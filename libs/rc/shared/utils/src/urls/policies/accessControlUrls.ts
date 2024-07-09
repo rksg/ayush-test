@@ -5,6 +5,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/l2AclPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy',
+    newApi: true
+  },
+  addL2AclPolicyRbac: {
+    method: 'post',
+    url: '/l2AclPolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
@@ -25,13 +31,19 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/l2AclPolicies/:l2AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
-    newApi: true
-    // defaultHeaders: {
-    //   'Accept': 'application/vnd.ruckus.v1.1+json',
-    //   'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    // }
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   updateL2AclPolicy: {
+    method: 'put',
+    url: '/l2AclPolicies/:l2AclPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
+    newApi: true
+  },
+  updateL2AclPolicyRbac: {
     method: 'put',
     url: '/l2AclPolicies/:l2AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
@@ -54,6 +66,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addL3AclPolicy: {
+    method: 'post',
+    url: '/l3AclPolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy',
+    newApi: true
+  },
+  addL3AclPolicyRbac: {
     method: 'post',
     url: '/l3AclPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy',
@@ -87,6 +105,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/l3AclPolicies/:l3AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
+    newApi: true
+  },
+  updateL3AclPolicyRbac: {
+    method: 'put',
+    url: '/l3AclPolicies/:l3AclPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
@@ -106,6 +130,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   addAppPolicy: {
+    method: 'post',
+    url: '/applicationPolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
+    newApi: true
+  },
+  addAppPolicyRbac: {
     method: 'post',
     url: '/applicationPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
@@ -136,6 +166,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     // }
   },
   updateAppAclPolicy: {
+    method: 'put',
+    url: '/applicationPolicies/:applicationPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
+    newApi: true
+  },
+  updateAppAclPolicyRbac: {
     method: 'put',
     url: '/applicationPolicies/:applicationPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
@@ -323,6 +359,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/devicePolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy',
+    newApi: true
+  },
+  addDevicePolicyRbac: {
+    method: 'post',
+    url: '/devicePolicies',
+    oldUrl: '/api/tenant/:tenantId/wifi/device-policy',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -362,6 +404,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateDevicePolicy: {
+    method: 'put',
+    url: '/devicePolicies/:devicePolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId',
+    newApi: true
+  },
+  updateDevicePolicyRbac: {
     method: 'put',
     url: '/devicePolicies/:devicePolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId',

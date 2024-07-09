@@ -188,7 +188,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.addL2AclPolicy,
-        AccessControlUrls.addL2AclPolicy
+        AccessControlUrls.addL2AclPolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -218,7 +218,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.updateL2AclPolicy,
-        AccessControlUrls.updateL2AclPolicy
+        AccessControlUrls.updateL2AclPolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -282,7 +282,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.addL3AclPolicy,
-        AccessControlUrls.addL3AclPolicy
+        AccessControlUrls.addL3AclPolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -320,7 +320,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.updateL3AclPolicy,
-        AccessControlUrls.updateL3AclPolicy
+        AccessControlUrls.updateL3AclPolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -443,7 +443,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addDevicePolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.addDevicePolicy,
-        AccessControlUrls.addDevicePolicy
+        AccessControlUrls.addDevicePolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -504,7 +504,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateDevicePolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.updateDevicePolicy,
-        AccessControlUrls.updateDevicePolicy
+        AccessControlUrls.updateDevicePolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -537,7 +537,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.addAppPolicy,
-        AccessControlUrls.addAppPolicy
+        AccessControlUrls.addAppPolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -598,7 +598,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateAppPolicy: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         AccessControlUrls.updateAppAclPolicy,
-        AccessControlUrls.updateAppAclPolicy
+        AccessControlUrls.updateAppAclPolicyRbac
       ),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
