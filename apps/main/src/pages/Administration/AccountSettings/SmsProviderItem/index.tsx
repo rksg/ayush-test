@@ -24,6 +24,8 @@ import {
 } from '@acx-ui/rc/services'
 import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
 import { store }                                                        from '@acx-ui/store'
+import { RolesEnum }                                                    from '@acx-ui/types'
+import { hasRoles }                                                     from '@acx-ui/user'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
@@ -72,6 +74,7 @@ const SmsProviderItem = () => {
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
+  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const FREE_SMS_POOL = 100
 
@@ -98,6 +101,7 @@ const SmsProviderItem = () => {
       provider: selectedType
     }
     updateNotificationSms({ params , payload: payload }).then()
+    setSmsProviderConfigured(false)
     reloadSmsNotification(2)
   }
 
@@ -218,6 +222,7 @@ const SmsProviderItem = () => {
       >
         <Button type='link'
           key='editProvider'
+          disabled={!hasPermission}
           onClick={() => {
             setEditMode(true)
             setDrawerVisible(true)
@@ -226,6 +231,7 @@ const SmsProviderItem = () => {
         </Button>
         <Button type='link'
           key='deleteProvider'
+          disabled={!hasPermission}
           onClick={() => {
             showActionModal({
               title: $t({ defaultMessage: 'Remove SMS Provider' }),
@@ -273,6 +279,13 @@ const SmsProviderItem = () => {
             label={$t({ defaultMessage: 'Auth Token' })} />
           <h3 style={{ marginTop: '-18px' }}>
             {smsProvider.data?.authToken}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Phone Number' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {smsProvider.data?.fromNumber}</h3>
         </div>
       </Card>
     </Col>
@@ -444,6 +457,7 @@ const SmsProviderItem = () => {
           style={{ marginLeft: '40px' }}
           type='link'
           size='small'
+          disabled={!hasPermission}
           onClick={() => { setIsChangeThreshold(true) }}>{$t({ defaultMessage: 'Change' })}</Button>
       </div>}
       {isChangeThreshold && <div>
@@ -529,6 +543,7 @@ const SmsProviderItem = () => {
               <Button
                 type='link'
                 size='small'
+                disabled={!hasPermission}
                 onClick={onSetUpValue}>{$t({ defaultMessage: 'Set SMS Provider' })}</Button>
             </Card>
           </Col>
