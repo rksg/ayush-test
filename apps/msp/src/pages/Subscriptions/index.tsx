@@ -17,6 +17,7 @@ import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
+  LicenseCompliance,
   PendingActivations,
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -108,6 +109,7 @@ export function Subscriptions () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const {
     state
   } = useContext(HspContext)
@@ -473,6 +475,11 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Pending Activations' }),
       content: <PendingActivations />,
       visible: isPendingActivationEnabled
+    },
+    compliance: {
+      title: $t({ defaultMessage: 'Compliance' }),
+      content: <LicenseCompliance />,
+      visible: isComplianceEnabled
     }
   }
 

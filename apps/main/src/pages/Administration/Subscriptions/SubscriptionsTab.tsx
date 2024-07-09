@@ -5,7 +5,7 @@ import {
   Tabs
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { PendingActivations }                                from '@acx-ui/msp/components'
+import { LicenseCompliance, PendingActivations }             from '@acx-ui/msp/components'
 import { SpaceWrapper }                                      from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
 import { useGetAccountTierQuery }                            from '@acx-ui/user'
@@ -30,6 +30,8 @@ export const SubscriptionTabs = () => {
     }
     const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
     const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+    const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
     const subscriptionVal = tier === AccountTier.GOLD ? SubscriptionTierType.Gold
@@ -50,6 +52,11 @@ export const SubscriptionTabs = () => {
         title: $t({ defaultMessage: 'Pending Activations' }),
         content: <PendingActivations />,
         visible: true
+      },
+      compliance: {
+        title: $t({ defaultMessage: 'Compliance' }),
+        content: <LicenseCompliance />,
+        visible: isComplianceEnabled
       }
     }
 
