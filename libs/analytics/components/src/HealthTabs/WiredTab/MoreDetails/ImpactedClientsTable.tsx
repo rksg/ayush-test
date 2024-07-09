@@ -4,7 +4,8 @@ import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
@@ -94,8 +95,21 @@ export const ImpactedClientsTable = ({
       dataIndex: 'localPortName',
       key: 'localPortName',
       fixed: 'left',
+      width: 160,
       disable: true,
-      sorter: { compare: sortProp('localPortName', defaultSort) }
+      sorter: { compare: sortProp('localPortName', defaultSort) },
+      render: (_, row: ImpactedClients) => (
+        <Tooltip title={row.localPortName}>
+          {row.localPortName}
+        </Tooltip>
+      )
+    },
+    {
+      title: $t({ defaultMessage: 'Switch MAC' }),
+      dataIndex: 'switchId',
+      key: 'switchId',
+      show: false,
+      sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Name' }),
@@ -113,6 +127,7 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
+      width: 160,
       show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
@@ -154,7 +169,7 @@ export const ImpactedClientsTable = ({
           }}
         />
       </ChartTitle>
-      <Table
+      <Table<ImpactedClients>
         settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={data}
