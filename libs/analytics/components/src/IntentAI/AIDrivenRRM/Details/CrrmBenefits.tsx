@@ -42,7 +42,7 @@ export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) =
         <GridCol col={{ span: 12 }}>
           <Card type='default'>
             <BenefitsHeader>{$t({ defaultMessage: 'Interfering links' })}</BenefitsHeader>
-            <BenefitsBody>
+            <BenefitsBody data-testid='interfering-links'>
               <BenefitsValue>{interferingBefore}</BenefitsValue>
               <BenefitsBadge count={interferingImprovement}></BenefitsBadge>
             </BenefitsBody>
@@ -53,7 +53,7 @@ export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) =
             <BenefitsHeader>
               {$t({ defaultMessage: 'Average interfering links per AP' })}
             </BenefitsHeader>
-            <BenefitsBody>
+            <BenefitsBody data-testid='interfering-links-per-ap'>
               <BenefitsValue>{interferingPerApBefore}</BenefitsValue>
               <BenefitsBadge count={interferingApImprovement}></BenefitsBadge>
             </BenefitsBody>
