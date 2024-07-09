@@ -1,5 +1,5 @@
-import { gql }         from 'graphql-request'
-import _, { uniqueId } from 'lodash'
+import { gql } from 'graphql-request'
+import _       from 'lodash'
 
 import {
   nodeTypes,
@@ -86,22 +86,18 @@ export const api = recommendationApi.injectEndpoints({
           const {
             id, path, sliceValue, sliceType, code, status
           } = intent
-          const newId = id === 'unknown' ? uniqueId() : id
           const statusEnum = status as StateType
-          const getCode = code === 'unknown'
-            ? status as keyof typeof codes
-            : code as keyof typeof codes
-          const detail = codes[getCode]
+          const detail = codes[code]
           detail && intents.push({
             ...intent,
-            id: newId,
+            id: id,
             aiFeature: $t(detail.aiFeature),
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             type: nodeTypes(sliceType as NodeType),
             category: $t(detail.category),
             status: $t(states[statusEnum].text)
-          } as unknown as (IntentAIRecommendationListItem))
+          } as (IntentAIRecommendationListItem))
           return intents
         }, [] as Array<IntentAIRecommendationListItem>)
 
