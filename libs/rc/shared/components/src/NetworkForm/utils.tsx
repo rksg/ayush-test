@@ -563,28 +563,28 @@ export function useAccessControlActivation () {
     let object = {} as Record<string, unknown>
     if (data.wlan?.advancedCustomization?.hasOwnProperty('l2AclPolicyId')
       && data.wlan?.advancedCustomization.l2AclEnable) {
-      object['l2AclPolicyId'] = { id: data.wlan.advancedCustomization.l2AclPolicyId }
+      object['l2AclPolicyId'] = data.wlan.advancedCustomization.l2AclPolicyId
     }
 
     if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
       && data.wlan?.advancedCustomization.l3AclEnable) {
-      object['l3AclPolicyId'] = { id: data.wlan.advancedCustomization.l3AclPolicyId }
+      object['l3AclPolicyId'] = data.wlan.advancedCustomization.l3AclPolicyId
     }
 
     if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
       && data.enableDeviceOs) {
-      object['devicePolicyId'] = { id: data.wlan.advancedCustomization.devicePolicyId }
+      object['devicePolicyId'] = data.wlan.advancedCustomization.devicePolicyId
     }
 
     if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
       && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
-      object['applicationPolicyId'] = { id: data.wlan.advancedCustomization.applicationPolicyId }
+      object['applicationPolicyId'] = data.wlan.advancedCustomization.applicationPolicyId
     }
 
     if (data.wlan?.advancedCustomization?.hasOwnProperty('accessControlProfileId')
       && data.wlan?.advancedCustomization.accessControlEnable) {
       // eslint-disable-next-line max-len
-      object['accessControlProfileId'] = { id: data.wlan.advancedCustomization.accessControlProfileId }
+      object['accessControlProfileId'] = data.wlan.advancedCustomization.accessControlProfileId
     }
 
     return object
@@ -593,18 +593,18 @@ export function useAccessControlActivation () {
   // eslint-disable-next-line max-len
   const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown>, key: string, id: string) => {
     if (!Object.keys(oldPayload).length) {
-      const keyObject = currentPayload[key] as { id: string }
+      const keyObject = currentPayload[key]
       return {
-        [key]: { networkId: id, [key]: keyObject.id }
+        [key]: { networkId: id, [key]: keyObject }
       } as ActionItem
     }
 
-    const oldObject = oldPayload[key] as { id: string }
-    const updateObject = currentPayload[key] as { id: string }
+    const oldObject = oldPayload[key]
+    const updateObject = currentPayload[key]
     return {
       [key]: {
-        oldAction: { networkId: id, [key]: oldObject.id },
-        action: { networkId: id, [key]: updateObject.id }
+        oldAction: { networkId: id, [key]: oldObject },
+        action: { networkId: id, [key]: updateObject }
       }
     } as UpdateActionItem
   }
