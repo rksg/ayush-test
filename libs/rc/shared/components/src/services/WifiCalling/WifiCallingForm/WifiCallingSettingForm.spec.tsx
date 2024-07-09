@@ -11,8 +11,8 @@ import { EPDG, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls 
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
-import { mockRbacWifiCallingTableResult, mockWifiCallingTableResult, wifiCallingSettingTable } from '../__tests__/fixtures'
-import WifiCallingFormContext                                                                  from '../WifiCallingFormContext'
+import { mockRbacWifiCallingTableResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                                         from '../WifiCallingFormContext'
 
 import WifiCallingSettingForm from './WifiCallingSettingForm'
 

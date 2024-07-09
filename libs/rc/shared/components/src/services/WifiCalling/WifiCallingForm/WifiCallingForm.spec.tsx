@@ -44,24 +44,6 @@ const wifiCallingServiceResponse = {
   ]
 }
 
-const wifiCallingListResponse = [
-  {
-    networkIds: [
-      'c8cd8bbcb8cc42caa33c991437ecb983',
-      '44c5604da90443968e1ee91706244e63'
-    ],
-    qosPriority: 'WIFICALLING_PRI_VOICE',
-    serviceName: 'wifiCSP1',
-    id: 'ad7309563e004b36861f662bfbfd0144',
-    epdgs: [
-      {
-        ip: '1.2.3.4',
-        domain: 'abc.com'
-      }
-    ]
-  }
-]
-
 const initState = {
   serviceName: '',
   ePDG: [],
