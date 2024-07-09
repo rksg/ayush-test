@@ -1,10 +1,10 @@
-import { Form, Input, Switch } from 'antd'
-import { useIntl }             from 'react-intl'
+import { Form, Input } from 'antd'
+import { useIntl }     from 'react-intl'
 
 import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
 // FIXME: Use self definition style component to render
-import { FieldLabel } from '../../../../NetworkForm/styledComponents'
+// import { FieldLabel } from '../../../../NetworkForm/styledComponents'
 
 import { CommonActionSettings } from './CommonActionSettings'
 
@@ -13,19 +13,10 @@ export function DisplayMessageSetting () {
   const { $t } = useIntl()
 
   return (<>
-    <CommonActionSettings />
-
-    <FieldLabel width='555px' key='key'>
-      {$t({ defaultMessage: 'Page Title' })}
-      <Form.Item
-        name={'displayTitle'}
-        valuePropName={'checked'}
-      >
-        <Switch />
-      </Form.Item>
-    </FieldLabel>
+    <CommonActionSettings actionType='DisplayMessage' />
     <Form.Item
       name={'title'}
+      label={$t({ defaultMessage: 'Page Title' })}
       rules={[
         { required: true },
         { min: 1 },
@@ -51,26 +42,20 @@ export function DisplayMessageSetting () {
 
     <Form.Item
       name={'backButtonText'}
-      label={$t({ defaultMessage: 'Back Button Label' })}
-      rules={[
-        { required: true },
-        { min: 1 },
-        { max: 20 }
-      ]}
-    >
-      <Input />
-    </Form.Item>
+      hidden={true}
+    />
 
     <Form.Item
       name={'continueButtonText'}
-      label={$t({ defaultMessage: 'Continue Button Label' })}
-      rules={[
-        { required: true },
-        { min: 1 },
-        { max: 20 }
-      ]}
-    >
-      <Input />
-    </Form.Item>
+      hidden={true}
+    />
+    <Form.Item
+      name={'displayBackButton'}
+      hidden={true}
+    />
+    <Form.Item
+      name={'displayContinueButton'}
+      hidden={true}
+    />
   </>)
 }

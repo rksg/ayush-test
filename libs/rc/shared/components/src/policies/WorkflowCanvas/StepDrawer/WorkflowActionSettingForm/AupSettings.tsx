@@ -11,7 +11,7 @@ export function AupSettings () {
   const { $t } = useIntl()
 
   return (<>
-    <CommonActionSettings />
+    <CommonActionSettings actionType='AUP' />
 
     <Form.Item
       name={'title'}

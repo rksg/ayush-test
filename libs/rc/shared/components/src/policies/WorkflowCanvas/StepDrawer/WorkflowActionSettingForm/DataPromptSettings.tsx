@@ -13,7 +13,7 @@ export function DataPromptSettings () {
 
   return (
     <>
-      <CommonActionSettings />
+      <CommonActionSettings actionType='DataPrompt' />
 
       <Form.Item
         name='title'
