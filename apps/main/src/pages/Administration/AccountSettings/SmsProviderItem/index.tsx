@@ -280,6 +280,13 @@ const SmsProviderItem = () => {
           <h3 style={{ marginTop: '-18px' }}>
             {smsProvider.data?.authToken}</h3>
         </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Phone Number' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {smsProvider.data?.fromNumber}</h3>
+        </div>
       </Card>
     </Col>
   }
