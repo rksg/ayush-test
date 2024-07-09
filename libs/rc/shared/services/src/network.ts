@@ -718,35 +718,26 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     venueNetworkActivationsViewModelList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const networkActivations = {
-          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
-          body: arg.payload
-        }
-        const networkActivationsQuery = await fetchWithBQ(networkActivations)
-        const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
-
+        const typedPayload = arg.payload as Record<string, unknown>
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-        let networksList = { data: [] } as { data: WifiNetwork[] }
-        const networkIds = networkVenueList?.data.map(item => item.networkId!) || []
-        if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
-          const networkListQuery = await fetchWithBQ({
-            ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, apiCustomHeader),
-            body: JSON.stringify({
-              filters: { id: networkIds }
-            }) })
+        const networkListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, apiCustomHeader),
+          body: JSON.stringify({
+            filters: { 'venueApGroups.venueId': [typedPayload.venueId] }
+          }) })
 
-          networksList = networkListQuery.data as TableResult<WifiNetwork>
-        }
+        const networksList = networkListQuery.data as TableResult<WifiNetwork>
 
         // fetch vlan pool info
-        const typedPayload = arg.payload as Record<string, unknown>
-        if (networkIds.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
+        const networkIds = networksList?.data.map(item => item.id!) || []
+        if (networksList.data.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
           const vlanPoolListQuery = await fetchWithBQ({
             ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, apiCustomHeader),
             body: JSON.stringify({
               fields: ['id', 'name', 'wifiNetworkIds'],
               filters: { wifiNetworkIds: networkIds }
             }) })
+
           const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
 
           networksList.data.forEach(network => {
@@ -756,14 +747,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           })
         }
 
-        return networkVenueList
-          ? { data: {
-            ...networkVenueList,
-            data: networksList?.data
-          } as TableResult<Network> }
-          : {
-            error: networkActivationsQuery.error as FetchBaseQueryError
-          }
+        return networksList
+          ? { data: networksList as TableResult<Network> }
+          : { error: networkListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {

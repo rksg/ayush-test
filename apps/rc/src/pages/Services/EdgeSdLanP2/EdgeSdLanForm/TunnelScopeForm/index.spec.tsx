@@ -8,17 +8,17 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm, StepsFormProps }                                                                                          from '@acx-ui/components'
-import { networkApi, tunnelProfileApi }                                                                                       from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                    from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                                          from '@acx-ui/components'
+import { networkApi, tunnelProfileApi }                                                                       from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
+import { mockNetworkViewmodelList } from '../../__tests__/fixtures'
 
 import { TunnelScopeForm } from '.'
 
@@ -105,10 +105,6 @@ describe('Tunnel Scope Form', () => {
     store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
-      ),
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_req, res, ctx) => res(ctx.json({

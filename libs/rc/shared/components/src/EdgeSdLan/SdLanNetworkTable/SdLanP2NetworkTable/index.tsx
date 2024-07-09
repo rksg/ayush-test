@@ -91,7 +91,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
-    apiParams: { venueId },
     defaultPayload: {
       sortField: 'name',
       sortOrder: 'ASC',

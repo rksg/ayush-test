@@ -3,9 +3,9 @@ import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import _                                      from 'lodash'
 import { rest }                               from 'msw'
 
-import { networkApi }                                                            from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, NetworkTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                       from '@acx-ui/store'
+import { networkApi }                                            from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, NetworkTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,7 +14,7 @@ import {
 import { EdgeScopes, SwitchScopes, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, hasPermission, setUserProfile } from '@acx-ui/user'
 
-import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
+import { mockNetworkViewmodelList } from '../../__tests__/fixtures'
 
 import { EdgeSdLanP2ActivatedNetworksTable } from '.'
 
@@ -36,10 +36,6 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     store.dispatch(networkApi.util.resetApiState())
 
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
-      ),
       rest.post(
         CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_req, res, ctx) => res(ctx.json({
