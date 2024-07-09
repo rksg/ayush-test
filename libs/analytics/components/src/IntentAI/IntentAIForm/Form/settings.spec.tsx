@@ -1,20 +1,21 @@
-// import { NamePath } from 'antd/es/form/interface'
+import { render } from '@acx-ui/test-utils'
 
-// import { render } from '@acx-ui/test-utils'
+import { Settings } from './settings'
 
-// import { Priority } from './priority'
-// import { Settings } from './settings'
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  useStepFormContext: () => {
+    return {
+      form: {
+        intentType: 'clientDensity'
+      }
+    }
+  }
+}))
 
-// describe('settings', () => {
-//   const name = Priority.fieldName as unknown as NamePath
-//   it('should match snapshot', () => {
-//     const { form } = renderFormHook()
-//     form.setFieldValue(name)
-//     const { asFragment } = renderForm(<Settings />, {
-//       initialValues: {
-//         intentType: 'clientDensity'
-//       }
-//     })
-//     expect(asFragment()).toMatchSnapshot()
-//   })
-// })
+describe('settings', () => {
+  it('should match snapshot', () => {
+    const { asFragment } = render(<Settings />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+})

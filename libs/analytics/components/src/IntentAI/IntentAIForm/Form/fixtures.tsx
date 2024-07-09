@@ -1,22 +1,25 @@
+/* eslint-disable max-len */
 import { useState } from 'react'
 
 import { Form, Input } from 'antd'
 import flat            from 'flat'
 
-import { Provider } from '@acx-ui/store'
+import { createStepsFormContext } from '@acx-ui/components'
+import { Provider }               from '@acx-ui/store'
+import { render, screen, within } from '@acx-ui/test-utils'
 
-import { EnhancedRecommendation } from '../services'
+import {
+  EnhancedRecommendation
+} from '../services'
+
+const Context = createStepsFormContext()
+
+export const withinField = () => within(screen.getByTestId('field'))
 
 export const renderForm = (
   field: JSX.Element,
   options: {
-    initialValues?: Partial<Omit<EnhancedRecommendation, 'configs'>> & {
-      configs?: Partial<EnhancedRecommendation['configs'][0]>[]
-    },
-    editMode?: boolean,
-    valuesToUpdate?: Partial<Omit<EnhancedRecommendation, 'configs'>> & {
-      configs?: Partial<EnhancedRecommendation['configs'][0]>[]
-    },
+    initialValues?: Partial<Pick<EnhancedRecommendation, 'status' | 'sliceValue' | 'updatedAt'>>
     params?: Record<string, string>
   } = {}
 ) => {
@@ -24,15 +27,14 @@ export const renderForm = (
     const [form] = Form.useForm()
     const [ok, setOk] = useState(false)
     const {
-      initialValues = {},
-      editMode = false,
-      valuesToUpdate = {}
+      initialValues = {}
     } = options
+    const editMode = false
+    const gotoStep = () => {}
 
     const onFinish = async () => { setOk(true) }
     const onSetValue = () => {
       setOk(false)
-      form.setFieldsValue(valuesToUpdate)
     }
     const onValuesChange = () => setOk(false)
     const formProps = { form, initialValues, onFinish, onValuesChange }
@@ -45,7 +47,7 @@ export const renderForm = (
       {ok ? <div data-testid='form-values'>{JSON.stringify(form.getFieldsValue(true))}</div> : null}
       {/* TODO: might be a source of bug for the StepsForm when previous page rely on useWatch to update another value */}
       {/* It is required to have fields render in order for useWatch to trigger */}
-      {Object.keys(flat({ ...initialValues, ...valuesToUpdate })).map(key => <Form.Item
+      {Object.keys(flat({ ...initialValues })).map(key => <Form.Item
         key={key}
         name={key.split('.')}
         children={<Input />}
@@ -53,7 +55,7 @@ export const renderForm = (
       <button type='button' onClick={onSetValue}>Update</button>
       <button type='submit'>Submit</button>
     </Form>
-    const value = { form, editMode, initialValues, current: 1 }
+    const value = { form, editMode, gotoStep, initialValues, current: 1 }
 
     return <Provider>
       <Context.Provider {...{ value, children }} />

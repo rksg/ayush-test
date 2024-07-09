@@ -19,9 +19,9 @@ export function Settings () {
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t(config.steps.title.settings)} />
-      <StepsForm.Subtitle>
+      <Typography.Paragraph>
         {$t(config.steps.calendarText)}
-      </StepsForm.Subtitle>
+      </Typography.Paragraph>
     </Col>
     <Col span={7} offset={2}>
       <UI.SideNotes>

@@ -10,114 +10,42 @@ exports[`priority should match snapshot 1`] = `
       class="ant-col ant-col-15"
       style="padding-left: 10px; padding-right: 10px;"
     >
-      <div
-        class="styledComponents__Wrapper-sc-ki2m8o-1 eYGHYS"
+      <h3
+        class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
       >
-        <h2
-          class="ant-typography styledComponents__Title-sc-ki2m8o-2"
-        >
-          Intent Priority
-        </h2>
-        <div
-          class="styledComponents__Content-sc-ki2m8o-5 dFaUyX"
-        >
-          <div
-            class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-ki2m8o-4 hYNJuf fjfDlt"
-          >
-            What's more important to you for this network?
-          </div>
-        </div>
-        <div
-          class="styledComponents__Content-sc-ki2m8o-5 dFaUyX"
-        >
-          <div
-            class="ant-radio-group ant-radio-group-outline"
-            id="intentType"
-          >
-            <div
-              class="ant-space ant-space-vertical"
-            >
-              <div
-                class="ant-space-item"
-                style="margin-bottom: 8px;"
-              >
-                <label
-                  class="ant-radio-wrapper"
-                >
-                  <span
-                    class="ant-radio"
-                  >
-                    <input
-                      class="ant-radio-input"
-                      type="radio"
-                      value="clientDensity"
-                    />
-                    <span
-                      class="ant-radio-inner"
-                    />
-                  </span>
-                  <span>
-                    High number of clients in a dense network
-                  </span>
-                </label>
-              </div>
-              <div
-                class="ant-space-item"
-              >
-                <label
-                  class="ant-radio-wrapper"
-                >
-                  <span
-                    class="ant-radio"
-                  >
-                    <input
-                      class="ant-radio-input"
-                      type="radio"
-                      value="clientThroughput"
-                    />
-                    <span
-                      class="ant-radio-inner"
-                    />
-                  </span>
-                  <span>
-                    High client throughput in sparse network
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        Intent Priority
+      </h3>
+      <h4
+        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__Subtitle-sc-1ibvcih-5 fPbHyn dnpHFP"
+      >
+        What is your primary network intent for Zone 
+      </h4>
     </div>
     <div
       class="ant-col ant-col-7 ant-col-offset-2"
       style="padding-left: 10px; padding-right: 10px;"
     >
       <div
-        class="styledComponents__Wrapper-sc-ki2m8o-1 eYGHYS"
+        class="styledComponents__SideNotes-sc-ki2m8o-1 jmDqWF"
       >
+        <h4
+          class="ant-typography"
+        >
+          Side Notes
+        </h4>
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__Subtitle-sc-1ibvcih-5 fPbHyn dnpHFP"
+        >
+          Potential trade-off?
+        </h4>
         <div
-          class="styledComponents__SideNote-sc-ki2m8o-7 eYbBtL"
+          class="styledComponents__TextContent-sc-1ibvcih-10 gqfdQa"
         >
           <div
-            class="styledComponents__SideNoteHeader-sc-ki2m8o-8 doWzrG"
-          >
-            <h3
-              class="ant-typography styledComponents__SideNoteTitle-sc-ki2m8o-3"
-            >
-              Side Notes
-            </h3>
-          </div>
-          <div
-            class="styledComponents__SideNoteSubtitle-sc-ki2m8o-9 iGojjG"
-          >
-            Potential trade-off
-          </div>
-          <span
-            class="styledComponents__SideNoteContent-sc-ki2m8o-10 dyJqUa"
+            class="ant-typography"
           >
             In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, making networks more prone to signal degradation and interference, which could compromise overall performance and reliability.
-          </span>
+          </div>
         </div>
       </div>
     </div>
