@@ -6,6 +6,7 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { StepsForm }                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedWifiCallingServiceListQuery, useGetEnhancedWifiCallingServiceTemplateListQuery,
   useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery
@@ -42,6 +43,7 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const form = Form.useFormInstance()
 
   const {
@@ -50,13 +52,15 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
-    skip: !useParams().hasOwnProperty('serviceId')
+    skip: !useParams().hasOwnProperty('serviceId'),
+    enableRbac
   })
 
   const { data: dataList } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEnhancedWifiCallingServiceListQuery,
     useTemplateQueryFn: useGetEnhancedWifiCallingServiceTemplateListQuery,
-    payload: defaultPayload
+    payload: defaultPayload,
+    enableRbac
   })
 
   const handleServiceName = (serviceName: string) => {
@@ -117,7 +121,9 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
             serviceName: data.serviceName,
             tags: data.tags,
             description: data.description,
-            qosPriority: data.qosPriority
+            qosPriority: data.qosPriority,
+            networkIds: [...data.networkIds ?? []],
+            oldNetworkIds: data.networkIds ?? []
           }
         }
       })

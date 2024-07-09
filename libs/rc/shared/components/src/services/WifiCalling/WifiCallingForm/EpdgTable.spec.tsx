@@ -28,6 +28,7 @@ const ePDG: EPDG[] = [{
   ip: '10.10.10.10'
 }]
 const networkIds: string[] = []
+const oldNetworkIds: string[] = []
 const networksName: string[] = []
 const epdgs: EPDG[] = []
 
@@ -39,6 +40,7 @@ const initState = {
   tags,
   description,
   networkIds,
+  oldNetworkIds,
   networksName,
   epdgs
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
@@ -132,6 +133,15 @@ export function MacRegistrationsTab () {
   },
   {
     label: $t({ defaultMessage: 'Revoke' }),
+    disabled: ([selectedRow]) => {
+      if(selectedRow.revoked) {
+        return true
+      }
+      else if(selectedRow.expirationDate) {
+        return moment(selectedRow.expirationDate).isSameOrBefore(new Date())
+      }
+      return false
+    },
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (rows, clearSelection) => {
       editMacRegistration(
@@ -145,6 +155,7 @@ export function MacRegistrationsTab () {
   },
   {
     label: $t({ defaultMessage: 'Unrevoke' }),
+    disabled: ([selectedRow]) => !selectedRow.revoked,
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (rows, clearSelection) => {
       editMacRegistration(

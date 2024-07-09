@@ -674,7 +674,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateSwitchPosition',
             'UpdateApPosition',
             'UpdateRwgPosition',
-            'UpdateCloudpathServerPosition',
             'DeleteFloorPlan',
             'ActivateApFloorPosition',
             'DeactivateApFloorPosition'
@@ -726,16 +725,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'RWG', id: 'List' }]
-    }),
-    updateCloudpathServerPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateCloudpathServerPosition, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     getApCompatibilitiesVenue: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1392,7 +1381,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       transformResponse: (result: { data: ApMeshTopologyData[] }) => {
-        return result?.data[0] as ApMeshTopologyData
+        return result?.data?.[0] as ApMeshTopologyData
       }
     }),
     getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
@@ -1809,7 +1798,6 @@ export const {
   useUpdateSwitchPositionMutation,
   useUpdateApPositionMutation,
   useUpdateRwgPositionMutation,
-  useUpdateCloudpathServerPositionMutation,
   useGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useGetVenueApModelsQuery,
