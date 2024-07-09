@@ -518,7 +518,7 @@ export const apApi = baseApApi.injectEndpoints({
             apSerialNumbers: [params?.serialNumber]
           }
         }
-        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.getMdnsProxyListRbac, undefined, apiCustomHeader)
+        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)
         const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
         const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
         const targetMdnsData = mDnsProxyList?.[0]
