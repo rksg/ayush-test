@@ -25,7 +25,31 @@ import {
   TabletOutlined,
   Ubuntu,
   VoIpOutlined,
-  WdsOutlined
+  WdsOutlined,
+  Avaya,
+  Bose,
+  Brother,
+  Canon,
+  Cisco,
+  Dell,
+  Epson,
+  Panasonic,
+  Nortel,
+  Nintendo,
+  Nest,
+  Libratone,
+  Linksys,
+  Hp,
+  Roku,
+  Playstation,
+  Sonos,
+  Sony,
+  Samsung,
+  Wemo,
+  Xerox,
+  Xbox,
+  WifiSmartPlug,
+  Telnet
 } from '@acx-ui/icons'
 
 export const getDeviceTypeIcon = (deviceType: string) => {
@@ -58,38 +82,39 @@ export const getOsTypeIcon = (osType: string) => {
   type Type = keyof typeof osIconMap
   const type = convertClientOsType(osType)
   const defaultIcon = <GenericOs />
-  const osIconMap = { // TODO: Add icons (Waiting for designer)
+  const osIconMap = {
     apple: <Apple />,
-    // avaya:
+    avaya: <Avaya />,
     android: <Android />,
     blackberry: <Blackberry />,
-    // bose:
-    // brother:
-    // canon:
+    bose: <Bose />,
+    brother: <Brother />,
+    canon: <Canon />,
     chrome: <Chrome />,
-    // cisco:
-    // dell:
-    // epson:
-    // panasonic:
-    // nortel:
-    // nintendo:
-    // nest:
+    cisco: <Cisco />,
+    dell: <Dell />,
+    epson: <Epson />,
+    panasonic: <Panasonic />,
+    nortel: <Nortel />,
+    nintendo: <Nintendo />,
+    nest: <Nest />,
     linux: <Linux />,
-    // linksys:
-    // libratone:
+    linksys: <Linksys />,
+    libratone: <Libratone />,
     kindle: <Amazon />,
-    // hp:
-    // playstation:
-    // roku:
-    // samsung:
-    // sonos:
-    // sony:
+    hp: <Hp />,
+    playstation: <Playstation />,
+    roku: <Roku />,
+    samsung: <Samsung />,
+    sonos: <Sonos />,
+    sony: <Sony />,
+    telnet: <Telnet />,
     ubuntu: <Ubuntu />,
-    // wemo:
-    windows: <Microsoft />
-    // xbox:
-    // xerox:
-    // 'wifi smart plug':
+    wemo: <Wemo />,
+    windows: <Microsoft />,
+    xbox: <Xbox />,
+    xerox: <Xerox />,
+    'wifi smart plug': <WifiSmartPlug />
   }
   return osIconMap[type as Type] || defaultIcon
 }

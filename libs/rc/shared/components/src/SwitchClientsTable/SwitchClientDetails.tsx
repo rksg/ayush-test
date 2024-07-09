@@ -112,6 +112,50 @@ export function SwitchClientDetails () {
         <span>{deviceType || '--'}</span>)
   }
 
+  const osIconMap = Object.keys({
+    apple: '<Apple />',
+    avaya: '<Avaya />',
+    android: '<Android />',
+    blackberry: '<Blackberry />',
+    bose: '<Bose />',
+    brother: '<Brother />',
+    canon: '<Canon />',
+    chrome: '<Chrome />',
+    cisco: '<Cisco />',
+    dell: '<Dell />',
+    epson: '<Epson />',
+    panasonic: '<Panasonic />',
+    nortel: '<Nortel />',
+    nintendo: '<Nintendo />',
+    nest: '<Nest />',
+    linux: '<Linux />',
+    linksys: '<Linksys />',
+    libratone: '<Libratone />',
+    kindle: '<Amazon />',
+    hp: '<Hp />',
+    playstation: '<Playstation />',
+    roku: '<Roku />',
+    samsung: '<Samsung />',
+    sonos: '<Sonos />',
+    sony: '<Sony />',
+    telnet: '<Telnet />',
+    ubuntu: '<Ubuntu />',
+    wemo: '<Wemo />',
+    windows: '<Microsoft />',
+    xbox: '<Xbox />',
+    xerox: '<Xerox />',
+    'wifi smart plug': '<WifiSmartPlug />'
+  })
+  const test = osIconMap.map(key => ( {
+    title: <span>
+      {$t({ defaultMessage: 'OS' })}
+    </span>,
+    value: <UI.OsType>
+    { getOsTypeIcon(key) }
+    { key }
+  </UI.OsType>
+  }))
+
   const clientData: Client[] = [
     {
       title: $t({ defaultMessage: 'Mac Address' }),
@@ -147,7 +191,8 @@ export function SwitchClientDetails () {
       </span>,
       value: <span>{clientDetails?.dhcpClientModelName || '--'}</span>
     }] : [])
-  ]
+  ].concat(test)
+ 
 
   const clientConnection: Client[] = [
     ...(isDhcpClientsEnabled ? [{
