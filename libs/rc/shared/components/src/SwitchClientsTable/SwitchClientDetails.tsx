@@ -152,7 +152,6 @@ export function SwitchClientDetails () {
     }] : [])
   ]
 
-
   const clientConnection: Client[] = [
     ...(isDhcpClientsEnabled ? [{
       title: <span>
