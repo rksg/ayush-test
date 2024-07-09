@@ -59,10 +59,8 @@ const Column2:ReactNode = (<div style={{ flexDirection: 'column' }}>
 
 export const Default = Template.bind({})
 Default.args = {
-  title: 'Choose priority',
   name: 'tradeOff',
   currentValue: 'value1',
-  label: 'What\'s more important to you for this network?',
   headers: ['Intent Priority', 'IntentAI Scope'],
   radios: [
     {
