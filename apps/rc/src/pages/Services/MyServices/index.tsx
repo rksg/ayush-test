@@ -52,7 +52,7 @@ export default function MyServices () {
       type: ServiceType.MDNS_PROXY,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedMdnsProxyListQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
       }).data?.totalCount
     },
     {
