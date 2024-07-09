@@ -1171,3 +1171,14 @@ export function systemDefinedNameValidator (value: string) {
   return Promise.resolve()
 }
 
+export function guestPasswordValidator (value: string) {
+  const { $t } = getIntl()
+  const regex = /^[a-zA-Z0-9!@#$%^&*()\[\]{}_\-+=~`|:;"'<>,./?]{6,16}$/
+
+  if (value && !regex.test(value)) {
+    return Promise.reject($t(validationMessages.guestPasswordInvalid))
+  }
+  return Promise.resolve()
+
+}
+

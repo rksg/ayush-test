@@ -49,6 +49,8 @@ export function SwitchTraceRouteForm () {
     useGetTroubleshootingQuery({
       params: troubleshootingParams,
       enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetailsContextData.switchDetailHeader?.venueId
     })
 
   const refetchResult = function () {
@@ -83,7 +85,7 @@ export function SwitchTraceRouteForm () {
       }
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)

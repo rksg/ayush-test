@@ -198,9 +198,11 @@ function DashboardPageHeader () {
       title={''}
       extra={[
         ...filterByAccess([
-          <Dropdown overlay={addMenu} placement={'bottomRight'}>{() =>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
-          }</Dropdown>
+          <Dropdown overlay={addMenu}
+            placement={'bottomRight'}
+            scopeKey={[WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE]}>{() =>
+              <Button type='primary'>{ $t({ defaultMessage: 'Add...' }) }</Button>
+            }</Dropdown>
         ]),
         <VenueFilter key={getShowWithoutRbacCheckKey('hierarchy-filter')}/>,
         <RangePicker

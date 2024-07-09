@@ -60,5 +60,10 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedMdnsProxyProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedMdnsProxyProfiles/query',
     newApi: true
+  },
+  getMdnsProxyListRbac: {
+    method: 'post',
+    url: '/multicastDnsProxyProfiles/query',
+    newApi: true
   }
 }

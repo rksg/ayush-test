@@ -12,7 +12,8 @@ import {
   SchedulerTypeEnum,
   Hotspot20AccessNetworkTypeEnum,
   Hotspot20Ipv4AddressTypeEnum,
-  NetworkHotspot20Settings
+  NetworkHotspot20Settings,
+  SmsProviderType
 } from '@acx-ui/rc/utils'
 
 export const networksResponse = {
@@ -321,69 +322,6 @@ export const networkDeepResponse = {
   ]
 }
 
-export const wifiCloudpathResponse = [
-  {
-    name: 'twoserver',
-    deploymentType: 'Cloud',
-    authRadius: {
-      primary: {
-        ip: '4.4.4.4',
-        port: 4444,
-        sharedSecret: '666666'
-      },
-      id: '71da40ca44144030a861668cf22f4ec7'
-    },
-    accountingRadius: {
-      primary: {
-        ip: '5.5.5.5',
-        port: 5555,
-        sharedSecret: '666666'
-      },
-      id: 'd5f3a867ec95466085a939475f396fd7'
-    },
-    id: '2b94e9cbf3454b71af9ee06af0fcb5ba'
-  },
-  {
-    name: 'test1',
-    deploymentType: 'Cloud',
-    authRadius: {
-      primary: {
-        ip: '1.1.1.1',
-        port: 11111,
-        sharedSecret: '111111'
-      },
-      id: 'c7f1dfd9ae86482f9a98c939a3202438'
-    },
-    id: '46ec9547703b424daa9614ea8e80160f'
-  },
-  {
-    name: 'test server 2',
-    deploymentType: 'Cloud',
-    authRadius: {
-      primary: {
-        ip: '2.2.2.2',
-        port: 2222,
-        sharedSecret: '222222'
-      },
-      id: 'd3753ce508a44633bfd4ad673174ad30'
-    },
-    id: '6116be7334be493e85a9db7a4efe5576'
-  },
-  {
-    name: 'test2',
-    deploymentType: 'Cloud',
-    authRadius: {
-      primary: {
-        ip: '1.1.1.1',
-        port: 10,
-        sharedSecret: '888888888888888'
-      },
-      id: 'ceed9973ad994ffbb5b26538fece3005'
-    },
-    id: 'decbac6f92244933b7ccaba4e06c5137'
-  }
-]
-
 export const venuesResponse = {
   fields: [
     'country',
@@ -616,52 +554,12 @@ export const venueListResponse = {
   ]
 }
 
-export const successResponse = { requestId: 'request-id' }
-
-export const cloudpathResponse = [
-  {
-    authRadius: {
-      primary: {
-        ip: '5.54.58.5',
-        port: 56,
-        sharedSecret: '454545'
-      },
-      id: 'c615bf8c82dc404ebb98c7e89672ef29'
-    },
-    accountingRadius: {
-      primary: {
-        ip: '5.54.58.6',
-        port: 57,
-        sharedSecret: '454545'
-      },
-      id: 'c615bf8c82dc404ebb98c7e89672ef29'
-    },
-    deploymentType: 'Cloud',
-    id: '6edb22ef74b143f280f2eb3105053840',
-    name: 'cloud_02'
-  },
-  {
-    authRadius: {
-      primary: {
-        ip: '3.2.34.5',
-        port: 56,
-        sharedSecret: 'GFHFGH'
-      },
-      id: '296ee3f68c434aa4bc3b3ba1f7272806'
-    },
-    accountingRadius: {
-      primary: {
-        ip: '3.2.34.6',
-        port: 57,
-        sharedSecret: 'GFHFGH'
-      },
-      id: '296ee3f68c434aa4bc3b3ba1f7272806'
-    },
-    deploymentType: 'Cloud',
-    id: '5cc1d4a21c4d41b8ab1a839a0e03cc8c',
-    name: 'cloud_01'
+export const successResponse = {
+  requestId: 'request-id',
+  response: {
+    id: 'new-network-id'
   }
-]
+}
 
 export const policyListResponse = {
   fields: ['name', 'id'],
@@ -2145,4 +2043,73 @@ export const mockWifiCallingDetail = {
       domain: 'def.com'
     }
   ]
+}
+
+export const mockWifiCallingTableResult = {
+  fields: ['ePDGs', 'epdg', 'qosPriority', 'networkIds', 'epdgs', 'name', 'tenantId', 'id'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'b6ebccae545c44c1935ddaf746f5b048',
+      name: 'wifi-1',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      networkIds: [],
+      tenantId: '1977de24c7824b0b975c4d02806e081f',
+      epdgs: [
+        {
+          domain: 'a.b.comd'
+        }
+      ]
+    }
+  ]
+}
+
+export const macRegistrationList = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool',
+      description: '',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 1,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
+
+export const mockNotificationSmsResponse = {
+  threshold: 80,
+  provider: SmsProviderType.RUCKUS_ONE,
+  ruckusOneUsed: 100
+}
+
+export const mockNotificationSmsHasPoolResponse = {
+  threshold: 80,
+  provider: SmsProviderType.RUCKUS_ONE,
+  ruckusOneUsed: 80
+}
+
+export const mockNotificationSmsProviderNotR1Response = {
+  threshold: 80,
+  provider: SmsProviderType.TWILIO,
+  ruckusOneUsed: 80
 }

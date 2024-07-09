@@ -11,7 +11,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import handlers      from './__tests__/fixtures'
+import { handlers }  from './__tests__/fixtures'
 import VenueDHCPForm from './VenueDHCPForm'
 
 const mockedUseConfigTemplate = jest.fn()
