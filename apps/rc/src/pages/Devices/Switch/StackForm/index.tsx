@@ -164,7 +164,7 @@ export function StackForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
-  const [currentFW, setCurrentFw] = useState('')
+  const [currentFw, setCurrentFw] = useState('')
   const [currentAboveTenFW, setCurrentAboveTenFw] = useState('')
   const [currentVenueFw, setCurrentVenueFw] = useState('')
   const [currentVenueAboveTenFw, setCurrentVenueAboveTenFw] = useState('')
@@ -261,23 +261,23 @@ export function StackForm () {
       )
 
       const switchFw = switchData.firmwareVersion
-
       if (isSwitchFirmwareV1002Enabled && venuesListV1002) {
         const venueVersions = venuesListV1002.data?.find(
           venue => venue['venueId'] === switchData.venueId)?.versions
         setCurrentFirmwareV1002(venueVersions || [])
 
       } else if (!isSwitchFirmwareV1002Enabled && venuesList) {
+        const venueId = switchData?.venueId || switchDetail?.venueId || ''
         const venueFw = venuesList.data.find(
-          venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
+          venue => venue.id === venueId)?.switchFirmwareVersion?.id
         const venueAboveTenFw = venuesList.data.find(
-          venue => venue.id === switchData.venueId)?.switchFirmwareVersionAboveTen?.id
+          venue => venue.id === venueId)?.switchFirmwareVersionAboveTen?.id
+
         setCurrentFw(switchFw || venueFw || '')
         setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
         setCurrentVenueFw(venueFw || '')
         setCurrentVenueAboveTenFw(venueAboveTenFw || '')
       }
-
 
       if (!!switchDetail.model?.includes('ICX7650')) {
         formRef?.current?.setFieldValue('rearModuleOption',
@@ -373,7 +373,7 @@ export function StackForm () {
       const miniMembers = getMiniMembers(activeSerialNumber)
       setTableData(data => [...data].splice(0, miniMembers))
     }
-  }, [activeSerialNumber, currentAboveTenFW, currentFW, currentFirmwareV1002])
+  }, [activeSerialNumber, currentAboveTenFW, currentFw, currentFirmwareV1002])
 
 
   const getMiniMembers = function (activeSerialNumber: string) {
@@ -384,7 +384,7 @@ export function StackForm () {
         v.modelGroup === switchModelGroup)?.version || ''
       return getStackUnitsMinLimitationV1002(switchModel, currentVersion)
     } else {
-      return getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+      return getStackUnitsMinLimitation(switchModel, currentFw, currentAboveTenFW)
     }
   }
 
@@ -427,7 +427,7 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const hasBlockingTsb = function () {
-    return !checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch
+    return !checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch
 
   }
 
