@@ -14,7 +14,7 @@ const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
 const { mockedPortsStatus } = EdgePortConfigFixtures
 const { mockedSdLanServiceP2Dmz } = EdgeSdLanFixtures
 // eslint-disable-next-line max-len
-const mockedHaWizardNetworkSettings = transformFromApiToFormData(mockedHaNetworkSettings, mockEdgeClusterList.data[0] as EdgeClusterStatus)
+const mockedHaWizardNetworkSettings = transformFromApiToFormData(mockedHaNetworkSettings)
 const nodeList = mockEdgeClusterList.data[0].edgeList as EdgeStatus[]
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -55,8 +55,7 @@ describe('InterfaceSettings - PortForm', () => {
       })
 
     expect(screen.getByText('Port General Settings')).toBeVisible()
-    const infoTitle = screen.getByText(/all SmartEdges in this cluster/)
-    expect(infoTitle).toHaveTextContent('(Edge Cluster 1)')
+    expect(screen.getByText(/all SmartEdges in this cluster/)).toBeVisible()
     expect(screen.getAllByRole('tab').length).toBe(2)
     const tab = screen.getByRole('tab', { name: 'Smart Edge 1' })
     expect(tab.getAttribute('aria-selected')).toBeTruthy()

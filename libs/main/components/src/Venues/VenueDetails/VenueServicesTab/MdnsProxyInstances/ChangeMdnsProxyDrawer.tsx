@@ -3,6 +3,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Drawer }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { MdnsProxySelector }          from '@acx-ui/rc/components'
 import { useAddMdnsProxyApsMutation } from '@acx-ui/rc/services'
 
@@ -23,6 +24,7 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
     setVisible,
     initialServiceId
   } = props
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ form ] = Form.useForm<{ serviceId: string }>()
   const [ addMdnsProxyAps ] = useAddMdnsProxyApsMutation()
 
@@ -30,7 +32,8 @@ export default function ChangeMdnsProxyDrawer (props: ChangeMdnsProxyDrawerProps
     try {
       await addMdnsProxyAps({
         params: { ...params, serviceId: data.serviceId },
-        payload: apSerialNumberList
+        payload: apSerialNumberList,
+        enableRbac
       }).unwrap()
 
       onClose()

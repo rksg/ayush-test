@@ -363,7 +363,7 @@ export const apApi = baseApApi.injectEndpoints({
             apSerialNumbers: [params?.serialNumber]
           }
         }
-        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.getMdnsProxyListRbac, undefined, apiCustomHeader)
+        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)
         const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
         const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
         const targetMdnsData = mDnsProxyList?.[0]
@@ -1511,7 +1511,7 @@ const getVenueDhcpRelation = async (
       venueIds: newPayload.map(item => item.venueId)
     }
   }
-  const dhcpListReq = createHttpRequest(DHCPUrls.queryDHCPProfiles, undefined, customHeaders)
+  const dhcpListReq = createHttpRequest(DHCPUrls.queryDhcpProfiles, undefined, customHeaders)
   const dhcpListRes = await fetchWithBQ({ ...dhcpListReq, body: JSON.stringify(dhcpListPayload) })
   const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data
   return reduce(newPayload,

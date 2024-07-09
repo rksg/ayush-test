@@ -7,6 +7,7 @@ import { Loader, Table, TableProps, Button }                                  fr
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
 import { defaultSort, sortProp, StaticRoute, SwitchViewModel }                from '@acx-ui/rc/utils'
+import { SwitchScopes }                                                       from '@acx-ui/types'
 import { filterByAccess }                                                     from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
@@ -60,12 +61,14 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         openDrawer(selectedRows[0])
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       onClick: (selectedRows, clearSelection) => {
         deleteSwitchStaticRoutes({
           params: { ...params, venueId: switchDetail?.venueId || '' },

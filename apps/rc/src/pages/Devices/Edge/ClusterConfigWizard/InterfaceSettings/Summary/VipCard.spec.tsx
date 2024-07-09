@@ -6,7 +6,7 @@ import { ClusterConfigWizardContext }                  from '../../ClusterConfig
 import { VipCard } from './VipCard'
 
 
-describe('InterfaceSettings - Summary > LagTable', () => {
+describe('InterfaceSettings - Summary > VipCard', () => {
   it('should render correctly', async () => {
     render(
       <ClusterConfigWizardContext.Provider value={defaultCxtData}>

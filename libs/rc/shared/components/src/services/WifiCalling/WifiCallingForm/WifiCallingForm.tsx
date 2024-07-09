@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { useCreateWifiCallingServiceMutation, useCreateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -52,7 +53,8 @@ export const WifiCallingForm = () => {
     description,
     networkIds,
     networksName,
-    epdgs
+    epdgs,
+    oldNetworkIds: []
   })
 
   const [ createWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
@@ -62,12 +64,14 @@ export const WifiCallingForm = () => {
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
   const pageTitle = useServicePageHeaderTitle(false, ServiceType.WIFI_CALLING)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const handleAddWifiCallingService = async () => {
     try {
       await createWifiCallingService({
         params,
-        payload: WifiCallingFormValidate(state)
+        payload: WifiCallingFormValidate(state),
+        enableRbac
       }).unwrap()
       navigate(previousPath, { replace: true })
     } catch (error) {

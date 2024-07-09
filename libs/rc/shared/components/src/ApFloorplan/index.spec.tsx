@@ -69,7 +69,6 @@ const networkDevices: {
     }],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
     DP: [],
     rwg: []
   }

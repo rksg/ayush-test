@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { StepsFormLegacy }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { MdnsProxyForwardingRulesTable, RULES_MAX_COUNT } from '@acx-ui/rc/components'
 import { useLazyGetMdnsProxyListQuery }                   from '@acx-ui/rc/services'
 import {
@@ -22,6 +23,7 @@ export function MdnsProxySettingsForm () {
   const rules = Form.useWatch('rules')
   const { currentData } = useContext(MdnsProxyFormContext)
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const id = Form.useWatch<string>('id', form)
   const [ mdnsProxyList ] = useLazyGetMdnsProxyListQuery()
 
@@ -31,7 +33,7 @@ export function MdnsProxySettingsForm () {
   }, [currentData, form])
 
   const nameValidator = async (value: string) => {
-    const list = (await mdnsProxyList({ params }).unwrap())
+    const list = (await mdnsProxyList({ params, enableRbac }).unwrap())
       .filter(mdnsProxy => mdnsProxy.id !== id)
       .map(mdnsProxy => ({ serviceName: mdnsProxy.name }))
     // eslint-disable-next-line max-len
