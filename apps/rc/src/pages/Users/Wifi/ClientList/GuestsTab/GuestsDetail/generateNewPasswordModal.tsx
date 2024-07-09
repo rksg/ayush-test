@@ -167,6 +167,7 @@ export function GenerateNewPasswordModal (props: {
   const [ validateGuestPassword ] = useValidateGuestPasswordByGuestIdMutation()
   const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
   const guestPasswordOptionChange = (event: RadioChangeEvent) => {
+    form.validateFields()
     setGuestPasswordOption(event.target.value)
   }
   return (<Modal
