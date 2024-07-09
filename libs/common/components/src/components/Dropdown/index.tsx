@@ -24,6 +24,7 @@ export interface DropdownItemType extends MenuItemType {
 
 export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownProps) {
   const { defaultSelectedKeys, onClick } = overlay.props
+  const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(defaultSelectedKeys)
   const transformedOverlay = {
     ...overlay,
     props: {
@@ -35,7 +36,6 @@ export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownPro
       })
     }
   }
-  const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(defaultSelectedKeys)
   const menu = React.cloneElement(transformedOverlay, {
     onClick: ((event) => {
       onClick && onClick(event)
