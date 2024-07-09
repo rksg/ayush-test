@@ -151,7 +151,7 @@ export function SwitchClientDetails () {
       value: <span>{clientDetails?.dhcpClientModelName || '--'}</span>
     }] : [])
   ]
- 
+
 
   const clientConnection: Client[] = [
     ...(isDhcpClientsEnabled ? [{
