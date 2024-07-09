@@ -1,12 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Space, Switch } from 'antd'
-import TextArea                          from 'antd/lib/input/TextArea'
-import _                                 from 'lodash'
-import { useIntl }                       from 'react-intl'
+import { Checkbox, Form, Space, Switch, Typography } from 'antd'
+import TextArea                                      from 'antd/lib/input/TextArea'
+import _                                             from 'lodash'
+import { useIntl }                                   from 'react-intl'
 
-import { Drawer, Select, StepsForm, showActionModal } from '@acx-ui/components'
-import { Features }                                   from '@acx-ui/feature-toggle'
+import { Drawer, Select, StepsForm, Subtitle, showActionModal } from '@acx-ui/components'
+import { Features }                                             from '@acx-ui/feature-toggle'
+import { formatter }                                            from '@acx-ui/formatter'
 import {
   ClusterNetworkSettings,
   EdgeIpModeEnum,
@@ -134,6 +135,97 @@ export const LagDrawer = (props: LagDrawerProps) => {
         $t({ defaultMessage: 'Add' }) })
   }
 
+  interface LagMembersFieldProps {
+    value?: EdgeLag['lagMembers']
+    onChange?: (data: unknown) => void
+  }
+
+  const maxSpeedPortGroups = _.groupBy(portList, 'maxSpeedCapa')
+  const maxSpeedList = Object.keys(maxSpeedPortGroups)
+  const [portCheckedMaxSpeed, setPortCheckedMaxSpeed] = useState<String>()
+  const genLagMembersMaxSpeedGroupDesc = (maxSpeed?: String, maxSpeedListSize?: number) => {
+    if(!maxSpeedListSize || maxSpeedListSize < 2) {
+      return ''
+    } else {
+      return <Typography.Text className='description darkGreyText' >
+        Max Speed:{formatter('networkSpeedFormat')(maxSpeed)}
+      </Typography.Text>
+    }
+
+  }
+
+  const genLagMembersMaxSpeedNote = (maxSpeedListSize?: number) => {
+    if(maxSpeedListSize && maxSpeedListSize > 1) {
+      return <Subtitle level={5}>{$t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'Please ensure that a LAG requires its port members to have the same speed capability.'
+      })}
+      </Subtitle>
+    } else {
+      return ''
+    }
+
+  }
+
+  const disabledLagMembers = (maxSpeed?: String) => {
+    const result = portCheckedMaxSpeed!==undefined && portCheckedMaxSpeed !== maxSpeed
+    return result
+  }
+
+  const LagMembersField = (props: LagMembersFieldProps) => {
+    const { value } = props
+    const lagMembers = value
+    const maxSpeedPorts : { maxSpeed: string, ports: EdgePort[] }[] = []
+    maxSpeedList.forEach(row => {
+      maxSpeedPorts.push({ maxSpeed: row, ports: maxSpeedPortGroups[row] })
+    })
+
+    return (
+      <div>
+        {genLagMembersMaxSpeedNote(maxSpeedList.length)}
+        <Checkbox.Group value={lagMembers?.map(item => item.portId)}>
+          <Space direction='vertical'>
+            {
+              maxSpeedPorts.map((row) => (
+                <Space direction='vertical' key={`${row.maxSpeed}_space`} >
+                  {genLagMembersMaxSpeedGroupDesc(row.maxSpeed, maxSpeedList.length)}
+                  {
+                    getUseableLagMembers(row.ports)?.map((item: EdgePort) => (
+                      <Space key={`${item.id}_space`} size={30}>
+                        <Checkbox
+                          key={`${item.id}_checkbox`}
+                          value={item.id}
+                          children={getEdgePortDisplayName(item)}
+                          onChange={(e) =>
+                            handleLagMemberChange(row.maxSpeed, item.id, e.target.checked)}
+                          disabled={disabledLagMembers(row.maxSpeed)}
+                        />
+                        {
+                          lagMembers?.some(id => id.portId === item.id) &&
+                  <StepsForm.FieldLabel width='100px'>
+                    <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
+                    <Form.Item
+                      children={<Switch
+                        // eslint-disable-next-line max-len
+                        checked={lagMembers.find(member => member.portId === item.id)?.portEnabled ?? false}
+                        onChange={(checked) => handlePortEnabled(item.id, checked)}
+                        disabled={!lagEnabled}
+                      />}
+                      noStyle
+                    />
+                  </StepsForm.FieldLabel>
+                        }
+                      </Space>
+
+                    ))}
+                </Space>
+              ))
+
+            }
+          </Space>
+        </Checkbox.Group></div>
+    )}
+
   const handleClose = () => {
     setVisible(false)
   }
@@ -224,14 +316,17 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
-  const handleLagMemberChange = (portId: string, enabled: boolean) => {
+  const handleLagMemberChange = (maxSpeed: string, portId: string, enabled: boolean) => {
+
     const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
     let updatedMembers = _.cloneDeep(currentMembers)
 
     if(enabled) {
       updatedMembers.push({ portId, portEnabled: lagEnabled })
+      setPortCheckedMaxSpeed(maxSpeed)
     } else {
       _.remove(updatedMembers, item => item.portId === portId)
+      setPortCheckedMaxSpeed(undefined)
     }
 
     const updateValues: Partial<EdgeLag> = {
@@ -339,48 +434,13 @@ export const LagDrawer = (props: LagDrawerProps) => {
       children={<Select options={timeoutOptions} />}
     />
     <Form.Item
+      name='lagMembers'
       label={$t({ defaultMessage: 'Select LAG members:' })}
       shouldUpdate={(prev, cur) => {
         return prev.lagMembers !== cur.lagMembers
       }}
-    >
-      {({ getFieldValue }) => {
-        const lagMembers = getFieldValue('lagMembers') as EdgeLag['lagMembers']
-
-        return <Checkbox.Group value={lagMembers?.map(item => item.portId)}>
-          <Space direction='vertical'>
-            {
-              getUseableLagMembers(portList)?.map((item: EdgePort) =>
-                (
-                  <Space key={`${item.id}_space`} size={30}>
-                    <Checkbox
-                      key={`${item.id}_checkbox`}
-                      value={item.id}
-                      children={getEdgePortDisplayName(item)}
-                      onChange={(e) => handleLagMemberChange(item.id, e.target.checked)}
-                    />
-                    {
-                      lagMembers?.some(id => id.portId === item.id) &&
-                    <StepsForm.FieldLabel width='100px'>
-                      <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
-                      <Form.Item
-                        children={<Switch
-                          // eslint-disable-next-line max-len
-                          checked={lagMembers.find(member => member.portId === item.id)?.portEnabled ?? false}
-                          onChange={(checked) => handlePortEnabled(item.id, checked)}
-                          disabled={!lagEnabled}
-                        />}
-                        noStyle
-                      />
-                    </StepsForm.FieldLabel>
-                    }
-                  </Space>
-                ))
-            }
-          </Space>
-        </Checkbox.Group>
-      }}
-    </Form.Item>
+      children={<LagMembersField/>}
+    />
 
 
     <Form.Item
@@ -461,4 +521,8 @@ const getMergedLagData = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) =
     updatedLagData = [changedLag]
   }
   return updatedLagData
+}
+
+function setState (arg0: { [x: string]: any }) {
+  throw new Error('Function not implemented.')
 }
