@@ -61,7 +61,7 @@ export function ClientsTable (props: {
   const params = useParams()
   const { searchable, filterableKeys, settingsId = 'switch-clients-table' } = props
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
-  const isDhcpClientsEnabled = true //useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
+  const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -312,41 +312,6 @@ export function ClientsTable (props: {
     })
   }
 
-   const osIconMap = Object.keys({
-    apple: '<Apple />',
-    avaya: '<Avaya />',
-    android: '<Android />',
-    blackberry: '<Blackberry />',
-    bose: '<Bose />',
-    brother: '<Brother />',
-    canon: '<Canon />',
-    chrome: '<Chrome />',
-    cisco: '<Cisco />',
-    dell: '<Dell />',
-    epson: '<Epson />',
-    panasonic: '<Panasonic />',
-    nortel: '<Nortel />',
-    nintendo: '<Nintendo />',
-    nest: '<Nest />',
-    linux: '<Linux />',
-    linksys: '<Linksys />',
-    libratone: '<Libratone />',
-    kindle: '<Amazon />',
-    hp: '<Hp />',
-    playstation: '<Playstation />',
-    roku: '<Roku />',
-    samsung: '<Samsung />',
-    sonos: '<Sonos />',
-    sony: '<Sony />',
-    telnet: '<Telnet />',
-    ubuntu: '<Ubuntu />',
-    wemo: '<Wemo />',
-    windows: '<Microsoft />',
-    xbox: '<Xbox />',
-    xerox: '<Xerox />',
-    'wifi smart plug': '<WifiSmartPlug />'
-  })
-
   return (
     <div>
       <Loader states={[
@@ -355,10 +320,7 @@ export function ClientsTable (props: {
         <Table
           settingsId={settingsId}
           columns={getCols(useIntl())}
-          dataSource={tableQuery.data?.data.map((item, index) => ({
-            ...item,
-            dhcpClientOsVendorName: osIconMap[index] || ''
-          }))}
+          dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           onFilterChange={handleFilterChange}
