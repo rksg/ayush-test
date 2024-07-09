@@ -47,9 +47,6 @@ describe('CaptiveNetworkForm-HostApproval', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
-        res(ctx.json([]))
-      ),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(hostDataRes))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
