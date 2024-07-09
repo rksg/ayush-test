@@ -29,7 +29,8 @@ export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownPro
     props: {
       ...overlay.props,
       items: (overlay?.props?.items as DropdownItemType[])?.map(item => {
-        const { scopeKey, allowedOperationUrl, ...props } = item
+        const itemProps = item ?? {}
+        const { scopeKey, allowedOperationUrl, ...props } = itemProps
         return props
       })
     }
