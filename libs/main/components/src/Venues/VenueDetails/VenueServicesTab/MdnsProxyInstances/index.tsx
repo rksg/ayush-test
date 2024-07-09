@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetMdnsProxyApsQuery,
   useDeleteMdnsProxyApsMutation
@@ -25,6 +26,7 @@ import * as UI                    from './styledComponents'
 export default function MdnsProxyInstances () {
   const { $t } = useIntl()
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteInstances ] = useDeleteMdnsProxyApsMutation()
   const [ changeServiceDrawerVisible, setChangeServiceDrawerVisible ] = useState(false)
   const [ addInstanceDrawerVisible, setAddInstanceDrawerVisible ] = useState(false)
@@ -35,7 +37,8 @@ export default function MdnsProxyInstances () {
   const tableQuery = useTableQuery({
     useQuery: useGetMdnsProxyApsQuery,
     defaultPayload: {},
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const handleAddAction = () => {
@@ -126,7 +129,8 @@ export default function MdnsProxyInstances () {
       onOk: () => {
         deleteInstances({
           params: { ...params, serviceId: rows[0].serviceId },
-          payload: rows.map(r => r.serialNumber)
+          payload: rows.map(r => r.serialNumber),
+          enableRbac
         }).then(callback)
       }
     })
