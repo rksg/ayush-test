@@ -43,7 +43,7 @@ export const CrrmDetails = () => {
           link: 'analytics/intentAI' }
       ]}
       extra={hasPermission({ permission: 'WRITE_AI_DRIVEN_RRM', scopes: [WifiScopes.UPDATE] })
-        ? []
+        ? [] // TODO: Action buttom
         : []
       }
     />}
