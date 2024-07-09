@@ -55,7 +55,7 @@ const FWVersionMgmt = () => {
   const { data: switchVenueVersionList } =
     useGetSwitchVenueVersionListQuery(
       { params, enableRbac: isSwitchRbacEnabled },
-      { skip: !isSwitchFirmwareV1002Enabled })
+      { skip: isSwitchFirmwareV1002Enabled })
 
   const { data: switchVenueVersionListV1002 } =
     useGetSwitchVenueVersionListV1002Query(
@@ -144,7 +144,7 @@ const FWVersionMgmt = () => {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
         {hasRecomendedSwitchFirmware && <Tooltip children={<InformationSolid />}
           // eslint-disable-next-line max-len
-          title={$t({ defaultMessage: 'There are new recommended Switch firmware versions available' })} />}
+          title={$t({ defaultMessage: 'New recommended versions are available' })} />}
       </UI.TabWithHint>,
       content: <SwitchFirmwareV1002 />,
       visible: true

@@ -16,9 +16,9 @@ export const VersionBanner = () => {
 
   const { $t } = useIntl()
   const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
-    [SwitchFirmwareModelGroup.ICX71]: $t({ defaultMessage: 'For ICX Models (7150)' }),
-    [SwitchFirmwareModelGroup.ICX7X]: $t({ defaultMessage: 'For ICX Models (7550-7850)' }),
-    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: 'For ICX Models (8200)' })
+    [SwitchFirmwareModelGroup.ICX71]: $t({ defaultMessage: 'ICX Models (7150)' }),
+    [SwitchFirmwareModelGroup.ICX7X]: $t({ defaultMessage: 'ICX Models (7550-7850)' }),
+    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: 'ICX Models (8200)' })
   }
 
   const { data: latestVersions } = useGetSwitchLatestFirmwareListV1002Query({ params })

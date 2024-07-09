@@ -190,6 +190,17 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
           </Typography.Text>
         </Row>
       </div>
+      <Row style={{ marginTop: '30px' }}>
+        <Typography.Text>
+          <span style={{
+            fontSize: '14px',
+            marginLeft: '8px',
+            fontWeight: 600
+          }}>
+            {intl.$t({ defaultMessage: 'Switches with their own update schedule' })}</span>
+        </Typography.Text>
+      </Row>
+
       <Table
         columns={columns}
         type={'tall'}
