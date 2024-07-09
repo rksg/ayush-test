@@ -11,6 +11,7 @@ import {
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
+  WifiCallingUrls,
   WifiOperatorUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -31,12 +32,12 @@ import {
   venueListResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse,
   networkDeepResponse,
   portalList,
   mockHotpost20IdentityProviderList,
   mockHotspot20OperatorList,
-  macRegistrationList
+  macRegistrationList,
+  mockWifiCallingTableResult
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -61,6 +62,8 @@ describe('NetworkForm', () => {
 
     networkDeepResponse.name = 'open network test'
     mockServer.use(
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -71,8 +74,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -101,6 +102,9 @@ describe('NetworkForm', () => {
       ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json(successResponse))
       ),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([]))
