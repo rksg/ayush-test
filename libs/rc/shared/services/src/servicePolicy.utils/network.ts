@@ -18,7 +18,6 @@ export function updateNetworkVenueFn (isTemplate = false): QueryFn<CommonResult,
 
       const res = await fetchWithBQ({
         ...createHttpRequest(apiInfo, params, {
-          ...apiInfo.defaultHeaders,
           'x-rks-new-ui': 'true'
         }),
         body: JSON.stringify(newData)
