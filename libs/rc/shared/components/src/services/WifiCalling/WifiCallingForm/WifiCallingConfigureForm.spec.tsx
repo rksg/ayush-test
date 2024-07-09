@@ -120,8 +120,6 @@ describe('WifiCallingConfigureForm', () => {
         (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
       rest.post(ServicesConfigTemplateUrlsInfo.updateWifiCalling.url,
         (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.put(WifiCallingUrls.updateWifiCalling.url,
         (req, res, ctx) => {
           mockedUpdateService()

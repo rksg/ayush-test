@@ -154,8 +154,6 @@ describe('WifiCallingForm', () => {
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,

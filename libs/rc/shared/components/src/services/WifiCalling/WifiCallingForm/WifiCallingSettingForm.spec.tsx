@@ -84,8 +84,6 @@ describe('WifiCallingSettingForm', () => {
           mockedEnhancedWifiCallingList()
           return res(ctx.json(mockWifiCallingTableResult))
         }),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(wifiCallingSettingTable))),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
         (req, res, ctx) => {
           return res(ctx.json(mockWifiCallingTableResult))
