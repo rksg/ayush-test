@@ -192,17 +192,11 @@ export function VenueFirmwareList () {
       fitlerCustomOptions: versionFilterOptions || [],
       filterMultiple: false,
       filterKey: 'filterModelVersion',
-      render: function (_, row) {
-        return {
-          props: {
-            style: {
-              padding: '10px 0 5px 0',
-              overflow: 'hidden'
-            }
-          },
-          children: getCurrentFirmwareDisplay(intl, row)
-        }
-      }
+      onCell: () => ({
+        style: { padding: '10px 0 5px 0',
+          overflow: 'hidden' }
+      }),
+      render: (_, row) => getCurrentFirmwareDisplay(intl, row)
     },
     {
       title: $t({ defaultMessage: 'Status' }),

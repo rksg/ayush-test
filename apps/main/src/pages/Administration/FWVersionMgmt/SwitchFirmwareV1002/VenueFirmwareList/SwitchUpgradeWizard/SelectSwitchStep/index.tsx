@@ -79,15 +79,11 @@ function useColumns () {
       key: 'version',
       dataIndex: 'version',
       width: 180,
-      render: function (_, row) {
-        return {
-          props: {
-            style: { padding: '5px',
-              overflow: 'hidden' }
-          },
-          children: getCurrentFirmwareDisplay(intl, row)
-        }
-      }
+      onCell: () => ({
+        style: { padding: '5px',
+          overflow: 'hidden' }
+      }),
+      render: (_, row) => getCurrentFirmwareDisplay(intl, row)
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',

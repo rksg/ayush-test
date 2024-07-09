@@ -1,7 +1,8 @@
 import { rest } from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  FirmwareCategory,
+  FirmwareRbacUrlsInfo,
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
@@ -15,46 +16,37 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  switchVenue,
   switchRelease
 } from '../../__tests__/fixtures'
+import {
+  switchLatestV1002,
+  switchVenueV1002
+} from '../__tests__/fixtures'
 
 import VersionBanner from '.'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
-
-const lastestFirmware = [
-  {
-    id: '09010e_b397', name: '09010e_b397',
-    category: FirmwareCategory.RECOMMENDED, createdDate: '2023-02-07T16:31:10.245+00:00'
-  },
-  {
-    id: '10010_b176', name: '10010_b176',
-    category: FirmwareCategory.RECOMMENDED, createdDate: '2023-02-07T16:31:10.245+00:00'
-  }]
-
-jest.mock('@acx-ui/rc/services', () => ({
-  ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
-  })
-}))
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 describe('Switch Firmware Banner', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(lastestFirmware))
+        FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatestV1002))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(lastestFirmware))
+        FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatestV1002))
+      ),
+      rest.get(
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       ),
       rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json(switchVenue))
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(switchVenueV1002))
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
@@ -73,6 +65,6 @@ describe('Switch Firmware Banner', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
       })
-    await screen.findByText('9.0.10e_b397')
+    await screen.findByText('10.0.10b')
   })
 })

@@ -388,6 +388,7 @@ export function useSwitchFirmwareUtils () {
 
         currentVersionDisplay.push(
           <Statistic
+            key={modelGroupValue}
             width={modelGroupValue === SwitchFirmwareModelGroup.ICX7X ? 110 : 100}
             title={<Tag style={{
               fontSize: '10px',
