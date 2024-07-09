@@ -244,6 +244,12 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                     color: var(--acx-neutrals-10);
                     font-weight: var(--acx-headline-4-font-weight-bold);
                   }
+                  &.menu-beta-suffix-label {
+                    //use fixed size to solve menu jitter issue
+                    &:after {
+                      padding-right: 10px;
+                    }
+                  }
                 }
               }
               &-selected { background-color: unset; }

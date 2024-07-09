@@ -79,9 +79,8 @@ export function useMenuConfig () {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/intentAI',
-      // eslint-disable-next-line max-len
-      label: <span>{ $t({ defaultMessage: 'Intent AI {suffix}' }, { suffix: <sup>beta</sup> }) }</span>,
-      key: 'intentAI'
+      label: $t({ defaultMessage: 'Intent AI' }),
+      showBetaSuffix: true
     })
   }
   return buildMenu([{

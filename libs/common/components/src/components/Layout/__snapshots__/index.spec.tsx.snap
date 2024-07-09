@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
+    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -408,7 +408,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render correctly when adminItem = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
+    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -565,10 +565,10 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Layout should render correctly when label is ReactNode 1`] = `
+exports[`Layout should render correctly when menu has beta suffix label 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
+    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -605,7 +605,7 @@ exports[`Layout should render correctly when label is ReactNode 1`] = `
               >
                 <li
                   class="ant-menu-item ant-menu-item-only-child"
-                  data-menu-id="rc-menu-uuid-test-"
+                  data-menu-id="rc-menu-uuid-test--dashboard"
                   role="menuitem"
                   tabindex="-1"
                 >
@@ -614,21 +614,25 @@ exports[`Layout should render correctly when label is ReactNode 1`] = `
                   >
                     <a
                       aria-current="page"
-                      class="active"
-                      data-label="[object Object]"
+                      class="menu-beta-suffix-label active"
+                      data-label="Dashboard"
                       href="/ai/dashboard"
                     >
-                      <span
-                        class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
-                      >
-                        <svg
-                          data-testid="SpeedIndicatorOutlined"
-                        />
+                      <span>
+                         
+                        <span
+                          class="styledComponents__MenuIcon-sc-iwostn-1 ccvYDe"
+                        >
+                          <svg
+                            data-testid="SpeedIndicatorOutlined"
+                          />
+                        </span>
+                        Dashboard 
+                        <sup>
+                          beta
+                        </sup>
+                         
                       </span>
-                      Dashboard
-                      <sup>
-                        beta
-                      </sup>
                     </a>
                   </span>
                 </li>
@@ -732,7 +736,7 @@ exports[`Layout should render correctly when label is ReactNode 1`] = `
 exports[`Layout should render correctly when openNewTab = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
+    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -892,7 +896,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 cliNEx"
+    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div

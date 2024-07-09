@@ -64,8 +64,8 @@ export function useMenuConfig () {
   type aiMenuItem = {
     permission: string,
     uri: string,
-    label: React.ReactNode,
-    key?: string
+    label: string,
+    showBetaSuffix?: boolean
   }
 
   const aiAnalyticsMenu = [{
@@ -85,9 +85,8 @@ export function useMenuConfig () {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/analytics/intentAI',
-      // eslint-disable-next-line max-len
-      label: <span>{ $t({ defaultMessage: 'Intent AI {suffix}' }, { suffix: <sup>beta</sup> }) }</span>,
-      key: 'intentAI'
+      label: $t({ defaultMessage: 'Intent AI' }),
+      showBetaSuffix: true
     })
   }
   const config: LayoutProps['menuConfig'] = [

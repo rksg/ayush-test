@@ -43,8 +43,8 @@ type SideNavProps = {
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
-  label: React.ReactNode,
-  key?: string
+  label: string,
+  showBetaSuffix?: boolean
 }
 type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
   label: string
@@ -112,11 +112,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   const getMenuItem = (item: LayoutProps['menuConfig'][number], key: string): AntItemType => {
     if (item === null) return item
 
-    if (typeof item.label === 'string') {
-      key = `${key}-${snakeCase(item.label)}`
-    } else if (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.key) {
-      key = `${key}-${snakeCase(item.key)}`
-    }
+    key = `${key}-${snakeCase(item.label)}`
 
     if (isMenuItemGroupType(item)) {
       return {
@@ -145,12 +141,20 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     if (uri) {
       label = Boolean(item.openNewTab)
         ? <NewTabLink to={uri}>{label}</NewTabLink>
-        : <TenantNavLink
-          to={uri}
-          tenantType={tenantType}
-          data-label={item.label}>
-          {label}
-        </TenantNavLink>
+        : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.showBetaSuffix)
+          ? <TenantNavLink
+            to={uri}
+            tenantType={tenantType}
+            data-label={item.label}
+            className='menu-beta-suffix-label'>
+            <span> {label} {<sup>beta</sup>} </span>
+          </TenantNavLink>
+          : <TenantNavLink
+            to={uri}
+            tenantType={tenantType}
+            data-label={item.label}>
+            {label}
+          </TenantNavLink>
     }
     return {
       ...rest,

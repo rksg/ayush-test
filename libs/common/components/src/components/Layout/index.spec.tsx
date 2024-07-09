@@ -174,15 +174,16 @@ describe('Layout', () => {
     await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render correctly when label is ReactNode', async () => {
+  it('should render correctly when menu has beta suffix label', async () => {
     get.mockReturnValue('true')
     const config = [
       {
         uri: '/analytics/dashboard',
-        label: <>Dashboard<sup>beta</sup></>,
+        label: 'Dashboard',
         inactiveIcon: SpeedIndicatorOutlined,
         activeIcon: SpeedIndicatorSolid,
-        openNewTab: false
+        openNewTab: false,
+        showBetaSuffix: true
       }
     ]
     const { asFragment } = render(<Layout
