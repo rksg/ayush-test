@@ -549,7 +549,8 @@ const SmsProviderItem = () => {
           </Col>
           }
 
-          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && <List
+          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && !smsProviderConfigured
+          && <List
             style={{ marginTop: '15px', marginBottom: 0 }}
             split={false}
             dataSource={[
