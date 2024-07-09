@@ -97,12 +97,7 @@ export const ImpactedClientsTable = ({
       fixed: 'left',
       width: 160,
       disable: true,
-      sorter: { compare: sortProp('localPortName', defaultSort) },
-      render: (_, row: ImpactedClients) => (
-        <Tooltip title={row.localPortName}>
-          {row.localPortName}
-        </Tooltip>
-      )
+      sorter: { compare: sortProp('localPortName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Switch MAC' }),
