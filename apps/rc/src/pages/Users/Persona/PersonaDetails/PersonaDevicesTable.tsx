@@ -24,14 +24,14 @@ import {
   defaultSort,
   DPSKDeviceInfo,
   getOsTypeIcon,
+  hasCloudpathAccess,
   Persona,
   PersonaDevice,
   PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 
 const defaultPayload = {
@@ -246,9 +246,8 @@ export function PersonaDevicesTable (props: {
     }
   ]
 
-  const rowActions: TableProps<PersonaDevice>['rowActions'] = [
+  const rowActions: TableProps<PersonaDevice>['rowActions'] = hasCloudpathAccess() ? [
     {
-      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
 
@@ -270,10 +269,10 @@ export function PersonaDevicesTable (props: {
         })
       }
     }
-  ]
+  ] : []
 
   const actions: TableProps<PersonaDevice>['actions'] =
-    hasPermission({ scopes: [WifiScopes.CREATE] })
+    hasCloudpathAccess()
       ? [{
         label: $t({ defaultMessage: 'Add Device' }),
         onClick: () => {
@@ -345,7 +344,7 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasPermission({ scopes: [WifiScopes.DELETE] }) ? {
+        rowSelection={hasCloudpathAccess() ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page
