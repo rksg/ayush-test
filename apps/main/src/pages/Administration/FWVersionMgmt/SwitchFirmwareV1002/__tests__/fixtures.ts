@@ -255,7 +255,7 @@ export const switchVenueV1002 = [
   },
   {
     venueId: '72a44bc9039f4a20a4733e208dfb8b5a',
-    venueName: 'My-Venue-cli-profile',
+    venueName: 'My-Venue-cli-profile-skip',
     versions: [
       {
         modelGroup: 'ICX82',

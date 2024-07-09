@@ -134,7 +134,7 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    const row = await screen.findByRole('row', { name: /My-Venue-cli-template/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Update Now' }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
@@ -148,7 +148,7 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const row = await screen.findByRole('row', { name: /My-Venue/i })
+    const row = await screen.findByRole('row', { name: /My-Venue-cli-template/i })
     await userEvent.click(within(row).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: /Change Update Schedule/i }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
@@ -162,10 +162,10 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    const kittoVenue2 = await screen.findByRole('row', { name: /KittoVenue2/i })
+    const kittoVenue2 = await screen.findByRole('row', { name: /My-Venue-cli-profile-skip/i })
     await userEvent.click(within(kittoVenue2).getByRole('checkbox'))
-    expect(screen.getByRole('button', { name: 'Update Now' })).toBeEnabled()
-    await userEvent.click(screen.getByRole('button', { name: 'Update Now' }))
+    expect(screen.getByRole('button', { name: 'Skip Update' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Skip Update' }))
     expect(await screen.findByTestId('test-SwitchUpgradeWizard')).toBeInTheDocument()
   })
 
