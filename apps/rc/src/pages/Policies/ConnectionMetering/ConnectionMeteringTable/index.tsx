@@ -239,7 +239,7 @@ export default function ConnectionMeteringTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'Data Usage Metering' })}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() && [
           <TenantLink
             to={getPolicyRoutePath({
               type: PolicyType.CONNECTION_METERING,
@@ -250,7 +250,7 @@ export default function ConnectionMeteringTable () {
               { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
             </Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <Table
         enableApiFilter
