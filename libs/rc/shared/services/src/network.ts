@@ -43,6 +43,17 @@ const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
 
+const NetworkUseCases = [
+  // non-RBAC API
+  'AddNetwork',
+  'UpdateNetwork',
+  'DeleteNetwork',
+  // RBAC API
+  'AddWifiNetwork',
+  'UpdateWifiNetwork',
+  'DeleteWifiNetwork'
+]
+
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
     networkList: build.query<TableResult<Network>, RequestPayload>({
@@ -707,10 +718,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddNetwork'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, NetworkUseCases, () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
         })
