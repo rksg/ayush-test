@@ -373,6 +373,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/dpskPassphrasePools/query',
     newApi: true
   },
+  */
   getApLanPorts: {
     method: 'get',
     url: '/venues/aps/:serialNumber/lanPortSettings',
@@ -388,7 +389,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
-  */
   getApLed: {
     method: 'get',
     // url: '/venues/aps/:serialNumber/ledSettings',
