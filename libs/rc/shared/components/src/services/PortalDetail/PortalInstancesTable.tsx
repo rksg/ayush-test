@@ -65,11 +65,10 @@ export function PortalInstancesTable (){
   }, [isTemplate, isEnabledWifiRbac])
 
   const networkQueryFields = useMemo(() => {
-    const isEnabledNetworkRbac = isTemplate ? isEnabledTemplateRbac : isEnabledNonTemplateWifiRbac
-    return isEnabledNetworkRbac ?
+    return isEnabledNonTemplateWifiRbac ?
       ['name', 'id', 'captiveType', 'nwSubType', 'venueApGroups.venueId'] :
       ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients']
-  }, [isTemplate,isEnabledTemplateRbac, isEnabledNonTemplateWifiRbac])
+  }, [isEnabledNonTemplateWifiRbac])
 
   const tableQuery = useTableQuery<WifiNetwork|Network>({
     useQuery,
