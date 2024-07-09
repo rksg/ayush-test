@@ -80,7 +80,7 @@ export function useMenuConfig () {
       permission: 'READ_INTENT_AI',
       uri: '/intentAI',
       label: $t({ defaultMessage: 'Intent AI' }),
-      showBetaSuffix: true
+      suffixLabel: $t({ defaultMessage: 'beta' })
     })
   }
   return buildMenu([{

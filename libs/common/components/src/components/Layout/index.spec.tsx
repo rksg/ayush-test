@@ -174,7 +174,7 @@ describe('Layout', () => {
     await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render correctly when menu has beta suffix label', async () => {
+  it('should render correctly when menu has suffix label', async () => {
     get.mockReturnValue('true')
     const config = [
       {
@@ -183,7 +183,7 @@ describe('Layout', () => {
         inactiveIcon: SpeedIndicatorOutlined,
         activeIcon: SpeedIndicatorSolid,
         openNewTab: false,
-        showBetaSuffix: true
+        suffixLabel: 'beta'
       }
     ]
     const { asFragment } = render(<Layout

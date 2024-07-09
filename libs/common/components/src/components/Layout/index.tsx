@@ -44,7 +44,7 @@ type SideNavProps = {
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
   label: string,
-  showBetaSuffix?: boolean
+  suffixLabel?: string
 }
 type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
   label: string
@@ -141,13 +141,13 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     if (uri) {
       label = Boolean(item.openNewTab)
         ? <NewTabLink to={uri}>{label}</NewTabLink>
-        : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.showBetaSuffix)
+        : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.suffixLabel)
           ? <TenantNavLink
             to={uri}
             tenantType={tenantType}
             data-label={item.label}
-            className='menu-beta-suffix-label'>
-            <span> {label} {<sup>beta</sup>} </span>
+            data-suffix-label={item.suffixLabel}>
+            <span> {label} <sup>{item.suffixLabel}</sup> </span>
           </TenantNavLink>
           : <TenantNavLink
             to={uri}

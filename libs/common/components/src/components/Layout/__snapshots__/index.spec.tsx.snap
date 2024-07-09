@@ -3,7 +3,7 @@
 exports[`Layout should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
+    class="styledComponents__Wrapper-sc-iwostn-0 layjIu"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -408,7 +408,7 @@ exports[`Layout should render correctly 1`] = `
 exports[`Layout should render correctly when adminItem = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
+    class="styledComponents__Wrapper-sc-iwostn-0 layjIu"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -565,10 +565,10 @@ exports[`Layout should render correctly when adminItem = true 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Layout should render correctly when menu has beta suffix label 1`] = `
+exports[`Layout should render correctly when menu has suffix label 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
+    class="styledComponents__Wrapper-sc-iwostn-0 layjIu"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -607,6 +607,7 @@ exports[`Layout should render correctly when menu has beta suffix label 1`] = `
                   class="ant-menu-item ant-menu-item-only-child"
                   data-menu-id="rc-menu-uuid-test--dashboard"
                   role="menuitem"
+                  suffixlabel="beta"
                   tabindex="-1"
                 >
                   <span
@@ -614,8 +615,9 @@ exports[`Layout should render correctly when menu has beta suffix label 1`] = `
                   >
                     <a
                       aria-current="page"
-                      class="menu-beta-suffix-label active"
+                      class="active"
                       data-label="Dashboard"
+                      data-suffix-label="beta"
                       href="/ai/dashboard"
                     >
                       <span>
@@ -736,7 +738,7 @@ exports[`Layout should render correctly when menu has beta suffix label 1`] = `
 exports[`Layout should render correctly when openNewTab = true 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
+    class="styledComponents__Wrapper-sc-iwostn-0 layjIu"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div
@@ -896,7 +898,7 @@ exports[`Layout should render correctly when openNewTab = true 1`] = `
 exports[`Layout should render with custom tenant type correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-iwostn-0 FpCBQ"
+    class="styledComponents__Wrapper-sc-iwostn-0 layjIu"
     style="--acx-has-cloudmessagebanner: 0; --acx-pageheader-height: 0px;"
   >
     <div

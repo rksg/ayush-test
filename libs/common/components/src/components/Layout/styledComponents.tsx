@@ -232,7 +232,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                   display: inline-flex;
                   flex-direction: column;
                   &:after {
-                    content: attr(data-label);
+                    content: attr(data-label) attr(data-suffix-label);
                     height: 0;
                     visibility: hidden;
                     overflow: hidden;
@@ -243,12 +243,6 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                   &:after, &:hover {
                     color: var(--acx-neutrals-10);
                     font-weight: var(--acx-headline-4-font-weight-bold);
-                  }
-                  &.menu-beta-suffix-label {
-                    //use fixed size to solve menu jitter issue
-                    &:after {
-                      padding-right: 10px;
-                    }
                   }
                 }
               }
