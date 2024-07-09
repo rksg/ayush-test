@@ -4,7 +4,7 @@ import {  Provider }       from '@acx-ui/store'
 import { render, screen  } from '@acx-ui/test-utils'
 
 
-import { transformDetailsResponse } from '../services'
+import { transformDetailsResponse } from '../AIDrivenRRM/services'
 
 import {
   mockedRecommendationCRRM

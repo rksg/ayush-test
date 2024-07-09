@@ -8,9 +8,9 @@ import { get }                               from '@acx-ui/config'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { truthy }                            from '@acx-ui/utils'
 
-import { DescriptionSection }     from '../../../DescriptionSection'
-import { codes, statusTrailMsgs } from '../config'
-import { EnhancedRecommendation } from '../services'
+import { DescriptionSection }     from '../../DescriptionSection'
+import { codes, statusTrailMsgs } from '../AIDrivenRRM/config'
+import { EnhancedRecommendation } from '../AIDrivenRRM/services'
 
 import { DownloadRRMComparison } from './Graph/DownloadRRMComparison'
 

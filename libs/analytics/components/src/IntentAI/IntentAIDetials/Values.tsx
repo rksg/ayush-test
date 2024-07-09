@@ -5,9 +5,9 @@ import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl }                     from '@acx-ui/utils'
 
-import { codes }                                      from '../config'
-import { EnhancedRecommendation, extractBeforeAfter } from '../services'
-import { isDataRetained }                             from '../utils'
+import { codes }                                      from '../AIDrivenRRM/config'
+import { EnhancedRecommendation, extractBeforeAfter } from '../AIDrivenRRM/services'
+import { isDataRetained }                             from '../AIDrivenRRM/utils'
 
 
 export const getValues = (details: EnhancedRecommendation) => {

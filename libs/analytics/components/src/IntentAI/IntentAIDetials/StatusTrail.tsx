@@ -4,8 +4,8 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 import { Card }                      from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { StatusTrail as StatusTrailType, statusTrailMsgs } from '../config'
-import { EnhancedRecommendation }                          from '../services'
+import { StatusTrail as StatusTrailType, statusTrailMsgs } from '../AIDrivenRRM/config'
+import { EnhancedRecommendation }                          from '../AIDrivenRRM/services'
 
 import {
   DetailsHeader,

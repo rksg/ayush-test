@@ -7,11 +7,11 @@ import { useParams }                            from '@acx-ui/react-router-dom'
 import { WifiScopes }                           from '@acx-ui/types'
 import { hasPermission }                        from '@acx-ui/user'
 
-import { FixedAutoSizer }               from '../../../DescriptionSection/styledComponents'
+import { FixedAutoSizer }               from '../../DescriptionSection/styledComponents'
 import {
   useRecommendationCodeQuery,
   useConfigRecommendationDetailsQuery
-} from '../services'
+} from '../AIDrivenRRM/services'
 
 import { CrrmBenefits }                       from './CrrmBenefits'
 import { CrrmValuesExtra }                    from './CrrmValuesExtra'
@@ -22,7 +22,7 @@ import { AIDrivenRRMHeader, AIDrivenRRMIcon } from './styledComponents'
 export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const id = get(params, 'id', undefined) as string
+  const id = get(params, 'recommendationId', undefined) as string
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
     useIsSplitOn(Features.CRRM_PARTIAL)

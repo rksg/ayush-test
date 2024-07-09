@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow, Loader, recommendationBandMapping } from '@acx-ui/components'
 
-import { EnhancedRecommendation } from '../services'
+import { EnhancedRecommendation } from '../AIDrivenRRM/services'
 
 import { useCRRMQuery } from './Graph/services'
 import {

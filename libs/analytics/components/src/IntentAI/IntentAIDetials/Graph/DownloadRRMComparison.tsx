@@ -13,7 +13,7 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { EnhancedRecommendation } from '../../services'
+import { EnhancedRecommendation } from '../../AIDrivenRRM/services'
 
 import { useCRRMQuery }    from './services'
 import { DownloadWrapper } from './styledComponents'

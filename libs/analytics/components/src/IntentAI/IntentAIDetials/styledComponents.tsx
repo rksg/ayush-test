@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { GridCol }                                                     from '@acx-ui/components'
 import { AIDrivenRRM, BulbOutlined, DeleteOutlined, InformationSolid } from '@acx-ui/icons'
 
-import { Subtitle } from '../../../IncidentDetails/Insights/styledComponents'
+import { Subtitle } from '../../IncidentDetails/Insights/styledComponents'
 
 export const detailsHeaderFontStyles = css`
   color: var(--acx-primary-black);
