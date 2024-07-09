@@ -4,8 +4,7 @@ import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
   Loader,
   Table,
-  TableProps,
-  Tooltip
+  TableProps
 } from '@acx-ui/components'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
