@@ -60,7 +60,7 @@ export function RadioSettingsChannelsManual320Mhz (props: {
 
   const intl = useIntl()
   const form = Form.useFormInstance()
-  const channelGroup_320MHz_Manual = 
+  const channelGroup_320MHz_Manual =
     indoor ? ChannelGroup_Indoor_320MHz_Manual : ChannelGroup_Outdoor_320MHz_Manual
   const [checkedGroup, setCheckGroup] = useState('320MHz-1')
   const [checkedChannel, setCheckedChannel] = useState([] as CheckboxValueType[])
