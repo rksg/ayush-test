@@ -7,6 +7,7 @@ import {
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
+  VlanPoolRbacUrls,
   getSelectPolicyRoutePath,
   RogueApUrls, SyslogUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
@@ -138,7 +139,16 @@ describe('MyPolicies', () => {
       rest.post(
         SyslogUrls.querySyslog.url,
         (_req, res, ctx) => res(ctx.json(mockQueryResult))
-      ))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (req, res, ctx) => res(ctx.json({ data: [] }))
+      )
+    )
 
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
