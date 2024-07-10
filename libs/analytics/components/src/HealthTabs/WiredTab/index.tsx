@@ -17,10 +17,12 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
   const { $t } = useIntl()
   const { filters: widgetFilters, noSwitches } = props
   const { filters } = useAnalyticsFilter()
-  const healthPageFilters = widgetFilters ? widgetFilters : filters
-
-  healthPageFilters.startDate = moment(healthPageFilters.startDate).tz('UTC').format()
-  healthPageFilters.endDate = moment(healthPageFilters.endDate).tz('UTC').format()
+  const healthPageFilters = {
+    ...filters,
+    ...widgetFilters,
+    startDate: moment(widgetFilters?.startDate || filters.startDate).tz('UTC').format(),
+    endDate: moment(widgetFilters?.endDate || filters.endDate).tz('UTC').format()
+  }
 
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
