@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
-import { ApiVersionEnum, CommonUrlsInfo, GetApiVersionHeader, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                   from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                              from '@acx-ui/test-utils'
 
 import { mockNetworkResult, mockRbacWifiCallingTableResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
 import WifiCallingFormContext                                                            from '../WifiCallingFormContext'
@@ -102,8 +102,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('WifiCallingForm', () => {
-  const createApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-  const rbacCreateApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1_1)
 
   beforeEach(() => {
     mockedAddService.mockClear()
@@ -115,9 +113,8 @@ describe('WifiCallingForm', () => {
         WifiCallingUrls.addWifiCalling.url,
         (req, res, ctx) => {
           const headers = req.headers.get('content-type')
-          if (headers === createApiHeaders?.['Content-Type']) {
-            mockedAddService()
-          } else if (headers === rbacCreateApiHeaders?.['Content-Type']) {
+          const rbacHeaders = WifiCallingUrls.addWifiCallingRbac.defaultHeaders?.['Content-Type']
+          if (headers === rbacHeaders) {
             mockedRbacAddService()
             return res(ctx.json( {
               requestId: 'requestId',
@@ -125,6 +122,8 @@ describe('WifiCallingForm', () => {
                 id: 'service-id'
               }
             }))
+          } else {
+            mockedAddService()
           }
           return res(ctx.json(wifiCallingServiceResponse))
         }
