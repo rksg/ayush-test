@@ -115,6 +115,10 @@ describe('ApDetails', () => {
       rest.get(
         WifiUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

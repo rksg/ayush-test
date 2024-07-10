@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useAddClientIsolationMutation,
   useGetClientIsolationQuery,
@@ -40,12 +41,15 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
   const tablePath = getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { editMode = false } = props
 
   const [ addClientIsolation ] = useAddClientIsolationMutation()
   const [ updateClientIsolation ] = useUpdateClientIsolationMutation()
-  const { data: dataFromServer } = useGetClientIsolationQuery({ params }, { skip: !editMode })
+  const { data: dataFromServer } = useGetClientIsolationQuery(
+    { params, enableRbac },
+    { skip: !editMode })
   const formRef = useRef<StepsFormLegacyInstance<ClientIsolationSaveData>>()
 
   useEffect(() => {
@@ -57,9 +61,9 @@ export function ClientIsolationForm (props: ClientIsolationFormProps) {
   const saveData = async (data: ClientIsolationSaveData) => {
     try {
       if (editMode) {
-        await updateClientIsolation({ params, payload: _.omit(data, 'id') }).unwrap()
+        await updateClientIsolation({ params, payload: _.omit(data, 'id'), enableRbac }).unwrap()
       } else {
-        await addClientIsolation({ params, payload: data }).unwrap()
+        await addClientIsolation({ params, payload: data, enableRbac }).unwrap()
       }
 
       navigate(linkToPolicies, { replace: true })
