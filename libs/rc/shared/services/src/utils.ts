@@ -1,5 +1,5 @@
-import { TableResult, Transaction, onSocketActivityChanged } from '@acx-ui/rc/utils'
-import { ApiInfo, DateRangeFilter, computeRangeFilter }      from '@acx-ui/utils'
+import { CommonResult, TableResult, Transaction, TxStatus, onSocketActivityChanged } from '@acx-ui/rc/utils'
+import { ApiInfo, DateRangeFilter, computeRangeFilter }                              from '@acx-ui/utils'
 
 type MetaBase = { id: string }
 
@@ -31,7 +31,8 @@ export async function handleCallbackWhenActivitySuccess (
   api: SocketActivityChangedParams[1],
   activityData: Transaction,
   targetUseCase: string,
-  callback?: unknown
+  callback?: unknown,
+  failedCallback?: unknown
 ) {
   try {
     if (!callback || typeof callback !== 'function') return
@@ -40,11 +41,15 @@ export async function handleCallbackWhenActivitySuccess (
 
     if (!response) return
 
-    if (
-      activityData.useCase === targetUseCase &&
-      activityData.steps?.find(step => step.id === targetUseCase)?.status !== 'IN_PROGRESS'
-    ) {
-      callback()
+    // eslint-disable-next-line max-len
+    if ((response?.data as CommonResult)?.requestId === activityData.requestId && activityData.useCase === targetUseCase) {
+      const status = activityData.steps?.find((step) => (step.id === targetUseCase))?.status
+
+      if (status === TxStatus.FAIL) {
+        ((failedCallback || callback) as Function)?.(response.data)
+      } else if (status === TxStatus.SUCCESS) {
+        (callback as Function)?.(response.data)
+      }
     }
   } catch (error) {
     // eslint-disable-next-line no-console

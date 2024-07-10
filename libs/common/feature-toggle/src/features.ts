@@ -43,6 +43,7 @@ export enum Features {
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
+  EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',

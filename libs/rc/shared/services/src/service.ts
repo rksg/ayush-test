@@ -119,6 +119,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
+        ((payload as Record<string, unknown>).filters as Record<string, unknown>)['sdf'] = ['213']
+
         const req = createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params)
         return {
           ...req,

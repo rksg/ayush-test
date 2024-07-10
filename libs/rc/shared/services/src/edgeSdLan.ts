@@ -17,17 +17,28 @@ import {
   EdgeSdLanToggleDmzPayload,
   EdgeSdLanSettingP2,
   EdgeClusterStatus,
-  TxStatus
+  TxStatus,
+  EdgeMvSdLanExtended,
+  EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import { serviceApi } from './service'
+import { serviceApi }                        from './service'
+import { handleCallbackWhenActivitySuccess } from './utils'
 
 const versionHeader = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+enum EdgeSdLanActivityEnum {
+  ADD = 'Add SD-LAN',
+  UPDATE = 'Update SD-LAN',
+  DELETE = 'Delete SD-LAN',
+  ACTIVATE_NETWORK = 'Activate network',
+  DEACTIVATE_NETWORK = 'Deactivate network',
 }
 
 export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
@@ -47,9 +58,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
-              'Add SD-LAN',
-              'Update SD-LAN',
-              'Delete SD-LAN'
+              EdgeSdLanActivityEnum.ADD,
+              EdgeSdLanActivityEnum.UPDATE,
+              EdgeSdLanActivityEnum.DELETE
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -151,9 +162,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
-              'Add SD-LAN',
-              'Update SD-LAN',
-              'Delete SD-LAN'
+              EdgeSdLanActivityEnum.ADD,
+              EdgeSdLanActivityEnum.UPDATE,
+              EdgeSdLanActivityEnum.DELETE
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -189,11 +200,11 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             onActivityMessageReceived(msg, [
-              'Add SD-LAN',
-              'Update SD-LAN',
-              'Delete SD-LAN',
-              'Activate network',
-              'Deactivate network'
+              EdgeSdLanActivityEnum.ADD,
+              EdgeSdLanActivityEnum.UPDATE,
+              EdgeSdLanActivityEnum.DELETE,
+              EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
+              EdgeSdLanActivityEnum.DEACTIVATE_NETWORK
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -361,20 +372,11 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-
-            // eslint-disable-next-line max-len
-            if (response && response.data.requestId === msg.requestId && msg.useCase === 'Activate network') {
-              const status = msg.steps?.find((step) => (step.id === 'Activate network'))?.status
-
-              if (status === TxStatus.FAIL) {
-                (requestArgs.failedCallback as Function)?.(response.data)
-              } else if (status === TxStatus.SUCCESS) {
-                (requestArgs.callback as Function)?.(response.data)
-              }
-            }
-          } catch {}
+          await handleCallbackWhenActivitySuccess(api, msg,
+            EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
+            requestArgs.callback,
+            requestArgs.failedCallback
+          )
         })
       }
     }),
@@ -387,20 +389,11 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-
-            // eslint-disable-next-line max-len
-            if (response && response.data.requestId === msg.requestId && msg.useCase === 'Deactivate network') {
-              const status = msg.steps?.find((step) => (step.id === 'Deactivate network'))?.status
-
-              if (status === TxStatus.FAIL) {
-                (requestArgs.failedCallback as Function)?.(response.data)
-              } else if (status === TxStatus.SUCCESS) {
-                (requestArgs.callback as Function)?.(response.data)
-              }
-            }
-          } catch {}
+          await handleCallbackWhenActivitySuccess(api, msg,
+            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
+            requestArgs.callback,
+            requestArgs.failedCallback
+          )
         })
       }
     }),
@@ -414,6 +407,161 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz, params, versionHeader)
         return { ...req }
+      }
+    }),
+    // multi-venue SD-LAN
+    getEdgeMvSdLanViewDataList:
+    build.query<TableResult<EdgeSdLanViewDataP2>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            EdgeSdLanActivityEnum.ADD,
+            EdgeSdLanActivityEnum.UPDATE,
+            EdgeSdLanActivityEnum.DELETE,
+            EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
+            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK
+          ], () => {
+            api.dispatch(serviceApi.util.invalidateTags([
+              { type: 'Service', id: 'LIST' }
+            ]))
+            api.dispatch(edgeSdLanApi.util.invalidateTags([
+              { type: 'EdgeMvSdLan', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    getEdgeMvSdLan: build.query<EdgeSdLanSettingP2, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        const sdLanRequest = createHttpRequest(
+          EdgeSdLanUrls.getEdgeSdLan, params, versionHeader)
+        const sdLanQuery = await fetchWithBQ(sdLanRequest)
+        const sdLanConfig = sdLanQuery.data as EdgeMvSdLanExtended
+
+        if (sdLanConfig) {
+          const guestSettingsReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz,
+            params,
+            versionHeader)
+          const edgeGuestSettingQuery = await fetchWithBQ(guestSettingsReq)
+
+          const sdLanStatusReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
+          const sdLanStatusQuery = await fetchWithBQ({
+            ...sdLanStatusReq,
+            body: {
+              filters: { id: [params!.serviceId] }
+            }
+          })
+
+          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
+          const edgeClusterQuery = await fetchWithBQ({
+            ...clusterReq,
+            body: {
+              fields: [
+                'name',
+                'clusterId',
+                'venueId',
+                'venueName'
+              ],
+              filters: { clusterId: [sdLanConfig.edgeClusterId] }
+            }
+          })
+
+          const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeMvSdLanViewData>
+          const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
+          const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
+          let sdLanData = sdLanConfig
+          if (sdLanInfo && guestSettings && clusterInfo) {
+          // eslint-disable-next-line max-len
+            sdLanData = transformSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
+          }
+
+          return (sdLanInfo && guestSettings && clusterInfo)
+            ? { data: sdLanData }
+            : { error: (sdLanStatusQuery.error
+              || edgeGuestSettingQuery.error
+              || edgeClusterQuery.data) as FetchBaseQueryError }
+        } else {
+          return { error: sdLanQuery.error as FetchBaseQueryError }
+        }
+      },
+      providesTags: [{ type: 'EdgeMvSdLan', id: 'DETAIL' }]
+    }),
+    addEdgeMvSdLan: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.addEdgeSdLan, params, versionHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivitySuccess(api, msg,
+            EdgeSdLanActivityEnum.ADD,
+            requestArgs.callback,
+            requestArgs.failedCallback
+          )
+        })
+      }
+    }),
+    updateEdgeMvSdLanPartial: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeSdLanUrls.updateEdgeSdLanPartial, params, versionHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivitySuccess(api, msg,
+            EdgeSdLanActivityEnum.UPDATE,
+            requestArgs.callback,
+            requestArgs.failedCallback
+          )
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    activateEdgeMvSdLanNetwork: build.mutation<CommonResult, RequestPayload<EdgeSdLanActivateNetworkPayload>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(EdgeSdLanUrls.activateEdgeMvSdLanNetwork, params, versionHeader)
+        return { ...req, body: JSON.stringify(payload) }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivitySuccess(api, msg,
+            EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
+            requestArgs.callback)
+        })
+      }
+    }),
+    // eslint-disable-next-line max-len
+    deactivateEdgeMvSdLanNetwork: build.mutation<CommonResult, RequestPayload<EdgeSdLanActivateNetworkPayload>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork, params, versionHeader)
+        return { ...req, body: JSON.stringify(payload) }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          await handleCallbackWhenActivitySuccess(api, msg,
+            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
+            requestArgs.callback
+          )
+        })
       }
     })
   })
@@ -456,5 +604,11 @@ export const {
   useActivateEdgeSdLanNetworkMutation,
   useDeactivateEdgeSdLanNetworkMutation,
   useGetEdgeSdLanIsDmzQuery,
-  useToggleEdgeSdLanDmzMutation
+  useToggleEdgeSdLanDmzMutation,
+  // multi-venue
+  useGetEdgeMvSdLanViewDataListQuery,
+  useAddEdgeMvSdLanMutation,
+  useUpdateEdgeMvSdLanPartialMutation,
+  useActivateEdgeMvSdLanNetworkMutation,
+  useDeactivateEdgeMvSdLanNetworkMutation
 } = edgeSdLanApi

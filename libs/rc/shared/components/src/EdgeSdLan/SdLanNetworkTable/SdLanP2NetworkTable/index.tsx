@@ -69,7 +69,7 @@ export interface ActivatedNetworksTableP2Props {
   activated?: string[],
   activatedGuest?: string[],
   disabled?: boolean,
-  tooltip?: string,
+  toggleButtonTooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
   isUpdating?: boolean
 }
@@ -82,7 +82,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     activated,
     activatedGuest,
     disabled,
-    tooltip,
+    toggleButtonTooltip,
     onActivateChange,
     isUpdating
   } = props
@@ -152,7 +152,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         row={row}
         activated={activated ?? []}
         disabled={disabled || disabledInfo.disabled}
-        tooltip={tooltip || disabledInfo.tooltip}
+        tooltip={toggleButtonTooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
@@ -176,7 +176,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           row={row}
           activated={activatedGuest ?? []}
           disabled={disabled || disabledInfo.disabled}
-          tooltip={tooltip || disabledInfo.tooltip}
+          tooltip={toggleButtonTooltip || disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
