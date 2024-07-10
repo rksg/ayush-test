@@ -4,7 +4,8 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm } from '@acx-ui/components'
+import { PageHeader, StepsForm }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddMdnsProxyMutation,
   useGetMdnsProxyQuery,
@@ -38,8 +39,9 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
     type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST
   })
   const serviceTablePath = useTenantLink(tablePath)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ currentData, setCurrentData ] = useState<MdnsProxyFormData>({} as MdnsProxyFormData)
-  const { data: dataFromServer } = useGetMdnsProxyQuery({ params }, { skip: !editMode })
+  const { data: dataFromServer } = useGetMdnsProxyQuery({ params, enableRbac }, { skip: !editMode })
   const [ addMdnsProxy ] = useAddMdnsProxyMutation()
   const [ updateMdnsProxy ] = useUpdateMdnsProxyMutation()
 
@@ -61,9 +63,16 @@ export default function MdnsProxyForm ({ editMode = false }: MdnsProxyFormProps)
   const saveData = async (editMode: boolean, data: MdnsProxyFormData) => {
     try {
       if (editMode) {
-        await updateMdnsProxy({ params, payload: _.omit(data, 'id') }).unwrap()
+        await updateMdnsProxy({
+          params,
+          payload: {
+            ..._.omit(data, 'id'),
+            oldScope: dataFromServer?.scope
+          },
+          enableRbac
+        }).unwrap()
       } else {
-        await addMdnsProxy({ params, payload: data }).unwrap()
+        await addMdnsProxy({ params, payload: data, enableRbac }).unwrap()
       }
 
       navigate(serviceTablePath, { replace: true })

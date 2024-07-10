@@ -1,11 +1,14 @@
-import { Form } from 'antd'
 
-import { StepsForm }                  from '@acx-ui/components'
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { StepsForm }              from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { EdgeGeneralFixtures }    from '@acx-ui/rc/utils'
+import { render, screen }         from '@acx-ui/test-utils'
 
-import { mockClusterConfigWizardData } from '../../__tests__/fixtures'
+import { ClusterConfigWizardContext, ClusterConfigWizardContextType } from '../../ClusterConfigWizardDataProvider'
 
 import { Summary } from '.'
+
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('./LagTable', () => ({
   ...jest.requireActual('./LagTable'),
@@ -15,55 +18,55 @@ jest.mock('./PortGeneralTable', () => ({
   ...jest.requireActual('./PortGeneralTable'),
   PortGeneralTable: () => <div data-testid='PortGeneralTable' />
 }))
-jest.mock('./VipCard', () => ({
-  ...jest.requireActual('./VipCard'),
-  VipCard: () => <div data-testid='VipCard' />
+jest.mock('./VipDisplayForm', () => ({
+  ...jest.requireActual('./VipDisplayForm'),
+  VipDisplayForm: () => <div data-testid='VipDisplayForm' />
+}))
+jest.mock('./HaDisplayForm', () => ({
+  ...jest.requireActual('./HaDisplayForm'),
+  HaDisplayForm: () => <div data-testid='HaDisplayForm' />
 }))
 
 describe('InterfaceSettings - Summary', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+  })
   it('should correctly render', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', mockClusterConfigWizardData.vipConfig)
-      form.setFieldValue('timeout', mockClusterConfigWizardData.timeout)
-      return form
-    })
     render(
-      <StepsForm form={formRef.current}>
-        <StepsForm.StepForm>
-          <Summary />
-        </StepsForm.StepForm>
-      </StepsForm>
+      <ClusterConfigWizardContext.Provider value={{
+        clusterInfo: mockEdgeClusterList.data[0]
+      } as ClusterConfigWizardContextType}>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <Summary />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>
     )
 
     expect(screen.getByText('Summary')).toBeVisible()
     expect(screen.getByTestId('LagTable')).toBeVisible()
     expect(screen.getByTestId('PortGeneralTable')).toBeVisible()
-    expect(await screen.findByTestId('VipCard')).toBeVisible()
-    expect(await screen.findByText('HA Timeout')).toBeVisible()
-    expect(await screen.findByText('3 seconds')).toBeVisible()
+    expect(screen.getByTestId('VipDisplayForm')).toBeVisible()
   })
 
-  it('should not render VipCard when vipConfig is empty/undefined', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      form.setFieldValue('vipConfig', undefined)
-      form.setFieldValue('timeout', mockClusterConfigWizardData.timeout)
-      return form
-    })
+  it('should show HA setting when FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_AA_TOGGLE)
     render(
-      <StepsForm form={formRef.current}>
-        <StepsForm.StepForm>
-          <Summary />
-        </StepsForm.StepForm>
-      </StepsForm>
+      <ClusterConfigWizardContext.Provider value={{
+        clusterInfo: mockEdgeClusterList.data[0]
+      } as ClusterConfigWizardContextType}>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <Summary />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </ClusterConfigWizardContext.Provider>
     )
 
     expect(screen.getByText('Summary')).toBeVisible()
     expect(screen.getByTestId('LagTable')).toBeVisible()
     expect(screen.getByTestId('PortGeneralTable')).toBeVisible()
-    expect(screen.queryByTestId('VipCard')).toBeNull()
-    expect(screen.queryByTestId('HA Timeout')).toBeNull()
-    expect(screen.queryByTestId('3 seconds')).toBeNull()
+    expect(screen.getByTestId('HaDisplayForm')).toBeVisible()
   })
 })

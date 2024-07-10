@@ -68,6 +68,8 @@ function SwitchPageHeader () {
   const jwtToken = useGetJwtTokenQuery({
     params: { tenantId, serialNumber, venueId: switchDetailHeader?.venueId },
     enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !switchDetailHeader?.venueId
   })
 
   const [isSyncing, setIsSyncing] = useState(false)
@@ -212,10 +214,11 @@ function SwitchPageHeader () {
     }, 3000)
   }
 
-  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
   const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
   const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
-  const showAddMember = isStack && (maxMembers > 0) && hasCreatePermission
+  const showAddMember = isStack && (maxMembers > 0) && hasUpdatePermission
+  const showDivider = (hasUpdatePermission && (isSyncedSwitchConfig || isOperational))
+    && (showAddMember || hasDeletaPermission)
 
   const menu = (
     <Menu
@@ -241,7 +244,7 @@ function SwitchPageHeader () {
           label: $t({ defaultMessage: 'CLI Session' })
         }] : []),
 
-        ...(hasUpdatePermission && (showAddMember || hasDeletaPermission) ? [{
+        ...(showDivider ? [{
           type: 'divider'
         }] : [] ),
 
@@ -291,7 +294,7 @@ function SwitchPageHeader () {
           />,
           ...filterByAccess([
             <Dropdown overlay={menu}
-              scopeKey={[SwitchScopes.CREATE, SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
+              scopeKey={[SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
                 <Button>
                   <Space>
                     {$t({ defaultMessage: 'More Actions' })}

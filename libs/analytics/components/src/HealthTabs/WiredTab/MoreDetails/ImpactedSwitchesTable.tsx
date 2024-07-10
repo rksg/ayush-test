@@ -67,7 +67,7 @@ export const ImpactedSwitchesTable = ({
       key: 'name',
       fixed: 'left',
       render: (_, row: SwitchDetails) => (
-        <TenantLink to={`/devices/switch/${row.mac}/serial/details/incidents`}>
+        <TenantLink to={`/devices/switch/${row.mac}/serial/details/reports`}>
           {row.name}
         </TenantLink>
       ),
@@ -118,6 +118,10 @@ export const ImpactedSwitchesTable = ({
     }
   ]
 
+  const getRowKey = (record: SwitchDetails): string => {
+    return '' + record.mac + '_' + record.serial
+  }
+
   const totalCount = queryResults?.data?.length
   return (
     <Loader states={[queryResults]}>
@@ -138,7 +142,7 @@ export const ImpactedSwitchesTable = ({
         settingsId='switch-health-impacted-switches-table'
         columns={columns}
         dataSource={queryResults.data as SwitchDetails[]}
-        rowKey='mac'
+        rowKey={getRowKey}
         type='tall'
       />
     </Loader>
