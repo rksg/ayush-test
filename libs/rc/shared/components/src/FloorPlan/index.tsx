@@ -15,7 +15,6 @@ import {
   useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery,
   useRemoveApPositionMutation,
   useUpdateApPositionMutation,
-  useUpdateCloudpathServerPositionMutation,
   useUpdateFloorPlanMutation,
   useUpdateRwgPositionMutation,
   useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
@@ -77,7 +76,6 @@ export function FloorPlan () {
     switches: [],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
     DP: [],
     rwg: []
   } as TypeWiseNetworkDevices
@@ -197,11 +195,6 @@ export function FloorPlan () {
   ] = useRemoveApPositionMutation()
 
   const [
-    updateCloudpathServerPosition,
-    { isLoading: isUpdateCloudpathServerPosition }
-  ] = useUpdateCloudpathServerPositionMutation()
-
-  const [
     updateRwgPosition,
     { isLoading: isUpdateRwgPosition }
   ] = useUpdateRwgPositionMutation()
@@ -263,9 +256,8 @@ export function FloorPlan () {
     const apsCount = get(unplacedDevices, 'ap.length', 0)
     const switchesCount = get(unplacedDevices, 'switches.length', 0)
     const lteApsCount = get(unplacedDevices, 'LTEAP.length', 0)
-    const coudpathsCount = get(unplacedDevices, 'cloudpath.length', 0)
     const rwgCount = get(unplacedDevices, 'rwg.length', 0)
-    return apsCount + switchesCount + lteApsCount + coudpathsCount + rwgCount
+    return apsCount + switchesCount + lteApsCount + rwgCount
   }
 
   const extractPlacedDevices = (deviceType: NetworkDeviceType,
@@ -376,10 +368,6 @@ export function FloorPlan () {
         updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
           payload: clear ? clearDevicePositionValues : device.position })
         break
-      case NetworkDeviceType.cloudpath:
-        updateCloudpathServerPosition({ params: { ...params, cloudpathServerId: device.id },
-          payload: clear ? clearDevicePositionValues : device.position })
-        break
       case NetworkDeviceType.rwg:
         updateRwgPosition({ params: { ...params, gatewayId: device.id },
           payload: clear ? clearDevicePositionValues : device.position })
@@ -413,7 +401,6 @@ export function FloorPlan () {
       { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateSwitchPosition },
       { isLoading: false, isFetching: isUpdateApPosition || isRemoveApPosition },
-      { isLoading: false, isFetching: isUpdateCloudpathServerPosition },
       { isLoading: false, isFetching: isUpdateRwgPosition }
     ]}>
       {floorPlans?.length ?

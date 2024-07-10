@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import _, { find }                                 from 'lodash'
 
 import {
   ApCompatibility,
@@ -29,7 +30,10 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  RadioTypeEnum
+  RadioTypeEnum,
+  BaseNetwork,
+  VlanPoolRbacUrls,
+  VLANPoolViewModelRbacType
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -41,6 +45,17 @@ import { updateNetworkVenueFn } from './servicePolicy.utils/network'
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
+
+const NetworkUseCases = [
+  // non-RBAC API
+  'AddNetwork',
+  'UpdateNetwork',
+  'DeleteNetwork',
+  // RBAC API
+  'AddWifiNetwork',
+  'UpdateWifiNetwork',
+  'DeleteWifiNetwork'
+]
 
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
@@ -638,10 +653,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddNetwork'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, NetworkUseCases, () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
         })
@@ -649,32 +661,38 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     venueNetworkActivationsViewModelList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
-        const networkActivations = {
-          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
-          body: arg.payload
+        const typedPayload = arg.payload as Record<string, unknown>
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const networkListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, apiCustomHeader),
+          body: JSON.stringify({
+            filters: { 'venueApGroups.venueId': [typedPayload.venueId] }
+          }) })
+
+        const networksList = networkListQuery.data as TableResult<WifiNetwork>
+
+        // fetch vlan pool info
+        const networkIds = networksList?.data.map(item => item.id!) || []
+        if (networksList.data.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
+          const vlanPoolListQuery = await fetchWithBQ({
+            ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, apiCustomHeader),
+            body: JSON.stringify({
+              fields: ['id', 'name', 'wifiNetworkIds'],
+              filters: { wifiNetworkIds: networkIds }
+            }) })
+
+          const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+
+          networksList.data.forEach(network => {
+            network.vlanPool = find(vlanPoolList.data, (item) => {
+              return item.wifiNetworkIds?.includes(network.id)
+            }) as BaseNetwork['vlanPool']
+          })
         }
-        const networkActivationsQuery = await fetchWithBQ(networkActivations)
-        const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
 
-        let networksList = { data: [] } as { data: Network[] }
-
-        if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
-          const networkIds = networkVenueList.data.map(item => item.networkId!) || []
-          const networkListReq = createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params)
-          const networkListQuery = await fetchWithBQ({ ...networkListReq, body: {
-            filters: { id: networkIds }
-          } })
-          networksList = networkListQuery.data as TableResult<Network>
-        }
-
-        return networkVenueList
-          ? { data: {
-            ...networkVenueList,
-            data: networksList?.data
-          } as TableResult<Network> }
-          : {
-            error: networkActivationsQuery.error as FetchBaseQueryError
-          }
+        return networksList
+          ? { data: networksList as TableResult<Network> }
+          : { error: networkListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {

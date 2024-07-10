@@ -160,4 +160,46 @@ describe('ClusterConfigWizard', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByTestId('rc-SubInterfaceSettings')).toBeInTheDocument()
   })
+
+  it('should render AA mode string when the HA mode of the cluster is AA', async () => {
+    const subInterfaceRouteParams = { ...params, settingType: 'subInterface' }
+
+    render(
+      <Provider>
+        <ClusterConfigWizard />
+      </Provider>, {
+        route: {
+          params: subInterfaceRouteParams,
+          path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType'
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Edge Cluster 1 (Active-Active HA mode)')).toBeVisible()
+  })
+
+  it('should render AB mode string when the HA mode of the cluster is AA', async () => {
+    const subInterfaceRouteParams = { ...params, settingType: 'subInterface' }
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json({
+          data: [mockEdgeClusterList.data[1]]
+        }))
+      )
+    )
+
+    render(
+      <Provider>
+        <ClusterConfigWizard />
+      </Provider>, {
+        route: {
+          params: subInterfaceRouteParams,
+          path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType'
+        }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Edge Cluster 2 (Active-Standby HA mode)')).toBeVisible()
+  })
 })
