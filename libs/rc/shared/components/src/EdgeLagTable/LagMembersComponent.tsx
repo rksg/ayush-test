@@ -73,7 +73,8 @@ export const LagMembersComponent = (props: LagMembersComponentProps) => {
     const dataCheckedMaxSpeed = maxSpeedPorts
       .filter(sp => sp.ports
         .some(p => porIds.includes(p.id))).map(sp => sp.maxSpeed).pop()
-    return dataCheckedMaxSpeed !== maxSpeed
+    const result = dataCheckedMaxSpeed !== maxSpeed
+    return result
   }
 
   const handleLagMemberChange = (maxSpeed: string, portId: string, enabled: boolean) => {
