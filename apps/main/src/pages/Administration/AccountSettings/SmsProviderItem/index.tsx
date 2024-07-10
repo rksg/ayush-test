@@ -429,7 +429,7 @@ const SmsProviderItem = () => {
                 $t({ defaultMessage: 'Attention! RUCKUS SMS pool for Captive' }),
                 $t({ defaultMessage: 'Portal Self Sign-In is depleted. To avoid' }),
                 $t({ defaultMessage: 'service disruption, please set up an SMS' }),
-                $t({ defaultMessage: 'Provider before August 12, 2024.' })
+                $t({ defaultMessage: 'Provider before October 31, 2024.' })
               ]}
               renderItem={(item) => (
                 <List.Item>
