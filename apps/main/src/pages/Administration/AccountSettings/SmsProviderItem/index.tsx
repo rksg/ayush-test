@@ -113,11 +113,12 @@ const SmsProviderItem = () => {
   useEffect(() => {
     if (smsUsage) {
       const usedSms = smsUsage.data?.ruckusOneUsed || 0
+      const providerType = smsUsage.data?.provider
       setRuckusOneUsed(usedSms)
       setSmsThreshold(smsUsage.data?.threshold ?? 80)
-      setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
-      setSmsProviderConfigured((smsUsage.data?.provider &&
-        smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
+      setSmsProviderType(providerType ?? SmsProviderType.RUCKUS_ONE)
+      setSmsProviderConfigured((providerType && providerType !== SmsProviderType.RUCKUS_ONE &&
+        providerType !== SmsProviderType.SMSProvider_UNSET) ? true : false)
       setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
     }
     if(smsProvider && smsProvider.data) {
@@ -242,7 +243,7 @@ const SmsProviderItem = () => {
               onOk: () => {
                 const payload: NotificationSmsUsage = {
                   threshold: smsThreshold,
-                  provider: SmsProviderType.RUCKUS_ONE
+                  provider: SmsProviderType.SMSProvider_UNSET
                 }
                 updateNotificationSms({ params: params, payload: payload })
                   .then()
@@ -549,7 +550,8 @@ const SmsProviderItem = () => {
           </Col>
           }
 
-          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && !smsProviderConfigured
+          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL ||
+            smsProviderType === SmsProviderType.SMSProvider_UNSET ) && !smsProviderConfigured
           && <List
             style={{ marginTop: '15px', marginBottom: 0 }}
             split={false}
@@ -567,8 +569,8 @@ const SmsProviderItem = () => {
             )}
           />}
 
-          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod)
-          && <FreeSmsPool/>}
+          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod) &&
+           smsProviderType === SmsProviderType.RUCKUS_ONE && <FreeSmsPool/>}
         </Form>
       </Col>
     </Row>
