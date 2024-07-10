@@ -9,7 +9,11 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addApGroup: {
     method: 'post',
     url: '/templates/venues/:venueId/apGroups',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   updateApGroup: {
     method: 'put',
@@ -19,7 +23,11 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateApGroupRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteApGroup: {
     method: 'delete',
@@ -29,7 +37,11 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteApGroupRbac: {
     method: 'delete',
     url: '/templates/venues/:venueId/apGroups/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getApGroup: {
     method: 'get',
@@ -39,7 +51,11 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getApGroupRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getApGroupNetworkList: {
     method: 'post',
@@ -55,5 +71,14 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/apGroups/query',
     newApi: true
+  },
+  getApGroupsListRbac: {
+    method: 'post',
+    url: '/templates/venues/apGroups/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

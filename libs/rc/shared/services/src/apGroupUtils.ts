@@ -129,8 +129,10 @@ export const getApGroupsListFn = (isTemplate: boolean = false) : QueryFn<TableRe
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
     const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
-    const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-    const apGroupListReq = createHttpRequest(apis.getApGroupsList, params, customHeaders)
+    const apGroupListReq = createHttpRequest(
+      isTemplate && enableRbac ? apis.getApGroupsListRbac : apis.getApGroupsList,
+      params
+    )
 
     let apGroups: TableResult<ApGroupViewModel>
     if (enableRbac) {
@@ -176,7 +178,7 @@ export const getApGroupsListFn = (isTemplate: boolean = false) : QueryFn<TableRe
       const networkIds = uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
       if (networkIds.length && isPayloadHasField(payload, 'networks')) {
         // eslint-disable-next-line max-len
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, customHeaders)
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
         const networkListQuery = await fetchWithBQ({
           ...networkListReq,
           body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: networkIds } })
@@ -197,7 +199,7 @@ export const getApGroupsListFn = (isTemplate: boolean = false) : QueryFn<TableRe
           filters: { id: apIds }
         }
         const apsListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
+          ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params),
           body: JSON.stringify(apQueryPayload)
         })
         const aps = apsListQuery.data as unknown as TableResult<NewAPModel>
@@ -220,12 +222,10 @@ export const getApGroupFn = (isTemplate: boolean = false) : QueryFn<ApGroup, Req
   return async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
     const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
-    const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
     // eslint-disable-next-line max-len
     const apGroupQuery = await fetchWithBQ(createHttpRequest(
       isTemplate && enableRbac ? apis.getApGroupRbac : apis.getApGroup,
-      params,
-      customHeaders
+      params
     ))
 
     let apGroup: ApGroup
@@ -268,11 +268,9 @@ export const updateApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGrou
     try {
       const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
       const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
-      const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
       const req = createHttpRequest(
         isTemplate && enableRbac ? apis.updateApGroupRbac : apis.updateApGroup,
-        params,
-        customHeaders
+        params
       )
 
       let newPayload: AddApGroup = { ...(payload as unknown as AddApGroup) }
@@ -303,8 +301,7 @@ export const addApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGroup, 
     try {
       const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
       const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
-      const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-      const req = createHttpRequest(apis.addApGroup, params, customHeaders)
+      const req = createHttpRequest(apis.addApGroup, params)
 
       let newPayload: AddApGroup = { ...(payload as unknown as AddApGroup) }
       // transform payload
