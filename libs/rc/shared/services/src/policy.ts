@@ -218,12 +218,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.delL2AclPolicy, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.delL2AclPolicy, AccessControlUrls.delL2AclPolicyRbac),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delL2AclPolicies: build.mutation<CommonResult, RequestPayload>({
@@ -233,10 +228,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { l2AclPolicyId: policyId }, payload: {} }))
           return batchApi(
-            AccessControlUrls.delL2AclPolicy,
+            AccessControlUrls.delL2AclPolicyRbac,
             requests,
-            fetchWithBQ,
-            GetApiVersionHeader(ApiVersionEnum.v1_1)
+            fetchWithBQ
           )
         }
 
@@ -282,12 +276,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delL3AclPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.delL3AclPolicy, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.delL3AclPolicy, AccessControlUrls.delL3AclPolicyRbac),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delL3AclPolicies: build.mutation<CommonResult, RequestPayload>({
@@ -297,10 +286,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { l3AclPolicyId: policyId }, payload: {} }))
           return batchApi(
-            AccessControlUrls.delL3AclPolicy,
+            AccessControlUrls.delL3AclPolicyRbac,
             requests,
-            fetchWithBQ,
-            GetApiVersionHeader(ApiVersionEnum.v1_1)
+            fetchWithBQ
           )
         }
 
@@ -355,14 +343,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     deleteAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfile, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.deleteAccessControlProfile, AccessControlUrls.deleteAccessControlProfileRbac),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     deleteAccessControlProfiles: build.mutation<CommonResult, RequestPayload>({
@@ -372,10 +353,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { policyId: policyId }, payload: {} }))
           return batchApi(
-            AccessControlUrls.deleteAccessControlProfile,
+            AccessControlUrls.deleteAccessControlProfileRbac,
             requests,
-            fetchWithBQ,
-            GetApiVersionHeader(ApiVersionEnum.v1_1)
+            fetchWithBQ
           )
         }
 
@@ -456,12 +436,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     delDevicePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.delDevicePolicy, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.delDevicePolicy, AccessControlUrls.delDevicePolicyRbac),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delDevicePolicies: build.mutation<CommonResult, RequestPayload>({
@@ -471,10 +446,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { devicePolicyId: policyId }, payload: {} }))
           return batchApi(
-            AccessControlUrls.delDevicePolicy,
+            AccessControlUrls.delDevicePolicyRbac,
             requests,
-            fetchWithBQ,
-            GetApiVersionHeader(ApiVersionEnum.v1_1)
+            fetchWithBQ
           )
         }
 
@@ -545,12 +519,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     delAppPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AccessControlUrls.delAppAclPolicy, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.delAppAclPolicy, AccessControlUrls.delAppAclPolicyRbac),
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delAppPolicies: build.mutation<CommonResult, RequestPayload>({
@@ -560,10 +529,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { applicationPolicyId: policyId }, payload: {} }))
           return batchApi(
-            AccessControlUrls.delAppAclPolicy,
+            AccessControlUrls.delAppAclPolicyRbac,
             requests,
-            fetchWithBQ,
-            GetApiVersionHeader(ApiVersionEnum.v1_1)
+            fetchWithBQ
           )
         }
 
@@ -2029,8 +1997,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           try {
             const categoryListReq = createHttpRequest(
               AccessControlUrls.applicationLibrariesCategoryList,
-              params,
-              GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+              params
             )
             const categoryListRes = await fetchWithBQ(categoryListReq)
 
@@ -2066,11 +2033,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     applicationLibrariesCategoryList: build.query<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload }) => {
         const categoryListReq = createHttpRequest(
           AccessControlUrls.applicationLibrariesCategoryList,
-          params,
-          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+          params
         )
         return {
           ...categoryListReq,
@@ -2085,8 +2051,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           try {
             const categoryListReq = createHttpRequest(
               AccessControlUrls.applicationLibrariesCategoryList,
-              params,
-              GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+              params
             )
             const categoryListRes = await fetchWithBQ(categoryListReq)
             const categories = (categoryListRes.data as { categories: { id: string, name: string }[] }).categories
@@ -2098,8 +2063,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
                   {
                     ...params,
                     categoryId: category.id
-                  },
-                  GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+                  }
                 )
                 return fetchWithBQ(applicationPolicyDetail)
               })
@@ -2144,11 +2108,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     applicationLibrariesApplicationList: build.query<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload }) => {
         const applicationListReq = createHttpRequest(
           AccessControlUrls.applicationLibrariesApplicationList,
-          params,
-          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+          params
         )
         return {
           ...applicationListReq,

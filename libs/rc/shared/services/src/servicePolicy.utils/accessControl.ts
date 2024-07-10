@@ -386,11 +386,10 @@ export function getEnhancedAccessControlProfileListFn () : QueryFn<TableResult<E
       if (!enableRbac) return policy
 
       try {
-        // eslint-disable-next-line max-len
         const aclPolicyDetail = createHttpRequest(
-          AccessControlUrls.getAccessControlProfile,
-          { policyId: policy.id },
-          enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+          // eslint-disable-next-line max-len
+          enableRbac ? AccessControlUrls.getAccessControlProfileRbac : AccessControlUrls.getAccessControlProfile,
+          { policyId: policy.id }
         )
         const acl = await fetchWithBQ(aclPolicyDetail)
         const aclData = acl.data as unknown as EnhancedAccessControlInfoType
@@ -437,9 +436,8 @@ export function getEnhancedL2AclProfileListFn () : QueryFn<TableResult<L2AclPoli
       try {
         // eslint-disable-next-line max-len
         const l2AclPolicyDetail = createHttpRequest(
-          AccessControlUrls.getL2AclPolicy,
-          { l2AclPolicyId: policy.id },
-          enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+          enableRbac ? AccessControlUrls.getL2AclPolicyRbac : AccessControlUrls.getL2AclPolicy,
+          { l2AclPolicyId: policy.id }
         )
         const l2Acl = await fetchWithBQ(l2AclPolicyDetail)
         const l2AclData = l2Acl.data as unknown as l2AclPolicyInfoType
@@ -470,8 +468,11 @@ export function getEnhancedL3AclProfileListFn () : QueryFn<TableResult<L3AclPoli
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     const l3AclPolicyListInfo = {
-      // eslint-disable-next-line max-len
-      ...createHttpRequest(enableRbac ? AccessControlUrls.getL3AclPolicyListQuery : AccessControlUrls.getEnhancedL3AclPolicies, params),
+      ...createHttpRequest(
+        // eslint-disable-next-line max-len
+        enableRbac ? AccessControlUrls.getL3AclPolicyListQuery : AccessControlUrls.getEnhancedL3AclPolicies,
+        params
+      ),
       body: enableRbac ? JSON.stringify(payload) : payload
     }
 
@@ -484,9 +485,8 @@ export function getEnhancedL3AclProfileListFn () : QueryFn<TableResult<L3AclPoli
 
       try {
         const l3AclPolicyDetail = createHttpRequest(
-          AccessControlUrls.getL3AclPolicy,
-          { l3AclPolicyId: policy.id },
-          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+          enableRbac ? AccessControlUrls.getL3AclPolicyRbac : AccessControlUrls.getL3AclPolicy,
+          { l3AclPolicyId: policy.id }
         )
         const l3Acl = await fetchWithBQ(l3AclPolicyDetail)
         const l3AclData = l3Acl.data as unknown as l3AclPolicyInfoType
@@ -531,9 +531,8 @@ export function getEnhancedDeviceProfileListFn () : QueryFn<TableResult<DevicePo
 
       try {
         const devicePolicyDetail = createHttpRequest(
-          AccessControlUrls.getDevicePolicy,
-          { devicePolicyId: policy.id },
-          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+          enableRbac ? AccessControlUrls.getDevicePolicyRbac : AccessControlUrls.getDevicePolicy,
+          { devicePolicyId: policy.id }
         )
         const devicePolicy = await fetchWithBQ(devicePolicyDetail)
         const deviceData = devicePolicy.data as unknown as devicePolicyInfoType
@@ -579,9 +578,8 @@ export function getEnhancedApplicationProfileListFn () : QueryFn<TableResult<App
 
       try {
         const applicationPolicyDetail = createHttpRequest(
-          AccessControlUrls.getAppPolicy,
-          { applicationPolicyId: policy.id },
-          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+          enableRbac ? AccessControlUrls.getAppPolicyRbac : AccessControlUrls.getAppPolicy,
+          { applicationPolicyId: policy.id }
         )
         const applicationPolicy = await fetchWithBQ(applicationPolicyDetail)
         const applicationData = applicationPolicy.data as unknown as appPolicyInfoType

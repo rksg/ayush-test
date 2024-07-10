@@ -7,7 +7,6 @@ import {
   ComparisonObjectType,
   fetchAdditionalData,
   operateAction,
-  profilePayload,
   UpdateActionItem
 } from './accessControl'
 
@@ -42,7 +41,7 @@ describe('fetchAdditionData', () => {
 
 describe('comparePayload and operateAction', () => {
 
-  const currentPayload: profilePayload = {
+  const currentPayload: Record<string, unknown> = {
     id: '832ad540d6aa4dfc802a07e04e43f29d',
     name: 'acl-temp-003',
     description: '',
@@ -60,7 +59,7 @@ describe('comparePayload and operateAction', () => {
     }
   }
 
-  const oldPayload: profilePayload = {
+  const oldPayload: Record<string, unknown> = {
     devicePolicy: {
       id: '3936bc7f94fa40c4a1b6d52991e65fad',
       enabled: true
@@ -78,7 +77,7 @@ describe('comparePayload and operateAction', () => {
   }
 
   // eslint-disable-next-line max-len
-  const itemProcessFn = (currentPayload: profilePayload, oldPayload: profilePayload, key: string, id: string) => {
+  const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown>, key: string, id: string) => {
     const idName = `${key}Id`
 
     if (!Object.keys(oldPayload).length) {
@@ -165,3 +164,5 @@ describe('comparePayload and operateAction', () => {
     expect(mockFetchWithBQ).toHaveBeenCalledTimes(6) // add: 1, removed: 1, updated: 2 * 2
   })
 })
+
+
