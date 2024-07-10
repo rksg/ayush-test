@@ -1,7 +1,5 @@
-import { useState } from 'react'
-
-import { Row, Col, Typography, Space } from 'antd'
-import { useIntl, defineMessage }      from 'react-intl'
+import { Row, Col, Form, Typography, Space } from 'antd'
+import { useIntl, defineMessage }            from 'react-intl'
 
 import {
   useLayoutContext,
@@ -42,7 +40,7 @@ export function AIDrivenRRM () {
   const priority = [
     {
       key: 'full',
-      value: 'full',
+      value: 'full' as const,
       children: $t({ defaultMessage: 'High number of clients in a dense network (Default)' }),
       columns: [
         $t({ defaultMessage: 'Maximize client density - simultaneous connected clients (Default)' }),
@@ -51,7 +49,7 @@ export function AIDrivenRRM () {
     },
     {
       key: 'partial',
-      value: 'partial',
+      value: 'partial' as const,
       children: 'High client throughput in sparse network',
       columns: [
         $t({ defaultMessage: 'High client throughput in sparse network' }),
@@ -79,7 +77,12 @@ export function AIDrivenRRM () {
   const choose = get('IS_MLISA_SA')
     ? defineMessage({ defaultMessage: 'What is your primary network intent for Zone: {zone}' })
     : defineMessage({ defaultMessage: 'What is your primary network intent for Venue: {zone}' })
-  const [currentPriority, setPriority] = useState('full')
+
+  // TODO:
+  // state below should be from the RRM record
+  const initialValues = {
+    intentPriority: 'full' as typeof priority[number]['value']
+  }
 
   return (
     <>
@@ -100,8 +103,7 @@ export function AIDrivenRRM () {
           }
         ]}
       />
-      <StepsForm buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}>
-
+      <StepsForm {... { initialValues }} buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}>
         <StepsForm.StepForm title={$t({ defaultMessage: 'Introduction' })}>
           <Row gutter={20}>
             <Col span={15}>
@@ -182,19 +184,14 @@ export function AIDrivenRRM () {
               <StepsForm.Subtitle>
                 {$t(choose, { zone: mapping.zone })}
               </StepsForm.Subtitle>
-              <TradeOff
-                key='intentPriority'
-                name='intentPriority'
-                headers={[
-                  $t({ defaultMessage: 'Intent Priority' }),
-                  $t({ defaultMessage: 'IntentAI Scope' })
-                ]}
-                radios={priority}
-                currentValue={currentPriority}
-                onChange={(selected) => {
-                  setPriority(selected as string)
-                }}
-              />
+              <Form.Item name='intentPriority'>
+                <TradeOff
+                  radios={priority}
+                  headers={[
+                    $t({ defaultMessage: 'Intent Priority' }),
+                    $t({ defaultMessage: 'IntentAI Scope' })
+                  ]} />
+              </Form.Item>
             </Col>
             <Col span={7} offset={2}>
               <UI.SideNotes $pageHeaderY={pageHeaderY}>
