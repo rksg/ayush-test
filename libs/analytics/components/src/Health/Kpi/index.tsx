@@ -101,8 +101,8 @@ export function KpiSection (props: {
     }
   }
   const defaultZoom = (
-    moment(filters.startDate).tz('UTC').isSame(timeWindow[0]) &&
-    moment(filters.endDate).tz('UTC').isSame(timeWindow[1])
+    moment(filters.startDate).isSame(timeWindow[0]) &&
+    moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
   useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
