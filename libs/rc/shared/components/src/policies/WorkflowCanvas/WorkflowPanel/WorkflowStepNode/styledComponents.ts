@@ -1,8 +1,6 @@
 import styled from 'styled-components/macro'
 
 
-import { Collapse as AntCollapse } from '@acx-ui/components'
-
 export const StepNode = styled.div<{ selected?: boolean }>`
   font-size: 12px;
   width: 220px;
