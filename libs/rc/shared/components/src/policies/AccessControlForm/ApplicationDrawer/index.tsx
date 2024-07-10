@@ -227,7 +227,6 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useTemplateQueryFn: useGetAppPolicyTemplateQuery,
     // eslint-disable-next-line max-len
     skip: skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
-    payload: {},
     extraParams: {
       applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
     },

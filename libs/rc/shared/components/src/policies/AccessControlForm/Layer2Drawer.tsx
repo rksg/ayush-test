@@ -152,7 +152,6 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     useQueryFn: useGetL2AclPolicyQuery,
     useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
     extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId },
     enableRbac
   })

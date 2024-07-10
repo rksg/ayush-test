@@ -193,15 +193,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getL2AclPolicy: build.query<l2AclPolicyInfoType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? AccessControlUrls.getL2AclPolicyRbac : AccessControlUrls.getL2AclPolicy,
-          params
-        )
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(
+        AccessControlUrls.getL2AclPolicy,
+        AccessControlUrls.getL2AclPolicyRbac
+      ),
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -418,15 +413,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       )
     }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? AccessControlUrls.getL3AclPolicyRbac : AccessControlUrls.getL3AclPolicy,
-          params
-        )
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(
+        AccessControlUrls.getL3AclPolicy,
+        AccessControlUrls.getL3AclPolicyRbac
+      ),
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -448,15 +438,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getDevicePolicy: build.query<devicePolicyInfoType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? AccessControlUrls.getDevicePolicyRbac : AccessControlUrls.getDevicePolicy,
-          params
-        )
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(
+        AccessControlUrls.getDevicePolicy,
+        AccessControlUrls.getDevicePolicyRbac
+      ),
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -542,15 +527,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getAppPolicy: build.query<appPolicyInfoType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? AccessControlUrls.getAppPolicyRbac : AccessControlUrls.getAppPolicy,
-          params
-        )
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(
+        AccessControlUrls.getAppPolicy,
+        AccessControlUrls.getAppPolicyRbac
+      ),
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

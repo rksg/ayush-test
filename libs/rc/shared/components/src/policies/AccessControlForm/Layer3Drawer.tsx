@@ -193,7 +193,6 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useQueryFn: useGetL3AclPolicyQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
     extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId },
     enableRbac
   })

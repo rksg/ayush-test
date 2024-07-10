@@ -183,7 +183,6 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     useQueryFn: useGetDevicePolicyQuery,
     useTemplateQueryFn: useGetDevicePolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
     extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId },
     enableRbac
   })
