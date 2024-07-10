@@ -7,6 +7,106 @@ export const successResponse = {
   requestId: 'request-id'
 }
 
+export const availableVersionsV1002 = [
+  {
+    modelGroup: 'ICX82',
+    switchCount: 0,
+    versions: [
+      {
+        id: '10010_rc3',
+        name: '10010_rc3',
+        category: 'REGULAR',
+        createdDate: '2024-05-23T03:54:07.867+00:00',
+        inUse: true,
+        isDowngradeVersion: true
+      },
+      {
+        id: '10010_rc2',
+        name: '10010_rc2',
+        category: 'REGULAR',
+        createdDate: '2024-05-22T07:21:52.693+00:00',
+        inUse: true,
+        isDowngradeVersion: true
+      },
+      {
+        id: '10010a_cd1_b3',
+        name: '10010a_cd1_b3',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:12:47.128+00:00',
+        inUse: true,
+        isDowngradeVersion: true
+      }
+    ]
+  },
+  {
+    modelGroup: 'ICX7X',
+    switchCount: 0,
+    versions: [
+      {
+        id: '10010_rc3',
+        name: '10010_rc3',
+        category: 'REGULAR',
+        createdDate: '2024-05-23T03:54:07.867+00:00',
+        inUse: true
+      },
+      {
+        id: '10010_rc2',
+        name: '10010_rc2',
+        category: 'REGULAR',
+        createdDate: '2024-05-22T07:21:52.693+00:00',
+        inUse: true,
+        isDowngradeVersion: true
+      },
+      {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:50.553+00:00',
+        inUse: true,
+        isDowngradeVersion: true,
+        isNonDowngradable: true
+      },
+      {
+        id: '09010h_rc1',
+        name: '09010h_rc1',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:46.772+00:00',
+        isDowngradeVersion: true,
+        isNonDowngradable: true
+      }
+    ]
+  },
+  {
+    modelGroup: 'ICX71',
+    switchCount: 2,
+    versions: [
+      {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:50.553+00:00',
+        inUse: true,
+        isDowngradeVersion: true
+      },
+      {
+        id: '09010h_rc1',
+        name: '09010h_rc1',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:46.772+00:00',
+        inUse: true,
+        isDowngradeVersion: true
+      },
+      {
+        id: '09010h_cd2_b4',
+        name: '09010h_cd2_b4',
+        category: 'RECOMMENDED',
+        createdDate: '2024-04-09T09:13:06.337+00:00',
+        inUse: true
+      }
+    ]
+  }
+]
+
 export const versionLatest = [
   {
     name: '6.2.1.103.1580',
