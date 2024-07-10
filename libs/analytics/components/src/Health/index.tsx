@@ -1,3 +1,4 @@
+import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -33,7 +34,12 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string, showHead
       noSwitchSupportURLs: isSwitchHealthEnabled ? [] : ['/ai/health', '/analytics/health']
     }
   })
-  const healthPageFilters = widgetFilters ? widgetFilters : filters
+  const healthPageFilters = {
+    ...filters,
+    ...widgetFilters,
+    startDate: moment(widgetFilters?.startDate || filters.startDate).tz('UTC').format(),
+    endDate: moment(widgetFilters?.endDate || filters.endDate).tz('UTC').format()
+  }
 
   const onTabChange = (tab: string) =>
     navigate({
