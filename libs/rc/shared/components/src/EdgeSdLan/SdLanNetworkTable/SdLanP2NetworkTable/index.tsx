@@ -12,7 +12,6 @@ import {
   defaultSort,
   sortProp,
   isOweTransitionNetwork,
-  isDsaeOnboardingNetwork,
   NetworkTypeEnum,
   useTableQuery,
   Network,
@@ -49,8 +48,7 @@ const getRowDisabledInfo = (
     disabled = true
     // eslint-disable-next-line max-len
     tooltip = $t({ defaultMessage: 'This is OWE transition network, cannot be SD-LAN traffic network.' })
-    //TODO: need to refactor after wifi team data migration done.
-  } else if (dsaeOnboardNetworkIds?.includes(row.id) || isDsaeOnboardingNetwork(row)) {
+  } else if (dsaeOnboardNetworkIds?.includes(row.id)) {
     disabled = true
     // eslint-disable-next-line max-len
     tooltip = $t({ defaultMessage: 'This is an onboarding network for WPA3-DPSK3 for DPSK, cannot be SD-LAN traffic network.' })
@@ -93,7 +91,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
-    apiParams: { venueId },
     defaultPayload: {
       sortField: 'name',
       sortOrder: 'ASC',
@@ -101,7 +98,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
       fields: [
         'id',
         'name',
-        'type'
+        'type',
+        'vlanPool'
       ]
     },
     option: {
@@ -214,8 +212,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           actions={filterByAccess(actions)}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          // TODO: confirm is need?
-          // onFilterChange={tableQuery.handleFilterChange}
         />
       </Loader>
       <AddNetworkModal
