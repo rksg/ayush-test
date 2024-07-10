@@ -40,7 +40,7 @@ function BarChart ({
   const { $t } = useIntl()
   const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
-  const startDate = moment(endDate).subtract(6, 'd').format()
+  const startDate = moment(endDate).subtract(6, 'd').tz('UTC').format()
   const queryResults = healthApi.useKpiTimeseriesQuery(
     {
       ...filters,
