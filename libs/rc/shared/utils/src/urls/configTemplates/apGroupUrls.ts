@@ -16,9 +16,19 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/apGroups/:apGroupId',
     newApi: true
   },
+  updateApGroupRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apGroups/:apGroupId',
+    newApi: true
+  },
   deleteApGroup: {
     method: 'delete',
     url: '/templates/venues/apGroups/:templateId',
+    newApi: true
+  },
+  deleteApGroupRbac: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/apGroups/:templateId',
     newApi: true
   },
   getApGroup: {

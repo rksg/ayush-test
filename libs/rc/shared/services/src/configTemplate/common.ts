@@ -55,7 +55,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate, ConfigTemplateUrlsInfo.getNetworkTemplateRbac),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({

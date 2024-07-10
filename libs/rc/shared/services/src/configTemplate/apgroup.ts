@@ -12,7 +12,7 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
 import {
-  addApGroupFn,
+  addApGroupFn, deleteApGroupsTemplateFn,
   getApGroupFn,
   getApGroupsListFn,
   updateApGroupFn
@@ -66,8 +66,10 @@ export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ]
     }),
     deleteApGroupsTemplate: build.mutation<ApGroup[], RequestPayload>({
-      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.deleteApGroup),
-      invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
+      queryFn: deleteApGroupsTemplateFn(),
+      invalidatesTags: [
+        { type: 'ApGroupTemplate', id: 'LIST' }
+      ]
     })
   })
 })

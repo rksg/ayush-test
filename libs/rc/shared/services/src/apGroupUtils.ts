@@ -269,7 +269,11 @@ export const updateApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGrou
       const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
       const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
       const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-      const req = createHttpRequest(apis.updateApGroup, params, customHeaders)
+      const req = createHttpRequest(
+        isTemplate && enableRbac ? apis.updateApGroupRbac : apis.updateApGroup,
+        params,
+        customHeaders
+      )
 
       let newPayload: AddApGroup = { ...(payload as unknown as AddApGroup) }
       // transform payload
@@ -317,6 +321,73 @@ export const addApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGroup, 
         return { error: res.error as FetchBaseQueryError }
       } else {
         return { data: res.data as AddApGroup }
+      }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
+}
+
+// eslint-disable-next-line max-len
+export const deleteApGroupsTemplateFn = () : QueryFn<ApGroup[], RequestPayload> => {
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      const apis = ApGroupConfigTemplateUrlsInfo
+      const apGroupListReq = createHttpRequest(apis.getApGroupsList, params)
+      let apGroups: TableResult<ApGroupViewModel>
+
+      if (enableRbac) {
+        const apGroupInfoPayload = {
+          searchString: '',
+          fields: [ 'id', 'venueId'],
+          filters: { id: [params?.templateId] },
+          pageSize: 1
+        }
+        // eslint-disable-next-line max-len
+        const newPayload = getNewApGroupViewmodelPayloadFromOld(apGroupInfoPayload as Record<string, unknown>)
+        const apGroupListQuery = await fetchWithBQ({
+          ...apGroupListReq,
+          body: JSON.stringify(newPayload)
+        })
+
+        // simplely map new fields into old fields
+        // eslint-disable-next-line max-len
+        const rbacApGroups = apGroupListQuery.data as unknown as TableResult<NewApGroupViewModelResponseType>
+        apGroups = {
+          ...omit(rbacApGroups, ['data']),
+          data: [] as ApGroupViewModel[]
+        } as TableResult<ApGroupViewModel>
+
+        rbacApGroups.data.forEach(group => {
+          apGroups.data.push({
+            ...pick(group, ['id', 'name', 'venueId', 'isDefault']),
+            clients: group.clientCount
+          } as ApGroupViewModel)
+        })
+      } else {
+        const apGroupListQuery = await fetchWithBQ({
+          ...apGroupListReq,
+          body: JSON.stringify(payload)
+        })
+        apGroups = apGroupListQuery.data as unknown as TableResult<ApGroupViewModel>
+      }
+
+      const req = createHttpRequest(
+        // eslint-disable-next-line max-len
+        enableRbac ? ApGroupConfigTemplateUrlsInfo.deleteApGroupRbac : ApGroupConfigTemplateUrlsInfo.deleteApGroup,
+        {
+          ...params,
+          venueId: apGroups.data?.[0]?.venueId
+        }
+      )
+
+      const res = await fetchWithBQ({
+        ...req
+      })
+      if (res.error) {
+        return { error: res.error as FetchBaseQueryError }
+      } else {
+        return { data: res.data as ApGroup[] }
       }
     } catch (error) {
       return { error: error as FetchBaseQueryError }

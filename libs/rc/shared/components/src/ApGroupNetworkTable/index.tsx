@@ -56,6 +56,7 @@ export interface ApGroupNetworksTableProps {
 
 export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const { venueId, apGroupId } = props
 
@@ -67,7 +68,8 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
     apiParams: { venueId: venueId || '' },
     defaultPayload: {
       ...defaultApGroupNetworkPayload,
-      isTemplate: isTemplate
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled
     },
     pagination: { settingsId }
   })
