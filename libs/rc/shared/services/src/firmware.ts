@@ -25,7 +25,9 @@ import {
   CurrentVersionsV1002,
   SwitchFirmwareVersion1002,
   FirmwareSwitchVenueV1002,
-  SwitchFirmwareV1002
+  SwitchFirmwareV1002,
+  SwitchRbacUrlsInfo,
+  SwitchRow
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -534,6 +536,15 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }, { type: 'SwitchFirmware', id: 'PREDOWNLOAD' }]
     }),
+    retryFirmwareUpdateV1002: build.mutation<SwitchRow, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.retryFirmwareUpdate, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getLatestEdgeFirmware: build.query<LatestEdgeFirmwareVersion[], RequestPayload>({
       query: () => {
         const req = createHttpRequest(FirmwareUrlsInfo.getLatestEdgeFirmware)
@@ -799,7 +810,8 @@ export const {
   useGetVenueApModelFirmwaresQuery,
   useUpdateVenueSchedulesPerApModelMutation,
   useSkipVenueSchedulesPerApModelMutation,
-  useBatchSkipSwitchUpgradeSchedulesMutation
+  useBatchSkipSwitchUpgradeSchedulesMutation,
+  useRetryFirmwareUpdateV1002Mutation
 } = firmwareApi
 
 

@@ -89,22 +89,21 @@ function useColumns () {
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
       width: 100,
-      render: function (_, row) {
-        return {
-          props: {
-            style: {
-              zIndex: 3,
-              overflow: 'visible'
-            }
-          },
-          children: <Tooltip
-            title={getSwitchNextScheduleTplTooltipV1002(intl,
-              row, getNextScheduleTplV1002(intl, row)) ||
-              intl.$t({ defaultMessage: 'Not scheduled' })}
-            placement='bottom' >
-            <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>
-          </Tooltip >
+      onCell: () => ({
+        style: {
+          zIndex: 3,
+          overflow: 'visible'
         }
+      }),
+      render: (_, row) => {
+        return <Tooltip
+          title={getSwitchNextScheduleTplTooltipV1002(intl,
+            row, getNextScheduleTplV1002(intl, row)) ||
+            intl.$t({ defaultMessage: 'Not scheduled' })}
+          placement='bottom' >
+          <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>
+        </Tooltip >
+
       }
     }
   ]
@@ -193,34 +192,32 @@ export const SelectSwitchStep = (
       dataIndex: 'currentFirmware',
       width: 180,
       filterMultiple: false,
-      render: function (_, row) {
+      onCell: () => ({
+        style: {
+          padding: '10px 0 5px 5px'
+        }
+      }),
+      render: (_, row) => {
         const version = row.currentFirmware ?
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
-        return {
-          props: {
-            style: { padding: '10px 0 5px 5px' }
-          },
-          children: getTooltipText(version)
-        }
+        return getTooltipText(version)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'switchNextSchedule',
       dataIndex: 'switchNextSchedule',
       width: 100,
-      render: function (_, row) {
+      onCell: () => ({
+        style: {
+          overflow: 'visible',
+          zIndex: 3
+        }
+      }),
+      render: (_, row) => {
         const tooltip = getSwitchScheduleTplV1002(row) ||
           intl.$t({ defaultMessage: 'Not scheduled' })
         const customDisplayValue = getSwitchNextScheduleTpl(intl, row)
-        return {
-          props: {
-            style: {
-              overflow: 'visible',
-              zIndex: 3
-            }
-          },
-          children: getTooltipText(tooltip, customDisplayValue)
-        }
+        return getTooltipText(tooltip, customDisplayValue)
       }
     }
   ]

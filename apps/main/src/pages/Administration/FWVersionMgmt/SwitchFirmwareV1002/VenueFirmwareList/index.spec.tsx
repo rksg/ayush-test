@@ -170,13 +170,52 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
   })
 
   it('clicks status - check status', async () => {
+    const checkSwitchVenue = [
+      {
+        venueId: '72a44bc9039f4a20a4733e208dfb8b5a',
+        venueName: 'My-Venue-cli-profile-skip',
+        versions: [
+          {
+            modelGroup: 'ICX7X',
+            version: '09010h_cd2_b4'
+          },
+          {
+            modelGroup: 'ICX82',
+            version: '10010a_cd3_b11'
+          },
+          {
+            modelGroup: 'ICX71',
+            version: '09010h_cd2_b4'
+          }
+        ],
+        lastScheduleUpdateTime: '2024-05-23T03:55:15.151+00:00',
+        preDownload: true,
+        switchCounts: [
+          {
+            modelGroup: 'ICX71',
+            count: 1
+          }
+        ],
+        status: 'SUCCESS',
+        scheduleCount: 0
+      }
+    ]
+
+    mockServer.use(
+      rest.post(
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(checkSwitchVenue))
+      )
+    )
+
     render(
       <Provider>
         <VenueFirmwareList />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    const checkStatusButton = await screen.findByRole('button', { name: 'Check Status' })
+    const row = await screen.findByRole('row', { name: /My-Venue-cli-profile-skip/i })
+    const checkStatusButton = await within(row).findByText(/Check Status/i)
     await userEvent.click(checkStatusButton)
     expect(await screen.findByTestId('test-VenueStatusDrawer')).toBeInTheDocument()
   })

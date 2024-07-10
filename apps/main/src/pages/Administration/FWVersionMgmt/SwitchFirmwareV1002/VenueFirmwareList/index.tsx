@@ -215,12 +215,11 @@ export function VenueFirmwareList () {
             $t({ defaultMessage: 'Update failed.' })
         }
 
-        const witchFirmwareStatusValue =
+        const switchFirmwareStatusValue =
         SwitchFirmwareStatusType[row.status as keyof typeof SwitchFirmwareStatusType]
 
-        if (_.isEmpty(witchFirmwareStatusValue)
-          || witchFirmwareStatusValue === SwitchFirmwareStatusType.NONE
-          || _.isEmpty(witchFirmwareStatusValue)) {
+        if (_.isEmpty(switchFirmwareStatusValue)
+          || switchFirmwareStatusValue === SwitchFirmwareStatusType.NONE ) {
           return noDataDisplay
         }
 

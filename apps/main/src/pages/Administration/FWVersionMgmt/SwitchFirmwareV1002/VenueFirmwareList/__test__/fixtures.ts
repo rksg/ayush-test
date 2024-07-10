@@ -345,8 +345,8 @@ export const switchReleaseV1002 = [
     modelGroup: 'ICX7X',
     versions: [
       {
-        id: '10010_rc3',
-        name: '10010_rc3',
+        id: '10010_rc55',
+        name: '10010_rc55',
         category: 'RECOMMENDED',
         createdDate: '2024-05-23T03:54:07.867+00:00'
       },
@@ -374,8 +374,8 @@ export const switchReleaseV1002 = [
     modelGroup: 'ICX71',
     versions: [
       {
-        id: '09010f_b19',
-        name: '09010f_b19',
+        id: '09010f_b71',
+        name: '09010f_b71',
         category: 'RECOMMENDED',
         createdDate: '2024-04-09T09:13:50.553+00:00'
       },
@@ -397,8 +397,8 @@ export const switchReleaseV1002 = [
     modelGroup: 'ICX82',
     versions: [
       {
-        id: '10010_rc3',
-        name: '10010_rc3',
+        id: '10010_rc82',
+        name: '10010_rc82',
         category: 'RECOMMENDED',
         createdDate: '2024-05-23T03:54:07.867+00:00'
       },

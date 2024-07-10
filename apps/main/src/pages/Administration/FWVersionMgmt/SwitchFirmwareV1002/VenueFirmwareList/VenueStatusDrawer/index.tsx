@@ -19,7 +19,6 @@ import {
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams }                                        from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL, noDataDisplay } from '@acx-ui/utils'
 
 import { toUserDate } from '../../../FirmwareUtils'
@@ -35,7 +34,6 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   const { $t } = useIntl()
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
-  const params = useParams()
   const switchAction = useSwitchActions()
 
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareStatusListQuery({
@@ -126,9 +124,8 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
                       content: $t({ defaultMessage: 'Start firmware upgrade retry' })
                     })
                   }
-                  switchAction.doRetryFirmwareUpdate({
+                  switchAction.doRetryFirmwareUpdateV1002({
                     switchId,
-                    tenantId: params.tenantId,
                     venueId: props.data.venueId
                   }, callback)
                 }}>
