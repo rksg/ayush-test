@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -15,12 +16,13 @@ import {
   mockedApList,
   mockedEmptyApList,
   mockedGetApiResponse,
-  mockedGetApiResponseWithoutAps
+  mockedGetApiResponseWithoutAps,
+  mockedGetApiResponseWithoutApsRbac
 } from '../MdnsProxyForm/__tests__/fixtures'
 
 import MdnsProxyDetail from './MdnsProxyDetail'
 
-describe.skip('MdnsProxyDetail', () => {
+describe('MdnsProxyDetail', () => {
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742',
     serviceId: '4b76b1952c80401b8500b00d68106576'
@@ -44,7 +46,7 @@ describe.skip('MdnsProxyDetail', () => {
     )
   })
 
-  it('should render the detail view without AP instances', async () => {
+  it.skip('should render the detail view without AP instances', async () => {
     mockServer.use(
       rest.get(
         MdnsProxyUrls.getMdnsProxy.url,
@@ -67,7 +69,36 @@ describe.skip('MdnsProxyDetail', () => {
     expect(await screen.findByText('Instances (0)')).toBeVisible()
   })
 
-  it('should navigate to the edit page', async () => {
+  it('should render the detail view without AP instances via RBAC api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => res(ctx.json({
+          data: [mockedGetApiResponseWithoutApsRbac],
+          page: 0,
+          totalCount: 1
+        }))
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    const targetText = mockedGetApiResponseWithoutApsRbac.name
+
+    expect(await screen.findByText(targetText)).toBeVisible()
+
+    jest.mocked(useIsSplitOn).mockReset()
+  })
+
+  it.skip('should navigate to the edit page', async () => {
     const editLink = `/${params.tenantId}/t/` + getServiceDetailsLink({
       type: ServiceType.MDNS_PROXY,
       oper: ServiceOperation.EDIT,
@@ -90,7 +121,7 @@ describe.skip('MdnsProxyDetail', () => {
     expect(targetRow).toBeVisible()
   })
 
-  it('should render breadcrumb correctly', async () => {
+  it.skip('should render breadcrumb correctly', async () => {
     render(
       <Provider>
         <MdnsProxyDetail />

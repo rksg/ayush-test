@@ -3,11 +3,13 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { BonjourGatewayRule } from '../../models/BonjourGatewayRule'
 import {
+  MdnsActivation,
   MdnsProxyCreateApiPayload,
   MdnsProxyFormData,
   MdnsProxyForwardingRule,
   MdnsProxyGetApiResponse,
-  MdnsProxyScopeData
+  MdnsProxyScopeData,
+  MdnsProxyViewModel
 } from '../../types/services'
 
 
@@ -37,6 +39,23 @@ export function convertApiPayloadToMdnsProxyFormData (response: MdnsProxyGetApiR
     rules: rules,
     scope: extractScopeFromApiPayload(response.aps)
   }
+}
+
+// eslint-disable-next-line max-len
+export function convertMdnsProxyViewModelToMdnsProxyFormData (data: MdnsProxyViewModel): MdnsProxyFormData {
+  return {
+    id: data.id,
+    name: data.name,
+    rules: data.rules,
+    scope: extractScopeFromViewModel(data.activations)
+  } as MdnsProxyFormData
+}
+
+function extractScopeFromViewModel (activations: MdnsActivation[] = []): MdnsProxyScopeData[] {
+  return activations.map(activation => ({
+    venueId: activation.venueId,
+    aps: activation.apSerialNumbers.map(serialNumber => ({ serialNumber }))
+  }))
 }
 
 function extractApSerialNumberFromScope (scope: MdnsProxyScopeData[] = []): string[] {
