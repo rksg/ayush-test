@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
-import { Checkbox, Form, Space, Switch, Typography } from 'antd'
-import TextArea                                      from 'antd/lib/input/TextArea'
-import _                                             from 'lodash'
-import { useIntl }                                   from 'react-intl'
+import { Form, Space } from 'antd'
+import TextArea        from 'antd/lib/input/TextArea'
+import _               from 'lodash'
+import { useIntl }     from 'react-intl'
 
-import { Drawer, Select, StepsForm, Subtitle, showActionModal } from '@acx-ui/components'
-import { Features }                                             from '@acx-ui/feature-toggle'
-import { formatter }                                            from '@acx-ui/formatter'
+import { Drawer, Select, showActionModal } from '@acx-ui/components'
+import { Features }                        from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
   EdgeIpModeEnum,
@@ -19,7 +18,6 @@ import {
   EdgePortTypeEnum,
   EdgeSerialNumber,
   convertEdgePortsConfigToApiPayload,
-  getEdgePortDisplayName,
   getEdgePortTypeOptions,
   isInterfaceInVRRPSetting
 } from '@acx-ui/rc/utils'
@@ -28,6 +26,8 @@ import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGener
 import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
 import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
 import { useIsEdgeFeatureReady }            from '../useEdgeActions'
+
+import { LagMembersComponent } from './LagMembersComponent'
 
 interface LagDrawerProps {
   clusterId: string
@@ -135,97 +135,6 @@ export const LagDrawer = (props: LagDrawerProps) => {
         $t({ defaultMessage: 'Add' }) })
   }
 
-  interface LagMembersFieldProps {
-    value?: EdgeLag['lagMembers']
-    onChange?: (data: unknown) => void
-  }
-
-  const maxSpeedPortGroups = _.groupBy(portList, 'maxSpeedCapa')
-  const maxSpeedList = Object.keys(maxSpeedPortGroups)
-  const [portCheckedMaxSpeed, setPortCheckedMaxSpeed] = useState<String>()
-  const genLagMembersMaxSpeedGroupDesc = (maxSpeed?: String, maxSpeedListSize?: number) => {
-    if(!maxSpeedListSize || maxSpeedListSize < 2) {
-      return ''
-    } else {
-      return <Typography.Text className='description darkGreyText' >
-        Max Speed:{formatter('networkSpeedFormat')(maxSpeed)}
-      </Typography.Text>
-    }
-
-  }
-
-  const genLagMembersMaxSpeedNote = (maxSpeedListSize?: number) => {
-    if(maxSpeedListSize && maxSpeedListSize > 1) {
-      return <Subtitle level={5}>{$t({
-        // eslint-disable-next-line max-len
-        defaultMessage: 'Please ensure that a LAG requires its port members to have the same speed capability.'
-      })}
-      </Subtitle>
-    } else {
-      return ''
-    }
-
-  }
-
-  const disabledLagMembers = (maxSpeed?: String) => {
-    const result = portCheckedMaxSpeed!==undefined && portCheckedMaxSpeed !== maxSpeed
-    return result
-  }
-
-  const LagMembersField = (props: LagMembersFieldProps) => {
-    const { value } = props
-    const lagMembers = value
-    const maxSpeedPorts : { maxSpeed: string, ports: EdgePort[] }[] = []
-    maxSpeedList.forEach(row => {
-      maxSpeedPorts.push({ maxSpeed: row, ports: maxSpeedPortGroups[row] })
-    })
-
-    return (
-      <div>
-        {genLagMembersMaxSpeedNote(maxSpeedList.length)}
-        <Checkbox.Group value={lagMembers?.map(item => item.portId)}>
-          <Space direction='vertical'>
-            {
-              maxSpeedPorts.map((row) => (
-                <Space direction='vertical' key={`${row.maxSpeed}_space`} >
-                  {genLagMembersMaxSpeedGroupDesc(row.maxSpeed, maxSpeedList.length)}
-                  {
-                    getUseableLagMembers(row.ports)?.map((item: EdgePort) => (
-                      <Space key={`${item.id}_space`} size={30}>
-                        <Checkbox
-                          key={`${item.id}_checkbox`}
-                          value={item.id}
-                          children={getEdgePortDisplayName(item)}
-                          onChange={(e) =>
-                            handleLagMemberChange(row.maxSpeed, item.id, e.target.checked)}
-                          disabled={disabledLagMembers(row.maxSpeed)}
-                        />
-                        {
-                          lagMembers?.some(id => id.portId === item.id) &&
-                  <StepsForm.FieldLabel width='100px'>
-                    <div style={{ margin: 'auto' }}>{$t({ defaultMessage: 'Port Enabled' })}</div>
-                    <Form.Item
-                      children={<Switch
-                        // eslint-disable-next-line max-len
-                        checked={lagMembers.find(member => member.portId === item.id)?.portEnabled ?? false}
-                        onChange={(checked) => handlePortEnabled(item.id, checked)}
-                        disabled={!lagEnabled}
-                      />}
-                      noStyle
-                    />
-                  </StepsForm.FieldLabel>
-                        }
-                      </Space>
-
-                    ))}
-                </Space>
-              ))
-
-            }
-          </Space>
-        </Checkbox.Group></div>
-    )}
-
   const handleClose = () => {
     setVisible(false)
   }
@@ -316,66 +225,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
     }
   }
 
-  const handleLagMemberChange = (maxSpeed: string, portId: string, enabled: boolean) => {
-
-    const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
-    let updatedMembers = _.cloneDeep(currentMembers)
-
-    if(enabled) {
-      updatedMembers.push({ portId, portEnabled: lagEnabled })
-      setPortCheckedMaxSpeed(maxSpeed)
-    } else {
-      _.remove(updatedMembers, item => item.portId === portId)
-      setPortCheckedMaxSpeed(undefined)
-    }
-
-    const updateValues: Partial<EdgeLag> = {
-      lagMembers: updatedMembers
-    }
-
-    // check if need to reset core port enabled
-    let isLagMemberPortHasCorePort = false
-    for(let idx = 0; idx < updatedMembers.length; idx++) {
-      if (_.find(portList, { id: updatedMembers[idx].portId })?.corePortEnabled) {
-        isLagMemberPortHasCorePort = true
-        break
-      }
-    }
-
-    const currentLadId = form.getFieldValue('id') as EdgeLag['id']
-    const initialCorePortEnabled = existedLagList
-      ?.find(lag => lag.id === currentLadId)?.corePortEnabled
-    if (!isLagMemberPortHasCorePort && !initialCorePortEnabled) {
-      updateValues.corePortEnabled = false
-    }
-
-    form.setFieldsValue(updateValues)
-  }
-
-  const handlePortEnabled = (portId: string, enabled: boolean) => {
-    const currentMembers = form.getFieldValue('lagMembers') as EdgeLag['lagMembers'] ?? []
-    const updated = _.cloneDeep(currentMembers)
-    updated.forEach(item => {
-      if (item.portId === portId)
-        item.portEnabled = enabled
-    })
-    form.setFieldValue('lagMembers', updated)
-  }
-
   const getUseableLagOptions = (existedLagList?: EdgeLag[]) => {
     return lagNameOptions.filter(option =>
       !existedLagList?.some(existedLag =>
         existedLag.id === option.value &&
         existedLag.id !== data?.id)) // keep the edit mode data as a selection
-  }
-
-  const getUseableLagMembers = (portList?: EdgePort[]) => {
-    return portList?.filter(port =>
-      !existedLagList?.some(exsistedLag =>
-        exsistedLag.lagMembers?.some(existedLagMember =>
-          existedLagMember.portId === port.id &&
-          !data?.lagMembers.some(editLagMember =>
-            editLagMember.portId === port.id)))) // keep the edit mode data as a selection
   }
 
   const drawerContent = <Form
@@ -439,7 +293,11 @@ export const LagDrawer = (props: LagDrawerProps) => {
       shouldUpdate={(prev, cur) => {
         return prev.lagMembers !== cur.lagMembers
       }}
-      children={<LagMembersField/>}
+      children={<LagMembersComponent
+        data={data}
+        portList={portList}
+        existedLagList={existedLagList}
+        lagEnabled={lagEnabled}/>}
     />
 
 
@@ -521,8 +379,4 @@ const getMergedLagData = (lagData: EdgeLag[] | undefined, changedLag: EdgeLag) =
     updatedLagData = [changedLag]
   }
   return updatedLagData
-}
-
-function setState (arg0: { [x: string]: any }) {
-  throw new Error('Function not implemented.')
 }
