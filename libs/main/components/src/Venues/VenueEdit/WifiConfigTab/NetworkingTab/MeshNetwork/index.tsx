@@ -36,6 +36,20 @@ const MeshInfoIcon = () => {
   />
 }
 
+const Mesh6GhzInfoIcon = () => {
+  const { $t } = useIntl()
+
+  return <Tooltip.Info iconStyle={{
+    position: 'absolute',
+    bottom: '0px'
+  }}
+  isFilled
+  title={
+    $t({ defaultMessage: 'When selecting the 6GHz radio to link other mesh APs, 2R APs and 3R APs will form mesh networks independently, with 2R APs forming on the 5GHz band and 3R APs (2/5/6) forming on the 6GHz band.' })
+  }
+  />
+}
+
 const useVenueWifiSettings = (venueId: string | undefined) => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -70,7 +84,7 @@ export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
+  const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
   const {
     editContextData,
     setEditContextData,
@@ -453,10 +467,27 @@ export function MeshNetwork () {
             disabled={isReadOnly}
             value={meshRadioType}
             onChange={handleRadioTypeChanged}>
-            <Space direction='vertical'>
-              <Radio value='5-GHz'>{$t({ defaultMessage: '5 & 6 GHz' })}</Radio>
-              <Radio value='2.4-GHz'>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
-            </Space>
+            { isWifiMeshIndependents56GEnable ? (
+              <Space direction='vertical'>
+                <Radio value='5-6-GHz' data-testid='radio56'>
+                  {$t({ defaultMessage: '5 & 6 GHz' })}
+                </Radio>
+                <Radio value='5-GHz' data-testid='radio5'>
+                  {$t({ defaultMessage: '5 GHz' })}
+                </Radio>
+                <Radio value='6-GHz' data-testid='radio6'>
+                  {$t({ defaultMessage: '6 GHz' })}<Mesh6GhzInfoIcon/>
+                </Radio>
+                <Radio value='2.4-GHz' data-testid='radio24'>
+                  {$t({ defaultMessage: '2.4 GHz' })}
+                </Radio>
+              </Space>
+            ) : (
+              <Space direction='vertical'>
+                <Radio value='5-GHz'>{$t({ defaultMessage: '5 & 6 GHz' })}</Radio>
+                <Radio value='2.4-GHz'>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
+              </Space>
+            )}
           </Radio.Group>
         </Form.Item>
       </StepsFormLegacy.FieldLabel>

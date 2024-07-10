@@ -73,14 +73,14 @@ export function useMenuConfig () {
     permission: 'READ_AI_OPERATIONS',
     uri: '/analytics/recommendations/aiOps',
     label: $t({ defaultMessage: 'AI Operations' })
-  }]
-  if (isIntentAIEnabled) {
-    aiAnalyticsMenu.push({
-      permission: 'READ_INTENT_AI',
-      uri: '/analytics/intentAI',
-      label: $t({ defaultMessage: 'Intent AI' })
-    })
-  }
+  }, ...(isIntentAIEnabled ? [{
+    permission: 'READ_INTENT_AI',
+    uri: '/analytics/intentAI',
+    label: $t({ defaultMessage: 'Intent AI' }),
+    superscript: $t({ defaultMessage: 'beta' })
+  }] : [])
+  ]
+
   const config: LayoutProps['menuConfig'] = [
     {
       uri: '/dashboard',
