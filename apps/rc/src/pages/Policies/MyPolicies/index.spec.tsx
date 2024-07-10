@@ -1,15 +1,14 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  VlanPoolRbacUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SyslogUrls, WifiUrlsInfo
+  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -19,7 +18,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedRogueApPoliciesList
+  mockedClientIsolationQueryData,
+  mockedRogueApPoliciesList,
+  mockedVlanPoolProfilesQueryData
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -141,12 +142,12 @@ describe('MyPolicies', () => {
         (_req, res, ctx) => res(ctx.json(mockQueryResult))
       ),
       rest.post(
-        ClientIsolationUrls.queryClientIsolation.url,
-        (req, res, ctx) => res(ctx.json({}))
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVlanPoolProfilesQueryData))
       ),
       rest.post(
-        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
+        ClientIsolationUrls.queryClientIsolation.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
       )
     )
 
@@ -162,5 +163,11 @@ describe('MyPolicies', () => {
 
     const rogueApTitle = 'Rogue AP Detection (99)'
     expect(await screen.findByText(rogueApTitle)).toBeVisible()
+
+    const vlanPoolTitle = 'VLAN Pools (0)'
+    expect(await screen.findByText(vlanPoolTitle)).toBeVisible()
+
+    const clientIsolationTitle = 'Client Isolation (1)'
+    expect(await screen.findByText(clientIsolationTitle)).toBeVisible()
   })
 })
