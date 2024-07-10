@@ -47,9 +47,8 @@ import {
   getAdminPassword
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { SwitchScopes }                                      from '@acx-ui/types'
-import { filterByAccess, hasPermission }                     from '@acx-ui/user'
+import { RolesEnum, RequestPayload, SwitchScopes }           from '@acx-ui/types'
+import { filterByAccess, hasPermission, hasRoles }           from '@acx-ui/user'
 import {
   exportMessageMapping,
   getIntl,
@@ -390,11 +389,27 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
     return !!selectOne && selectedRows.length === 1
   }
 
-  const isSelectionVisible = searchable !== false && hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
+  const isReadOnlyRole = hasRoles([RolesEnum.READ_ONLY]) ?? false
+  const isSelectionVisible = searchable !== false && (hasPermission({
+    scopes: [SwitchScopes.READ, SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  }) || (isReadOnlyRole && enableSwitchBlinkLed))
 
-  const rowActions: TableProps<SwitchRow>['rowActions'] = [{
+  const blinkLedAction = [{
+    label: $t({ defaultMessage: 'Blink LEDs' }),
+    key: 'SHOW_WITHOUT_RBAC_CHECK_BLINK_LEDs',
+    disabled: (rows: SwitchRow[]) => {
+      return rows.filter((row: SwitchRow) => {
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+            row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+        return !isOperational
+      }).length > 0
+    },
+    onClick: handleBlinkLeds
+  }]
+
+  const rowActions: TableProps<SwitchRow>['rowActions'] = isReadOnlyRole && enableSwitchBlinkLed ? [
+    ...blinkLedAction
+  ] : [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     scopeKey: [SwitchScopes.UPDATE],
@@ -484,17 +499,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }, callback)
     }
   },
-  ...(enableSwitchBlinkLed ? [{
-    label: $t({ defaultMessage: 'Blink LEDs' }),
-    disabled: (rows: SwitchRow[]) => {
-      return rows.filter((row: SwitchRow) => {
-        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
-            row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
-        return !isOperational
-      }).length > 0
-    },
-    onClick: handleBlinkLeds
-  }] : []),
+  ...(enableSwitchBlinkLed ? [
+    ...blinkLedAction
+  ] : []),
   {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [SwitchScopes.DELETE],
