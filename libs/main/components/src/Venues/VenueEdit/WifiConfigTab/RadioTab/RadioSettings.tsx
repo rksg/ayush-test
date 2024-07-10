@@ -311,14 +311,15 @@ export function RadioSettings () {
     }
 
     if (apList) {
-      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res || {}
-        if (data) {
-          const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
-            .map((ap: APExtended) => ap.model)
-          setVenueTriBandApModels(uniq(venueTriBandApModels))
-        }
-      })
+      apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
+        .then((res)=>{
+          const { data } = res || {}
+          if (data) {
+            const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
+              .map((ap: APExtended) => ap.model)
+            setVenueTriBandApModels(uniq(venueTriBandApModels))
+          }
+        })
     }
   }, [triBandApModels])
 
