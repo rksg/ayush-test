@@ -232,7 +232,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                   display: inline-flex;
                   flex-direction: column;
                   &:after {
-                    content: attr(data-label) attr(data-suffix-label);
+                    content: attr(data-label) ' ' attr(data-superscript);
                     height: 0;
                     visibility: hidden;
                     overflow: hidden;

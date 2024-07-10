@@ -77,7 +77,7 @@ export function useMenuConfig () {
     permission: 'READ_INTENT_AI',
     uri: '/analytics/intentAI',
     label: $t({ defaultMessage: 'Intent AI' }),
-    suffixLabel: $t({ defaultMessage: 'beta' })
+    superscript: $t({ defaultMessage: 'beta' })
   }] : [])
   ]
 

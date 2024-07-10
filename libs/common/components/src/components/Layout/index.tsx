@@ -44,7 +44,7 @@ type SideNavProps = {
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
   label: string,
-  suffixLabel?: string
+  superscript?: string
 }
 type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
   label: string
@@ -141,13 +141,13 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
     if (uri) {
       label = Boolean(item.openNewTab)
         ? <NewTabLink to={uri}>{label}</NewTabLink>
-        : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.suffixLabel)
+        : (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.superscript)
           ? <TenantNavLink
             to={uri}
             tenantType={tenantType}
             data-label={item.label}
-            data-suffix-label={item.suffixLabel}>
-            <span> {label} <sup>{item.suffixLabel}</sup> </span>
+            data-superscript={item.superscript}>
+            <span> {label} <sup>{item.superscript}</sup> </span>
           </TenantNavLink>
           : <TenantNavLink
             to={uri}
