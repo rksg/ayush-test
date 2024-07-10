@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
-import { servicesConfigTemplateApi, serviceApi, networkApi, clientApi }                                           from '@acx-ui/rc/services'
-import { ConfigTemplateUrlsInfo, ServicesConfigTemplateUrlsInfo, PortalUrlsInfo, CommonUrlsInfo, ClientUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { servicesConfigTemplateApi, serviceApi, networkApi }                                      from '@acx-ui/rc/services'
+import { ConfigTemplateUrlsInfo, ServicesConfigTemplateUrlsInfo, PortalUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,8 +15,7 @@ import { mockDetailResult,
   mockedNetworks,
   mockedNetworkTemplates,
   mockedWifiNetworks,
-  mockedWifiNetworkTemplates,
-  mockClientInfos
+  mockedWifiNetworkTemplates
 } from './__tests__/fixtures'
 import { PortalInstancesTable } from './PortalInstancesTable'
 
@@ -36,7 +35,6 @@ describe('Portal Instances Table', () => {
     store.dispatch(servicesConfigTemplateApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(clientApi.util.resetApiState())
     mockServer.use(
       rest.post(
         ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
@@ -74,11 +72,7 @@ describe('Portal Instances Table', () => {
           return res(ctx.json({
             content: [{ id: 'test', name: 'test', wifiNetworkIds: ['networkId'] }],
             paging: { page: 1, pageSize: 10, totalCount: 1 } }))
-        }),
-      rest.post(ClientUrlsInfo.getClients.url,
-        (_, res, ctx) => res(ctx.json(mockClientInfos))
-      )
-
+        })
     )
   })
 
@@ -162,6 +156,7 @@ describe('Portal Instances Table', () => {
     expect(targetRow).toHaveAttribute('href', networkLink)
     const row = await screen.findByRole('row', { name: /NetU/i })
     expect(await within(row).findByText('1')).toBeVisible()
+    expect(await within(row).findByText('30')).toBeVisible()
   })
 
   it('should render detail table - is Template - templateRBAC FF on', async () => {

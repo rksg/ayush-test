@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
@@ -12,8 +12,7 @@ import {
   useGetEnhancedPortalTemplateListQuery,
   useGetNetworkTemplateListQuery,
   useNetworkListQuery,
-  useWifiNetworkListQuery,
-  useLazyGetClientsQuery
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   Network,
@@ -40,8 +39,6 @@ export function PortalInstancesTable (){
   const isEnabledWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEnabledTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const [ tableData, setTableData ] = useState<(Network|WifiNetwork)[]>([])
-  const [ getClients ] = useLazyGetClientsQuery()
   const isNewDefined = isTemplate || isEnabledRbacService
   const isEnabledNonTemplateWifiRbac = !isTemplate && isEnabledWifiRbac
   const defaultPayload = {
@@ -66,7 +63,7 @@ export function PortalInstancesTable (){
 
   const networkQueryFields = useMemo(() => {
     return isEnabledNonTemplateWifiRbac ?
-      ['name', 'id', 'captiveType', 'nwSubType', 'venueApGroups.venueId'] :
+      ['name', 'id', 'captiveType', 'nwSubType', 'venueApGroups.venueId', 'clientCount'] :
       ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients']
   }, [isEnabledNonTemplateWifiRbac])
 
@@ -98,52 +95,6 @@ export function PortalInstancesTable (){
 
     }
   },[data])
-
-  useEffect(() => {
-    const fetchClients = async (networkIds: string[]) => {
-      const clientsResult = await getClients({
-        payload: {
-          fields: ['networkInformation','macAddress'],
-          page: 1,
-          pageSize: 256,
-          filters: {
-            'networkInformation.id': networkIds
-          }
-        }
-      }).unwrap()
-      const networkCounts: { [networkId: string]: number } = {}
-      if (tableQuery.data?.data && clientsResult.data) {
-        const clients = clientsResult.data
-        clients.forEach(({ networkInformation }) => {
-          if (networkInformation && networkInformation.id) {
-            const networkId = networkInformation.id
-            if (networkCounts[networkId]) {
-              networkCounts[networkId] += 1
-            } else {
-              networkCounts[networkId] = 1
-            }
-
-          }
-        })
-        const newTableData = tableQuery.data.data.map((network) => {
-          return {
-            ...network,
-            clients: networkCounts[network.id] ?? 0
-          } as WifiNetwork
-        })
-        setTableData(newTableData)
-      }
-    }
-    if (tableQuery.data) {
-      if (isEnabledNonTemplateWifiRbac &&
-        tableQuery.data?.data && tableQuery.data?.data.length > 0) {
-        const networkIds = tableQuery.data.data.map(({ id }) => id)
-        fetchClients(networkIds)
-      }
-      setTableData(tableQuery.data?.data)
-    }
-
-  }, [tableQuery.data])
 
   const columns: TableProps<WifiNetwork|Network>['columns'] = [
     {
@@ -191,11 +142,14 @@ export function PortalInstancesTable (){
       }
     },
     ...(isTemplate ? []: [{
-      key: 'clients',
+      key: isEnabledWifiRbac ? 'clientCount': 'clients',
       title: $t({ defaultMessage: 'Number of Clients' }),
       align: 'center' as AlignType,
-      dataIndex: 'clients',
-      sorter: true
+      dataIndex: isEnabledWifiRbac ? 'clientCount': 'clients',
+      sorter: false,
+      render: function (_:ReactNode, row:WifiNetwork|Network) {
+        return (isEnabledWifiRbac ? (row as WifiNetwork).clientCount : row.clients) ?? 0
+      }
     }])
   ]
   return (
@@ -206,7 +160,7 @@ export function PortalInstancesTable (){
           columns={columns}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          dataSource={isEnabledNonTemplateWifiRbac ? tableData : tableQuery.data?.data}
+          dataSource={tableQuery.data?.data}
           rowKey='id'
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
