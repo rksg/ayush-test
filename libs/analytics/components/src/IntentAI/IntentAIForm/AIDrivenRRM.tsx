@@ -1,5 +1,6 @@
 import React from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -42,6 +43,11 @@ export function AIDrivenRRM () {
       link: '/analytics/intentAI'
     }
   ]
+  const defaultValue = {
+    preferences: {
+      crrmFullOptimization: true
+    }
+  }
 
   return (
     <Loader states={[codeQuery, detailsQuery]}>
@@ -66,7 +72,7 @@ export function AIDrivenRRM () {
         buttonLabel={{
           submit: 'Apply'
         }}
-        initialValues={detailsQuery?.data!}
+        initialValues={_.merge(defaultValue, details)}
       >
         <StepsForm.StepForm
           title={$t(config.steps.title.introduction)}

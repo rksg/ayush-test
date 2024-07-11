@@ -5,9 +5,9 @@ import { useIntl }              from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import * as config                from '../config'
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { steps, crrmIntent, isOptimized } from '../config'
+import { EnhancedRecommendation }         from '../services'
+import * as UI                            from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
@@ -19,19 +19,19 @@ export function Summary () {
 
   return <Row gutter={20}>
     <Col span={15}>
-      <StepsForm.Title children={$t(config.steps.title.summary)} />
+      <StepsForm.Title children={$t(steps.title.summary)} />
     </Col>
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t(config.steps.sideNotes.title)}
+          {$t(steps.sideNotes.title)}
         </Typography.Title>
         <StepsForm.Subtitle>
-          {$t(config.crrmIntent[config.isOptimized(intentPriority) as IntentPriority]?.title)}
+          {$t(crrmIntent[isOptimized(intentPriority) as IntentPriority]?.title)}
         </StepsForm.Subtitle>
         <StepsForm.TextContent>
           <Typography.Paragraph>
-            {$t(config.crrmIntent[config.isOptimized(intentPriority) as IntentPriority]?.content)}
+            {$t(crrmIntent[isOptimized(intentPriority) as IntentPriority]?.content)}
           </Typography.Paragraph>
         </StepsForm.TextContent>
       </UI.SideNotes>

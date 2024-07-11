@@ -2,17 +2,18 @@
 import React from 'react'
 
 import { Row, Col, Typography, Form } from 'antd'
+import { NamePath }                   from 'antd/lib/form/interface'
 import { useIntl, defineMessage }     from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
 
 import { TradeOff }               from '../../../TradeOff'
-import * as config                from '../config'
+import { steps }                  from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 
-const name = 'intentPriority' as const
+const name = ['preferences', 'crrmFullOptimization'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
 
 export enum IntentPriority {
@@ -52,7 +53,7 @@ export function Priority () {
 
   return <Row gutter={20}>
     <Col span={15}>
-      <StepsForm.Title children={$t(config.steps.title.priority)} />
+      <StepsForm.Title children={$t(steps.title.priority)} />
       <StepsForm.Subtitle>
         {$t(choose, { zone: sliceValue })}
       </StepsForm.Subtitle>
@@ -68,14 +69,14 @@ export function Priority () {
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t({ defaultMessage: 'Side Notes' })}
+          {$t(steps.sideNotes.title)}
         </Typography.Title>
         <StepsForm.Subtitle>
           {$t({ defaultMessage: 'Potential trade-off?' })}
         </StepsForm.Subtitle>
         <StepsForm.TextContent>
           <Typography.Paragraph>
-            {$t(config.steps.sideNotes.tradeoff)}
+            {$t(steps.sideNotes.tradeoff)}
           </Typography.Paragraph>
         </StepsForm.TextContent>
       </UI.SideNotes>

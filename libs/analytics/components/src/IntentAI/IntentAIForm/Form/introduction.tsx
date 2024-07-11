@@ -9,10 +9,10 @@ import { get }                                                           from '@
 import { DateFormatEnum, formatter }                                     from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon }                               from '@acx-ui/icons'
 
-import * as config                from '../config'
-import { states }                 from '../config'
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { steps, crrmIntent, intentTypeMap, statusTrailMsgs } from '../config'
+import { states }                                            from '../config'
+import { EnhancedRecommendation }                            from '../services'
+import * as UI                                               from '../styledComponents'
 
 
 export function Introduction () {
@@ -23,12 +23,12 @@ export function Introduction () {
 
   const descriptions = [
     {
-      title: config.crrmIntent.full.title,
-      text: config.crrmIntent.partial.content
+      title: crrmIntent.full.title,
+      text: crrmIntent.partial.content
     },
     {
-      title: config.crrmIntent.partial.title,
-      text: config.crrmIntent.partial.content
+      title: crrmIntent.partial.title,
+      text: crrmIntent.partial.content
     }
   ]
   const resources = [
@@ -46,15 +46,15 @@ export function Introduction () {
 
   return <Row gutter={20}>
     <Col span={15}>
-      <StepsForm.Title children={$t(config.steps.title.introduction)} />
+      <StepsForm.Title children={$t(steps.title.introduction)} />
       <Descriptions noSpace>
         <Descriptions.Item
           label={$t({ defaultMessage: 'Intent' })}
-          children={$t(config.intentTypeMap.aiDrivenRRM.intent)}
+          children={$t(intentTypeMap.aiDrivenRRM.intent)}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Category' })}
-          children={$t(config.intentTypeMap.aiDrivenRRM.category)}
+          children={$t(intentTypeMap.aiDrivenRRM.category)}
         />
         <Descriptions.Item
           label={get('IS_MLISA_SA')
@@ -65,7 +65,7 @@ export function Introduction () {
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Status' })}
-          children={$t(config.statusTrailMsgs[status as keyof typeof states ])}
+          children={$t(statusTrailMsgs[status as keyof typeof states ])}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Last update' })}
@@ -88,14 +88,14 @@ export function Introduction () {
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t({ defaultMessage: 'Side Notes' })}
+          {$t(steps.sideNotes.title)}
         </Typography.Title>
         <StepsForm.Subtitle>
           {$t({ defaultMessage: 'Benefits' })}
         </StepsForm.Subtitle>
         <StepsForm.TextContent>
           <Typography.Paragraph>
-            {$t(config.steps.sideNotes.introduction)}
+            {$t(steps.sideNotes.introduction)}
           </Typography.Paragraph>
         </StepsForm.TextContent>
         <StepsForm.Subtitle>
