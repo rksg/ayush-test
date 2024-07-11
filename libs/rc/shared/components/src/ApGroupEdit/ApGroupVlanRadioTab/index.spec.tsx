@@ -21,7 +21,7 @@ jest.mock('./ApGroupVlanRadioTable', () => ({
   ApGroupVlanRadioTable: () => <div data-testid={'apGroupVlanRadioTable'}></div>
 }))
 
-const mockGetApGroup = jest.fn()
+const mockGetNetworkDeep = jest.fn()
 const setEditContextDataFn = jest.fn()
 const venueId = oneApGroupList.data[0].venueId
 const defaultApGroupCxtdata = {
@@ -40,13 +40,6 @@ describe('AP Group vlan & radio tab', () => {
     })
 
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getApGroup.url,
-        (req, res, ctx) => {
-          mockGetApGroup()
-          return res(ctx.json({}))
-        }
-      ),
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
         (req, res, ctx) => res(ctx.json(oneApGroupList))
@@ -65,7 +58,10 @@ describe('AP Group vlan & radio tab', () => {
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
+        (req, res, ctx) => {
+          mockGetNetworkDeep()
+          return res(ctx.json(networkDeepList))
+        }
       ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
@@ -96,11 +92,9 @@ describe('AP Group vlan & radio tab', () => {
       }
     )
 
-    await waitFor(() => expect(mockGetApGroup).toBeCalledTimes(1))
+    await waitFor(() => expect(mockGetNetworkDeep).toBeCalledTimes(1))
     // eslint-disable-next-line max-len
     const note = await screen.findByText('Configure the VLAN & Radio settings for the following networks which are applied to this AP group:')
     expect(note).toBeVisible()
-
   })
-
 })

@@ -386,7 +386,6 @@ describe('Add Guest Drawer', () => {
         <AddGuestDrawer visible={true} setVisible={setVisible} />
       </Provider>, { route: { params: { ...params, networkId: '123456' } } }
     )
-    mockServer.printHandlers()
 
     await selectAllowedNetwork('guest pass wlan1')
 
