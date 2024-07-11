@@ -193,13 +193,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/venues/:venueId/meshSettings',
     newApi: true
   },
-  /*
   getMeshAps: {
     method: 'post',
-    url: '/aps/query?mesh=true',
-    oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
+    url: '/venues/aps/query?mesh=true',
+    // url: '/aps/query?mesh=true',
     newApi: true
   },
+  /*
   downloadApsCSV: {
     method: 'post',
     url: '/aps/query/csvFiles',

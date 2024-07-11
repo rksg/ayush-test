@@ -12,7 +12,9 @@ import {
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
   useGetVenueTemplateSettingsQuery,
-  useUpdateVenueTemplateMeshMutation
+  useUpdateVenueTemplateMeshMutation,
+  useGetVenueMeshQuery,
+  useGetDHCPProfileListViewModelQuery
 } from '@acx-ui/rc/services'
 import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
 import { validationMessages }                                          from '@acx-ui/utils'
@@ -46,6 +48,36 @@ const Mesh6GhzInfoIcon = () => {
     $t({ defaultMessage: 'When selecting the 6GHz radio to link other mesh APs, 2R APs and 3R APs will form mesh networks independently, with 2R APs forming on the 5GHz band and 3R APs (2/5/6) forming on the 6GHz band.' })
   }
   />
+}
+
+const useVenueWifiSettings = (venueId: string | undefined) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueSettings } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: isWifiRbacEnabled
+  })
+
+  const { data: dhcpList } = useGetDHCPProfileListViewModelQuery({
+    payload: {
+      fields: ['id', 'venueIds'],
+      filters: { venueIds: [venueId] }
+    }
+  }, { skip: !isWifiRbacEnabled || !venueId })
+
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({
+    params: { venueId } },
+  { skip: !isWifiRbacEnabled })
+
+  return isWifiRbacEnabled
+    ? ((venueMeshSettings && dhcpList)
+      ? {
+        dhcpServiceSetting: { enabled: !!dhcpList?.data[0] },
+        mesh: venueMeshSettings
+      } as VenueSettings
+      : undefined)
+    : venueSettings
 }
 
 export function MeshNetwork () {
@@ -91,14 +123,11 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+  const wifiSettingsData = useVenueWifiSettings(params.venueId)
 
   useEffect(() => {
-    if (data) {
-      const { mesh, dhcpServiceSetting } = data
+    if (wifiSettingsData) {
+      const { mesh, dhcpServiceSetting } = wifiSettingsData
       const { enabled = false, ssid, passphrase, radioType, zeroTouchEnabled = false } = mesh || {}
       setMeshEnabled(enabled)
       setIsReadOnly(enabled)
@@ -126,7 +155,7 @@ export function MeshNetwork () {
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Mesh-Network')))])
     }
-  }, [data])
+  }, [wifiSettingsData])
 
   const checkMeshAPs = async () => {
     const payload = {
@@ -138,7 +167,7 @@ export function MeshNetwork () {
       },
       pageSize: 1
     }
-    const { data } = await apList({ params, payload }, true)
+    const { data } = await apList({ params, payload, enableRbac: isWifiRbacEnabled }, true)
     setHasMeshAPs(!!(data?.totalCount && data.totalCount > 0))
   }
 
@@ -320,7 +349,7 @@ export function MeshNetwork () {
   }
 
   return (<Loader states={[{
-    isLoading: !data || meshToolTipDisabledText === defaultToolTip,
+    isLoading: !wifiSettingsData || meshToolTipDisabledText === defaultToolTip,
     isFetching: isUpdatingVenueMesh
   }]}>
     <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
