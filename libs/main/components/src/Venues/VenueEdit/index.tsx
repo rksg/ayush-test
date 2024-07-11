@@ -288,6 +288,7 @@ export function showUnsavedModal (
         })
       } else if(editContextData?.unsavedTabKey === 'servers'){
         editServerContextData?.discardSyslog?.()
+        editServerContextData?.discardVenueLbs?.()
         editServerContextData?.discardMdnsFencing?.()
         setEditContextData({
           ...editContextData,

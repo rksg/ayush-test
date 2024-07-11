@@ -110,7 +110,9 @@ const IdentityProviderMutationUseCases = [
 const LbsServerProfileMutationUseCases = [
   'AddLbsServerProfile',
   'UpdateLbsServerProfile',
-  'DeleteLbsServerProfile'
+  'DeleteLbsServerProfile',
+  'ActivateLbsServerProfileOnVenue',
+  'DectivateLbsServerProfileOnVenue'
 ]
 
 const L2AclUseCases = [
@@ -1434,7 +1436,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(args, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-            if (args.callback && response && msg.useCase === 'AddLbsProfile' &&
+            if (args.callback && response && msg.useCase === 'AddLbsServerProfile' &&
               msg.status === TxStatus.SUCCESS) {
               (args.callback as Function)(response.data)
             }

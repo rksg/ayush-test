@@ -69,7 +69,7 @@ const LbsServerProfileSettingForm = () => {
         />
         <Form.Item
           name='serverAddress'
-          style={{ display: 'inline-block', width: 'calc(86%)', paddingRight: '20px' }}
+          style={{ display: 'inline-block', width: 'calc(80%)' }}
           rules={[
             { required: true },
             { validator: (_, value) => domainNameRegExp(value) }
@@ -80,7 +80,12 @@ const LbsServerProfileSettingForm = () => {
         />
         <Form.Item
           name='serverPort'
-          style={{ display: 'inline-block', width: 'calc(14%)' }}
+          style={{
+            display: 'inline-block',
+            width: 'calc(14%)',
+            float: 'right',
+            marginRight: '10px'
+          }}
           label={$t({ defaultMessage: 'Port' })}
           rules={[
             { required: true },
