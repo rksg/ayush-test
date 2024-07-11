@@ -35,6 +35,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 const mockSetVisible = jest.fn()
 const mockAvcCategory = jest.fn()
 const mockAvcApp = jest.fn()
+const mockLibSetting = jest.fn()
 
 
 describe('AccessControlPolicy component', () => {
@@ -71,6 +72,11 @@ describe('AccessControlPolicy component', () => {
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
       rest.get(AccessControlUrls.getAppPolicy.url,
         (_, res, ctx) => res(ctx.json(applicationDetailResponse))),
+      rest.get(AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          mockLibSetting()
+          return res(ctx.json({ version: 'versionValue' }))
+        }),
       rest.get(AccessControlUrls.getAvcCategory.url,
         (_, res, ctx) => {
           mockAvcCategory()
@@ -182,6 +188,7 @@ describe('AccessControlPolicy component', () => {
       }
     )
 
+    await waitFor(() => expect(mockLibSetting).toHaveBeenCalled())
     await waitFor(() => expect(mockAvcCategory).toHaveBeenCalled())
     await waitFor(() => expect(mockAvcApp).toHaveBeenCalled())
 

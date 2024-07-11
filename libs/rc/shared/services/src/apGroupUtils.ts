@@ -1,12 +1,12 @@
-import { FetchBaseQueryError }     from '@reduxjs/toolkit/query'
-import { isNil, omit, pick, uniq } from 'lodash'
-import _                           from 'lodash'
+import { FetchBaseQueryError }                       from '@reduxjs/toolkit/query'
+import { omit, uniq, cloneDeep, forIn, pick, isNil } from 'lodash'
 
 import {
   ApDeep,
   ApGroup,
   ApGroupViewModel,
   CountAndNames,
+  FILTER,
   NewAPModel,
   NewApGroupViewModelResponseType,
   NewGetApGroupResponseType,
@@ -29,37 +29,35 @@ import { createHttpRequest } from '@acx-ui/utils'
 import { isPayloadHasField } from './apUtils'
 import { QueryFn }           from './servicePolicy.utils'
 
+
+const apGroupOldNewFieldsMapping: Record<string, string> = {
+  aps: 'apSerialNumbers',
+  members: 'apSerialNumbers',
+  networks: 'wifiNetworkIds',
+  clients: 'clientCount'
+}
+
 export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
-  switch(oldFieldName) {
-    case 'members':
-    case 'aps':
-      return'apSerialNumbers'
-    case 'networks':
-      return 'wifiNetworkIds'
-    case 'clients':
-      return 'clientCount'
-    default:
-      return oldFieldName
-  }
+  return apGroupOldNewFieldsMapping[oldFieldName] ?? oldFieldName
 }
 
 export const getNewApGroupViewmodelPayloadFromOld = (payload: Record<string, unknown>) => {
-  const newPayload = _.cloneDeep(payload) as Record<string, unknown>
+  const newPayload = cloneDeep(payload) as Record<string, unknown>
 
   if (newPayload.fields) {
     // eslint-disable-next-line max-len
-    newPayload.fields = _.uniq((newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
+    newPayload.fields = uniq((newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
   }
   if (newPayload.searchTargetFields) {
   // eslint-disable-next-line max-len
-    newPayload.searchTargetFields = _.uniq((newPayload.searchTargetFields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
+    newPayload.searchTargetFields = uniq((newPayload.searchTargetFields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
   }
 
   newPayload.sortField = getApGroupNewFieldFromOld(payload.sortField as string)
 
   if (payload.filters) {
-    const filters = {} as Record<string, unknown>
-    _.forIn(payload.filters, (val, key) => {
+    const filters = {} as FILTER
+    forIn((payload.filters as FILTER), (val, key) => {
       filters[getApGroupNewFieldFromOld(key)] = val
     })
     newPayload.filters = filters

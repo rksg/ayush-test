@@ -7,7 +7,8 @@ import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListQuery,
-  useApGroupNetworkListV2Query
+  useApGroupNetworkListV2Query,
+  useNewApGroupNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -46,6 +47,30 @@ export const defaultApGroupNetworkPayload = {
   sortOrder: 'ASC'
 }
 
+export const defaultNewApGroupNetworkPayload = {
+  searchString: '',
+  fields: [
+    'check-all',
+    'name',
+    'description',
+    'nwSubType',
+    'clients',
+    'vlan',
+    'cog',
+    'ssid',
+    'vlanPool',
+    'captiveType',
+    'id',
+    'isOweMaster',
+    'owePairNetworkId',
+    'dsaeOnboardNetwork',
+    'venueApGroups.isAllApGroups',
+    'venueApGroups.venueId',
+    'venueApGroups.apGroupIds'
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
 
 const defaultArray: NetworkExtended[] = []
 
@@ -55,24 +80,13 @@ export interface ApGroupNetworksTableProps {
 }
 
 export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
-  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
   const { venueId, apGroupId } = props
 
   const [tableData, setTableData] = useState(defaultArray)
 
   const settingsId = 'apgroup-network-table'
-  const tableQuery = useTableQuery({
-    useQuery: isUseWifiApiV2? useApGroupNetworkListV2Query : useApGroupNetworkListQuery,
-    apiParams: { venueId: venueId || '' },
-    defaultPayload: {
-      ...defaultApGroupNetworkPayload,
-      isTemplate: isTemplate,
-      isTemplateRbacEnabled
-    },
-    pagination: { settingsId }
-  })
+
+  const tableQuery = useApGroupNetworkList({ settingsId, ...props })
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyInstance(!tableData.length)
 
@@ -90,7 +104,7 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
 
         data.push({
           ...item,
-          deepVenue: activatedVenue
+          deepVenue: activatedVenue // seems not using now?
         })
       })
 
@@ -113,6 +127,43 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
       />
     </Loader>
   )
+}
+
+const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
+  apGroupId?: string } ) => {
+  const { settingsId, venueId, apGroupId } = props
+  const { isTemplate } = useConfigTemplate()
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
+  const nonRbacTableQuery = useTableQuery({
+    useQuery: isUseWifiApiV2 ? useApGroupNetworkListV2Query : useApGroupNetworkListQuery,
+    apiParams: { venueId: venueId || '' },
+    defaultPayload: {
+      ...defaultApGroupNetworkPayload,
+      isTemplate: isTemplate
+    },
+    pagination: { settingsId },
+    option: { skip: isWifiRbacEnabled }
+  })
+
+  const rbacTableQuery = useTableQuery({
+    useQuery: useNewApGroupNetworkListQuery,
+    apiParams: { venueId: venueId! },
+    defaultPayload: {
+      ...defaultNewApGroupNetworkPayload,
+      filters: {
+        'venueApGroups.apGroupIds': [apGroupId]
+      },
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled
+    },
+    pagination: { settingsId },
+    option: { skip: !isWifiRbacEnabled || !venueId || !apGroupId }
+  })
+
+  return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 export const getCurrentVenue = (row: Network, venueId: string) => {

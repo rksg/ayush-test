@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Tabs }                                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetNetworkSegmentationGroupByIdQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import { Persona, TableQuery, useTableQuery }                                                                  from '@acx-ui/rc/utils'
 
@@ -23,6 +24,8 @@ export const PersonalIdentityNetworkDetailTableGroup = (
 
   const { nsgId } = props
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const [isApPayloadReady,setIsApPayloadReady] = useState(false)
   const [accessSwitchData, setAccessSwitchData] = useState<AccessSwitchTableDataType[]>([])
   const {
@@ -51,7 +54,9 @@ export const PersonalIdentityNetworkDetailTableGroup = (
     defaultPayload: {
       ...defaultApPayload,
       filters: { venueId: [''] }
-    },option: { skip: !isApPayloadReady }
+    },
+    option: { skip: !isApPayloadReady },
+    enableRbac: isWifiRbacEnabled
   })
   const personaListTableQuery = usePersonaListQuery({
     personaGroupId: nsgViewData?.venueInfos[0]?.personaGroupId
