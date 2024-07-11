@@ -34,6 +34,11 @@ jest.mock('../Recommendations', () => ({
   RecommendationTabContent: () => <div data-testid='Recommendations' />
 }))
 
+jest.mock('../IntentAI', () => ({
+  ...jest.requireActual('../IntentAI'),
+  IntentAIRecommendationTabContent: () => <div data-testid='intentAI' />
+}))
+
 
 describe('NetworkAssurance', () => {
   beforeEach(() => {
