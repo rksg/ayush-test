@@ -4,6 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
@@ -59,11 +60,14 @@ const AccessControlSet = () => {
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const settingsId = 'policies-access-control-set-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const networkTableQuery = useTableQuery<Network>({
@@ -114,7 +118,11 @@ const AccessControlSet = () => {
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params,
+        payload: selectedRows.map(row => row.id),
+        enableRbac
+      }).then(callback)
     )
   }
 
@@ -269,7 +277,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       filterable: networkFilterOptions,
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (_, row) => row.networkIds.length
+      render: (_, row) => {
+        return row.networkIds?.length || 0
+      }
     }
   ]
 
