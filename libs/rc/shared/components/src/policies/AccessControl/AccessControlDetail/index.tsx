@@ -9,6 +9,7 @@ import {
   PolicyOperation,
   PolicyType, useConfigTemplateQueryFnSwitcher, usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -34,6 +35,7 @@ export function AccessControlDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={PolicyType.ACCESS_CONTROL}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}
