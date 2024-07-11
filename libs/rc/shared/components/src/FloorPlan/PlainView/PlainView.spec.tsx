@@ -5,7 +5,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum,
   ApMeshLink,
   CommonUrlsInfo,
@@ -30,7 +30,6 @@ import {
 } from './__tests__/fixtures'
 import PlainView, { setUpdatedLocation } from './PlainView'
 import Thumbnail                         from './Thumbnail'
-
 
 jest.mock('../../ApMeshConnection', () => ({
   ...jest.requireActual('../../ApMeshConnection'),
@@ -487,7 +486,7 @@ describe('Floor Plan Plain View', () => {
   })
 
   it('should render correctly Plain View with AP Mesh Topology enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(
       rest.post(
