@@ -1,4 +1,4 @@
-import { omit } from 'lodash'
+import { omit, pick } from 'lodash'
 
 import { recommendationUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery }         from '@acx-ui/test-utils'
@@ -8,7 +8,7 @@ import {
   mockedRecommendationCRRM,
   mockedRecommendationCRRMApplied
 } from './__tests__/fixtures'
-import { api, EnhancedRecommendation, RecommendationAp } from './services'
+import { api, EnhancedRecommendation, kpiHelper, RecommendationAp } from './services'
 
 describe('recommendation services', () => {
   const recommendationPayload = {
@@ -21,6 +21,24 @@ describe('recommendation services', () => {
     search: ''
   }
 
+  describe('crrm recommendation code', () => {
+    it('should return correct value', async () => {
+      mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
+        data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
+      })
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.recommendationCode.initiate({
+          ...recommendationPayload })
+      )
+      expect(status).toBe('fulfilled')
+      expect(error).toBeUndefined()
+      expect(data).toEqual({
+        code: 'c-crrm-channel24g-auto',
+        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+      })
+    })
+  })
+
   describe('crrm recommendation details', () => {
     it('should return correct value', async () => {
       mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
@@ -28,6 +46,7 @@ describe('recommendation services', () => {
           recommendation: mockedRecommendationCRRM
         }
       })
+
       const { status, data, error } = await store.dispatch(
         api.endpoints.configRecommendationDetails.initiate({
           ...recommendationPayload, isCrrmPartialEnabled: true })
@@ -134,5 +153,14 @@ describe('recommendation services', () => {
         }
       })
     )
+  })
+})
+
+describe('kpiHelper', () => {
+  it('should return correct kpi', () => {
+    const code = 'c-crrm-channel24g-auto'
+    const kpi = kpiHelper(code)
+    const result = kpi.includes('kpi_number_of_interfering_links')
+    expect(result).toEqual(true)
   })
 })

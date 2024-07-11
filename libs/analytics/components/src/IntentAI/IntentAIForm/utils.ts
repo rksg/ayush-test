@@ -69,7 +69,8 @@ export const crrmText = (value: CrrmTextType) => {
         ? $t({ defaultMessage: `static and reduced AP Tx Power in {txPowerAPCount} {txPowerAPCount, plural,
             one {AP}
             other {APs}
-          }` }, { txPowerAPCount })
+          }`,
+        description: 'Translation strings - AP, APs' }, { txPowerAPCount })
         : $t({ defaultMessage: 'no change in AP Tx Power' })
     })
   }
