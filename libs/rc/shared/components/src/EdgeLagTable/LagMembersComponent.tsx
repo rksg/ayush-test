@@ -48,7 +48,8 @@ export const LagMembersComponent = (props: LagMembersComponentProps) => {
       return ''
     } else {
       return <Typography.Text className='description darkGreyText' >
-          Max Speed:{formatter('networkSpeedFormat')(maxSpeed)}
+        {$t({ defaultMessage: 'Max Speed:{maxSpeed}' },
+          { maxSpeed: formatter('networkSpeedFormat')(maxSpeed) })}
       </Typography.Text>
     }
   }
