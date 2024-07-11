@@ -339,6 +339,7 @@ export function SingleRadioSettings (props:{
                 disabled={inherit5G || disable || isUseVenueSettings}
                 handleChanged={handleChanged}
                 afcProps={afcProps}
+                indoor={!LPIButtonText?.isAPOutdoor}
               />
             </Col>
           </Row>

@@ -5,6 +5,7 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -124,6 +125,11 @@ export function NetworkForm (props:{
   modalCallBack?: ()=>void,
   defaultActiveVenues?: string[]
 }) {
+
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+  const enableRbac = isUseWifiRbacApi && !isTemplate
+
   const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
   const navigate = useNavigate()
@@ -527,7 +533,8 @@ export function NetworkForm (props:{
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
             'hotspot20Settings.originalProviders']))
-      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
+
+      const networkResponse = await addNetworkInstance({ params, payload, enableRbac }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
@@ -614,7 +621,7 @@ export function NetworkForm (props:{
     try {
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload }).unwrap()
+      await updateNetworkInstance({ params, payload, enableRbac }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
@@ -867,9 +874,13 @@ function useUpdateInstance () {
 }
 
 function useGetInstance (isEdit: boolean) {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
-  const networkResult = useGetNetworkQuery({ params }, { skip: isTemplate })
+  const networkResult = useGetNetworkQuery({
+    params,
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isTemplate })
   // eslint-disable-next-line max-len
   const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
 
