@@ -146,6 +146,8 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const [
@@ -174,14 +176,16 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     useTemplateMutationFn: useUpdateDevicePolicyTemplateMutation
   })
 
-  const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(editMode.isEdit)
+  const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(
+    editMode.isEdit, enableRbac
+  )
 
   const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDevicePolicyQuery,
     useTemplateQueryFn: useGetDevicePolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
-    extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
+    extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId },
+    enableRbac
   })
 
   const setDrawerVisible = (status: boolean) => {
@@ -460,14 +464,16 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       if (!edit) {
         const deviceRes: CommonResult = await createDevicePolicy({
           params: params,
-          payload: convertToPayload()
+          payload: convertToPayload(),
+          enableRbac
         }).unwrap()
         setRequestId(deviceRes.requestId)
         setQueryPolicyName(policyName)
       } else {
         await updateDevicePolicy({
           params: { ...params, devicePolicyId: queryPolicyId },
-          payload: convertToPayload(queryPolicyId)
+          payload: convertToPayload(queryPolicyId),
+          enableRbac
         }).unwrap()
       }
     } catch (error) {
@@ -720,14 +726,15 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   )
 }
 
-const useGetDeviceAclPolicyListInstance = (isEdit: boolean): {
+const useGetDeviceAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   deviceSelectOptions: JSX.Element[], deviceList: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<DevicePolicy>>({
     useQueryFn: useGetEnhancedDeviceProfileListQuery,
     useTemplateQueryFn: useGetDevicePolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {
