@@ -69,14 +69,15 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance from './PortalInstance'
+import PortalInstance          from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveFieldsFromServerData,
   useRadiusServer,
   useVlanPool,
   useClientIsolationActivations,
-  useWifiCalling
+  useWifiCalling,
+  useAccessControlActivation
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -156,6 +157,7 @@ export function NetworkForm (props:{
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
+  const { updateAccessControl } = useAccessControlActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -538,7 +540,7 @@ export function NetworkForm (props:{
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       await updateRadiusServer(saveState, data, networkId)
       await updateWifiCallingActivation(networkId, saveState)
-
+      await updateAccessControl(saveState, data)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -627,6 +629,7 @@ export function NetworkForm (props:{
 
       // eslint-disable-next-line max-len
       await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
+      await updateAccessControl(formData, data)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -1015,3 +1018,4 @@ function useUpdateHotspot20Activation () {
 
   return updateHotspot20Activations
 }
+
