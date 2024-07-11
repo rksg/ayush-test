@@ -83,6 +83,7 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
               channelBandwidth320MhzGroupFieldName={['apRadioParams6G', 'channelBandwidth320MhzGroup']}
               channelList={T670_CHANNEL_DATA}
               disabled={false}
+              indoor={false}
             />
           </StepsFormLegacy.StepForm>
         </StepsFormLegacy>
@@ -114,6 +115,56 @@ describe('RadioSettingsChannelsManual320Mhz', () => {
     expect(screen.queryAllByText('101').length).toBe(0)
     expect(screen.queryAllByText('105').length).toBe(0)
     expect(screen.queryAllByText('221').length).toBe(0)
+  })
+
+  it('should render 6G channels correctly for indoor R770', async () => {
+    render(
+      <Provider>
+        <StepsFormLegacy>
+          <StepsFormLegacy.StepForm>
+            <RadioSettingsChannelsManual320Mhz
+              formName={['apRadioParams6G', 'allowedChannels']}
+              // eslint-disable-next-line
+              channelBandwidth320MhzGroupFieldName={['apRadioParams6G', 'channelBandwidth320MhzGroup']}
+              channelList={TEST_CHANNEL_DATA}
+              disabled={false}
+              indoor={true}
+            />
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
+      </Provider>
+    )
+
+    expect(screen.getByTestId('320MHz-1-radio')).toBeChecked()
+    expect(screen.queryAllByText('1').length).toBe(1)
+    expect(screen.queryAllByText('5').length).toBe(1)
+    expect(screen.queryAllByText('9').length).toBe(1)
+    expect(screen.queryAllByText('61').length).toBe(1)
+    expect(screen.queryAllByText('65').length).toBe(1)
+    expect(screen.queryAllByText('69').length).toBe(1)
+    expect(screen.queryAllByText('73').length).toBe(1)
+    expect(screen.queryAllByText('77').length).toBe(1)
+    expect(screen.queryAllByText('81').length).toBe(1)
+    expect(screen.queryAllByText('85').length).toBe(1)
+    expect(screen.queryAllByText('89').length).toBe(1)
+    expect(screen.queryAllByText('93').length).toBe(1)
+    expect(screen.queryAllByText('189').length).toBe(1)
+    fireEvent.click(screen.getByTestId('320MHz-2-radio'))
+    expect(screen.getByTestId('320MHz-2-radio')).toBeChecked()
+    expect(screen.queryAllByText('33').length).toBe(1)
+    expect(screen.queryAllByText('37').length).toBe(1)
+    expect(screen.queryAllByText('41').length).toBe(1)
+    expect(screen.queryAllByText('69').length).toBe(1)
+    expect(screen.queryAllByText('73').length).toBe(1)
+    expect(screen.queryAllByText('77').length).toBe(1)
+    expect(screen.queryAllByText('81').length).toBe(1)
+    expect(screen.queryAllByText('85').length).toBe(1)
+    expect(screen.queryAllByText('89').length).toBe(1)
+    expect(screen.queryAllByText('93').length).toBe(1)
+    expect(screen.queryAllByText('97').length).toBe(1)
+    expect(screen.queryAllByText('101').length).toBe(1)
+    expect(screen.queryAllByText('105').length).toBe(1)
+    expect(screen.queryAllByText('221').length).toBe(1)
   })
 })
 
@@ -179,7 +230,7 @@ const TEST_CHANNEL_DATA = [
 
 const T670_CHANNEL_DATA = [
   { value: '1', selected: false },
-  { value: '5', selected: false },
+  { value: '5', selected: true },
   { value: '9', selected: false },
   { value: '13', selected: false },
   { value: '17', selected: false },

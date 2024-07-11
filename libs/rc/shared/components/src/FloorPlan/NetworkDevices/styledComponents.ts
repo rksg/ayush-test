@@ -127,10 +127,6 @@ export const DeviceContainer = styled('div')`
       background-color: var(--acx-semantics-yellow-40) !important;
     }
 
-    &.cloudpath-server {
-      background-color: var(--acx-semantics-green-50) !important;
-    }
-
     ${getRogueApMarkerCss()}
 
     &:after {
@@ -171,7 +167,7 @@ export const DeviceContainer = styled('div')`
       border: 0;
       padding: 4px;
 
-      &.ap, &.LTEAP, &.switches, &.CloudpathServer {
+      &.ap, &.LTEAP, &.switches {
         &:after {
           font-size: 20px;
           bottom: 2px;

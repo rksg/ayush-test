@@ -209,7 +209,7 @@ describe('SMS Provider Form Item', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Yes, Remove Provider' }))
 
     const value: [Function, Object] = expect.objectContaining({
-      payload: { provider: SmsProviderType.RUCKUS_ONE, threshold: 80 }
+      payload: { provider: SmsProviderType.SMSProvider_UNSET, threshold: 80 }
     })
     await waitFor(()=> {
       expect(mockMutation).toHaveBeenLastCalledWith(value)

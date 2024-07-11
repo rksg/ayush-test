@@ -42,6 +42,7 @@ const epdgs: EPDG[] = [{
   domain: 'init.aaa.com',
   ip: '10.10.10.10'
 }]
+const oldNetworkIds: string[] = []
 
 const initState = {
   serviceName,
@@ -52,7 +53,8 @@ const initState = {
   description,
   networkIds,
   networksName,
-  epdgs
+  epdgs,
+  oldNetworkIds
 } as WifiCallingFormContextType
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
