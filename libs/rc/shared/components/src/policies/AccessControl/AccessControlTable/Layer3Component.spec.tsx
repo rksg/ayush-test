@@ -129,6 +129,6 @@ describe('AccessControlTable - Layer3', () => {
     await userEvent.click(await screen.findByText('Delete'))
     await userEvent.click(await screen.findByText('Delete Policy'))
 
-    await waitForElementToBeRemoved(() => screen.queryAllByText('Edit'))
+    await waitForElementToBeRemoved(() => screen.queryAllByText('Delete Policy'))
   })
 })

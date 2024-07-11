@@ -88,6 +88,7 @@ export interface EdgePort {
   natEnabled: boolean
   corePortEnabled: boolean
   interfaceName?: string
+  maxSpeedCapa: number
 }
 
 export interface EdgePortWithStatus extends EdgePort {
