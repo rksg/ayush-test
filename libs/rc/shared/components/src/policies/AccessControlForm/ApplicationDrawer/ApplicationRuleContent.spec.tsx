@@ -75,7 +75,13 @@ describe('ApplicationRuleContent Component', () => {
       rest.get(AccessControlUrls.getAvcCategory.url,
         (_, res, ctx) => res(ctx.json(avcCat))),
       rest.get(AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(ctx.json(avcApp)))
+        (_, res, ctx) => res(ctx.json(avcApp))),
+      rest.get(
+        AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
+        }
+      )
     )
   })
 
