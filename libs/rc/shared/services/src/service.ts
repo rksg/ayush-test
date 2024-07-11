@@ -54,7 +54,8 @@ import {
   ApiVersionEnum,
   GetApiVersionHeader,
   convertMdnsProxyViewModelToMdnsProxyFormData,
-  APExtended
+  APExtended,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
@@ -450,8 +451,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
               }
             } : {})
           }
-          const apReq = createHttpRequest(CommonUrlsInfo.getApsList)
-          const apResult = await fetchWithBQ({ ...apReq, body: queryApPayload })
+          const apReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
+          const apResult = await fetchWithBQ({ ...apReq, body: JSON.stringify(queryApPayload) })
           const apMap = new Map<string, APExtended>()
           if (apResult.data) {
             const apData = apResult.data as TableResult<APExtended>
@@ -470,7 +471,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
                 venueId: params?.venueId,
                 venueName: ap?.venueName ?? params?.venueId ?? '',
                 serviceId: profile.id,
-                serviceName: profile.name
+                serviceName: profile.name,
+                rules: profile.rules
               } as MdnsProxyAp
             })
           })
