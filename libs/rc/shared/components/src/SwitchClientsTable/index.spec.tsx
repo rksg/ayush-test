@@ -166,8 +166,8 @@ jest.mock('../SwitchPortTable/editPortDrawer', () => ({
 describe('SwitchClientsTable - Port link', () => {
   beforeEach(() => {
     mockExportCsv.mockClear()
-    mockGetSwitchList.mockClear()
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API)
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
@@ -236,7 +236,7 @@ describe('SwitchClientsTable - Port link', () => {
       expect(mockGetSwitchList).toBeCalledTimes(2)
     })
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
-    expect( await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
+    expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
 
     await userEvent.click(screen.getByText(/1\/1\/7/i))
     expect(await screen.findByTestId('rc-editPortDrawer')).toBeVisible()
@@ -387,7 +387,8 @@ describe('SwitchClientsTable', () => {
   })
 
   it('should render blank fields correctly', async () => {
-    const clientListWithEmpty = { ...clientList,
+    const clientListWithEmpty = {
+      ...clientList,
       data: [
         {
           // eslint-disable-next-line max-len
@@ -430,7 +431,8 @@ describe('SwitchClientsTable', () => {
   })
 
   it('should render router type correctly', async () => {
-    const clientListWithRouter = { ...clientList,
+    const clientListWithRouter = {
+      ...clientList,
       data: [
         {
           // eslint-disable-next-line max-len
@@ -476,7 +478,8 @@ describe('SwitchClientsTable', () => {
       serialNumber: 'serialNumber'
     }
 
-    const clientListWithEmpty = { ...clientList,
+    const clientListWithEmpty = {
+      ...clientList,
       data: [
         {
           ...clientList.data?.[0],
@@ -492,7 +495,8 @@ describe('SwitchClientsTable', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API)
 
     render(
       <Provider>
@@ -534,7 +538,8 @@ describe('SwitchClientsTable', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API)
 
     render(
       <Provider>

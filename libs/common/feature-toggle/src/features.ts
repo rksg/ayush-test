@@ -165,7 +165,8 @@ export enum Features {
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
-  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle'
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
+  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
