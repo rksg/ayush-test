@@ -3,11 +3,10 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { clientApi, networkApi }                         from '@acx-ui/rc/services'
+import { clientApi, networkApi, venueApi }               from '@acx-ui/rc/services'
 import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }                               from '@acx-ui/store'
 import {
-  act,
   mockServer,
   render,
   screen,
@@ -67,6 +66,9 @@ const openGuestDetailsAndClickAction = async (guestName: string) => {
   expect(menuitems).toHaveLength(4)
 }
 
+const mockGetClientList = jest.fn()
+const mockGetVenueList = jest.fn()
+
 describe('Guest Generate New Password Modal', () => {
   const params: { tenantId: string, networkId: string } = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -86,11 +88,12 @@ describe('Guest Generate New Password Modal', () => {
   })
 
   beforeEach(() => {
+    mockGetVenueList.mockClear()
+    mockGetClientList.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    act(() => {
-      store.dispatch(clientApi.util.resetApiState())
-      store.dispatch(networkApi.util.resetApiState())
-    })
+    store.dispatch(clientApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
 
     setUserProfile({
       ...userProfile,
@@ -112,11 +115,17 @@ describe('Guest Generate New Password Modal', () => {
       ),
       rest.post(
         ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json(GuestClients))
+        (_, res, ctx) => {
+          mockGetClientList()
+          return res(ctx.json(GuestClients))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(VenueList))
+        (_, res, ctx) => {
+          mockGetVenueList()
+          return res(ctx.json(VenueList))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
@@ -298,6 +307,9 @@ describe('Guest Generate New Password Modal', () => {
           route: { params, path: '/:tenantId/t/users/wifi/guests' }
         })
 
+      await waitFor(() => {
+        expect(mockGetVenueList).toBeCalledTimes(2)
+      })
       expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
       const table = await screen.findByRole('table')
       expect(await within(table).findByText('test1')).toBeVisible()
@@ -326,6 +338,10 @@ describe('Guest Generate New Password Modal', () => {
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/guests' }
         })
+
+      await waitFor(() => {
+        expect(mockGetClientList).toBeCalledTimes(2)
+      })
       expect(screen.queryByRole('button', { name: 'Add Guest' })).toBeNull()
     })
   })
