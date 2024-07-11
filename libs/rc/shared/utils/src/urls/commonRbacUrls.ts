@@ -11,11 +11,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     newApi: true
   },
+  */
   getWifiNetworksList: {
     method: 'post',
     url: '/wifiNetworks/query',
     newApi: true
   },
+  /*
   getNetworksDetailHeader: {
     // [New API] Path variable not match
     // method: 'get',
@@ -191,13 +193,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/venues/:venueId/meshSettings',
     newApi: true
   },
-  /*
   getMeshAps: {
     method: 'post',
-    url: '/aps/query?mesh=true',
-    oldUrl: '/api/viewmodel/:tenantId/aps/mesh',
+    url: '/venues/aps/query?mesh=true',
+    // url: '/aps/query?mesh=true',
     newApi: true
   },
+  /*
   downloadApsCSV: {
     method: 'post',
     url: '/aps/query/csvFiles',

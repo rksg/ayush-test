@@ -24,6 +24,8 @@ import {
 } from '@acx-ui/rc/services'
 import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
 import { store }                                                        from '@acx-ui/store'
+import { RolesEnum }                                                    from '@acx-ui/types'
+import { hasRoles }                                                     from '@acx-ui/user'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
@@ -72,6 +74,7 @@ const SmsProviderItem = () => {
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
+  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const FREE_SMS_POOL = 100
 
@@ -98,6 +101,7 @@ const SmsProviderItem = () => {
       provider: selectedType
     }
     updateNotificationSms({ params , payload: payload }).then()
+    setSmsProviderConfigured(false)
     reloadSmsNotification(2)
   }
 
@@ -109,11 +113,12 @@ const SmsProviderItem = () => {
   useEffect(() => {
     if (smsUsage) {
       const usedSms = smsUsage.data?.ruckusOneUsed || 0
+      const providerType = smsUsage.data?.provider
       setRuckusOneUsed(usedSms)
       setSmsThreshold(smsUsage.data?.threshold ?? 80)
-      setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
-      setSmsProviderConfigured((smsUsage.data?.provider &&
-        smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
+      setSmsProviderType(providerType ?? SmsProviderType.RUCKUS_ONE)
+      setSmsProviderConfigured((providerType && providerType !== SmsProviderType.RUCKUS_ONE &&
+        providerType !== SmsProviderType.SMSProvider_UNSET) ? true : false)
       setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
     }
     if(smsProvider && smsProvider.data) {
@@ -218,6 +223,7 @@ const SmsProviderItem = () => {
       >
         <Button type='link'
           key='editProvider'
+          disabled={!hasPermission}
           onClick={() => {
             setEditMode(true)
             setDrawerVisible(true)
@@ -226,6 +232,7 @@ const SmsProviderItem = () => {
         </Button>
         <Button type='link'
           key='deleteProvider'
+          disabled={!hasPermission}
           onClick={() => {
             showActionModal({
               title: $t({ defaultMessage: 'Remove SMS Provider' }),
@@ -236,7 +243,7 @@ const SmsProviderItem = () => {
               onOk: () => {
                 const payload: NotificationSmsUsage = {
                   threshold: smsThreshold,
-                  provider: SmsProviderType.RUCKUS_ONE
+                  provider: SmsProviderType.SMSProvider_UNSET
                 }
                 updateNotificationSms({ params: params, payload: payload })
                   .then()
@@ -273,6 +280,13 @@ const SmsProviderItem = () => {
             label={$t({ defaultMessage: 'Auth Token' })} />
           <h3 style={{ marginTop: '-18px' }}>
             {smsProvider.data?.authToken}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Phone Number' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {smsProvider.data?.fromNumber}</h3>
         </div>
       </Card>
     </Col>
@@ -415,7 +429,9 @@ const SmsProviderItem = () => {
                 $t({ defaultMessage: 'Attention! RUCKUS SMS pool for Captive' }),
                 $t({ defaultMessage: 'Portal Self Sign-In is depleted. To avoid' }),
                 $t({ defaultMessage: 'service disruption, please set up an SMS' }),
-                $t({ defaultMessage: 'Provider before August 12, 2024.' })
+                $t({ defaultMessage: 'Provider before {graceEndDate}.' },
+                  { graceEndDate: <b>{'October 31, 2024'}</b> }
+                )
               ]}
               renderItem={(item) => (
                 <List.Item>
@@ -444,6 +460,7 @@ const SmsProviderItem = () => {
           style={{ marginLeft: '40px' }}
           type='link'
           size='small'
+          disabled={!hasPermission}
           onClick={() => { setIsChangeThreshold(true) }}>{$t({ defaultMessage: 'Change' })}</Button>
       </div>}
       {isChangeThreshold && <div>
@@ -529,12 +546,15 @@ const SmsProviderItem = () => {
               <Button
                 type='link'
                 size='small'
+                disabled={!hasPermission}
                 onClick={onSetUpValue}>{$t({ defaultMessage: 'Set SMS Provider' })}</Button>
             </Card>
           </Col>
           }
 
-          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && <List
+          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL ||
+            smsProviderType === SmsProviderType.SMSProvider_UNSET ) && !smsProviderConfigured
+          && <List
             style={{ marginTop: '15px', marginBottom: 0 }}
             split={false}
             dataSource={[
@@ -551,8 +571,8 @@ const SmsProviderItem = () => {
             )}
           />}
 
-          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod)
-          && <FreeSmsPool/>}
+          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod) &&
+           smsProviderType === SmsProviderType.RUCKUS_ONE && <FreeSmsPool/>}
         </Form>
       </Col>
     </Row>
