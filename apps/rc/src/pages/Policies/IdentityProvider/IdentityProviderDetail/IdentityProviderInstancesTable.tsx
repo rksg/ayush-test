@@ -1,8 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { Card, Loader, Table, TableProps }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { useNetworkListQuery, useNetworkTableQuery } from '@acx-ui/rc/services'
+import { Card, Loader, Table, TableProps } from '@acx-ui/components'
+import { useNetworkTableQuery }            from '@acx-ui/rc/services'
 import {
   IdentityProviderViewModel,
   Network,
@@ -32,11 +31,10 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
   const { $t } = useIntl()
   const { data } = props
 
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const networkIds = data?.wifiNetworkIds || []
 
   const tableQuery = useTableQuery<Network>({
-    useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
+    useQuery: useNetworkTableQuery,
     defaultPayload: {
       ...defaultNetworkPayload,
       filters: { id: networkIds }

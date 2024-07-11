@@ -2,13 +2,11 @@ import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, Col, Radio, Row, Space } from 'antd'
 import TextArea                                from 'antd/lib/input/TextArea'
-import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Button, StepsFormLegacy, Tooltip, cssStr } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
-  useLazyGetVenueNetworkApGroupQuery,
   useLazyNetworkListQuery,
   useLazyGetNetworkTemplateListQuery
 } from '@acx-ui/rc/services'
@@ -17,7 +15,6 @@ import {
   NetworkTypeEnum,
   WifiNetworkMessages,
   checkObjectNotExists,
-  NetworkVenue,
   networkTypes,
   validateByteLength,
   ConfigTemplateType,
@@ -26,8 +23,7 @@ import {
   Network,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { networkTypesDescription }                   from '../contentsMap'
 import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
@@ -52,8 +48,6 @@ export function NetworkDetailForm () {
     modalMode,
     createType
   } = useContext(NetworkFormContext)
-
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const [differentSSID, setDifferentSSID] = useState(false)
 
@@ -86,7 +80,7 @@ export function NetworkDetailForm () {
     useLazyQueryFn: useLazyNetworkListQuery,
     useLazyTemplateQueryFn: useLazyGetNetworkTemplateListQuery
   })
-  const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
+
   const params = useParams()
 
   const nameValidator = async (value: string) => {
@@ -98,50 +92,6 @@ export function NetworkDetailForm () {
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
-  const ssidValidator = async (value: string) => {
-    if (!editMode || isUseWifiApiV2) { return Promise.resolve() }
-    const venues = _.get(data, 'venues') || []
-    let payload: {
-      venueId: string,
-      networkId: string,
-      ssids: string[]
-    }[] = []
-
-    if (venues.length > 0) {
-      venues.forEach((activatedVenue: NetworkVenue) => {
-        const venueId = activatedVenue.venueId || ''
-        const networkId = _.get(data, 'id') || ''
-        payload.push({ venueId, networkId, ssids: [value] })
-      })
-    }
-
-    let errorsCounter = 0
-    const list = (await getVenueNetrworkApGroupList({ params, payload }, true).unwrap())
-    const networkApGroup = _.get(list, 'response')
-    networkApGroup?.forEach((item: NetworkVenue) => {
-      if (item.isAllApGroups && _.get(item, 'validationErrorSsidAlreadyActivated')) {
-        errorsCounter++
-      } else if (!item.isAllApGroups &&
-        item.apGroups
-        && item.apGroups.length > 0) {
-        item.apGroups.forEach(apGroup => {
-          if (apGroup.validationErrorSsidAlreadyActivated) {
-            errorsCounter++
-          } else {
-            errorsCounter = 0
-          }
-        })
-      }
-    })
-
-    return errorsCounter === 0 ?
-      Promise.resolve() :
-      Promise.reject(intl.$t(validationMessages.duplication, {
-        entityName: intl.$t({ defaultMessage: 'SSID' }),
-        key: intl.$t({ defaultMessage: 'name' }),
-        extra: ''
-      }))
-  }
   const { isTemplate } = useConfigTemplate()
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
@@ -223,8 +173,7 @@ export function NetworkDetailForm () {
               { max: 32,
                 message: intl.$t({ defaultMessage: 'The SSID must be up to 32 characters' }) },
               { validator: (_, value) => ssidBackendNameRegExp(value) },
-              { validator: (_, value) => validateByteLength(value, 32) },
-              { validator: (_, value) => ssidValidator(value) }
+              { validator: (_, value) => validateByteLength(value, 32) }
             ]}
             validateFirst
             hasFeedback
