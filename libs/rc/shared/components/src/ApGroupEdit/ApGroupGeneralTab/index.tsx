@@ -149,7 +149,6 @@ export function ApGroupGeneralTab () {
     }
   }, [isEditMode, apGroupData, isApGroupDataLoading, venueId])
 
-
   const handleVenueChange = async (value: string,
     extraMemberList?: { name: string; key: string; }[]) => {
     const defaultApGroupOption: { name: string, key: string }[] = []

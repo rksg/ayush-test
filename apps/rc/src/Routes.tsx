@@ -31,6 +31,7 @@ import {
   CliTemplateForm,
   CliProfileForm,
   IdentityProviderForm,
+  LbsServerProfileForm,
   ApGroupDetails,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -584,20 +585,36 @@ function ServiceRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
-        element={<WifiCallingForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <WifiCallingForm />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })}
-        element={<WifiCallingConfigureForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <WifiCallingConfigureForm />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
-        element={<WifiCallingDetailView />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <WifiCallingDetailView />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
-        element={<WifiCallingTable/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <WifiCallingTable/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
@@ -872,19 +889,35 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm editMode={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <AccessControlForm editMode={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
-        element={<AccessControlForm editMode={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <AccessControlForm editMode={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
-        element={<AccessControlDetail />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AccessControlDetail />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
-        element={<AccessControlTable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AccessControlTable />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
@@ -972,6 +1005,24 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.DETAIL })}
         element={<IdentityProviderDetail />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <LbsServerProfileForm editMode={false} />
+          </AuthRoute>
+        }
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <LbsServerProfileForm editMode={true} />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len

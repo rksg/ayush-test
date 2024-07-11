@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
 import { Loader, Tooltip, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useApListQuery,
   useGetEdgeDhcpServiceQuery,
@@ -31,6 +32,8 @@ export const PersonalIdentityNetworkServiceInfo = styled((
   const { $t } = useIntl()
   const params = useParams()
   const { tenantId } = params
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const {
     nsgViewData,
     isNsgViewDataLoading
@@ -56,7 +59,8 @@ export const PersonalIdentityNetworkServiceInfo = styled((
     payload: {
       ...defaultApPayload,
       filters: { venueId: [nsgViewData?.venueInfos[0]?.venueId] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   }, { skip: !!!nsgViewData?.venueInfos[0]?.venueId })
 
   // TODO if nsg es index is refactored, remove below scope
