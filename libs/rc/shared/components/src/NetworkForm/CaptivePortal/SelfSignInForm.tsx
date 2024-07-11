@@ -100,7 +100,9 @@ export function SelfSignInForm () {
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
   const isSMSTokenAvailable = isSmsProviderEnabled ?
-    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
+    !((smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE ||
+      smsUsage?.data?.provider === SmsProviderType.SMSProvider_UNSET
+    ) &&
      (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
     : true
   const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
@@ -144,7 +146,7 @@ export function SelfSignInForm () {
     }
 
     // when provider is not ruckus one, no needs to consider used pools at this condition
-    if (provider !== SmsProviderType.RUCKUS_ONE) {
+    if (provider !== SmsProviderType.RUCKUS_ONE && provider !== SmsProviderType.SMSProvider_UNSET) {
       return defaultMessage
     }
     // when provider is ruckus one but there's pool still remains
