@@ -1797,6 +1797,39 @@ export const vlanList = [{
   id: '0753a360ad9945b88249039ef6734498'
 }]
 
+export const mockRbacVlanList = {
+  totalCount: 1,
+  data: [{
+    id: '7b5b3b03492d4a0b84ff9d1d11c4770d',
+    name: 'test pool',
+    vlanMembers: ['2'],
+    wifiNetworkIds: ['id1', 'id2'],
+    wifiNetworkVenueApGroups: [
+      {
+        venueId: '3',
+        isAllApGroups: false,
+        apGroupIds: [
+          'b9eb6106a4d44ac498f1aa89a8fb87d5'
+        ]
+      }
+    ]
+  }, {
+    id: '0753a360ad9945b88249039ef6734498',
+    name: 'test pool2',
+    vlanMembers: ['2'],
+    wifiNetworkIds: ['id3'],
+    wifiNetworkVenueApGroups: [
+      {
+        venueId: '3',
+        isAllApGroups: false,
+        apGroupIds: [
+          'b9eb6106a4d44ac498f1aa89a8fb87d5'
+        ]
+      }
+    ]
+  }]
+}
+
 export const mockedTunnelProfileViewData = {
   totalCount: 2,
   page: 1,
