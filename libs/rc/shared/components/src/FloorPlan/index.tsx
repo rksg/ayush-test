@@ -111,7 +111,8 @@ export function FloorPlan () {
       filters: { venueId: [params.venueId] }
     },
     enableRbac: isUseWifiRbacApi
-  }, { skip: !isApMeshTopologyFFOn })
+  }, { skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   // Set mesh role for unplaced AP
   useEffect(() => {
