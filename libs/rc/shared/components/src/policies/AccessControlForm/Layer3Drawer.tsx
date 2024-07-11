@@ -46,7 +46,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   layer3ProtocolLabelMapping, TableResult, L3AclPolicy
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
 
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
@@ -56,7 +57,7 @@ import { useScrollLock }                                                        
 const { useWatch } = Form
 const { Option } = Select
 
-export interface Layer3DrawerProps {
+interface Layer3DrawerProps {
   inputName?: string[],
   onlyViewMode?: {
     id: string,
@@ -1070,31 +1071,38 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || !l3AclPolicyId}
-          onClick={() => {
-            if (l3AclPolicyId) {
-              setDrawerVisible(true)
-              setQueryPolicyId(l3AclPolicyId)
-              setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
+        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          <Button type='link'
+            disabled={visible || !l3AclPolicyId}
+            onClick={() => {
+              if (l3AclPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(l3AclPolicyId)
+                setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
+              }
             }
-          }
-          }>
-          {$t({ defaultMessage: 'Edit Details' })}
-        </Button>
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
       </AclGridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
-          onClick={() => {
-            setDrawerVisible(true)
-            setQueryPolicyId('')
-          }}>
-          {$t({ defaultMessage: 'Add New' })}
-        </Button>
+        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+          <Button type='link'
+            disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
       </AclGridCol>
     </GridRow>
   }
+
+  // eslint-disable-next-line max-len
+  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>

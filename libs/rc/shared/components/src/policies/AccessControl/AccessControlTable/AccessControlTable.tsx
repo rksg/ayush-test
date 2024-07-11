@@ -12,6 +12,7 @@ import {
   getPolicyRoutePath, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
@@ -56,7 +57,9 @@ export function AccessControlTable () {
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
-          })}>
+          })}
+          scopeKey={[WifiScopes.CREATE]}
+        >
           <Button
             type='primary'
             disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_ACCESS_CONTROL}>

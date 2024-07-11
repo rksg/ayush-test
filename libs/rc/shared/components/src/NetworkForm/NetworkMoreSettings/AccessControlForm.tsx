@@ -36,6 +36,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
+import { WifiScopes }           from '@acx-ui/types'
+import { hasPermission }        from '@acx-ui/user'
 
 import {
   AccessControlSettingForm,
@@ -138,6 +140,8 @@ export function AccessControlForm () {
          !enableDeviceOs && !applicationPolicyEnable && !enableClientRateLimit))
     }
   }, [])
+
+  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })) return null
 
   const updateSelectedACProfile = (id: string) => {
     if (!!id) {
@@ -301,6 +305,8 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
     uplinkLimit, downlinkLimit//, modalStatus.visible
   ])
 
+  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
+
   const handleOnClick = () => {
     setModalStatus({
       visible: true,
@@ -367,11 +373,11 @@ function GetLinkLimitByAccessControlProfileTemplate (props: {
   return <div>{limit}</div>
 }
 
-export type SelectedAccessControlProfileType = {
+type SelectedAccessControlProfileType = {
   selectedAccessControlProfile: AccessControlProfile | AccessControlProfileTemplate | undefined
 }
 
-export function SelectAccessProfileProfile (props: {
+function SelectAccessProfileProfile (props: {
   accessControlProfileId: string,
   setModalStatus: (data: ModalStatus) => void
 }) {
@@ -483,10 +489,12 @@ export function SelectAccessProfileProfile (props: {
           children={accessControlProfileSelectOptions} />
       </Form.Item>
 
-      <Button type='link'
-        onClick={handleOnAddClick}
-        children={$t({ defaultMessage: 'Add' })}
-        style={{ paddingTop: '10px' }} />
+      {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        <Button type='link'
+          onClick={handleOnAddClick}
+          children={$t({ defaultMessage: 'Add' })}
+          style={{ paddingTop: '10px' }} />
+      }
     </Space>}
 
     <UI.FieldLabel width={labelWidth} style={{ fontWeight: 700 }}>

@@ -39,7 +39,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
 
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
@@ -700,31 +701,38 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || !applicationPolicyId}
-          onClick={() => {
-            if (applicationPolicyId) {
-              setDrawerVisible(true)
-              setQueryPolicyId(applicationPolicyId)
-              setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
+        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          <Button type='link'
+            disabled={visible || !applicationPolicyId}
+            onClick={() => {
+              if (applicationPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(applicationPolicyId)
+                setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
+              }
             }
-          }
-          }>
-          {$t({ defaultMessage: 'Edit Details' })}
-        </Button>
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
       </AclGridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
-          onClick={() => {
-            setDrawerVisible(true)
-            setQueryPolicyId('')
-          }}>
-          {$t({ defaultMessage: 'Add New' })}
-        </Button>
+        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+          <Button type='link'
+            disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
       </AclGridCol>
     </GridRow>
   }
+
+  // eslint-disable-next-line max-len
+  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>

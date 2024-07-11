@@ -39,8 +39,9 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 
 import { AddModeProps, editModeProps }                            from './AccessControlForm'
@@ -613,6 +614,9 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       </Button>
     }
 
+    // eslint-disable-next-line max-len
+    if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
+
     return <GridRow style={{ width: '350px' }}>
       <GridCol col={{ span: 12 }}>
         <Form.Item
@@ -635,28 +639,32 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || !l2AclPolicyId}
-          onClick={() => {
-            if (l2AclPolicyId) {
-              setDrawerVisible(true)
-              setQueryPolicyId(l2AclPolicyId)
-              setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          <Button type='link'
+            disabled={visible || !l2AclPolicyId}
+            onClick={() => {
+              if (l2AclPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(l2AclPolicyId)
+                setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+              }
             }
-          }
-          }>
-          {$t({ defaultMessage: 'Edit Details' })}
-        </Button>
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
       </AclGridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
-          onClick={() => {
-            setDrawerVisible(true)
-            setQueryPolicyId('')
-          }}>
-          {$t({ defaultMessage: 'Add New' })}
-        </Button>
+        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+          <Button type='link'
+            disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
       </AclGridCol>
     </GridRow>
   }

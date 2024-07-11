@@ -20,7 +20,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import { defaultNetworkPayload } from '../../../NetworkTable'
 import { ApplicationDrawer }     from '../../AccessControlForm/ApplicationDrawer'
@@ -128,6 +129,7 @@ const AccessControlSet = () => {
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -135,6 +137,7 @@ const AccessControlSet = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -161,7 +164,10 @@ const AccessControlSet = () => {
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'checkbox' }}
+      rowSelection={
+        // eslint-disable-next-line max-len
+        hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+      }
     />
   </Loader>
 }
