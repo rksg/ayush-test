@@ -302,6 +302,9 @@ export function NetworkTable ({
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
@@ -309,7 +312,7 @@ export function NetworkTable ({
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
@@ -394,8 +397,10 @@ export function NetworkTable ({
             />,
             ...( !hideConfirmation && { confirmationText: 'Delete' })
           },
-          onOk: () => deleteNetwork({ params: { tenantId, networkId: selected.id } })
-            .then(clearSelection)
+          onOk: () => deleteNetwork({
+            params: { tenantId, networkId: selected.id },
+            enableRbac: isUseWifiRbacApi
+          }).then(clearSelection)
         })
       },
       disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled

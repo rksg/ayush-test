@@ -117,8 +117,22 @@ export const ImpactedSwitchesTable = ({
       }
     }
   ]
+  const isSwitchDetails = (item: SwitchDetails): item is SwitchDetails => {
+    return 'serial' in item && 'model' in item && 'status' in item &&
+    'firmware' in item && 'numOfPorts' in item
+  }
 
   const totalCount = queryResults?.data?.length
+  const data = queryResults?.data?.map((item, i) => {
+    if (isSwitchDetails(item as SwitchDetails)) {
+      return {
+        ...item,
+        rowId: i + 1 // added to make rowKey unique
+      }
+    }
+    return item
+  })
+
   return (
     <Loader states={[queryResults]}>
       <ChartTitle>
@@ -137,8 +151,8 @@ export const ImpactedSwitchesTable = ({
       <Table
         settingsId='switch-health-impacted-switches-table'
         columns={columns}
-        dataSource={queryResults.data as SwitchDetails[]}
-        rowKey='mac'
+        dataSource={data as SwitchDetails[]}
+        rowKey='rowId'
         type='tall'
       />
     </Loader>

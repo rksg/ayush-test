@@ -2,9 +2,19 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { AccessControlUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                        from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  AaaUrls,
+  AccessControlUrls,
+  ClientIsolationUrls,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  VlanPoolRbacUrls,
+  WifiNetworkFixtures,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -24,7 +34,8 @@ import {
   policyListResponse,
   apGroupsResponse,
   externalProviders,
-  vlanList
+  vlanList,
+  mockRbacVlanList
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -153,7 +164,8 @@ const networkResponse = {
 
 describe('NetworkForm', () => {
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
@@ -174,9 +186,6 @@ describe('NetworkForm', () => {
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
-        res(ctx.json([]))
-      ),
       rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venueListResponse))
       ),
@@ -189,24 +198,47 @@ describe('NetworkForm', () => {
       rest.get(AccessControlUrls.getDevicePolicyList.url, (_, res, ctx) =>
         res(ctx.json(policyListResponse))
       ),
-      rest.get(AccessControlUrls.getAppPolicyList.url, (_, res, ctx) =>
-        res(ctx.json(policyListResponse))
+      rest.get(AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))
       ),
-      rest.post(CommonUrlsInfo.venueNetworkApGroup.url, (req, res, ctx) =>
-        res(ctx.json(apGroupsResponse))
+      rest.post(CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(apGroupsResponse))
       ),
-      rest.get(CommonUrlsInfo.getWifiCallingProfileList.url, (_, res, ctx) =>
-        res(ctx.json(policyListResponse))
+      rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))
       ),
-      rest.get(WifiUrlsInfo.getVlanPools.url, (_, res, ctx) =>
-        res(ctx.json(vlanList))
+      rest.get(WifiUrlsInfo.getVlanPools.url,
+        (_, res, ctx) => res(ctx.json(vlanList))
       ),
-      rest.get(AccessControlUrls.getAccessControlProfileList.url, (_, res, ctx) =>
-        res(ctx.json([]))
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([]))
       ),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
-        (_, res, ctx) => res(ctx.json(externalProviders)))
-
+        (_, res, ctx) => res(ctx.json(externalProviders))
+      ),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (req, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.get(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      // RBAC API
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkResponse))
+      ),
+      rest.post(CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: WifiNetworkFixtures.mockedRbacWifiNetworkList }))
+      ),
+      rest.get(WifiRbacUrlsInfo.getRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockRbacVlanList))
+      )
     )
   })
 

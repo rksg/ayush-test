@@ -65,6 +65,7 @@ export interface Network extends BaseNetwork{
 export interface WifiNetwork extends Network{
   venueApGroups: VenueApGroup[]
   clientCount?: number
+  apSerialNumbers?: string[]
 }
 
 export interface NetworkExtended extends Network {

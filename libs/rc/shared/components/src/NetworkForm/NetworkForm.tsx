@@ -5,6 +5,7 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -68,9 +69,16 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                                                                                                                from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer, useVlanPool, useClientIsolationActivations } from './utils'
-import { Venues }                                                                                                                    from './Venues/Venues'
+import PortalInstance from './PortalInstance'
+import {
+  useNetworkVxLanTunnelProfileInfo,
+  deriveFieldsFromServerData,
+  useRadiusServer,
+  useVlanPool,
+  useClientIsolationActivations,
+  useWifiCalling
+} from './utils'
+import { Venues } from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -116,6 +124,11 @@ export function NetworkForm (props:{
   modalCallBack?: ()=>void,
   defaultActiveVenues?: string[]
 }) {
+
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+  const enableRbac = isUseWifiRbacApi && !isTemplate
+
   const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
   const navigate = useNavigate()
@@ -158,6 +171,7 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
+  const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
   const { updateClientIsolationActivations }
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
@@ -221,6 +235,28 @@ export function NetworkForm (props:{
       updateSaveData({ ...resolvedData, certificateTemplateId })
     }
   }, [data, certificateTemplateId])
+
+  useEffect(() => {
+    if (!wifiCallingIds || wifiCallingIds.length === 0) return
+
+    const fullNetworkSaveData = _.merge(
+      {},
+      saveState,
+      {
+        wlan: {
+          advancedCustomization: {
+            wifiCallingIds: wifiCallingIds,
+            wifiCallingEnabled: true
+          }
+        }
+      }
+    )
+
+    form.setFieldValue('wlan.advancedCustomization.wifiCallingIds', wifiCallingIds)
+    form.setFieldValue('wlan.advancedCustomization.wifiCallingEnabled', true)
+
+    updateSaveData(fullNetworkSaveData)
+  }, [wifiCallingIds])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
@@ -495,11 +531,14 @@ export function NetworkForm (props:{
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
             'hotspot20Settings.originalProviders']))
-      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
+
+      const networkResponse = await addNetworkInstance({ params, payload, enableRbac }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       await updateRadiusServer(saveState, data, networkId)
+      await updateWifiCallingActivation(networkId, saveState)
+
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -580,10 +619,12 @@ export function NetworkForm (props:{
     try {
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload }).unwrap()
+      await updateNetworkInstance({ params, payload, enableRbac }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
+      await updateWifiCallingActivation(payload.id, formData)
+
       // eslint-disable-next-line max-len
       await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
       if (payload.id && (payload.venues || data?.venues)) {
@@ -830,9 +871,13 @@ function useUpdateInstance () {
 }
 
 function useGetInstance (isEdit: boolean) {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
-  const networkResult = useGetNetworkQuery({ params }, { skip: isTemplate })
+  const networkResult = useGetNetworkQuery({
+    params,
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isTemplate })
   // eslint-disable-next-line max-len
   const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
 

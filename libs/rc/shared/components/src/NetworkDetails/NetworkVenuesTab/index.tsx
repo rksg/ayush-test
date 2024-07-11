@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -31,7 +31,8 @@ import {
   useAddNetworkVenueTemplatesMutation,
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
-  useGetVLANPoolPolicyViewModelListQuery
+  useGetVLANPoolPolicyViewModelListQuery,
+  useNewNetworkVenueTableQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -97,6 +98,73 @@ const defaultPayload = {
   searchTargetFields: ['name']
 }
 
+const defaultRbacPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id',
+    'description',
+    'city',
+    'country',
+    'networks',
+    'aggregatedApStatus',
+    'radios',
+    'aps',
+    'activated',
+    'vlan',
+    'scheduling',
+    'switches',
+    'switchClients',
+    'latitude',
+    'longitude',
+    'mesh',
+    'status',
+    'isOweMaster',
+    'owePairNetworkId',
+    'venueApGroups'
+  ],
+  searchTargetFields: ['name']
+}
+
+const useNetworkVenueList = (props: { settingsId: string, networkId?: string } ) => {
+  const { settingsId, networkId } = props
+  const { isTemplate } = useConfigTemplate()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const nonRbacTableQuery = useTableQuery({
+    // eslint-disable-next-line max-len
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
+      : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    },
+    pagination: { settingsId },
+    option: { skip: isWifiRbacEnabled }
+  })
+
+  const rbacTableQuery = useTableQuery({
+    useQuery: useNewNetworkVenueTableQuery,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    search: {
+      searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
+    },
+    pagination: { settingsId },
+    option: { skip: !isWifiRbacEnabled || !networkId }
+  })
+
+  return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+}
+
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
 const notificationMessage = defineMessage({
@@ -109,25 +177,15 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
+  const params = useParams()
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const settingsId = 'network-venues-table'
-  const tableQuery = useTableQuery({
-    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
-      : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
-    defaultPayload: {
-      ...defaultPayload,
-      isTemplate: isTemplate
-    },
-    search: {
-      searchTargetFields: defaultPayload.searchTargetFields as string[]
-    },
-    pagination: { settingsId }
-  })
 
+  const tableQuery = useNetworkVenueList({ settingsId, networkId })
   const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
@@ -139,14 +197,10 @@ export function NetworkVenuesTab () {
   })
   const [systemNetwork, setSystemNetwork] = useState(false)
 
-  const params = useParams()
-  const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenueMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
   })
-  const networkId = params.networkId
 
   const networkQuery = useGetNetwork()
   const [

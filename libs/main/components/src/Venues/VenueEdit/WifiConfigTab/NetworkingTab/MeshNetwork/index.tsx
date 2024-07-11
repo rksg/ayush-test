@@ -12,7 +12,9 @@ import {
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
   useGetVenueTemplateSettingsQuery,
-  useUpdateVenueTemplateMeshMutation
+  useUpdateVenueTemplateMeshMutation,
+  useGetVenueMeshQuery,
+  useGetDHCPProfileListViewModelQuery
 } from '@acx-ui/rc/services'
 import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString, useConfigTemplate } from '@acx-ui/rc/utils'
 import { validationMessages }                                                             from '@acx-ui/utils'
@@ -34,6 +36,50 @@ const MeshInfoIcon = () => {
   />
 }
 
+const Mesh6GhzInfoIcon = () => {
+  const { $t } = useIntl()
+
+  return <Tooltip.Info iconStyle={{
+    position: 'absolute',
+    bottom: '0px'
+  }}
+  isFilled
+  title={
+    $t({ defaultMessage: 'When selecting the 6GHz radio to link other mesh APs, 2R APs and 3R APs will form mesh networks independently, with 2R APs forming on the 5GHz band and 3R APs (2/5/6) forming on the 6GHz band.' })
+  }
+  />
+}
+
+const useVenueWifiSettings = (venueId: string | undefined) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueSettings } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: isWifiRbacEnabled
+  })
+
+  const { data: dhcpList } = useGetDHCPProfileListViewModelQuery({
+    payload: {
+      fields: ['id', 'venueIds'],
+      filters: { venueIds: [venueId] }
+    }
+  }, { skip: !isWifiRbacEnabled || !venueId })
+
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({
+    params: { venueId } },
+  { skip: !isWifiRbacEnabled })
+
+  return isWifiRbacEnabled
+    ? ((venueMeshSettings && dhcpList)
+      ? {
+        dhcpServiceSetting: { enabled: !!dhcpList?.data[0] },
+        mesh: venueMeshSettings
+      } as VenueSettings
+      : undefined)
+    : venueSettings
+}
+
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
@@ -41,7 +87,7 @@ export function MeshNetwork () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
-
+  const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
   const {
     editContextData,
     setEditContextData,
@@ -80,14 +126,11 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+  const wifiSettingsData = useVenueWifiSettings(params.venueId)
 
   useEffect(() => {
-    if (data) {
-      const { mesh, dhcpServiceSetting } = data
+    if (wifiSettingsData) {
+      const { mesh, dhcpServiceSetting } = wifiSettingsData
       const { enabled = false, ssid, passphrase, radioType, zeroTouchEnabled = false } = mesh || {}
       setMeshEnabled(enabled)
       setIsReadOnly(enabled)
@@ -115,7 +158,7 @@ export function MeshNetwork () {
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Mesh-Network')))])
     }
-  }, [data])
+  }, [wifiSettingsData])
 
   const checkMeshAPs = async () => {
     const payload = {
@@ -127,7 +170,7 @@ export function MeshNetwork () {
       },
       pageSize: 1
     }
-    const { data } = await apList({ params, payload }, true)
+    const { data } = await apList({ params, payload, enableRbac: isWifiRbacEnabled }, true)
     setHasMeshAPs(!!(data?.totalCount && data.totalCount > 0))
   }
 
@@ -309,7 +352,7 @@ export function MeshNetwork () {
   }
 
   return (<Loader states={[{
-    isLoading: !data || meshToolTipDisabledText === defaultToolTip,
+    isLoading: !wifiSettingsData || meshToolTipDisabledText === defaultToolTip,
     isFetching: isUpdatingVenueMesh
   }]}>
     <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
@@ -427,10 +470,27 @@ export function MeshNetwork () {
             disabled={isReadOnly}
             value={meshRadioType}
             onChange={handleRadioTypeChanged}>
-            <Space direction='vertical'>
-              <Radio value='5-GHz'>{$t({ defaultMessage: '5 & 6 GHz' })}</Radio>
-              <Radio value='2.4-GHz'>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
-            </Space>
+            { isWifiMeshIndependents56GEnable ? (
+              <Space direction='vertical'>
+                <Radio value='5-6-GHz' data-testid='radio56'>
+                  {$t({ defaultMessage: '5 & 6 GHz' })}
+                </Radio>
+                <Radio value='5-GHz' data-testid='radio5'>
+                  {$t({ defaultMessage: '5 GHz' })}
+                </Radio>
+                <Radio value='6-GHz' data-testid='radio6'>
+                  {$t({ defaultMessage: '6 GHz' })}<Mesh6GhzInfoIcon/>
+                </Radio>
+                <Radio value='2.4-GHz' data-testid='radio24'>
+                  {$t({ defaultMessage: '2.4 GHz' })}
+                </Radio>
+              </Space>
+            ) : (
+              <Space direction='vertical'>
+                <Radio value='5-GHz'>{$t({ defaultMessage: '5 & 6 GHz' })}</Radio>
+                <Radio value='2.4-GHz'>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
+              </Space>
+            )}
           </Radio.Group>
         </Form.Item>
       </StepsFormLegacy.FieldLabel>

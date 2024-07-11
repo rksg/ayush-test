@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }                                                    from '@acx-ui/feature-toggle'
 import { apApi, clientApi, networkApi, venueApi }                                    from '@acx-ui/rc/services'
 import { ClientUrlsInfo, CommonUrlsInfo }                                            from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
@@ -10,7 +10,7 @@ import { ClientDualTable } from './index'
 
 describe('ClientDualTable', () => {
   const mockGetClientList = jest.fn()
-  jest.mocked(useIsSplitOn).mockReturnValue(true) // mock Features.USERS
+  jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API) // mock Features.USERS
   const params = {
     tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
     venueId: '4c778ed630394b76b17bce7fe230cf9f'

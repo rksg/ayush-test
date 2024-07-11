@@ -39,11 +39,13 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
-    skip: !useParams().hasOwnProperty('serviceId')
+    skip: !useParams().hasOwnProperty('serviceId'),
+    enableRbac
   })
 
   const basicColumns: TableProps<Network>['columns'] = [

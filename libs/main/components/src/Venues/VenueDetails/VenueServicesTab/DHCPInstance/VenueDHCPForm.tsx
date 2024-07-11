@@ -51,6 +51,7 @@ const VenueDHCPForm = (props: {
   const dhcpInfo = useDHCPInfo()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const addDhcpPath = usePathBasedOnConfigTemplate(
     getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
@@ -74,7 +75,8 @@ const VenueDHCPForm = (props: {
     payload: {
       ...defaultAPPayload,
       filters: { venueId: params.venueId ? [params.venueId] : [] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   }, { skip: isTemplate })
 
   const [selectedAPs, setSelectedAPs] = useState<string[]>([])
