@@ -14,6 +14,7 @@ import {
   SwitchProfile,
   TableResult,
   checkObjectNotExists,
+  useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -31,7 +32,8 @@ const profileListPayload = {
 
 export function GeneralSetting () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
@@ -46,7 +48,8 @@ export function GeneralSetting () {
     const list = (await validateUniqueProfileName({
       params,
       payload,
-      enableRbac: isSwitchRbacEnabled }, true).unwrap()).data
+      enableRbac: isTemplate ? isConfigTemplateRbacEnabled: isSwitchRbacEnabled
+    }, true).unwrap()).data
       .filter(n => n.id !== params.profileId)
       .map(n => n.name)
 

@@ -1,35 +1,35 @@
-import { Form, Radio, Col, RadioProps } from 'antd'
-import { NamePath }                     from 'antd/es/form/interface'
+import { Radio, Col, RadioProps, RadioGroupProps } from 'antd'
+import _                                           from 'lodash'
 
 import { TradeOffWrapper, HeaderWrapper, RowWrapper, DividerWrapper } from './styledComponents'
-declare type RawValue = string | number
+
+type RawValue = string | number
+
 export type TradeOffRadio = RadioProps & {
   columns: React.ReactNode[]
-  key: string,
+  key: string
   value: RawValue
 }
 
-export type TradeOffProps = {
-    key: string,
-    name: NamePath
-    headers: React.ReactNode[]
-    radios: TradeOffRadio[],
-    currentValue: RawValue,
-    onChange: (value: RawValue) => void
-}
+export type TradeOffProps <Value extends string | number = string> = {
+  headers: React.ReactNode[]
+  radios: TradeOffRadio[]
+  onChange?: (value: Value) => void
+} & Pick<RadioGroupProps, 'name' | 'value' | 'defaultValue'>
 
-export function TradeOff (props: TradeOffProps) {
-  const { key: tradeOffKey, name,
-    headers=[], radios = [], currentValue, onChange } = props
-  const fieldName = name as unknown as NamePath
-  const selectIndex = radios?.map(radios => radios.value).indexOf(currentValue)
+export function TradeOff <Value extends string | number = string> (props: TradeOffProps<Value>) {
+  const { headers=[], radios = [], onChange } = props
+  const value = typeof props.value === 'undefined' ? props.defaultValue : props.value
+  const selectIndex = radios?.map(radios => radios.value).indexOf(value)
+
+  const inputProps = _.pick(props, ['name', 'value', 'defaultValue'])
 
   const renderOptionRows =
   (radio: TradeOffRadio, rowIndex: number) => {
     const { key: radioKey, value: selectValue, columns } = radio
     return (
       <RowWrapper key={`tradeR_${radioKey}_${rowIndex}`}
-        className={selectValue === currentValue? 'highlight' : ''}>
+        className={selectValue === value ? 'highlight' : ''}>
         {columns.map((column, colIndex) => (
           <Col span={12} key={`tradeC_${radioKey}_${colIndex}`}>
             {column}
@@ -39,16 +39,11 @@ export function TradeOff (props: TradeOffProps) {
   }
 
   return (
-    <TradeOffWrapper key={tradeOffKey}>
-      <Form.Item
-        name={fieldName}
-        initialValue={currentValue}
-      >
-        <Radio.Group onChange={e => onChange(e.target.value)}>
-          {radios.map((radioProps) =>
-            (<div key={`tradeR_${radioProps.key}`}><Radio {...radioProps} /></div>))}
-        </Radio.Group>
-      </Form.Item>
+    <TradeOffWrapper>
+      <Radio.Group {...inputProps} onChange={e => onChange?.(e.target.value)}>
+        {radios.map((radioProps) =>
+          (<div key={`tradeR_${radioProps.key}`}><Radio {...radioProps} /></div>))}
+      </Radio.Group>
       <HeaderWrapper>
         {headers.map((header, hIndex) => (
           <Col span={12} key={`tradeH_${hIndex}`}><span>{header}</span></Col>

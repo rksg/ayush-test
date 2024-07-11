@@ -125,7 +125,7 @@ describe('SMS Provider Form Item', () => {
     })
   })
   it('should render layout correctly when in grace period', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
       return { data: { ...fakeSmsNoProvider, ruckusOneUsed: 110 } }
     })
@@ -209,7 +209,7 @@ describe('SMS Provider Form Item', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Yes, Remove Provider' }))
 
     const value: [Function, Object] = expect.objectContaining({
-      payload: { provider: SmsProviderType.RUCKUS_ONE, threshold: 80 }
+      payload: { provider: SmsProviderType.SMSProvider_UNSET, threshold: 80 }
     })
     await waitFor(()=> {
       expect(mockMutation).toHaveBeenLastCalledWith(value)

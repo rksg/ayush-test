@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                                                                                                                                                                     from '..'
-import { ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import { FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                       from '..'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -415,7 +415,7 @@ export interface EdgePortInfo {
 export type EdgeNodesPortsInfo = Record<EdgeSerialNumber, EdgePortInfo[]>
 
 export interface ClusterNetworkSettings {
-  virtualIpSettings: VirtualIpSetting[]
+  virtualIpSettings?: VirtualIpSetting[]
   portSettings: {
     serialNumber: EdgeSerialNumber,
     ports: EdgePort[]
@@ -424,4 +424,16 @@ export interface ClusterNetworkSettings {
     serialNumber: EdgeSerialNumber,
     lags: EdgeLag[]
   }[]
+  highAvailabilitySettings?: {
+    fallbackSettings: {
+      enable: boolean
+      schedule: {
+        type: ClusterHaFallbackScheduleTypeEnum
+        time?: string
+        weekday?: string
+        intervalHours?: number
+      }
+    }
+    loadDistribution: ClusterHaLoadDistributionEnum
+  }
 }

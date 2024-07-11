@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
-import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData, DHCPOption, DHCPPool, DHCPUsage } from '@acx-ui/rc/utils'
-import { Provider }                                                                    from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                             from '@acx-ui/feature-toggle'
+import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData, DHCPOption, DHCPPool, DHCPUsage, ServicesConfigTemplateUrlsInfo, ConfigTemplateContext } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -169,7 +169,7 @@ describe('DHCPForm', () => {
   })
 
   it('should call rbac api and render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     const getDhcpProfile = jest.fn()
     const queryProfile = jest.fn()
     mockServer.use(
@@ -177,7 +177,7 @@ describe('DHCPForm', () => {
         getDhcpProfile()
         return res(ctx.json(dhcpProfileRbac))
       }),
-      rest.post(DHCPUrls.queryDHCPProfiles.url,(_,res,ctx) => {
+      rest.post(DHCPUrls.queryDhcpProfiles.url,(_,res,ctx) => {
         queryProfile()
         return res(ctx.json({ data: [] }))
       })
@@ -192,6 +192,34 @@ describe('DHCPForm', () => {
     const insertInput = screen.getByLabelText('Service Name')
     userEvent.type(insertInput, '123')
     await userEvent.click(screen.getByText('Finish'))
-    expect(queryProfile).toBeCalledTimes(1)
+    expect(queryProfile).toHaveBeenCalled()
+  })
+
+  it('should call rbac api and render correctly for config template', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    const getDhcpProfile = jest.fn()
+    const queryProfile = jest.fn()
+    mockServer.use(
+      rest.get(ServicesConfigTemplateUrlsInfo.getDHCProfileDetail.url,(_,res,ctx) => {
+        getDhcpProfile()
+        return res(ctx.json(dhcpProfileRbac))
+      }),
+      rest.post(ServicesConfigTemplateUrlsInfo.queryDhcpProfiles.url,(_,res,ctx) => {
+        queryProfile()
+        return res(ctx.json({ data: [] }))
+      })
+    )
+    const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
+    render(<ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+      <Provider><DHCPForm editMode={true}/></Provider></ConfigTemplateContext.Provider>, {
+      route: { params }
+    })
+
+    expect(await screen.findByLabelText('Service Name')).toHaveValue('dhcpProfile1')
+    expect(getDhcpProfile).toHaveBeenCalled()
+    const insertInput = screen.getByLabelText('Service Name')
+    userEvent.type(insertInput, '123')
+    await userEvent.click(screen.getByText('Finish'))
+    expect(queryProfile).toHaveBeenCalled()
   })
 })

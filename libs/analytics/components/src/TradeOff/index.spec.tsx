@@ -1,29 +1,34 @@
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import _         from 'lodash'
 
 import { StepsForm }      from '@acx-ui/components'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-
 import { Default } from './stories'
 
-import { TradeOff, TradeOffProps } from './index'
+import { TradeOff, TradeOffProps } from '.'
 
 const { click } = userEvent
 
 describe('TradeOff', () => {
 
   it('should render with StepsForm', async () => {
-    let currentValue = 'value1'
+    const { name, ...props } = Default.args as TradeOffProps
+
     const mockedUpdateReq = jest.fn()
-    const mockedChangeReq = jest.fn().mockImplementation((value) => {currentValue = value})
+    const mockedChangeReq = jest.fn()
 
     render(<Provider>
-      <StepsForm onFinish={mockedUpdateReq}>
+      <StepsForm
+        onFinish={mockedUpdateReq}
+        onFieldsChange={([field]) => field && mockedChangeReq(field.value)}
+        initialValues={{ [String(name)]: props.radios[0].value }}>
         <StepsForm.StepForm>
-          <TradeOff {...(Default.args as TradeOffProps)}
-            currentValue={currentValue}
-            onChange={mockedChangeReq} />
+          <Form.Item
+            name={name}
+            children={<TradeOff {..._.pick(props, ['headers', 'radios'])} />} />
         </StepsForm.StepForm>
       </StepsForm>
     </Provider>, { route: { params: { tenantId: 't-id' } } })

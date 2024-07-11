@@ -10,7 +10,7 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import {
   useLazyGetProfilesQuery,
   useGetSwitchConfigProfileQuery,
@@ -20,7 +20,10 @@ import {
   useBatchDisassociateSwitchProfileMutation,
   useGetSwitchConfigProfileTemplateQuery,
   useAddSwitchConfigProfileTemplateMutation,
-  useUpdateSwitchConfigProfileTemplateMutation
+  useUpdateSwitchConfigProfileTemplateMutation,
+  useBatchAssociateSwitchConfigProfileTemplateMutation,
+  useBatchDisassociateSwitchConfigProfileTemplateMutation,
+  useLazyGetSwitchConfigProfileTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   CliConfiguration,
@@ -28,7 +31,9 @@ import {
   useConfigTemplateBreadcrumb,
   useConfigTemplateQueryFnSwitcher,
   ConfigurationProfile,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -64,11 +69,25 @@ export function CliProfileForm () {
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const editMode = params.action === 'edit'
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
 
   const [form] = Form.useForm()
-  const [getProfiles] = useLazyGetProfilesQuery()
-  const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
-  const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
+  const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyGetProfilesQuery,
+    useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateListQuery
+  })
+  const [batchAssociateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useBatchAssociateSwitchProfileMutation,
+    useTemplateMutationFn: useBatchAssociateSwitchConfigProfileTemplateMutation
+  })
+
+  const [batchDisassociateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useBatchDisassociateSwitchProfileMutation,
+    useTemplateMutationFn: useBatchDisassociateSwitchConfigProfileTemplateMutation
+  })
+
 
   const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddSwitchConfigProfileMutation,
@@ -127,7 +146,7 @@ export function CliProfileForm () {
           id: params.profileId,
           ...transformSaveData(data)
         },
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: rbacEnabled
       }).unwrap()
       await associateWithCliProfile(diffAssociatedSwitch)
       navigate(linkToProfiles, { replace: true })
@@ -142,12 +161,12 @@ export function CliProfileForm () {
       const hasAssociatedVenues = (data?.venues ?? [])?.length > 0
       await addSwitchConfigProfile({
         params, payload: transformSaveData(data),
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: rbacEnabled
       }).unwrap()
 
-      if (isSwitchRbacEnabled && hasAssociatedVenues) {
+      if (rbacEnabled && hasAssociatedVenues) {
         const { data: cliProfiles } = await getProfiles({
-          params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled
+          params, payload: profilesPayload, enableRbac: true
         }).unwrap()
         const profileId = cliProfiles?.filter(t => t.name === data.name)?.map(t => t.id)?.[0]
         await associateWithCliProfile(data?.venues ?? [], profileId)
@@ -167,12 +186,12 @@ export function CliProfileForm () {
     const profileId = params.profileId || cliProfileId
     const hasAssociatedVenues = venues.length > 0
 
-    if (isSwitchRbacEnabled && hasAssociatedVenues && profileId) {
+    if (rbacEnabled && hasAssociatedVenues && profileId) {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId }
       }))
 
-      await batchAssociateSwitchProfile(requests).then(callBack)
+      await batchAssociateSwitchConfigProfile(requests).then(callBack)
     }
     return Promise.resolve()
   }
@@ -182,11 +201,11 @@ export function CliProfileForm () {
     callBack?: () => void
   ) => {
     const hasDisassociatedVenues = venues.length > 0
-    if (isSwitchRbacEnabled && hasDisassociatedVenues) {
+    if (rbacEnabled && hasDisassociatedVenues) {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId: params.profileId }
       }))
-      await batchDisassociateSwitchProfile(requests).then(callBack)
+      await batchDisassociateSwitchConfigProfile(requests).then(callBack)
     }
     return Promise.resolve()
   }

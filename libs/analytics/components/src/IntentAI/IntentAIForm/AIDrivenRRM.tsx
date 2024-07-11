@@ -52,16 +52,13 @@ export function AIDrivenRRM () {
         subTitle={[
           {
             label: $t({ defaultMessage: 'Intent' }),
-            // value: $t([config.intentTypeMap[
-            //   details?.intentType! as keyof typeof config.intentTypeMap]
-            // ] as MessageDescriptor) as unknown as (string | number)[]
-            value: [details?.intentType!]
+            value: [$t(config.intentTypeMap.aiDrivenRRM.intent) as string]
           },
           {
             label: get('IS_MLISA_SA')
               ? $t({ defaultMessage: 'Zone' })
               : $t({ defaultMessage: 'Venue' }),
-            value: [details?.zone as unknown as string]
+            value: [details?.sliceValue]
           }
         ]}
       />

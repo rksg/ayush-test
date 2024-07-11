@@ -57,7 +57,7 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
         title: defineMessage({ defaultMessage: 'Congested Uplink Ports' }),
         value: formatValue(
           summaryData?.congestedPortCount,
-          summaryData?.portCount,
+          summaryData?.uplinkPortCount,
           noSwitches)
       }],
       onClick: () => { moreDetails('congestion') }
