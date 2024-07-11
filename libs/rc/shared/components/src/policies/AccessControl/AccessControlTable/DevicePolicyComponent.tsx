@@ -17,7 +17,8 @@ import {
   Network,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
 import { AddModeProps }                    from '../../AccessControlForm'
@@ -101,6 +102,7 @@ const DevicePolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    scopeKey: [WifiScopes.CREATE],
     label: $t({ defaultMessage: 'Add Device & OS Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
     onClick: () => {
@@ -120,6 +122,7 @@ const DevicePolicyComponent = () => {
 
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -127,6 +130,7 @@ const DevicePolicyComponent = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -151,7 +155,10 @@ const DevicePolicyComponent = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={
+          // eslint-disable-next-line max-len
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+        }
       />
     </Form>
   </Loader>
