@@ -390,26 +390,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   }
 
   const isReadOnlyRole = hasRoles([RolesEnum.READ_ONLY]) ?? false
-  const isSelectionVisible = searchable !== false && (hasPermission({
-    scopes: [SwitchScopes.READ, SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  }) || (isReadOnlyRole && enableSwitchBlinkLed))
+  const isSelectionVisible = searchable !== false
+    && (hasPermission({ scopes: [SwitchScopes.READ, SwitchScopes.UPDATE, SwitchScopes.DELETE] })
+      || (isReadOnlyRole && enableSwitchBlinkLed)
+    )
 
-  const blinkLedAction = [{
-    label: $t({ defaultMessage: 'Blink LEDs' }),
-    key: 'SHOW_WITHOUT_RBAC_CHECK_BLINK_LEDs',
-    disabled: (rows: SwitchRow[]) => {
-      return rows.filter((row: SwitchRow) => {
-        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
-            row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
-        return !isOperational
-      }).length > 0
-    },
-    onClick: handleBlinkLeds
-  }]
-
-  const rowActions: TableProps<SwitchRow>['rowActions'] = isReadOnlyRole && enableSwitchBlinkLed ? [
-    ...blinkLedAction
-  ] : [{
+  const rowActions: TableProps<SwitchRow>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     scopeKey: [SwitchScopes.UPDATE],
@@ -499,9 +485,18 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }, callback)
     }
   },
-  ...(enableSwitchBlinkLed ? [
-    ...blinkLedAction
-  ] : []),
+  ...(enableSwitchBlinkLed ? [{
+    label: $t({ defaultMessage: 'Blink LEDs' }),
+    key: 'SHOW_WITHOUT_RBAC_CHECK_BLINK_LEDs',
+    disabled: (rows: SwitchRow[]) => {
+      return rows.filter((row: SwitchRow) => {
+        const isOperational = row?.deviceStatus === SwitchStatusEnum.OPERATIONAL ||
+              row?.deviceStatus === SwitchStatusEnum.FIRMWARE_UPD_FAIL
+        return !isOperational
+      }).length > 0
+    },
+    onClick: handleBlinkLeds
+  }] : []),
   {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [SwitchScopes.DELETE],
