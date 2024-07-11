@@ -75,10 +75,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       ),
       rest.post(
         FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
-        (req, res, ctx) => {
-          // switchFwRequestSpy()
-          return res(ctx.json(upgradeSwitchViewList))
-        }
+        (req, res, ctx) => res(ctx.json(upgradeSwitchViewList))
       ),
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,

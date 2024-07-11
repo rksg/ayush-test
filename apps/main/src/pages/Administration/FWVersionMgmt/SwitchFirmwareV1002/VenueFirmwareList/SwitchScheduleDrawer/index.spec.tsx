@@ -1,8 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { firmwareApi }     from '@acx-ui/rc/services'
 import {
+  FirmwareRbacUrlsInfo,
   FirmwareSwitchVenue,
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
@@ -14,18 +16,17 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { VenueFirmwareList }          from '..'
+import { VenueFirmwareList }                   from '..'
+import { switchLatestV1002, switchVenueV1002 } from '../../__tests__/fixtures'
 import {
   switchVenue,
   preference,
-  switchRelease,
-  switchLatest,
-  upgradeSwitchViewList_KittoVenue1
+  switchReleaseV1002,
+  upgradeSwitchViewList
 } from '../__test__/fixtures'
 
 import { SwitchScheduleDrawer } from '.'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('./SwitchUpgradeWizard', () => ({
   ...jest.requireActual('./SwitchUpgradeWizard'),
@@ -34,18 +35,22 @@ jest.mock('./SwitchUpgradeWizard', () => ({
   }
 }))
 
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+
+
 describe('SwitchFirmware - SwitchScheduleDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json(switchVenue))
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(switchVenueV1002))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(switchRelease))
+        FirmwareRbacUrlsInfo.getSwitchAvailableFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchReleaseV1002))
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchUpgradePreferences.url,
@@ -58,20 +63,24 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
         }))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(switchLatest))
+        FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatestV1002))
+      ),
+      rest.get(
+        FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatestV1002))
       ),
       rest.post(
-        FirmwareUrlsInfo.getSwitchFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(upgradeSwitchViewList_KittoVenue1))
+        FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(upgradeSwitchViewList))
       )
     )
     params = {
