@@ -3,14 +3,17 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }           from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }                     from '@acx-ui/rc/services'
 import {
+  AccessControlUrls,
   CommonUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
+  WifiCallingUrls,
   WifiOperatorUrls,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -29,12 +32,12 @@ import {
   venueListResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse,
   networkDeepResponse,
   portalList,
-  vlanList,
   mockHotpost20IdentityProviderList,
-  mockHotspot20OperatorList
+  mockHotspot20OperatorList,
+  macRegistrationList,
+  mockWifiCallingTableResult
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -47,49 +50,6 @@ jest.mock('./utils', () => ({
   useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
 }))
 
-export const dhcpResponse = {
-  name: 'DHCP-Guest',
-  vlanId: 3000,
-  subnetAddress: '172.21.232.0',
-  subnetMask: '255.255.252.0',
-  startIpAddress: '172.21.232.2',
-  endIpAddress: '172.21.235.233',
-  leaseTimeHours: 12,
-  leaseTimeMinutes: 1,
-  id: 'UNPERSISTED-DEFAULT-PROFILE-ID'
-}
-
-const macRegistrationList = {
-  content: [
-    {
-      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
-      name: 'Registration pool',
-      description: '',
-      autoCleanup: true,
-      enabled: true,
-      expirationEnabled: false,
-      registrationCount: 5
-    }
-  ],
-  pageable: {
-    sort: { unsorted: true, sorted: false, empty: true },
-    pageNumber: 0,
-    pageSize: 10,
-    offset: 0,
-    paged: true,
-    unpaged: false
-  },
-  totalPages: 1,
-  totalElements: 1,
-  last: true,
-  sort: { unsorted: true, sorted: false, empty: true },
-  numberOfElements: 1,
-  first: true,
-  size: 10,
-  number: 0,
-  empty: false
-}
-
 describe('NetworkForm', () => {
 
   beforeEach(() => {
@@ -98,9 +58,12 @@ describe('NetworkForm', () => {
       store.dispatch(venueApi.util.resetApiState())
     })
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
+
     networkDeepResponse.name = 'open network test'
     mockServer.use(
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -111,8 +74,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -133,14 +94,25 @@ describe('NetworkForm', () => {
         MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macRegistrationList))
       ),
-      rest.get(WifiUrlsInfo.getVlanPools.url, (_, res, ctx) =>
-        res(ctx.json(vlanList))
-      ),
       rest.post(WifiOperatorUrls.getWifiOperatorList.url,
         (_, res, ctx) => res(ctx.json(mockHotspot20OperatorList))
       ),
       rest.post(IdentityProviderUrls.getIdentityProviderList.url,
-        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList)))
+        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
+      ),
+      rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json(successResponse))
+      ),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      // RBAC API
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))
+      )
     )
   })
 

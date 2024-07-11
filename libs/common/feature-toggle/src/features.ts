@@ -41,6 +41,8 @@ export enum Features {
   EDGE_DHCP_HA_TOGGLE = 'edge-dhcp-ha-toggle',
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
+  EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
+  EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
@@ -82,10 +84,14 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
+  NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
+  NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
+  PTENANT_RBAC_API = 'acx-ui-rbac-api-ptenant-toggle',
+  RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
@@ -115,6 +121,7 @@ export enum Features {
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
+  SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
@@ -123,6 +130,7 @@ export enum Features {
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
+  WIFI_EDA_LBS_TOGGLE = 'wifi-eda-lbs-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
@@ -153,7 +161,12 @@ export enum Features {
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
-  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
+  GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
+  RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
+  INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
+  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
+  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

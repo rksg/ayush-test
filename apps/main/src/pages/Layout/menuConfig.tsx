@@ -59,6 +59,27 @@ export function useMenuConfig () {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
+  const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+
+  const aiAnalyticsMenu = [{
+    permission: 'READ_INCIDENTS',
+    uri: '/analytics/incidents',
+    label: $t({ defaultMessage: 'Incidents' })
+  }, {
+    permission: 'READ_AI_DRIVEN_RRM',
+    uri: '/analytics/recommendations/crrm',
+    label: $t({ defaultMessage: 'AI-Driven RRM' })
+  }, {
+    permission: 'READ_AI_OPERATIONS',
+    uri: '/analytics/recommendations/aiOps',
+    label: $t({ defaultMessage: 'AI Operations' })
+  }, ...(isIntentAIEnabled ? [{
+    permission: 'READ_INTENT_AI',
+    uri: '/analytics/intentAI',
+    label: $t({ defaultMessage: 'Intent AI' }),
+    superscript: $t({ defaultMessage: 'beta' })
+  }] : [])
+  ]
 
   const config: LayoutProps['menuConfig'] = [
     {
@@ -75,20 +96,7 @@ export function useMenuConfig () {
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'AI Analytics' }),
-          children: [
-            {
-              uri: '/analytics/incidents',
-              label: $t({ defaultMessage: 'Incidents' })
-            },
-            {
-              uri: '/analytics/recommendations/crrm',
-              label: $t({ defaultMessage: 'AI-Driven RRM' })
-            },
-            {
-              uri: '/analytics/recommendations/aiOps',
-              label: $t({ defaultMessage: 'AI Operations' })
-            }
-          ]
+          children: aiAnalyticsMenu
         },
         {
           type: 'group' as const,

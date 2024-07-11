@@ -111,6 +111,7 @@ function VenuesRoutes () {
         element={<VenueDetails />}
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
     </Route>

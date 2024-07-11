@@ -49,7 +49,6 @@ const deviceData = [{
   }],
   LTEAP: [],
   RogueAP: [],
-  cloudpath: [],
   DP: [],
   rwg: [{
     deviceStatus: RWGStatusEnum.ONLINE,

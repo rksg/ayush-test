@@ -38,7 +38,8 @@ import {
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
   useScheduleSlotIndexMap,
-  useGetVLANPoolPolicyViewModelListQuery
+  useGetVLANPoolPolicyViewModelListQuery,
+  useNewVenueNetworkTableQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -60,9 +61,7 @@ import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react
 import { WifiScopes }                                        from '@acx-ui/types'
 import { filterByAccess, hasPermission }                     from '@acx-ui/user'
 
-
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
-
 
 const defaultPayload = {
   searchString: '',
@@ -86,6 +85,60 @@ const defaultPayload = {
   ]
 }
 
+const defaultRbacPayload = {
+  searchString: '',
+  fields: [
+    'check-all',
+    'name',
+    'description',
+    'nwSubType',
+    'venues',
+    'aps',
+    'clients',
+    'vlan',
+    'cog',
+    'ssid',
+    'vlanPool',
+    'captiveType',
+    'id',
+    'isOweMaster',
+    'owePairNetworkId',
+    'dsaeOnboardNetwork',
+    'venueApGroups.venueId'
+  ]
+}
+
+const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) => {
+  const { settingsId, venueId } = props
+  const { isTemplate } = useConfigTemplate()
+  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const nonRbacTableQuery = useTableQuery({
+    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
+      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
+    pagination: { settingsId },
+    option: { skip: isWifiRbacEnabled }
+  })
+
+  const rbacTableQuery = useTableQuery({
+    useQuery: useNewVenueNetworkTableQuery,
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    pagination: { settingsId },
+    option: { skip: !isWifiRbacEnabled || !venueId }
+  })
+
+  return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+}
+
 const defaultArray: NetworkExtended[] = []
 
 
@@ -95,21 +148,17 @@ interface schedule {
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
+  const params = useParams()
+  const navigate = useNavigate()
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const { isTemplate } = useConfigTemplate()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
-  const settingsId = 'venue-networks-table'
-  const tableQuery = useTableQuery({
-    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
-      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
-    defaultPayload: {
-      ...defaultPayload,
-      isTemplate: isTemplate
-    },
-    pagination: { settingsId }
-  })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { venueId } = params
+  const settingsId = 'venue-networks-table'
+
+  const tableQuery = useVenueNetworkList({ settingsId, venueId })
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -118,8 +167,6 @@ export function VenueNetworksTab () {
     visible: false
   })
 
-  const params = useParams()
-  const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenueMutation,
@@ -138,7 +185,7 @@ export function VenueNetworksTab () {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -147,7 +194,8 @@ export function VenueNetworksTab () {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
@@ -197,7 +245,7 @@ export function VenueNetworksTab () {
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue, enableRbac: isPolicyRbacEnabled })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
             if (networkVenue.venueId === params.venueId) {
@@ -302,7 +350,7 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Activated' }),
       dataIndex: ['activated', 'isActivated'],
       align: 'center',
-      sorter: true,
+      sorter: !isWifiRbacEnabled,
       render: function (__, row) {
         let disabled = false
         let title = ''
@@ -463,22 +511,21 @@ export function VenueNetworksTab () {
     updateNetworkVenue({ params: {
       tenantId: params.tenantId,
       networkVenueId: payload.id
-    }, payload: payload }).then(()=>{
+    }, payload: payload, enableRbac: isPolicyRbacEnabled }).then(()=>{
       setScheduleModalState({
         visible: false
       })
     })
   }
 
-  const handleFormFinish = (name: string, newData: FormFinishInfo) => {
+  const handleFormFinish = async (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
       let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
-
       updateNetworkVenue({ params: {
         tenantId: params.tenantId,
         networkVenueId: payload.id
-      }, payload: payload }).then(()=>{
+      }, payload: { ...payload, oldNetworkVenue: oldData }, enableRbac: isPolicyRbacEnabled }).then(()=>{
         setApGroupModalState({
           visible: false
         })

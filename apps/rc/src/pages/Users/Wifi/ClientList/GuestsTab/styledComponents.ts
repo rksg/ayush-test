@@ -1,4 +1,6 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
+
 
 import {
   MobilePhoneOutlined,
@@ -61,4 +63,12 @@ export const IconContainer = styled.div`
   svg {
     height: 24px
   }
+`
+
+export const FullWidthSpace = styled(Space)`
+  .ant-space-item > label > span:nth-child(2) {
+    width: 100%;
+    padding-right: 0px;
+  }
+  
 `

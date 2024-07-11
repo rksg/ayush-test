@@ -361,6 +361,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switchProfiles/:profileId',
     newApi: true
   },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/cliProfiles/venues',
+    newApi: true
+  },
   deleteSwitchProfile: {
     method: 'delete',
     url: '/switchProfiles/:switchProfileId',
@@ -402,7 +407,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getJwtToken: {
     method: 'get',
-    url: '/switches/:serialNumber/jwtToken', // TODO: Karen - Need backend support
+    url: '/venues/:venueId/switches/:serialNumber/jwtToken',
     newApi: true
   },
   getSwitchDetailHeader: {

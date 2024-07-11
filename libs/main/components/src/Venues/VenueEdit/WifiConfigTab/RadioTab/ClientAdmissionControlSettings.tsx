@@ -41,7 +41,9 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const minClientThroughput50GFieldName = 'clientAdmissionControlMinClientThroughput50G'
 
   const { isTemplate } = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const [ enable24G, enable50G ] = [
     useWatch<boolean>(enable24GFieldName),
@@ -119,7 +121,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
       await updateClientAdmissionControl({
         params: { venueId },
         payload,
-        enableRbac: isUseRbacApi,
+        enableRbac: resolvedRbacEnabled,
         callback: callback
       }).unwrap()
 

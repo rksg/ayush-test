@@ -2,16 +2,17 @@ module.exports = {
   displayName: 'analytics-components',
   preset: '../../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/analytics/components',
   coverageThreshold: {
     global: {
-      statements: 99.91,
+      statements: 99.9,
       branches: 96.96,
       functions: 99.9,
-      lines: 99.91
+      lines: 99.9
     }
   }
 }

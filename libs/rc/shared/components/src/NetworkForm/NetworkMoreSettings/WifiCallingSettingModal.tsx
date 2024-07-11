@@ -8,6 +8,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Modal, Transfer }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedWifiCallingServiceListQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery
@@ -31,11 +32,13 @@ const defaultPayload = {
 export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { wifiCallingSettingList, setWifiCallingSettingList }= useContext(WifiCallingSettingContext)
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetEnhancedWifiCallingServiceListQuery,
     useTemplateQueryFn: useGetEnhancedWifiCallingServiceTemplateListQuery,
-    payload: defaultPayload
+    payload: defaultPayload,
+    enableRbac
   })
 
   const [visible, setVisible] = useState(false)

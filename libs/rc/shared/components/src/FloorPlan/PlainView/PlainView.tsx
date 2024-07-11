@@ -248,8 +248,17 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
     <>
       <Row justify='space-between' style={{ height: '2rem', alignItems: 'center' }}>
         <Col>
-          <Typography.Title level={4} style={{ fontWeight: 'bold', marginBottom: '0' }}>
-            {selectedFloorPlan?.name}
+          <Typography.Title
+            level={4}
+            style={{ fontWeight: 'bold', marginBottom: '0' }}>
+            {selectedFloorPlan?.name} {
+              $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+              { floor: selectedFloorPlan?.floorNumber })}
           </Typography.Title>
         </Col>
         <Col>

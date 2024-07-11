@@ -172,7 +172,15 @@ export function syslogServerRegExp (value: string) {
   }
   return Promise.resolve()
 }
-
+export function lbsVenueNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/(^[a-zA-Z0-9\-](?:[a-zA-Z0-9\-\ ]*[a-zA-Z0-9\-])?$)/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
 export function trailingNorLeadingSpaces (value: string) {
   const { $t } = getIntl()
   if (value && (value.endsWith(' ') || value.startsWith(' '))) {
@@ -1161,5 +1169,16 @@ export function systemDefinedNameValidator (value: string) {
     )
   }
   return Promise.resolve()
+}
+
+export function guestPasswordValidator (value: string) {
+  const { $t } = getIntl()
+  const regex = /^[a-zA-Z0-9!@#$%^&*()\[\]{}_\-+=~`|:;"'<>,./?]{6,16}$/
+
+  if (value && !regex.test(value)) {
+    return Promise.reject($t(validationMessages.guestPasswordInvalid))
+  }
+  return Promise.resolve()
+
 }
 

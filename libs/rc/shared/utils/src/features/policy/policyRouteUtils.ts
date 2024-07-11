@@ -57,6 +57,7 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: 'radiusAttributeGroup',
   [PolicyType.TUNNEL_PROFILE]: 'tunnelProfile',
   [PolicyType.CONNECTION_METERING]: 'connectionMetering',
+  [PolicyType.LBS_SERVER_PROFILE]: 'lbsServerProfile',
   [PolicyType.WORKFLOW]: 'workflow',
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',

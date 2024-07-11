@@ -1,4 +1,5 @@
-import { RolesEnum } from '@acx-ui/types'
+import { RolesEnum }   from '@acx-ui/types'
+import { AccountTier } from '@acx-ui/utils'
 
 import {
   EntitlementDeviceType,
@@ -96,6 +97,13 @@ export interface TenantMspEc {
   serviceExpirationDate: string;
 }
 
+export interface NotificationPreference {
+  DEVICE_AP_FIRMWARE?: boolean;
+  DEVICE_SWITCH_FIRMWARE?: boolean;
+  DEVICE_EDGE_FIRMWARE?: boolean;
+  DEVICE_API_CHANGES?: boolean;
+}
+
 export interface TenantDetails {
   createdDate: string;
   entitlementId: string;
@@ -114,6 +122,8 @@ export interface TenantDetails {
   tenantMFA?: {
     mfaStatus: string
   }
+  accountTier?: AccountTier;
+  subscribes?: NotificationPreference;
 }
 
 export enum AdministrationDelegationType {
@@ -272,7 +282,8 @@ export interface EntitlementActivations {
   orderCreateDate: string,
   orderRegistrationCode: string,
   orderAcxRegistrationCode:string,
-  isChild?: boolean
+  isChild?: boolean,
+  trial?: boolean
 }
 
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>
@@ -352,31 +363,41 @@ export interface VenueObjectList
   'com.ruckus.cloud.venue.model.venue'?: string[]
 }
 
+export enum NotificationType {
+  apFirmware = 'DEVICE_AP_FIRMWARE',
+  switchFirmware = 'DEVICE_SWITCH_FIRMWARE',
+  edgeFirmware = 'DEVICE_EDGE_FIRMWARE',
+  apiChanges = 'NEW_API_PUBLISH'
+}
+
 export enum SmsProviderType {
   RUCKUS_ONE = 'RUCKUS_ONE',
   TWILIO = 'TWILIO',
   ESENDEX = 'ESENDEX',
-  OTHERS = 'OTHERS'
+  OTHERS = 'OTHERS',
+  SMSProvider_UNSET = 'SMSProvider_UNSET'
 }
 
 export interface NotificationSmsUsage
 {
   ruckusOneUsed?: number,
-  thredshold?: number,
+  threshold?: number,
   provider?: SmsProviderType
 }
 
 export interface NotificationSmsConfig
 {
   // twilio
-  authid?: string,
-  sid?: string,
+  accountSid?: string,
+  authToken?: string,
   fromNumber?: string,
   // esendex
-  userName?: string,
-  apiPassword?: string,
-  referenceNumber?: string,
-  // others
   apiKey?: string,
+  // others
   url?: string
+}
+
+export interface TwiliosIncommingPhoneNumbers
+{
+  incommingPhoneNumbers?: string[]
 }

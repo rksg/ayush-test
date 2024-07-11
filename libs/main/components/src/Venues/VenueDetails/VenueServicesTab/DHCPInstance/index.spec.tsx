@@ -1,14 +1,16 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ConfigTemplateContext }  from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import { mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import handlers from './__tests__/fixtures'
+
+import { configTemplateHandlers, handlers } from './__tests__/fixtures'
 
 import DHCPInstance from '.'
 
@@ -45,7 +47,7 @@ describe('Venue DHCP Instance', () => {
   })
 
   it('should call rbac apis and render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockServer.use(
       ...handlers
     )
@@ -61,5 +63,22 @@ describe('Venue DHCP Instance', () => {
     expect(screen.getByText('922102020872')).toBeVisible()
     expect(screen.getByRole('radio', { name: 'Pools (2)' })).toBeVisible()
     expect(screen.getByRole('radio', { name: 'Lease Table (1 Online)' })).toBeVisible()
+  })
+
+  it('should call rbac apis and render correctly for config template', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    mockServer.use(
+      ...configTemplateHandlers
+    )
+
+    const params = { tenantId: 'tenant-id', venueId: 'f6b580778ca54db78611ba4dcf2e29ba' }
+    render(<ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+      <Provider><DHCPInstance /></Provider></ConfigTemplateContext.Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/services' }
+    })
+
+    expect(await screen.findByText('dhcpConfigTemplate1')).toBeVisible()
+    expect(screen.getByText('Each APs')).toBeVisible()
+    expect(screen.getByText('ON')).toBeVisible()
   })
 })

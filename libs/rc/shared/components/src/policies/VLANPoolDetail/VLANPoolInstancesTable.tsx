@@ -2,25 +2,38 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, Loader }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { useGetVLANPoolVenuesQuery, useGetVlanPoolTemplateVenuesQuery } from '@acx-ui/rc/services'
 import { VLANPoolVenues, useConfigTemplate, useTableQuery }             from '@acx-ui/rc/utils'
-import { TenantLink }                                                   from '@acx-ui/react-router-dom'
+import { TenantLink, useParams }                                        from '@acx-ui/react-router-dom'
 
 
 export default function VLANPoolInstancesTable (){
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isPolicyRbacEnabled
+  const params = useParams()
+  const defaultPayload = resolvedRbacEnabled ? {
+    fields: ['id', 'wifiNetworkIds' ,'wifiNetworkVenueApGroups'],
+    filters: { id: [params.policyId!!] },
+    pageSize: 1
+  } : {
+    fields: ['venueId', 'venueName', 'venueApCount', 'apGroupData'],
+    pageSize: 10000
+  }
+
+  const sorter = resolvedRbacEnabled ? { sortField: 'name', sortOrder: 'ASC' } : {
+    sortField: 'venueName',
+    sortOrder: 'ASC'
+  }
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVlanPoolTemplateVenuesQuery : useGetVLANPoolVenuesQuery,
-    defaultPayload: {
-      fields: ['venueId', 'venueName', 'venueApCount', 'apGroupData'],
-      pageSize: 10000
-    },
-    sorter: {
-      sortField: 'venueName',
-      sortOrder: 'ASC'
-    }
+    defaultPayload: defaultPayload,
+    sorter: sorter,
+    enableRbac: resolvedRbacEnabled
   })
 
 
@@ -43,17 +56,17 @@ export default function VLANPoolInstancesTable (){
       title: $t({ defaultMessage: 'APs' }),
       dataIndex: 'venueApCount',
       align: 'center',
-      sorter: true
+      sorter: !resolvedRbacEnabled
     },
     {
       key: 'apGroupData',
       title: $t({ defaultMessage: 'Deployment Scope' }),
       dataIndex: 'apGroupData',
       searchable: true,
-      sorter: true,
+      sorter: !resolvedRbacEnabled,
       render: (__, { apGroupData }) => {
         const isAllAP = _.some(apGroupData, { apGroupName: 'ALL_APS' })
-        return isAllAP ? $t({ defaultMessage: 'All APs' }) : apGroupData.length
+        return isAllAP ? $t({ defaultMessage: 'All APs' }) : apGroupData?.length
       }
     }
 

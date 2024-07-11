@@ -1326,7 +1326,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           let ret = await fetchWithBQ(getDhcpLeasesInfo)
           let result = ret.data as TroubleshootingResult
 
-          while (result?.response?.syncing) {
+          while (result?.response?.syncing || _.get(result, 'syncing')) { //TODO: It is necessary to remove result?.response?.syncing after RBAC launch
             await wait(2000)
             ret = await fetchWithBQ(getDhcpLeasesInfo)
             result = ret.data as TroubleshootingResult
@@ -1441,6 +1441,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      },
+      transformResponse: (res: ConfigurationProfile) => {
+        return {
+          ...res,
+          data:
+            res.applyOnboardOnly = !res.applyOnboardOnly
         }
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]

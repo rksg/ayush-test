@@ -96,7 +96,10 @@ export const useCasesToRefreshSyslogTemplateList = [
 export const useCasesToRefreshRogueAPTemplateList = [
   'AddRogueApPolicyProfileTemplate',
   'UpdateRogueApPolicyProfileTemplate',
-  'DeleteRogueApPolicyProfileTemplate'
+  'DeleteRogueApPolicyProfileTemplate',
+  'DeleteRoguePolicyTemplate',
+  'AddRoguePolicyTemplate',
+  'UpdateRoguePolicyTemplate'
 ]
 
 export const useCasesToRefreshSwitchConfigProfileTemplateList = [

@@ -1,0 +1,59 @@
+import {
+  LbsServerProfileViewModel,
+  TableResult
+} from '@acx-ui/rc/utils'
+
+export const mockedTenantId = '__Tenant_ID__'
+export const mockedVenueId = '__Venue_ID__'
+export const mockedPolicyId1 = '__Policy_ID_1__'
+export const mockedPolicyId2 = '__Policy_ID_2__'
+
+export const dummyLbsServerProfileData1 = {
+  id: mockedPolicyId1,
+  name: 'LBS 1',
+  lbsVenueName: 'lbsvenue01',
+  server: 'abc.venue.ruckuslbs.com:8883'
+}
+
+export const dummyLbsServerProfileData2 = {
+  id: mockedPolicyId2,
+  name: 'LBS 2',
+  lbsVenueName: 'lbsvenue02',
+  server: 'xyz.venue.ruckuslbs.com:8883'
+}
+
+export const dummyTableResult: TableResult<LbsServerProfileViewModel> = {
+  totalCount: 2,
+  page: 1,
+  data: [{
+    ...dummyLbsServerProfileData1,
+    venueIds: ['0c41e2e116514dc698c53dc8c752a1b8']
+  }, {
+    ...dummyLbsServerProfileData2,
+    venueIds: ['0c41e2e116514dc698c53dc8c752a1b8']
+  }]
+}
+
+export const dummyVenuesResult = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: mockedVenueId,
+      name: 'My-Venue',
+      description: 'My-Venue',
+      networks: {
+        count: 1,
+        names: [
+          'Open Network 1'
+        ],
+        vlans: [
+          1
+        ]
+      },
+      aggregatedApStatus: {
+        '2_00_Operational': 1
+      }
+    }
+  ]
+}

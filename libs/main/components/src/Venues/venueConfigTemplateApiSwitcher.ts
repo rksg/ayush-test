@@ -18,26 +18,21 @@ interface UseVenueConfigTemplateQueryFnSwitcherProps<ResultType> {
   useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
   skip?: boolean
   enableRbac?: boolean
-  enableTemplateRbac?: boolean,
-  enableSeparation?: boolean
+  extraQueryArgs?: {}
 }
 
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
   props: UseVenueConfigTemplateQueryFnSwitcherProps<ResultType>
 ): ReturnType<typeof useQueryFn> {
   const { venueId } = useParams()
-  const {
-    useQueryFn, useTemplateQueryFn, skip = false,
-    enableRbac, enableTemplateRbac, enableSeparation = false
-  } = props
+  const { useQueryFn, useTemplateQueryFn, skip = false, enableRbac, extraQueryArgs } = props
 
   return useConfigTemplateQueryFnSwitcher({
     useQueryFn,
     useTemplateQueryFn,
     skip: skip || !venueId,
     enableRbac,
-    enableTemplateRbac,
-    enableSeparation
+    extraQueryArgs
   })
 }
 

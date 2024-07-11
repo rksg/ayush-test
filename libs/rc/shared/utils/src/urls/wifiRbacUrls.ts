@@ -15,26 +15,32 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/vlanPools',
     newApi: true
   },
+  */
   getNetwork: {
     method: 'get',
-    url: '/networks/:networkId',
+    //url: '/networks/:networkId',
+    url: '/wifiNetworks/:networkId',
     newApi: true
   },
   addNetworkDeep: {
     method: 'post',
-    url: '/networks',
+    //url: '/networks',
+    url: '/wifiNetworks',
     newApi: true
   },
   updateNetworkDeep: {
     method: 'put',
-    url: '/networks/:networkId',
+    //url: '/networks/:networkId',
+    url: '/wifiNetworks/:networkId',
     newApi: true
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/networks/:networkId',
+    //url: '/networks/:networkId',
+    url: '/wifiNetworks/:networkId',
     newApi: true
   },
+  /*
   addNetworkVenue: {
     method: 'post',
     url: '/networkActivations',
@@ -310,13 +316,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getApRadioCustomization: {
     method: 'get',
     //url: '/venues/aps/:serialNumber/radioSettings',
-    url: '/venues//:venueId/aps/:serialNumber/radioSettings',
+    url: '/venues/:venueId/aps/:serialNumber/radioSettings',
     newApi: true
   },
   updateApRadioCustomization: {
     method: 'put',
     //url: '/venues/aps/:serialNumber/radioSettings',
-    url: '/venues//:venueId/aps/:serialNumber/radioSettings',
+    url: '/venues/:venueId/aps/:serialNumber/radioSettings',
     newApi: true
   },
   pingAp: {

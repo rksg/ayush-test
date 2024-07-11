@@ -18,7 +18,8 @@ import {
   useSearchInProgressWorkflowListQuery,
   useAdaptivePolicyListByQueryQuery,
   useGetCertificateTemplatesQuery,
-  useGetWifiOperatorListQuery
+  useGetWifiOperatorListQuery,
+  useGetLbsServerProfileListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -93,6 +94,7 @@ export default function MyPolicies () {
 function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -123,7 +125,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       type: PolicyType.CLIENT_ISOLATION,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedClientIsolationListQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
@@ -178,7 +180,9 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
     {
       type: PolicyType.VLAN_POOL,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetVLANPoolPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
+      totalCount: useGetVLANPoolPolicyViewModelListQuery(
+        { params, payload: { } , enableRbac }
+      ).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
     },
@@ -220,6 +224,16 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.LBS_SERVER_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetLbsServerProfileListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportLbs }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !supportLbs
     },
     {
       type: PolicyType.WORKFLOW,
