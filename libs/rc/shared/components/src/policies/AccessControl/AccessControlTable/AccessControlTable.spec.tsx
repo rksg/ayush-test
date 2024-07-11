@@ -148,7 +148,10 @@ describe('AccessControlTable', () => {
         (_, res, ctx) => res(
           ctx.json(avcApp)
         )
-      )
+      ), rest.get(AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
+        })
     )
   })
 
