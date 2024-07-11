@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { find, omit }                              from 'lodash'
+import { find }                                    from 'lodash'
 
 import {
   ApCompatibility,
