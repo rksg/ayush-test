@@ -11,11 +11,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     newApi: true
   },
+  */
   getWifiNetworksList: {
     method: 'post',
     url: '/wifiNetworks/query',
     newApi: true
   },
+  /*
   getNetworksDetailHeader: {
     // [New API] Path variable not match
     // method: 'get',
@@ -29,12 +31,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/networks/:networkId/venues',
     oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
-    newApi: true
-  },
-  getCloudpathList: {
-    method: 'get',
-    url: '/cloudpaths',
-    oldUrl: '/api/tenant/:tenantId/wifi/cloudpath',
     newApi: true
   },
   getDashboardOverview: {
@@ -108,6 +104,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
+  // deprecated:  use getApGroupsList as replacement
   getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
@@ -144,12 +141,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+  */
   getVenue: {
     method: 'get',
     url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+  /*
   deleteVenue: {
     method: 'delete',
     url: '/venues/:venueId',
@@ -264,21 +262,27 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueCityList: {
     method: 'post',
-    url: '/venues/citylist/query'
+    url: '/venues/citylist/query',
+    newApi: true
   },
-  /*
+  GetApPosition: {
+    method: 'get',
+    url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
+    newApi: true
+  },
   UpdateApPosition: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/floorPositions',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/position',
+    // url: '/venues/aps/:serialNumber/floorPositions',
+    url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
     newApi: true
   },
-  UpdateCloudpathServerPosition: {
-    method: 'put',
-    url: '/cloudpaths/:cloudpathServerId/floorPositions',
-    oldUrl: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions',
+  RemoveApPosition: {
+    method: 'delete',
+    // url: '/venues/aps/:serialNumber/floorPositions',
+    url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
     newApi: true
   },
+  /*
   getVenueApModels: {
     method: 'get',
     url: '/venues/:venueId/apModels',
@@ -308,7 +312,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
-  /*
   getVenueBssColoring: {
     method: 'get',
     //url: '/venues/:venueId/bssColoringSettings',
@@ -321,6 +324,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
+  /*
   getVenueLanPorts: {
     method: 'get',
     //url: '/venues/:venueId/lanPortSettings',
@@ -378,15 +382,21 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueRogueAp: {
     method: 'get',
-    //url: '/venues/:venueId/rogueApSettings',
     url: '/venues/:venueId/roguePolicySettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueRogueAp: {
     method: 'put',
-    //url: '/venues/:venueId/rogueApSettings',
     url: '/venues/:venueId/roguePolicySettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   getRogueApLocation: {
@@ -453,6 +463,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/historicalClients/query',
     newApi: true
   },
+  */
   getGuestsList: {
     method: 'post',
     url: '/guestUsers/query',
@@ -461,10 +472,10 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addGuestPass: {
     method: 'post',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
+  /*
   getApNetworkList: {
     method: 'post',
     url: '/aps/:serialNumber/networks/query',
@@ -476,12 +487,14 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/apGroups/:apGroupId/networks/query',
     newApi: true
   },
+  */
   getExternalProviders: {
     method: 'get',
-    url: '/networks/wisprProviders',
-    oldUrl: '/api/tenant/:tenantId/wifi/network/external-providers',
+    // url: '/networks/wisprProviders',
+    url: '/wifiNetworks/wisprProviders',
     newApi: true
   },
+  /*
   fetchBotAuth: {
     method: 'post',
     url: '/tenants/chatbot/idtoken',

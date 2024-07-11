@@ -1,14 +1,24 @@
 import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery }                 from '@acx-ui/analytics/components'
-import { Card, Descriptions, Loader, Subtitle }                                                     from '@acx-ui/components'
-import { DateFormatEnum, formatter }                                                                from '@acx-ui/formatter'
-import { CloseSymbol }                                                                              from '@acx-ui/icons'
-import { ApDeviceStatusEnum, APMeshRole, APView, ApViewModel, SwitchStatusEnum, transformApStatus } from '@acx-ui/rc/utils'
-import { useLocation }                                                                              from '@acx-ui/react-router-dom'
-import { noDataDisplay, useDateFilter }                                                             from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                     from '@acx-ui/utils'
+import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
+import { Card, Descriptions, Loader, Subtitle, Tooltip }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
+import { CloseSymbol, LeafSolidIcon }                                               from '@acx-ui/icons'
+import {
+  ApDeviceStatusEnum,
+  APMeshRole,
+  APView,
+  ApViewModel,
+  PowerSavingStatusEnum,
+  SwitchStatusEnum,
+  transformApStatus,
+  getPowerSavingStatusEnabledApStatus
+} from '@acx-ui/rc/utils'
+import { useLocation }                  from '@acx-ui/react-router-dom'
+import { noDataDisplay, useDateFilter } from '@acx-ui/utils'
+import type { AnalyticsFilter }         from '@acx-ui/utils'
 
 import IncidentStackedBar              from './IncidentStackedBar'
 import * as UI                         from './styledComponents'
@@ -50,6 +60,8 @@ export function APDetailsCard (props: {
     || apDetail?.apMac
     || $t({ defaultMessage: 'Unknown' }) // for unknown device
 
+  const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
+
   return <Card><Card.Title>
     <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
       <UI.NodeTitle
@@ -57,6 +69,19 @@ export function APDetailsCard (props: {
         // eslint-disable-next-line max-len
         to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
         {apName}
+        {isSupportPowerSavingMode && getPowerSavingStatusEnabledApStatus(
+          apDetail?.deviceStatus as ApDeviceStatusEnum,
+          apDetail?.powerSavingStatus as PowerSavingStatusEnum) &&
+          <Tooltip zIndex={9999}
+            title={$t(
+              { defaultMessage: 'Device is controlled by EcoFlexAI. '
+                + 'Radio may not be broadcasting.' }
+            )}
+            placement='top'
+          >
+            <LeafSolidIcon width={12} height={12} style={{ marginLeft: '4px' }} />
+          </Tooltip>
+        }
       </UI.NodeTitle>
       <Button
         size='small'

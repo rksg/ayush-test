@@ -40,7 +40,8 @@ import {
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
   useMspCustomerListQuery,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useMspRbacAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -173,6 +174,7 @@ export function ManageCustomer () {
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
@@ -211,6 +213,7 @@ export function ManageCustomer () {
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
   const [patchCustomer] = usePatchCustomerMutation()
+  const params = useParams()
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -219,7 +222,16 @@ export function ManageCustomer () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
+    { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacAssignment } = useTableQuery({
+    useQuery: useMspRbacAssignmentHistoryQuery,
+    defaultPayload: {},
+    option: {
+      skip: !isEntitlementRbacApiEnabled
+    }
+  })
+  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: Administrators } =

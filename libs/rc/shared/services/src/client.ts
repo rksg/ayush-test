@@ -25,7 +25,8 @@ import {
   ClientStatusEnum,
   UEDetail,
   ApiVersionEnum,
-  GetApiVersionHeader
+  GetApiVersionHeader,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -141,7 +142,7 @@ export const clientApi = baseClientApi.injectEndpoints({
 
         const fields = [ ...(arg.payload as { fields: string[] }).fields, 'devicesMac' ]
         const guestsListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonUrlsInfo.getGuestsList,
+          ...createHttpRequest(CommonRbacUrlsInfo.getGuestsList,
             arg.params,
             GetApiVersionHeader(ApiVersionEnum.v1_1)),
           body: JSON.stringify({ ...body, filters, fields })
@@ -254,6 +255,34 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
+    validateGuestPasswordByGuestId: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests,
+          params,
+          { ...GetApiVersionHeader(ApiVersionEnum.v1),
+            ...ignoreErrorModal
+          })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
+    validateGuestPassword: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.validateGuestPassword,
+          params,
+          { ...GetApiVersionHeader(ApiVersionEnum.v1),
+            ...ignoreErrorModal
+          })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.getGuests, params, {
@@ -351,7 +380,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addGuestPass,
+        const req = createHttpRequest(CommonRbacUrlsInfo.addGuestPass,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1))
         return {
@@ -531,6 +560,8 @@ export const {
   useGetGuestsMutation,
   useDeleteGuestMutation,
   useEnableGuestsMutation,
+  useValidateGuestPasswordMutation,
+  useValidateGuestPasswordByGuestIdMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useImportGuestPassMutation,

@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features }                                                                           from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                                                              from '@acx-ui/rc/components'
 import { networkApi, tunnelProfileApi }                                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo, getPolicyRoutePath, PolicyOperation, PolicyType, TunnelProfileUrls } from '@acx-ui/rc/utils'
@@ -94,9 +95,11 @@ describe('TunnelProfileDetail', () => {
     await checkNetworkTable()
   })
 
-  describe('when SD-LAN ready', () => {
+  describe('when SD-LAN ready, Keep Alive not ready', () => {
     beforeEach(() => {
-      jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE))
     })
 
     it('should display tunnel type', async () => {
@@ -111,6 +114,7 @@ describe('TunnelProfileDetail', () => {
       await screen.findByText('Tunnel Type')
       await screen.findByText('VxLAN')
       await checkNetworkTable()
+      expect(screen.queryByText('Network Segment Type')).not.toBeInTheDocument()
     })
 
     it('should display VxLAN as default tunnel type', async () => {
@@ -159,6 +163,31 @@ describe('TunnelProfileDetail', () => {
       await screen.findByText('VLAN-VxLAN')
       expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
       await checkNetworkTable()
+    })
+  })
+
+  describe('when SD-LAN and Keep Alive ready', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff =>(ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          || ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+    })
+
+    it('should display network segment type and keep alive related columns', async () => {
+      render(
+        <Provider>
+          <TunnelProfileDetail />
+        </Provider>, {
+          route: { params, path: detailPath }
+        })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(screen.getByText('Network Segment Type')).toBeInTheDocument()
+      expect(screen.queryByText('Tunnel Type')).not.toBeInTheDocument()
+      expect(screen.getByText('PMTU Timeout')).toBeInTheDocument()
+      expect(screen.getByText('PMTU Retries')).toBeInTheDocument()
+      expect(screen.getByText('Keep Alive Interval')).toBeInTheDocument()
+      expect(screen.getByText('Keep Alive Reties')).toBeInTheDocument()
     })
   })
 })

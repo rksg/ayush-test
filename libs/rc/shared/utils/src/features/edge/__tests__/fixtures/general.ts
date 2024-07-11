@@ -1,5 +1,5 @@
-import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
-import { ClusterNetworkSettings }                                                                                                                                                         from '../../../../types/edge'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
+import { ClusterNetworkSettings }                                                                                                                                                                                                                                                            from '../../../../types/edge'
 
 export const mockEdgeList = {
   fields: [
@@ -171,6 +171,7 @@ export const mockEdgeClusterList = {
       venueId: 'mock_venue_1',
       venueName: 'venue_1',
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
       edgeList: [
         {
           name: 'Smart Edge 1',
@@ -218,6 +219,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000002',
       venueName: 'venue_2',
       clusterStatus: 'test',
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
       edgeList: [
         {
           name: 'Smart Edge 4',
@@ -508,5 +510,15 @@ export const mockedHaNetworkSettings = {
       portName: 'port2'
     }],
     timeoutSeconds: 6
-  }]
+  }],
+  highAvailabilitySettings: {
+    fallbackSettings: {
+      enable: true,
+      schedule: {
+        type: ClusterHaFallbackScheduleTypeEnum.DAILY,
+        time: '00:00'
+      }
+    },
+    loadDistribution: ClusterHaLoadDistributionEnum.AP_GROUP
+  }
 } as ClusterNetworkSettings

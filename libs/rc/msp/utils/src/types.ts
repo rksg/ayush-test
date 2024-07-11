@@ -211,6 +211,13 @@ export interface MspAssignmentHistory {
   mspTenantId: string;
   trialAssignment: boolean;
   status: string;
+  // RBAC
+  licenseType?: string;
+  effectiveDate?: string;
+  expirationDate?: string;
+  isTrial?: boolean,
+  createdDate?: string;
+  revokedDate?: string;
 }
 
 export interface MspAssignmentSummary {

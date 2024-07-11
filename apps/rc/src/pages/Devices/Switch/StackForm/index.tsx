@@ -159,7 +159,7 @@ export function StackForm () {
   const [readOnly, setReadOnly] = useState(false)
   const [disableIpSetting, setDisableIpSetting] = useState(false)
   const [standaloneSwitches, setStandaloneSwitches] = useState([] as SwitchRow[])
-  const [currentFW, setCurrentFw] = useState('')
+  const [currentFw, setCurrentFw] = useState('')
   const [currentAboveTenFW, setCurrentAboveTenFw] = useState('')
   const [currentVenueFw, setCurrentVenueFw] = useState('')
   const [currentVenueAboveTenFw, setCurrentVenueAboveTenFw] = useState('')
@@ -236,10 +236,12 @@ export function StackForm () {
       )
 
       const switchFw = switchData.firmwareVersion
+      const venueId = switchData?.venueId || switchDetail?.venueId || ''
       const venueFw = venuesList.data.find(
-        venue => venue.id === switchData.venueId)?.switchFirmwareVersion?.id
+        venue => venue.id === venueId)?.switchFirmwareVersion?.id
       const venueAboveTenFw = venuesList.data.find(
-        venue => venue.id === switchData.venueId)?.switchFirmwareVersionAboveTen?.id
+        venue => venue.id === venueId)?.switchFirmwareVersionAboveTen?.id
+
       setCurrentFw(switchFw || venueFw || '')
       setCurrentAboveTenFw(switchFw || venueAboveTenFw || '')
       setCurrentVenueFw(venueFw || '')
@@ -336,10 +338,10 @@ export function StackForm () {
     if (activeSerialNumber) {
       const switchModel = getSwitchModel(activeSerialNumber) || ''
       setIsIcx7650(switchModel.includes('ICX7650'))
-      const miniMembers = getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+      const miniMembers = getStackUnitsMinLimitation(switchModel, currentFw, currentAboveTenFW)
       setTableData(data => [...data].splice(0, miniMembers))
     }
-  }, [activeSerialNumber, currentAboveTenFW, currentFW])
+  }, [activeSerialNumber, currentAboveTenFW, currentFw])
 
 
   useEffect(() => {
@@ -381,7 +383,7 @@ export function StackForm () {
   const [convertToStack] = useConvertToStackMutation()
 
   const hasBlockingTsb = function () {
-    return !checkVersionAtLeast09010h(currentFW) && isBlockingTsbSwitch
+    return !checkVersionAtLeast09010h(currentFw) && isBlockingTsbSwitch
 
   }
 
@@ -778,7 +780,7 @@ export function StackForm () {
     if (!enableStackUnitLimitationFlag) {
       return true
     }
-    return tableData.length < getStackUnitsMinLimitation(switchModel, currentFW, currentAboveTenFW)
+    return tableData.length < getStackUnitsMinLimitation(switchModel, currentFw, currentAboveTenFW)
   }
 
   return (
@@ -972,7 +974,7 @@ export function StackForm () {
                   <SwitchUpgradeNotification
                     switchModel={getSwitchModel(activeSerialNumber)}
                     stackUnitsMinLimitaion={getStackUnitsMinLimitation(
-                      getSwitchModel(activeSerialNumber)!, currentFW, currentAboveTenFW
+                      getSwitchModel(activeSerialNumber)!, currentFw, currentAboveTenFW
                     )}
                     venueFirmware={currentVenueFw}
                     venueAboveTenFirmware={currentVenueAboveTenFw}

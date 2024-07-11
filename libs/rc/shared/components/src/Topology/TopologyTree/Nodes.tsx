@@ -1,10 +1,19 @@
 import React, { useState, useEffect, MouseEvent, useContext } from 'react'
 
 import { HierarchyPointNode } from 'd3'
+import { useIntl }            from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud } from '@acx-ui/icons'
-import { DeviceTypes, NodeData, TopologyDeviceStatus }      from '@acx-ui/rc/utils'
+import { Tooltip }                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud, LeafSolidIcon } from '@acx-ui/icons'
+import {
+  DeviceTypes,
+  NodeData,
+  TopologyDeviceStatus,
+  PowerSavingStatusEnum,
+  getPowerSavingStatusEnabledTopologyStatus
+} from '@acx-ui/rc/utils'
 
 import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
@@ -25,6 +34,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
   let delayHandler: NodeJS.Timeout
   const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
   const { selectedNode, selectedVlanPortList } = useContext(TopologyTreeContext)
+  const { $t } = useIntl()
+  const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
 
   useEffect(() => {
     nodes
@@ -81,6 +92,9 @@ const Nodes: React.FC<NodeProps> = (props) => {
             (node.data?._children && node.data._children?.length > 0 ?
               `(${node.data._children.length})` : '')
           const deviceType = node.data.meshRole === 'EMAP' ? DeviceTypes.ApWired : node.data.type
+          const nodeName = children !== '' && node.data.id !== 'Cloud' && node.data.name ?
+            node.data.name.substring(0,6)+children+'...'
+            :truncateLabel(node.data.name || node.data.id, 11)
           return (
             <g
               transform={coordinateTransform(node)}
@@ -120,9 +134,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                     text-anchor='middle'
                     dy='13'
                   >
-                    {children !== '' && node.data.id !== 'Cloud' ?
-                      node.data.name.substring(0,8)+children+'...'
-                      :truncateLabel(node.data.name || node.data.id, 13)}
+                    {nodeName}
                   </text>
                 </g>
               </g>
@@ -158,6 +170,24 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   />
                 </g>
               )}
+              {isSupportPowerSavingMode && getPowerSavingStatusEnabledTopologyStatus(
+                node.data.status as TopologyDeviceStatus,
+                node.data.powerSavingStatus as PowerSavingStatusEnum) &&
+                <Tooltip
+                  title={$t(
+                    { defaultMessage: 'Device is controlled by EcoFlexAI. '
+                      + 'Radio may not be broadcasting.' }
+                  )}
+                  placement='bottom'
+                >
+                  <LeafSolidIcon
+                    x={nodeName.length*3/2 + (nodeName.includes('...') ? 0:2)}
+                    y={9}
+                    width={6}
+                    height={6}
+                  />
+                </Tooltip>
+              }
             </g>
           )
         })}

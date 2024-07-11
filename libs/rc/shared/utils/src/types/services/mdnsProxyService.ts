@@ -4,6 +4,10 @@ export class MdnsProxyForwardingRule extends BonjourGatewayRule {
   id?: string
 }
 
+export class NewMdnsProxyForwardingRule extends BonjourGatewayRule {
+  ruleIndex?: number
+}
+
 export interface MdnsProxyScopeData {
   venueId: string;
   venueName?: string;
@@ -15,6 +19,15 @@ export interface MdnsProxyFormData {
   name: string;
   rules?: MdnsProxyForwardingRule[];
   scope?: MdnsProxyScopeData[];
+  oldScope?: MdnsProxyScopeData[];
+}
+
+export interface NewMdnsProxyData {
+  id?: string
+  name: string
+  rules?: NewMdnsProxyForwardingRule[]
+  venueIds?: string[]
+  apSerialNumbers?: string[]
 }
 
 export interface MdnsProxyCreateApiPayload {
@@ -40,10 +53,16 @@ export interface MdnsProxyAp {
   rules: MdnsProxyForwardingRule[]
 }
 
+export interface MdnsActivation {
+  venueId: string,
+  apSerialNumbers: string[]
+}
+
 export interface MdnsProxyViewModel {
   id: string;
   name: string;
   rules: MdnsProxyForwardingRule[];
   tenantId: string;
   venueIds?: string[];
+  activations?: MdnsActivation[];
 }

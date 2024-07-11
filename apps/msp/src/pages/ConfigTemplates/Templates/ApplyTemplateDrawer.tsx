@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
@@ -10,6 +10,7 @@ import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/se
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
 
+import HspContext                                                                         from '../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
 import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
 import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
@@ -17,6 +18,7 @@ import { OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateO
 
 import * as UI          from './styledComponents'
 import { useEcFilters } from './templateUtils'
+
 
 const mspUtils = MSPUtils()
 
@@ -39,6 +41,8 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     isOverridable,
     createOverrideModalProps
   } = useConfigTemplateOverride(selectedTemplate, selectedRows)
+
+  const { state: hspState } = useContext(HspContext)
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -63,10 +67,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
       return applyConfigTemplate({
         params: { templateId: selectedTemplate.id, tenantId: ec.id },
-        ...(overrideValue
-          ? { payload: transformOverrideValues(overrideValue) }
-          : {}
-        )
+        payload: transformOverrideValues(overrideValue)
       }).unwrap()
     })
 
@@ -194,7 +195,11 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - Brand Properties' })}
+        title={$t({ defaultMessage: 'Apply Templates - {customerType}' }, {
+          customerType: hspState.isHsp
+            ? $t({ defaultMessage: 'Brand Properties' })
+            : $t({ defaultMessage: 'MSP Customers' })
+        })}
         visible={true}
         onClose={onClose}
         footer={footer}

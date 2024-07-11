@@ -13,8 +13,8 @@ import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined } from '@acx-ui/icons'
 import {
   useAddFloorPlanMutation, useApListQuery, useDeleteFloorPlanMutation,
   useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery,
+  useRemoveApPositionMutation,
   useUpdateApPositionMutation,
-  useUpdateCloudpathServerPositionMutation,
   useUpdateFloorPlanMutation,
   useUpdateRwgPositionMutation,
   useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
@@ -69,13 +69,13 @@ export function FloorPlan () {
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const defaultDevices = {
     ap: [],
     switches: [],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
     DP: [],
     rwg: []
   } as TypeWiseNetworkDevices
@@ -190,9 +190,9 @@ export function FloorPlan () {
   ] = useUpdateApPositionMutation()
 
   const [
-    updateCloudpathServerPosition,
-    { isLoading: isUpdateCloudpathServerPosition }
-  ] = useUpdateCloudpathServerPositionMutation()
+    removeApPosition,
+    { isLoading: isRemoveApPosition }
+  ] = useRemoveApPositionMutation()
 
   const [
     updateRwgPosition,
@@ -256,9 +256,8 @@ export function FloorPlan () {
     const apsCount = get(unplacedDevices, 'ap.length', 0)
     const switchesCount = get(unplacedDevices, 'switches.length', 0)
     const lteApsCount = get(unplacedDevices, 'LTEAP.length', 0)
-    const coudpathsCount = get(unplacedDevices, 'cloudpath.length', 0)
     const rwgCount = get(unplacedDevices, 'rwg.length', 0)
-    return apsCount + switchesCount + lteApsCount + coudpathsCount + rwgCount
+    return apsCount + switchesCount + lteApsCount + rwgCount
   }
 
   const extractPlacedDevices = (deviceType: NetworkDeviceType,
@@ -344,19 +343,29 @@ export function FloorPlan () {
   function publishDevicePositionUpdate (device: NetworkDevice, clear: boolean) {
     switch (device.networkDeviceType) {
       case NetworkDeviceType.ap:
-        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: (clear ? clearDevicePositionValues : device.position) })
-        break
       case NetworkDeviceType.lte_ap:
-        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: (clear ? clearDevicePositionValues : device.position) })
+        if(clear && isUseWifiRbacApi) {
+          removeApPosition({
+            params: {
+              ...params,
+              floorplanId: device.floorplanId,
+              serialNumber: device.serialNumber
+            }
+          })
+        } else {
+          updateApPosition({
+            params: {
+              ...params,
+              floorplanId: device.position?.floorplanId,
+              serialNumber: device.serialNumber
+            },
+            payload: (clear ? clearDevicePositionValues : device.position),
+            enableRbac: isUseWifiRbacApi
+          })
+        }
         break
       case NetworkDeviceType.switch:
         updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: clear ? clearDevicePositionValues : device.position })
-        break
-      case NetworkDeviceType.cloudpath:
-        updateCloudpathServerPosition({ params: { ...params, cloudpathServerId: device.id },
           payload: clear ? clearDevicePositionValues : device.position })
         break
       case NetworkDeviceType.rwg:
@@ -391,8 +400,7 @@ export function FloorPlan () {
       { isLoading: false, isFetching: isAddFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateSwitchPosition },
-      { isLoading: false, isFetching: isUpdateApPosition },
-      { isLoading: false, isFetching: isUpdateCloudpathServerPosition },
+      { isLoading: false, isFetching: isUpdateApPosition || isRemoveApPosition },
       { isLoading: false, isFetching: isUpdateRwgPosition }
     ]}>
       {floorPlans?.length ?

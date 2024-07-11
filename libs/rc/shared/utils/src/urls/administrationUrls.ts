@@ -7,6 +7,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId',
     newApi: true
   },
+  updateTenantSelf: {
+    method: 'PATCH',
+    url: '/tenants/self',
+    newApi: true
+  },
   getRegisteredUsersList: {
     method: 'get',
     url: '/admins/registered',
@@ -320,6 +325,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deleteNotificationSmsProvider: {
     method: 'delete',
     url: '/notifications/sms/providers/:provider',
+    newApi: true
+  },
+  getTwiliosIncomingPhoneNumbers: {
+    method: 'post',
+    url: '/notifications/sms/providers/twilios/incomingPhoneNumbers',
     newApi: true
   }
 }

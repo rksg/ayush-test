@@ -18,7 +18,7 @@ import GenericError from '../../GenericError'
 import * as UI      from '../styledComponents'
 
 
-export type PillData = { success: number, total: number, length?: number }
+export type PillData = { success: number, total: number, length?: number, maxCount?: number }
 
 export const transformTSResponse = (
   { data, time }: KPITimeseriesResponse,
@@ -30,11 +30,14 @@ export const transformTSResponse = (
         moment(window.startDate), moment(window.endDate), undefined, '[]'
       )
     )
-  const [success, total] = filteredData.reduce(([success, total], datum) => (
-    datum && datum.length && (datum[0] !== null && datum[1] !== null )
-      ? [success + datum[0], total + datum[1]] : [success, total]
-  ), [0, 0])
-  return { success, total, length: filteredData.length }
+  const [success, total, length, maxCount] = filteredData
+    .reduce(([success, total,length,maxCount], datum) => (
+      datum && datum.length && (datum[0] !== null && datum[1] !== null )
+        ? [success + datum[0], total + datum[1], length + 1, Math.max(maxCount,datum[1])]
+        : [success, total, length, maxCount]
+    ), [0, 0, 0, 0])
+
+  return { success, total, length, maxCount }
 }
 
 export const tranformHistResponse = (
@@ -86,10 +89,10 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
   })
   const queryResults = histogram ? histogramQuery : timeseriesQuery
 
-  const { success, total, length } = queryResults.data as PillData
+  const { success, total, length, maxCount } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) : 0
 
-  return { queryResults, percent, length }
+  return { queryResults, percent, length, maxCount }
 }
 
 function HealthPill ({ filters, kpi, timeWindow, threshold }: {
@@ -103,7 +106,7 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { queryResults, percent } = usePillQuery({
     kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
-  let { success, total, length } = queryResults.data as PillData
+  let { success, total, length, maxCount } = queryResults.data as PillData
   // We need this check in case if wrong data is reported by an ICX.
   if ( success > total) success = total
 
@@ -112,7 +115,8 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const translatedDesc = description
     ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
       avgSuccessCount: countFormat(Math.ceil(success/(length || 1))),
-      avgTotalCount: countFormat(Math.ceil(total/(length || 1))) })
+      avgTotalCount: countFormat(Math.ceil(total/(length || 1))),
+      maxCount })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {

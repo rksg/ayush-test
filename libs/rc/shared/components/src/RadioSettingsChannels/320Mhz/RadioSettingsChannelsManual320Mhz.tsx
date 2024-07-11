@@ -12,6 +12,8 @@ import { ChannelButtonTextRender } from '@acx-ui/rc/utils'
 import { RadioChannel }  from '../../RadioSettings/RadioSettingsContents'
 import { CheckboxGroup } from '../styledComponents'
 
+import { ChannelGroup320MhzEnum, defaultStates } from './ChannelComponentStates'
+
 import type { RadioChangeEvent }  from 'antd'
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
@@ -107,11 +109,23 @@ export function RadioSettingsChannelsManual320Mhz (props: {
     const manualChannels = _.clone(ChannelGroup_320MHz_Manual)
     const supportedChannel: string[] = []
     props.channelList.forEach((channel) => { supportedChannel.push(channel.value)})
-    const shouldDisplay320MhzGroup1 = _.intersection(ChannelGroup_320MHz_Manual['320MHz-1'], supportedChannel)
-    const shouldDisplay320MhzGroup2 = _.intersection(ChannelGroup_320MHz_Manual['320MHz-2'], supportedChannel)
 
-    _.set(manualChannels, '320MHz-1', shouldDisplay320MhzGroup1)
-    _.set(manualChannels, '320MHz-2', shouldDisplay320MhzGroup2)
+    const get320MhzChannelsbyGroup = (assignedGroup: ChannelGroup320MhzEnum) => {
+      let channelsByGroup: string[] = []
+      _.forIn(defaultStates.ChannelGroup_320MHz, function (value){
+        if(value.group === assignedGroup){
+          const interSet = _.intersection(value.channels, supportedChannel)
+          if (!_.isEmpty(interSet) && interSet.length > channelsByGroup.length) {
+            channelsByGroup = interSet
+          }
+        }
+      })
+
+      return channelsByGroup
+    }
+
+    _.set(manualChannels, '320MHz-1', get320MhzChannelsbyGroup(ChannelGroup320MhzEnum.Group1))
+    _.set(manualChannels, '320MHz-2', get320MhzChannelsbyGroup(ChannelGroup320MhzEnum.Group2))
     setManualGroupChannelState(manualChannels)
 
   }, [form, props.formName])

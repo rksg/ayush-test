@@ -70,6 +70,7 @@ export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
+  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
   const filters = {
     includeExpired: ['true']
@@ -485,7 +486,11 @@ export const GuestsTable = () => {
         maxSize={CsvSize['5MB']}
         maxEntries={250}
         acceptType={['csv']}
-        templateLink='assets/templates/guests_import_template.csv'
+        templateLink={
+          isGuestManualPasswordEnabled ?
+            'assets/templates/guests_import_template_with_guestpass.csv' :
+            'assets/templates/guests_import_template.csv'
+        }
         visible={importVisible}
         isLoading={importResult.isLoading}
         importError={importResult.error as FetchBaseQueryError}

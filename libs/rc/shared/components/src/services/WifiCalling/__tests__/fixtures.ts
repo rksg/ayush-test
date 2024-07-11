@@ -54,8 +54,49 @@ export const mockWifiCallingTableResult = {
   ]
 }
 
+export const mockRbacWifiCallingTableResult = {
+  fields: ['ePDGs', 'epdg', 'qosPriority', 'networkIds', 'epdgs', 'name', 'tenantId', 'id'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'b6ebccae545c44c1935ddaf746f5b048',
+      name: 'wifi-1',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      wifiNetworkIds: ['network-1'],
+      tenantId: '1977de24c7824b0b975c4d02806e081f',
+      epdgs: [
+        {
+          domain: 'a.b.comd'
+        }
+      ]
+    }
+  ]
+}
+
 export const mockWifiCallingDetail = {
   networkIds: [
+    '44c5604da90443968e1ee91706244e63',
+    'c8cd8bbcb8cc42caa33c991437ecb983',
+    '5cae9e28662447008ea86ec7c339661b'
+  ],
+  description: 'for test',
+  qosPriority: 'WIFICALLING_PRI_VOICE',
+  serviceName: 'wifiCSP1',
+  id: 'wifiCallingServiceId1',
+  epdgs: [
+    {
+      ip: '1.2.3.4',
+      domain: 'abc.com'
+    },
+    {
+      domain: 'def.com'
+    }
+  ]
+}
+
+export const mockRbacWifiCallingDetail = {
+  wifiNetworkIds: [
     '44c5604da90443968e1ee91706244e63',
     'c8cd8bbcb8cc42caa33c991437ecb983',
     '5cae9e28662447008ea86ec7c339661b'

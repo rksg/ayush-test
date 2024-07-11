@@ -20,6 +20,7 @@ import { EnableR1Beta }                  from './EnableR1Beta'
 import { MapRegionFormItem }             from './MapRegionFormItem'
 import { MFAFormItem }                   from './MFAFormItem'
 import { RecoveryPassphraseFormItem }    from './RecoveryPassphraseFormItem'
+import { SmsProviderItem }               from './SmsProviderItem'
 import * as UI                           from './styledComponents'
 
 interface AccountSettingsProps {
@@ -50,6 +51,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
+  const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
 
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
@@ -71,13 +73,20 @@ const AccountSettings = (props : AccountSettingsProps) => {
         layout='horizontal'
         labelAlign='left'
       >
-        <StepsForm.DescriptionWrapper>
+        <StepsForm.TextContent>
           <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
           { (isPrimeAdminUser && isI18n) && (
             <>
               <Divider />
               <DefaultSystemLanguageFormItem />
+            </>
+          )}
+
+          { isSmsProviderEnabled && (
+            <>
+              <Divider />
+              <SmsProviderItem/>
             </>
           )}
 
@@ -136,7 +145,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
               />
             </>
           )}
-        </StepsForm.DescriptionWrapper>
+        </StepsForm.TextContent>
       </Form>
     </Loader>
   )

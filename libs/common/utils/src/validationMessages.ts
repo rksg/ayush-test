@@ -471,8 +471,12 @@ export const validationMessages = {
     description: 'Validation - Venue minimum floor checks'
   }),
   EnableAFCButNoVenueHeight: defineMessage({
-    defaultMessage: 'Enable AFC but no venue height was set.',
+    defaultMessage: 'Enable AFC but no <venueSingular></venueSingular> height was set.',
     description: 'Validation - Enable AFC venue height checks'
+  }),
+  guestPasswordInvalid: defineMessage({
+    defaultMessage: 'Guest password is invalid.',
+    description: 'Validation - Guest password check'
   })
 }
 

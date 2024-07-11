@@ -1,3 +1,4 @@
+import { formatter }                   from '@acx-ui/formatter'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -5,14 +6,14 @@ import {
   screen }  from '@acx-ui/test-utils'
 import { AnalyticsFilter } from '@acx-ui/utils'
 
-import { moreDetailsDataFixture, noDataFixture } from './__tests__/fixtures'
-import { WidgetType }                            from './config'
-import { MoreDetailsPieChart, transformData }    from './HealthPieChart'
-import { moreDetailsApi }                        from './services'
+import { moreDetailsDataFixture, noDataFixture }                from './__tests__/fixtures'
+import { WidgetType }                                           from './config'
+import { MoreDetailsPieChart, tooltipFormatter, transformData } from './HealthPieChart'
+import { moreDetailsApi }                                       from './services'
 
 const switchInfo = {
   mac: 'mac1',
-  name: ''
+  name: 'switch1'
 }
 const switchDetails = {
   serial: '',
@@ -33,6 +34,7 @@ describe('MoreDetailsPieChart', () => {
       render(
         <Provider>
           <MoreDetailsPieChart
+            title='test'
             filters={{
               filter: {},
               startDate: '2021-12-31T00:00:00+00:00',
@@ -42,7 +44,7 @@ describe('MoreDetailsPieChart', () => {
           'congestion' | 'portStorm'} />
         </Provider>
       )
-      expect(await screen.findByText(`switch1-${queryType}`)).toBeVisible()
+      expect(await screen.findByText(`switch1-${queryType} (mac1)`)).toBeVisible()
     })
   it('should show "Top 5" in title when top 5 is available', async () => {
     let moreDetailsDataFixtureCopy = moreDetailsDataFixture
@@ -62,6 +64,7 @@ describe('MoreDetailsPieChart', () => {
     render(
       <Provider>
         <MoreDetailsPieChart
+          title='test'
           filters={{
             filter: {},
             startDate: '2021-12-31T00:00:00+00:00',
@@ -76,10 +79,16 @@ describe('MoreDetailsPieChart', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: noDataFixture })
     render(
       <Provider>
-        <MoreDetailsPieChart filters={{} as AnalyticsFilter} queryType='cpuUsage' />
+        <MoreDetailsPieChart title='test' filters={{} as AnalyticsFilter} queryType='cpuUsage' />
       </Provider>
     )
     expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+
+  describe('tooltipFormatter', () => {
+    it('returns formatted values and percentage', () => {
+      expect(tooltipFormatter(50, formatter('countFormat'))(25)).toEqual('50% (25)')
+    })
   })
 })
 
@@ -126,7 +135,7 @@ describe('transformData', () => {
   ]
   it.each(metricsData)('should transform data correctly', ({ key, value }) => {
     const expectedPieChartData = [
-      { mac: 'mac1', value: 80, name: '', color: '#66B1E8' }
+      { mac: 'mac1', value: 80, name: 'switch1 (mac1)', color: '#66B1E8' }
     ]
     const result = transformData(key as WidgetType, value)
     expect(result).toEqual(expectedPieChartData)

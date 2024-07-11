@@ -1,3 +1,4 @@
+import moment                        from 'moment'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -16,7 +17,12 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
   const { $t } = useIntl()
   const { filters: widgetFilters, noSwitches } = props
   const { filters } = useAnalyticsFilter()
-  const healthPageFilters = widgetFilters ? widgetFilters : filters
+  const healthPageFilters = {
+    ...filters,
+    ...widgetFilters,
+    startDate: moment(widgetFilters?.startDate || filters.startDate).tz('UTC').format(),
+    endDate: moment(widgetFilters?.endDate || filters.endDate).tz('UTC').format()
+  }
 
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
@@ -26,7 +32,7 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
     <FormattedMessage
       defaultMessage={
       // eslint-disable-next-line max-len
-        'Data is displayed for switches with firmware version <b>10.0.10c</b> and SmartZone version <b>7.x</b> or above.'
+        'Data is displayed for switches with firmware version <b>10.0.10d</b> and SmartZone version <b>7.x</b> or above.'
       }
       values={{
         b: (content) => <b >{content}</b>
@@ -35,7 +41,7 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
     :
     <FormattedMessage
       defaultMessage={
-        'Data is displayed for switches with firmware version <b>10.0.10c</b> or above.'
+        'Data is displayed for switches with firmware version <b>10.0.10d</b> or above.'
       }
       values={{
         b: (content) => <b >{content}</b>

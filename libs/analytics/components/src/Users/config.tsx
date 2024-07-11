@@ -201,7 +201,6 @@ export const drawerContentConfig: DrawerContentConfig = {
       labelKey: defineMessage({ defaultMessage: '3rd Party User' }),
       component: Disclaimer,
       componentProps: () => ({
-        className: 'description greyText',
         style: {
           width: '350px',
           display: 'flex',
@@ -218,7 +217,6 @@ export const drawerContentConfig: DrawerContentConfig = {
         type invitedUser = Partial<ManagedUser> & { disclaimerChecked: boolean }
         const { $t } = getIntl()
         return {
-          className: 'description greyText',
           style: {
             width: '350px',
             display: 'flex',

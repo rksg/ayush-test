@@ -31,7 +31,7 @@ exports[`OverviewTab should render correctly 1`] = `
             >
               Data is displayed for switches with firmware version 
               <b>
-                10.0.10c
+                10.0.10d
               </b>
                or above.
             </div>
@@ -90,7 +90,7 @@ exports[`OverviewTab should render correctly when IS_MLISA_SA 1`] = `
             >
               Data is displayed for switches with firmware version 
               <b>
-                10.0.10c
+                10.0.10d
               </b>
                and SmartZone version 
               <b>
@@ -153,7 +153,7 @@ exports[`OverviewTab should render correctly with filter passed as props 1`] = `
             >
               Data is displayed for switches with firmware version 
               <b>
-                10.0.10c
+                10.0.10d
               </b>
                or above.
             </div>

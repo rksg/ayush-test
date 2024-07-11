@@ -92,7 +92,7 @@ describe('Venues Table', () => {
     const editButton = screen.getByRole('button', { name: /edit/i })
     await userEvent.click(editButton)
     expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      `${venuelist?.data?.[0].id}/edit/details`,
+      `${venuelist?.data?.[0].id}/edit/`,
       { replace: false }
     )
   })
@@ -183,7 +183,7 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>

@@ -4,14 +4,15 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetApGroupQuery, useGetApGroupTemplateQuery,
-  useGetVLANPoolPolicyViewModelListQuery, useGetVLANPoolPolicyViewModeTemplateListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useLazyApGroupNetworkListQuery,
   useLazyApGroupNetworkListV2Query,
-  useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
+  useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -23,7 +24,7 @@ import {
 
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
 import { usePathBasedOnConfigTemplate }                  from '../../configTemplates'
-import { ApGroupEditContext }                            from '../index'
+import { ApGroupEditContext }                            from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'
@@ -55,7 +56,9 @@ export function ApGroupVlanRadioTab () {
   const {
     isEditMode,
     isApGroupTableFlag,
-    setEditContextData
+    isWifiRbacEnabled,
+    setEditContextData,
+    venueId: contextVenueId
   } = useContext(ApGroupEditContext)
 
   const { tenantId, apGroupId = '' } = useParams()
@@ -71,9 +74,10 @@ export function ApGroupVlanRadioTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !(isApGroupTableFlag && isEditMode),
+    skip: !(isApGroupTableFlag && isEditMode) || (isWifiRbacEnabled && !contextVenueId),
     payload: null,
-    extraParams: { tenantId, apGroupId }
+    extraParams: { tenantId, apGroupId, venueId: contextVenueId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
@@ -213,7 +217,7 @@ export function ApGroupVlanRadioTab () {
 export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
   const { tenantId } = useParams()
   const { isTemplate } = useConfigTemplate()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
     vlanPoolingNameMap: data?.data
       ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
@@ -230,13 +234,14 @@ export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
 
   const vlanPoolingNonTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId },
-    payload: vlanPoolPayload
+    payload: vlanPoolPayload,
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: skipQuery || isTemplate,
     selectFromResult: transformVlanPoolData
   })
 
-  const vlanPoolingTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModeTemplateListQuery({
+  const vlanPoolingTemplate: VlanPoolNameMapType = useGetEnhancedVlanPoolPolicyTemplateListQuery({
     params: { tenantId },
     payload: vlanPoolPayload
   }, {

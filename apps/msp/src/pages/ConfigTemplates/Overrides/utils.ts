@@ -54,7 +54,9 @@ export function useConfigTemplateOverride (selectedTemplate: ConfigTemplate, sel
   }
 }
 
-export function transformOverrideValues (entity: OverrideEntitiyType): ApplyConfigTemplatePaylod {
+export function transformOverrideValues (entity?: OverrideEntitiyType): ApplyConfigTemplatePaylod {
+  if (!entity) return { overrides: [] }
+
   const values = flattenObject(entity)
 
   return {

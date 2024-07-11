@@ -148,11 +148,19 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       }
     }),
     getFirmwareVersionIdList: build.query<string[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getFirmwareVersionIdList, params)
-        return {
-          ...req
+      query: ({ params, enableRbac }) => {
+        const apiHeaders = enableRbac ? v1Header : {}
+        // eslint-disable-next-line max-len
+        const apiInfo = FirmwareUrlsInfo[enableRbac ? 'getDistinctFirmwareIdList' : 'getFirmwareVersionIdList']
+
+        return createHttpRequest(apiInfo, params, apiHeaders)
+      },
+      transformResponse: (response: string[] | { id: string }[], _meta, arg: RequestPayload) => {
+        if (arg.enableRbac) {
+          const res = response as { id: string }[]
+          return res.map(r => r.id)
         }
+        return response as string[]
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
@@ -210,7 +218,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.skipSwitchUpgradeSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     updateSwitchVenueSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -227,7 +236,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -349,22 +359,24 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
         return {
-          data: result.upgradeStatusDetailsViewList
+          data: result.upgradeStatusDetailsViewList || result
         } as unknown as TableResult<SwitchFirmwareStatus>
       }
     }),
     getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = FirmwareUrlsInfo//TODO: enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchFirmwareList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify( payload )
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
         return {
-          data: result.upgradeSwitchViewList
+          data: result.upgradeSwitchViewList || result
         } as unknown as TableResult<SwitchFirmware>
       }
     }),
@@ -493,7 +505,23 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
-      query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+      query: ({ params, enableRbac }) => {
+        const apiHeaders = enableRbac ? v1Header : {}
+        // eslint-disable-next-line max-len
+        const apiInfo = FirmwareUrlsInfo[enableRbac ? 'getApModelScheduledFirmware' : 'getScheduledFirmware']
+
+        return createHttpRequest(apiInfo, params, apiHeaders)
+      },
+      // eslint-disable-next-line max-len
+      transformResponse: (response: CloudVersion | { id: string }[], _meta, arg: RequestPayload) => {
+        if (arg.enableRbac) {
+          const res = response as { id: string }[]
+          return {
+            scheduleVersionList: res.map(r => r.id)
+          }
+        }
+        return response as CloudVersion
+      }
     }),
     // eslint-disable-next-line max-len
     getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({

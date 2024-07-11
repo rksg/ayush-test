@@ -16,7 +16,7 @@ exports[`AP floorplan should render correctly 1`] = `
           href="/undefined/t/venues/7231da344778480d88f37f0cca1c534f/venue-details/overview"
           style="margin-left: 10px; line-height: 24px; font-size: 14px;"
         >
-          TEST_2
+          TEST_2 (0th Floor)
         </a>
       </div>
       <div
