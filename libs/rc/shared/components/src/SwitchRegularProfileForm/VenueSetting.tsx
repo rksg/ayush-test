@@ -80,6 +80,9 @@ export function VenueSetting () {
       form.setFieldValue('venues', currentData.venues)
       setVenueList(currentData.venues || [])
     }
+    if(currentData.applyOnboardOnly == null) {
+      form.setFieldValue('applyOnboardOnly', true)
+    }
   }, [tableQuery.data, currentData])
 
   const rowActions: TableProps<Venue>['rowActions'] = [
@@ -192,11 +195,11 @@ export function VenueSetting () {
                 <Form.Item
                   noStyle
                   name='applyOnboardOnly'
-                  valuePropName='checked'
-                  initialValue={true}
-                >
-                  <Switch />
-                </Form.Item>
+                />
+                <Switch
+                  onChange={(checked: boolean) => form.setFieldValue('applyOnboardOnly', checked)}
+                  defaultChecked={form.getFieldValue('applyOnboardOnly')}
+                />
                 <UI.ApplyOnboardOnlySpan>
                   {$t({ defaultMessage: 'Apply profile updates to existing switches' })}
                 </UI.ApplyOnboardOnlySpan>
