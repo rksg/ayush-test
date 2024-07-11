@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { pick }  from 'lodash'
 
+import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
@@ -31,6 +32,11 @@ jest.mock('@acx-ui/components', () => ({
   }
 }))
 
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
@@ -41,13 +47,6 @@ describe('AIDrivenRRM', () => {
     })
     jest.spyOn(require('./utils'), 'isDataRetained')
       .mockImplementation(() => true)
-  })
-  it('should match snapshot', async () => {
-    const { asFragment } = render(<AIDrivenRRM />, {
-      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
-      wrapper: Provider
-    })
-    expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render correctly', async () => {
@@ -77,5 +76,14 @@ describe('AIDrivenRRM', () => {
     expect(screen.getByRole('button', {
       name: 'Apply'
     })).toBeVisible()
+  })
+
+  it('should render correctly when IS_MLISA_SA is true', async () => {
+    mockGet.mockReturnValue('true')
+    const { asFragment } = render(<AIDrivenRRM />, {
+      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
+      wrapper: Provider
+    })
+    expect(asFragment()).toMatchSnapshot()
   })
 })

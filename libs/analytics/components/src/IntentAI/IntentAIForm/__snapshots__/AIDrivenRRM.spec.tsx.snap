@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AIDrivenRRM should match snapshot 1`] = `
+exports[`AIDrivenRRM should render correctly when IS_MLISA_SA is true 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -44,7 +44,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/undefined/t/analytics/intentAI"
+                  href="/intentAI"
                 >
                   IntentAI
                 </a>
@@ -97,14 +97,14 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
             class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
             <span>
-              Intent: 
+              Intent: Client density vs Client throughput
               <div
                 class="ant-divider ant-divider-vertical"
                 role="separator"
               />
             </span>
             <span>
-              Venue: 
+              Zone: 
             </span>
           </span>
         </div>
@@ -343,7 +343,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                               <span
                                 class="ant-descriptions-item-label"
                               >
-                                Venue
+                                Zone
                               </span>
                               <span
                                 class="ant-descriptions-item-content"
