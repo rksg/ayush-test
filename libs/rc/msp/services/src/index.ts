@@ -939,8 +939,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getMspUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const request = createHttpRequest(MspRbacUrlsInfo.getUploadURL, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const request = createHttpRequest(mspUrlsInfo.getUploadURL, params)
         return {
           ...request,
           body: payload

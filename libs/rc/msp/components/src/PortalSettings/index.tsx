@@ -31,16 +31,16 @@ import {
   useAddMspLabelMutation,
   useGetMspBaseURLQuery,
   useGetMspLabelQuery,
+  useGetMspUploadURLMutation,
   useUpdateMspLabelMutation
 } from '@acx-ui/msp/services'
 import {
   MspPortal,
   MspLogoFile
 } from '@acx-ui/msp/utils'
-import { PhoneInput }       from '@acx-ui/rc/components'
+import { PhoneInput }         from '@acx-ui/rc/components'
 import {
-  useExternalProvidersQuery,
-  useGetUploadURLMutation
+  useExternalProvidersQuery
 } from '@acx-ui/rc/services'
 import {
   emailRegExp,
@@ -92,7 +92,7 @@ export function PortalSettings () {
   const [loginLogoUrl, setLoginLogoUrl] = useState('')
   const [supportLogoUrl, setSupportLogoUrl] = useState('')
   const [alarmLogoUrl, setAlarmLogoUrl] = useState('')
-  const [getUploadURL] = useGetUploadURLMutation()
+  const [getUploadURL] = useGetMspUploadURLMutation()
 
   const [preferredProvider, setPreferredProvider] = useState<string>('')
   const [customProfileName, setCustomProfileName] = useState<string>('')
@@ -119,7 +119,7 @@ export function PortalSettings () {
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {
       const defaultList = await Promise.all(mspLabel.mspLogoFileDataList?.map((file) => {
-        return loadImageWithJWT(file.logo_fileuuid)
+        return loadImageWithJWT(file.logo_fileuuid, undefined, isRbacEnabled)
           .then((fileUrl) => {
             return {
               uid: file.logo_fileuuid,
@@ -134,16 +134,19 @@ export function PortalSettings () {
       setFileList(defaultList)
       setSelectedLogo('myLogo')
       mspLabel.logo_uuid
-        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid))
+        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid, undefined, isRbacEnabled))
         : setPortalLogoUrl(defaultPortalLogo)
       mspLabel.ping_login_logo_uuid
-        ? setLoginLogoUrl(await loadImageWithJWT(mspLabel.ping_login_logo_uuid))
+        ? setLoginLogoUrl(await loadImageWithJWT(mspLabel.ping_login_logo_uuid,
+          undefined, isRbacEnabled))
         : setLoginLogoUrl(defaultLoginLogo)
       mspLabel.ping_notification_logo_uuid
-        ? setSupportLogoUrl(await loadImageWithJWT(mspLabel.ping_notification_logo_uuid))
+        ? setSupportLogoUrl(
+          await loadImageWithJWT(mspLabel.ping_notification_logo_uuid, undefined, isRbacEnabled))
         : setSupportLogoUrl(defaultSupportLogo)
       mspLabel.alarm_notification_logo_uuid
-        ? setAlarmLogoUrl(await loadImageWithJWT(mspLabel.alarm_notification_logo_uuid))
+        ? setAlarmLogoUrl(await loadImageWithJWT(mspLabel.alarm_notification_logo_uuid,
+          undefined, isRbacEnabled))
         : setAlarmLogoUrl(defaultAlarmLogo)
     }
     if (provider) {
@@ -276,7 +279,8 @@ export function PortalSettings () {
       const extension: string = getFileExtension(file.name)
       return getUploadURL({
         params: { ...params },
-        payload: { fileExtension: extension }
+        payload: { fileExtension: extension },
+        enableRbac: isRbacEnabled
       }).unwrap().then((uploadUrl) => {
         fetch(uploadUrl.signedUrl, { method: 'put', body: file as unknown as File, headers: {
           'Content-Type': ''

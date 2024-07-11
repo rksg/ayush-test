@@ -122,10 +122,13 @@ export function updateJwtCache (newJwt: string) {
   }
 }
 
-export async function loadImageWithJWT (imageId: string, requestUrl?: string): Promise<string> {
+export async function loadImageWithJWT (imageId: string, requestUrl?: string,
+  enableRbac?: boolean): Promise<string> {
   const headers = { 'mode': 'no-cors', 'Content-Type': 'application/json',
     'Accept': 'application/json', ...getJwtHeaders() }
-  const url = getUrlWithNewDomain(requestUrl) || `/api/file/tenant/${getTenantId()}/${imageId}/url`
+  const rbacUrl = `/tenants/${imageId}/urls`
+  const url = getUrlWithNewDomain(requestUrl) ||
+             (enableRbac ? rbacUrl : `/api/file/tenant/${getTenantId()}/${imageId}/url`)
   const response = await fetch(url, { headers })
   if (!response.ok) {
     throw new Error(`Error! status: ${response.status}`)
