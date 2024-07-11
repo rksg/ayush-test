@@ -12,7 +12,8 @@ import {
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                          from '@acx-ui/user'
+import { WifiScopes }                                         from '@acx-ui/types'
+import { filterByAccess, hasPermission }                      from '@acx-ui/user'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
 import { AddModeProps }                    from '../../AccessControlForm'
@@ -99,6 +100,7 @@ const Layer2Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    scopeKey: [WifiScopes.CREATE],
     label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER2_POLICY,
     onClick: () => {
@@ -118,6 +120,7 @@ const Layer2Component = () => {
 
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -125,6 +128,7 @@ const Layer2Component = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -149,7 +153,10 @@ const Layer2Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={
+          // eslint-disable-next-line max-len
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+        }
       />
     </Form>
   </Loader>
