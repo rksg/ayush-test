@@ -341,10 +341,10 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
 export interface FirmwareVenuePerApModel {
   id: string;
   name: string;
-  isFirmwareUpToDate: boolean;
+  isApFirmwareUpToDate?: boolean;
   currentApFirmwares?: { apModel: string, firmware: string }[];
-  lastScheduleUpdate?: string;
-  nextSchedules?: Schedule[];
+  lastApFirmwareUpdate?: string;
+  nextApFirmwareSchedules?: Schedule[];
 }
 
 export interface ApModelFirmware {
