@@ -252,6 +252,52 @@ describe('Edge LAG table drawer', () => {
       expect(screen.getByRole('combobox', { name: 'Port Type' })).toBeDisabled()
     )
   })
+
+  it('different speed port should be disable when an port checked', async () => {
+    const mockEdgeLag = _.cloneDeep(mockedEdgeLagList.content[0])
+    mockEdgeLag.lagMembers = []
+    const mockEdgePortConfigDifferentMaxSpeed = _.cloneDeep(mockEdgePortConfig.ports)
+    mockEdgePortConfigDifferentMaxSpeed[0].maxSpeedCapa = 100.111
+    mockEdgePortConfigDifferentMaxSpeed[1].maxSpeedCapa = 222.222
+    render(
+      <Provider>
+        <LagDrawer
+          clusterId='test-cluster'
+          serialNumber='test-edge'
+          visible={true}
+          setVisible={() => {}}
+          data={mockEdgeLag as EdgeLag}
+          portList={mockEdgePortConfigDifferentMaxSpeed as EdgePort[]}
+          existedLagList={[]}
+          onAdd={async () => {}}
+          onEdit={async () => {}}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+    const portCheckboxes = screen.getAllByRole('checkbox', { name: /Port/i })
+    expect(portCheckboxes)
+      .toHaveLength(mockEdgePortConfigDifferentMaxSpeed.length)
+    let ifName = mockEdgePortConfigDifferentMaxSpeed[0].interfaceName
+    let portName = ifName.charAt(0).toUpperCase() + ifName.slice(1)
+    let portCheckBox = screen.getAllByRole('checkbox', { name: portName })[0]
+    await userEvent.click(portCheckBox)
+    expect(portCheckBox).toBeEnabled()
+
+    ifName = mockEdgePortConfigDifferentMaxSpeed[1].interfaceName
+    portName = ifName.charAt(0).toUpperCase() + ifName.slice(1)
+    portCheckBox = screen.getAllByRole('checkbox', { name: portName })[0]
+    expect(portCheckBox).toBeDisabled()
+
+    ifName = mockEdgePortConfigDifferentMaxSpeed[2].interfaceName
+    portName = ifName.charAt(0).toUpperCase() + ifName.slice(1)
+    portCheckBox = screen.getAllByRole('checkbox', { name: portName })[0]
+    expect(portCheckBox).toBeDisabled()
+
+    ifName = mockEdgePortConfigDifferentMaxSpeed[3].interfaceName
+    portName = ifName.charAt(0).toUpperCase() + ifName.slice(1)
+    portCheckBox = screen.getAllByRole('checkbox', { name: portName })[0]
+    expect(portCheckBox).toBeDisabled()
+  })
+
 })
 
 const checkLoaded = async (): Promise<void> => {
