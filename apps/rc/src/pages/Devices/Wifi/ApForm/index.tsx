@@ -97,7 +97,11 @@ export function ApForm () {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
 
-  const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
+  const { data: apList } = useApListQuery({
+    params: { tenantId },
+    payload: defaultApPayload,
+    enableRbac: isUseWifiRbacApi
+  })
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const { data: apDetails, isLoading: isApDetailsLoading }

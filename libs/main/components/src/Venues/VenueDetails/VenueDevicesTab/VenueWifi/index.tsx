@@ -28,7 +28,12 @@ import {
   retrievedCompatibilitiesOptions,
   useApGroupsFilterOpts
 } from '@acx-ui/rc/components'
-import { useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
+import {
+  useGetVenueSettingsQuery,
+  useMeshApsQuery,
+  useGetApCompatibilitiesVenueQuery,
+  useGetVenueMeshQuery
+} from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -238,6 +243,22 @@ function transformData (data: APMesh[]) {
   })
 }
 
+const useIsMeshEnabled = (venueId: string | undefined) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueWifiSetting } = useGetVenueSettingsQuery(
+    { params: { venueId } },
+    { skip: isWifiRbacEnabled })
+
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({
+    params: { venueId } },
+  { skip: !isWifiRbacEnabled })
+
+  return (isWifiRbacEnabled
+    ? venueMeshSettings?.enabled
+    : venueWifiSetting?.mesh?.enabled) ?? false
+}
+
 export function VenueWifi () {
   const { $t } = useIntl()
   const params = useParams()
@@ -248,11 +269,10 @@ export function VenueWifi () {
 
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
-  const [ enabledMesh, setEnabledMesh ] = useState(false)
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const apCompatibilityTenantId = sessionStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
-  const { data: venueWifiSetting } = useGetVenueSettingsQuery({ params })
+  const enabledMesh = useIsMeshEnabled(params.venueId)
 
   const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
     {
@@ -265,12 +285,6 @@ export function VenueWifi () {
     })
 
   const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [params.venueId] })
-
-  useEffect(() => {
-    if (venueWifiSetting) {
-      setEnabledMesh(!!venueWifiSetting?.mesh?.enabled)
-    }
-  }, [venueWifiSetting])
 
   useEffect(() => {
     if (incompatible > 0) {
@@ -394,6 +408,8 @@ export function VenueWifi () {
 
 export function VenueMeshApsTable () {
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const defaultPayload = {
     fields: [
       'clients',
@@ -421,7 +437,8 @@ export function VenueMeshApsTable () {
   const tableQuery = useTableQuery({
     useQuery: useMeshApsQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isWifiRbacEnabled
   })
 
   return (
