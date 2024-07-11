@@ -1,6 +1,6 @@
 import { render, screen } from '@acx-ui/test-utils'
 
-import { RecommendationDetails, transformDetailsResponse } from '../AIDrivenRRM/services'
+import { RecommendationDetails, transformDetailsResponse } from '../IntentAIForm/services'
 
 import { mockedRecommendationCRRM } from './__tests__/fixtures'
 import { StatusTrail }              from './StatusTrail'

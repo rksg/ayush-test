@@ -14,7 +14,7 @@ import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
 
-import { EnhancedRecommendation } from '../../AIDrivenRRM/services'
+import { EnhancedRecommendation } from '../../IntentAIForm/services'
 
 
 const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({

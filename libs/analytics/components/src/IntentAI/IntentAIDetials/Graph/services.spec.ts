@@ -2,7 +2,7 @@ import { recommendationBandMapping }             from '@acx-ui/components'
 import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { EnhancedRecommendation }                                                                               from '../../AIDrivenRRM/services'
+import { EnhancedRecommendation }                                                                               from '../../IntentAIForm/services'
 import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedRecommendationCRRM, mockedRecommendationCRRMApplied } from '../__tests__/fixtures'
 
 import { useCRRMQuery } from './services'

@@ -1,7 +1,7 @@
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { EnhancedRecommendation }                     from '../../AIDrivenRRM/services'
+import { EnhancedRecommendation }                     from '../../IntentAIForm/services'
 import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../__tests__/fixtures'
 
 import { DownloadRRMComparison } from './DownloadRRMComparison'

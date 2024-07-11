@@ -2,7 +2,7 @@ import { MomentInput } from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 
-import { RecommendationDetails, transformDetailsResponse } from '../AIDrivenRRM/services'
+import { RecommendationDetails, transformDetailsResponse } from '../IntentAIForm/services'
 
 import {
   mockedRecommendationCRRM

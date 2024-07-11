@@ -11,7 +11,7 @@ import { FixedAutoSizer }               from '../../DescriptionSection/styledCom
 import {
   useRecommendationCodeQuery,
   useConfigRecommendationDetailsQuery
-} from '../AIDrivenRRM/services'
+} from '../IntentAIForm/services'
 
 import { CrrmBenefits }                       from './CrrmBenefits'
 import { CrrmValuesExtra }                    from './CrrmValuesExtra'
