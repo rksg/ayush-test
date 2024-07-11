@@ -94,8 +94,16 @@ export const ImpactedClientsTable = ({
       dataIndex: 'localPortName',
       key: 'localPortName',
       fixed: 'left',
+      width: 160,
       disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Switch MAC' }),
+      dataIndex: 'switchId',
+      key: 'switchId',
+      show: false,
+      sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Name' }),
@@ -113,6 +121,7 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
+      width: 160,
       show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
@@ -154,7 +163,7 @@ export const ImpactedClientsTable = ({
           }}
         />
       </ChartTitle>
-      <Table
+      <Table<ImpactedClients>
         settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={data}

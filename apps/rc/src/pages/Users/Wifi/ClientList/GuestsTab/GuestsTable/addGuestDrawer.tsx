@@ -250,7 +250,7 @@ export type GuestResponse = {
   requestId: string,
   response: Guest | { data: Guest[], downloadUrl: string } }
 
-export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
+export function GuestFields ({ withBasicFields = true, from }: { withBasicFields?: boolean, from?: string }) {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
@@ -455,7 +455,8 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         options={numberOfDevicesOptions}
       />}
     />
-    {isGuestManualPasswordEnabled &&
+    {/* Only display Guest Pass when render from AddGuestDrawer*/}
+    {isGuestManualPasswordEnabled && (from === 'add') &&
     <Form.Item
       label={$t({ defaultMessage: 'Guest Pass' })}
       valuePropName={'checked'}
@@ -607,7 +608,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-          <GuestFields />
+          <GuestFields from={'add'} />
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
