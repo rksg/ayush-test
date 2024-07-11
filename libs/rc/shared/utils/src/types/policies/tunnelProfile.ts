@@ -5,7 +5,7 @@ export interface TunnelProfile {
   name: string
   tags: string
   mtuType: MtuTypeEnum
-  mtuSize: number
+  mtuSize?: number
   forceFragmentation: boolean
   ageTimeMinutes: number
   type: TunnelTypeEnum

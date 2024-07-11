@@ -16,6 +16,7 @@ import {
   ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   WifiCallingDetailContextType
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -53,6 +54,7 @@ export const WifiCallingDetailView = () => {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={ServiceType.WIFI_CALLING}
             oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}

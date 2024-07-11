@@ -105,7 +105,8 @@ export function FloorPlan () {
     params, payload: {
       fields: ['serialNumber', 'meshRole'],
       filters: { venueId: [params.venueId] }
-    }
+    },
+    enableRbac: isUseWifiRbacApi
   }, { skip: !isApMeshTopologyFFOn })
 
   // Set mesh role for unplaced AP
