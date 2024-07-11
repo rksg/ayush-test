@@ -17,7 +17,10 @@ import { applicationDetail, avcApp, avcCat }     from '../__tests__/fixtures'
 import { ApplicationDrawer } from './index'
 
 const applicationResponse = {
-  requestId: '508c529a-0bde-49e4-8179-19366f69f31f'
+  requestId: '508c529a-0bde-49e4-8179-19366f69f31f',
+  response: {
+    id: 'edac8b0c22e140cd95e63a9e81421576'
+  }
 }
 
 jest.mock('antd', () => {
@@ -155,6 +158,7 @@ describe('ApplicationDrawer Component with view mode', () => {
 })
 
 describe('ApplicationDrawer Component', () => {
+  const mockAddAppPolicyReq = jest.fn()
   beforeEach(() => {
     mockServer.use(
       rest.post(
@@ -162,9 +166,12 @@ describe('ApplicationDrawer Component', () => {
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))
       ), rest.post(
         AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
+        (_, res, ctx) => {
+          mockAddAppPolicyReq()
+          return res(
+            ctx.json(applicationResponse)
+          )
+        }
       ), rest.get(
         AccessControlUrls.getAvcCategory.url,
         (_, res, ctx) => res(
@@ -229,6 +236,8 @@ describe('ApplicationDrawer Component', () => {
     await screen.findByText(/rules \(1\)/i)
 
     await userEvent.click(screen.getAllByText('Save')[0])
+
+    await waitFor(() => expect(mockAddAppPolicyReq).toBeCalledTimes(1))
 
     mockServer.use(rest.post(
       AccessControlUrls.getEnhancedApplicationPolicies.url,

@@ -226,19 +226,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const policyIds = payload as string[]
           // eslint-disable-next-line max-len
-          const requests = policyIds.map(policyId => ({ params: { l2AclPolicyId: policyId }, payload: {} }))
-          return batchApi(
+          const requests = policyIds.map(policyId => ({ params: { l2AclPolicyId: policyId } }))
+          await batchApi(
             AccessControlUrls.delL2AclPolicyRbac,
             requests,
             fetchWithBQ
           )
+          return { data: {} as CommonResult }
         }
 
         const req = createHttpRequest(AccessControlUrls.delL2AclPolicies, params)
-        return {
-          ...req,
-          body: payload
-        }
+        const res = await fetchWithBQ({ ...req, body: payload })
+        return res.data ? { data: res.data as CommonResult } : { error: res.error as FetchBaseQueryError }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -285,18 +284,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const policyIds = payload as string[]
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { l3AclPolicyId: policyId }, payload: {} }))
-          return batchApi(
+          await batchApi(
             AccessControlUrls.delL3AclPolicyRbac,
             requests,
             fetchWithBQ
           )
+          return { data: {} as CommonResult }
         }
 
         const req = createHttpRequest(AccessControlUrls.delL3AclPolicies, params)
-        return {
-          ...req,
-          body: payload
-        }
+        const res = await fetchWithBQ({ ...req, body: payload })
+        return res.data ? { data: res.data as CommonResult } : { error: res.error as FetchBaseQueryError }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -352,19 +350,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const policyIds = payload as string[]
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { policyId: policyId }, payload: {} }))
-          return batchApi(
+          await batchApi(
             AccessControlUrls.deleteAccessControlProfileRbac,
             requests,
             fetchWithBQ
           )
+          return { data: {} as CommonResult }
         }
 
         // eslint-disable-next-line max-len
         const req = createHttpRequest(AccessControlUrls.deleteAccessControlProfiles, params)
-        return {
-          ...req,
-          body: payload
-        }
+        const res = await fetchWithBQ({ ...req, body: payload })
+        return res.data ? { data: res.data as CommonResult } : { error: res.error as FetchBaseQueryError }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -445,18 +442,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const policyIds = payload as string[]
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { devicePolicyId: policyId }, payload: {} }))
-          return batchApi(
+          await batchApi(
             AccessControlUrls.delDevicePolicyRbac,
             requests,
             fetchWithBQ
           )
+          return { data: {} as CommonResult }
         }
 
         const req = createHttpRequest(AccessControlUrls.delDevicePolicies, params)
-        return {
-          ...req,
-          body: payload
-        }
+        const res = await fetchWithBQ({ ...req, body: payload })
+        return res.data ? { data: res.data as CommonResult } : { error: res.error as FetchBaseQueryError }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
@@ -528,18 +524,17 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const policyIds = payload as string[]
           // eslint-disable-next-line max-len
           const requests = policyIds.map(policyId => ({ params: { applicationPolicyId: policyId }, payload: {} }))
-          return batchApi(
+          await batchApi(
             AccessControlUrls.delAppAclPolicyRbac,
             requests,
             fetchWithBQ
           )
+          return { data: {} as CommonResult }
         }
 
         const req = createHttpRequest(AccessControlUrls.delAppAclPolicies, params)
-        return {
-          ...req,
-          body: payload
-        }
+        const res = await fetchWithBQ({ ...req, body: payload })
+        return res.data ? { data: res.data as CommonResult } : { error: res.error as FetchBaseQueryError }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
