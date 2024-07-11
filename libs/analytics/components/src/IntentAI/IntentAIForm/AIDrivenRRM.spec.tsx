@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { pick }  from 'lodash'
 
-import { recommendationUrl, Provider }                                         from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { recommendationUrl, Provider }              from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockedRecommendationCRRM } from './__tests__/fixtures'
 import { AIDrivenRRM }              from './AIDrivenRRM'
@@ -14,6 +15,22 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   })
 }))
 
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  useStepFormContext: () => {
+    return {
+      initialValues: {
+        status: 'applyscheduled',
+        sliceValue: '21_US_Beta_Samsung',
+        updatedAt: '2023-06-26T00:00:25.772Z'
+      },
+      form: {
+        getFieldValue: () => 'partial'
+      }
+    }
+  }
+}))
+
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
@@ -22,41 +39,40 @@ describe('AIDrivenRRM', () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: { recommendation: mockedRecommendationCRRM }
     })
-    jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
+    jest.spyOn(require('./utils'), 'isDataRetained')
       .mockImplementation(() => true)
   })
   it('should match snapshot', async () => {
     const { asFragment } = render(<AIDrivenRRM />, {
-      route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
+      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
       wrapper: Provider
     })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
 
   it('should render correctly', async () => {
     render(<AIDrivenRRM />, {
-      route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
+      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
       wrapper: Provider
     })
-
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByText('Benefits')).toBeVisible()
     await userEvent.click(actions.getByRole('button', { name: 'Next' }))
-    await screen.findAllByRole('heading', { name: 'Intent Priority' })
 
-    expect(await screen.findByText('Potential trade-off')).toBeVisible()
+    await screen.findAllByRole('heading', { name: 'Intent Priority' })
+    expect(await screen.findByText('Potential trade-off?')).toBeVisible()
     const throughputRadio = screen.getByRole('radio', {
       name: 'High client throughput in sparse network'
     })
     await userEvent.click(throughputRadio)
     expect(throughputRadio).toBeChecked()
     await userEvent.click(actions.getByRole('button', { name: 'Next' }))
-    await screen.findAllByRole('heading', { name: 'Settings' })
 
+    await screen.findAllByRole('heading', { name: 'Settings' })
     await userEvent.click(actions.getByRole('button', { name: 'Next' }))
+
     await screen.findAllByRole('heading', { name: 'Summary' })
     expect(screen.getByRole('button', {
       name: 'Apply'

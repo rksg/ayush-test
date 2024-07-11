@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`settings should match snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="ant-row"
+    style="margin-left: -10px; margin-right: -10px;"
+  >
+    <div
+      class="ant-col ant-col-15"
+      style="padding-left: 10px; padding-right: 10px;"
+    >
+      <h3
+        class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
+      >
+        Settings
+      </h3>
+      <div
+        class="styledComponents__TextContent-sc-1ibvcih-10 gqfdQa"
+      >
+        <div
+          class="ant-typography"
+        >
+          This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.
+        </div>
+      </div>
+    </div>
+    <div
+      class="ant-col ant-col-7 ant-col-offset-2"
+      style="padding-left: 10px; padding-right: 10px;"
+    >
+      <div
+        class="styledComponents__SideNotes-sc-ki2m8o-1 esivym"
+      >
+        <h4
+          class="ant-typography"
+        >
+          Side Notes
+        </h4>
+        <h4
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__Subtitle-sc-1ibvcih-5 fPbHyn dnpHFP"
+        >
+          High client throughput in sparse network
+        </h4>
+        <div
+          class="styledComponents__TextContent-sc-1ibvcih-10 gqfdQa"
+        >
+          <div
+            class="ant-typography"
+          >
+            In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

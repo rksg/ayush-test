@@ -1,4 +1,4 @@
-import { render } from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { Summary } from './summary'
 
@@ -7,15 +7,16 @@ jest.mock('@acx-ui/components', () => ({
   useStepFormContext: () => {
     return {
       form: {
-        intentType: 'clientDensity'
+        getFieldValue: () => 'full'
       }
     }
   }
 }))
 
 describe('summary', () => {
-  it('should match snapshot', () => {
+  it('should match snapshot', async () => {
     const { asFragment } = render(<Summary />)
+    expect(await screen.findByText('High number of clients in a dense network')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 })

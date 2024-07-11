@@ -1,4 +1,4 @@
-import { render } from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { Settings } from './settings'
 
@@ -7,15 +7,16 @@ jest.mock('@acx-ui/components', () => ({
   useStepFormContext: () => {
     return {
       form: {
-        intentType: 'clientDensity'
+        getFieldValue: () => 'partial'
       }
     }
   }
 }))
 
 describe('settings', () => {
-  it('should match snapshot', () => {
+  it('should match snapshot', async () => {
     const { asFragment } = render(<Settings />)
+    expect(await screen.findByText('High client throughput in sparse network')).toBeVisible()
     expect(asFragment()).toMatchSnapshot()
   })
 })
