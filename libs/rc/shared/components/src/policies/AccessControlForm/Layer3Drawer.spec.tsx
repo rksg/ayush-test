@@ -264,6 +264,7 @@ describe('Layer3Drawer Component', () => {
 
     await screen.findByRole('option', { name: newLayer3Policy.name })
 
+    expect(screen.getByRole('option', { name: newLayer3Policy.name })).toBeVisible()
   })
 
   it.skip('Render Layer3Drawer component with ip option successfully', async () => {

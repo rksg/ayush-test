@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import { useTableQuery }                               from '@acx-ui/rc/utils'
 
@@ -27,13 +28,16 @@ function AccessControlTabs () {
 
   const [currentTab, setCurrentTab] = useState('accessControlSet')
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const onTabChange = (tab: string) => {
     setCurrentTab(tab)
   }
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   return (
