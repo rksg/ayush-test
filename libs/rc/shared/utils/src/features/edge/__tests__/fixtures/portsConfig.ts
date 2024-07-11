@@ -19,7 +19,8 @@ export const mockEdgePortConfig = {
       subnet: '255.255.255.0',
       gateway: '1.1.1.1',
       corePortEnabled: false,
-      interfaceName: 'port1'
+      interfaceName: 'port1',
+      maxSpeedCapa: 0
     },
     {
       id: '20b445af-7270-438d-88a3-a5a2219c377b',
@@ -33,7 +34,8 @@ export const mockEdgePortConfig = {
       subnet: '255.255.255.0',
       gateway: '',
       corePortEnabled: true,
-      interfaceName: 'port2'
+      interfaceName: 'port2',
+      maxSpeedCapa: 0
     },
     {
       id: 'cdecd42e-81e3-4d60-921c-6b05181a53ae',
@@ -47,7 +49,8 @@ export const mockEdgePortConfig = {
       subnet: '255.255.255.0',
       gateway: '',
       corePortEnabled: false,
-      interfaceName: 'port3'
+      interfaceName: 'port3',
+      maxSpeedCapa: 0
     },
     {
       id: '6fcbcfc2-c207-4e45-b392-1f529cd1d6d4',
@@ -61,7 +64,8 @@ export const mockEdgePortConfig = {
       subnet: '255.255.255.0',
       gateway: '',
       corePortEnabled: false,
-      interfaceName: 'port4'
+      interfaceName: 'port4',
+      maxSpeedCapa: 0
     },
     {
       id: '081a71a7-aaad-4a13-967b-1c82166de11a',
@@ -75,7 +79,8 @@ export const mockEdgePortConfig = {
       subnet: '255.255.255.0',
       gateway: '',
       corePortEnabled: false,
-      interfaceName: 'port5'
+      interfaceName: 'port5',
+      maxSpeedCapa: 0
     }
   ]
 }
