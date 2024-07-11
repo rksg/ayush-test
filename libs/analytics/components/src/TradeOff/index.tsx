@@ -3,7 +3,8 @@ import _                                           from 'lodash'
 
 import { TradeOffWrapper, HeaderWrapper, RowWrapper, DividerWrapper } from './styledComponents'
 
-type RawValue = string | number
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RawValue = any
 
 export type TradeOffRadio = RadioProps & {
   columns: React.ReactNode[]

@@ -27,11 +27,11 @@ export function Summary () {
           {$t(config.steps.sideNotes.title)}
         </Typography.Title>
         <StepsForm.Subtitle>
-          {$t(config.crrmIntent[intentPriority as IntentPriority]?.title)}
+          {$t(config.crrmIntent[config.isOptimized(intentPriority) as IntentPriority]?.title)}
         </StepsForm.Subtitle>
         <StepsForm.TextContent>
           <Typography.Paragraph>
-            {$t(config.crrmIntent[intentPriority as IntentPriority]?.content)}
+            {$t(config.crrmIntent[config.isOptimized(intentPriority) as IntentPriority]?.content)}
           </Typography.Paragraph>
         </StepsForm.TextContent>
       </UI.SideNotes>

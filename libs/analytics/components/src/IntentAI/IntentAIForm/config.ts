@@ -256,3 +256,5 @@ export const crrmIntent = {
     content: defineMessage({ defaultMessage: 'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })
   }
 }
+
+export const isOptimized = (value: boolean) => value ? 'full' : 'partial'

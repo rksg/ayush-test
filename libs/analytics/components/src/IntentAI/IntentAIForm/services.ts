@@ -107,7 +107,6 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   const tooltipContent = recommendedValueTooltipContent
   const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
   const firstAppliedAt = findLast(statusTrail, t => t.status === 'applied')?.createdAt
-  const intentType = code.includes('crrm') && 'clientDensity' // to be changed when confirmed intentType
   return {
     ...details,
     monitoring,
@@ -116,8 +115,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     category,
     summary,
     appliedOnce,
-    firstAppliedAt,
-    intentType
+    firstAppliedAt
   } as EnhancedRecommendation
 }
 
