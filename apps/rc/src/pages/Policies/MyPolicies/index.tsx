@@ -114,7 +114,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       type: PolicyType.ACCESS_CONTROL,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedAccessControlProfileListQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST }))

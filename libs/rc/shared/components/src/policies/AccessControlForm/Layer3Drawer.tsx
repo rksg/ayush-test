@@ -21,7 +21,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Drag }                  from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drag }                   from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
   useGetEnhancedL3AclProfileListQuery,
@@ -156,6 +157,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const AnyText = $t({ defaultMessage: 'Any' })
@@ -183,14 +186,16 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useTemplateMutationFn: useUpdateL3AclPolicyTemplateMutation
   })
 
-  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(editMode.isEdit)
+  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(
+    editMode.isEdit, enableRbac
+  )
 
   const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetL3AclPolicyQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
-    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
+    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId },
+    enableRbac
   })
 
   const isViewMode = () => {
@@ -512,7 +517,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       if (!edit) {
         const l3AclRes: CommonResult = await createL3AclPolicy({
           params: params,
-          payload: convertToPayload()
+          payload: convertToPayload(),
+          enableRbac
         }).unwrap()
         // let responseData = l3AclRes.response as {
         //   [key: string]: string
@@ -524,7 +530,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       } else {
         await updateL3AclPolicy({
           params: { ...params, l3AclPolicyId: queryPolicyId },
-          payload: convertToPayload(queryPolicyId)
+          payload: convertToPayload(queryPolicyId),
+          enableRbac
         }).unwrap()
       }
     } catch (error) {
@@ -1131,14 +1138,15 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   )
 }
 
-const useGetL3AclPolicyListInstance = (isEdit: boolean): {
+const useGetL3AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   layer3SelectOptions: JSX.Element[], layer3List: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>({
     useQueryFn: useGetEnhancedL3AclProfileListQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {

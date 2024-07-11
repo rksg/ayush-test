@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -29,9 +30,12 @@ const defaultPayload = {
 export function AccessControlTable () {
   const { $t } = useIntl()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   return (<>
