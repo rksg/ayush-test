@@ -356,7 +356,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       // eslint-disable-next-line
       const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
       const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
-      expect(formItem).not.toBeDisabled()
+      expect(formItem).toBeDisabled()
 
       fireEvent.mouseOver(tooltips[0])
 
@@ -369,7 +369,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
           })
         ).toBeInTheDocument()
       })
-      expect(await screen.findByTestId('button-has-pool')).toBeInTheDocument()
+      expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
     })
     it('Other Provider - no left sms', async () => {
       services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {

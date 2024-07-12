@@ -99,13 +99,26 @@ export function SelfSignInForm () {
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
-  const isSMSTokenAvailable = isSmsProviderEnabled ?
-    !((smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE ||
-      smsUsage?.data?.provider === SmsProviderType.SMSProvider_UNSET
-    ) &&
-     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
-    : true
-  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
+  const isSMSTokenAvailable = () : boolean=> {
+
+    const provider = smsUsage?.data?.provider
+    const usedSMS = smsUsage?.data?.ruckusOneUsed ?? 0
+
+    if (!isSmsProviderEnabled) {
+      return true
+    }
+
+    if (provider === SmsProviderType.SMSProvider_UNSET){
+      return false
+    }
+
+    if (provider === SmsProviderType.RUCKUS_ONE && usedSMS >= 100 ){
+      return false
+    }
+
+    return true
+  }
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable()
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -150,7 +163,7 @@ export function SelfSignInForm () {
       return defaultMessage
     }
     // when provider is ruckus one but there's pool still remains
-    if(usedPools < 100) {
+    if(provider === SmsProviderType.RUCKUS_ONE && usedPools < 100) {
       return (
         <FormattedMessage
           defaultMessage={
@@ -287,7 +300,7 @@ export function SelfSignInForm () {
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
                 checked={enableSmsLogin}
-                disabled={!editMode && !isSMSTokenAvailable}
+                disabled={!editMode && !isSMSTokenAvailable()}
                 >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
