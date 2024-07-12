@@ -4,7 +4,6 @@ import { Timeline as AntTimeline, Descriptions } from 'antd'
 import { defineMessage, useIntl }                from 'react-intl'
 
 import { StatusIcon }                        from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { PlusSquareSolid, MinusSquareSolid } from '@acx-ui/icons'
 import { TimelineStatus, StatusIconProps }   from '@acx-ui/types'
@@ -69,7 +68,6 @@ export const Timeline = (props: TimelineProps) => {
   const { $t } = useIntl()
   const [ expand, setExpand ] = useState<Record<string, boolean>>({})
   const [ statusDescription, setStatusDescription ] = useState<string>('')
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   const currentStep = props.items.findIndex(item => !item.endDatetime)
   const modifiedProps = props.items.map((item, index) => {
@@ -94,8 +92,8 @@ export const Timeline = (props: TimelineProps) => {
   )
 
   const EndDot = (item: TimelineItem, index: number) => {
-    const isShowCheckApCompatibilities = supportApCompatibleCheck &&
-      item.status === 'SUCCESS' && item.id === 'CheckApCompatibilities'
+    const isShowCheckApCompatibilities = item.status === 'SUCCESS'
+      && item.id === 'CheckApCompatibilities'
     return (
       <AntTimeline.Item
         key={`timeline-end-${index}`}
