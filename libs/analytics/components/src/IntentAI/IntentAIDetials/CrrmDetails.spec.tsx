@@ -11,13 +11,6 @@ jest.mock('./CrrmValuesExtra', () =>
   ({ CrrmValuesExtra: () => <div data-testid='CrrmValuesExtra' /> }))
 jest.mock('./StatusTrail', () => ({ StatusTrail: () => <div data-testid='StatusTrail' /> }))
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
-  useParams: () => ({
-    id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
-  })
-}))
-
 describe('CrrmDetails', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
@@ -29,7 +22,12 @@ describe('CrrmDetails', () => {
   })
   it('renders correctly', async () => {
     render(<CrrmDetails />, {
-      route: { path: '/ai/intentAI/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
+      route: {
+        params: {
+          code: 'c-crrm-channel24g-auto',
+          recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+        }
+      },
       wrapper: Provider
     })
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
