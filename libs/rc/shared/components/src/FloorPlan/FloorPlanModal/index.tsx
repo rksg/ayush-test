@@ -58,7 +58,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
   const [getUploadURL] = useGetVenueSpecificUploadURLMutation()
 
   useEffect(() => {
-    if (isEditMode) {
+    if (isEditMode && open) {
       form.setFieldsValue({
         name: selectedFloorPlan?.name,
         imageName: selectedFloorPlan?.imageName,
