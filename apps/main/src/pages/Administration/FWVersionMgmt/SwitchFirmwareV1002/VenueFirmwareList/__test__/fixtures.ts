@@ -584,39 +584,88 @@ export const availableVersions = [
 
 export const availableVersions_hasInUse = [
   {
-    id: '09010e_b392',
-    name: '09010e_b392',
-    category: FirmwareCategory.RECOMMENDED,
-    inUse: true
+    modelGroup: 'ICX82',
+    switchCount: 0,
+    versions: [
+      {
+        id: '10010_rc3_icx82',
+        name: '10010_rc3_icx82',
+        category: 'REGULAR',
+        createdDate: '2024-05-23T03:54:07.867+00:00',
+        isDowngradeVersion: true
+      },
+      {
+        id: '10010_rc2',
+        name: '10010_rc2',
+        category: 'REGULAR',
+        createdDate: '2024-05-22T07:21:52.693+00:00',
+        isDowngradeVersion: true
+      },
+      {
+        id: '10010a_cd1_b3',
+        name: '10010a_cd1_b3',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:12:47.128+00:00',
+        isDowngradeVersion: true
+      }
+    ]
   },
   {
-    id: '09010h_rc1',
-    name: '09010h_rc1',
-    category: FirmwareCategory.RECOMMENDED
+    modelGroup: 'ICX7X',
+    switchCount: 0,
+    versions: [
+      {
+        id: '10010_rc3_ICX7',
+        name: '10010_rc3_ICX7',
+        category: 'REGULAR',
+        createdDate: '2024-05-23T03:54:07.867+00:00'
+      },
+      {
+        id: '10010_rc2',
+        name: '10010_rc2',
+        category: 'REGULAR',
+        createdDate: '2024-05-22T07:21:52.693+00:00'
+      },
+      {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:50.553+00:00',
+        isDowngradeVersion: true
+      },
+      {
+        id: '09010h_rc1',
+        name: '09010h_rc1',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:46.772+00:00',
+        isDowngradeVersion: true
+      }
+    ]
   },
   {
-    id: '09010h_cd2_b4',
-    name: '09010h_cd2_b4',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '09010f_b19',
-    name: '09010f_b19',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '10010_rc2',
-    name: '10010_rc2',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '10010a_cd3_b11',
-    name: '10010a_cd3_b11',
-    category: FirmwareCategory.RECOMMENDED
-  },
-  {
-    id: '10010_rc3',
-    name: '10010_rc3',
-    category: FirmwareCategory.RECOMMENDED
+    modelGroup: 'ICX71',
+    switchCount: 1,
+    versions: [
+      {
+        id: '09010f_b19',
+        name: '09010f_b19',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:50.553+00:00',
+        isDowngradeVersion: true
+      },
+      {
+        id: '09010h_rc1',
+        name: '09010h_rc1',
+        category: 'REGULAR',
+        createdDate: '2024-04-09T09:13:46.772+00:00',
+        inUse: true
+      },
+      {
+        id: '09010h_cd2_b4',
+        name: '09010h_cd2_b4',
+        category: 'RECOMMENDED',
+        createdDate: '2024-04-09T09:13:06.337+00:00'
+      }
+    ]
   }
 ]

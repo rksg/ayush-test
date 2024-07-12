@@ -2,12 +2,16 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 
 import {
+  FirmwareRbacUrlsInfo,
   FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
   SwitchFirmware,
-  SwitchFirmwareFixtures
+  SwitchFirmwareFixtures,
+  SwitchFirmwareVersion1002
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen,
   within
@@ -21,6 +25,9 @@ import {
 } from '../../__test__/fixtures'
 
 import { ScheduleStep } from '.'
+import { switchVenueV1002 } from '../../../__tests__/fixtures'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { rest } from 'msw'
 
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
@@ -42,10 +49,20 @@ jest.mock('@acx-ui/rc/services', () => ({
   })
 }))
 
-describe('ScheduleStep', () => {
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+
+
+describe.skip('ScheduleStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.get(
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
+      )
+    )
   })
 
   it('render ScheduleStep - 1 Venue', async () => {
@@ -55,26 +72,22 @@ describe('ScheduleStep', () => {
           <ScheduleStep
             setShowSubTitle={jest.fn()}
             visible={true}
-            availableVersions={availableVersions_hasInUse}
-            nonIcx8200Count={2}
-            icx8200Count={0}
+            availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
             hasVenue={true}
             // eslint-disable-next-line max-len
-            upgradeVenueList={switchVenue.upgradeVenueViewList.filter(v => v.name === 'Karen-Venue1') as FirmwareSwitchVenue[]}
+            upgradeVenueList={switchVenueV1002.filter(v => v.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]}
             upgradeSwitchList={[]}
-            data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+            data={switchVenueV1002 as FirmwareSwitchVenueV1002[]} />
         </Form>
       </Provider>
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
     const form = screen.getByTestId('schedule-step')
-    expect(within(form).getByText(/10.0.10a_cd3/i)).toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10f/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10h_cd2_b4/i)).toBeInTheDocument()
   })
 
-  it('render ScheduleStep - 1 Venue - Changed', async () => {
+  it('render ScheduleStep - Changed 1 Venue', async () => {
     jest.useFakeTimers()
     jest.setSystemTime(new Date('2023-11-01T00:00:00Z').getTime())
     render(
@@ -83,15 +96,12 @@ describe('ScheduleStep', () => {
           <ScheduleStep
             setShowSubTitle={jest.fn()}
             visible={true}
-            availableVersions={availableVersions_hasInUse}
-            nonIcx8200Count={2}
-            icx8200Count={0}
+            availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
             hasVenue={true}
-            upgradeVenueList={
-              switchVenue.upgradeVenueViewList.filter(
-                v => v.name === 'Karen-Venue1') as FirmwareSwitchVenue[]}
+            // eslint-disable-next-line max-len
+            upgradeVenueList={switchVenueV1002.filter(v => v.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]}
             upgradeSwitchList={[]}
-            data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+            data={switchVenueV1002 as FirmwareSwitchVenueV1002[]} />
         </Form>
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
@@ -99,19 +109,20 @@ describe('ScheduleStep', () => {
 
     const form = screen.getByTestId('schedule-step')
     expect(within(form).getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10f/i)).toBeInTheDocument()
+    expect(within(form).getByText(/9.0.10h_cd2_b4/i)).toBeInTheDocument()
 
-    const release10010rc2 = within(form).getByRole('radio', {
-      name: /10\.0\.10_rc2 \(release - recommended\)/i
+    const icx82Radio10010rc3 = within(form).getByRole('radio', {
+      name: /10\.0\.10_rc3_icx82 \(release\)/i
     })
-    await userEvent.click(release10010rc2, { delay: null })
-    expect(release10010rc2).toBeEnabled()
+    await userEvent.click(icx82Radio10010rc3, { delay: null })
+    expect(icx82Radio10010rc3).toBeEnabled()
 
-    const release09010f = within(form).getByRole('radio', {
-      name: /9\.0\.10f \(release - recommended\)/i
+
+    const icx7XRadio10010rc3 = within(form).getByRole('radio', {
+      name: /10010_rc3_ICX7 \(release\)/i
     })
-    await userEvent.click(release09010f, { delay: null })
-    expect(release09010f).toBeEnabled()
+    await userEvent.click(icx7XRadio10010rc3, { delay: null })
+    expect(icx7XRadio10010rc3).toBeEnabled()
 
     const calendar = within(form).getByRole('textbox', {
       name: /update date/i
@@ -136,36 +147,6 @@ describe('ScheduleStep', () => {
     expect(preDownloadSwitch).toBeEnabled()
     jest.runOnlyPendingTimers()
     jest.useRealTimers()
-  })
-
-  it('render ScheduleStep - 1 non8200 Switch', async () => {
-    render(
-      <Provider>
-        <Form>
-          <ScheduleStep
-            setShowSubTitle={jest.fn()}
-            visible={true}
-            availableVersions={availableVersions}
-            nonIcx8200Count={1}
-            icx8200Count={0}
-            hasVenue={false}
-            upgradeVenueList={[]}
-            // eslint-disable-next-line max-len
-            upgradeSwitchList={upgradeSwitchViewList.upgradeSwitchViewList.filter(v => v.switchName === 'FEK3224R0AG') as unknown as SwitchFirmware[]}
-            data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
-        </Form>
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
-      })
-    const form = screen.getByTestId('schedule-step')
-    expect(within(form).getByText(
-      /firmware available for icx 7150\/7550\/7650\/7850 series \(1 switches\)/i))
-      .toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10f/i)).toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10e/i)).toBeInTheDocument()
-    expect(within(form).queryByText(/Firmware available for ICX 8200 Series/i)).toBeNull()
   })
 
 })

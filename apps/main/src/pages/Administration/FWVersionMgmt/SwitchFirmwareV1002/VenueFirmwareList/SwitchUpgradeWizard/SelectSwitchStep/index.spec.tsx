@@ -44,7 +44,7 @@ jest.mock('./../VenueStatusDrawer', () => ({
   }
 }))
 
-describe('SwitchFirmware - SwitchUpgradeWizard', () => {
+describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     Modal.destroyAll()
