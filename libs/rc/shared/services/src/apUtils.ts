@@ -94,12 +94,13 @@ export const transformGroupByListFromNewModel = (
         }
         break
       case 'apGroupId':
-        newItem.apGroupName = firstApItem?.apGroupName
+        const targetApGroup = apGroupList?.data.find(apGroup =>
+          apGroup.id === item.groupedValue)
+        newItem.apGroupName = targetApGroup?.name
         newItem.apGroupId = item.groupedValue
-        newItem.deviceGroupName = firstApItem?.apGroupName // For the legacy usage of editing/deleting apGroup
+        newItem.deviceGroupName = targetApGroup?.name // For the legacy usage of editing/deleting apGroup
         newItem.deviceGroupId = item.groupedValue // For the legacy usage of editing/deleting apGroup
-        newItem.venueId = apGroupList?.data.find(apGroup =>
-          apGroup.id === item.groupedValue)?.venueId // For the legacy usage of editing/deleting apGroup
+        newItem.venueId = targetApGroup?.venueId // For the legacy usage of editing/deleting apGroup
         break
     }
     return newItem

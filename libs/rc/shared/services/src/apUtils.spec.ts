@@ -5,17 +5,17 @@ import {
   APGeneralFixtures,
   APGroupFixtures,
   ApExtraParams,
-  ApGroup,
   Capabilities,
+  NewAPExtendedGrouped,
   NewAPModelExtended,
   TableResult,
   Venue
 } from '@acx-ui/rc/utils'
 
-import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel } from './apUtils'
+import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel, transformGroupByListFromNewModel } from './apUtils'
 
-const { mockAPList, mockAPModels } = APGeneralFixtures
-const { mockAPGroupList } = APGroupFixtures
+const { mockAPList, mockAPModels, mockGroupedApList } = APGeneralFixtures
+const { mockRbacAPGroupList } = APGroupFixtures
 
 const mockAPListWithExtraInfo = {
   ...mockAPList,
@@ -77,6 +77,21 @@ describe('Test apUtils', () => {
     expect(result.extra?.channelU50).toBeFalsy()
   })
 
+  it('test transformGroupByListFromNewModel', async () => {
+    const cloneData = cloneDeep(mockGroupedApList) as unknown as TableResult<NewAPExtendedGrouped, ApExtraParams>
+    const result = transformGroupByListFromNewModel(cloneData, mockRbacAPGroupList)
+    const dataList = result.data
+    expect(dataList[2].members).toBe(2)
+    expect(dataList[2].incidents).toBe(0)
+    expect(dataList[2].clients).toBe(2)
+    expect(dataList[2].networks?.count).toBe(0)
+    expect(dataList[2].apGroupName).toBe('joe-apg-01')
+    expect(dataList[2].apGroupId).toBe('58195e050b8a4770acc320f6233ad8d9')
+    expect(dataList[2].deviceGroupName).toBe('joe-apg-01')
+    expect(dataList[2].deviceGroupId).toBe('58195e050b8a4770acc320f6233ad8d9')
+    expect(dataList[2].venueId).toBe('a919812d11124e6c91b56b9d71eacc31')
+  })
+
   it('test aggregateVenueInfo', async () => {
     const cloneData = cloneDeep(mockAPList) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
     aggregateVenueInfo(cloneData, mockVenueList as unknown as TableResult<Venue>)
@@ -93,8 +108,29 @@ describe('Test apUtils', () => {
 
   it('test aggregateApGroupInfo', async () => {
     const cloneData = cloneDeep(mockAPList) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
-    aggregateApGroupInfo(cloneData, mockAPGroupList as unknown as TableResult<ApGroup>)
+    aggregateApGroupInfo(cloneData, mockRbacAPGroupList)
     expect(cloneData.data[0].apGroupName).toBe('joe-apg-02')
     expect(cloneData.data[1].apGroupName).toBe('joe-apg-01')
+  })
+
+  it('test aggregateVenueInfo with grouped list', async () => {
+    const cloneData = cloneDeep(mockGroupedApList) as unknown as TableResult<NewAPExtendedGrouped, ApExtraParams>
+    aggregateVenueInfo(cloneData, mockVenueList as unknown as TableResult<Venue>)
+    expect(cloneData.data[2].aps[0].venueName).toBe('My-Venue')
+    expect(cloneData.data[2].aps[1].venueName).toBe('My-Venue')
+  })
+
+  it('test aggregatePoePortInfo with grouped list', async () => {
+    const cloneData = cloneDeep(mockGroupedApList) as unknown as TableResult<NewAPExtendedGrouped, ApExtraParams>
+    aggregatePoePortInfo(cloneData, mockAPModels as unknown as Capabilities)
+    expect(cloneData.data[2].aps[0].poePort).toBe('1')
+    expect(cloneData.data[2].aps[1].poePort).toBe('2')
+  })
+
+  it('test aggregateApGroupInfo with grouped list', async () => {
+    const cloneData = cloneDeep(mockGroupedApList) as unknown as TableResult<NewAPExtendedGrouped, ApExtraParams>
+    aggregateApGroupInfo(cloneData, mockRbacAPGroupList)
+    expect(cloneData.data[2].aps[0].apGroupName).toBe('joe-apg-01')
+    expect(cloneData.data[2].aps[0].apGroupName).toBe('joe-apg-01')
   })
 })

@@ -79,15 +79,14 @@ export const getGroupableConfig = (
     actions: [
       {
         key: 'edit',
-        renderer: (record: NewAPModelExtended) => record.apGroupName
-          ? <TenantLink to={`devices/apgroups/${record.apGroupId}/edit/general`}>
+        renderer: (record: NewAPModelExtended) => record.apGroupName &&
+          <TenantLink to={`devices/apgroups/${record.apGroupId}/edit/general`}>
             {$t(defineMessage({ defaultMessage: 'Edit' }))}
           </TenantLink>
-          : <span></span>
       }, {
         key: 'delete',
-        renderer: (record: NewAPModelExtended) => record.apGroupName
-          ? <Button
+        renderer: (record: NewAPModelExtended) => record.apGroupName &&
+          <Button
             style={{
               padding: '0px',
               margin: '0px',
@@ -102,8 +101,6 @@ export const getGroupableConfig = (
           >
             {$t(defineMessage({ defaultMessage: 'Delete' }))}
           </Button>
-          : <span></span>
-
       }
     ],
     attributes: [
