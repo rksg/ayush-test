@@ -7,16 +7,15 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
     newApi: true
   },
-  getWifiCallingList: {
-    method: 'get',
-    url: '/wifiCallingServiceProfiles',
-    oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
-    newApi: true
-  },
   getEnhancedWifiCallingList: {
     method: 'post',
     url: '/enhancedWifiCallingProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedWifiCallingProfiles/query',
+    newApi: true
+  },
+  queryWifiCalling: {
+    method: 'post',
+    url: '/wifiCallingServiceProfiles/query',
     newApi: true
   },
   addWifiCalling: {
@@ -41,6 +40,16 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/wifiCallingServiceProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
+    newApi: true
+  },
+  activateWifiCalling: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/wifiCallingServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deactivateWifiCalling: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/wifiCallingServiceProfiles/:serviceId',
     newApi: true
   }
 }

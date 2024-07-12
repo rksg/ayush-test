@@ -87,7 +87,6 @@ function VenueEditTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      {/* eslint-disable-next-line max-len */}
       {
         hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
         <Tabs.TabPane

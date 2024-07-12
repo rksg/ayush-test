@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useGetEnhancedAccessControlProfileListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -11,6 +12,7 @@ import {
   getPolicyRoutePath, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_ACCESS_CONTROL } from '../constants'
@@ -28,9 +30,12 @@ const defaultPayload = {
 export function AccessControlTable () {
   const { $t } = useIntl()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   return (<>
@@ -52,7 +57,9 @@ export function AccessControlTable () {
           to={getPolicyRoutePath({
             type: PolicyType.ACCESS_CONTROL,
             oper: PolicyOperation.CREATE
-          })}>
+          })}
+          scopeKey={[WifiScopes.CREATE]}
+        >
           <Button
             type='primary'
             disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_ACCESS_CONTROL}>

@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { showActionModal, Table, TableProps }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
   defaultSort,
@@ -22,6 +23,7 @@ import WifiCallingDrawer from './WifiCallingDrawer'
 const EpdgTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
   const { edit } = props
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [visibleAdd, setVisibleAdd] = useState(false)
   const [visibleEdit, setVisibleEdit] = useState(false)
   const [serviceName, setServiceName] = useState('')
@@ -33,7 +35,8 @@ const EpdgTable = (props: { edit?: boolean }) => {
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
-    skip: !useParams().hasOwnProperty('serviceId')
+    skip: !useParams().hasOwnProperty('serviceId'),
+    enableRbac
   })
 
   const [tableData, setTableData] = useState(state.ePDG as EPDG[])

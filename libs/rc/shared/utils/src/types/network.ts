@@ -63,7 +63,8 @@ export interface Network extends BaseNetwork{
 }
 
 export interface WifiNetwork extends Network{
-  venueApGroups: VenueApGroup[]
+  venueApGroups: VenueApGroup[],
+  apSerialNumbers?: string[]
 }
 
 export interface NetworkExtended extends Network {
@@ -114,6 +115,7 @@ export interface NetworkSaveData {
   authRadiusId?: string | null
   accountingRadiusId?: string
   enableDhcp?: boolean
+  enableDeviceOs?: boolean
   wlan?: {
     ssid?: string
     vlanId?: number
