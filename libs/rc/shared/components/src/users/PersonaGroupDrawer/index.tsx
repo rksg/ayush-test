@@ -51,7 +51,9 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   }
 
   const handleAddPersonaGroup = async (submittedData: PersonaGroup) => {
-    return createPersonaGroupMutation(submittedData)
+    return new Promise<AsyncCommonResponse>(async (resolve) => {
+      await createPersonaGroupMutation(submittedData, resolve)
+    })
   }
 
   const handleEditPersonaGroup = async (submittedData: PersonaGroup) => {
