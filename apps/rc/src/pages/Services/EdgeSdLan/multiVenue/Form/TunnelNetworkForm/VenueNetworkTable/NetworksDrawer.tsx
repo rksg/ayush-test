@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { Typography, Space, FormInstance }         from 'antd'
 import { isNil, pick, remove, cloneDeep, unionBy } from 'lodash'
 import { useIntl }                                 from 'react-intl'
@@ -36,36 +38,44 @@ interface NetworksDrawerProps {
 }
 
 export const NetworksDrawer = (props: NetworksDrawerProps) => {
+  const { $t } = useIntl()
   const {
     visible,
     onClose,
+    venueId,
     venueName,
-    formRef,
-    ...otherProps
+    formRef
   } = props
-  const { venueId } = otherProps
 
-  const { $t } = useIntl()
+  const [updateContent, setUpdateContent] = useState<Record<string, EdgeMvSdLanFormNetwork>>({})
   const isGuestTunnelEnabled = formRef.getFieldValue('isGuestTunnelEnabled')
-  // eslint-disable-next-line max-len
-  const activatedNetworks = (formRef.getFieldValue('activatedNetworks') ?? {}) as EdgeMvSdLanFormNetwork
-  // eslint-disable-next-line max-len
-  const activatedGuestNetworks = (formRef.getFieldValue('activatedGuestNetworks') ?? {}) as EdgeMvSdLanFormNetwork
+
+  // TODO: the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
+
+  useEffect(() => {
+    if (visible) {
+    // eslint-disable-next-line max-len
+      const activatedNetworks = (formRef.getFieldValue('activatedNetworks') ?? {}) as EdgeMvSdLanFormNetwork
+      // eslint-disable-next-line max-len
+      const activatedGuestNetworks = (formRef.getFieldValue('activatedGuestNetworks') ?? {}) as EdgeMvSdLanFormNetwork
+
+      setUpdateContent({
+        activatedNetworks,
+        activatedGuestNetworks
+      })
+    }
+  }, [visible])
 
   const handleActivateChange = (
     fieldName: string,
     data: Network,
     checked: boolean
   ) => {
-    // const changedData = pick(data, ['id', 'name'])
+    const { activatedNetworks = {}, activatedGuestNetworks = {} } = updateContent
 
     // eslint-disable-next-line max-len
-    const affectedNetworks = fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks
+    const affectedNetworks = (fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks)
     const newSelected = toggleItemFromSelected(checked, venueId, data, affectedNetworks)
-
-    // let newSelected = cloneDeep(affectedNetworks)
-    // if (checked) newSelected[venueId] = affectedNetworks[venueId].concat([changedData])
-    // else remove(newSelected[venueId], i => i.id === changedData.id)
 
     if (isGuestTunnelEnabled
       && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
@@ -83,36 +93,55 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
-        formRef.setFieldsValue(updateContent)
+        setUpdateContent(updateContent)
       } else {
         // eslint-disable-next-line max-len
         const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
-        formRef.setFieldsValue({
+        setUpdateContent({
           [fieldName]: newSelected,
           activatedNetworks: newSelectedNetworks
         })
       }
     } else {
-      formRef.setFieldValue(fieldName, newSelected)
+      setUpdateContent({
+        ...updateContent,
+        [fieldName]: newSelected
+      })
     }
+  }
+
+  const handleSubmit = async () => {
+    formRef.setFieldsValue(updateContent)
+    onClose()
   }
 
   return (
     <Drawer
       title={$t({ defaultMessage: '{venueName}: Select Networks' }, { venueName })}
-      width={500}
+      width={isGuestTunnelEnabled ? 1000 : 800}
       visible={visible}
       onClose={onClose}
+      footer={
+        <Drawer.FormFooter
+          buttonLabel={{
+            save: $t({ defaultMessage: 'OK' })
+          }}
+          onCancel={onClose}
+          onSave={handleSubmit}
+        />
+      }
     >
-      <Space>
+      <Space direction='vertical' >
         <Typography.Paragraph >
           { $t(messageMappings.drawer_table_description) }
         </Typography.Paragraph>
+
         <EdgeSdLanP2ActivatedNetworksTable
           venueId={venueId}
           isGuestTunnelEnabled={isGuestTunnelEnabled}
-          activated={activatedNetworks[venueId]?.map(item => item.id) ?? []}
-          activatedGuest={activatedGuestNetworks[venueId]?.map(item => item.id) ?? []}
+          activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
+          // eslint-disable-next-line max-len
+          activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
           onActivateChange={handleActivateChange}
         />
       </Space>

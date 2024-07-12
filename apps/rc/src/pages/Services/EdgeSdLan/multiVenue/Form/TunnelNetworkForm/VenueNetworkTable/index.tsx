@@ -1,33 +1,36 @@
 import { useMemo, useState } from 'react'
 
-import { Form }      from 'antd'
-import { AlignType } from 'rc-table/lib/interface'
-import { useIntl }   from 'react-intl'
+import { Form, Space } from 'antd'
+import { get }         from 'lodash'
+import { AlignType }   from 'rc-table/lib/interface'
+import { useIntl }     from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { useVenuesListQuery }                 from '@acx-ui/rc/services'
 import {
-  EdgeMvSdLanNetworks,
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
+import { EdgeMvSdLanFormNetwork } from '..'
+
 import { NetworksDrawer } from './NetworksDrawer'
 
 
 export interface VenueNetworksTableProps {
-  isGuestTunnelEnabled: boolean,
-  activated?: EdgeMvSdLanNetworks,
-  activatedGuest?: EdgeMvSdLanNetworks,
+  activated?: EdgeMvSdLanFormNetwork,
+  activatedGuest?: EdgeMvSdLanFormNetwork,
 }
 
 export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
   const formRef = Form.useFormInstance()
+  const { activated } = props
 
-  const [networkModalVenueId, setNetworkModalVenueId] = useState<string|undefined>(undefined)
+  const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
+  // TODO: The list should filter out the venues that already tied to other SDLAN services.
   const tableQuery = useTableQuery<Venue>({
     useQuery: useVenuesListQuery,
     defaultPayload: {
@@ -59,27 +62,34 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     dataIndex: 'selectedNetworks',
     align: 'center' as AlignType,
     width: 80,
-    render: () => {
-      const networkCount = 0
-      const networkNames = ['network_1']
+    render: (_, row) => {
+      const venueNetworks = get(activated, row.id) as { id:string, name: string }[]
+      const networkCount = venueNetworks?.length ?? 0
+      const networkNames = venueNetworks?.filter(i => i)
+        .map(item => <span key={item.id}>{item.name}</span>)
       return networkCount > 0
-        ? <Tooltip dottedUnderline title={networkNames} children={networkCount} />
+        ? <Tooltip dottedUnderline
+          title={<Space direction='vertical'>
+            {networkNames}
+          </Space>}
+          children={networkCount}
+        />
         : networkCount
     }
-  }]), [])
+  }]), [activated])
 
   const rowActions: TableProps<Venue>['rowActions'] = [{
     label: $t({ defaultMessage: 'Select Networks' }),
     onClick: (selectedRows) => {
-      setNetworkModalVenueId(selectedRows[0].id)
+      setNetworkDrawerVenueId(selectedRows[0].id)
     }
   }]
 
   const closeNetworkModal = () => {
-    setNetworkModalVenueId(undefined)
+    setNetworkDrawerVenueId(undefined)
   }
 
-  const isNetworkModalVisible = !!networkModalVenueId
+  const isNetworkDrawerVisible = !!networkDrawerVenueId
 
   return (
     <>
@@ -96,13 +106,12 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
           onChange={tableQuery.handleTableChange}
         />
       </Loader>
-      {networkModalVenueId && <NetworksDrawer
-        visible={isNetworkModalVisible}
+      {networkDrawerVenueId && <NetworksDrawer
+        visible={isNetworkDrawerVisible}
         onClose={closeNetworkModal}
-        venueId={networkModalVenueId!}
-        venueName={tableQuery.data?.data.find(item => item.id === networkModalVenueId)?.name}
+        venueId={networkDrawerVenueId!}
+        venueName={tableQuery.data?.data.find(item => item.id === networkDrawerVenueId)?.name}
         formRef={formRef}
-        {...props}
       />}
     </>
   )

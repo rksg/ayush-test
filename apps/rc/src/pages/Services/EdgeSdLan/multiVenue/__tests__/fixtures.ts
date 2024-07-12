@@ -1,29 +1,34 @@
 import { Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockedVenueList = {
-  fields: ['name', 'id'],
+  fields: ['name', 'id', 'country'],
   totalCount: 5,
   page: 1,
   data: [
     {
       id: 'venue_00001',
-      name: 'My-Venue'
+      name: 'My-Venue',
+      country: 'United States'
     },
     {
       id: 'venue_00002',
-      name: 'airport'
+      name: 'airport',
+      country: 'Taiwan'
     },
     {
       id: 'venue_00003',
-      name: 'MockedVenue 1'
+      name: 'MockedVenue 1',
+      country: 'United Kingdom'
     },
     {
       id: 'venue_00004',
-      name: 'MockedVenue 2'
+      name: 'MockedVenue 2',
+      country: 'United States'
     },
     {
       id: 'venue_00005',
-      name: 'SG office'
+      name: 'SG office',
+      country: 'Singapore'
     }
   ]
 }

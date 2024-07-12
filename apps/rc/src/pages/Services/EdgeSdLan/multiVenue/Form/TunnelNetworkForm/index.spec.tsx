@@ -9,7 +9,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { StepsForm, StepsFormProps }                                                    from '@acx-ui/components'
-import { networkApi, tunnelProfileApi }                                                 from '@acx-ui/rc/services'
+import { tunnelProfileApi, venueApi }                                                   from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { Provider, store }                                                              from '@acx-ui/store'
 import {
@@ -18,9 +18,9 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
+import { mockedVenueList } from '../../__tests__/fixtures'
 
-import { TunnelScopeForm } from '.'
+import { TunnelNetworkForm } from '.'
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -52,6 +52,12 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue('ecc2d7cf9d2342fdb31ae0e24958fcac')
 }))
+
+jest.mock('./VenueNetworkTable/NetworksDrawer.tsx', () => ({
+  ...jest.requireActual('./VenueNetworkTable/NetworksDrawer.tsx'),
+  NetworksDrawer: <div data-testid='NetworksDrawer' />
+}))
+
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
 
@@ -89,12 +95,12 @@ const useMockedFormHook = (initData: Record<string, unknown>) => {
 const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
   return <Provider>
     <StepsForm form={props.form} editMode={props.editMode} >
-      <TunnelScopeForm />
+      <TunnelNetworkForm />
     </StepsForm>
   </Provider>
 }
 
-describe('Tunnel Scope Form', () => {
+describe('Tunneled Venue Networks Form', () => {
   const mockedGetNetworkViewmodelList = jest.fn()
 
   beforeEach(() => {
@@ -102,23 +108,12 @@ describe('Tunnel Scope Form', () => {
     mockedGetNetworkViewmodelList.mockReset()
 
     store.dispatch(tunnelProfileApi.util.resetApiState())
-    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
-        (_req, res, ctx) => {
-          mockedGetNetworkViewmodelList()
-          return res(ctx.json({
-            data: mockNetworkViewmodelList,
-            page: 0,
-            totalCount: mockNetworkViewmodelList.length
-          }))
-        }
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVenueList))
       ),
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,

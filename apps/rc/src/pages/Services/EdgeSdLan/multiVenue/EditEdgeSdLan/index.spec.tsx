@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import { sdLanFormDefaultValues } from '../EdgeSdLanForm'
+import { sdLanFormDefaultValues } from '../Form'
 
 import EditEdgeSdLan from '.'
 
@@ -42,9 +42,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
-jest.mock('../EdgeSdLanForm', () => ({
+jest.mock('../Form', () => ({
   __esModule: true,
-  ...jest.requireActual('../EdgeSdLanForm'),
+  ...jest.requireActual('../Form'),
   default: (props: {
     editData: EdgeSdLanSettingP2 | undefined,
     onFinish: (values: unknown) => Promise<boolean | void>

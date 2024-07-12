@@ -1,15 +1,19 @@
 import { ReactNode } from 'react'
 
 import { FormInstance } from 'antd'
+import { find }         from 'lodash'
 
-import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
+import { StepsForm, StepsFormGotoStepFn }     from '@acx-ui/components'
+import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanExtended,
   getServiceRoutePath,
   getVlanVxlanDefaultTunnelProfileOpt,
   ServiceOperation,
   ServiceType,
-  EdgeMvSdLanNetworks
+  EdgeMvSdLanNetworks,
+  EdgeMvSdLanViewData,
+  EdgeSdLanTunneledWlan
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -17,28 +21,35 @@ import { EdgeMvSdLanFormNetwork  } from './TunnelNetworkForm'
 
 export const sdLanFormDefaultValues = {
   isGuestTunnelEnabled: false,
-  activatedNetworks: {},
-  activatedGuestNetworks: {}
+  activatedNetworks: {} as EdgeMvSdLanFormNetwork,
+  activatedGuestNetworks: {} as EdgeMvSdLanFormNetwork
 }
 
-const getFormNetworksType = (networks: EdgeMvSdLanNetworks): EdgeMvSdLanFormNetwork => {
+const getFormNetworksType = (
+  networks: EdgeMvSdLanNetworks,
+  wlans?: EdgeSdLanTunneledWlan[]
+): EdgeMvSdLanFormNetwork => {
   const result: EdgeMvSdLanFormNetwork = {}
   Object.entries(networks).forEach(([venueId, networkIds]) => {
-    result[venueId] = networkIds.map(id => ({ id, name: '' }))
+    result[venueId] = networkIds.map(id => ({
+      id,
+      name: find(wlans, { venueId, networkId: id })?.networkName
+    }))
   })
 
   return result
 }
 
 export const getSdLanFormDefaultValues
-  = (profileData?: EdgeMvSdLanExtended): EdgeMvSdLanFormModel => {
+  = (profileData?: EdgeMvSdLanExtended, viewData?: EdgeMvSdLanViewData): EdgeMvSdLanFormModel => {
     return {
       ...sdLanFormDefaultValues,
       ...profileData,
       ...(profileData
         ? {
-          activatedNetworks: getFormNetworksType(profileData.networks),
-          activatedGuestNetworks: getFormNetworksType(profileData.guestNetworks)
+          activatedNetworks: getFormNetworksType(profileData.networks, viewData?.tunneledWlans),
+          // eslint-disable-next-line max-len
+          activatedGuestNetworks: getFormNetworksType(profileData.guestNetworks, viewData?.tunneledGuestWlans)
         }
         : {}
       )
@@ -74,11 +85,19 @@ const EdgeMvSdLanForm = (props: EdgeMvSdLanFormProps) => {
     oper: ServiceOperation.LIST
   }))
 
+  const {
+    data: viewmodelData
+  } = useGetEdgeMvSdLanViewDataListQuery({
+    payload: {
+      fields: ['id', 'tunneledWlans', 'tunneledGuestWlans'],
+      filters: { id: [editData?.id] }
+    } }, { skip: !isEditMode || !editData })
+
   const handleFinish = async (formData: EdgeMvSdLanFormModel, gotoStep: StepsFormGotoStepFn) => {
     await onFinish(formData, gotoStep)
   }
 
-  const initFormValues = getSdLanFormDefaultValues(editData)
+  const initFormValues = getSdLanFormDefaultValues(editData, viewmodelData?.data[0])
   const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
   if (!isEditMode) {
     initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value

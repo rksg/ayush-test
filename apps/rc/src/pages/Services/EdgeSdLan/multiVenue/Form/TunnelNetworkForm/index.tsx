@@ -23,9 +23,9 @@ import { EdgeSdLanVenueNetworksTable } from './VenueNetworkTable'
 
 export type EdgeMvSdLanFormNetwork = {
   [venueId: string]: {
-  id: string,
-  name: string
-}[]
+    id: string,
+    name?: string
+  }[]
 }
 
 const tunnelProfileDefaultPayload = {
@@ -130,11 +130,9 @@ export const TunnelNetworkForm = () => {
             }}
           >
             {({ getFieldValue }) => <EdgeSdLanVenueNetworksTable
-              isGuestTunnelEnabled={isGuestTunnelEnabled}
               activated={getFieldValue('activatedNetworks')}
               activatedGuest={getFieldValue('activatedGuestNetworks')}
-            />
-            }
+            />}
           </Form.Item>
         </Col>
       </Row>
