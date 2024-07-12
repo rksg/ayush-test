@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 
-import { merge, find } from 'lodash'
-import { AlignType }   from 'rc-table/lib/interface'
-import { useIntl }     from 'react-intl'
+import { Form }      from 'antd'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { useVenuesListQuery }                 from '@acx-ui/rc/services'
@@ -24,6 +24,7 @@ export interface VenueNetworksTableProps {
 
 export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
+  const formRef = Form.useFormInstance()
 
   const [networkModalVenueId, setNetworkModalVenueId] = useState<string|undefined>(undefined)
 
@@ -36,8 +37,8 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     }
   })
 
-  const defaultColumns: TableProps<Venue>['columns'] = useMemo(() => ([{
-    title: $t({ defaultMessage: 'Venue' }),
+  const columns: TableProps<Venue>['columns'] = useMemo(() => ([{
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     key: 'name',
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
@@ -74,9 +75,6 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     }
   }]
 
-
-
-
   const closeNetworkModal = () => {
     setNetworkModalVenueId(undefined)
   }
@@ -86,13 +84,11 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   return (
     <>
       <Loader states={[
-        tableQuery,
-        { isLoading: false, isFetching: isUpdating }
+        tableQuery
       ]}>
         <Table
           rowKey='id'
-          columns={defaultColumns.map(item => merge(item,
-            find(columnsSetting, { key: item.key })))}
+          columns={columns}
           dataSource={tableQuery.data?.data}
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
@@ -104,6 +100,8 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
         visible={isNetworkModalVisible}
         onClose={closeNetworkModal}
         venueId={networkModalVenueId!}
+        venueName={tableQuery.data?.data.find(item => item.id === networkModalVenueId)?.name}
+        formRef={formRef}
         {...props}
       />}
     </>

@@ -6,30 +6,32 @@ import { Drawer }                            from '@acx-ui/components'
 import { EdgeSdLanP2ActivatedNetworksTable } from '@acx-ui/rc/components'
 import { Network, NetworkTypeEnum }          from '@acx-ui/rc/utils'
 
+import { messageMappings } from '../../messageMappings'
+
 import type { EdgeMvSdLanFormNetwork } from '../index'
 
 const toggleItemFromSelected = (
   checked: boolean,
+  venueId: string,
   data: Network,
-  selectedNetworks: EdgeMvSdLanFormNetwork | undefined
+  selectedNetworks: EdgeMvSdLanFormNetwork
 ) => {
-  let newSelected
+  let newSelected: EdgeMvSdLanFormNetwork = {}
   if (checked) {
-    newSelected = unionBy(selectedNetworks,
+    newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
       [pick(data, ['id', 'name'])], 'id')
   } else {
-    newSelected = [...selectedNetworks!]
-    remove(newSelected, item => item.id === data.id)
+    newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
+    remove(newSelected[venueId], item => item.id === data.id)
   }
   return newSelected
 }
-
 
 interface NetworksDrawerProps {
   visible: boolean,
   onClose: () => void,
   venueId: string,
-  venueName: string,
+  venueName?: string,
   formRef: FormInstance,
 }
 
@@ -55,13 +57,15 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     data: Network,
     checked: boolean
   ) => {
-    const changedData = pick(data, ['id', 'name'])
+    // const changedData = pick(data, ['id', 'name'])
 
     // eslint-disable-next-line max-len
     const affectedNetworks = fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks
-    let newSelected = cloneDeep(affectedNetworks)
-    if (checked) newSelected = affectedNetworks[venueId].concat([changedData])
-    else remove(newSelected[venueId], i => i.id === changedData.id)
+    const newSelected = toggleItemFromSelected(checked, venueId, data, affectedNetworks)
+
+    // let newSelected = cloneDeep(affectedNetworks)
+    // if (checked) newSelected[venueId] = affectedNetworks[venueId].concat([changedData])
+    // else remove(newSelected[venueId], i => i.id === changedData.id)
 
     if (isGuestTunnelEnabled
       && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
@@ -76,12 +80,13 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
         const isVlanPooling = !isNil(data.vlanPool)
         if (!isVlanPooling || (isVlanPooling && !checked)) {
           // eslint-disable-next-line max-len
-          updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, data, activatedGuestNetworks)
+          updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
         formRef.setFieldsValue(updateContent)
       } else {
-        const newSelectedNetworks = toggleItemFromSelected(checked, data, activatedNetworks)
+        // eslint-disable-next-line max-len
+        const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
         formRef.setFieldsValue({
           [fieldName]: newSelected,
           activatedNetworks: newSelectedNetworks
@@ -101,10 +106,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     >
       <Space>
         <Typography.Paragraph >
-          {
-            // eslint-disable-next-line max-len
-            $t({ defaultMessage: 'Enable the networks that will tunnel the traffic to the selected cluster:' })
-          }
+          { $t(messageMappings.drawer_table_description) }
         </Typography.Paragraph>
         <EdgeSdLanP2ActivatedNetworksTable
           venueId={venueId}

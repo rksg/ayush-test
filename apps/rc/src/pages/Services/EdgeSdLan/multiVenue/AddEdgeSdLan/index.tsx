@@ -3,7 +3,7 @@ import { transform } from 'lodash'
 import { useIntl }   from 'react-intl'
 
 import { PageHeader }                                                                                                            from '@acx-ui/components'
-import { useEdgeSdLanActions }                                                                                                   from '@acx-ui/rc/components'
+import { useEdgeMvSdLanActions }                                                                                                 from '@acx-ui/rc/components'
 import { EdgeMvSdLanExtended, EdgeMvSdLanNetworks, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                                                                            from '@acx-ui/react-router-dom'
 
@@ -22,7 +22,7 @@ const AddEdgeMvSdLan = () => {
   })
 
   const linkToServiceList = useTenantLink(cfListRoute)
-  const { addEdgeSdLan } = useEdgeSdLanActions()
+  const { addEdgeSdLan } = useEdgeMvSdLanActions()
 
   const [form] = Form.useForm()
 
@@ -59,7 +59,7 @@ const AddEdgeMvSdLan = () => {
         payload.guestTunnelProfileId = formData.guestTunnelProfileId
         payload.guestNetworks = transform(formData.activatedGuestNetworks, (result, value, key) => {
           result[key] = value.map(v => v.id)
-        }, {} as EdgeMvSdLanNetworks),
+        }, {} as EdgeMvSdLanNetworks)
       }
 
       await new Promise(async (resolve, reject) => {

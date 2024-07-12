@@ -129,11 +129,12 @@ export const TunnelNetworkForm = () => {
                   || _.get(prev, 'activatedGuestNetworks') !== _.get(cur, 'activatedGuestNetworks')
             }}
           >
-            {() => {
-
-              return <EdgeSdLanVenueNetworksTable
-              />
-            }}
+            {({ getFieldValue }) => <EdgeSdLanVenueNetworksTable
+              isGuestTunnelEnabled={isGuestTunnelEnabled}
+              activated={getFieldValue('activatedNetworks')}
+              activatedGuest={getFieldValue('activatedGuestNetworks')}
+            />
+            }
           </Form.Item>
         </Col>
       </Row>

@@ -58,7 +58,7 @@ describe('Summary form', () => {
     await screen.findByRole('cell', { name: /tunnelProfile2/i })
     await screen.findByText('Off')
     await screen.findByText('airport (1 network)')
-    expect(screen.getByText('venues & Networks (1)')).not.toBeNull()
+    expect(screen.getByText('Venues & Networks (1)')).not.toBeNull()
   })
 
   it('should correctly display when activatedNetworks not defined.', async () => {
@@ -89,7 +89,7 @@ describe('Summary form', () => {
     await screen.findByRole('cell', { name: /Smart Edge 2/i })
     await screen.findByRole('cell', { name: /tunnelProfile1/i })
     await screen.findByText('Off')
-    expect(screen.getByText('venues & Networks (0)')).not.toBeNull()
+    expect(screen.getByText('Venues & Networks (0)')).not.toBeNull()
   })
 
   it('should correctly display when DMZ enabled', async () => {
@@ -143,6 +143,6 @@ describe('Summary form', () => {
     await screen.findByText('Tunnel Profile (Cluster- DMZ Cluster tunnel)')
     await screen.findByRole('cell', { name: /tunnelProfile1/i })
     await screen.findByText('MockedVenue 1 (2 networks)')
-    expect(screen.getByText('venues & Networks (1)')).not.toBeNull()
+    expect(screen.getByText('Venues & Networks (1)')).not.toBeNull()
   })
 })

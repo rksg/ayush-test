@@ -96,7 +96,7 @@ export const SummaryForm = () => {
           <Subtitle level={4}>
             {
             // eslint-disable-next-line max-len
-              $t({ defaultMessage: '<venuePlural></venuePlural> & Networks ({venueCount})' }, { venueCount })
+              $t({ defaultMessage: '<VenuePlural></VenuePlural> & Networks ({venueCount})' }, { venueCount })
             }
           </Subtitle>
           <Descriptions>

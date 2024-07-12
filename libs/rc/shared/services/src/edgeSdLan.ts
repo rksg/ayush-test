@@ -1,4 +1,5 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
+import { groupBy }             from 'lodash'
 
 import {
   TableResult,
@@ -19,7 +20,8 @@ import {
   EdgeClusterStatus,
   TxStatus,
   EdgeMvSdLanExtended,
-  EdgeMvSdLanViewData
+  EdgeMvSdLanViewData,
+  EdgeMvSdLanNetworks
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -411,7 +413,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
     }),
     // multi-venue SD-LAN
     getEdgeMvSdLanViewDataList:
-    build.query<TableResult<EdgeSdLanViewDataP2>, RequestPayload>({
+    build.query<TableResult<EdgeMvSdLanViewData>, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanViewDataList)
         return {
@@ -440,7 +442,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    getEdgeMvSdLan: build.query<EdgeSdLanSettingP2, RequestPayload>({
+    getEdgeMvSdLan: build.query<EdgeMvSdLanExtended, RequestPayload>({
       async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
         const sdLanRequest = createHttpRequest(
           EdgeSdLanUrls.getEdgeSdLan, params, versionHeader)
@@ -481,7 +483,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           let sdLanData = sdLanConfig
           if (sdLanInfo && guestSettings && clusterInfo) {
           // eslint-disable-next-line max-len
-            sdLanData = transformSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
+            sdLanData = transformMvSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
           }
 
           return (sdLanInfo && guestSettings && clusterInfo)
@@ -567,6 +569,34 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
   })
 })
 
+const transformMvSdLanGetData = (
+  profile: EdgeMvSdLanExtended,
+  statusData: EdgeMvSdLanViewData,
+  clusterInfo: EdgeClusterStatus,
+  guestSettings: EdgeSdLanToggleDmzPayload
+): EdgeMvSdLanExtended => {
+  profile.venueId = clusterInfo.venueId
+  profile.isGuestTunnelEnabled = guestSettings.isGuestTunnelEnabled
+
+  const networks: EdgeMvSdLanNetworks = {}
+  Object.entries(groupBy(statusData.tunneledWlans, 'venueId')).forEach(([venueId, wlans]) => {
+    networks[venueId] = wlans.map(wlan => wlan.networkId)
+  })
+
+  const guestNetworks: EdgeMvSdLanNetworks = {}
+  Object.entries(groupBy(statusData.tunneledGuestWlans, 'venueId')).forEach(([venueId, wlans]) => {
+    guestNetworks[venueId] = wlans.map(wlan => wlan.networkId)
+  })
+
+  return {
+    ...profile,
+    networks,
+    guestEdgeClusterId: statusData.guestEdgeClusterId,
+    guestTunnelProfileId: statusData.guestTunnelProfileId,
+    guestNetworks
+  }
+}
+
 const transformSdLanGetData = (
   profile: EdgeSdLanSettingP2,
   statusData: EdgeSdLanViewDataP2,
@@ -607,6 +637,7 @@ export const {
   useToggleEdgeSdLanDmzMutation,
   // multi-venue
   useGetEdgeMvSdLanViewDataListQuery,
+  useGetEdgeMvSdLanQuery,
   useAddEdgeMvSdLanMutation,
   useUpdateEdgeMvSdLanPartialMutation,
   useActivateEdgeMvSdLanNetworkMutation,

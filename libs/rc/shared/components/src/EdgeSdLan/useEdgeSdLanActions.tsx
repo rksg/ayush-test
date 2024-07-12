@@ -1,4 +1,4 @@
-import { difference, flatMap, uniq, groupBy, intersection } from 'lodash'
+import { difference, flatMap, uniq, groupBy, intersection, isNil, isEqual, pick } from 'lodash'
 
 import { showActionModal }              from '@acx-ui/components'
 import { Features }                     from '@acx-ui/feature-toggle'
@@ -151,6 +151,94 @@ export const useEdgeMvSdLanActions = () => {
         networkIds.map((id) => actionFn(venueId, serviceId!, id)))
   }
 
+  const handleAssociationDiff = async (
+    serviceId: string,
+    originData: EdgeMvSdLanExtended | undefined,
+    payload: EdgeMvSdLanExtended
+  ): Promise<CommonResult[] | CommonErrorsResult<CatchErrorDetails>> => {
+    const isAddMode: boolean = isNil(originData)
+
+    if (isAddMode) {
+      originData = { networks: {}, guestNetworks: {} } as EdgeMvSdLanExtended
+    }
+
+    const actions = []
+    const allResults = []
+
+    // addMode
+    // or editMode guestTunnelEnabled changed
+    const isGuestTunnelChanged = originData?.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled
+    if (isGuestTunnelChanged) {
+      // doesn't need to handle deactivateDmzCluster when isGuestTunnelEnabled changed into false
+
+      const requiredActions = []
+      // DC scenario into DMZ scenario
+      // or addMode DMZ scenario
+      if (payload.isGuestTunnelEnabled && !originData?.guestEdgeClusterId) {
+        requiredActions.push(activateGuestEdgeCluster(serviceId, payload))
+        requiredActions.push(activateGuestTunnel(serviceId, payload))
+
+        try {
+          const reqResult = await Promise.all(requiredActions)
+          allResults.push(...reqResult)
+        } catch(error) {
+          // if the required field: DmzEdgeCluster/ DMZTunnelProfile failed
+          // non need to trigger furthur actions
+          // callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+          return error as CommonErrorsResult<CatchErrorDetails>
+        }
+      }
+
+      // skip if in `addMode` and isGuestTunnelEnabled === false
+      if (!(isAddMode && !payload.isGuestTunnelEnabled))
+        actions.push(toggleGuestTunnelEnable(serviceId, payload.isGuestTunnelEnabled))
+    } else {
+      // for change guest tunnel: only need to do PUT
+      // eslint-disable-next-line max-len
+      if (!isAddMode && originData?.guestTunnelProfileId !== payload.guestTunnelProfileId) {
+        actions.push(activateGuestTunnel(serviceId, payload))
+      }
+    }
+
+    // process networks diff
+    const rmNetworks = differenceVenueNetworks(originData!.networks, payload.networks)
+    const addNetworks = differenceVenueNetworks(payload.networks, originData!.networks)
+
+    let addGuestNetworks: EdgeMvSdLanNetworks = {}
+    if (payload.isGuestTunnelEnabled) {
+      // eslint-disable-next-line max-len
+      addGuestNetworks = differenceVenueNetworks(payload.guestNetworks, originData!.guestNetworks)
+
+      // eslint-disable-next-line max-len
+      const rmGuestNetworks = differenceVenueNetworks(originData!.guestNetworks, payload.guestNetworks)
+      const deactivateDmzNetworks = differenceVenueNetworks(rmGuestNetworks, rmNetworks)
+
+      // handle guestNetworkIds changes
+      // eslint-disable-next-line max-len
+      actions.push(...getActivateActionsFromType(serviceId, addGuestNetworks, ActivationType.activate, true))
+      // eslint-disable-next-line max-len
+      actions.push(...getActivateActionsFromType(serviceId, deactivateDmzNetworks, ActivationType.deactivate, true))
+    } else {
+      addGuestNetworks = isAddMode
+        ? {} as EdgeMvSdLanNetworks
+        : differenceVenueNetworks(payload.guestNetworks, originData!.guestNetworks)
+    }
+
+    const activateDcNetworks = differenceVenueNetworks(addNetworks, addGuestNetworks)
+
+    // eslint-disable-next-line max-len
+    actions.push(...getActivateActionsFromType(serviceId, activateDcNetworks, ActivationType.activate, false))
+    // eslint-disable-next-line max-len
+    actions.push(...getActivateActionsFromType(serviceId, rmNetworks, ActivationType.deactivate, false))
+
+    try {
+      const relationActs = await Promise.all(actions)
+      return allResults.concat(relationActs)
+    } catch(error) {
+      return error as CommonErrorsResult<CatchErrorDetails>
+    }
+  }
+
   const addSdLan = async (req: {
     payload: EdgeMvSdLanExtended,
     callback?: (res: (CommonResult[]
@@ -170,41 +258,11 @@ export const useEdgeMvSdLanActions = () => {
           return
         }
 
-        const dcNetworks = payload.isGuestTunnelEnabled
-          ? differenceVenueNetworks(payload.networks, payload.guestNetworks)
-          : {}
-
-        const optActions = []
-        const allResults = []
-
-        if (payload.isGuestTunnelEnabled) {
-          const requiredActions = [
-            activateGuestEdgeCluster(serviceId, payload),
-            activateGuestTunnel(serviceId!, payload)
-          ]
-
-          try {
-            const reqResult = await Promise.all(requiredActions)
-            allResults.push(...reqResult)
-
-            optActions.push(toggleGuestTunnelEnable(serviceId, true))
-            // eslint-disable-next-line max-len
-            optActions.push(...getActivateActionsFromType(serviceId, dcNetworks, ActivationType.activate, false))
-            // eslint-disable-next-line max-len
-            optActions.push(...getActivateActionsFromType(serviceId, payload.guestNetworks, ActivationType.activate, true))
-
-          } catch(error) {
-            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-            return
-          }
-        } else {
-          // eslint-disable-next-line max-len
-          optActions.push(...getActivateActionsFromType(serviceId, payload.networks, ActivationType.activate, false))
-        }
-
         try {
-          const reqResult = await Promise.all(optActions)
-          callback?.(allResults.concat(reqResult))
+          const reqResult = await handleAssociationDiff(serviceId!,
+            undefined,
+            payload)
+          callback?.(reqResult)
         } catch(error) {
           callback?.(error as CommonErrorsResult<CatchErrorDetails>)
         }
@@ -220,77 +278,32 @@ export const useEdgeMvSdLanActions = () => {
     const { payload, callback } = req
     const serviceId = payload.id
 
-    return await updateEdgeSdLan({
-      payload: {
-        name: payload.name,
-        tunnelProfileId: payload.tunnelProfileId
-      },
-      params: { serviceId },
-      callback: async () => {
-        // eslint-disable-next-line max-len
-        const isGuestTunnelChanged = originData.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled
-        const actions = []
-        const allResults = []
-
-        // diff `originData` vs `req.payload`
-        if (isGuestTunnelChanged) {
-          // doesn't need to handle deactivateDmzCluster when isGuestTunnelEnabled changed into false
-
-          const requiredActions = []
-          // DC scenario into DMZ scenario
-          if (payload.isGuestTunnelEnabled && !originData.guestEdgeClusterId) {
-            requiredActions.push(activateGuestEdgeCluster(serviceId!, payload))
-            requiredActions.push(activateGuestTunnel(serviceId!, payload))
-
-            try {
-              const reqResult = await Promise.all(requiredActions)
-              allResults.push(...reqResult)
-            } catch(error) {
-              // if the required field: DmzEdgeCluster/ DMZTunnelProfile failed
-              // non need to trigger furthur actions
-              callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-              return
-            }
-          }
-
-          actions.push(toggleGuestTunnelEnable(serviceId!, payload.isGuestTunnelEnabled))
-        } else {
-          // for change guest tunnel: only need to do PUT
-          if (originData.guestTunnelProfileId !== payload.guestTunnelProfileId) {
-            actions.push(activateGuestTunnel(serviceId!, payload))
-          }
-        }
-
-        const rmNetworks = differenceVenueNetworks(originData.networks, payload.networks)
-        const addNetworks = differenceVenueNetworks(payload.networks, originData.networks)
-        // eslint-disable-next-line max-len
-        const rmGuestNetworks = differenceVenueNetworks(originData.guestNetworks, payload.guestNetworks)
-        // eslint-disable-next-line max-len
-        const addGuestNetworks = differenceVenueNetworks(payload.guestNetworks, originData.guestNetworks)
-
-        const activateDcNetworks = differenceVenueNetworks(addNetworks, addGuestNetworks)
-        const deactivateDmzNetworks = differenceVenueNetworks(rmGuestNetworks, rmNetworks)
-
-        // eslint-disable-next-line max-len
-        actions.push(...getActivateActionsFromType(serviceId, activateDcNetworks, ActivationType.activate, false))
-
-        // eslint-disable-next-line max-len
-        actions.push(...getActivateActionsFromType(serviceId, rmNetworks, ActivationType.deactivate, false))
-
-        // handle guestNetworkIds changes
-        // eslint-disable-next-line max-len
-        actions.push(...getActivateActionsFromType(serviceId, addGuestNetworks, ActivationType.activate, true))
-        // eslint-disable-next-line max-len
-        actions.push(...getActivateActionsFromType(serviceId, deactivateDmzNetworks, ActivationType.deactivate, true))
-
-        try {
-          const relationActs = await Promise.all(actions)
-          callback?.(allResults.concat(relationActs))
-        } catch(error) {
-          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
-        }
+    if (isEqual(
+      pick(originData, ['id', 'name', 'tunnelProfileId']),
+      pick(payload, ['id', 'name', 'tunnelProfileId']))
+    ) {
+      try {
+        return await handleAssociationDiff(serviceId!, originData, payload)
+      } catch(error) {
+        return error
       }
-    }).unwrap()
+    } else {
+      return await updateEdgeSdLan({
+        payload: {
+          name: payload.name,
+          tunnelProfileId: payload.tunnelProfileId
+        },
+        params: { serviceId },
+        callback: async () => {
+          try {
+            const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
+            callback?.(reqResult)
+          } catch(error) {
+            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+          }
+        }
+      }).unwrap()
+    }
   }
 
   return {

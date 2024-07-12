@@ -1,12 +1,13 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Form }      from 'antd'
+import { transform } from 'lodash'
+import { useIntl }   from 'react-intl'
 
 import { Loader, PageHeader, StepsFormGotoStepFn } from '@acx-ui/components'
-import { useEdgeSdLanActions }                     from '@acx-ui/rc/components'
-import {
-  useGetEdgeSdLanP2Query } from '@acx-ui/rc/services'
+import { useEdgeMvSdLanActions }                   from '@acx-ui/rc/components'
+import { useGetEdgeMvSdLanQuery }                  from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanExtended,
+  EdgeMvSdLanNetworks,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
@@ -28,8 +29,8 @@ const EditEdgeMvSdLan = () => {
     oper: ServiceOperation.LIST
   })
   const linkToServiceList = useTenantLink(cfListRoute)
-  const { editEdgeSdLan } = useEdgeSdLanActions()
-  const { data, isFetching } = useGetEdgeSdLanP2Query({ params })
+  const { editEdgeSdLan } = useEdgeMvSdLanActions()
+  const { data, isFetching } = useGetEdgeMvSdLanQuery({ params })
 
   const steps = [
     {
@@ -53,12 +54,16 @@ const EditEdgeMvSdLan = () => {
         id: params.serviceId,
         venueId: formData.venueId,
         name: formData.name,
-        networkIds: formData.activatedNetworks.map(network => network.id),
+        networks: transform(formData.activatedNetworks, (result, value, key) => {
+          result[key] = value.map(v => v.id)
+        }, {} as EdgeMvSdLanNetworks),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled,
         guestEdgeClusterId: formData.guestEdgeClusterId,
         guestTunnelProfileId: formData.guestTunnelProfileId,
-        guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
+        guestNetworks: transform(formData.activatedGuestNetworks, (result, value, key) => {
+          result[key] = value.map(v => v.id)
+        }, {} as EdgeMvSdLanNetworks)
       } as EdgeMvSdLanExtended
 
       await new Promise(async (resolve, reject) => {
