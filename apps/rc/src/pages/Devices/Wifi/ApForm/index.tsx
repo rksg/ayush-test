@@ -329,15 +329,6 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
-      await updateAp({
-        params: {
-          tenantId,
-          venueId: values.venueId,
-          serialNumber
-        },
-        payload,
-        enableRbac: isUseWifiRbacApi
-      }).unwrap()
       if(
         isUseWifiRbacApi &&
         (values.venueId !==apDetails?.venueId ||
@@ -351,6 +342,15 @@ export function ApForm () {
           }
         }).unwrap()
       }
+      await updateAp({
+        params: {
+          tenantId,
+          venueId: values.venueId,
+          serialNumber
+        },
+        payload,
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
       if (isOnlyOneTab) {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
