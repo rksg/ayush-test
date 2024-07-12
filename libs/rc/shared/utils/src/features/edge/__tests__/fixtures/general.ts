@@ -453,7 +453,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '1.1.1.1',
       corePortEnabled: false,
-      interfaceName: 'port1'
+      interfaceName: 'port1',
+      maxSpeedCapa: 0.0
     },
     {
       id: 'port_id_1',
@@ -467,7 +468,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
-      interfaceName: 'port2'
+      interfaceName: 'port2',
+      maxSpeedCapa: 0.0
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,

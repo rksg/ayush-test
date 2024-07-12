@@ -5,11 +5,11 @@ import { Path }  from 'react-router-dom'
 import {
   AccessControlUrls, CommonUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider }                   from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen, waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import {
@@ -70,6 +70,11 @@ describe('AccessControlTable - ApplicationPolicy', () => {
         (_, res, ctx) => res(
           ctx.json(avcApp)
         )
+      ), rest.get(
+        AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
+        }
       )
     )
   })
@@ -126,5 +131,7 @@ describe('AccessControlTable - ApplicationPolicy', () => {
     }))
     await userEvent.click(await screen.findByText('Delete'))
     await userEvent.click(await screen.findByText('Delete Policy'))
+
+    await waitForElementToBeRemoved(() => screen.queryAllByText('Delete Policy'))
   })
 })
