@@ -6,6 +6,7 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }                     from '@acx-ui/rc/services'
 import {
+  AccessControlUrls,
   CommonUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
@@ -13,7 +14,8 @@ import {
   WifiCallingUrls,
   WifiOperatorUrls,
   WifiRbacUrlsInfo,
-  WifiUrlsInfo } from '@acx-ui/rc/utils'
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -36,7 +38,12 @@ import {
   mockHotpost20IdentityProviderList,
   mockHotspot20OperatorList,
   macRegistrationList,
-  mockWifiCallingTableResult
+  mockWifiCallingTableResult,
+  devicePolicyListResponse,
+  applicationPolicyListResponse,
+  accessControlListResponse,
+  layer2PolicyListResponse,
+  layer3PolicyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -100,9 +107,34 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
       ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))),
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
       rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
-        (_, res, ctx) => res(ctx.json(successResponse)))
+        (_, res, ctx) => res(ctx.json(successResponse))
+      ),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(applicationPolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => {
+          return res(ctx.json(accessControlListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(layer2PolicyListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(layer3PolicyListResponse))
+        }),
+      // RBAC API
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))
+      )
     )
   })
 

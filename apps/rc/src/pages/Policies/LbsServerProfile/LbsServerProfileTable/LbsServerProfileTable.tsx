@@ -50,7 +50,10 @@ export default function LbsServerProfileTable () {
       selectedRows,
       $t({ defaultMessage: 'Profile(s)' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      [{
+        fieldName: 'venueIds',
+        fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
+      }],
       async () =>
         Promise.all(selectedRows.map(row => deleteFn({ params: { policyId: row.id } })))
           .then(callback)
@@ -173,7 +176,7 @@ function useColumns () {
     },
     {
       key: 'lbsVenueName',
-      title: $t({ defaultMessage: 'LBS Venue Name' }),
+      title: $t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' }),
       dataIndex: 'lbsVenueName',
       sorter: true
     },
@@ -185,7 +188,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       align: 'center',
       filterKey: 'venueIds',

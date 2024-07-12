@@ -79,7 +79,8 @@ export function CellularOptionsForm () {
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
   const availableLteBands = useGetAvailableLteBandsQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
-  const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
+  const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } },
+    { skip: isUseRbacApi })
   const venueInfoData = useGetVenueQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi }, { skip: !isUseRbacApi })
   const [currentRegion, setCurrentRegion] = useState('')

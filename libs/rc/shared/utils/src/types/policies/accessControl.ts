@@ -199,6 +199,14 @@ export enum EnabledStatus {
   OFF = 'OFF'
 }
 
+export type ApplicationLibrarySettingType = {
+  version: string,
+  updatedDate: string,
+  releasedDate: string,
+  latestVersion: string,
+  latestReleasedDate: string
+}
+
 export const layer3ProtocolLabelMapping: Record<Layer3ProtocolType, MessageDescriptor> = {
   [Layer3ProtocolType.ANYPROTOCOL]: defineMessage({ defaultMessage: 'Any Protocol' }),
   [Layer3ProtocolType.L3ProtocolEnum_TCP]: defineMessage({ defaultMessage: 'TCP' }),
