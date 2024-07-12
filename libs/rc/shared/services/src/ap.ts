@@ -57,6 +57,7 @@ import {
   LanPortStatusProperties,
   MdnsProxyUrls,
   MeshUplinkAp,
+  NewAPExtendedGrouped,
   NewAPModel,
   NewAPModelExtended,
   NewApGroupViewModelResponseType,
@@ -101,7 +102,8 @@ import {
   aggregateApGroupInfo,
   aggregatePoePortInfo,
   aggregateVenueInfo,
-  transformApListFromNewModel
+  transformApListFromNewModel,
+  transformGroupByListFromNewModel
 } from './apUtils'
 
 
@@ -109,6 +111,15 @@ export type ApsExportPayload = {
   filters: Filter
   tenantId: string
 } & SEARCH & SORTER
+
+interface ApRequestPayload extends SORTER {
+  filters: Filter
+  groupBy: unknown
+  groupByFields: unknown
+  fields: unknown
+  page: number
+  pageSize: number
+}
 
 export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
@@ -154,28 +165,32 @@ export const apApi = baseApApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    newApList: build.query<TableResult<NewAPModelExtended, ApExtraParams>,
+    newApList: build.query<TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>,
     RequestPayload>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
-        interface ApRequestPayload {
-          groupBy: unknown
-          groupByFields: unknown
-          fields: unknown
-        }
         const hasGroupBy = (payload as ApRequestPayload)?.groupBy
-        const fields = hasGroupBy ? (payload as ApRequestPayload).groupByFields : (payload as ApRequestPayload).fields
+        // const isGroupByApGroup = hasGroupBy && (payload as ApRequestPayload)?.groupBy === 'apGroupId'
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-        // TODO Will add it back when the groupBy api is ready
-        // const apsReq = hasGroupBy
-        //   ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
-        //   : createHttpRequest(CommonRbacUrlsInfo.getApsList, params, apiCustomHeader)
-        const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, params, apiCustomHeader)
-        const apListRes = await fetchWithBQ({ ...apsReq, body: JSON.stringify({ ...(payload as Object), fields: fields }) })
-        // if(hasGroupBy) {
-        //   return { data: transformGroupByList(apListRes.data as TableResult<APExtendedGrouped, ApExtraParams>) }
+        // let groupByApGroupList
+        // let newPayload = payload
+        // if(isGroupByApGroup) {
+        //   [groupByApGroupList, newPayload] = await groupByApGroupPreProcess(payload as ApRequestPayload, fetchWithBQ)
         // }
-        const apList = apListRes.data as TableResult<NewAPModelExtended, ApExtraParams>
-        const venueIds = apList.data.map(item => item.venueId).filter(item => item)
+        const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, params, apiCustomHeader)
+        const apListRes = await fetchWithBQ({ ...apsReq, body: JSON.stringify(payload) })
+        let apList
+        let venueIds
+        let groupIds
+        let apGroupList
+        if(hasGroupBy) {
+          apList = apListRes.data as TableResult<NewAPExtendedGrouped, ApExtraParams>
+          venueIds = apList.data.flatMap(item => item.aps.map(item => item.venueId))
+          groupIds = apList.data.flatMap(item => item.aps.map(item => item.apGroupId))
+        } else {
+          apList = apListRes.data as TableResult<NewAPModelExtended, ApExtraParams>
+          venueIds = apList.data.map(item => item.venueId).filter(item => item)
+          groupIds = apList.data.map(item => item.apGroupId).filter(item => item)
+        }
         if(venueIds.length > 0) {
           const venuePayload = {
             fields: ['name', 'id'],
@@ -186,21 +201,32 @@ export const apApi = baseApApi.injectEndpoints({
           const venueList = venueListRes.data as TableResult<Venue>
           aggregateVenueInfo(apList, venueList)
         }
-        const groupIds = apList.data.map(item => item.apGroupId).filter(item => item)
         if(groupIds.length > 0) {
+          // if(isGroupByApGroup) {
+          //   aggregateApGroupInfo(apList, groupByApGroupList as TableResult<NewApGroupViewModelResponseType>)
+          // } else {
           const apGroupPayload = {
-            fields: ['name', 'id'],
+            fields: ['name', 'id', 'wifiNetworkIds'],
             pageSize: 10000,
             filters: { id: groupIds }
           }
           const apGroupListRes = await fetchWithBQ({ ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList), body: apGroupPayload })
-          const apGroupList = apGroupListRes.data as TableResult<ApGroup>
+          apGroupList = apGroupListRes.data as TableResult<NewApGroupViewModelResponseType>
           aggregateApGroupInfo(apList, apGroupList)
+          // }
         }
         const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, apiCustomHeader))
         const capabilities = capabilitiesRes.data as Capabilities
         aggregatePoePortInfo(apList, capabilities)
-        return { data: transformApListFromNewModel(apListRes.data as TableResult<NewAPModelExtended, ApExtraParams>) }
+        if(hasGroupBy) {
+          return {
+            data: transformGroupByListFromNewModel(
+              apList as TableResult<NewAPExtendedGrouped, ApExtraParams>,
+              apGroupList
+            )
+          }
+        }
+        return { data: transformApListFromNewModel(apList as TableResult<NewAPModelExtended, ApExtraParams>) }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Ap', id: 'LIST' }],
@@ -213,6 +239,7 @@ export const apApi = baseApApi.injectEndpoints({
             'DeleteAp',
             'DeleteAps',
             'AddApGroup',
+            'DeleteApGroup',
             'AddApGroupLegacy',
             'ImportVenueApsCsv'
           ]
@@ -1706,3 +1733,53 @@ const setDhcpProfileToCache = async (
     cacheDhcpProfileData[dhcpId] = venueDhcpSettingRes.data as DHCPSaveData
   }
 }
+
+// will return apGroupList by pagination
+// const groupByApGroupPreProcess = async (
+//   payload: ApRequestPayload,
+//   fetchWithBQ: (arg: string | FetchArgs) =>
+//   MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
+// ) => {
+//   const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+//   const apGroupListPayload = {
+//     fields: ['id', 'name', 'apSerialNumbers', 'wifiNetworkIds', 'isDefault', 'venueId'],
+//     filters: { isDefault: [false] },
+//     sortField: payload.sortField === 'name' ? 'name' : '',
+//     sortOrder: payload.sortField === 'name' ? payload.sortOrder : '',
+//     page: payload.page,
+//     pageSize: payload.pageSize
+//   }
+//   const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, {}, customHeaders)
+//   const apGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(apGroupListPayload) })
+//   const result = (apGroupListRes?.data as TableResult<NewApGroupViewModelResponseType>)
+//   if(
+//     (
+//       // default order OR ASC AND at first page
+//       (!payload.sortOrder || payload.sortOrder === 'ASC') && payload.page === 1
+//     ) ||
+//     (
+//       // DESC AND at last page
+//       payload.sortOrder === 'DESC' &&
+//       payload.page * payload.pageSize >= ((apGroupListRes.data as TableResult<NewApGroupViewModelResponseType>)?.totalCount ?? 0)
+//     )
+//   ) {
+//     const defaultApGroupListPayload = {
+//       fields: ['id', 'name', 'apSerialNumbers', 'wifiNetworkIds', 'isDefault', 'venueId'],
+//       filters: { isDefault: [true] },
+//       page: 1,
+//       pageSize: 10000
+//     }
+//     const defaultApGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(defaultApGroupListPayload) })
+//     const defaultApGroupList = (defaultApGroupListRes?.data as TableResult<NewApGroupViewModelResponseType>)?.data
+//     result.data = result.data.concat(defaultApGroupList)
+//   }
+//   const newPayload = cloneDeep(payload)
+//   newPayload.filters = {
+//     ...payload.filters,
+//     serialNumber: [
+//       ...(payload.filters.serialNumber || []),
+//       ...result.data.flatMap(item => item.apSerialNumbers ?? [])
+//     ]
+//   }
+//   return [result, newPayload]
+// }

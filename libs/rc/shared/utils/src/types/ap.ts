@@ -88,6 +88,7 @@ export interface NewAPModel {
   statusSeverity?: ApVenueStatusEnum
   status?: ApDeviceStatusEnum
   meshRole?: string
+  clientCount?: number
   networkStatus?: {
     ipAddress: string
     externalIpAddress: string
@@ -592,6 +593,8 @@ export interface APExtendedGrouped extends APExtended {
   id?: number | string
 }
 export interface NewAPExtendedGrouped extends NewAPModelExtended {
+  groupedField: string
+  groupedValue: string
   members: number
   incidents: number
   model: string
@@ -599,6 +602,8 @@ export interface NewAPExtendedGrouped extends NewAPModelExtended {
   aps: NewAPModelExtended[],
   children?: NewAPModelExtended[],
   id?: number | string
+  deviceGroupName?: string // For the legacy usage of editing/deleting apGroup
+  deviceGroupId?: string // For the legacy usage of editing/deleting apGroup
 }
 export type ImportErrorRes = {
   errors: {
