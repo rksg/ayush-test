@@ -1,11 +1,11 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
+import { rest }        from 'msw'
 
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   FirmwareRbacUrlsInfo,
-  FirmwareSwitchVenue,
   FirmwareSwitchVenueV1002,
-  SwitchFirmware,
   SwitchFirmwareFixtures,
   SwitchFirmwareVersion1002
 } from '@acx-ui/rc/utils'
@@ -17,17 +17,12 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { switchVenueV1002 }    from '../../../__tests__/fixtures'
 import {
-  switchVenue,
-  upgradeSwitchViewList,
-  availableVersions,
   availableVersions_hasInUse
 } from '../../__test__/fixtures'
 
 import { ScheduleStep } from '.'
-import { switchVenueV1002 } from '../../../__tests__/fixtures'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { rest } from 'msw'
 
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 

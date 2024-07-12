@@ -1,11 +1,14 @@
+import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { FirmwareCategory,
+  FirmwareUrlsInfo,
   FirmwareVersion,
   SwitchFirmwareFixtures,
   defaultSort } from '@acx-ui/rc/utils'
-import { Provider }   from '@acx-ui/store'
-import { renderHook } from '@acx-ui/test-utils'
+import { Provider }               from '@acx-ui/store'
+import { mockServer, renderHook } from '@acx-ui/test-utils'
 
 import { mockSwitchVenue, mockVenue } from './__tests__/fixtures'
 
@@ -21,13 +24,23 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 describe('Test useSwitchFirmwareUtils', () => {
+
+  beforeEach(async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+      )
+    )
+  })
   it('parseSwitchVersion', async () => {
     const { result } = renderHook(() => useSwitchFirmwareUtils(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { parseSwitchVersion } = result.current
     expect(parseSwitchVersion('09010h')).toBe('9.0.10h')
-    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f')
+    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f_b19')
   })
 
   it('getSwitchVersionLabel', async () => {
