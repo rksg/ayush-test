@@ -2,10 +2,10 @@ import styled from 'styled-components'
 
 import { Table, TableProps } from '@acx-ui/components'
 
-import { IntentAIRecommendationListItem } from './services'
+import { IntentListItem } from './services'
 
 export const IntentAITableWrapper =
-styled((props: TableProps<IntentAIRecommendationListItem>) => <Table {...props} />)`
+styled((props: TableProps<IntentListItem>) => <Table {...props} />)`
   .ant-picker-suffix {
     margin: 0 !important;
   }
