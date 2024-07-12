@@ -27,6 +27,8 @@ import {
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useActivateVlanPoolTemplateOnWifiNetworkMutation,
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation,
   WifiActionMapType,
@@ -52,8 +54,9 @@ import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
   CommonResult,
-  NetworkVenue,
-  VlanPool
+  VlanPool,
+  useConfigTemplateMutationFnSwitcher,
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -363,9 +366,16 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()
+  const [activate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateVlanPoolMutation,
+    useTemplateMutationFn: useActivateVlanPoolTemplateOnWifiNetworkMutation
+  })
 
-  const [activate] = useActivateVlanPoolMutation()
-  const [deactivate] = useDeactivateVlanPoolMutation()
+  const [deactivate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateVlanPoolMutation,
+    useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
+  })
+
 
   const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
     payload: {
