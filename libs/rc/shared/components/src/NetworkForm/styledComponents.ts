@@ -42,6 +42,31 @@ export const Drawer = styled(UIDrawer)`
 export const Checkbox = styled(UICheckbox)`
   width: 130px;
 `
+export const RedAlertCheckbox = styled(UICheckbox)<{ alert?: boolean }>`
+  ${(props) => {
+    if(props.alert) {
+      return `
+        width: 130px;
+        > span > span {
+          background-color: white !important;
+          border-color: var(--acx-semantics-red-70) !important;
+        }
+        .ant-checkbox-inner::after {
+          border: 2px solid var(--acx-semantics-red-70);
+          border-top: 0;
+          border-left: 0;
+        }
+        > span:nth-of-type(2) {
+          color: var(--acx-semantics-red-70);
+        }
+        > span:nth-of-type(2) > svg > path {
+          fill: var(--acx-semantics-red-70);
+        }
+      `
+    }
+    return 'width: 130px;'
+  }}
+`
 
 export const ConfigurationSolid = styled(UIConfigurationSolid)`
   &:hover{
