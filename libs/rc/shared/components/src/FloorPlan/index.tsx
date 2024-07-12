@@ -23,8 +23,10 @@ import {
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
   NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }  from '@acx-ui/user'
+import { TenantLink }                   from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes }     from '@acx-ui/types'
+import { hasAccess, hasPermission }     from '@acx-ui/user'
+import { TABLE_QUERY_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -99,7 +101,10 @@ export function FloorPlan () {
   const getNetworkDevices = useGetAllDevicesQuery({ params: { ...params,
     showRwgDevice: '' + showRwgDevice
   },
-  payload: networkDevicePayload })
+  payload: networkDevicePayload },
+  {
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
+  })
 
   const { data: apsList } = useApListQuery({
     params, payload: {
@@ -107,7 +112,8 @@ export function FloorPlan () {
       filters: { venueId: [params.venueId] }
     },
     enableRbac: isUseWifiRbacApi
-  }, { skip: !isApMeshTopologyFFOn })
+  }, { skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   // Set mesh role for unplaced AP
   useEffect(() => {
@@ -416,13 +422,15 @@ export function FloorPlan () {
               showIcon
               action={
                 <Space direction='horizontal'>
-                  { hasAccess() && <TenantLink to='devices/wifi/add'>
+                  { hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+                  <TenantLink to='devices/wifi/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add AP' })}
                     </Button>
                   </TenantLink>
                   }
-                  { hasAccess() && <TenantLink to='devices/switch/add'>
+                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) &&
+                  <TenantLink to='devices/switch/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </Button>

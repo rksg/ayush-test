@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useGetApMeshTopologyQuery, useGetFloorPlanMeshApsQuery } from '@acx-ui/rc/services'
 import { FloorPlanMeshAP, APMeshRole, ApMeshLink }                from '@acx-ui/rc/utils'
+import { TABLE_QUERY_POLLING_INTERVAL }                           from '@acx-ui/utils'
 
 export interface ApMeshTopologyDevice {
   serialNumber: string
@@ -61,13 +62,15 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
         apMeshTopologyDeviceList: data && flatApMeshList(data.data)
       }
     },
-    skip: !isApMeshTopologyFFOn
+    skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
   const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({
     params: { tenantId: params.tenantId, venueId }
   }, {
-    skip: !isApMeshTopologyFFOn
+    skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
   const {
