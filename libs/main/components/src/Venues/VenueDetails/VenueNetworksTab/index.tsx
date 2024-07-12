@@ -511,7 +511,7 @@ export function VenueNetworksTab () {
     updateNetworkVenue({ params: {
       tenantId: params.tenantId,
       networkVenueId: payload.id
-    }, payload: payload, enableRbac: isPolicyRbacEnabled }).then(()=>{
+    }, payload: { newData: payload }, enableRbac: isPolicyRbacEnabled }).then(()=>{
       setScheduleModalState({
         visible: false
       })
@@ -525,7 +525,7 @@ export function VenueNetworksTab () {
       updateNetworkVenue({ params: {
         tenantId: params.tenantId,
         networkVenueId: payload.id
-      }, payload: { ...payload, oldNetworkVenue: oldData }, enableRbac: isPolicyRbacEnabled }).then(()=>{
+      }, payload: { newData: payload, oldData: oldData }, enableRbac: isPolicyRbacEnabled }).then(()=>{
         setApGroupModalState({
           visible: false
         })
