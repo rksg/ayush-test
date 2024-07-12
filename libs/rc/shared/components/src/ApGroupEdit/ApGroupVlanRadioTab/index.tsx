@@ -95,6 +95,7 @@ export function ApGroupVlanRadioTab () {
           payload: cloneDeep({
             ...defaultNewApGroupNetworkPayload,
             isTemplate: isTemplate,
+            isTemplateRbacEnabled: isRbacEnabled,
             filters: {
               'venueApGroups.apGroupIds': [apGroupId],
               'venueApGroups.isAllApGroups': [false]

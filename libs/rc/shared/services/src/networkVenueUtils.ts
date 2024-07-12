@@ -147,8 +147,8 @@ export const aggregatedRbacNetworksVenueData = (
 }
 
 export const getNetworkDeepList =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,max-len
+  async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false, isTemplateRbacEnabled: boolean = false) => {
     let networkDeepList: NetworkDetail[] = []
 
     if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
@@ -157,7 +157,10 @@ export const getNetworkDeepList =
     const reqs = []
     for (let i=0; i<networkIds.length; i++) {
       reqs.push(fetchWithBQ(createHttpRequest(
-        isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
+        isTemplate
+          // eslint-disable-next-line max-len
+          ? (isTemplateRbacEnabled ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : ConfigTemplateUrlsInfo.getNetworkTemplate)
+          : WifiUrlsInfo.getNetwork
         , { networkId: networkIds[i] })))
     }
 
@@ -181,7 +184,8 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
   if (networkList?.data.length) {
     const networkIds = networkList.data.map(item => item.id)
     // `deepNetwork.venues` is deprecated in GET v1 /wifiNetworks/:networkId
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+    // eslint-disable-next-line max-len
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
   }
 
   return {
@@ -201,7 +205,8 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const networkIds = networkList?.data?.map(item => item.id) || []
 
   if (networkIds.length > 0) {
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+    // eslint-disable-next-line max-len
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
   }
   return {
     error: networkListResult.error as FetchBaseQueryError,
@@ -266,8 +271,25 @@ export const fetcRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
   const isFilterByIsAllApGroups = venueApGroupFilters.includes('venueApGroups.isAllApGroups')
   const networkListInfo = arg.payload.isTemplate
     ? {
-      ...createHttpRequest(VenueConfigTemplateUrlsInfo.getApGroupNetworkList, arg.params),
-      body: arg.payload
+      ...createHttpRequest(
+        // eslint-disable-next-line max-len
+        (arg.payload.isTemplateRbacEnabled ? VenueConfigTemplateUrlsInfo.networkActivationsRbac : VenueConfigTemplateUrlsInfo.networkActivations),
+        arg.params
+      ),
+      body: arg.payload.isTemplateRbacEnabled
+        ? JSON.stringify({
+          deep: true,
+          fields: [],
+          // eslint-disable-next-line max-len
+          filters: isFilterByIsAllApGroups
+            ? { ...omit(arg.payload.filters, 'venueApGroups.isAllApGroups') }
+            : arg.payload.filters,
+          sortField: 'name',
+          sortOrder: 'ASC',
+          page: 1,
+          pageSize: 10_000
+        })
+        : arg.payload
     }
     : {
       // eslint-disable-next-line max-len

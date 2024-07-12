@@ -755,20 +755,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           return { error: networkListQueryError }
 
         const networkIdsToIncompatible:{ [key:string]: number } = {}
-        try {
-          const apCompatibilitiesReq = {
-            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, arg.params),
-            body: { filters: { networkIds } }
+        if (!(arg.payload as any).isTemplate) {
+          try {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, arg.params),
+              body: { filters: { networkIds } }
+            }
+            const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+            const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
+            const apCompatibilities = apCompatibilitiesResponse.apCompatibilities as ApCompatibility[]
+            apCompatibilities.forEach((item:ApCompatibility) => {
+              networkIdsToIncompatible[item.id] = item.incompatible
+            })
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('venueNetworkTable getApCompatibilitiesVenue error:', e)
           }
-          const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
-          const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
-          const apCompatibilities = apCompatibilitiesResponse.apCompatibilities as ApCompatibility[]
-          apCompatibilities.forEach((item:ApCompatibility) => {
-            networkIdsToIncompatible[item.id] = item.incompatible
-          })
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('venueNetworkTable getApCompatibilitiesVenue error:', e)
         }
 
         const aggregatedList = aggregatedRbacVenueNetworksData(

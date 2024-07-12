@@ -26,8 +26,8 @@ import {
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import { isPayloadHasField } from './apUtils'
 import { QueryFn }           from './servicePolicy.utils'
+import { isPayloadHasField } from './utils'
 
 
 const apGroupOldNewFieldsMapping: Record<string, string> = {

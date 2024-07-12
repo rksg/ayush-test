@@ -558,6 +558,10 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   networkActivationsRbac: {
     method: 'post',
     url: '/templates/wifiNetworks/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
