@@ -16,7 +16,7 @@ import {
 import { get }                  from '@acx-ui/config'
 import { formatter }            from '@acx-ui/formatter'
 import { InformationOutlined }  from '@acx-ui/icons'
-import { NodesFilter }          from '@acx-ui/utils'
+import { NodesFilter, getIntl } from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
@@ -130,7 +130,11 @@ function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
-  const tops = data.slice(0, topCount).concat()
+  const tops = data.slice(0, topCount).concat({
+    ...data.slice(topCount)[0],
+    key: getIntl().$t({ defaultMessage: 'Others' })
+  })
+
   const total = tops.reduce((total, { value }) => value + total, 0)
   return (
     data.length > 0

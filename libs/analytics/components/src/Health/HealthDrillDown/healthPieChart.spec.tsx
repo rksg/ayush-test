@@ -191,6 +191,7 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('WLANs')).toBeVisible()
     expect(await screen.findByText('Manufacturers')).toBeVisible()
     expect(await screen.findByText('Events')).toBeVisible()
+    expect(await screen.findByText('Others')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Detailed breakup of all items beyond Top5 can be explored using Data Studio custom charts.')).toBeInTheDocument()
   })
