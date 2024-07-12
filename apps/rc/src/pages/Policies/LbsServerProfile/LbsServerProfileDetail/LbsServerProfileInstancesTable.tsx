@@ -41,7 +41,7 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'name',
       key: 'name',
       searchable: true,

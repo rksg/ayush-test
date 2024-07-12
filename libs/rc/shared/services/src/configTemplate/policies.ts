@@ -250,7 +250,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getVlanPoolPolicyTemplateDetail: build.query<VLANPoolPolicyType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyRbac),
       transformResponse (data: VLANPoolPolicyType) {
         data.vlanMembers = (data.vlanMembers as string[]).join(',')
         return data
@@ -259,15 +260,18 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     addVlanPoolPolicyTemplate: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     updateVlanPoolPolicyTemplate: build.mutation<VLANPoolPolicyType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     delVlanPoolPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     getVlanPoolTemplateVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
@@ -411,6 +415,12 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
       queryFn: updateVenueRoguePolicyFn(true),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    activateVlanPoolTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.activateVlanPool)
+    }),
+    deactivateVlanPoolTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deactivateVlanPool)
     })
   })
 })
@@ -462,5 +472,7 @@ export const {
   useDelRoguePolicyTemplateMutation,
   useGetVenueRoguePolicyTemplateQuery,
   useGetVenueRogueApTemplateQuery,
-  useUpdateVenueRogueApTemplateMutation
+  useUpdateVenueRogueApTemplateMutation,
+  useActivateVlanPoolTemplateOnWifiNetworkMutation,
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation
 } = policiesConfigTemplateApi
