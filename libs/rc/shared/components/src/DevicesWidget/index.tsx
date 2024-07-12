@@ -9,6 +9,7 @@ import type { DonutChartData }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { ChartData }                                from '@acx-ui/rc/utils'
 import { TenantLink, useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }     from '@acx-ui/types'
 import { filterByAccess }                           from '@acx-ui/user'
 
 import { useIsEdgeReady } from '../useEdgeActions'
@@ -154,9 +155,13 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 30 }}>
-                    {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
-                      {$t({ defaultMessage: 'Add Access Point' })}
-                    </TenantLink>])}
+                    {filterByAccess([
+                      <TenantLink
+                        scopeKey={[WifiScopes.CREATE]}
+                        to={'/devices/wifi/add'}>
+                        {$t({ defaultMessage: 'Add Access Point' })}
+                      </TenantLink>
+                    ])}
                   </UI.LinkContainer>
                 }
               </GridCol>
@@ -189,9 +194,13 @@ export function DevicesWidgetv2 (props: {
                   : <UI.LinkContainer
                     key='switch-linkContainer'
                     style={{ height: (height/2) - 30 }}>
-                    {filterByAccess([<TenantLink to={'/devices/switch/add'}>
-                      {$t({ defaultMessage: 'Add Switch' })}
-                    </TenantLink>])}
+                    {filterByAccess([
+                      <TenantLink
+                        to={'/devices/switch/add'}
+                        scopeKey={[SwitchScopes.CREATE]}>
+                        {$t({ defaultMessage: 'Add Switch' })}
+                      </TenantLink>
+                    ])}
                   </UI.LinkContainer>
                 }
               </GridCol>
@@ -226,6 +235,7 @@ export function DevicesWidgetv2 (props: {
                       key='edge-linkContainer'
                       style={{ height: (height/2) - 30 }}>
                       {filterByAccess([<TenantLink
+                        scopeKey={[EdgeScopes.CREATE]}
                         to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add SmartEdge' })}
                       </TenantLink>])}
