@@ -1,7 +1,10 @@
 export const useCasesToRefreshNetworkTemplateList = [
   'AddNetworkTemplate',
   'UpdateNetworkTemplate',
-  'DeleteNetworkTemplate'
+  'DeleteNetworkTemplate',
+  'AddWifiNetworkTemplate',
+  'UpdateWifiNetworkTemplate',
+  'DeleteWifiNetworkTemplate'
 ]
 
 export const useCasesToRefreshVenueTemplateList = [

@@ -45,21 +45,33 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.addNetworkTemplate,
+        ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.updateNetworkTemplate,
+        ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getNetworkTemplate,
+        ConfigTemplateUrlsInfo.getNetworkTemplateRbac
+      ),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.deleteNetworkTemplate,
+        ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),

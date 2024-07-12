@@ -49,8 +49,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/wifiNetworks/:networkId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      Accept: 'application/vnd.ruckus.v1+json'
     }
   },
   deleteNetworkTemplate: {

@@ -1,5 +1,5 @@
-import { FetchBaseQueryError }          from '@reduxjs/toolkit/query'
-import { keys, every, get, uniq, omit } from 'lodash'
+import { FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { keys, every, get, uniq, omit }   from 'lodash'
 
 import {
   ApiVersionEnum,
@@ -12,11 +12,12 @@ import {
   NetworkDetail,
   TableResult,
   Venue,
-  VenueConfigTemplateUrlsInfo,
   WifiNetwork,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { createHttpRequest } from '@acx-ui/utils'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 export const getApGroupNetworkVenueNewFieldFromOld = (oldFieldName: string) => {
   switch(oldFieldName) {
@@ -147,8 +148,8 @@ export const aggregatedRbacNetworksVenueData = (
 }
 
 export const getNetworkDeepList =
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+  async (networkIds: string[], fetchWithBQ: any, isTemplate: boolean = false, enableRbac: boolean = false) => {
     let networkDeepList: NetworkDetail[] = []
 
     if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
@@ -157,8 +158,9 @@ export const getNetworkDeepList =
     const reqs = []
     for (let i=0; i<networkIds.length; i++) {
       reqs.push(fetchWithBQ(createHttpRequest(
-        isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
-        , { networkId: networkIds[i] })))
+        resolveGetNetworkApiInfo(isTemplate, enableRbac)
+        , { networkId: networkIds[i] }
+      )))
     }
 
     const results = await Promise.allSettled(reqs)
@@ -211,15 +213,10 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const fetchRbacNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
-  const networkVenuesListInfo = {
-    ...createHttpRequest(arg.payload.isTemplate
-      ? ConfigTemplateUrlsInfo.getVenuesTemplateList
-      : CommonUrlsInfo.getVenuesList
-    , arg.params),
-    body: arg.payload
-  }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTemplate?: boolean }>, fetchWithBQ: any) => {
+  const { params, payload } = queryArgs
+  const networkVenuesListInfo = resolveRbacVenuesListFetchArgs(queryArgs)
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
   const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
   const venueIds:string[] = networkVenuesList.data?.filter(v => {
@@ -229,23 +226,25 @@ export const fetchRbacNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
     return false
   }).map(v => v.id) || []
 
+  const targetNetworkIdList = params?.networkId ? [params.networkId] : []
   // eslint-disable-next-line max-len
-  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
+  const networkDeepList = await getNetworkDeepList(targetNetworkIdList, fetchWithBQ, payload?.isTemplate, true)
   const networkDeep = Array.isArray(networkDeepList?.response)
     ? networkDeepList?.response[0]
     : undefined
   let networkViewmodel = {} as WifiNetwork
 
-  if (!arg.params?.networkId) {
+  if (!params?.networkId) {
     // eslint-disable-next-line no-console
-    console.error('missing networkId', arg.params?.networkId)
+    console.error('missing networkId', params?.networkId)
   }
 
-  if (networkDeep?.wlan?.ssid && arg.params?.networkId) {
+  if (networkDeep?.wlan?.ssid && params?.networkId) {
     const networkListResult = await fetcRbacNetworkList({
       payload: {
         fields: ['id', 'name', 'venueApGroups'],
-        filters: { id: [arg.params?.networkId] }
+        filters: { id: [params?.networkId] },
+        isTemplate: payload?.isTemplate
       }
     }, fetchWithBQ)
     networkViewmodel = networkListResult.data?.data[0]
@@ -264,21 +263,19 @@ export const fetchRbacNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
 export const fetcRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
   const venueApGroupFilters = getVenueApGroupFilters(arg.payload.filters)
   const isFilterByIsAllApGroups = venueApGroupFilters.includes('venueApGroups.isAllApGroups')
-  const networkListInfo = arg.payload.isTemplate
-    ? {
-      ...createHttpRequest(VenueConfigTemplateUrlsInfo.getApGroupNetworkList, arg.params),
-      body: arg.payload
-    }
-    : {
-      // eslint-disable-next-line max-len
-      ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, arg.params, GetApiVersionHeader(ApiVersionEnum.v1)),
-      body: JSON.stringify({
-        ...arg.payload,
-        filters: isFilterByIsAllApGroups
-          ? { ...omit(arg.payload.filters, 'venueApGroups.isAllApGroups') }
-          : arg.payload.filters
-      })
-    }
+  const resolvedRequest = arg.payload.isTemplate
+    ? createHttpRequest(ConfigTemplateUrlsInfo.getNetworkTemplateListRbac, arg.params)
+    // eslint-disable-next-line max-len
+    : createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, arg.params, GetApiVersionHeader(ApiVersionEnum.v1))
+  const networkListInfo = {
+    ...resolvedRequest,
+    body: JSON.stringify({
+      ...arg.payload,
+      filters: isFilterByIsAllApGroups
+        ? { ...omit(arg.payload.filters, 'venueApGroups.isAllApGroups') }
+        : arg.payload.filters
+    })
+  }
 
   const networkListQuery = await fetchWithBQ(networkListInfo)
   const networkList = networkListQuery.data as TableResult<WifiNetwork>
@@ -290,4 +287,31 @@ export const fetcRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
     data: networkList,
     error: networkListQuery.error
   }
+}
+
+function resolveGetNetworkApiInfo (isTemplate: boolean, enableRbac: boolean): ApiInfo {
+  if (isTemplate) {
+    return enableRbac
+      ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac
+      : ConfigTemplateUrlsInfo.getNetworkTemplate
+  }
+
+  return enableRbac ? WifiRbacUrlsInfo.getNetwork : WifiUrlsInfo.getNetwork
+}
+
+// eslint-disable-next-line max-len
+function resolveRbacVenuesListFetchArgs (queryArgs: RequestPayload<{ isTemplate?: boolean }>): FetchArgs {
+  const { params, payload } = queryArgs
+
+  const venueTemplateListInfo = {
+    ...createHttpRequest(ConfigTemplateUrlsInfo.getVenuesTemplateListRbac, params),
+    body: JSON.stringify(payload)
+  }
+
+  const networkVenuesListInfo = {
+    ...createHttpRequest(CommonUrlsInfo.getVenuesList, params),
+    body: payload
+  }
+
+  return payload?.isTemplate ? venueTemplateListInfo : networkVenuesListInfo
 }
