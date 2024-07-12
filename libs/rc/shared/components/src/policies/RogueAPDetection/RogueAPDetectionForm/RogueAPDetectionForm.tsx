@@ -25,7 +25,7 @@ import {
   usePolicyPageHeaderTitle,
   useConfigTemplateMutationFnSwitcher,
   usePolicyPreviousPath,
-  RoguePolicyRequest
+  RoguePolicyRequest, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -43,6 +43,8 @@ type RogueAPDetectionFormProps = {
 
 export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
@@ -90,13 +92,13 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
         results = await createRoguePolicy({
           params,
           payload: transformPayload(state, false),
-          enableRbac
+          enableRbac: (isTemplate) ? enableTemplateRbac : enableRbac
         }).unwrap()
       } else {
         await updateRoguePolicy({
           params,
           payload: transformPayload(state, true),
-          enableRbac
+          enableRbac: (isTemplate) ? enableTemplateRbac : enableRbac
         }).unwrap()
       }
       const response = results.response as { id: string }

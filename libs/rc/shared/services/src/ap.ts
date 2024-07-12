@@ -518,7 +518,7 @@ export const apApi = baseApApi.injectEndpoints({
             apSerialNumbers: [params?.serialNumber]
           }
         }
-        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.getMdnsProxyListRbac, undefined, apiCustomHeader)
+        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.queryMdnsProxy, undefined, apiCustomHeader)
         const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
         const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
         const targetMdnsData = mDnsProxyList?.[0]
@@ -1101,9 +1101,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac?
-          (enableSeparation ? ApiVersionEnum.v1_1: ApiVersionEnum.v1) : undefined
+        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
+          (enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getApValidChannel, params, apiCustomHeader)
@@ -1675,7 +1675,7 @@ const getVenueDhcpRelation = async (
       venueIds: newPayload.map(item => item.venueId)
     }
   }
-  const dhcpListReq = createHttpRequest(DHCPUrls.queryDHCPProfiles, undefined, customHeaders)
+  const dhcpListReq = createHttpRequest(DHCPUrls.queryDhcpProfiles, undefined, customHeaders)
   const dhcpListRes = await fetchWithBQ({ ...dhcpListReq, body: JSON.stringify(dhcpListPayload) })
   const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data
   return reduce(newPayload,

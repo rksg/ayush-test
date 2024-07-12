@@ -68,27 +68,22 @@ describe('Health KPI', () => {
     expect(wiredKPIsForTab()).toMatchObject({
       overview: {
         kpis: [
-          'switchUplinkPortUtilization',
-          'switchReachability'
+          'switchUplinkPortUtilization'
         ]
       },
       connection: {
         kpis: [
-          'switchAuthentication',
-          'switchDhcp'
+          'switchAuthentication'
         ]
       },
       performance: {
         kpis: [
           'switchPortUtilization',
-          'switchUplinkPortUtilization',
-          'switchInterfaceAnomalies',
-          'switchStormControl'
+          'switchUplinkPortUtilization'
         ]
       },
       infrastructure: {
         kpis: [
-          'switchReachability',
           'switchMemoryUtilization',
           'switchCpuUtilization',
           'switchesTemperature',

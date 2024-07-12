@@ -3,7 +3,7 @@
 exports[`PageHeader should render basic page header 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -30,10 +30,101 @@ exports[`PageHeader should render basic page header 1`] = `
 </DocumentFragment>
 `;
 
+exports[`PageHeader should render page header with subtitles and dividers 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+    >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/networks"
+              >
+                Networks
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              With Subtitles & Dividers
+            </h1>
+          </span>
+        </div>
+      </div>
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          <span>
+            Label 1: Value 1
+            <div
+              class="ant-divider ant-divider-vertical"
+              role="separator"
+            />
+          </span>
+          <span>
+            Label 2: Value 2
+            <div
+              class="ant-divider ant-divider-vertical"
+              role="separator"
+            />
+          </span>
+          <span
+            title="Value 3, Value 4"
+          >
+            Label 3: Value 3 (2)
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`PageHeader should render page header with tabs 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
   >
     <div
       class="ant-page-header has-breadcrumb has-footer ant-page-header-ghost"
@@ -190,7 +281,7 @@ exports[`PageHeader should render page header with tabs 1`] = `
 exports[`PageHeader should render page header with title, breadcrumb & subtitle 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -277,7 +368,7 @@ exports[`PageHeader should render page header with title, breadcrumb & subtitle 
 exports[`PageHeader should render page header with titleExtra 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
   >
     <div
       class="ant-page-header ant-page-header-ghost"
@@ -307,10 +398,43 @@ exports[`PageHeader should render page header with titleExtra 1`] = `
 </DocumentFragment>
 `;
 
+exports[`PageHeader should render page header with titlePrefix 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
+  >
+    <div
+      class="ant-page-header ant-page-header-ghost"
+    >
+      <div
+        class="ant-page-header-heading"
+      >
+        <div
+          class="ant-page-header-heading-left"
+        >
+          <span
+            class="ant-page-header-heading-title"
+          >
+            <div>
+              Title Prefi
+            </div>
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            >
+              With Subtitle
+            </h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`PageHeader should render page header without bottom padding 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
   >
     <div
       class="ant-page-header ant-page-header-ghost"

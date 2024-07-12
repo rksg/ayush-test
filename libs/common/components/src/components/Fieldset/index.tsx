@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode, useEffect, useRef, useState } from 'react'
+import { CSSProperties, forwardRef, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { Switch } from 'antd'
 
@@ -15,13 +15,13 @@ export type FieldsetProps = {
   switchStyle?: CSSProperties
 }
 
-export function Fieldset ({
+export const Fieldset = forwardRef<HTMLElement, FieldsetProps>(({
   onChange,
   className,
   style,
   switchStyle,
   ...props
-}: FieldsetProps) {
+}: FieldsetProps, ref) => {
   const isControlled = useRef(props.checked !== undefined).current
   const [checked, setChecked] = useState(false)
 
@@ -43,6 +43,7 @@ export function Fieldset ({
         <label>
           {props.label}
           <Switch
+            ref={ref}
             disabled={props.disabled}
             style={switchStyle}
             checked={checked}
@@ -53,4 +54,4 @@ export function Fieldset ({
       {checked && props.children}
     </UI.Fieldset>
   )
-}
+})

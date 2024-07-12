@@ -425,7 +425,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         params: {
           tenantId: params.tenantId,
           serialNumber: row.serialNumber,
-          venueId: params.venueId
+          venueId: row.venueId
         },
         enableRbac: isSwitchRbacEnabled
       }, true)
@@ -477,7 +477,11 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           content: $t({ defaultMessage: 'Start firmware upgrade retry' })
         })
       }
-      switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
+      switchAction.doRetryFirmwareUpdate({
+        switchId,
+        tenantId: params.tenantId,
+        venueId: rows[0].venueId
+      }, callback)
     }
   },
   ...(enableSwitchBlinkLed ? [{

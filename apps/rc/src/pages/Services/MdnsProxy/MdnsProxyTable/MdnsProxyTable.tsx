@@ -9,6 +9,7 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
@@ -21,10 +22,11 @@ import {
   MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'rules', 'venueIds'],
+  fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
   searchString: '',
   filters: {}
 }
@@ -34,11 +36,13 @@ export default function MdnsProxyTable () {
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteMdnsProxyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedMdnsProxyListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
@@ -53,10 +57,14 @@ export default function MdnsProxyTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).unwrap().then(clearSelection)
+            deleteFn({
+              params: { tenantId, serviceId: id },
+              enableRbac
+            }).unwrap().then(clearSelection)
           }
         })
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -69,7 +77,8 @@ export default function MdnsProxyTable () {
             serviceId: id!
           })
         })
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     }
   ]
 
@@ -86,7 +95,8 @@ export default function MdnsProxyTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
+            <Button scopeKey={[WifiScopes.CREATE]} type='primary'>
+              {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
         ])}
       />
@@ -98,7 +108,10 @@ export default function MdnsProxyTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) &&
+            { type: 'radio' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useGetMdnsProxyQuery }                 from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -11,6 +12,7 @@ import {
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
@@ -19,7 +21,8 @@ import { MdnsProxyOverview }       from './MdnsProxyOverview'
 export default function MdnsProxyDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data } = useGetMdnsProxyQuery({ params })
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data } = useGetMdnsProxyQuery({ params, enableRbac })
 
   const getApList = () => {
     if (!data || !data.scope?.length) {
@@ -49,7 +52,9 @@ export default function MdnsProxyDetail () {
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId as string
           })}>
-            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            <Button scopeKey={[WifiScopes.UPDATE]} key='configure' type='primary'>
+              {$t({ defaultMessage: 'Configure' })}
+            </Button>
           </TenantLink>
         ])}
       />
