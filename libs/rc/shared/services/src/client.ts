@@ -392,7 +392,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params)
         return {
           ...networkListReq,
           body: payload

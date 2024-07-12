@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Card, Loader, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }               from '@acx-ui/rc/components'
-import { useVenuesTableQuery }             from '@acx-ui/rc/services'
+import { useVenuesListQuery }              from '@acx-ui/rc/services'
 import {
   LbsServerProfileViewModel,
   Venue,
@@ -29,7 +29,7 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
   const venueIds = data?.venueIds || []
 
   const tableQuery = useTableQuery<Venue>({
-    useQuery: useVenuesTableQuery,
+    useQuery: useVenuesListQuery,
     defaultPayload: {
       ...defaultVenuePayload,
       filters: { id: venueIds }

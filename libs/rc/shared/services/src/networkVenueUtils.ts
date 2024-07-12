@@ -173,7 +173,7 @@ export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfi
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
-  const networkListResult = await fetcRbacNetworkList(arg, fetchWithBQ)
+  const networkListResult = await fetchRbacNetworkList(arg, fetchWithBQ)
   const networkList = networkListResult.data
 
   let networkDeepListList = {} as { response: NetworkDetail[] }
@@ -193,7 +193,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
-  const networkListResult = await fetcRbacNetworkList(arg, fetchWithBQ)
+  const networkListResult = await fetchRbacNetworkList(arg, fetchWithBQ)
   const networkList = networkListResult.data
 
   let networkDeepListList = {} as { response: NetworkDetail[] }
@@ -242,7 +242,7 @@ export const fetchRbacNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   }
 
   if (networkDeep?.wlan?.ssid && arg.params?.networkId) {
-    const networkListResult = await fetcRbacNetworkList({
+    const networkListResult = await fetchRbacNetworkList({
       payload: {
         fields: ['id', 'name', 'venueApGroups'],
         filters: { id: [arg.params?.networkId] }
@@ -261,7 +261,7 @@ export const fetchRbacNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const fetcRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
+export const fetchRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
   const venueApGroupFilters = getVenueApGroupFilters(arg.payload.filters)
   const isFilterByIsAllApGroups = venueApGroupFilters.includes('venueApGroups.isAllApGroups')
   const networkListInfo = arg.payload.isTemplate

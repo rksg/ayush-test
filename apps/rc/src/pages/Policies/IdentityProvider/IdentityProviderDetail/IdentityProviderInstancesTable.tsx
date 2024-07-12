@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Card, Loader, Table, TableProps } from '@acx-ui/components'
-import { useNetworkTableQuery }            from '@acx-ui/rc/services'
+import { useWifiNetworkListQuery }         from '@acx-ui/rc/services'
 import {
   IdentityProviderViewModel,
   Network,
@@ -34,7 +34,7 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
   const networkIds = data?.wifiNetworkIds || []
 
   const tableQuery = useTableQuery<Network>({
-    useQuery: useNetworkTableQuery,
+    useQuery: useWifiNetworkListQuery,
     defaultPayload: {
       ...defaultNetworkPayload,
       filters: { id: networkIds }
