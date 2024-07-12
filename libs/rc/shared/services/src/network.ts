@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import { find, omit }                              from 'lodash'
+import { find }                                    from 'lodash'
 
 import {
   ApCompatibility,
@@ -47,6 +47,8 @@ import {
   fetchRbacVenueNetworkList,
   getNetworkDeepList
 } from './networkVenueUtils'
+import { updateNetworkVenueFn } from './servicePolicy.utils/network'
+
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -233,75 +235,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      queryFn: async ({ params, payload, enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const promises = []
-          promises.push(fetchWithBQ({ ...createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI), body: JSON.stringify(omit(payload as Object, ['oldNetworkVenue'])) }))
-          if (enableRbac) {
-            const { oldNetworkVenue } = payload as { oldNetworkVenue: NetworkVenue }
-            if (oldNetworkVenue) {
-              let oldData = oldNetworkVenue as NetworkVenue
-              let newData = payload as NetworkVenue
-              if (newData.isAllApGroups && !oldData.isAllApGroups) {
-                oldData.apGroups?.filter(group => group.vlanPoolId !== undefined)
-                  .forEach(group => {
-                    promises.push(fetchWithBQ(
-                      createHttpRequest(WifiUrlsInfo.deactivateApGroupVlanPool, {
-                        apGroupId: group.apGroupId,
-                        profileId: group.vlanPoolId,
-                        networkId: oldData.networkId,
-                        venueId: oldData.venueId
-                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
-                  })
-              } else if (!newData.isAllApGroups && oldData.isAllApGroups ) {
-                newData.apGroups?.filter(group => group.vlanPoolId !== undefined)
-                  .forEach(group => {
-                    promises.push(fetchWithBQ(
-                      createHttpRequest(WifiUrlsInfo.activateApGroupVlanPool, {
-                        apGroupId: group.apGroupId,
-                        profileId: group.vlanPoolId,
-                        networkId: newData.networkId,
-                        venueId: newData.venueId
-                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
-                  })
-              } else if (!newData.isAllApGroups && !oldData.isAllApGroups) {
-                const oldMapping = new Map<string, string>()
-                oldData.apGroups?.filter(group => group.vlanPoolId !== undefined)
-                  .forEach(group => oldMapping.set(group.apGroupId!!, group.vlanPoolId!!))
-                const newMapping = new Map<string, string>()
-                newData.apGroups?.filter(group => group.vlanPoolId !== undefined)
-                  .forEach(group => newMapping.set(group.apGroupId!!, group.vlanPoolId!!))
-                newMapping.forEach((vlanPoolId, groupId ) => {
-                  if (!oldMapping.has(groupId) || oldMapping.get(groupId) !== vlanPoolId) {
-                    promises.push(fetchWithBQ(
-                      createHttpRequest(WifiUrlsInfo.activateApGroupVlanPool, {
-                        apGroupId: groupId,
-                        profileId: vlanPoolId,
-                        networkId: newData.networkId,
-                        venueId: newData.venueId
-                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
-                  }
-                })
-                oldMapping.forEach((vlanPoolId, groupId) => {
-                  if (!newMapping.has(groupId)) {
-                    promises.push(fetchWithBQ(
-                      createHttpRequest(WifiUrlsInfo.deactivateApGroupVlanPool, {
-                        apGroupId: groupId,
-                        profileId: vlanPoolId,
-                        networkId: newData.networkId,
-                        venueId: newData.venueId
-                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
-                  }
-                })
-              }
-            }
-          }
-          await Promise.all(promises)
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-        return { data: {} as CommonResult }
-      },
+      queryFn: updateNetworkVenueFn(false),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenues: build.mutation<CommonResult, RequestPayload>({

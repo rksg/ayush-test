@@ -16,9 +16,10 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { networkApi }        from '../network'
-import { addNetworkVenueFn } from '../networkUtils'
-import { commonQueryFn }     from '../servicePolicy.utils'
+import { networkApi }           from '../network'
+import { addNetworkVenueFn }    from '../networkUtils'
+import { commonQueryFn }        from '../servicePolicy.utils'
+import { updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -175,7 +176,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
+      queryFn: updateNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
