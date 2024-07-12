@@ -20,7 +20,8 @@ import {
   useLazyGetVenueSettingsQuery,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
-  useResetApLanPortsMutation
+  useResetApLanPortsMutation,
+  useLazyGetDHCPProfileListViewModelQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -34,6 +35,35 @@ import {
 } from '@acx-ui/react-router-dom'
 
 import { ApDataContext, ApEditContext } from '../..'
+
+const useFetchIsVenueDhcpEnabled = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
+  const [getDhcpList] = useLazyGetDHCPProfileListViewModelQuery()
+
+  return async (venueId: string) => {
+    let isDhcpEnabled: boolean = false
+
+    if (isWifiRbacEnabled) {
+      const dhcpList = await getDhcpList({
+        payload: {
+          fields: ['id', 'venueIds'],
+          filters: { venueIds: [venueId] }
+        }
+      }).unwrap()
+
+      isDhcpEnabled = !!dhcpList?.data[0]
+    } else {
+      const venueSettings = (await getVenueSettings({
+        params: { venueId } }, true).unwrap())
+
+      isDhcpEnabled = venueSettings?.dhcpServiceSetting?.enabled ?? false
+    }
+
+    return isDhcpEnabled
+  }
+}
 
 export function LanPorts () {
   const { $t } = useIntl()
@@ -60,8 +90,7 @@ export function LanPorts () {
     = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
 
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
-  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
-
+  const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
 
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
@@ -101,8 +130,7 @@ export function LanPorts () {
           params: { tenantId, venueId }
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
 
-        const venueSettings = (await getVenueSettings({
-          params: { tenantId, venueId } }, true).unwrap())
+        const isDhcpEnabled = await getDhcpEnabled(venueId!)
 
         const apLanPortsCap = apCaps.lanPorts
         const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
@@ -114,7 +142,7 @@ export function LanPorts () {
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
-        setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
+        setIsDhcpEnabled(isDhcpEnabled)
         setLanData(lanPorts?.lanPorts as LanPort[])
         setFormInitializing(false)
 

@@ -51,6 +51,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
 
   useEffect(() => {
     if (data) {
+      form.setFieldValue('oldPayload', data)
       form.setFieldValue('policyName', data.name)
       form.setFieldValue('description', get(data, 'description'))
       if (get(data, 'l2AclPolicy')) {

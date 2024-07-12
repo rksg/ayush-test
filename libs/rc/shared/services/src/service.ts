@@ -1147,7 +1147,8 @@ export const {
   useUploadPhotoMutation,
   useUploadPoweredImgMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery
+  useGetDHCPProfileListViewModelQuery,
+  useLazyGetDHCPProfileListViewModelQuery
 } = serviceApi
 
 export function createDpskHttpRequest (

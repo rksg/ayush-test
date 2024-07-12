@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn  }                  from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features  }        from '@acx-ui/feature-toggle'
 import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import {
@@ -52,7 +52,7 @@ describe('Connected Clients Table', () => {
   })
 
   it('should render table: all columns', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
     render(
       <Provider>
         <ConnectedClientsTable
