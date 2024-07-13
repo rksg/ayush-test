@@ -2,6 +2,8 @@ import {  Loader }                                                              
 import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { useDashboardOverviewQuery, useDashboardV2OverviewQuery, useRwgListQuery } from '@acx-ui/rc/services'
 import { useParams }                                                               from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                               from '@acx-ui/types'
+import { hasRoles }                                                                from '@acx-ui/user'
 import { useDashboardFilter }                                                      from '@acx-ui/utils'
 
 import {
@@ -31,8 +33,10 @@ export function DevicesDashboardWidget () {
   })
 
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  const { data: rwgs } = useRwgListQuery({ params: useParams() }, { skip: !showRwgUI })
+  const { data: rwgs } = useRwgListQuery({ params: useParams() },
+    { skip: !(showRwgUI && rwgHasPermission) })
 
   return (
     <Loader states={[queryResults]}>
@@ -72,9 +76,10 @@ export function DevicesDashboardWidgetV2 () {
   })
 
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const { data: rwgs, isLoading: rwgLoading } =
-    useRwgListQuery({ params: useParams() }, { skip: !showRwgUI })
+    useRwgListQuery({ params: useParams() }, { skip: !(showRwgUI && rwgHasPermission) })
 
   return (
     <Loader states={[queryResults, { isLoading: rwgLoading }]}>
