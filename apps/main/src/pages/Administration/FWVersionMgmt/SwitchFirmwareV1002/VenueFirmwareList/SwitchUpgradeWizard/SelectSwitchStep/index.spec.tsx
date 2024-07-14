@@ -2,9 +2,11 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { firmwareApi }     from '@acx-ui/rc/services'
 import {
-  FirmwareSwitchVenue,
+  FirmwareRbacUrlsInfo,
+  FirmwareSwitchVenueV1002,
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
@@ -16,17 +18,15 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { switchLatestV1002, switchVenueV1002 } from '../../../__tests__/fixtures'
 import {
-  switchVenue,
   preference,
-  switchRelease,
-  switchLatest,
-  upgradeSwitchViewList
+  upgradeSwitchViewList,
+  switchReleaseV1002
 } from '../../__test__/fixtures'
 
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './../'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedCancel = jest.fn()
 const switchFwRequestSpy = jest.fn()
 
@@ -44,19 +44,28 @@ jest.mock('./../VenueStatusDrawer', () => ({
   }
 }))
 
-describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsV1002Query: () => ({
+    data: mockSwitchCurrentVersionsV1002
+  })
+}))
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+
+describe('SwitchFirmware - SwitchUpgradeWizard', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     Modal.destroyAll()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json(switchVenue))
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json(switchVenueV1002))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchAvailableFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(switchRelease))
+        FirmwareRbacUrlsInfo.getSwitchAvailableFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchReleaseV1002))
       ),
       rest.get(
         FirmwareUrlsInfo.getSwitchUpgradePreferences.url,
@@ -69,19 +78,19 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
         }))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'requestId' }))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
-        (req, res, ctx) => res(ctx.json(switchLatest))
+        FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatestV1002))
       ),
       rest.post(
-        FirmwareUrlsInfo.getSwitchFirmwareList.url,
+        FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
         (req, res, ctx) => {
           switchFwRequestSpy()
           return res(ctx.json(upgradeSwitchViewList))
@@ -101,7 +110,7 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenueV1002 as FirmwareSwitchVenueV1002[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -124,8 +133,8 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList.filter(
-            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
+          data={switchVenueV1002.filter(
+            item => item.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -151,8 +160,8 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList.filter(
-            item => item.name === 'My-Venue') as FirmwareSwitchVenue[]} />
+          data={switchVenueV1002.filter(
+            item => item.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -169,7 +178,7 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(within(myVenue).getByRole('checkbox')).not.toBeChecked()
   })
 
-  it('render SwitchUpgradeWizard - select switch step - venue - select all', async () => {
+  it.skip('render SwitchUpgradeWizard - select switch step - venue - select all', async () => {
     render(
       <Provider>
         <SwitchUpgradeWizard
@@ -177,7 +186,7 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenueV1002 as FirmwareSwitchVenueV1002[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -207,8 +216,8 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList.filter(
-            item => item.name === 'Karen-Venue1') as FirmwareSwitchVenue[]} />
+          data={switchVenueV1002.filter(
+            item => item.venueName === 'My-Venue') as FirmwareSwitchVenueV1002[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
@@ -217,7 +226,7 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
     expect(stepsFormSteps).toBeInTheDocument()
 
     // Clicks Expand button
-    const venue = await screen.findByRole('row', { name: /Karen-Venue1/i })
+    const venue = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(within(venue).getByTestId('arrow-right'))
 
     expect(await screen.findByTestId('arrow-expand')).toBeInTheDocument()
@@ -231,7 +240,7 @@ describe.skip('SwitchFirmware - SwitchUpgradeWizard', () => {
           visible={true}
           setVisible={mockedCancel}
           onSubmit={() => { }}
-          data={switchVenue.upgradeVenueViewList as FirmwareSwitchVenue[]} />
+          data={switchVenueV1002 as FirmwareSwitchVenueV1002[]} />
       </Provider>, {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })

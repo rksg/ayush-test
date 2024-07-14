@@ -32,9 +32,7 @@ import { switchLatestV1002,
 import FWVersionMgmt from '.'
 
 const { mockedVenueFirmwareList, mockedLatestEdgeFirmwares } = EdgeFirmwareFixtures
-const { mockSwitchCurrentVersions,
-  mockSwitchCurrentVersionsV1002
-} = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -75,7 +73,7 @@ jest.mock('./EdgeFirmware/VenueFirmwareList', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchCurrentVersionsQuery: () => ({
+  useGetSwitcDefaultVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })
 }))
@@ -97,10 +95,6 @@ describe('Firmware Version Management', () => {
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
         (req, res, ctx) => res(ctx.json(versionLatest))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.get(
         FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
@@ -199,10 +193,6 @@ describe('Firmware Version Management', () => {
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatestV1002))
-      ),
-      rest.get(
-        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       )
     )
     render(

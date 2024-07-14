@@ -39,11 +39,11 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const [selectedICX82Version, setSelecteedICX82Version] = useState('')
 
   const ICX71Count = availableVersions?.filter(
-    v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].switchCount || 0
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
   const ICX7XCount = availableVersions?.filter(
-    v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0].switchCount || 0
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.switchCount || 0
   const ICX82Count = availableVersions?.filter(
-    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0].switchCount || 0
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
 
   const handleICX71Change = (value: RadioChangeEvent) => {

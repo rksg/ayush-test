@@ -1,22 +1,26 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
+import { rest }        from 'msw'
 
-import { SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
+  FirmwareRbacUrlsInfo,
+  SwitchFirmwareFixtures,
+  SwitchFirmwareVersion1002
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  mockServer,
   render,
   screen,
   within
 } from '@acx-ui/test-utils'
 
 import {
-  availableVersions,
   availableVersions_hasInUse
 } from '../../__test__/fixtures'
 
 import { UpdateNowStep } from '.'
-
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
@@ -32,14 +36,23 @@ jest.mock('@acx-ui/components', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
-    data: mockSwitchCurrentVersions
+    data: mockSwitchCurrentVersionsV1002
   })
 }))
 
-describe.skip('UpdateNowStep', () => {
+const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+
+describe('UpdateNowStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    mockServer.use(
+      rest.get(
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
+      ))
   })
 
   it('render UpdateNowStep - 1 Venue', async () => {
@@ -49,9 +62,7 @@ describe.skip('UpdateNowStep', () => {
           <UpdateNowStep
             setShowSubTitle={jest.fn()}
             visible={true}
-            availableVersions={availableVersions_hasInUse}
-            nonIcx8200Count={2}
-            icx8200Count={0}
+            availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
             hasVenue={true}/>
         </Form>
       </Provider>
@@ -62,23 +73,19 @@ describe.skip('UpdateNowStep', () => {
     expect(within(updateNowStepForm)
       .getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
     expect(within(updateNowStepForm)
-      .getByText(/10.0.10a_cd3/i)).toBeInTheDocument()
+      .getByText(/10.0.10_rc3_icx82/i)).toBeInTheDocument()
     expect(within(updateNowStepForm)
-      .getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(within(updateNowStepForm)
-      .getByText(/9.0.10f/i)).toBeInTheDocument()
+      .getByText(/10010_rc3_ICX7/i)).toBeInTheDocument()
   })
 
-  it('render UpdateNowStep - 1 Venue - Changed', async () => {
+  it('render UpdateNowStep - Changed 1 Venue', async () => {
     render(
       <Provider>
         <Form>
           <UpdateNowStep
             setShowSubTitle={jest.fn()}
             visible={true}
-            availableVersions={availableVersions_hasInUse}
-            nonIcx8200Count={2}
-            icx8200Count={0}
+            availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
             hasVenue={true}
           />
         </Form>
@@ -87,62 +94,25 @@ describe.skip('UpdateNowStep', () => {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
 
-    expect(await screen.findByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
-
-    const release10010rc2 = screen.getByRole('radio', {
-      name: /10\.0\.10_rc2 \(release - recommended\)/i
-    })
-    await userEvent.click(release10010rc2)
-    expect(release10010rc2).toBeEnabled()
-
-
-    const release10010acd3 = screen.getByRole('radio', {
-      name: /10\.0\.10a_cd3 \(release - recommended\)/i
-    })
-    await userEvent.click(release10010acd3)
-    expect(release10010acd3).toBeEnabled()
-
-    const release09010f = screen.getByRole('radio', {
-      name: /9\.0\.10f \(release - recommended\)/i
-    })
-    await userEvent.click(release09010f)
-    expect(release09010f).toBeEnabled()
-
-    const release09010hcd2 = screen.getByRole('radio', {
-      name: /9\.0\.10h_cd2 \(release - recommended\)/i
-    })
-    await userEvent.click(release09010hcd2)
-    expect(release09010hcd2).toBeEnabled()
-
-  })
-
-  it('render UpdateNowStep - 1 non8200 Switch', async () => {
-    render(
-      <Provider>
-        <Form>
-          <UpdateNowStep
-            setShowSubTitle={jest.fn()}
-            visible={true}
-            availableVersions={availableVersions}
-            nonIcx8200Count={1}
-            icx8200Count={0}
-            hasVenue={false}
-          />
-        </Form>
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
-      })
-
     const updateNowStepForm = screen.getByTestId('update-now-step')
-    expect(updateNowStepForm).toBeInTheDocument()
+    expect(within(updateNowStepForm)
+      .getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
 
-    expect(screen.getByText(/9.0.10h_cd2/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10f/i)).toBeInTheDocument()
-    expect(screen.getByText(/9.0.10e/i)).toBeInTheDocument()
-    expect(screen.queryByText(/Firmware available for ICX 8200 Series/i)).toBeNull()
+
+    const icx82radio = screen.getByRole('radio', {
+      name: /10.0.10_rc3_icx82/i
+    })
+
+    await userEvent.click(icx82radio)
+    expect(icx82radio).toBeEnabled()
+
+
+    const icx7xradio = screen.getByRole('radio', {
+      name: /10010_rc3_ICX7/i
+    })
+    await userEvent.click(icx7xradio)
+    expect(icx7xradio).toBeEnabled()
+
   })
-
 
 })

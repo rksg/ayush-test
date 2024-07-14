@@ -15,6 +15,7 @@ import {
   mockServer,
   render,
   screen,
+  waitFor,
   within
 } from '@acx-ui/test-utils'
 
@@ -82,7 +83,7 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
         (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
       ),
       rest.post(
-        FirmwareUrlsInfo.updateSwitchVenueSchedules.url,
+        FirmwareRbacUrlsInfo.updateSwitchVenueSchedules.url,
         (req, res, ctx) => {
           updateRequestSpy()
           return res(ctx.json({ requestId: 'requestId' }))
@@ -263,15 +264,11 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
     })
     userEvent.click(radio7x)
     expect(radio7x).toBeEnabled()
-    //FIXME:
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    // act(()=>{ // workaround - avoid act error
-    //   fireEvent.click(screen.getByRole('button', { name: 'Run Update' }))
-    // })
-    // await userEvent.click(screen.getByRole('button', { name: 'Run Update' }))
-    // await waitFor(()=>{
-    //   expect(updateRequestSpy).toBeCalledTimes(1)
-    // })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Run Update' }))
+    await waitFor(()=>{
+      expect(updateRequestSpy).toBeCalledTimes(1)
+    })
 
   })
 

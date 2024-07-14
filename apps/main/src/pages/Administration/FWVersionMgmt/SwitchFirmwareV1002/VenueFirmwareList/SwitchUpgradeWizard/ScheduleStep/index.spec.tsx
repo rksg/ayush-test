@@ -47,7 +47,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 
 
-describe.skip('ScheduleStep', () => {
+describe('ScheduleStep', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
     Modal.destroyAll()
@@ -104,7 +104,6 @@ describe.skip('ScheduleStep', () => {
 
     const form = screen.getByTestId('schedule-step')
     expect(within(form).getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
-    expect(within(form).getByText(/9.0.10h_cd2_b4/i)).toBeInTheDocument()
 
     const icx82Radio10010rc3 = within(form).getByRole('radio', {
       name: /10\.0\.10_rc3_icx82 \(release\)/i
