@@ -4,7 +4,7 @@ import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/anal
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
 import { useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { recommendationUrl, Provider, store }                 from '@acx-ui/store'
+import { intentAIUrl, Provider, store }                       from '@acx-ui/store'
 import {
   findTBody,
   mockGraphqlQuery,
@@ -16,12 +16,12 @@ import {
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { intentAIRecommendationListResult } from './__tests__/fixtures'
+import { intentListResult } from './__tests__/fixtures'
 import {
   api
 } from './services'
 
-import { IntentAIRecommendationTabContent } from './index'
+import { IntentAITabContent } from './index'
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -42,7 +42,7 @@ jest.mock('./services', () => ({
 }))
 
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
-describe('IntentAIRecommendationTabContent', () => {
+describe('IntentAITabContent', () => {
   const filters = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -74,10 +74,10 @@ describe('IntentAIRecommendationTabContent', () => {
   })
 
   it('should render loader and empty table', async () => {
-    mockGraphqlQuery(recommendationUrl, 'IntentAIList', {
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: { intents: [] }
     })
-    render(<IntentAIRecommendationTabContent/>, {
+    render(<IntentAITabContent/>, {
       wrapper: Provider
     })
 
@@ -91,17 +91,17 @@ describe('IntentAIRecommendationTabContent', () => {
   })
 
   it('should render intentAI table for R1', async () => {
-    mockGraphqlQuery(recommendationUrl, 'IntentAIList', {
-      data: intentAIRecommendationListResult
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: intentListResult
     })
-    render(<IntentAIRecommendationTabContent/>, {
+    render(<IntentAITabContent/>, {
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     //search row text
-    const rrmText = await screen.findAllByText('AI-Driven RRM')
-    expect(rrmText).toHaveLength(3)
+    const rowText = await screen.findAllByText('AI-Driven RRM')
+    expect(rowText).toHaveLength(3)
     //search column title
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Venue')).toBeVisible()
@@ -111,18 +111,18 @@ describe('IntentAIRecommendationTabContent', () => {
   })
 
   it('should render intentAI table for RA', async () => {
-    mockGraphqlQuery(recommendationUrl, 'IntentAIList', {
-      data: intentAIRecommendationListResult
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: intentListResult
     })
     jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
-    render(<IntentAIRecommendationTabContent />, {
+    render(<IntentAITabContent />, {
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     //search row text
-    const rrmText = await screen.findAllByText('AI-Driven RRM')
-    expect(rrmText).toHaveLength(3)
+    const rowText = await screen.findAllByText('AI-Driven RRM')
+    expect(rowText).toHaveLength(3)
     //search column title
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Zone')).toBeVisible()
@@ -146,7 +146,7 @@ describe('IntentAIRecommendationTabContent', () => {
       setNetworkPath: jest.fn(),
       raw: []
     })
-    render(<IntentAIRecommendationTabContent />, {
+    render(<IntentAITabContent />, {
       route: { params: { activeTab: 'aiOps' } },
       wrapper: Provider
     })

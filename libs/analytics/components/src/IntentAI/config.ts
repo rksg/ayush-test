@@ -9,6 +9,12 @@ type CodeInfo = {
   category: MessageDescriptor
 }
 
+type StateInfo = {
+  text: MessageDescriptor,
+  tooltip: MessageDescriptor,
+  tooltipPartial?: MessageDescriptor
+}
+
 const aiFeatures = {
   'AI-Driven RRM': defineMessage({ defaultMessage: 'AI-Driven RRM' }),
   'AirFlexAI': defineMessage({ defaultMessage: 'AirFlexAI' }),
@@ -24,39 +30,72 @@ const categories = {
 }
 
 export const states = {
-  new: {
+  'new': {
     text: defineMessage({ defaultMessage: 'New' }),
-    tooltip: defineMessage({ defaultMessage: 'Schedule a day and time to apply this recommendation.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval.\nTo review the details, specify Intent priority, and apply the recommendations, click "Optimize."\nAlternatively, use "1-Click Optimize" to instantly apply the changes with default priority.' })
   },
-  applyscheduled: {
+  'applyscheduled': {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'Recommendation has been scheduled for {scheduledAt}. Note that the actual configuration change will happen asynchronously within 1 hour of the scheduled time.' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize" initiated by the user [ UserName ].\nOR\nThe change recommendation has been scheduled via user action "Optimize" initiated by the user [ UserName ].\nOR\nThe change recommendation has been automatically scheduled by IntentAI.' })
   },
-  applied: {
+  'applyscheduleinprogress': {
+    text: defineMessage({ defaultMessage: 'Apply In Progress' }),
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the [ Zone | Venue ].' })
+  },
+  'applied': {
     text: defineMessage({ defaultMessage: 'Applied' }),
-    tooltip: defineMessage({ defaultMessage: 'Recommendation has been successfully applied on {updatedAt}. RUCKUS Analytics will monitor this configuration change for the next 7 days until {updatedAtPlus7Days}.' }),
-    tooltipCCR: defineMessage({ defaultMessage: 'Recommendation has been successfully applied on {updatedAt}.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has successfully applied the changes to the [ Zone | Venue ]. The new configuration is: XYZ.' })
   },
-  applyfailed: {
+  'applyfailed': {
     text: defineMessage({ defaultMessage: 'Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'An error was encountered on {updatedAt} when the recommended configuration change was applied. Note that no configuration change was made.\n\nError: {errorMessage}' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to be applied to the [ Zone | Venue ] due to the reason:\n\n{errorMessage}' })
   },
-  revertscheduled: {
+  'revertscheduled': {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'A reversion to undo the configuration change has been scheduled for {scheduledAt}. Note that the actual reversion of configuration will happen asynchronously within 1 hour of the scheduled time.' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert" initiated by the user [ UserName ].' })
   },
-  revertfailed: {
+  'revertscheduleinprogress': {
+    text: defineMessage({ defaultMessage: 'Revert In Progress' }),
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the [ Zone | Venue ].' })
+  },
+  'revertfailed': {
     text: defineMessage({ defaultMessage: 'Revert Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'An error was encountered on {updatedAt} when the reversion was applied. Note that no reversion was made.\n\nError: {errorMessage}' }),
+    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: \n\n{errorMessage}' }),
     tooltipPartial: defineMessage({ defaultMessage: 'Error(s) were encountered on {updatedAt} when the reversion was applied. \n\nErrors: \n{errorMessage}' })
   },
-  reverted: {
+  'reverted': {
     text: defineMessage({ defaultMessage: 'Revert Success' }),
-    tooltip: defineMessage({ defaultMessage: 'Reversion has been successfully applied on {updatedAt}.' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change was successful. The new configuration is: XYZ.' })
+  },
+  'paused': {
+    text: defineMessage({ defaultMessage: 'Paused' }),
+    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user [ User Name ]/nOR/nThe Intent is in default state of "Paused".\nA Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
+  },
+  'na-conflicting-configuration': {
+    text: defineMessage({ defaultMessage: 'No recommendation, Conflicting Configuration' }),
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.' })
+  },
+  'na-no-aps': {
+    text: defineMessage({ defaultMessage: 'No recommendation, No APs' }),
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the [ Zone | Venue ].' })
+  },
+  'na-not-enough-license': {
+    text: defineMessage({ defaultMessage: 'No recommendation, Not enough license' }),
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone [Zone Name].' })
+  },
+  'na-not-enough-data': {
+    text: defineMessage({ defaultMessage: 'No recommendation, Not enough data' }),
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than X days of data in the [ Zone | Venue ].' })
+  },
+  'na-verified': {
+    text: defineMessage({ defaultMessage: 'Verified' }),
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated [ Zone | Venue ] configurations. No new changes have been recommended.' })
+  },
+  'na-unknown-reason': {
+    text: defineMessage({ defaultMessage: 'No recommendation, Unknown reason' }),
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI encountered and an unknown issue.' })
   }
-  //TODO: audit API isn't ready yet for 'unqualifiedZone', 'noAps', 'insufficientLicenses', 'verificationError', 'verified', 'unknown'
-  //TODO: PRD has defined new states https://jira-wiki.ruckuswireless.com/display/Team/RUCKUS+IntentAI+-+PRD#RUCKUSIntentAIPRD-Requirements
-}
+} as Record<string, StateInfo>
 
 export type StateType = keyof typeof states
 
@@ -157,5 +196,4 @@ export const codes = {
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   }
-  //TODO: audit API isn't ready yet for 'unqualifiedZone', 'noAps', 'insufficientLicenses', 'verificationError', 'verified', 'unknown'
-} as unknown as Record<string, CodeInfo>
+} as Record<string, CodeInfo>

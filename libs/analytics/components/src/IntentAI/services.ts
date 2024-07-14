@@ -4,7 +4,7 @@ import _       from 'lodash'
 import {
   nodeTypes,
   formattedPath } from '@acx-ui/analytics/utils'
-import { recommendationApi }                                  from '@acx-ui/store'
+import { intentAIApi }                                        from '@acx-ui/store'
 import { NodeType, getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
 import type { PathFilter }                                    from '@acx-ui/utils'
 
@@ -14,10 +14,11 @@ import {
   StatusTrail,
   StateType } from './config'
 
-type Recommendation = {
+type Intent = {
   id: string
   code: string
   status: string | StateType
+  displayStatus: string
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -29,7 +30,7 @@ type Recommendation = {
   trigger: string
 }
 
-export type IntentAIRecommendationListItem = Recommendation & {
+export type IntentListItem = Intent & {
   aiFeature: string
   intent: string
   scope: string
@@ -39,10 +40,10 @@ export type IntentAIRecommendationListItem = Recommendation & {
   statusEnum: StateType
 }
 
-export const api = recommendationApi.injectEndpoints({
+export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
-    intentAIRecommendationList: build.query<
-      IntentAIRecommendationListItem[],
+    intentAIList: build.query<
+      IntentListItem[],
       PathFilter
     >({
       query: (payload) => ({
@@ -54,12 +55,16 @@ export const api = recommendationApi.injectEndpoints({
             id
             code
             status
+            status_reason
+            displayStatus
             createdAt
             updatedAt
             sliceType
             sliceValue
             metadata
-            preferences
+            excludedPaths {
+              name
+            }
             path {
               type
               name
@@ -68,8 +73,6 @@ export const api = recommendationApi.injectEndpoints({
               type
               name
             }
-            statusTrail { status }
-            trigger
           }
         }
         `,
@@ -80,13 +83,15 @@ export const api = recommendationApi.injectEndpoints({
           })
         }
       }),
-      transformResponse: (response: Response<Recommendation>) => {
+      transformResponse: (response: Response<Intent>) => {
         const { $t } = getIntl()
         const items = response.intents.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, sliceType, code, status
+            id, path, sliceValue, sliceType, code, status, displayStatus
           } = intent
-          const statusEnum = status as StateType
+          const statusEnum = displayStatus.startsWith('na-')
+            ? displayStatus as StateType
+            : status as StateType
           const detail = codes[code]
           detail && intents.push({
             ...intent,
@@ -97,10 +102,9 @@ export const api = recommendationApi.injectEndpoints({
             type: nodeTypes(sliceType as NodeType),
             category: $t(detail.category),
             status: $t(states[statusEnum].text)
-          } as (IntentAIRecommendationListItem))
+          } as (IntentListItem))
           return intents
-        }, [] as Array<IntentAIRecommendationListItem>)
-
+        }, [] as Array<IntentListItem>)
         return items
       },
       providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
@@ -108,10 +112,10 @@ export const api = recommendationApi.injectEndpoints({
   })
 })
 
-export interface Response<Recommendation> {
-  intents: Recommendation[]
+export interface Response<Intent> {
+  intents: Intent[]
 }
 
 export const {
-  useIntentAIRecommendationListQuery
+  useIntentAIListQuery
 } = api

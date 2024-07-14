@@ -1,12 +1,224 @@
 import { NetworkPath } from '@acx-ui/utils'
 
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
-export const intentAIRecommendationListResult = {
+export const notEnoughLicenses = {
+  id: '19',
+  code: 'c-bgscan24g-enable',
+  status: 'na',
+  status_reason: 'not-enough-license',
+  displayStatus: 'na-not-enough-license',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-12T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '01-Alethea-WiCheck Test',
+  metadata: {
+    audit: [{
+      code: 'global',
+      stage: 'filter',
+      failure: {
+        'not-fully-licensed': false
+      }
+    }]
+  },
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '01-US-CA-D1-Test-Home'
+    },
+    {
+      type: 'zone',
+      name: '01-Alethea-WiCheck Test'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const notEnoughData = {
+  id: '20',
+  code: 'c-bgscan24g-enable',
+  status: 'na',
+  status_reason: 'not-enough-data',
+  displayStatus: 'na-not-enough-data',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-13T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: {
+    audit: [{
+      code: 'global',
+      stage: 'filter',
+      failure: {
+        mesh: false
+      }
+    }]
+  },
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '22-US-CA-D22-Aaron-Home'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const verified = {
+  id: '21',
+  code: 'c-bgscan24g-enable',
+  status: 'na',
+  status_reason: 'verified',
+  displayStatus: 'na-verified',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '01-US-CA-D1-Ruckus-HQ-QA-interop',
+  metadata: {
+    audit: [
+      {
+        code: 'c-crrm-channel24g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-24g': false
+          }
+        }
+      },
+      {
+        code: 'c-crrm-channel5g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-5g': false
+          }
+        }
+      },
+      {
+        code: 'c-crrm-channel6g-auto',
+        stage: 'kpi',
+        failure: {
+          'cloud-rrm-ccir': {
+            'above-medium-ccir-6g': false
+          }
+        }
+      }
+    ]
+  },
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '01-US-CA-D1-Test-Home'
+    },
+    {
+      type: 'zone',
+      name: '01-US-CA-D1-Ruckus-HQ-QA-interop'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const conflictConfig = {
+  id: '22',
+  code: 'c-bgscan24g-enable',
+  status: 'na',
+  status_reason: 'conflicting-configuration',
+  displayStatus: 'na-conflicting-configuration',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '23A-IND-BNG-D23-Keshav-Home',
+  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { mesh: false } } ] },
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    },
+    {
+      type: 'zone',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const unknownReason = {
+  id: '23',
+  code: 'c-bgscan24g-enable',
+  status: 'na',
+  status_reason: 'unknown-reason',
+  displayStatus: 'na-unknown-reason',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: { audit: [{ code: 'global', stage: 'filter', failure: { somethingUnknown: false } }] },
+  path: [
+    {
+      type: 'system',
+      name: 'vsz-h-bdc-home-network-05'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const noAps = {
+  id: '24',
+  code: 'c-bgscan24g-enable',
+  status: 'na',
+  status_reason: 'no-aps',
+  displayStatus: 'na-no-aps',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '25-US-CA-D25-SandeepKour-home',
+  metadata: { audit: [ { code: 'global', stage: 'filter', failure: { 'no-aps': false } } ] },
+  path: [
+    {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '25-US-CA-D25-SandeepKour-home'
+    },
+    {
+      type: 'zone',
+      name: '25-US-CA-D25-SandeepKour-home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
+export const intentListResult = {
   intents: [
     {
       id: '11',
       code: 'c-crrm-channel5g-auto',
       status: 'applied',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -33,6 +245,8 @@ export const intentAIRecommendationListResult = {
       id: '12',
       code: 'c-crrm-channel5g-auto',
       status: 'revertscheduled',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -66,6 +280,8 @@ export const intentAIRecommendationListResult = {
       id: '13',
       code: 'c-txpower-same',
       status: 'revertfailed',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:06:02.839Z',
       sliceType: 'zone',
@@ -91,6 +307,8 @@ export const intentAIRecommendationListResult = {
       id: '14',
       code: 'c-bandbalancing-enable',
       status: 'new',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-12T07:05:14.900Z',
       updatedAt: '2023-07-06T06:05:21.004Z',
       sliceType: 'zone',
@@ -120,6 +338,8 @@ export const intentAIRecommendationListResult = {
       id: '15',
       code: 'c-crrm-channel24g-auto',
       status: 'new',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -139,6 +359,8 @@ export const intentAIRecommendationListResult = {
       id: '16',
       code: 'c-probeflex-24g',
       status: 'new',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -153,6 +375,8 @@ export const intentAIRecommendationListResult = {
       id: '17',
       code: 'c-probeflex-5g',
       status: 'new',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -167,6 +391,8 @@ export const intentAIRecommendationListResult = {
       id: '18',
       code: 'c-probeflex-6g',
       status: 'new',
+      status_reason: '',
+      displayStatus: '',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -178,13 +404,12 @@ export const intentAIRecommendationListResult = {
       ] as NetworkPath,
       preferences: { crrmFullOptimization: true },
       trigger: 'daily'
-    }
-    //TODO: audit API isn't ready yet for 'unqualifiedZone', 'noAps', 'insufficientLicenses', 'verificationError', 'verified', 'unknown'
-    // insufficientLicenses,
-    // verificationError,
-    // verified,
-    // unqualifiedZone,
-    // noAps,
-    // unknownAudit,
+    },
+    notEnoughLicenses,
+    notEnoughData,
+    verified,
+    conflictConfig,
+    unknownReason,
+    noAps
   ]
 }

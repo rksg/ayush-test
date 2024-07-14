@@ -36,7 +36,7 @@ jest.mock('../Recommendations', () => ({
 
 jest.mock('../IntentAI', () => ({
   ...jest.requireActual('../IntentAI'),
-  IntentAIRecommendationTabContent: () => <div data-testid='intentAI' />
+  IntentAITabContent: () => <div data-testid='intentAI' />
 }))
 
 

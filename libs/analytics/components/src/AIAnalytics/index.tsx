@@ -7,10 +7,10 @@ import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-route
 import { hasPermission }                               from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
 
-import { useHeaderExtra }                   from '../Header'
-import { IncidentTabContent }               from '../Incidents'
-import { IntentAIRecommendationTabContent } from '../IntentAI'
-import { RecommendationTabContent }         from '../Recommendations'
+import { useHeaderExtra }           from '../Header'
+import { IncidentTabContent }       from '../Incidents'
+import { IntentAITabContent }       from '../IntentAI'
+import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
@@ -51,7 +51,7 @@ const useTabs = () : Tab[] => {
   const intenAITab = {
     key: AIAnalyticsTabEnum.INTENTAI,
     title: $t({ defaultMessage: 'Intent AI' }),
-    component: <IntentAIRecommendationTabContent />,
+    component: <IntentAITabContent />,
     headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
 

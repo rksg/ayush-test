@@ -9,24 +9,24 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import {
-  useIntentAIRecommendationListQuery,
-  IntentAIRecommendationListItem
+  useIntentAIListQuery,
+  IntentListItem
 } from './services'
 import * as UI from './styledComponents'
 
-export function IntentAIRecommendationTable (
+export function IntentAITable (
   { pathFilters }: { pathFilters: PathFilter }
 ) {
   const { $t } = useIntl()
 
   const switchPath = isSwitchPath(pathFilters.path)
-  const queryResults = useIntentAIRecommendationListQuery(
+  const queryResults = useIntentAIListQuery(
     { ...pathFilters },
     { skip: switchPath }
   )
   const data = switchPath ? [] : queryResults?.data
 
-  const columns: TableProps<IntentAIRecommendationListItem>['columns'] = [
+  const columns: TableProps<IntentListItem>['columns'] = [
     {
       title: $t({ defaultMessage: 'AI Feature' }),
       width: 110,
@@ -55,7 +55,7 @@ export function IntentAIRecommendationTable (
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      width: 90,
+      width: 200,
       dataIndex: 'status',
       key: 'status'
     },

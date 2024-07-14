@@ -2,16 +2,16 @@ import { useAnalyticsFilter }             from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, useDateRange } from '@acx-ui/components'
 import { getDateRangeFilter }             from '@acx-ui/utils'
 
-import { IntentAIRecommendationTable } from './Table'
+import { IntentAITable } from './Table'
 
-export const IntentAIRecommendationTabContent = () => {
+export const IntentAITabContent = () => {
   const { pathFilters } = useAnalyticsFilter()
   const { selectedRange } = useDateRange()
 
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
-        <IntentAIRecommendationTable
+        <IntentAITable
           pathFilters={{ ...pathFilters, ...getDateRangeFilter(selectedRange) }}
         />
       </GridCol>
