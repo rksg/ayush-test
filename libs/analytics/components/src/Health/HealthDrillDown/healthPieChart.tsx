@@ -130,10 +130,14 @@ function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
-  const tops = data.slice(0, topCount).concat({
-    ...data.slice(topCount)[0],
-    key: getIntl().$t({ defaultMessage: 'Others' })
-  })
+
+  let tops = data.slice(0, topCount)
+  if(data.slice(topCount)[0]?.key === 'Others') {
+    tops.push({
+      ...data.slice(topCount)[0],
+      key: getIntl().$t({ defaultMessage: 'Others' })
+    })
+  }
 
   const total = tops.reduce((total, { value }) => value + total, 0)
   return (

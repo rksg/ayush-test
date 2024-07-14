@@ -70,6 +70,7 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('WLANs')).toBeVisible()
     expect(await screen.findByText('Manufacturers')).toBeVisible()
     expect(await screen.findByText('Events')).toBeVisible()
+    expect(screen.queryByText('Others')).not.toBeInTheDocument()
     expect(screen.queryByText('Detailed breakup of all items beyond Top5')).not.toBeInTheDocument()
   })
 
