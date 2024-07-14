@@ -402,7 +402,7 @@ export function RadioSettingsForm (props:{
           }}/>
           {$t(
             // eslint-disable-next-line max-len
-            { defaultMessage: '320 MHz applies only to R770. The other AP models will enable 160 MHz.' }
+            { defaultMessage: '320 MHz applies only to Wi-Fi 7 AP model family. The other AP models will enable 160 MHz.' }
           )}
         </div>
         : '' }

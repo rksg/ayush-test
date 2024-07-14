@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { VenueDetailHeader }              from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen, waitFor }        from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { CommonRbacUrlsInfo, VenueDetailHeader } from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { render, mockServer, screen, waitFor }   from '@acx-ui/test-utils'
+import { RolesEnum }                             from '@acx-ui/types'
+import { getUserProfile, setUserProfile }        from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 
@@ -29,6 +30,12 @@ jest.mock('@acx-ui/rc/utils', () => ({
 describe('VenueTabs', () => {
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockServer.use(
+      rest.post(
+        CommonRbacUrlsInfo.getRwgListByVenueId.url,
+        (req, res, ctx) => res(ctx.json({ response: { data: [] } }))
+      )
+    )
   })
 
   afterEach(() => {

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { venueApi }                                              from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
@@ -78,7 +78,7 @@ describe('MeshNetwork', () => {
   })
 
   it('Mesh enhancement: should disabled all settings when mesh has been turned ON', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     render(<Provider><MeshNetwork /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
@@ -92,7 +92,7 @@ describe('MeshNetwork', () => {
   })
 
   it('Mesh enhancement: enable mesh and set other settings', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(rest.get(
       CommonUrlsInfo.getVenueSettings.url,
@@ -153,8 +153,10 @@ describe('MeshNetwork', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Generate' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
 
-    await userEvent.click(await screen.findByRole('radio', { name: '2.4 GHz' }))
-
+    await userEvent.click(await screen.findByTestId('radio24'))
+    await userEvent.click(await screen.findByTestId('radio56'))
+    await userEvent.click(await screen.findByTestId('radio5'))
+    await userEvent.click(await screen.findByTestId('radio6'))
     // zero touch mesh
     await userEvent.click(await screen.findByTestId('zero-touch-mesh-switch'))
   })
