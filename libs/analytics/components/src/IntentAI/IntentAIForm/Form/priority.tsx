@@ -32,7 +32,7 @@ export function Priority () {
       value: true,
       children: $t({ defaultMessage: 'High number of clients in a dense network (Default)' }),
       columns: [
-        $t({ defaultMessage: 'Maximize client density - simultaneous connected clients (Default)' }),
+        $t({ defaultMessage: 'High number of clients in a dense network (Default)' }),
         $t({ defaultMessage: 'This is AI-Driven RRM Full Optimization mode, where IntentAI will consider only the channels configured on the Controller, assess the neighbor AP radio channels for each AP radio and build a channel plan for each radio to minimize the interference. While building the channel plan, IntentAI may optionally change the AP Radio Channel Width and Transmit Power to minimize the channel interference.' })
       ]
     },
