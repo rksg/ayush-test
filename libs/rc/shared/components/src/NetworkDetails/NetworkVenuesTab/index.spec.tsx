@@ -11,6 +11,7 @@ import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   WifiNetworkFixtures,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -774,7 +775,7 @@ describe('WIFI_RBAC_API is turned on', () => {
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
       rest.get(
-        WifiUrlsInfo.getNetwork.url,
+        WifiRbacUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.post(
@@ -803,21 +804,6 @@ describe('WIFI_RBAC_API is turned on', () => {
   })
 
   it('should trigger RBAC API when WIFI_RBAC turned on', async () => {
-    render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/:networkId' }
-    })
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled()
-    expect(mockedGetWifiNetwork).toHaveBeenCalled()
-    const row = await screen.findByRole('row', { name: /network-venue-1/i })
-    expect(row).toHaveTextContent('VLAN-1 (Default)')
-    expect(row).toHaveTextContent('All APs')
-    expect(row).toHaveTextContent('24/7')
-    const rows = await screen.findAllByRole('switch')
-    expect(rows).toHaveLength(2)
-  })
-  it('sdfshould trigger RBAC API when WIFI_RBAC turned on', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
