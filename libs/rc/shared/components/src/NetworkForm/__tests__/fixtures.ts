@@ -2170,20 +2170,38 @@ export const macRegistrationList = {
   empty: false
 }
 
-export const mockNotificationSmsResponse = {
+export const mockSMS_R1_Over100 = {
   threshold: 80,
   provider: SmsProviderType.RUCKUS_ONE,
   ruckusOneUsed: 100
 }
 
-export const mockNotificationSmsHasPoolResponse = {
+export const mockSMS_R1_Under100 = {
   threshold: 80,
   provider: SmsProviderType.RUCKUS_ONE,
   ruckusOneUsed: 80
 }
 
-export const mockNotificationSmsProviderNotR1Response = {
+export const mockSMS_TWILIO_Under100 = {
   threshold: 80,
   provider: SmsProviderType.TWILIO,
+  ruckusOneUsed: 80
+}
+
+export const mockSMS_TWILIO_Over100 = {
+  threshold: 80,
+  provider: SmsProviderType.TWILIO,
+  ruckusOneUsed: 100
+}
+
+export const mockSMS_Unset_Over100 = {
+  threshold: 80,
+  provider: SmsProviderType.SMSProvider_UNSET,
+  ruckusOneUsed: 100
+}
+
+export const mockSMS_Unset_Under100 = {
+  threshold: 80,
+  provider: SmsProviderType.SMSProvider_UNSET,
   ruckusOneUsed: 80
 }
