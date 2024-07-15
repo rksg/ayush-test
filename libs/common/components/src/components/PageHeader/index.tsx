@@ -4,9 +4,11 @@ import {
   PageHeader as AntPageHeader,
   PageHeaderProps as AntPageHeaderProps,
   Breadcrumb,
-  Typography
+  Typography,
+  Divider
 } from 'antd'
-import _ from 'lodash'
+import _            from 'lodash'
+import { useIntl  } from 'react-intl'
 
 import { TenantLink, TenantType } from '@acx-ui/react-router-dom'
 
@@ -14,11 +16,18 @@ import { useLayoutContext } from '../Layout'
 
 import * as UI from './styledComponents'
 
+type PageHeaderSubTitle = {
+  label: string
+  value: (number | string)[]
+}
+
 export interface PageHeaderProps
-  extends Omit<AntPageHeaderProps, 'title' | 'breadcrumb' | 'children'>
+  extends Omit<AntPageHeaderProps, 'title' | 'subTitle' | 'breadcrumb' | 'children'>
 {
   title: React.ReactNode,
+  titlePrefix?: React.ReactNode,
   titleExtra?: React.ReactNode,
+  subTitle?: AntPageHeaderProps['subTitle'] | PageHeaderSubTitle[],
   footerSpacer?: boolean,
   breadcrumb?: { text: string, link?: string, tenantType?: TenantType }[]
 }
@@ -31,7 +40,7 @@ function PageHeader (props: PageHeaderProps) {
   const ref = useRef<HTMLDivElement>(null)
   const layout = useLayoutContext()
   const pageHeaderProps: AntPageHeaderProps = _.omit(props, 'breadcrumb', 'subTitle')
-  pageHeaderProps.title = <Typography.Title ellipsis>{props.title}</Typography.Title>
+  const { $t } = useIntl()
 
   useLayoutEffect(() => {
     const top = parseInt(getComputedStyle(ref.current!).top, 10)
@@ -49,18 +58,41 @@ function PageHeader (props: PageHeaderProps) {
     layout.setPageHeaderY(top + height)
   })
 
-  if (props.titleExtra) {
-    pageHeaderProps.title = <>
-      {pageHeaderProps.title}
-      {props.titleExtra}
-    </>
+  let titleNodes: React.ReactNode[] = [<Typography.Title ellipsis>{props.title}</Typography.Title>]
+  if (props.titlePrefix) titleNodes = [props.titlePrefix, ...titleNodes]
+  if (props.titleExtra) titleNodes = [...titleNodes, props.titleExtra]
+  pageHeaderProps.title = (titleNodes as JSX.Element[])
+    .map((node, index) => React.cloneElement(node, { key: `title-${index}` }))
+
+  let subTitle = props.subTitle
+  if (
+    subTitle &&
+    Array.isArray(subTitle) &&
+    subTitle.every(({ label, value }) => Boolean(label) && Boolean(value))
+  ) {
+    const subTitles = subTitle as PageHeaderSubTitle[]
+    subTitle = subTitles.map(({ label, value }, index) => (
+      <span key={index} title={value.length > 1 ? value.join(', ') : undefined}>
+        {$t(
+          {
+            defaultMessage:
+              '{label}: {firstValue}{count, selectordinal, one {} other { ({count})}}',
+            description: 'Translation string: <none>'
+          },
+          { label, firstValue: value[0], count: value.length }
+        )}
+        {index < subTitles.length - 1 && <Divider type='vertical' />}
+      </span>
+    ))
   }
+
   let extra = props.extra
   if (Array.isArray(extra)) {
     extra = (props.extra as JSX.Element[])
       .filter(Boolean)
       .map((node, index) => React.cloneElement(node, { key: `extra-${index}` }))
   }
+
   if (props.breadcrumb) {
     pageHeaderProps.breadcrumb = <Breadcrumb>
       {props.breadcrumb.map((breadcrumb, index) => {
@@ -75,9 +107,10 @@ function PageHeader (props: PageHeaderProps) {
       <Breadcrumb.Item key='last'>&nbsp;</Breadcrumb.Item>
     </Breadcrumb>
   }
+
   return <UI.Wrapper ref={ref}>
     <AntPageHeader {...pageHeaderProps} extra={extra}>
-      {props.subTitle && <Typography.Text ellipsis>{props.subTitle}</Typography.Text>}
+      {props.subTitle && <Typography.Text ellipsis>{subTitle as React.ReactNode}</Typography.Text>}
     </AntPageHeader>
     {props.footer && props.footerSpacer && <UI.Spacer />}
   </UI.Wrapper>
