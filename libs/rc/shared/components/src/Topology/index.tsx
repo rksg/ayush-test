@@ -503,7 +503,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                     .includes(inputValue.toLowerCase()) ||
                   !!((option as OptionType).item.mac as string).toLowerCase()
                     .includes(inputValue.toLowerCase()) ||
-                  !!((option as OptionType).item.ipAddress as string).toLowerCase()
+                  !!((option as OptionType).item.ipAddress as string)?.toLowerCase()
                     .includes(inputValue.toLowerCase())
                 }
                 }

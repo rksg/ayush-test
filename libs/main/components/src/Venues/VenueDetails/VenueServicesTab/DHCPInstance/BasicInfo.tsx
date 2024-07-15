@@ -1,13 +1,13 @@
 import { useRef, useState } from 'react'
 
-import { Button, Form }           from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useLocation, useParams } from 'react-router-dom'
+import { Button, Form }                from 'antd'
+import { filter, find, isEmpty, take } from 'lodash'
+import { useIntl }                     from 'react-intl'
+import { useLocation, useParams }      from 'react-router-dom'
 
-import { Modal, SummaryCard }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { ServiceConfigTemplateLinkSwitcher }  from '@acx-ui/rc/components'
+import { Modal, SummaryCard }                from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ServiceConfigTemplateLinkSwitcher } from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
@@ -16,7 +16,8 @@ import {
   useLazyGetDHCPProfileQuery,
   useLazyGetDhcpTemplateQuery,
   useUpdateVenueDHCPProfileMutation,
-  useUpdateVenueTemplateDhcpProfileMutation
+  useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueMeshQuery
 } from '@acx-ui/rc/services'
 import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
@@ -32,6 +33,23 @@ import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTempl
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
 
+const useIsMeshEnabled = (venueId: string | undefined) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueWifiSetting } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: isWifiRbacEnabled
+  })
+
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({
+    params: { venueId } },
+  { skip: !isWifiRbacEnabled })
+
+  return (isWifiRbacEnabled
+    ? venueMeshSettings?.enabled
+    : venueWifiSetting?.mesh?.enabled) ?? false
+}
 
 interface DHCPFormRefType {
   resetForm: Function,
@@ -49,16 +67,15 @@ export default function BasicInfo () {
   const { $t } = useIntl()
   const DISPLAY_GATEWAY_MAX_NUM = 2
   const dhcpInfo = useDHCPInfo()
-  const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
+  const natGateway = take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const meshEnable = useIsMeshEnabled(params.venueId)
+
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
-  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
@@ -78,7 +95,7 @@ export default function BasicInfo () {
       return result
     }
     if(dhcpProfileList && dhcpServiceID){
-      return _.find(dhcpProfileList, { id: dhcpServiceID })
+      return find(dhcpProfileList, { id: dhcpServiceID })
     }else{
       return { dhcpMode: DHCPConfigTypeEnum.SIMPLE, dhcpPools: [] }
     }
@@ -127,14 +144,13 @@ export default function BasicInfo () {
         }
         return {}
       })
-      gateways = _.filter(gateways, o => !_.isEmpty(o.serialNumber) )
-      if(!_.isEmpty(gateways) && payload.dhcpServiceAps){
+      gateways = filter(gateways, o => !isEmpty(o.serialNumber) )
+      if(!isEmpty(gateways) && payload.dhcpServiceAps){
         payload.dhcpServiceAps = payload.dhcpServiceAps.concat(gateways)
       }
     }
     return payload
   }
-  const meshEnable = venue?.mesh?.enabled
 
   const dhcpData = [
     {

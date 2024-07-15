@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelL2AclPoliciesMutation,
@@ -12,7 +13,8 @@ import {
   useNetworkListQuery
 } from '@acx-ui/rc/services'
 import { AclOptionType, L2AclPolicy, Network, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                          from '@acx-ui/user'
+import { WifiScopes }                                         from '@acx-ui/types'
+import { filterByAccess, hasPermission }                      from '@acx-ui/user'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
 import { AddModeProps }                    from '../../AccessControlForm'
@@ -47,6 +49,8 @@ const Layer2Component = () => {
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const networkTableQuery = useTableQuery<Network>({
     useQuery: useNetworkListQuery,
     defaultPayload: {
@@ -65,7 +69,8 @@ const Layer2Component = () => {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedL2AclProfileListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   useEffect(() => {
@@ -99,6 +104,7 @@ const Layer2Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    scopeKey: [WifiScopes.CREATE],
     label: $t({ defaultMessage: 'Add Layer 2 Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER2_POLICY,
     onClick: () => {
@@ -112,12 +118,17 @@ const Layer2Component = () => {
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params,
+        payload: selectedRows.map(row => row.id),
+        enableRbac
+      }).then(callback)
     )
   }
 
   const rowActions: TableProps<L2AclPolicy>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -125,6 +136,7 @@ const Layer2Component = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -149,7 +161,10 @@ const Layer2Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={
+          // eslint-disable-next-line max-len
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+        }
       />
     </Form>
   </Loader>
@@ -188,12 +203,13 @@ function useColumns (
       sorter: true
     },
     {
-      key: 'macAddressCount',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Addresses' }),
-      dataIndex: 'macAddressCount',
+      dataIndex: 'macAddress',
       align: 'center',
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend']
+      sortDirections: ['descend', 'ascend', 'descend'],
+      render: (_, row) => row.macAddress?.length
     },
     {
       key: 'networkIds',
