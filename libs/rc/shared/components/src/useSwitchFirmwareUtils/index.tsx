@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 
 import { Tag, Tooltip, Typography } from 'antd'
+import _                            from 'lodash'
 import { IntlShape }                from 'react-intl'
 
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -366,7 +367,8 @@ export function useSwitchFirmwareUtils () {
 
   function getCurrentFirmwareDisplay (
     intl: IntlShape,
-    row: FirmwareSwitchVenueV1002
+    row: FirmwareSwitchVenueV1002,
+    contentValueWidthToDeduct?: number
   ) {
 
     let currentVersionDisplay = []
@@ -389,6 +391,8 @@ export function useSwitchFirmwareUtils () {
         currentVersionDisplay.push(
           <Statistic
             key={modelGroupValue}
+            contentValueWidthToDeduct={_.isNumber(contentValueWidthToDeduct) ?
+              contentValueWidthToDeduct : 10}
             width={modelGroupValue === SwitchFirmwareModelGroup.ICX7X ? 110 : 100}
             title={<Tag style={{
               fontSize: '10px',

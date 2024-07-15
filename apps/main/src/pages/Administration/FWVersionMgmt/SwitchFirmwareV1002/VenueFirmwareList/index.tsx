@@ -196,7 +196,7 @@ export function VenueFirmwareList () {
         style: { padding: '10px 0 5px 0',
           overflow: 'hidden' }
       }),
-      render: (_, row) => getCurrentFirmwareDisplay(intl, row)
+      render: (_, row) => getCurrentFirmwareDisplay(intl, row, 0)
     },
     {
       title: $t({ defaultMessage: 'Status' }),
