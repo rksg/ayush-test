@@ -119,7 +119,8 @@ export function PortalSettings () {
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {
       const defaultList = await Promise.all(mspLabel.mspLogoFileDataList?.map((file) => {
-        return loadImageWithJWT(file.logo_fileuuid, undefined, isRbacEnabled)
+        return loadImageWithJWT(file.logo_fileuuid,
+          isRbacEnabled ? `/tenants/${file.logo_fileuuid}/urls` : undefined)
           .then((fileUrl) => {
             return {
               uid: file.logo_fileuuid,
@@ -134,19 +135,21 @@ export function PortalSettings () {
       setFileList(defaultList)
       setSelectedLogo('myLogo')
       mspLabel.logo_uuid
-        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid, undefined, isRbacEnabled))
+        ? setPortalLogoUrl(await loadImageWithJWT(mspLabel.logo_uuid,
+          isRbacEnabled ? `/tenants/${mspLabel.logo_uuid}/urls` : undefined))
         : setPortalLogoUrl(defaultPortalLogo)
       mspLabel.ping_login_logo_uuid
         ? setLoginLogoUrl(await loadImageWithJWT(mspLabel.ping_login_logo_uuid,
-          undefined, isRbacEnabled))
+          isRbacEnabled ? `/tenants/${mspLabel.ping_login_logo_uuid}/urls` : undefined))
         : setLoginLogoUrl(defaultLoginLogo)
       mspLabel.ping_notification_logo_uuid
         ? setSupportLogoUrl(
-          await loadImageWithJWT(mspLabel.ping_notification_logo_uuid, undefined, isRbacEnabled))
+          await loadImageWithJWT(mspLabel.ping_notification_logo_uuid,
+            isRbacEnabled ? `/tenants/${mspLabel.ping_notification_logo_uuid}/urls` : undefined))
         : setSupportLogoUrl(defaultSupportLogo)
       mspLabel.alarm_notification_logo_uuid
         ? setAlarmLogoUrl(await loadImageWithJWT(mspLabel.alarm_notification_logo_uuid,
-          undefined, isRbacEnabled))
+          isRbacEnabled ? `/tenants/${mspLabel.alarm_notification_logo_uuid}/urls` : undefined))
         : setAlarmLogoUrl(defaultAlarmLogo)
     }
     if (provider) {
