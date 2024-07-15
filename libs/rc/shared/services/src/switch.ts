@@ -1336,7 +1336,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
         const getDhcpLeasesQuery = await pollingDhcpLease()
         const leaseResult = getDhcpLeasesQuery.data as TroubleshootingResult
-        const dhcpServerLeaseList = leaseResult?.response?.dhcpServerLeaseList || _.get(leaseResult, 'dhcpServerLeaseList')
+        const dhcpServerLeaseList = leaseResult?.response?.dhcpServerLeaseList ||
+          _.get(leaseResult, 'dhcpServerLeaseList')
 
         return dhcpServerLeaseList ? { data: dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
