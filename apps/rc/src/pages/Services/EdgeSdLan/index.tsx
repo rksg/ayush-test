@@ -1,5 +1,6 @@
 import { Features }              from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { goToNotFound }          from '@acx-ui/user'
 
 import AddEdgeMvSdLan    from './multiVenue/AddEdgeSdLan'
 import EditEdgeMvSdLan   from './multiVenue/EditEdgeSdLan'
@@ -18,8 +19,7 @@ export const EdgeSdLanTable = () => {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>
+    return goToNotFound()
 
   return isEdgeSdLanHaEnabled ? <EdgeSdLanTableP2 /> : <EdgeSdLanTableP1 />
 }
@@ -30,8 +30,7 @@ export const EdgeSdLanDetail = () => {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>
+    return goToNotFound()
 
   return isEdgeSdLanHaEnabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetailP1 />
 }
@@ -42,8 +41,7 @@ export const AddEdgeSdLan = () => {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>
+    return goToNotFound()
 
   return isEdgeSdLanMvEnabled
     ? <AddEdgeMvSdLan />
@@ -56,8 +54,7 @@ export const EditEdgeSdLan = () => {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>
+    return goToNotFound()
 
   return isEdgeSdLanMvEnabled
     ? <EditEdgeMvSdLan />
