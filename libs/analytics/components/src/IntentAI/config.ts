@@ -36,27 +36,27 @@ export const states = {
   },
   'applyscheduled': {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize" initiated by the user [ UserName ].\nOR\nThe change recommendation has been scheduled via user action "Optimize" initiated by the user [ UserName ].\nOR\nThe change recommendation has been automatically scheduled by IntentAI.' })
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize" initiated by the user {userName}.\nOR\nThe change recommendation has been scheduled via user action "Optimize" initiated by the user {userName}.\nOR\nThe change recommendation has been automatically scheduled by IntentAI.' })
   },
   'applyscheduleinprogress': {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the [ Zone | Venue ].' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the {zoneName}.' })
   },
   'applied': {
     text: defineMessage({ defaultMessage: 'Applied' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI has successfully applied the changes to the [ Zone | Venue ]. The new configuration is: XYZ.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has successfully applied the changes to the {zoneName}. The new configuration is: {newConfig}.' })
   },
   'applyfailed': {
     text: defineMessage({ defaultMessage: 'Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to be applied to the [ Zone | Venue ] due to the reason:\n\n{errorMessage}' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to be applied to the {zoneName} due to the reason:\n\n{errorMessage}' })
   },
   'revertscheduled': {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert" initiated by the user [ UserName ].' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert" initiated by the user {userName}.' })
   },
   'revertscheduleinprogress': {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the [ Zone | Venue ].' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the {zoneName}.' })
   },
   'revertfailed': {
     text: defineMessage({ defaultMessage: 'Revert Failed' }),
@@ -69,7 +69,7 @@ export const states = {
   },
   'paused': {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user [ User Name ]/nOR/nThe Intent is in default state of "Paused".\nA Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
+    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause" initiated by the user {userName}/nOR/nThe Intent is in default state of "Paused".\nA Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
   'na-conflicting-configuration': {
     text: defineMessage({ defaultMessage: 'No recommendation, Conflicting Configuration' }),
@@ -77,19 +77,19 @@ export const states = {
   },
   'na-no-aps': {
     text: defineMessage({ defaultMessage: 'No recommendation, No APs' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the [ Zone | Venue ].' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the {zoneName}.' })
   },
   'na-not-enough-license': {
     text: defineMessage({ defaultMessage: 'No recommendation, Not enough license' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone [Zone Name].' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone {zoneName}.' })
   },
   'na-not-enough-data': {
     text: defineMessage({ defaultMessage: 'No recommendation, Not enough data' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than X days of data in the [ Zone | Venue ].' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than X days of data in the {zoneName}.' })
   },
   'na-verified': {
     text: defineMessage({ defaultMessage: 'Verified' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated [ Zone | Venue ] configurations. No new changes have been recommended.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated {zoneName} configurations. No new changes have been recommended.' })
   },
   'na-unknown-reason': {
     text: defineMessage({ defaultMessage: 'No recommendation, Unknown reason' }),

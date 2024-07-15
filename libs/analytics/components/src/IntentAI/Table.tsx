@@ -1,6 +1,5 @@
 import { useIntl } from 'react-intl'
 
-import { isSwitchPath } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps }        from '@acx-ui/components'
@@ -19,12 +18,10 @@ export function IntentAITable (
 ) {
   const { $t } = useIntl()
 
-  const switchPath = isSwitchPath(pathFilters.path)
   const queryResults = useIntentAIListQuery(
-    { ...pathFilters },
-    { skip: switchPath }
+    { ...pathFilters }
   )
-  const data = switchPath ? [] : queryResults?.data
+  const data = queryResults?.data
 
   const columns: TableProps<IntentListItem>['columns'] = [
     {
