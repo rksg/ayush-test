@@ -2,8 +2,8 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { edgeSdLanApi }           from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, useUpdateEdgeMvSdLanPartialMutation } from '@acx-ui/rc/services'
 import {
   EdgeSdLanUrls,
   EdgeSdLanSettingP2,
@@ -51,7 +51,7 @@ jest.mock('@acx-ui/rc/services', () => ({
       }) }
     }]
   },
-  useUpdateEdgeMvSdLanPartialMutation: () => {
+  useUpdateEdgeMvSdLanPartialMutation: jest.fn().mockImplementation(() => {
     return [(req: RequestPayload) => {
       return { unwrap: () => new Promise((resolve) => {
         resolve(true)
@@ -60,7 +60,7 @@ jest.mock('@acx-ui/rc/services', () => ({
         }, 300)
       }) }
     }]
-  },
+  }),
   useAddEdgeSdLanP2Mutation: () => {
     return [(req: RequestPayload) => {
       return { unwrap: () => new Promise((resolve) => {
@@ -306,12 +306,11 @@ describe('useEdgeMvSdLanActions', () => {
         callback: mockedCallback
       })
 
-      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
       // handle dmz tunnel changes
-      expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+      await waitFor(() => expect(mockedActivateDmzTunnelReq).toBeCalledWith({
         tunnelProfileId: 't-tunnelProfile-id-3',
         serviceId: 'mocked_service_id'
-      })
+      }))
 
       // should activate guest network
       expect(mockedActivateMvNetworkReq).toBeCalledTimes(1)
@@ -321,6 +320,7 @@ describe('useEdgeMvSdLanActions', () => {
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelUtilized: true })
 
+      expect(mockedCallback).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
@@ -350,12 +350,12 @@ describe('useEdgeMvSdLanActions', () => {
         callback: mockedCallback
       })
 
-      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
-      expect(mockedToggleDmzReq).toBeCalledTimes(1)
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledTimes(1))
       expect(mockedToggleDmzReq).toBeCalledWith({
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelEnabled: true })
 
+      expect(mockedCallback).toBeCalledTimes(0)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
@@ -403,14 +403,15 @@ describe('useEdgeMvSdLanActions', () => {
         callback: mockedCallback
       })
 
-      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+      await waitFor(() => expect(mockedActivateMvNetworkReq).toBeCalledTimes(2))
+      expect(mockedCallback).toBeCalledTimes(0)
       expect(mockedToggleDmzReq).toBeCalledTimes(0)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
       expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
       expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
-      expect(mockedActivateMvNetworkReq).toBeCalledTimes(2)
+
       Object.entries(mockedPayload.networks).forEach(([venueId, networkIds]) => {
         networkIds.forEach(network => {
           expect(mockedActivateMvNetworkReq).toBeCalledWith({
@@ -438,10 +439,10 @@ describe('useEdgeMvSdLanActions', () => {
         callback: mockedCallback
       })
 
-      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
-      expect(mockedToggleDmzReq).toBeCalledWith({
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
         serviceId: 'mocked_service_id'
-      }, { isGuestTunnelEnabled: true })
+      }, { isGuestTunnelEnabled: true }))
+      expect(mockedCallback).toBeCalledTimes(0)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
@@ -467,7 +468,7 @@ describe('useEdgeMvSdLanActions', () => {
         callback: mockedCallback
       })
 
-      await waitFor(() =>expect(mockedToggleDmzReq).toBeCalledWith({
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelEnabled: true }))
 
@@ -483,6 +484,29 @@ describe('useEdgeMvSdLanActions', () => {
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelUtilized: false })
       expect(mockedCallback).toBeCalledTimes(0)
+    })
+
+    it('should update porfile name', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      mockedData.name = 'newTestName'
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedEditData, {
+        payload: mockedData,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
     })
 
     it('should handle relation requests failed', async () => {
@@ -502,11 +526,7 @@ describe('useEdgeMvSdLanActions', () => {
           }
         ))
 
-      const mockedCallbackInnerFn = jest.fn()
       const mockedCBFn = jest.fn()
-        .mockImplementation((response: CommonErrorsResult<CatchErrorDetails>) => {
-          mockedCallbackInnerFn(response.data.errors[0].code)
-        })
       const mockedPayload = {
         ...mockedEditData,
         networks: { mocked_venue_id: ['network_1', 'network_3'] },
@@ -517,23 +537,59 @@ describe('useEdgeMvSdLanActions', () => {
       })
 
       const { editEdgeSdLan } = result.current
-      await editEdgeSdLan(mockedEditData, {
-        payload: mockedPayload,
-        callback: mockedCBFn
-      })
+      let errResult
+      try {
+        await editEdgeSdLan(mockedEditData, {
+          payload: mockedPayload,
+          callback: mockedCBFn
+        })
+      } catch(err) {
+        errResult = (err as CommonErrorsResult<CatchErrorDetails>).data.errors[0].code
+      }
 
-      await waitFor(() => expect(mockedCBFn).toBeCalledTimes(1))
-      expect(mockedCallbackInnerFn).toBeCalledWith('EDGE-00000')
+      expect(errResult).toBe('EDGE-00000')
       expect(mockedReq).toBeCalledWith({
         venueId: 'mocked_venue_id',
         serviceId: 'mocked_service_id',
         wifiNetworkId: 'network_1'
       })
+      expect(mockedCBFn).toBeCalledTimes(0)
       expect(mockedReq).toBeCalledWith({
         venueId: 'mocked_venue_id',
         serviceId: 'mocked_service_id',
         wifiNetworkId: 'network_3'
       })
+    })
+
+    it('should handle profile update failed', async () => {
+      (useUpdateEdgeMvSdLanPartialMutation as jest.Mock).mockImplementation(() => {
+        return [() => {
+          return { unwrap: () => new Promise((_resolve, reject) => {
+            reject('test rename failed') }) }
+        }]
+      })
+
+      const mockedCBFn = jest.fn()
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      const { editEdgeSdLan } = result.current
+      let errResult
+      try {
+        await editEdgeSdLan(mockedEditData, {
+          payload: {
+            ...mockedEditData,
+            name: 'testRename'
+          },
+          callback: mockedCBFn
+        })
+      } catch(err) {
+        errResult = err
+      }
+
+      expect(errResult).toBe('test rename failed')
+      expect(mockedCBFn).toBeCalledTimes(0)
     })
   })
 })

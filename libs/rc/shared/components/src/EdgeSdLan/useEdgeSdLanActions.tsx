@@ -233,9 +233,9 @@ export const useEdgeMvSdLanActions = () => {
 
     try {
       const relationActs = await Promise.all(actions)
-      return allResults.concat(relationActs)
+      return Promise.resolve(allResults.concat(relationActs))
     } catch(error) {
-      return error as CommonErrorsResult<CatchErrorDetails>
+      return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
     }
   }
 
@@ -282,11 +282,7 @@ export const useEdgeMvSdLanActions = () => {
       pick(originData, ['id', 'name', 'tunnelProfileId']),
       pick(payload, ['id', 'name', 'tunnelProfileId']))
     ) {
-      try {
-        return await handleAssociationDiff(serviceId!, originData, payload)
-      } catch(error) {
-        return error
-      }
+      return await handleAssociationDiff(serviceId!, originData, payload)
     } else {
       return await updateEdgeSdLan({
         payload: {
