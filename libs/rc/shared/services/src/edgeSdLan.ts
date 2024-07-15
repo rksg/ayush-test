@@ -21,7 +21,8 @@ import {
   TxStatus,
   EdgeMvSdLanExtended,
   EdgeMvSdLanViewData,
-  EdgeMvSdLanNetworks
+  EdgeMvSdLanNetworks,
+  EdgeMvSdLanResponseType
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -447,7 +448,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         const sdLanRequest = createHttpRequest(
           EdgeSdLanUrls.getEdgeSdLan, params, versionHeader)
         const sdLanQuery = await fetchWithBQ(sdLanRequest)
-        const sdLanConfig = sdLanQuery.data as EdgeMvSdLanExtended
+        const sdLanConfig = sdLanQuery.data as EdgeMvSdLanResponseType
 
         if (sdLanConfig) {
           const guestSettingsReq = createHttpRequest(EdgeSdLanUrls.getEdgeSdLanIsDmz,
@@ -459,6 +460,13 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           const sdLanStatusQuery = await fetchWithBQ({
             ...sdLanStatusReq,
             body: {
+              fields: [
+                'id', 'edgeClusterName',
+                'tunnelProfileName', 'isGuestTunnelEnabled',
+                'guestEdgeClusterId', 'guestEdgeClusterName',
+                'guestTunnelProfileId', 'guestTunnelProfileName',
+                'tunneledWlans', 'tunneledGuestWlans'
+              ],
               filters: { id: [params!.serviceId] }
             }
           })
@@ -480,7 +488,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeMvSdLanViewData>
           const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
           const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
-          let sdLanData = sdLanConfig
+          let sdLanData: EdgeMvSdLanExtended = sdLanConfig as EdgeMvSdLanExtended
           if (sdLanInfo && guestSettings && clusterInfo) {
           // eslint-disable-next-line max-len
             sdLanData = transformMvSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
@@ -570,14 +578,11 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
 })
 
 const transformMvSdLanGetData = (
-  profile: EdgeMvSdLanExtended,
+  profile: EdgeMvSdLanResponseType,
   statusData: EdgeMvSdLanViewData,
   clusterInfo: EdgeClusterStatus,
   guestSettings: EdgeSdLanToggleDmzPayload
 ): EdgeMvSdLanExtended => {
-  profile.venueId = clusterInfo.venueId
-  profile.isGuestTunnelEnabled = guestSettings.isGuestTunnelEnabled
-
   const networks: EdgeMvSdLanNetworks = {}
   Object.entries(groupBy(statusData.tunneledWlans, 'venueId')).forEach(([venueId, wlans]) => {
     networks[venueId] = wlans.map(wlan => wlan.networkId)
@@ -590,11 +595,13 @@ const transformMvSdLanGetData = (
 
   return {
     ...profile,
+    venueId: clusterInfo.venueId,
+    isGuestTunnelEnabled: guestSettings.isGuestTunnelEnabled,
     networks,
-    guestEdgeClusterId: statusData.guestEdgeClusterId,
-    guestTunnelProfileId: statusData.guestTunnelProfileId,
+    guestEdgeClusterId: statusData.guestEdgeClusterId!,
+    guestTunnelProfileId: statusData.guestTunnelProfileId!,
     guestNetworks
-  }
+  } as EdgeMvSdLanExtended
 }
 
 const transformSdLanGetData = (

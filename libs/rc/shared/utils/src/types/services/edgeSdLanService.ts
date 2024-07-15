@@ -130,17 +130,17 @@ export interface EdgeMvSdLanViewData {
   tenantId?: string
   name?: string
   tags?: string[]
-  venueId: string
+  venueId?: string
   venueName?: string
   edgeId?: string
   edgeName?: string
-  edgeClusterId: string
-  tunnelProfileId: string
+  edgeClusterId?: string
+  tunnelProfileId?: string
   edgeClusterName?: string
   tunnelProfileName?: string
-  isGuestTunnelEnabled: boolean
-  guestEdgeClusterId: string
-  guestTunnelProfileId: string
+  isGuestTunnelEnabled?: boolean
+  guestEdgeClusterId?: string
+  guestTunnelProfileId?: string
   guestEdgeClusterName?: string
   guestTunnelProfileName?: string
   serviceVersion?: string

@@ -59,11 +59,30 @@ describe('Tunneled Venue Networks Table', () => {
 
   it('should correctly render', async () => {
     render(<MockedTargetComponent
+      activated={{
+        venue_00002: [{
+          id: 'network1',
+          name: 'Network_1'
+        }, {
+          id: 'network2',
+          name: 'Network_2'
+        }, {
+          id: 'network3',
+          name: 'Network_3' }],
+        venue_00005: [{
+          id: 'network5',
+          name: 'Network_5'
+        }]
+      }}
     />, { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
-    const rows = screen.getAllByRole('row')
-    expect(rows.length).toBe(5)
+    screen.getAllByRole('row')
+    screen.getByRole('row', { name: /My-Venue .* 0/i })
+    screen.getByRole('row', { name: /airport.* 3/i })
+    screen.getByRole('row', { name: /MockedVenue 1 .* 0/i })
+    screen.getByRole('row', { name: /MockedVenue 2 .* 0/i })
+    screen.getByRole('row', { name: /SG office .* 1/i })
   })
 
   it('should open networks selection drawer', async () => {

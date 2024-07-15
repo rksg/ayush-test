@@ -55,11 +55,8 @@ jest.mock('@acx-ui/utils', () => ({
 
 jest.mock('./VenueNetworkTable/NetworksDrawer.tsx', () => ({
   ...jest.requireActual('./VenueNetworkTable/NetworksDrawer.tsx'),
-  NetworksDrawer: <div data-testid='NetworksDrawer' />
+  NetworksDrawer: () => <div data-testid='NetworksDrawer' />
 }))
-
-const mockedSetFieldValue = jest.fn()
-const { click } = userEvent
 
 const mockedTunnelProfileViewDataNoDefault = {
   data: EdgeTunnelProfileFixtures.mockedTunnelProfileViewData.data.filter(item =>
@@ -101,12 +98,7 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
 }
 
 describe('Tunneled Venue Networks Form', () => {
-  const mockedGetNetworkViewmodelList = jest.fn()
-
   beforeEach(() => {
-    mockedSetFieldValue.mockReset()
-    mockedGetNetworkViewmodelList.mockReset()
-
     store.dispatch(tunnelProfileApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
 
@@ -129,15 +121,11 @@ describe('Tunneled Venue Networks Form', () => {
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
+    await basicCheck()
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
       'tunnelProfile3')
-
-    await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(7)
+    expect(stepFormRef.current.getFieldValue('tunnelProfileName')).toBe('tunnelProfile3')
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
   })
 
@@ -154,21 +142,20 @@ describe('Tunneled Venue Networks Form', () => {
       editMode={true}
     />, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
+    await basicCheck()
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
       'Default tunnel profile (SD-LAN)')
 
-    await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
-    await screen.findByRole('row', { name: /MockedNetwork 4/i })
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
   })
 
   it('should correctly render in edit mode', async () => {
     const mockedNetworkIds = ['network_1', 'network_2']
     const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-      activatedNetworks: mockedNetworkIds.map(id => ({ id }))
+      activatedNetworks: {
+        venue_00003: mockedNetworkIds.map(id => ({ id }))
+      }
     }))
 
     render(<MockedTargetComponent
@@ -179,100 +166,32 @@ describe('Tunneled Venue Networks Form', () => {
       }}
     />, { route: { params: { tenantId: 't-id' } } })
 
-    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-    await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
+    await basicCheck()
+    screen.getByRole('row', { name: /airport.* 0/i })
+    screen.getByRole('row', { name: /MockedVenue 1 .* 2/i })
+    screen.getByRole('row', { name: /MockedVenue 2 .* 0/i })
+    screen.getByRole('row', { name: /SG office .* 0/i })
     await waitFor(() =>
-      expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual([
+      expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual({ venue_00003: [
         { id: 'network_1' },
         { id: 'network_2' }
-      ]))
-
-    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
-    const switchBtn = within(rows[1]).getByRole('switch')
-    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
-    const switchBtn2 = within(rows[1]).getByRole('switch')
-    expect(switchBtn).toBeChecked()
-    expect(switchBtn2).toBeChecked()
-  })
-
-  it('should correctly activate by switcher', async () => {
-    const { result: stepFormRef } = renderHook(useMockedFormHook)
-    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
-    render(<MockedTargetComponent
-      form={stepFormRef.current}
-    />, { route: { params: { tenantId: 't-id' } } })
-
-    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-    //await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
-    expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
-    await click(within(rows[1]).getByRole('switch'))
-
-    expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', [
-      { name: 'MockedNetwork 2', id: 'network_2' }
-    ])
-  })
-
-  it('should correctly deactivate by switch', async () => {
-    const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-      activatedNetworks: [
-        { name: 'MockedNetwork 1', id: 'network_1' },
-        { name: 'MockedNetwork 2', id: 'network_2' }
-      ]
-    }))
-    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
-    render(<MockedTargetComponent
-      form={stepFormRef.current}
-    />, { route: { params: { tenantId: 't-id' } } })
-
-    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-    const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
-    const switchBtn = within(rows[0]).getByRole('switch')
-    expect(switchBtn).toBeChecked()
-    await click(switchBtn)
-
-    expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', [
-      { name: 'MockedNetwork 2', id: 'network_2' }
-    ])
-  })
-
-  it('activatedNetworks will be default into undefined when networkId is not touched in create mode', async () => {
-    const { result: stepFormRef } = renderHook(useMockedFormHook)
-    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
-    render(<MockedTargetComponent
-      form={stepFormRef.current}
-    />, { route: { params: { tenantId: 't-id' } } })
-
-    expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-    await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    const formFoot = await screen.findByTestId('steps-form-actions')
-
-    await click(await within(formFoot).findByRole('button', { name: 'Add' }))
-    const actualVal = stepFormRef.current.getFieldValue('activatedNetworks')
-    expect(actualVal).toStrictEqual(undefined)
+      ] }))
   })
 
   describe('guest tunnel enabled', () => {
     it('should correctly display', async () => {
+      const mockedSetFieldValue = jest.fn()
       const { result: stepFormRef } = renderHook(() => useMockedFormHook({
         isGuestTunnelEnabled: true,
-        activatedNetworks: [
-          { name: 'MockedNetwork 1', id: 'network_1' },
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ],
-        activatedGuestNetworks: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ]
+        activatedNetworks: {
+          venue_00002: [
+            { name: 'MockedNetwork 1', id: 'network_1' },
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] },
+        activatedGuestNetworks: {
+          venue_00002: [
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] }
       }))
       jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
@@ -280,8 +199,12 @@ describe('Tunneled Venue Networks Form', () => {
         form={stepFormRef.current}
       />, { route: { params: { tenantId: 't-id' } } })
 
-      expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-      await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
+      await basicCheck()
+      screen.getByRole('row', { name: /airport.* 2/i })
+      screen.getByRole('row', { name: /MockedVenue 1 .* 0/i })
+      screen.getByRole('row', { name: /MockedVenue 2 .* 0/i })
+      screen.getByRole('row', { name: /SG office .* 0/i })
+
       const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
       const opts = await within(dmzTunnelSelector).findAllByRole('option')
       expect(opts.length).toBe(1)
@@ -289,94 +212,13 @@ describe('Tunneled Venue Networks Form', () => {
       // only Manual mode can be options for DMZ tunnel
       expect(screen.queryByRole('option', { name: 'tunnelProfileId2' })).toBeNull()
       await userEvent.selectOptions(dmzTunnelSelector, 'tunnelProfileId1')
-
-      const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-      expect(rows.length).toBe(7)
-      expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
-      const switchBtns = within(rows[0]).getAllByRole('switch')
-      expect(switchBtns.length).toBe(1)
-      expect(switchBtns[0]).toBeChecked()
-
-      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
-      const captivePortalSwitchBtns = within(rows[3]).getAllByRole('switch')
-      expect(captivePortalSwitchBtns.length).toBe(2)
-      captivePortalSwitchBtns.forEach(item => {
-        expect(item).toBeChecked()
-      })
-    })
-
-    it('guest tunnel network should default true when is captivePortal network', async () => {
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldValue)
-
-      render(<MockedTargetComponent
-        form={stepFormRef.current}
-      />, { route: { params: { tenantId: 't-id' } } })
-
-      expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-      await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-      const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
-      const opts = await within(dmzTunnelSelector).findAllByRole('option')
-      expect(opts.length).toBe(1)
-
-      const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-      expect(rows.length).toBe(7)
-
-      // when turn on DC captive portal network DMZ network should be ON by default
-      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
-      const switchBtns = within(rows[3]).getAllByRole('switch')
-      switchBtns.forEach((switchBtn) => {
-        expect(switchBtn).not.toBeChecked()
-      })
-      await click(switchBtns[0])
-
-      expect(mockedSetFieldValue).toBeCalledWith({
-        activatedNetworks: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ],
-        activatedGuestNetworks: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ]
-      })
-    })
-
-    it('data network should be true when enable guest captivePortal network', async () => {
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldValue)
-
-      render(<MockedTargetComponent
-        form={stepFormRef.current}
-      />, { route: { params: { tenantId: 't-id' } } })
-
-      expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-      await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-      const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
-      const opts = await within(dmzTunnelSelector).findAllByRole('option')
-      expect(opts.length).toBe(1)
-
-      const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-      expect(rows.length).toBe(7)
-
-      // when turn on DC captive portal network DMZ network should be ON by default
-      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
-      const switchBtns = within(rows[3]).getAllByRole('switch')
-      switchBtns.forEach((switchBtn) => {
-        expect(switchBtn).not.toBeChecked()
-      })
-      await click(switchBtns[1])
-
-      expect(mockedSetFieldValue).toBeCalledWith({
-        activatedNetworks: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ],
-        activatedGuestNetworks: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ]
-      })
     })
   })
 })
+
+const basicCheck = async () => {
+  await screen.findByText('Tunnel & Network Settings')
+  screen.getByText(/Select the venues and networks where the SD-LAN Service will be applied/i)
+  const rows = await screen.findAllByRole('row', { name: /MockedVenue/i })
+  expect(rows.length).toBe(2)
+}

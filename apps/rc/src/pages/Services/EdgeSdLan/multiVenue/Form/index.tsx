@@ -79,7 +79,6 @@ const EdgeMvSdLanForm = (props: EdgeMvSdLanFormProps) => {
   const { form, steps, editData, onFinish } = props
   const navigate = useNavigate()
   const isEditMode = Boolean(editData)
-
   const linkToServiceList = useTenantLink(getServiceRoutePath({
     type: ServiceType.EDGE_SD_LAN,
     oper: ServiceOperation.LIST

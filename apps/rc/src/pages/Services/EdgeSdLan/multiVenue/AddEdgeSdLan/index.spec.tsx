@@ -1,6 +1,7 @@
-import userEvent from '@testing-library/user-event'
+import userEvent     from '@testing-library/user-event'
+import { transform } from 'lodash'
 
-import { getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
+import { getServiceRoutePath, ServiceOperation, ServiceType, EdgeMvSdLanNetworks } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -11,7 +12,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import { EdgeSdLanFormModelP2 } from '../EdgeSdLanForm'
+import { EdgeMvSdLanFormModel } from '../Form'
 
 import AddEdgeSdLan from '.'
 
@@ -28,11 +29,11 @@ const mockedSubmitDataGen = jest.fn()
 const mockedApiReqCallbackData = jest.fn()
 const mockedApiReqSucceed = jest.fn()
 
-jest.mock('../EdgeSdLanForm', () => ({
+jest.mock('../Form', () => ({
   __esModule: true,
-  ...jest.requireActual('../EdgeSdLanForm'),
+  ...jest.requireActual('../Form'),
   default: (props: {
-    onFinish: (values: EdgeSdLanFormModelP2) => Promise<boolean | void>
+    onFinish: (values: EdgeMvSdLanFormModel) => Promise<boolean | void>
   }) => {
     const submitData = mockedSubmitDataGen()
     return <div data-testid='rc-EdgeSdLanForm'>
@@ -45,7 +46,7 @@ jest.mock('../EdgeSdLanForm', () => ({
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useEdgeSdLanActions: () => {
+  useEdgeMvSdLanActions: () => {
     return { addEdgeSdLan: (req: RequestPayload) => {
       mockedAddFn(req.payload)
       const cbData = mockedApiReqCallbackData()
@@ -70,18 +71,18 @@ const targetPath = getServiceRoutePath({
 const mockedDmzData = {
   name: 'testAddDMZSdLanService',
   edgeClusterId: '0000000002',
-  activatedNetworks: [{
+  activatedNetworks: { venue_00002: [{
     id: 'network_4',
     name: 'Network4'
-  }],
+  }] },
   tunnelProfileId: 't-tunnelProfile-id',
   isGuestTunnelEnabled: true,
   guestEdgeClusterId: '0000000005',
   guestTunnelProfileId: 't-tunnelProfile-id-2',
-  activatedGuestNetworks: [{
+  activatedGuestNetworks: { venue_00002: [{
     id: 'network_4',
     name: 'Network4'
-  }]
+  }] }
 }
 
 describe('Add SD-LAN service', () => {
@@ -98,10 +99,10 @@ describe('Add SD-LAN service', () => {
       name: 'testAddSdLanService',
       edgeClusterId: '0000000001',
       tunnelProfileId: 't-tunnelProfile-id',
-      activatedNetworks: [{
+      activatedNetworks: { venue_00002: [{
         id: 'network_1',
         name: 'Network1'
-      }],
+      }] },
       isGuestTunnelEnabled: false
     }
     mockedSubmitDataGen.mockReturnValueOnce(mockedFormData)
@@ -111,7 +112,7 @@ describe('Add SD-LAN service', () => {
     </Provider>, {
       route: {
         params: { tenantId: 't-id' },
-        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
+        path: '/:tenantId/services/edgeMvEdgeSdLan/create'
       }
     })
 
@@ -122,7 +123,9 @@ describe('Add SD-LAN service', () => {
         name: mockedFormData.name,
         edgeClusterId: mockedFormData.edgeClusterId,
         tunnelProfileId: mockedFormData.tunnelProfileId,
-        networkIds: mockedFormData.activatedNetworks.map(item => item.id),
+        networks: transform(mockedFormData.activatedNetworks, (result, value, key) => {
+          result[key] = value.map(v => v.id)
+        }, {} as EdgeMvSdLanNetworks),
         isGuestTunnelEnabled: mockedFormData.isGuestTunnelEnabled
       })
     })
@@ -139,7 +142,7 @@ describe('Add SD-LAN service', () => {
       name: 'testAddSdLanService2',
       edgeClusterId: '0000000002',
       tunnelProfileId: 't-tunnelProfile2-id',
-      activatedNetworks: [],
+      activatedNetworks: {},
       isGuestTunnelEnabled: false
     }
     mockedSubmitDataGen.mockReturnValueOnce(mockeFormData)
@@ -160,7 +163,7 @@ describe('Add SD-LAN service', () => {
         name: mockeFormData.name,
         edgeClusterId: mockeFormData.edgeClusterId,
         tunnelProfileId: mockeFormData.tunnelProfileId,
-        networkIds: mockeFormData.activatedNetworks.map(item => item.id),
+        networks: {},
         isGuestTunnelEnabled: mockeFormData.isGuestTunnelEnabled
       })
     })
@@ -178,7 +181,7 @@ describe('Add SD-LAN service', () => {
     </Provider>, {
       route: {
         params: { tenantId: 't-id', serviceId: 't-cf-id' },
-        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
+        path: '/:tenantId/services/edgeMvEdgeSdLan/create'
       }
     })
 
@@ -189,10 +192,14 @@ describe('Add SD-LAN service', () => {
         name: mockedDmzData.name,
         edgeClusterId: mockedDmzData.edgeClusterId,
         tunnelProfileId: mockedDmzData.tunnelProfileId,
-        networkIds: mockedDmzData.activatedNetworks.map(item => item.id),
+        networks: transform(mockedDmzData.activatedNetworks, (result, value, key) => {
+          result[key] = value.map(v => v.id)
+        }, {} as EdgeMvSdLanNetworks),
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
         guestEdgeClusterId: mockedDmzData.guestEdgeClusterId,
-        guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(item => item.id),
+        guestNetworks: transform(mockedDmzData.activatedGuestNetworks, (result, value, key) => {
+          result[key] = value.map(v => v.id)
+        }, {} as EdgeMvSdLanNetworks),
         guestTunnelProfileId: mockedDmzData.guestTunnelProfileId
       })
     })
@@ -217,7 +224,7 @@ describe('Add SD-LAN service', () => {
     </Provider>, {
       route: {
         params: { tenantId: 't-id' },
-        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
+        path: '/:tenantId/services/edgeMvEdgeSdLan/create'
       }
     })
 
@@ -243,7 +250,7 @@ describe('Add SD-LAN service', () => {
     </Provider>, {
       route: {
         params: { tenantId: 't-id' },
-        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
+        path: '/:tenantId/services/edgeMvEdgeSdLan/create'
       }
     })
 

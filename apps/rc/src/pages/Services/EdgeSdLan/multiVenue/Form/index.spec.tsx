@@ -1,16 +1,21 @@
 import userEvent       from '@testing-library/user-event'
 import { Form, Input } from 'antd'
+import { transform }   from 'lodash'
+import { rest }        from 'msw'
 
 import {
+  EdgeSdLanUrls,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
-  EdgeSdLanFixtures
+  EdgeSdLanFixtures,
+  EdgeMvSdLanFormNetwork
 } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
 import {
+  mockServer,
   render,
   renderHook,
   screen,
@@ -18,9 +23,9 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import EdgeSdLanForm from '.'
+import EdgeMvSdLanForm from '.'
 
-const { mockedSdLanServiceP2 } = EdgeSdLanFixtures
+const { mockedMvSdLanService, mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 const { click } = userEvent
 
@@ -57,14 +62,14 @@ const addSteps = [{
 
 const mockedFinishFn = jest.fn()
 
-describe('SD-LAN P2 form', () => {
+describe('multi-venue SD-LAN form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
   })
 
   it('should navigate to service list when click cancel', async () => {
     const { result } = renderHook(() => Form.useForm())
-    render(<EdgeSdLanForm
+    render(<EdgeMvSdLanForm
       form={result.current[0]}
       steps={addSteps}
       onFinish={mockedFinishFn}
@@ -98,7 +103,7 @@ describe('SD-LAN P2 form', () => {
     const { result } = renderHook(() => Form.useForm())
 
     it('should submit with correct data', async () => {
-      render(<EdgeSdLanForm
+      render(<EdgeMvSdLanForm
         form={result.current[0]}
         steps={addSteps}
         onFinish={mockedFinishFn}
@@ -130,8 +135,8 @@ describe('SD-LAN P2 form', () => {
           name: 'mockedServiceName',
           tunnelProfileId: 'SLt-id',
           tunnelProfileName: 'Default tunnel profile (SD-LAN)',
-          activatedNetworks: [],
-          activatedGuestNetworks: [],
+          activatedNetworks: {},
+          activatedGuestNetworks: {},
           isGuestTunnelEnabled: false
         })
       })
@@ -139,6 +144,14 @@ describe('SD-LAN P2 form', () => {
   })
 
   describe('Edit', () => {
+    beforeEach(() => {
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
+        )
+      )
+    })
     const { result } = renderHook(() => Form.useForm())
 
     const MockedEditFormStep1 = () => <div data-testid='rc-SettingsForm'>
@@ -155,11 +168,11 @@ describe('SD-LAN P2 form', () => {
 
     it('should correctly edit profile', async () => {
       const formRef = result.current[0]
-      render(<EdgeSdLanForm
+      render(<EdgeMvSdLanForm
         form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}
-        editData={mockedSdLanServiceP2}
+        editData={mockedMvSdLanService}
       />, {
         wrapper: Provider,
         route: { params: { tenantId: 't-id', serviceId: 'mock-id' } }
@@ -174,9 +187,11 @@ describe('SD-LAN P2 form', () => {
       await waitFor(() => {
         const call = mockedFinishFn.mock.calls[0]
         expect(call[0]).toStrictEqual({
-          ...mockedSdLanServiceP2,
-          activatedNetworks: mockedSdLanServiceP2.networkIds.map(id => ({ id })),
-          activatedGuestNetworks: mockedSdLanServiceP2.guestNetworkIds.map(id => ({ id }))
+          ...mockedMvSdLanService,
+          activatedNetworks: transform(mockedMvSdLanService.networks, (result, value, key) => {
+            result[key] = value.map(id => ({ id, name: undefined }))
+          }, {} as EdgeMvSdLanFormNetwork),
+          activatedGuestNetworks: {}
         })
       })
     })

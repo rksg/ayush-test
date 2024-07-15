@@ -33,7 +33,6 @@ const EditEdgeMvSdLan = () => {
   const { editEdgeSdLan } = useEdgeMvSdLanActions()
   const { data, isFetching } = useGetEdgeMvSdLanQuery({ params })
 
-
   const steps = [
     {
       title: $t({ defaultMessage: 'Settings' }),
