@@ -1,5 +1,7 @@
 import { NetworkPath } from '@acx-ui/utils'
 
+import { IntentListItem } from '../services'
+
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {
   id: '19',
@@ -211,6 +213,28 @@ export const noAps = {
   preferences: null
 }
 
+export const mockCrrmRow = {
+  id: '15',
+  code: 'c-crrm-channel24g-auto',
+  status: 'new',
+  status_reason: '',
+  displayStatus: '',
+  createdAt: '2023-06-13T07:05:08.638Z',
+  updatedAt: '2023-06-16T06:05:02.839Z',
+  sliceType: 'zone',
+  sliceValue: 'zone-1',
+  metadata: { algorithmData: { isCrrmFullOptimization: false } },
+  path: [
+    { type: 'system', name: 'vsz612' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  idPath: [
+    { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  preferences: { crrmFullOptimization: true }
+}
+
 export const intentListResult = {
   intents: [
     {
@@ -334,27 +358,7 @@ export const intentListResult = {
       preferences: null,
       trigger: 'once'
     },
-    {
-      id: '15',
-      code: 'c-crrm-channel24g-auto',
-      status: 'new',
-      status_reason: '',
-      displayStatus: '',
-      createdAt: '2023-06-13T07:05:08.638Z',
-      updatedAt: '2023-06-16T06:05:02.839Z',
-      sliceType: 'zone',
-      sliceValue: 'zone-1',
-      metadata: { algorithmData: { isCrrmFullOptimization: false } },
-      path: [
-        { type: 'system', name: 'vsz612' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ] as NetworkPath,
-      idPath: [
-        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ] as NetworkPath,
-      preferences: { crrmFullOptimization: true }
-    },
+    { ...crrmRow },
     {
       id: '16',
       code: 'c-probeflex-24g',
@@ -411,5 +415,5 @@ export const intentListResult = {
     conflictConfig,
     unknownReason,
     noAps
-  ]
+  ] as IntentListItem[]
 }

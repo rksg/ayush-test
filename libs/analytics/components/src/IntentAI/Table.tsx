@@ -1,23 +1,28 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { isSwitchPath } from '@acx-ui/analytics/utils'
 import {
   Loader,
   TableProps }        from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { noDataDisplay, PathFilter } from '@acx-ui/utils'
+import { get }                                                       from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
 import {
   useIntentAIListQuery,
   IntentListItem
 } from './services'
-import * as UI from './styledComponents'
+import * as UI                from './styledComponents'
+import { useIntentAIActions } from './useIntentAIActions'
 
 export function IntentAITable (
   { pathFilters }: { pathFilters: PathFilter }
 ) {
   const { $t } = useIntl()
+  const intentActions = useIntentAIActions()
 
   const switchPath = isSwitchPath(pathFilters.path)
   const queryResults = useIntentAIListQuery(
@@ -25,6 +30,22 @@ export function IntentAITable (
     { skip: switchPath }
   )
   const data = switchPath ? [] : queryResults?.data
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
+  const rowActions: TableProps<IntentListItem>['rowActions'] = [
+    {
+      key: getShowWithoutRbacCheckKey('1-click-optimize'),
+      label: $t({ defaultMessage: '1-Click Optimize' }),
+      visible: (rows) => rows?.filter(row =>
+        row.status !== 'new' ||
+        !(row.code.startsWith('c-probeflex-') || row.code.startsWith('c-crrm'))).length === 0,
+      onClick: async (rows) => {
+        intentActions.showOneClickOptimize(rows)
+        clearSelection()
+      }
+    }
+  ]
 
   const columns: TableProps<IntentListItem>['columns'] = [
     {
@@ -68,6 +89,10 @@ export function IntentAITable (
     }
   ]
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
+
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableWrapper
@@ -77,6 +102,11 @@ export function IntentAITable (
         dataSource={data}
         columns={columns}
         rowKey='id'
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasPermission({ permission: 'WRITE_INCIDENTS' }) && {
+          type: 'checkbox',
+          selectedRowKeys
+        }}
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}

@@ -124,7 +124,7 @@ export interface SchedulePayload extends MutationPayload {
   isRecommendationRevertEnabled?: boolean
   wlans?: RecommendationWlan[]
 }
-interface ScheduleResponse { schedule: MutationResponse }
+export interface ScheduleResponse { schedule: MutationResponse }
 
 interface DeleteMutationPayload extends MutationPayload { }
 interface DeleteMutationResponse { deleteRecommendation: MutationResponse }
@@ -616,6 +616,7 @@ export const {
   useAiOpsListQuery,
   useRecommendationListQuery,
   useRecommendationWlansQuery,
+  useLazyRecommendationWlansQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,
