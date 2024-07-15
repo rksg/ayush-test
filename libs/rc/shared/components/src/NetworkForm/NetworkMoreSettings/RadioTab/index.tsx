@@ -2,6 +2,8 @@
 import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
+import{ StepsForm } from '@acx-ui/components'
+
 import { LoadControlForm } from '../LoadControlForm'
 import * as UI             from '../styledComponents'
 
@@ -101,12 +103,14 @@ export function RadioTab () {
         />
       </UI.FieldLabel>
 
-      <UI.Subtitle>{$t({ defaultMessage: 'Load Control' })}</UI.Subtitle>
+      <StepsForm.Subtitle>
+        {$t({ defaultMessage: 'Load Control' })}
+      </StepsForm.Subtitle>
       <LoadControlForm labelWidth={labelWidth} />
 
-      <UI.Subtitle>
+      <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Data Rate Control (2.4 GHz & 5 GHz)' })}
-      </UI.Subtitle>
+      </StepsForm.Subtitle>
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'auto 1fr',

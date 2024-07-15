@@ -159,9 +159,9 @@ export function AccessControlForm () {
         alignItems: 'baseline',
         margin: '20px 0'
       }}>
-        <UI.Subtitle level={4}>
+        <StepsFormLegacy.Subtitle>
           {$t({ defaultMessage: 'Access Control' })}
-        </UI.Subtitle>
+        </StepsFormLegacy.Subtitle>
 
         {!isTemplate && !enabledProfile && <SaveAsAcProfileButton
           modalStatus={modalStatus}
