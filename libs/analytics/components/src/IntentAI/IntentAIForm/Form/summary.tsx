@@ -3,8 +3,8 @@ import React from 'react'
 import { Row, Col, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { TrendTypeEnum }                                                                                       from '@acx-ui/analytics/utils'
-import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapping, Descriptions, TrendPill } from '@acx-ui/components'
+import { TrendTypeEnum }                                                                         from '@acx-ui/analytics/utils'
+import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapping, TrendPill } from '@acx-ui/components'
 
 import { IntentAIRRMGraph, getGraphKPI }  from '../../RRMGraph'
 import { useIntentAICRRMQuery }           from '../../RRMGraph/services'
@@ -40,31 +40,32 @@ export function Summary () {
           && <IntentAIRRMGraph
             details={initialValues as EnhancedRecommendation}
           />}
-      <Descriptions noSpace>
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'Interfering links' })}
-          children={<>
-            {interferingLinks.after}
-            <TrendPill
-              value={interferingLinks.links.value as string}
-              trend={interferingLinks.links.trend as TrendTypeEnum}
-            />
-          </>}
-        />
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'Average interfering links per AP' })}
-          children={<>
-            {Math.ceil(linksPerAP.after)}
-            <TrendPill
-              value={linksPerAP.average.value as string}
-              trend={linksPerAP.average.trend as TrendTypeEnum} />
-          </>}
-        />
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'Schedule' })}
-          children={''}
-        />
-      </Descriptions>
+      <StepsForm.Subtitle>
+        {$t({ defaultMessage: 'Interfering links' })}
+      </StepsForm.Subtitle>
+      <StepsForm.Subtitle>
+        <UI.Kpi>
+          <UI.KpiText>{interferingLinks.after}</UI.KpiText>
+          <TrendPill
+            value={interferingLinks.links.value as string}
+            trend={interferingLinks.links.trend as TrendTypeEnum}
+          />
+        </UI.Kpi>
+      </StepsForm.Subtitle>
+      <StepsForm.Subtitle>
+        {$t({ defaultMessage: 'Average interfering links per AP' })}
+      </StepsForm.Subtitle>
+      <StepsForm.Subtitle>
+        <UI.Kpi>
+          <UI.KpiText>{Math.ceil(linksPerAP.after)}</UI.KpiText>
+          <TrendPill
+            value={linksPerAP.average.value as string}
+            trend={linksPerAP.average.trend as TrendTypeEnum} />
+        </UI.Kpi>
+      </StepsForm.Subtitle>
+      <StepsForm.Subtitle>
+        {$t({ defaultMessage: 'Schedule' })}
+      </StepsForm.Subtitle>
     </Col>
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
