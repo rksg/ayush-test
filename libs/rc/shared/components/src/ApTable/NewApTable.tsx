@@ -65,7 +65,7 @@ import { useApActions }                                                         
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
-import { useFilters }   from './useFilters'
+import { useFilters }         from './useFilters'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
 
@@ -345,7 +345,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       sorter: true,
       groupable: enableGroups
         ? filterables && getGroupableConfig(apAction)?.deviceGroupNameGroupableOptions
-        : undefined
+        : undefined,
+      render: (_: ReactNode, row: NewAPModelExtended) => row.apGroupName
     }]),
     {
       key: 'rf-channels',
