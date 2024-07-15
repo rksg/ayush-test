@@ -57,7 +57,7 @@ const LbsServerProfileSettingForm = () => {
       <div>
         <Form.Item
           name='lbsVenueName'
-          label={$t({ defaultMessage: 'LBS Venue Name' })}
+          label={$t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' })}
           rules={[
             { required: true },
             { min: 2 },

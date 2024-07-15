@@ -1,2 +1,2 @@
-export { Header, useHeaderExtra, useNetworkFilter } from './Header'
-export type { SubTitle, HeaderData, UseHeaderExtraProps } from './Header'
+export { Header, useHeaderExtra } from './Header'
+export type { UseHeaderExtraProps } from './Header'

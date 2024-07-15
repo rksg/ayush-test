@@ -1270,6 +1270,7 @@ export function RadioSettings () {
                   enabledFieldName={['enable6G']}
                   onEnableChanged={handleEnableChanged}
                   radioType={ApRadioTypeEnum.Radio6G}
+                  handleChanged={handleChange}
                   isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal6GHz)}
                   afcProps={afcProps}
                 />
