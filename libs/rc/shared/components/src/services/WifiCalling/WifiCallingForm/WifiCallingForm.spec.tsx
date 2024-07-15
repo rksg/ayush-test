@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
-import { ApiVersionEnum, CommonUrlsInfo, GetApiVersionHeader, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                   from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                         from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                              from '@acx-ui/test-utils'
 
 import { mockNetworkResult, mockRbacWifiCallingTableResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
 import WifiCallingFormContext                                                            from '../WifiCallingFormContext'
@@ -43,24 +43,6 @@ const wifiCallingServiceResponse = {
     'tag2'
   ]
 }
-
-const wifiCallingListResponse = [
-  {
-    networkIds: [
-      'c8cd8bbcb8cc42caa33c991437ecb983',
-      '44c5604da90443968e1ee91706244e63'
-    ],
-    qosPriority: 'WIFICALLING_PRI_VOICE',
-    serviceName: 'wifiCSP1',
-    id: 'ad7309563e004b36861f662bfbfd0144',
-    epdgs: [
-      {
-        ip: '1.2.3.4',
-        domain: 'abc.com'
-      }
-    ]
-  }
-]
 
 const initState = {
   serviceName: '',
@@ -120,8 +102,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('WifiCallingForm', () => {
-  const createApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-  const rbacCreateApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1_1)
 
   beforeEach(() => {
     mockedAddService.mockClear()
@@ -133,9 +113,8 @@ describe('WifiCallingForm', () => {
         WifiCallingUrls.addWifiCalling.url,
         (req, res, ctx) => {
           const headers = req.headers.get('content-type')
-          if (headers === createApiHeaders?.['Content-Type']) {
-            mockedAddService()
-          } else if (headers === rbacCreateApiHeaders?.['Content-Type']) {
+          const rbacHeaders = WifiCallingUrls.addWifiCallingRbac.defaultHeaders?.['Content-Type']
+          if (headers === rbacHeaders) {
             mockedRbacAddService()
             return res(ctx.json( {
               requestId: 'requestId',
@@ -143,6 +122,8 @@ describe('WifiCallingForm', () => {
                 id: 'service-id'
               }
             }))
+          } else {
+            mockedAddService()
           }
           return res(ctx.json(wifiCallingServiceResponse))
         }
@@ -154,8 +135,6 @@ describe('WifiCallingForm', () => {
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,

@@ -12,7 +12,9 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
 
   .ant-descriptions-item {
     padding: 0;
-    padding-bottom: var(--acx-descriptions-space);
+    padding-bottom: ${props => props.noSpace
+    ? 'calc(var(--acx-body-4-line-height) - var(--acx-body-4-font-size))'
+    : 'var(--acx-descriptions-space)'};
 
     .ant-descriptions-item-container {
       align-items: baseline;
@@ -24,7 +26,7 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
       }
 
       .ant-descriptions-item-label {
-        width: ${props => props.labelWidthPercent}%;
+        width: ${props => props.noSpace ? 'unset' : `${props.labelWidthPercent}%`};
         color: var(--acx-neutrals-60);
       }
 

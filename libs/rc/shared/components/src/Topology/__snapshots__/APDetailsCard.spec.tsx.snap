@@ -79,7 +79,7 @@ exports[`Topology AP Card should render correctly 1`] = `
           class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
         >
           <div
-            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 gbgdBl"
           >
             <div
               class="ant-descriptions-view"
@@ -462,7 +462,7 @@ exports[`Topology AP Card should render correctly 1`] = `
             role="separator"
           />
           <div
-            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 gbgdBl"
           >
             <div
               class="ant-descriptions-view"
@@ -497,7 +497,7 @@ exports[`Topology AP Card should render correctly 1`] = `
             </div>
           </div>
           <div
-            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 ihJLgO"
+            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 gbgdBl"
           >
             <div
               class="ant-descriptions-view"

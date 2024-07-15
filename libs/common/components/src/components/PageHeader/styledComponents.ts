@@ -43,6 +43,11 @@ export const Wrapper = styled.div`
       font-size: var(--acx-body-4-font-size);
       line-height: var(--acx-body-4-line-height);
       font-weight: var(--acx-body-font-weight);
+      .ant-divider-vertical {
+        background-color: var(--acx-primary-black);
+        margin: 0 0.5em;
+        height: 0.9em;
+      }
     }
     .ant-breadcrumb {
       a:hover {
