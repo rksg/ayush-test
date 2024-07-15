@@ -51,7 +51,7 @@ const MapRegionFormItem = () => {
             $t(MessageMapping.map_region_not_enabled_message)
           }
         </Form.Item>
-        <Typography.Paragraph className='description greyText'>
+        <Typography.Paragraph className='greyText'>
           {$t(MessageMapping.map_region_description)}
         </Typography.Paragraph>
       </Col>

@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'react'
 import { Form, Input, InputNumber, Radio, Space, Switch } from 'antd'
 import { useIntl, defineMessage }                         from 'react-intl'
 
-import { Tooltip }                                                                                               from '@acx-ui/components'
+import { StepsForm, Tooltip }                                                                                    from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                                                                            from '@acx-ui/icons'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WlanSecurityEnum } from '@acx-ui/rc/utils'
@@ -410,7 +410,9 @@ export function NetworkingTab (props: {
 
       {(enableBSSPriority && enableAP70) &&
       <>
-        <UI.Subtitle>{$t({ defaultMessage: 'Basic Service Set' })}</UI.Subtitle>
+        <StepsForm.Subtitle>
+          {$t({ defaultMessage: 'Basic Service Set' })}
+        </StepsForm.Subtitle>
         <Form.Item
           name={['wlan','advancedCustomization','bssPriority']}
           label={<>
@@ -424,7 +426,7 @@ export function NetworkingTab (props: {
           </>}
           initialValue={BasicServiceSetPriorityEnum.HIGH}
           valuePropName='value'
-          style={{ marginBottom: '15px', width: '300px' }}
+          style={{ marginBottom: '35px', width: '300px' }}
           children={
             <Radio.Group data-testid='BSS-Radio-Group'>
               <Space direction='vertical'>
@@ -444,7 +446,9 @@ export function NetworkingTab (props: {
 
       {hasAuthRadius(data, wlanData) &&
       <>
-        <UI.Subtitle>{$t({ defaultMessage: 'RADIUS Options' })}</UI.Subtitle>
+        <StepsForm.Subtitle>
+          {$t({ defaultMessage: 'RADIUS Options' })}
+        </StepsForm.Subtitle>
         <RadiusOptionsForm context='network'
           isWispr={data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr}
           showSingleSessionIdAccounting={showSingleSessionIdAccounting} />
