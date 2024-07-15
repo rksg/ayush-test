@@ -6,11 +6,13 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { defaultClientPayload }                     from '@acx-ui/rc/components'
 import {
   useDeleteDpskPassphraseDevicesMutation, useGetClientListQuery,
   useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
-  useUpdateDpskPassphraseDevicesMutation
+  useUpdateDpskPassphraseDevicesMutation,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   DPSKDeviceInfo,
@@ -36,6 +38,8 @@ export interface ManageDeviceDrawerProps {
 const { useWatch } = Form
 
 const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
 
   const { visible, setVisible, passphraseInfo } = props
@@ -92,7 +96,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   }, [data])
 
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       fields: ['name', 'id'],
       filters: { id: data?.networkIds }

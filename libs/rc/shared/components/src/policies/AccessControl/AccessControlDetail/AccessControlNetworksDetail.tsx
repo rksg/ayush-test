@@ -2,8 +2,13 @@ import React, { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                             from '@acx-ui/components'
-import { useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Card, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import {
+  useGetNetworkTemplateListQuery,
+  useNetworkListQuery,
+  useWifiNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   AccessControlInfoType,
   Network,
@@ -24,6 +29,8 @@ const defaultPayload = {
 }
 
 const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | undefined }) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const { data } = props
@@ -69,7 +76,8 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
   }, [data])
 
   const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery :
+      isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {

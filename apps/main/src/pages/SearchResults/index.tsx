@@ -10,6 +10,7 @@ import {
   defaultClientPayload,
   defaultHistoricalClientPayload,
   defaultNetworkPayload,
+  defaultRbacNetworkPayload,
   defaultSwitchClientPayload,
   defaultSwitchPayload,
   eventDefaultSearch,
@@ -29,7 +30,8 @@ import {
   useNetworkListQuery,
   useNewApListQuery,
   useSwitchListQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -42,7 +44,8 @@ import {
   SwitchRow,
   TableQuery,
   useTableQuery,
-  Venue
+  Venue,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 
@@ -79,12 +82,11 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
-      useQuery: useNetworkListQuery,
-      defaultPayload: {
-        ...defaultNetworkPayload
-      },
+  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+    const result = useTableQuery<Network|WifiNetwork, RequestPayload<unknown>, unknown>({
+      useQuery: enableRbac.isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
+      // eslint-disable-next-line max-len
+      defaultPayload: enableRbac.isWifiRbacEnabled? defaultRbacNetworkPayload : defaultNetworkPayload,
       search: {
         searchString,
         searchTargetFields: ['name', 'description']

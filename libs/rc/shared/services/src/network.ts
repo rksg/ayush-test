@@ -33,7 +33,8 @@ import {
   RadioTypeEnum,
   BaseNetwork,
   VlanPoolRbacUrls,
-  VLANPoolViewModelRbacType
+  VLANPoolViewModelRbacType,
+  transformWifiNetwork
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -147,7 +148,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       transformResponse (result: TableResult<WifiNetwork>) {
         result.data = result.data.map(item => ({
-          ...transformNetwork(item)
+          ...transformWifiNetwork(item)
         })) as WifiNetwork[]
         return result
       },
@@ -162,21 +163,20 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    /*
     wifiNetworkTable: build.query<TableResult<WifiNetwork>, RequestPayload>({
       async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
         const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
         const networkList = networkListQuery.data as TableResult<WifiNetwork>
-        const networkIds = networkList?.data?.filter(n => n.aps > 0).map(n => n.id) || []
+        const networkIds = networkList?.data?.filter(n => (n.apSerialNumbers && n.apSerialNumbers.length > 0)).map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const allApCompatibilitiesQuery:any = await Promise.all(networkIds.map(id => {
             const apCompatibilitiesReq = {
-              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, { networkId: id }),
-              body: { filters: {} }
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, { networkId: id }, apiCustomHeader),
+              body: JSON.stringify({ filters: {} })
             }
             return fetchWithBQ(apCompatibilitiesReq)
           }))
@@ -189,7 +189,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           // eslint-disable-next-line no-console
           console.error('networkTable getApCompatibilitiesNetwork error:', e)
         }
-        const aggregatedList = aggregatedNetworkCompatibilitiesData(
+        const aggregatedList = aggregatedWifiNetworkCompatibilitiesData(
           networkList, networkIdsToIncompatible) as TableResult<WifiNetwork>
 
         return networkListQuery.data
@@ -207,7 +207,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    */
     addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1445,6 +1444,7 @@ export const {
   useNetworkTableQuery,
   useWifiNetworkListQuery,
   useLazyWifiNetworkListQuery,
+  useWifiNetworkTableQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
   useGetVenueNetworkApGroupQuery,
@@ -1495,10 +1495,19 @@ export const {
   useUnbindClientIsolationMutation
 } = networkApi
 
-export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network> | TableResult<WifiNetwork>,
+export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
   apCompatibilities: { [key:string]: number }) => {
   networkList.data = networkList.data.map(item => ({
     ...transformNetwork(item),
+    incompatible: apCompatibilities[item.id]
+  }))
+  return networkList
+}
+
+export const aggregatedWifiNetworkCompatibilitiesData = (networkList: TableResult<WifiNetwork>,
+  apCompatibilities: { [key:string]: number }) => {
+  networkList.data = networkList.data.map(item => ({
+    ...transformWifiNetwork(item),
     incompatible: apCompatibilities[item.id]
   }))
   return networkList

@@ -10,7 +10,8 @@ import {
   useGetNetworkTemplateListQuery,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceTemplateQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
@@ -37,6 +38,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { isTemplate } = useConfigTemplate()
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
@@ -91,7 +93,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery :
+      isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload
   })
 

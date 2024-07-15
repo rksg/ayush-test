@@ -10,7 +10,8 @@ import {
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
   useGetNetworkTemplateListQuery,
-  useNetworkListQuery } from '@acx-ui/rc/services'
+  useNetworkListQuery,
+  useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -31,6 +32,7 @@ export function PortalInstancesTable (){
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isNewDefined = isTemplate || isEnabledRbacService
   const defaultPayload = {
@@ -47,12 +49,13 @@ export function PortalInstancesTable (){
     payload: { ...defaultPayload },
     enableRbac: isEnabledRbacService
   })
-  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery :
+    isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
 
   const tableQuery = useTableQuery<Network>({
     useQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
+      fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients', 'venueApGroups'],
       filters: {
         id: isNewDefined ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
           (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])

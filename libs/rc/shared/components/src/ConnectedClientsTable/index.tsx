@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { Space }              from 'antd'
-import _                      from 'lodash'
+import { cloneDeep }          from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import { Subtitle, Tooltip, Table, TableProps, Loader, showActionModal  } from '@acx-ui/components'
@@ -15,7 +15,8 @@ import {
   useNetworkListQuery,
   useRevokeClientMutation,
   useDisconnectClientMutation,
-  useLazyApListQuery
+  useLazyApListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   ClientList,
@@ -71,7 +72,10 @@ function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefin
 }
 
 function GetNetworkFilterOptions (tenantId: string|undefined) {
-  const { networkFilterOptions } = useNetworkListQuery({ params: { tenantId }, payload: {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+
+  const { networkFilterOptions } = getNetworkListQuery({ params: { tenantId }, payload: {
     fields: ['name', 'ssid'],
     pageSize: 10000,
     sortField: 'name',
@@ -182,7 +186,7 @@ export const ConnectedClientsTable = (props: {
       if (setConnectedClientCount) {
         setConnectedClientCount(tableQuery.data?.totalCount ?? 0)
       }
-      const clonedSelection = _.cloneDeep(tableSelected)
+      const clonedSelection = cloneDeep(tableSelected)
       const newSelectRows = clonedSelection.selectRows.filter((row) => {
         return connectedClientList?.find((client) => client.clientMac === row.clientMac)
       })
