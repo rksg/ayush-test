@@ -1,10 +1,9 @@
 
 import { useIntl } from 'react-intl'
 
+import { StepsForm }                                              from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { NetworkSaveData }                                        from '@acx-ui/rc/utils'
-
-import * as UI from '../../../NetworkMoreSettings/styledComponents'
 
 import { QosMapSetForm } from './QosMapSetForm'
 import QoSMirroring      from './QoSMirroring'
@@ -22,9 +21,9 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
 
   return (
     <>
-      <UI.Subtitle>
+      <StepsForm.Subtitle>
         {$t({ defaultMessage: 'QoS' })}
-      </UI.Subtitle>
+      </StepsForm.Subtitle>
       { qosMirroringFlag && enableAP70 && <QoSMirroring wlanData={wlanData} /> }
       <QosMapSetForm />
     </>

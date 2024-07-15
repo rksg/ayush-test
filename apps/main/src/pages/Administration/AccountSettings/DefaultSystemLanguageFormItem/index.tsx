@@ -72,7 +72,7 @@ const DefaultSystemLanguageFormItem = () => {
           </Select>
 
         </Form.Item>
-        <Typography.Paragraph className='description greyText'
+        <Typography.Paragraph className='greyText'
           style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
           {
             $t(MessageMapping.default_system_language_description)
