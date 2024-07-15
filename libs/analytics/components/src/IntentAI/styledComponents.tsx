@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled                from 'styled-components'
 import { createGlobalStyle } from 'styled-components/macro'
 
 import { Table, TableProps } from '@acx-ui/components'
