@@ -1,7 +1,11 @@
-import { Col } from 'antd'
-import styled  from 'styled-components/macro'
+import { Col, Row } from 'antd'
+import styled       from 'styled-components/macro'
 
 import { SdLanTopologyDiagram } from '@acx-ui/rc/components'
+
+export const Wrapper = styled(Row)`
+  margin-top: 30px;
+`
 
 export const StyledDiagram = styled(SdLanTopologyDiagram)`
   margin-top: 40px;
@@ -14,10 +18,6 @@ export const ClusterSelectorHelper = styled(FieldText)`
   & svg {
     vertical-align: sub;
   }
-`
-export const VenueSelectorText = styled(FieldText)`
-  margin-top: -10px;
-  margin-bottom: var(--acx-select-item-top-padding);
 `
 
 export const VerticalSplitLine = styled(Col)`

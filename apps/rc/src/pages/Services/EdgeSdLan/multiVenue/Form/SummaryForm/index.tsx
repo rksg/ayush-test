@@ -8,9 +8,7 @@ import { Descriptions, StepsForm, useStepFormContext, Subtitle, Loader } from '@
 import { intlFormats }                                                   from '@acx-ui/formatter'
 import { SpaceWrapper }                                                  from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                            from '@acx-ui/rc/services'
-
-import { EdgeMvSdLanFormModel }   from '..'
-import { EdgeMvSdLanFormNetwork } from '../TunnelNetworkForm'
+import { EdgeMvSdLanFormModel, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
 
 import { StyledAntdDescriptions } from './styledComponents'
 

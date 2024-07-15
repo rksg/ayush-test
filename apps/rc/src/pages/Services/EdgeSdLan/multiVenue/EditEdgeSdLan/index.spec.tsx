@@ -108,6 +108,7 @@ const mockedDmzData = {
   tunnelProfileId: 't-tunnelProfile-id',
   isGuestTunnelEnabled: true,
   guestEdgeClusterId: 'mock_edge_id_2',
+  guestEdgeClusterVenueId: 'mock_venue_id',
   guestTunnelProfileId: 't-tunnelProfile-id-2',
   guestNetworks: { venue_00002: ['network_4'] },
   activatedGuestNetworks: { venue_00002: [{
@@ -196,6 +197,7 @@ describe('Edit SD-LAN service', () => {
         tunnelProfileId: mockedDCData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
         guestEdgeClusterId: mockedDCData.guestEdgeClusterId,
+        guestEdgeClusterVenueId: mockedDCData.venueId,
         guestTunnelProfileId: mockedDCData.guestTunnelProfileId,
         guestNetworks: transform(mockedDCData.activatedGuestNetworks, (result, value, key) => {
           result[key] = value.map(v => v.id)

@@ -27,7 +27,7 @@ jest.mock('@acx-ui/utils', () => ({
   getTenantId: jest.fn().mockReturnValue('ecc2d7cf9d2342fdb31ae0e24958fcac')
 }))
 
-const mockedSetFieldsValue = jest.fn()
+const mockedSetFieldValue = jest.fn()
 const mockedGetNetworkViewmodelList = jest.fn()
 const mockedCloseFn = jest.fn()
 const mockedVenueId = 'mocked_venue_id'
@@ -60,7 +60,7 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
 describe('Network Drawer', () => {
 
   beforeEach(() => {
-    mockedSetFieldsValue.mockReset()
+    mockedSetFieldValue.mockReset()
     mockedGetNetworkViewmodelList.mockReset()
 
     store.dispatch(networkApi.util.resetApiState())
@@ -124,7 +124,7 @@ describe('Network Drawer', () => {
 
   it('should correctly activate by switcher', async () => {
     const { result: stepFormRef } = renderHook(useMockedFormHook)
-    jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
     render(<MockedTargetComponent
       form={stepFormRef.current}
@@ -136,12 +136,14 @@ describe('Network Drawer', () => {
     await click(within(rows[1]).getByRole('switch'))
 
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSetFieldsValue).toBeCalledWith({
-      activatedNetworks: { [mockedVenueId]: [
+    expect(mockedSetFieldValue).toBeCalledWith(
+      'activatedNetworks', { [mockedVenueId]: [
         { name: 'MockedNetwork 2', id: 'network_2' }
-      ] },
-      activatedGuestNetworks: {}
-    })
+      ] }
+    )
+    expect(mockedSetFieldValue).toBeCalledWith(
+      'activatedGuestNetworks', {}
+    )
   })
 
   it('should correctly deactivate by switch', async () => {
@@ -151,7 +153,7 @@ describe('Network Drawer', () => {
         { name: 'MockedNetwork 2', id: 'network_2' }
       ] }
     }))
-    jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
     render(<MockedTargetComponent
       form={stepFormRef.current}
@@ -163,12 +165,14 @@ describe('Network Drawer', () => {
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSetFieldsValue).toBeCalledWith({
-      activatedNetworks: { [mockedVenueId]: [
+    expect(mockedSetFieldValue).toBeCalledWith(
+      'activatedNetworks', { [mockedVenueId]: [
         { name: 'MockedNetwork 2', id: 'network_2' }
-      ] },
-      activatedGuestNetworks: {}
-    })
+      ] }
+    )
+    expect(mockedSetFieldValue).toBeCalledWith(
+      'activatedGuestNetworks', {}
+    )
   })
 
   it('activatedNetworks will be default into {} when networks is not touched in create mode', async () => {
@@ -220,7 +224,7 @@ describe('Network Drawer', () => {
       const { result: stepFormRef } = renderHook(() => useMockedFormHook({
         isGuestTunnelEnabled: true
       }))
-      jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
       render(<MockedTargetComponent
         form={stepFormRef.current}
@@ -236,21 +240,23 @@ describe('Network Drawer', () => {
       })
       await click(switchBtns[0])
       await click(screen.getByRole('button', { name: 'OK' }))
-      expect(mockedSetFieldsValue).toBeCalledWith({
-        activatedNetworks: { [mockedVenueId]: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] },
-        activatedGuestNetworks: { [mockedVenueId]: [
+      expect(mockedSetFieldValue).toBeCalledWith(
+        'activatedNetworks', { [mockedVenueId]: [
           { name: 'MockedNetwork 4', id: 'network_4' }
         ] }
-      })
+      )
+      expect(mockedSetFieldValue).toBeCalledWith(
+        'activatedGuestNetworks', { [mockedVenueId]: [
+          { name: 'MockedNetwork 4', id: 'network_4' }
+        ] }
+      )
     })
 
     it('data network should be true when enable guest captivePortal network', async () => {
       const { result: stepFormRef } = renderHook(() => useMockedFormHook({
         isGuestTunnelEnabled: true
       }))
-      jest.spyOn(stepFormRef.current, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
 
       render(<MockedTargetComponent
         form={stepFormRef.current}
@@ -265,14 +271,16 @@ describe('Network Drawer', () => {
       })
       await click(switchBtns[1])
       await click(screen.getByRole('button', { name: 'OK' }))
-      expect(mockedSetFieldsValue).toBeCalledWith({
-        activatedNetworks: { [mockedVenueId]: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] },
-        activatedGuestNetworks: { [mockedVenueId]: [
+      expect(mockedSetFieldValue).toBeCalledWith(
+        'activatedNetworks', { [mockedVenueId]: [
           { name: 'MockedNetwork 4', id: 'network_4' }
         ] }
-      })
+      )
+      expect(mockedSetFieldValue).toBeCalledWith(
+        'activatedGuestNetworks', { [mockedVenueId]: [
+          { name: 'MockedNetwork 4', id: 'network_4' }
+        ] }
+      )
     })
   })
 })

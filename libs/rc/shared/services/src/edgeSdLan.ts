@@ -471,34 +471,19 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
             }
           })
 
-          const clusterReq = createHttpRequest(EdgeUrlsInfo.getEdgeClusterStatusList)
-          const edgeClusterQuery = await fetchWithBQ({
-            ...clusterReq,
-            body: {
-              fields: [
-                'name',
-                'clusterId',
-                'venueId',
-                'venueName'
-              ],
-              filters: { clusterId: [sdLanConfig.edgeClusterId] }
-            }
-          })
-
           const sdLanInfo = sdLanStatusQuery.data as TableResult<EdgeMvSdLanViewData>
           const guestSettings = edgeGuestSettingQuery.data as EdgeSdLanToggleDmzPayload
-          const clusterInfo = edgeClusterQuery.data as TableResult<EdgeClusterStatus>
           let sdLanData: EdgeMvSdLanExtended = sdLanConfig as EdgeMvSdLanExtended
-          if (sdLanInfo && guestSettings && clusterInfo) {
+          if (sdLanInfo && guestSettings) {
           // eslint-disable-next-line max-len
-            sdLanData = transformMvSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], clusterInfo.data[0], guestSettings)
+            sdLanData = transformMvSdLanGetData(sdLanConfig, sdLanInfo.data?.[0], guestSettings)
           }
 
-          return (sdLanInfo && guestSettings && clusterInfo)
+          return (sdLanInfo && guestSettings)
             ? { data: sdLanData }
             : { error: (sdLanStatusQuery.error
               || edgeGuestSettingQuery.error
-              || edgeClusterQuery.data) as FetchBaseQueryError }
+              ) as FetchBaseQueryError }
         } else {
           return { error: sdLanQuery.error as FetchBaseQueryError }
         }
@@ -580,7 +565,6 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
 const transformMvSdLanGetData = (
   profile: EdgeMvSdLanResponseType,
   statusData: EdgeMvSdLanViewData,
-  clusterInfo: EdgeClusterStatus,
   guestSettings: EdgeSdLanToggleDmzPayload
 ): EdgeMvSdLanExtended => {
   const networks: EdgeMvSdLanNetworks = {}
@@ -595,7 +579,6 @@ const transformMvSdLanGetData = (
 
   return {
     ...profile,
-    venueId: clusterInfo.venueId,
     isGuestTunnelEnabled: guestSettings.isGuestTunnelEnabled,
     networks,
     guestEdgeClusterId: statusData.guestEdgeClusterId!,

@@ -288,25 +288,4 @@ export const mockedMvSdLanDataList = [{
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 20,
   vlanNum: 15
-}, {
-  id: 'mocked-sd-lan-3',
-  name: 'Mocked_SDLAN_3',
-  tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
-  venueId: 'a8def420bd6c4f3e8b28114d6c78f231',
-  venueName: 'Mocked-Venue-3',
-  edgeClusterId: '96BD19BB3B5CE111EE80500E35957BEDC3',
-  edgeClusterName: 'SE_Cluster 2',
-  guestEdgeClusterId: '',
-  guestEdgeClusterName: '',
-  tunnelProfileId: 'aa3ecf6f283448d5bb8c0ce86790b843',
-  tunnelProfileName: 'Mocked_tunnel-1',
-  guestTunnelProfileId: '',
-  guestTunnelProfileName: '',
-  isGuestTunnelEnabled: false,
-  tunneledWlans: [],
-  tunneledGuestWlans: [],
-  edgeAlarmSummary: {} as EdgeAlarmSummary,
-  serviceVersion: '1.0.0.100',
-  vxlanTunnelNum: 0,
-  vlanNum: 0
 }] as EdgeMvSdLanViewData[]

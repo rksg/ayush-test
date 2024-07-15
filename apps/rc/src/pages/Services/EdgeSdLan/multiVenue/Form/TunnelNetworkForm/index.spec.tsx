@@ -8,19 +8,28 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm, StepsFormProps }                                                    from '@acx-ui/components'
-import { tunnelProfileApi, venueApi }                                                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                                                              from '@acx-ui/store'
+import { StepsForm, StepsFormProps }  from '@acx-ui/components'
+import { tunnelProfileApi, venueApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  EdgeTunnelProfileFixtures,
+  TunnelProfileUrls,
+  TunnelTypeEnum,
+  EdgeSdLanFixtures
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedVenueList } from '../../__tests__/fixtures'
+import { mockedVenueList }                            from '../../__tests__/fixtures'
+import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../EdgeMvSdLanContextProvider'
 
 import { TunnelNetworkForm } from '.'
+
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -79,6 +88,11 @@ const mockedTunnelProfileViewData = {
     }
   ])
 }
+
+const edgeMvSdlanContextValues = {
+  allSdLans: mockedMvSdLanDataList
+} as EdgeMvSdLanContextType
+
 const useMockedFormHook = (initData: Record<string, unknown>) => {
   const [ form ] = Form.useForm()
   form.setFieldsValue({
@@ -89,11 +103,17 @@ const useMockedFormHook = (initData: Record<string, unknown>) => {
   return form
 }
 
-const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
+type MockedTargetComponentType = Pick<StepsFormProps, 'form' | 'editMode'> & {
+  ctxValues?: EdgeMvSdLanContextType
+}
+const MockedTargetComponent = (props: MockedTargetComponentType) => {
+  const { form, editMode, ctxValues } = props
   return <Provider>
-    <StepsForm form={props.form} editMode={props.editMode} >
-      <TunnelNetworkForm />
-    </StepsForm>
+    <EdgeMvSdLanContext.Provider value={ctxValues ?? edgeMvSdlanContextValues}>
+      <StepsForm form={form} editMode={editMode}>
+        <TunnelNetworkForm />
+      </StepsForm>
+    </EdgeMvSdLanContext.Provider>
   </Provider>
 }
 

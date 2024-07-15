@@ -1,22 +1,40 @@
 /* eslint-disable max-len */
-import {
-  within
-} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitForElementToBeRemoved, within } from '@testing-library/react'
+import userEvent                             from '@testing-library/user-event'
+import { Form }                              from 'antd'
+import { cloneDeep }                         from 'lodash'
+import { rest }                              from 'msw'
 
-import { venueApi }        from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { StepsForm, StepsFormProps }         from '@acx-ui/components'
+import { venueApi }                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                   from '@acx-ui/store'
 import {
   mockServer,
   render,
+  renderHook,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedVenueList } from '../../../__tests__/fixtures'
+import { mockedVenueList }                            from '../../../__tests__/fixtures'
+import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../../EdgeMvSdLanContextProvider'
 
 import { EdgeSdLanVenueNetworksTable, VenueNetworksTableProps } from '.'
+
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+
+const mockedOverlapSdLans = cloneDeep(mockedMvSdLanDataList)
+const targetVenue = mockedVenueList.data[1]
+mockedOverlapSdLans[0].venueId = targetVenue.id
+mockedOverlapSdLans[0].tunneledWlans?.forEach(wlan => {
+  wlan.venueId = targetVenue.id
+})
+mockedOverlapSdLans[0].tunneledGuestWlans?.forEach(wlan => {
+  wlan.venueId = targetVenue.id
+})
+const edgeMvSdlanContextValues = {
+  allSdLans: mockedMvSdLanDataList
+} as EdgeMvSdLanContextType
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -34,15 +52,23 @@ jest.mock('./NetworksDrawer.tsx', () => ({
   </div>
 }))
 
-const { click, hover } = userEvent
-
-const MockedTargetComponent = (props: VenueNetworksTableProps) => {
+type MockedTargetComponentType = VenueNetworksTableProps & Pick<StepsFormProps, 'form' | 'editMode'> & {
+  ctxValues?: EdgeMvSdLanContextType
+}
+const MockedTargetComponent = (props: MockedTargetComponentType) => {
+  const { form, editMode, ctxValues, ...networkTableProps } = props
   return <Provider>
-    <EdgeSdLanVenueNetworksTable
-      {...props}
-    />
+    <EdgeMvSdLanContext.Provider value={ctxValues ?? edgeMvSdlanContextValues}>
+      <StepsForm form={form} editMode={editMode}>
+        <EdgeSdLanVenueNetworksTable
+          {...networkTableProps}
+        />
+      </StepsForm>
+    </EdgeMvSdLanContext.Provider>
   </Provider>
 }
+
+const { click, hover } = userEvent
 
 describe('Tunneled Venue Networks Table', () => {
 
@@ -98,8 +124,7 @@ describe('Tunneled Venue Networks Table', () => {
   })
 
   it('should close networks selection drawer', async () => {
-    render(<MockedTargetComponent
-    />, { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck()
     const row = screen.getByRole('row', { name: /airport/i })
@@ -128,9 +153,45 @@ describe('Tunneled Venue Networks Table', () => {
     await hover(within(within(row).getByRole('cell', { name: '1' })).getByText('1'))
     expect(await screen.findByRole('tooltip', { hidden: true })).toHaveTextContent('Network1')
   })
+
+  it('should filter venues which has been tied with other SDLAN on add mode', async () => {
+    render(<MockedTargetComponent ctxValues={{ allSdLans: mockedOverlapSdLans }} />,
+      { route: { params: { tenantId: 't-id' } } })
+
+    await basicCheck()
+    expect(screen.queryByRole('row', { name: /airport/i })).toBe(null)
+    screen.getByRole('row', { name: /My-Venue/i })
+    screen.getByRole('row', { name: /SG office/i })
+  })
+
+  it('should filter venues which has been tied with other SDLAN on edit mode', async () => {
+    const useMockedFormHook = (initData: Record<string, unknown>) => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue({
+        venueId: targetVenue.id,
+        name: targetVenue.name,
+        ...initData
+      })
+      return form
+    }
+
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+
+    render(<MockedTargetComponent
+      ctxValues={{ allSdLans: mockedOverlapSdLans }}
+      form={stepFormRef.current}
+      editMode={true}
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    await basicCheck()
+    screen.getByRole('row', { name: /My-Venue/i })
+    screen.getByRole('row', { name: /SG office/i })
+    expect(screen.queryByRole('row', { name: /airport/i })).not.toBe(null)
+  })
 })
 
 const basicCheck = async () => {
+  await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   const rows = await screen.findAllByRole('row', { name: /MockedVenue/i })
   expect(rows.length).toBe(2)
 }

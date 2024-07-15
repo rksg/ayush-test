@@ -53,6 +53,7 @@ export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) =
 
   if (formData.isGuestTunnelEnabled) {
     payload.guestEdgeClusterId = formData.guestEdgeClusterId
+    payload.guestEdgeClusterVenueId = formData.guestEdgeClusterVenueId
     payload.guestTunnelProfileId = formData.guestTunnelProfileId
     payload.guestNetworks = transform(formData.activatedGuestNetworks, (result, value, key) => {
       result[key] = value.map(v => v.id)

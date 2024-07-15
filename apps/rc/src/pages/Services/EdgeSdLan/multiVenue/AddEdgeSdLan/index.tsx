@@ -1,16 +1,21 @@
-import { Form }      from 'antd'
-import { transform } from 'lodash'
-import { useIntl }   from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { PageHeader }                                                                                                            from '@acx-ui/components'
-import { useEdgeMvSdLanActions }                                                                                                 from '@acx-ui/rc/components'
-import { EdgeMvSdLanExtended, EdgeMvSdLanNetworks, getServiceListRoutePath, getServiceRoutePath, ServiceOperation, ServiceType } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink }                                                                                            from '@acx-ui/react-router-dom'
+import { PageHeader }                                            from '@acx-ui/components'
+import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/rc/components'
+import {
+  getServiceListRoutePath,
+  getServiceRoutePath,
+  ServiceOperation,
+  ServiceType,
+  EdgeMvSdLanFormModel
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import EdgeMvSdLanForm, { EdgeMvSdLanFormModel } from '../Form'
-import { SettingsForm }                          from '../Form/SettingsForm'
-import { SummaryForm }                           from '../Form/SummaryForm'
-import { TunnelNetworkForm }                     from '../Form/TunnelNetworkForm'
+import EdgeMvSdLanForm       from '../Form'
+import { SettingsForm }      from '../Form/SettingsForm'
+import { SummaryForm }       from '../Form/SummaryForm'
+import { TunnelNetworkForm } from '../Form/TunnelNetworkForm'
 
 const AddEdgeMvSdLan = () => {
   const { $t } = useIntl()
@@ -29,38 +34,21 @@ const AddEdgeMvSdLan = () => {
   const steps = [
     {
       title: $t({ defaultMessage: 'Settings' }),
-      content: <SettingsForm />
+      content: SettingsForm
     },
     {
       title: $t({ defaultMessage: 'Tunnel & Network' }),
-      content: <TunnelNetworkForm />
+      content: TunnelNetworkForm
     },
     {
       title: $t({ defaultMessage: 'Summary' }),
-      content: <SummaryForm />
+      content: SummaryForm
     }
   ]
 
   const handleFinish = async (formData: EdgeMvSdLanFormModel) => {
     try {
-      const payload = {
-        name: formData.name,
-        venueId: formData.venueId,
-        edgeClusterId: formData.edgeClusterId,
-        networks: transform(formData.activatedNetworks, (result, value, key) => {
-          result[key] = value.map(v => v.id)
-        }, {} as EdgeMvSdLanNetworks),
-        tunnelProfileId: formData.tunnelProfileId,
-        isGuestTunnelEnabled: formData.isGuestTunnelEnabled
-      } as EdgeMvSdLanExtended
-
-      if (formData.isGuestTunnelEnabled) {
-        payload.guestEdgeClusterId = formData.guestEdgeClusterId
-        payload.guestTunnelProfileId = formData.guestTunnelProfileId
-        payload.guestNetworks = transform(formData.activatedGuestNetworks, (result, value, key) => {
-          result[key] = value.map(v => v.id)
-        }, {} as EdgeMvSdLanNetworks)
-      }
+      const payload = edgeSdLanFormRequestPreProcess(formData)
 
       await new Promise(async (resolve, reject) => {
         await addEdgeSdLan({

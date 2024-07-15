@@ -175,7 +175,8 @@ export const useEdgeMvSdLanActions = () => {
       // DC scenario into DMZ scenario
       // or addMode DMZ scenario
       if (payload.isGuestTunnelEnabled && !originData?.guestEdgeClusterId) {
-        requiredActions.push(activateGuestEdgeCluster(serviceId, payload))
+        requiredActions.push(activateGuestEdgeCluster(serviceId,
+          { ...payload, venueId: payload.guestEdgeClusterVenueId }))
         requiredActions.push(activateGuestTunnel(serviceId, payload))
 
         try {
@@ -184,7 +185,6 @@ export const useEdgeMvSdLanActions = () => {
         } catch(error) {
           // if the required field: DmzEdgeCluster/ DMZTunnelProfile failed
           // non need to trigger furthur actions
-          // callback?.(error as CommonErrorsResult<CatchErrorDetails>)
           return error as CommonErrorsResult<CatchErrorDetails>
         }
       }

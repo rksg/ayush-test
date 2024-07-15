@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Select,Col, Form, Input, Row, Switch } from 'antd'
 import { findIndex }                            from 'lodash'
 import { useIntl }                              from 'react-intl'
@@ -12,11 +14,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   servicePolicyNameRegExp,
-  useHelpPageLink
+  useHelpPageLink,
+  EdgeMvSdLanFormModel
 } from '@acx-ui/rc/utils'
 
-import { EdgeMvSdLanFormModel } from '..'
-import { messageMappings }      from '../messageMappings'
+import { messageMappings } from '../messageMappings'
 
 import * as UI from './styledComponents'
 
@@ -25,6 +27,7 @@ export const SettingsForm = () => {
   const params = useParams()
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
+
   const helpUrl = useHelpPageLink()
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeMvSdLanViewDataListQuery(
@@ -42,14 +45,22 @@ export const SettingsForm = () => {
     }
   )
 
+  const filterSn = editMode ? [initialValues?.edgeClusterId] : []
+  if (editMode && initialValues?.guestEdgeClusterId)
+    filterSn.push(initialValues?.guestEdgeClusterId)
+
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
         'name',
+        'venueId',
         'clusterId',
         'clusterStatus',
         'hasCorePort'
-      ]
+      ],
+      ...(filterSn.length === 2
+        ? { filters: { clusterId: filterSn } }
+        : { pageSize: 10000 })
     } },
     {
       skip: isSdLanBoundEdgesLoading,
@@ -67,14 +78,36 @@ export const SettingsForm = () => {
     value: item.clusterId
   }))
 
+  // prepare venue id
+  useEffect(() => {
+    if (editMode && initialValues && clusterData) {
+      const { edgeClusterId, guestEdgeClusterId } = initialValues
+      // eslint-disable-next-line max-len
+      const edgeClusterVenueId = clusterData.filter(i => i.clusterId === edgeClusterId)[0].venueId
+      // eslint-disable-next-line max-len
+      const guestEdgeClusterVenueId = clusterData.filter(i => i.clusterId === guestEdgeClusterId)[0].venueId
+
+      form.setFieldsValue({
+        venueId: edgeClusterVenueId,
+        guestEdgeClusterVenueId
+      })
+    }
+  }, [clusterData, editMode, initialValues])
+
   const onEdgeClusterChange = (val: string) => {
-    const edgeData = clusterOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('edgeClusterName', edgeData?.label)
+    const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
+    form.setFieldsValue({
+      edgeClusterName: edgeData?.name,
+      venueId: edgeData?.venueId
+    })
   }
 
   const onDmzClusterChange = (val: string) => {
-    const edgeData = clusterOptions?.filter(i => i.value === val)[0]
-    form.setFieldValue('guestEdgeClusterName', edgeData?.label)
+    const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
+    form.setFieldsValue({
+      guestEdgeClusterName: edgeData?.name,
+      guestEdgeClusterVenueId: edgeData?.venueId
+    })
   }
 
   const checkCorePortConfigured = (clusterId: string) => {
@@ -92,9 +125,9 @@ export const SettingsForm = () => {
   }
 
   return (
-    <Row>
+    <UI.Wrapper>
       <Col span={12}>
-        <SpaceWrapper full direction='vertical' size={30}>
+        <SpaceWrapper full direction='vertical' size={30} justifycontent='flex-start'>
           <Row>
             <Col span={18}>
               <StepsForm.Title>
@@ -217,6 +250,6 @@ export const SettingsForm = () => {
           }}
         </Form.Item>
       </Col>
-    </Row>
+    </UI.Wrapper>
   )
 }

@@ -157,6 +157,7 @@ describe('useEdgeMvSdLanActions', () => {
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
       guestEdgeClusterId: '0000000005',
+      guestEdgeClusterVenueId: 'mocked_venue_id',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworks: { mocked_venue_id: ['network_1'] }
     } as EdgeMvSdLanExtended
@@ -283,6 +284,7 @@ describe('useEdgeMvSdLanActions', () => {
       tunnelProfileId: 't-tunnelProfile-id',
       isGuestTunnelEnabled: true,
       guestEdgeClusterId: '0000000003',
+      guestEdgeClusterVenueId: 'mocked_venue_id',
       guestTunnelProfileId: 't-tunnelProfile-id-2',
       guestNetworks: { mocked_venue_id: ['network_4'] }
     } as EdgeMvSdLanExtended

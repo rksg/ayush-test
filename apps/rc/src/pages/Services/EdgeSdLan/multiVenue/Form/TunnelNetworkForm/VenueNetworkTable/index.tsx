@@ -1,22 +1,23 @@
 import { useMemo, useState } from 'react'
 
 import { Form, Space } from 'antd'
-import { get }         from 'lodash'
+import { get, uniq }   from 'lodash'
 import { AlignType }   from 'rc-table/lib/interface'
 import { useIntl }     from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useVenuesListQuery }                 from '@acx-ui/rc/services'
+import { Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useVenuesListQuery }                                     from '@acx-ui/rc/services'
 import {
   useTableQuery,
-  Venue
+  Venue,
+  EdgeMvSdLanFormModel,
+  EdgeMvSdLanFormNetwork
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
-import { EdgeMvSdLanFormNetwork } from '..'
+import { useEdgeMvSdLanContext } from '../../EdgeMvSdLanContextProvider'
 
 import { NetworksDrawer } from './NetworksDrawer'
-
 
 export interface VenueNetworksTableProps {
   activated?: EdgeMvSdLanFormNetwork,
@@ -25,18 +26,23 @@ export interface VenueNetworksTableProps {
 
 export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { $t } = useIntl()
-  const formRef = Form.useFormInstance()
   const { activated } = props
+  const { form: formRef, editMode } = useStepFormContext<EdgeMvSdLanFormModel>()
+  const { allSdLans } = useEdgeMvSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
 
-  // TODO: The list should filter out the venues that already tied to other SDLAN services.
+  const venueId = formRef.getFieldValue('venueId')
+
   const tableQuery = useTableQuery<Venue>({
     useQuery: useVenuesListQuery,
     defaultPayload: {
       fields: ['name', 'country', 'city', 'id'],
       sortField: 'name',
       sortOrder: 'ASC'
+    },
+    pagination: {
+      pageSize: 10000
     }
   })
 
@@ -91,20 +97,41 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
 
   const isNetworkDrawerVisible = !!networkDrawerVenueId
 
+  // venue list should filter out the venues that already tied to other SDLAN services.
+  const usedVenueIds = uniq(allSdLans.flatMap((sdlan) => {
+    // need to BC some old data
+    return sdlan.tunneledWlans?.map(wlan => wlan.venueId) ?? []
+  }))
+  const availableVenues = (tableQuery.data?.data.filter(venue => {
+    return (editMode && venueId === venue.id)
+    || !usedVenueIds.includes(venue.id)
+  })) || []
+
   return (
     <>
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Table
-          rowKey='id'
-          columns={columns}
-          dataSource={tableQuery.data?.data}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'radio' }}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-        />
+      <Loader states={[ tableQuery ]}>
+        <Form.Item
+          name='activatedNetworks'
+          rules={[
+            { required: true },
+            {
+              validator: (_, value) => {
+                return value && Object.keys((value as EdgeMvSdLanFormNetwork)).length > 0
+                  ? Promise.resolve()
+                  // eslint-disable-next-line max-len
+                  : Promise.reject($t({ defaultMessage: 'Please select at least 1 <venueSingular></venueSingular> network' }))
+              }
+            }
+          ]}
+        >
+          <Table
+            rowKey='id'
+            columns={columns}
+            dataSource={availableVenues}
+            rowActions={filterByAccess(rowActions)}
+            rowSelection={{ type: 'radio' }}
+          />
+        </Form.Item>
       </Loader>
       {networkDrawerVenueId && <NetworksDrawer
         visible={isNetworkDrawerVisible}

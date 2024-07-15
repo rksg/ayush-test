@@ -11,22 +11,15 @@ import {
   getVlanVxlanDefaultTunnelProfileOpt,
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
-  TunnelTypeEnum
+  TunnelTypeEnum,
+  EdgeMvSdLanFormModel
 } from '@acx-ui/rc/utils'
 
-import { EdgeMvSdLanFormModel } from '..'
-import { messageMappings }      from '../messageMappings'
+import { messageMappings } from '../messageMappings'
 
 import { DmzTunnelProfileFormItem }    from './DmzTunnelProfileFormItem'
 import { TunnelProfileFormItem }       from './TunnelProfileFormItem'
 import { EdgeSdLanVenueNetworksTable } from './VenueNetworkTable'
-
-export type EdgeMvSdLanFormNetwork = {
-  [venueId: string]: {
-    id: string,
-    name?: string
-  }[]
-}
 
 const tunnelProfileDefaultPayload = {
   fields: ['name', 'id', 'type', 'mtuType'],

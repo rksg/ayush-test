@@ -3,6 +3,7 @@ import { Form, Input } from 'antd'
 import { transform }   from 'lodash'
 import { rest }        from 'msw'
 
+import { edgeSdLanApi }    from '@acx-ui/rc/services'
 import {
   EdgeSdLanUrls,
   getServiceRoutePath,
@@ -12,7 +13,7 @@ import {
   EdgeMvSdLanFormNetwork
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
@@ -51,25 +52,41 @@ const MockedStep2 = () => <div data-testid='rc-ScopeForm'>
 const MockedStep3 = () => <div data-testid='rc-SummaryForm'></div>
 const addSteps = [{
   title: 'Settings',
-  content: <MockedStep1 />
+  content: MockedStep1
 }, {
   title: 'Scope',
-  content: <MockedStep2 />
+  content: MockedStep2
 }, {
   title: 'Summary',
-  content: <MockedStep3 />
+  content: MockedStep3
 }]
+
+const MockedTargetComponent = (props: EdgeMvSdLanFormProps) => {
+  return <Provider>
+    <EdgeMvSdLanForm
+      {...props}
+    />
+  </Provider>
+}
 
 const mockedFinishFn = jest.fn()
 
 describe('multi-venue SD-LAN form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
+    store.dispatch(edgeSdLanApi.util.resetApiState())
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
+      )
+    )
   })
 
   it('should navigate to service list when click cancel', async () => {
     const { result } = renderHook(() => Form.useForm())
-    render(<EdgeMvSdLanForm
+    render(<MockedTargetComponent
       form={result.current[0]}
       steps={addSteps}
       onFinish={mockedFinishFn}
@@ -103,7 +120,7 @@ describe('multi-venue SD-LAN form', () => {
     const { result } = renderHook(() => Form.useForm())
 
     it('should submit with correct data', async () => {
-      render(<EdgeMvSdLanForm
+      render(<MockedTargetComponent
         form={result.current[0]}
         steps={addSteps}
         onFinish={mockedFinishFn}
@@ -144,14 +161,6 @@ describe('multi-venue SD-LAN form', () => {
   })
 
   describe('Edit', () => {
-    beforeEach(() => {
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
-        )
-      )
-    })
     const { result } = renderHook(() => Form.useForm())
 
     const MockedEditFormStep1 = () => <div data-testid='rc-SettingsForm'>
@@ -163,12 +172,12 @@ describe('multi-venue SD-LAN form', () => {
     const editSteps = addSteps.slice(1, 2)
     editSteps.unshift({
       title: 'Settings',
-      content: <MockedEditFormStep1 />
+      content: MockedEditFormStep1
     })
 
     it('should correctly edit profile', async () => {
       const formRef = result.current[0]
-      render(<EdgeMvSdLanForm
+      render(<MockedTargetComponent
         form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}

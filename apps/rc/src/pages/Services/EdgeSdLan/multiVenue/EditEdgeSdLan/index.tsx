@@ -1,24 +1,24 @@
+import { Form }            from 'antd'
+import { omit, transform } from 'lodash'
+import { useIntl }         from 'react-intl'
 
-import { Form }      from 'antd'
-import { transform } from 'lodash'
-import { useIntl }   from 'react-intl'
-
-import { Loader, PageHeader, StepsFormGotoStepFn } from '@acx-ui/components'
-import { useEdgeMvSdLanActions }                   from '@acx-ui/rc/components'
-import { useGetEdgeMvSdLanQuery }                  from '@acx-ui/rc/services'
+import { Loader, PageHeader, StepsFormGotoStepFn }               from '@acx-ui/components'
+import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/rc/components'
+import { useGetEdgeMvSdLanQuery }                                from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanExtended,
-  EdgeMvSdLanNetworks,
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
-  ServiceType
+  ServiceType,
+  EdgeMvSdLanFormModel,
+  EdgeMvSdLanNetworks
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import EdgeMvSdLanForm, { EdgeMvSdLanFormModel } from '../Form'
-import { SettingsForm }                          from '../Form/SettingsForm'
-import { TunnelNetworkForm }                     from '../Form/TunnelNetworkForm'
+import EdgeMvSdLanForm       from '../Form'
+import { SettingsForm }      from '../Form/SettingsForm'
+import { TunnelNetworkForm } from '../Form/TunnelNetworkForm'
 
 const EditEdgeMvSdLan = () => {
   const { $t } = useIntl()
@@ -36,11 +36,11 @@ const EditEdgeMvSdLan = () => {
   const steps = [
     {
       title: $t({ defaultMessage: 'Settings' }),
-      content: <SettingsForm />
+      content: SettingsForm
     },
     {
       title: $t({ defaultMessage: 'Scope' }),
-      content: <TunnelNetworkForm />
+      content: TunnelNetworkForm
     }
   ]
 
@@ -52,15 +52,10 @@ const EditEdgeMvSdLan = () => {
       }
 
       const payload = {
+        ...omit(edgeSdLanFormRequestPreProcess(formData), 'edgeClusterId'),
         id: params.serviceId,
-        venueId: formData.venueId,
-        name: formData.name,
-        networks: transform(formData.activatedNetworks, (result, value, key) => {
-          result[key] = value.map(v => v.id)
-        }, {} as EdgeMvSdLanNetworks),
-        tunnelProfileId: formData.tunnelProfileId,
-        isGuestTunnelEnabled: formData.isGuestTunnelEnabled,
         guestEdgeClusterId: formData.guestEdgeClusterId,
+        guestEdgeClusterVenueId: formData.guestEdgeClusterVenueId,
         guestTunnelProfileId: formData.guestTunnelProfileId,
         guestNetworks: transform(formData.activatedGuestNetworks, (result, value, key) => {
           result[key] = value.map(v => v.id)

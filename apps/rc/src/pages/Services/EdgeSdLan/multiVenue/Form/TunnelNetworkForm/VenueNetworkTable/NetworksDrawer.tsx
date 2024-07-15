@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Typography, Space, FormInstance }         from 'antd'
-import { isNil, pick, remove, cloneDeep, unionBy } from 'lodash'
-import { useIntl }                                 from 'react-intl'
+import { Typography, Space, FormInstance }                           from 'antd'
+import { isNil, pick, remove, cloneDeep, unionBy, transform, unset } from 'lodash'
+import { useIntl }                                                   from 'react-intl'
 
-import { Drawer }                            from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable } from '@acx-ui/rc/components'
-import { Network, NetworkTypeEnum }          from '@acx-ui/rc/utils'
+import { Drawer }                                                                from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable }                                     from '@acx-ui/rc/components'
+import { EdgeMvSdLanNetworks, Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
-
-import type { EdgeMvSdLanFormNetwork } from '../index'
 
 const toggleItemFromSelected = (
   checked: boolean,
@@ -25,7 +23,10 @@ const toggleItemFromSelected = (
   } else {
     newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
     remove(newSelected[venueId], item => item.id === data.id)
+    if (newSelected[venueId].length === 0)
+      unset(newSelected, venueId)
   }
+
   return newSelected
 }
 
@@ -34,7 +35,7 @@ interface NetworksDrawerProps {
   onClose: () => void,
   venueId: string,
   venueName?: string,
-  formRef: FormInstance,
+  formRef: FormInstance
 }
 
 export const NetworksDrawer = (props: NetworksDrawerProps) => {
@@ -48,9 +49,8 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   } = props
 
   const [updateContent, setUpdateContent] = useState<Record<string, EdgeMvSdLanFormNetwork>>({})
-  const isGuestTunnelEnabled = formRef.getFieldValue('isGuestTunnelEnabled')
 
-  // TODO: the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
+  const isGuestTunnelEnabled = formRef.getFieldValue('isGuestTunnelEnabled')
 
   useEffect(() => {
     if (visible) {
@@ -111,9 +111,17 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   }
 
   const handleSubmit = async () => {
-    formRef.setFieldsValue(updateContent)
+    Object.keys(updateContent).forEach(d => {
+      formRef.setFieldValue(d, updateContent[d])
+    })
     onClose()
   }
+
+  // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
+  const mvActivatedGuestNetworks = transform(updateContent.activatedGuestNetworks,
+    (result, value, key) => {
+      result[key] = value.map(v => v.id)
+    }, {} as EdgeMvSdLanNetworks)
 
   return (
     <Drawer
@@ -131,7 +139,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
         />
       }
     >
-      <Space direction='vertical' >
+      <Space direction='vertical'>
         <Typography.Paragraph >
           { $t(messageMappings.drawer_table_description) }
         </Typography.Paragraph>
@@ -142,6 +150,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           // eslint-disable-next-line max-len
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
+          mvActivatedGuestNetworks={mvActivatedGuestNetworks}
           onActivateChange={handleActivateChange}
         />
       </Space>
