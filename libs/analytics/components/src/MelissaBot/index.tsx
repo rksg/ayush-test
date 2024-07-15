@@ -242,8 +242,12 @@ export function MelissaBot (){
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   const tabDetails:ContentSwitcherProps['tabDetails']=[
-    { label: $t({ defaultMessage: 'My Network' }) , children: <div/>, value: 'my-network' },
-    { label: $t({ defaultMessage: 'General' }), children: <div/>, value: 'general' }
+    { label: $t({ defaultMessage: 'My Network' }),
+      tooltip: $t({ defaultMessage: 'Analyze network data and gain insights with ease.' }),
+      children: <div/>, value: 'my-network' },
+    { label: $t({ defaultMessage: 'General' }),
+      tooltip: $t({ defaultMessage: 'Your go-to assistant for product details, user guides and technical information.' }),
+      children: <div/>, value: 'general' }
   ]
   return (<>{state.showFloatingButton && <MelissaIcon
     onClick={showDrawer}

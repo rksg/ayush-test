@@ -89,7 +89,7 @@ function Conversation ({
   isReplying,
   style,
   listCallback,
-  maxChar=300
+  maxChar=3000
 }: ConversationProps) {
   return (
     <UI.Wrapper style={style} className={classList}>
