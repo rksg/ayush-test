@@ -3,12 +3,28 @@ import { Form }         from 'antd'
 import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { act }          from 'react-dom/test-utils'
 
-import { useIsSplitOn, Features }                                                                                                        from '@acx-ui/feature-toggle'
-import { ApDeviceStatusEnum, CommonRbacUrlsInfo, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, RWG, RWGStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                     from '@acx-ui/test-utils'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import {
+  ApDeviceStatusEnum,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  FloorPlanDto,
+  NetworkDeviceType,
+  RWG,
+  RWGStatusEnum,
+  SwitchStatusEnum
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
+import {
+  fireEvent,
+  mockServer,
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+  within
+}                                                     from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
 
@@ -247,19 +263,21 @@ describe('Floor Plans', () => {
     expect(thumbnailImages).toHaveLength(list.length)
     await screen.findByText('+ Add Floor Plan')
 
-    fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
-    await screen.findByText('Are you sure you want to delete this Floor Plan?')
-
     fireEvent.click(screen.getByRole('button', { name: /Edit/i }))
     await screen.findByText('Edit Floor Plan')
 
+    const editDialog = await screen.findByRole('dialog')
     const editForm: HTMLFormElement = await screen.findByTestId('floor-plan-form')
-    await act(() => {
-      editForm.submit()
-    })
+    editForm.submit()
+    await waitFor(() => expect(editDialog).not.toBeVisible())
 
-    const deleteFloorplanButton = await screen.findByText('Delete Floor Plan')
+    fireEvent.click(screen.getByRole('button', { name: /Delete/i }))
+    const deleteDialog = await screen.findByRole('dialog')
+    await screen.findByText('Are you sure you want to delete this Floor Plan?')
+
+    const deleteFloorplanButton = await within(deleteDialog).findByText('Delete Floor Plan')
     fireEvent.click(deleteFloorplanButton)
+    await waitFor(() => expect(deleteDialog).not.toBeVisible())
 
     fireEvent.click(await screen.findByTestId('ApplicationsSolid'))
     expect(plainViewImage[0]).not.toBeInTheDocument()
