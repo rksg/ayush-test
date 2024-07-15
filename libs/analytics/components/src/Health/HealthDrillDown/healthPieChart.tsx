@@ -243,8 +243,8 @@ export const HealthPieChart = ({
       { (tabsList.find((tab) => tab.key === chartKey)?.data.length || 0) > topCount &&
       <Space align='start'>
         <InformationOutlined />
-        {$t({ defaultMessage: `Detailed breakup of all items beyond 
-          Top5 can be explored using Data Studio custom charts.` })}
+        {$t({ defaultMessage: `Detailed breakup of all items beyond
+          Top 5 can be explored using Data Studio custom charts.` })}
       </Space> }
     </Loader>
   )
