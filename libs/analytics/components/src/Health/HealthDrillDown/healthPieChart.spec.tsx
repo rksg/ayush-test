@@ -71,7 +71,7 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('Manufacturers')).toBeVisible()
     expect(await screen.findByText('Events')).toBeVisible()
     expect(screen.queryByText('Others')).not.toBeInTheDocument()
-    expect(screen.queryByText('Detailed breakup of all items beyond Top5')).not.toBeInTheDocument()
+    expect(screen.queryByText('Detailed breakup of all items beyond Top 5')).not.toBeInTheDocument()
   })
 
   it('should render correctly for single ttc failures', async () => {
@@ -194,7 +194,7 @@ describe('HealthPieChart', () => {
     expect(await screen.findByText('Events')).toBeVisible()
     expect(await screen.findByText('Others')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Detailed breakup of all items beyond Top5 can be explored using Data Studio custom charts.')).toBeInTheDocument()
+    expect(await screen.findByText('Detailed breakup of all items beyond Top 5 can be explored using Data Studio custom charts.')).toBeInTheDocument()
   })
 
   it('should handle chart switching', async () => {
