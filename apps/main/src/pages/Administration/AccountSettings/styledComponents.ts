@@ -2,7 +2,7 @@ import { css } from 'styled-components/macro'
 
 import { StepsForm } from '@acx-ui/components'
 
-export const greyTextStyles = StepsForm.DescriptionTextWrapper
+export const greyTextStyles = StepsForm.greyTextStyles
 
 export const darkGreyTextStyles = css`
   .darkGreyText {
