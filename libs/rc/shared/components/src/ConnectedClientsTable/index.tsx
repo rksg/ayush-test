@@ -50,13 +50,19 @@ function GetVenueFilterOptions (tenantId: string|undefined) {
 }
 
 function GetApFilterOptions (tenantId: string|undefined, venueId: string|undefined) {
-  const { apFilterOptions } = useApListQuery({ params: { tenantId }, payload: {
-    fields: ['name', 'serialNumber'],
-    pageSize: 10000,
-    sortField: 'name',
-    sortOrder: 'ASC',
-    filters: venueId ? { venueId: [venueId] } : {}
-  } }, {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { apFilterOptions } = useApListQuery({
+    params: { tenantId },
+    payload: {
+      fields: ['name', 'serialNumber'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: venueId ? { venueId: [venueId] } : {}
+    },
+    enableRbac: isWifiRbacEnabled
+  }, {
     selectFromResult: ({ data }) => ({
       apFilterOptions: data?.data?.map(v=>({ key: v.serialNumber, value: v.name? v.name : v.serialNumber })) || true
     })
@@ -124,6 +130,8 @@ export const ConnectedClientsTable = (props: {
   const { $t } = useIntl()
   const params = useParams()
   const wifiEDAClientRevokeToggle = useIsSplitOn(Features.WIFI_EDA_CLIENT_REVOKE_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { showAllColumns, searchString, setConnectedClientCount } = props
   const [ tableSelected, setTableSelected] = useState({
     selectedRowKeys: [] as string[],
@@ -643,10 +651,13 @@ export const ConnectedClientsTable = (props: {
       scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
       onClick: async (selectedRows, clearRowSelections) => {
         const selectedVenues = selectedRows.map((row) => row.venueId)
-        const allAps = (await getApList({ params, payload: {
-          fields: ['serialNumber', 'apMac'],
-          filters: { venueId: selectedVenues }
-        } })).data
+        const allAps = (await getApList({ params,
+          payload: {
+            fields: ['serialNumber', 'apMac'],
+            filters: { venueId: selectedVenues }
+          },
+          enableRbac: isWifiRbacEnabled
+        })).data
         selectedRows.forEach((row) => {
           sendDisconnect({
             params: {

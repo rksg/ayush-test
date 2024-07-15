@@ -3,7 +3,7 @@ import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useM
 
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/dist/query'
 import { Badge, Divider, Form } from 'antd'
-import { cloneDeep, find }      from 'lodash'
+import { find }                 from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import {
@@ -49,7 +49,6 @@ import {
   SEARCH,
   TableQuery,
   TableResult,
-  getFilters,
   transformDisplayNumber,
   transformDisplayText,
   usePollingTableQuery
@@ -66,6 +65,7 @@ import { useApActions }                                                         
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
+import { useFilters }   from './useFilters'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
 
@@ -89,7 +89,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
-  const filters = cloneDeep(getFilters(params) as FILTER)
+  const { filters, isNetworkLoading } = useFilters(params)
   const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
@@ -106,24 +106,26 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
 
-  const { deviceGroupId , ...otherFilters } = filters
-  const newFilters = { ...otherFilters, apGroupId: deviceGroupId }
-
   const apListTableQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: {
       ...newDefaultApPayload,
-      filters: newFilters
+      filters
     },
     search: {
       searchTargetFields: newDefaultApPayload.searchTargetFields
     },
-    option: { skip: Boolean(props.tableQuery) },
+    option: { skip: Boolean(props.tableQuery) || isNetworkLoading },
     enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
       'status', 'firmwareVersion'],
     pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || apListTableQuery
+
+  useEffect(() => {
+    if(!Boolean(filters) || Object.keys(filters).length === 0) return
+    tableQuery.setPayload({ ...tableQuery.payload, filters } as typeof apListTableQuery.payload)
+  }, [filters])
 
   useEffect(() => {
     const fetchApCompatibilitiesAndSetData = async () => {

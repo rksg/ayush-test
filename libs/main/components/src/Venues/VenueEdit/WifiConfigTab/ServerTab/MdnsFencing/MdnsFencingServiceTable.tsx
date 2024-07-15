@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useApListQuery }                              from '@acx-ui/rc/services'
 import {
   MdnsFencingService,
@@ -35,6 +36,8 @@ export const MdnsFencingServiceContext = createContext({} as MdnsFencingServiceC
 export function MdnsFencingServiceTable () {
   const { $t } = useIntl()
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { mdnsFencingServices, setMdnsFencingServices } = useContext(MdnsFencingContext)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -55,7 +58,11 @@ export function MdnsFencingServiceTable () {
     sortOrder: 'ASC',
     filters: { venueId: [params.venueId] }
   }
-  const apViewModelQuery = useApListQuery({ params, payload: apViewModelPayload }, {
+  const apViewModelQuery = useApListQuery({
+    params,
+    payload: apViewModelPayload,
+    enableRbac: isWifiRbacEnabled
+  }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: data?.data,
       ...rest
