@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Card }              from '@acx-ui/components'
 import { ArrowChevronRight } from '@acx-ui/icons'
 
-import { detailsHeaderFontStyles } from '../styledComponents'
+import { detailsHeaderFontStyles } from '../IntentAIDetails/styledComponents'
 
 export const Wrapper = styled.div`
   position: relative;

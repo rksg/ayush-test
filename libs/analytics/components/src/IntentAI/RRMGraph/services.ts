@@ -14,12 +14,7 @@ import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
 
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/Graph/services.ts
-import { EnhancedRecommendation } from '../services'
-========
-import { EnhancedRecommendation } from '../../IntentAIForm/services'
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetials/Graph/services.ts
-
+import { EnhancedRecommendation } from '../IntentAIForm/services'
 
 const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({

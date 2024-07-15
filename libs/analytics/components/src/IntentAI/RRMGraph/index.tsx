@@ -20,7 +20,7 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { EnhancedRecommendation } from '../services'
+import { EnhancedRecommendation } from '../IntentAIForm/services'
 
 import { Legend }               from './Legend'
 import { useIntentAICRRMQuery } from './services'

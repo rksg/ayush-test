@@ -14,7 +14,6 @@ import { states }                                            from '../config'
 import { EnhancedRecommendation }                            from '../services'
 import * as UI                                               from '../styledComponents'
 
-
 export function Introduction () {
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()

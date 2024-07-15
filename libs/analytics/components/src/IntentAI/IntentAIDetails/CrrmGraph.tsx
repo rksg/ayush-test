@@ -1,9 +1,9 @@
 
 import { useIntl } from 'react-intl'
 
-import { IntentAIRRMGraph }       from '../Graph'
-import { EnhancedRecommendation } from '../services'
-import { isDataRetained }         from '../utils'
+import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { isDataRetained }         from '../IntentAIForm/utils'
+import { IntentAIRRMGraph }       from '../RRMGraph'
 
 import {
   DetailsHeader,

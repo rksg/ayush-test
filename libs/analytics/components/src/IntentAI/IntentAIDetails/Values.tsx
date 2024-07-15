@@ -9,7 +9,6 @@ import { codes }                                      from '../IntentAIForm/conf
 import { EnhancedRecommendation, extractBeforeAfter } from '../IntentAIForm/services'
 import { isDataRetained }                             from '../IntentAIForm/utils'
 
-
 export const getValues = (details: EnhancedRecommendation) => {
   const {
     status,

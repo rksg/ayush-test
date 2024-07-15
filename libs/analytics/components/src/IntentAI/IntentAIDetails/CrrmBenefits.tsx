@@ -4,9 +4,9 @@ import { useIntl } from 'react-intl'
 import { TrendTypeEnum }                                             from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Loader, recommendationBandMapping } from '@acx-ui/components'
 
-import { getGraphKPI }            from '../Graph'
-import { useIntentAICRRMQuery }   from '../Graph/services'
 import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { getGraphKPI }            from '../RRMGraph'
+import { useIntentAICRRMQuery }   from '../RRMGraph/services'
 
 import {
   BenefitsBody,
