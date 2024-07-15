@@ -394,7 +394,7 @@ const SmsProviderItem = () => {
                   ]}
                   renderItem={(item) => (
                     <List.Item>
-                      <Typography.Text className='description darkGreyText'>
+                      <Typography.Text className='darkGreyText'>
                         {item}
                       </Typography.Text>
                     </List.Item>
@@ -435,7 +435,7 @@ const SmsProviderItem = () => {
               ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text className='description darkGreyText'>
+                  <Typography.Text className='darkGreyText'>
                     {item}
                   </Typography.Text>
                 </List.Item>
@@ -564,7 +564,7 @@ const SmsProviderItem = () => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='description greyText'>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>

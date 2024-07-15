@@ -116,7 +116,7 @@ describe('WifiCallingSettingForm', () => {
     expect(desc).toBeEmptyDOMElement()
 
     await userEvent.type(serviceName, 'serviceTest')
-    expect(serviceName).toHaveValue('serviceTest')
+    expect(await screen.findByRole('textbox', { name: /service name/i })).toHaveValue('serviceTest')
 
     await userEvent.type(desc, 'desc')
     expect(desc).toHaveValue('desc')
