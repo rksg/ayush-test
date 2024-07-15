@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { act, fireEvent, render, screen } from '@acx-ui/test-utils'
 
-import { responseBody, uploadRes } from './__tests__/fixtures'
+import { gptResponseBody, responseBody, uploadRes } from './__tests__/fixtures'
 
 import { MelissaBot } from '.'
 describe('MelissaBot', () => {
@@ -104,6 +104,41 @@ describe('MelissaBot', () => {
     await screen.findByText('What is cloud RRM?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
+  })
+  it('should chat with chatbot in general mode',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
+    })
+    await screen.findByText('What is cloud RRM?')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(gptResponseBody)
+      })
+    )
+    await act(async ()=>{
+      fireEvent.click(await screen.findByLabelText('General'))
+    })
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'How does wifi works?{enter}')
+    })
+    await screen.findByText('How does wifi works?')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(10)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('general-mode')
+    await act(async ()=>{
+      fireEvent.click(await screen.findByLabelText('My Network'))
+    })
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(11)
+    expect(document.querySelector('body')?.innerHTML)
+      .toMatchSnapshot('switch-back-to-my-network-mode')
   })
   it('should handle error message from chatbot',async ()=>{
     await act(async ()=>{
