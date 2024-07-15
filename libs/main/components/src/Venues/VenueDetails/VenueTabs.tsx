@@ -10,7 +10,8 @@ import {
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasPermission }                         from '@acx-ui/user'
+import { RolesEnum }                             from '@acx-ui/types'
+import { hasPermission, hasRoles }               from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -35,7 +36,9 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   })
 
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const { data: rwgs } = useRwgListQuery({ params: useParams() }, { skip: !showRwgUI })
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const { data: rwgs } = useRwgListQuery({ params: useParams() },
+    { skip: !(showRwgUI && rwgHasPermission) })
 
   const onTabChange = (tab: string) => {
     if (isTemplate) {
