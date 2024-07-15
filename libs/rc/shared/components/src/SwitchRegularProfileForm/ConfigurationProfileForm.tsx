@@ -258,7 +258,7 @@ export function ConfigurationProfileForm () {
   }
 
   const proceedData = (formData: SwitchConfigurationProfile) => {
-    const data = JSON.parse(JSON.stringify(formData)) as SwitchConfigurationProfile
+    const data = _.cloneDeep(formData) as SwitchConfigurationProfile
     if(data.trustedPorts){
       const vlanModels = data.vlans?.map(
         item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
