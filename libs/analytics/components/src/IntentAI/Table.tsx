@@ -2,7 +2,8 @@ import { useIntl } from 'react-intl'
 
 import {
   Loader,
-  TableProps }        from '@acx-ui/components'
+  TableProps,
+  Table } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay, PathFilter } from '@acx-ui/utils'
@@ -67,7 +68,9 @@ export function IntentAITable (
 
   return (
     <Loader states={[queryResults]}>
-      <UI.IntentAITableWrapper
+      <UI.IntentAITableStyle/>
+      <Table
+        className='intentai-table'
         data-testid='intentAI'
         settingsId={'intentai-table'}
         type='tall'

@@ -1,12 +1,9 @@
-import styled from 'styled-components'
+import { createGlobalStyle } from 'styled-components/macro'
 
-import { Table, TableProps } from '@acx-ui/components'
-
-import { IntentListItem } from './services'
-
-export const IntentAITableWrapper =
-styled((props: TableProps<IntentListItem>) => <Table {...props} />)`
-  .ant-picker-suffix {
-    margin: 0 !important;
+export const IntentAITableStyle = createGlobalStyle`
+  .intentai-table {
+    .ant-picker-suffix {
+      margin: 0 !important;
+    }
   }
 `
