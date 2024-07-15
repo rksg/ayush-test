@@ -61,6 +61,10 @@ describe('ApGroupDetails', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (req, res, ctx) => res(ctx.json(vlanPoolProfilesData))
+      ),
+      rest.get(
+        WifiUrlsInfo.getWifiCapabilities.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
