@@ -4,6 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
@@ -19,7 +20,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import { defaultNetworkPayload } from '../../../NetworkTable'
 import { ApplicationDrawer }     from '../../AccessControlForm/ApplicationDrawer'
@@ -58,11 +60,14 @@ const AccessControlSet = () => {
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const settingsId = 'policies-access-control-set-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedAccessControlProfileListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const networkTableQuery = useTableQuery<Network>({
@@ -113,13 +118,18 @@ const AccessControlSet = () => {
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params,
+        payload: selectedRows.map(row => row.id),
+        enableRbac
+      }).then(callback)
     )
   }
 
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -127,6 +137,7 @@ const AccessControlSet = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -153,7 +164,10 @@ const AccessControlSet = () => {
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'checkbox' }}
+      rowSelection={
+        // eslint-disable-next-line max-len
+        hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+      }
     />
   </Loader>
 }
@@ -263,7 +277,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       filterable: networkFilterOptions,
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (_, row) => row.networkIds.length
+      render: (_, row) => {
+        return row.networkIds?.length || 0
+      }
     }
   ]
 

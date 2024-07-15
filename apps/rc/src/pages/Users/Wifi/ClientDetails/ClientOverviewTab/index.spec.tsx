@@ -63,6 +63,7 @@ const params = {
   clientId: 'client-id'
 }
 const mockReqEventMeta = jest.fn()
+const mockGetClientList = jest.fn()
 
 describe('ClientOverviewTab root', () => {
   beforeEach(() => {
@@ -182,6 +183,7 @@ describe('ClientOverviewTab root', () => {
 
 describe('ClientOverviewTab - ClientProperties', () => {
   beforeEach(() => {
+    mockGetClientList.mockClear()
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
@@ -501,9 +503,10 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
-            res(ctx.json(GuestClients))
-          ),
+          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) => {
+            mockGetClientList()
+            return res(ctx.json(GuestClients))
+          }),
           rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
             res(ctx.json(VenueList))
           )
@@ -522,6 +525,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
             path: '/:tenantId/t/users/wifi/clients/:clientId/details/overview',
             search: '?clientStatus=historical'
           }
+        })
+        await waitFor(() => {
+          expect(mockGetClientList).toBeCalledTimes(1)
         })
         expect(await screen.findByText('Client Details')).toBeVisible()
         expect(await screen.findByText('Last Session')).toBeVisible()
