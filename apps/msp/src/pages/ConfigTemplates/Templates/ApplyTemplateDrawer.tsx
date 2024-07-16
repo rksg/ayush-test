@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
@@ -10,7 +10,6 @@ import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/se
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
 
-import HspContext                                                                         from '../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
 import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
 import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
@@ -41,8 +40,6 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     isOverridable,
     createOverrideModalProps
   } = useConfigTemplateOverride(selectedTemplate, selectedRows)
-
-  const { state: hspState } = useContext(HspContext)
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -195,11 +192,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - {customerType}' }, {
-          customerType: hspState.isHsp
-            ? $t({ defaultMessage: 'Brand Properties' })
-            : $t({ defaultMessage: 'MSP Customers' })
-        })}
+        title={$t({ defaultMessage: 'Apply Templates - Customers' })}
         visible={true}
         onClose={onClose}
         footer={footer}
