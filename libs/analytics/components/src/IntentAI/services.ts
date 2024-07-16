@@ -10,7 +10,9 @@ import {
   states,
   codes,
   StatusTrail,
-  StateType } from './config'
+  StateType,
+  aiFeaturesLabel
+} from './config'
 
 type Intent = {
   id: string
@@ -91,7 +93,7 @@ export const api = intentAIApi.injectEndpoints({
           detail && intents.push({
             ...intent,
             id: id,
-            aiFeature: $t(detail.aiFeature),
+            aiFeature: $t(aiFeaturesLabel[detail.aiFeature]),
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),

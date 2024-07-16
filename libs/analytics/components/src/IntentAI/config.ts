@@ -3,8 +3,15 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 export type StatusTrail = Array<{ status: Lowercase<StateType>, createdAt?: string }>
 
+export const aiFeaturesLabel = {
+  'AI-Driven RRM': defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+  'AirFlexAI': defineMessage({ defaultMessage: 'AirFlexAI' }),
+  'AI Operations': defineMessage({ defaultMessage: 'AI Operations' }),
+  'EcoFlexAI': defineMessage({ defaultMessage: 'EcoFlexAI' })
+}
+
 type CodeInfo = {
-  aiFeature: MessageDescriptor,
+  aiFeature: keyof typeof aiFeaturesLabel,
   intent: MessageDescriptor,
   category: MessageDescriptor
 }
@@ -13,13 +20,6 @@ type StateInfo = {
   text: MessageDescriptor,
   tooltip: MessageDescriptor,
   tooltipPartial?: MessageDescriptor
-}
-
-const aiFeatures = {
-  'AI-Driven RRM': defineMessage({ defaultMessage: 'AI-Driven RRM' }),
-  'AirFlexAI': defineMessage({ defaultMessage: 'AirFlexAI' }),
-  'AI Operations': defineMessage({ defaultMessage: 'AI Operations' }),
-  'EcoFlexAI': defineMessage({ defaultMessage: 'EcoFlexAI' })
 }
 
 const categories = {
@@ -102,97 +102,97 @@ export type StateType = keyof typeof states
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-enable': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan24g-timer': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-timer': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan6g-timer': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-enable': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Expanded Radar channels vs Limited Channel options' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-disable': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Radar Interference vs Optimal Channel availability' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable-below-61': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-proactive': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Client Distribution vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-aclb-enable': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Distributed Wi-Fi Load vs Client Stability' }),
     category: categories['Wi-Fi Experience']
   },
   'i-zonefirmware-upgrade': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Secure AP firmware vs Client Device Compatibility' }),
     category: categories.Infrastructure
   },
   'c-txpower-same': {
-    aiFeature: aiFeatures['AI Operations'],
+    aiFeature: 'AI Operations',
     intent: defineMessage({ defaultMessage: 'Optimize for 5 GHz Radio vs Longer range with 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel24g-auto': {
-    aiFeature: aiFeatures['AI-Driven RRM'],
+    aiFeature: 'AI-Driven RRM',
     intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel5g-auto': {
-    aiFeature: aiFeatures['AI-Driven RRM'],
+    aiFeature: 'AI-Driven RRM',
     intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel6g-auto': {
-    aiFeature: aiFeatures['AI-Driven RRM'],
+    aiFeature: 'AI-Driven RRM',
     intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-24g': {
-    aiFeature: aiFeatures.AirFlexAI,
+    aiFeature: 'AirFlexAI',
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-5g': {
-    aiFeature: aiFeatures.AirFlexAI,
+    aiFeature: 'AirFlexAI',
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 5 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-6g': {
-    aiFeature: aiFeatures.AirFlexAI,
+    aiFeature: 'AirFlexAI',
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   }
