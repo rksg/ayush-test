@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import _           from 'lodash'
+import { isEmpty } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -16,7 +16,6 @@ import {
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
-  useVenuesListQuery,
   useVenuesTableQuery,
   useDeleteVenueMutation,
   useGetVenueCityListQuery
@@ -38,7 +37,6 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -118,7 +116,7 @@ function useColumns (
               to={`/venues/${row.id}/venue-details/devices`}
               children={count ? count : 0}
             />
-            {isApCompatibleCheckEnabled && row?.incompatible && row.incompatible > 0 ?
+            {row?.incompatible && row.incompatible > 0 ?
               <Tooltip.Info isFilled
                 title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
@@ -310,11 +308,10 @@ export const VenueTable = ({ settingsId = 'venues-table',
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   const settingsId = 'venues-table'
   const tableQuery = usePollingTableQuery<Venue>({
-    useQuery: isApCompatibleCheckEnabled ? useVenuesTableQuery: useVenuesListQuery,
+    useQuery: useVenuesTableQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
@@ -348,7 +345,7 @@ export function VenuesTable () {
 
 function shouldShowConfirmation (selectedVenues: Venue[]) {
   const venues = selectedVenues.filter(v => {
-    return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
+    return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !isEmpty(v['aggregatedApStatus'])
   })
   return venues.length > 0
 }
