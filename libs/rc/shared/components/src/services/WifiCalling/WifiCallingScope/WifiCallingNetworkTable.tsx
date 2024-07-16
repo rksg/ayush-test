@@ -35,15 +35,17 @@ const defaultPayload = {
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
     skip: !useParams().hasOwnProperty('serviceId'),
-    enableRbac
+    enableRbac: enableServicePolicyRbac
   })
 
   const basicColumns: TableProps<Network>['columns'] = [
@@ -92,7 +94,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac
   })
 
   useEffect(() => {

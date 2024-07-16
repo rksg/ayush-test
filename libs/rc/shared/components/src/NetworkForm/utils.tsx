@@ -213,18 +213,21 @@ export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveD
 }
 
 export function useRadiusServer () {
+  const { isTemplate } = useConfigTemplate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableServicePolicyRbac
   const { networkId } = useParams()
   const [ activateRadiusServer ] = useActivateRadiusServerMutation()
   const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
   const [ updateRadiusServerSettings ] = useUpdateRadiusServerSettingsMutation()
   const { data: radiusServerProfiles } = useGetAAAPolicyViewModelListQuery({
     payload: { filters: { networkIds: [networkId] } },
-    enableRbac: enableServicePolicyRbac
-  }, { skip: !networkId || !enableServicePolicyRbac })
+    enableRbac: resolvedRbacEnabled
+  }, { skip: !networkId || !resolvedRbacEnabled })
   const { data: radiusServerSettings } = useGetRadiusServerSettingsQuery({
     params: { networkId }
-  }, { skip: !networkId || !enableServicePolicyRbac })
+  }, { skip: !networkId || !resolvedRbacEnabled })
   // eslint-disable-next-line max-len
   const [ radiusServerConfigurations, setRadiusServerConfigurations ] = useState<Partial<NetworkSaveData>>()
 
@@ -261,7 +264,7 @@ export function useRadiusServer () {
 
   // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
-    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
 
@@ -283,7 +286,7 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },

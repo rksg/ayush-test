@@ -267,8 +267,6 @@ export function VenueWifi () {
 
   const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
 
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const apCompatibilityTenantId = sessionStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
@@ -280,7 +278,6 @@ export function VenueWifi () {
       payload: { filters: {} }
     },
     {
-      skip: !isApCompatibleCheckEnabled,
       selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
     })
 
@@ -361,20 +358,18 @@ export function VenueWifi () {
           rowSelection={{ type: 'checkbox' }}
           searchable={true}
           enableActions={true}
-          enableApCompatibleCheck={isApCompatibleCheckEnabled}
+          enableApCompatibleCheck={true}
           filterables={{
             deviceGroupId: apgroupFilterOptions,
             featureIncompatible: compatibilitiesFilterOptions
           }}
         />
-        {isApCompatibleCheckEnabled &&
-          <ApCompatibilityDrawer
-            isMultiple
-            visible={drawerVisible}
-            data={apCompatibilities}
-            onClose={() => setDrawerVisible(false)}
-          />
-        }
+        <ApCompatibilityDrawer
+          isMultiple
+          visible={drawerVisible}
+          data={apCompatibilities}
+          onClose={() => setDrawerVisible(false)}
+        />
       </Tabs.TabPane>
       { enabledMesh && <Tabs.TabPane key='mesh'
         tab={<Tooltip title={$t({ defaultMessage: 'Mesh List' })}>

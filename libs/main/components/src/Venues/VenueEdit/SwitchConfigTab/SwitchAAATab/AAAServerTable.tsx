@@ -179,7 +179,10 @@ export const AAAServerTable = (props: {
   const [disabledDelete, setDisabledDelete] = useState(false)
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const { tenantId, venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
   const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useDeleteAAAServerMutation,
     useTemplateMutationFn: useDeleteVenueTemplateSwitchAAAServerMutation
@@ -308,12 +311,12 @@ export const AAAServerTable = (props: {
             onOk: () => { rows.length === 1 ?
               deleteAAAServer({
                 params: { tenantId, venueId, aaaServerId: rows[0].id },
-                enableRbac: isSwitchRbacEnabled
+                enableRbac: resolvedRbacEnabled
               }).then(clearSelection) :
               bulkDeleteAAAServer({
                 params: { tenantId, venueId },
                 payload: rows.map(item => item.id),
-                enableRbac: isSwitchRbacEnabled
+                enableRbac: resolvedRbacEnabled
               }).then(clearSelection)
             }
           })
