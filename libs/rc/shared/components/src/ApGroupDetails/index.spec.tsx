@@ -37,18 +37,25 @@ describe('ApGroupDetails', () => {
     mockServer.use(
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
-        (req, res, ctx) => res(ctx.json(oneApGroupList))
+        (_, res, ctx) => res(ctx.json(oneApGroupList))
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(apGroupMembers))
+        (_, res, ctx) => res(ctx.json(apGroupMembers))
       ),
       rest.post(
         CommonUrlsInfo.getApGroupNetworkList.url,
-        (req, res, ctx) => res(ctx.json(apGroupNetworkLinks))
+        (_, res, ctx) => res(ctx.json(apGroupNetworkLinks))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
+        (_, res, ctx) => {
+          mockvenueNetworkApGroup()
+          return res(ctx.json(networkApGroup))
+        }
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => {
           mockvenueNetworkApGroup()
           return res(ctx.json(networkApGroup))
@@ -56,7 +63,15 @@ describe('ApGroupDetails', () => {
       ),
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
+        (_, res, ctx) => res(ctx.json(networkDeepList))
+      ),
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepList.response))
+      ),
+      rest.get(
+        WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json([]))
       ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
