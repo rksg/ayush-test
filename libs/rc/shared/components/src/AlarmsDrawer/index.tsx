@@ -12,7 +12,8 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { formatter }  from '@acx-ui/formatter'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -20,11 +21,19 @@ import {
   eventAlarmApi,
   networkApi,
   useClearAlarmByVenueMutation,
-  useGetVenuesQuery
-}  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { store }                                                                  from '@acx-ui/store'
+  useVenuesListQuery,
+  useGetVenuesTemplateListQuery
+} from '@acx-ui/rc/services'
+import {
+  Alarm,
+  CommonUrlsInfo,
+  useTableQuery,
+  EventSeverityEnum,
+  EventTypeEnum,
+  useConfigTemplateQueryFnSwitcher, TableResult, Venue, useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { store }                 from '@acx-ui/store'
 
 import * as UI from './styledComponents'
 
@@ -65,8 +74,14 @@ const defaultPayload: {
 
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isTemplateRbacEnabled : isWifiRbacEnabled
+
   const { visible, setVisible } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
@@ -107,8 +122,13 @@ export function AlarmsDrawer (props: AlarmsType) {
     { isLoading: isAlarmByVenueCleaning }
   ] = useClearAlarmByVenueMutation()
 
-  const { data: venuesList } =
-      useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
+  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+    useQueryFn: useVenuesListQuery,
+    useTemplateQueryFn: useGetVenuesTemplateListQuery,
+    skip: false,
+    payload: venuesListPayload,
+    enableRbac: resolvedRbacEnabled
+  })
 
 
   const tableQuery = useTableQuery({
@@ -199,7 +219,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   }
 
   const getVenueIdsOfAlarms = (venueNames: string[]) => {
-    const venueIds = (venuesList?.data.filter(venue =>
+    const venueIds = (venuesList?.data?.data.filter(venue =>
       venueNames.includes(venue.name)) || []).map(venue => venue.id)
 
     return venueIds

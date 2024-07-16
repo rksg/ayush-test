@@ -8,7 +8,7 @@ import { addNetworkVenueFn } from './networkUtils'
 jest.mock('@acx-ui/utils')
 const fetchWithBQ = jest.fn()
 
-describe('addSyslogPolicy', () => {
+describe('networkUtils', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
