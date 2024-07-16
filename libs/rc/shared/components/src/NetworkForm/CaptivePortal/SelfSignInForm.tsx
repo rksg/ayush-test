@@ -12,9 +12,9 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
-import { get }                                        from '@acx-ui/config'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { cssStr, GridCol, GridRow, StepsFormLegacy, Tooltip } from '@acx-ui/components'
+import { get }                                                from '@acx-ui/config'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
@@ -307,20 +307,50 @@ export function SelfSignInForm () {
               initialValue={false}
               style={SelfSignInAppStyle}>
               <>
-                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
+                <UI.RedAlertCheckbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
                 checked={enableSmsLogin}
                 disabled={!editMode && !isSMSTokenAvailable()}
                 >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
-                </UI.Checkbox>
+                </UI.RedAlertCheckbox>
                 <Tooltip
                   title={displaySMSTokenToolTips()}
                   placement='bottom'>
                   <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
                 </Tooltip>
               </>
+            </Form.Item>
+            <Form.Item style={SelfSignInAppStyle}>
+              <div style={{
+                paddingLeft: '24px',
+                width: '600px',
+                color: cssStr('--acx-semantics-red-70')
+              }} >
+                <div style={{ height: '100%',float: 'left' }}>
+                  <UI.WarningTriangleSolid/>
+                </div>
+                <div style={{ fontSize: '12px', paddingLeft: '3px', float: 'left' }}>
+                  <FormattedMessage
+                    defaultMessage={
+                      `To keep this option enabled, configure an SMS provider on the<br></br>
+                      <SMSLink></SMSLink> or set a social login option.`}
+                    values={{
+                      br: () => <br/>,
+                      SMSLink: () => {
+                        return (<TenantLink to='/administration/accountSettings'>
+                          <Button
+                            data-testid='red-alert-message'
+                            type='link'
+                            style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
+                            { $t({ defaultMessage: 'Administration > Settings' }) }
+                          </Button>
+                        </TenantLink>)}
+                    }}
+                  />
+                </div>
+              </div>
             </Form.Item>
             { isEnabledEmailOTP && <Form.Item name={['guestPortal', 'enableEmailLogin']}
               initialValue={false}
