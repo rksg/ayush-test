@@ -6,33 +6,22 @@ import {
   useGetVenueTemplateQuery
 } from '@acx-ui/rc/services'
 import {
+  UseConfigTemplateQueryFnSwitcherProps,
   VenueExtended,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }                from '@acx-ui/react-router-dom'
-import { RequestPayload, UseQuery } from '@acx-ui/types'
-
-interface UseVenueConfigTemplateQueryFnSwitcherProps<ResultType> {
-  useQueryFn: UseQuery<ResultType, RequestPayload>
-  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
-  skip?: boolean
-  enableRbac?: boolean
-  extraQueryArgs?: {}
-}
+import { useParams } from '@acx-ui/react-router-dom'
 
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
-  props: UseVenueConfigTemplateQueryFnSwitcherProps<ResultType>
-): ReturnType<typeof useQueryFn> {
+  props: UseConfigTemplateQueryFnSwitcherProps<ResultType>
+){
   const { venueId } = useParams()
-  const { useQueryFn, useTemplateQueryFn, skip = false, enableRbac, extraQueryArgs } = props
+  const { skip = false, ...rest } = props
 
-  return useConfigTemplateQueryFnSwitcher({
-    useQueryFn,
-    useTemplateQueryFn,
-    skip: skip || !venueId,
-    enableRbac,
-    extraQueryArgs
+  return useConfigTemplateQueryFnSwitcher<ResultType>({
+    ...rest,
+    skip: skip || !venueId
   })
 }
 

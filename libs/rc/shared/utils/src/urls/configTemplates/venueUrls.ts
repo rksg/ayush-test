@@ -169,10 +169,19 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  getVenueSettings: { // TODO
+  getVenueSettings: {
     method: 'get',
     url: '/templates/venues/:venueId/wifiSettings',
     newApi: true
+  },
+  getVenueMeshRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apMeshSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueMesh: {
     method: 'put',

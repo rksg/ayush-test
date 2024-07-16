@@ -30,7 +30,7 @@ export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountTyp
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
 
-interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
+export interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
   useQueryFn: UseQuery<ResultType, RequestPayload>
   useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
   skip?: boolean

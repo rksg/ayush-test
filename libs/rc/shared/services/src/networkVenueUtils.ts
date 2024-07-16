@@ -203,7 +203,8 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const networkIds = networkList?.data?.map(item => item.id) || []
 
   if (networkIds.length > 0) {
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+    // eslint-disable-next-line max-len
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, true)
   }
   return {
     error: networkListResult.error as FetchBaseQueryError,

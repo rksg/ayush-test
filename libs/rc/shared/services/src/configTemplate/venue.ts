@@ -5,6 +5,7 @@ import {
   ConfigTemplateUrlsInfo,
   ExternalAntenna,
   LocalUser,
+  Mesh,
   RadiusServer,
   TableResult,
   TacacsServer,
@@ -201,12 +202,29 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
+    // only exist in v1(RBAC version)
+    getVenueTemplateMesh: build.query<Mesh, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueMeshRbac, params)
+        }
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, ['UpdateVenueTemplateApMeshSettings'], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]))
+          })
+        })
+      }
+    }),
     updateVenueTemplateMesh: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.updateVenueMesh,
         VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
       ),
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'WIFI_SETTINGS' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]
     }),
     getVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueLanPorts)
@@ -496,6 +514,7 @@ export const {
   useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueTemplateExternalAntennaMutation,
   useGetVenueTemplateSettingsQuery,
+  useGetVenueTemplateMeshQuery,
   useUpdateVenueTemplateMeshMutation,
   useGetVenueTemplateLanPortsQuery,
   useUpdateVenueTemplateLanPortsMutation,
