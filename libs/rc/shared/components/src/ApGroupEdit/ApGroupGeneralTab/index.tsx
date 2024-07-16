@@ -77,7 +77,8 @@ export function ApGroupGeneralTab () {
     useQueryFn: useVenuesListQuery,
     useTemplateQueryFn: useGetVenuesTemplateListQuery,
     skip: false,
-    payload: defaultVenuePayload
+    payload: defaultVenuePayload,
+    enableRbac: isRbacEnabled
   })
 
   const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher({

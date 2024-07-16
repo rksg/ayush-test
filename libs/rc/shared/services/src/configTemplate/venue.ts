@@ -65,7 +65,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList,
+        ConfigTemplateUrlsInfo.getVenuesTemplateListRbac
+      ),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -385,7 +388,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueCityList),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueCityList,
+        VenueConfigTemplateUrlsInfo.getVenueCityListRbac
+      ),
       transformResponse: (result: { cityList: { name: string }[] }) => {
         return result.cityList
       }

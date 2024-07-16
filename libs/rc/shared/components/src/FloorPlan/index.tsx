@@ -23,9 +23,10 @@ import {
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
   NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices
 } from '@acx-ui/rc/utils'
-import { TenantLink }                   from '@acx-ui/react-router-dom'
-import { hasAccess }                    from '@acx-ui/user'
-import { TABLE_QUERY_POLLING_INTERVAL } from '@acx-ui/utils'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasAccess, hasPermission, hasRoles }  from '@acx-ui/user'
+import { TABLE_QUERY_POLLING_INTERVAL }        from '@acx-ui/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -97,8 +98,9 @@ export function FloorPlan () {
 
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
   const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const getNetworkDevices = useGetAllDevicesQuery({ params: { ...params,
-    showRwgDevice: '' + showRwgDevice
+    showRwgDevice: '' + (showRwgDevice && rwgHasPermission)
   },
   payload: networkDevicePayload },
   {
@@ -421,13 +423,15 @@ export function FloorPlan () {
               showIcon
               action={
                 <Space direction='horizontal'>
-                  { hasAccess() && <TenantLink to='devices/wifi/add'>
+                  { hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+                  <TenantLink to='devices/wifi/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add AP' })}
                     </Button>
                   </TenantLink>
                   }
-                  { hasAccess() && <TenantLink to='devices/switch/add'>
+                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) &&
+                  <TenantLink to='devices/switch/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </Button>

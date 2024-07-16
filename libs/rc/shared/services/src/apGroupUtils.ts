@@ -176,7 +176,10 @@ export const getApGroupsListFn = (isTemplate: boolean = false) : QueryFn<TableRe
       const networkIds = uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
       if (networkIds.length && isPayloadHasField(payload, 'networks')) {
         // eslint-disable-next-line max-len
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
+        const networkListReq = createHttpRequest(
+          // eslint-disable-next-line max-len
+          isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac : CommonUrlsInfo.getWifiNetworksList,
+          params)
         const networkListQuery = await fetchWithBQ({
           ...networkListReq,
           body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: networkIds } })

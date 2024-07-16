@@ -5,16 +5,13 @@ import { useParams }                                      from '@acx-ui/react-ro
 
 export function useGetNetwork () {
   const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-
-  const { tenantId, networkId } = useParams()
+  const params = useParams()
   // eslint-disable-next-line max-len
-  const networkResult = useGetNetworkQuery({ params: { tenantId, networkId } }, { skip: isTemplate })
+  const networkResult = useGetNetworkQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate })
   // eslint-disable-next-line max-len
-  const networkTemplateResult = useGetNetworkTemplateQuery({
-    params: { tenantId, networkId },
-    enableRbac: isConfigTemplateRbacEnabled
-  }, { skip: !isTemplate })
+  const networkTemplateResult = useGetNetworkTemplateQuery({ params, enableRbac: isConfigTemplateRbacEnabled }, { skip: !isTemplate })
   return isTemplate ? networkTemplateResult : networkResult
 }
 

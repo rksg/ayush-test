@@ -16,10 +16,28 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networks',
     newApi: true
   },
+  addNetworkTemplateRbac: {
+    method: 'post',
+    url: '/templates/wifiNetworks',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   updateNetworkTemplate: {
     method: 'put',
     url: '/templates/networks/:networkId',
     newApi: true
+  },
+  updateNetworkTemplateRbac: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getNetworkTemplate: {
     method: 'get',
@@ -31,8 +49,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/wifiNetworks/:networkId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      Accept: 'application/vnd.ruckus.v1+json'
     }
   },
   deleteNetworkTemplate: {
@@ -40,10 +57,28 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networks/:templateId',
     newApi: true
   },
+  deleteNetworkTemplateRbac: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getNetworkTemplateList: {
     method: 'post',
     url: '/templates/networks/query',
     newApi: true
+  },
+  getNetworkTemplateListRbac: {
+    method: 'post',
+    url: '/templates/wifiNetworks/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueNetworkTemplateList: {
     method: 'post',
