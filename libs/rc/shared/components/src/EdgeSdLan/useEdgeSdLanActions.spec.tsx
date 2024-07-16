@@ -320,7 +320,7 @@ describe('useEdgeMvSdLanActions', () => {
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelUtilized: true })
 
-      expect(mockedCallback).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
@@ -355,7 +355,7 @@ describe('useEdgeMvSdLanActions', () => {
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelEnabled: true })
 
-      expect(mockedCallback).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
@@ -404,7 +404,7 @@ describe('useEdgeMvSdLanActions', () => {
       })
 
       await waitFor(() => expect(mockedActivateMvNetworkReq).toBeCalledTimes(2))
-      expect(mockedCallback).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
       expect(mockedToggleDmzReq).toBeCalledTimes(0)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
@@ -442,7 +442,7 @@ describe('useEdgeMvSdLanActions', () => {
       await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelEnabled: true }))
-      expect(mockedCallback).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
@@ -483,7 +483,7 @@ describe('useEdgeMvSdLanActions', () => {
         wifiNetworkId: 'network_3',
         serviceId: 'mocked_service_id'
       }, { isGuestTunnelUtilized: false })
-      expect(mockedCallback).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
     })
 
     it('should update porfile name', async () => {

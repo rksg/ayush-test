@@ -69,6 +69,7 @@ const EditEdgeMvSdLan = () => {
             // callback is after all RBAC related APIs sent
             if (Array.isArray(result)) {
               resolve(true)
+              navigate(linkToServiceList, { replace: true })
             } else {
               reject(result)
             }
@@ -76,8 +77,6 @@ const EditEdgeMvSdLan = () => {
           // need to catch basic service profile failed
         }).catch(reject)
       })
-
-      navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)

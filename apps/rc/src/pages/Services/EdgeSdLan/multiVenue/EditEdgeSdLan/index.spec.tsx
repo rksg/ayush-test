@@ -213,6 +213,7 @@ describe('Edit SD-LAN service', () => {
         search: ''
       }, { replace: true })
     })
+    expect(mockedNavigate).toBeCalledTimes(1)
   })
 
   it('should correctly handle guest network enabled case', async () => {
@@ -274,6 +275,7 @@ describe('Edit SD-LAN service', () => {
         search: ''
       }, { replace: true })
     })
+    expect(mockedNavigate).toBeCalledTimes(1)
   })
 
   it('should catch profile API error', async () => {

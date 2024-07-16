@@ -8,17 +8,17 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormProps }  from '@acx-ui/components'
-import { networkApi }      from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { StepsFormProps }                       from '@acx-ui/components'
+import { networkApi }                           from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                      from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../../__tests__/fixtures'
+import { mockNetworkViewmodelList } from '../../../__tests__/fixtures'
 
 import { NetworksDrawer } from './NetworksDrawer'
 
@@ -67,17 +67,23 @@ describe('Network Drawer', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_req, res, ctx) => res(ctx.json({
+          data: mockNetworkViewmodelList,
+          page: 0,
+          totalCount: mockNetworkViewmodelList.length
+        }))
       ),
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_req, res, ctx) => {
           mockedGetNetworkViewmodelList()
           return res(ctx.json({
-            data: mockNetworkViewmodelList,
-            page: 0,
-            totalCount: mockNetworkViewmodelList.length
+            fields: [
+            ],
+            totalCount: 0,
+            page: 1,
+            data: []
           }))
         }
       )

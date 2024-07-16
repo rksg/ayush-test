@@ -282,7 +282,13 @@ export const useEdgeMvSdLanActions = () => {
       pick(originData, ['id', 'name', 'tunnelProfileId']),
       pick(payload, ['id', 'name', 'tunnelProfileId']))
     ) {
-      return await handleAssociationDiff(serviceId!, originData, payload)
+      try {
+        const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
+        callback?.(reqResult)
+        return Promise.resolve()
+      } catch(error) {
+        return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
+      }
     } else {
       return await updateEdgeSdLan({
         payload: {
