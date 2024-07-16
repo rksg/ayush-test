@@ -6,9 +6,8 @@ import { useWatch }                    from 'antd/lib/form/Form'
 import { get }                         from 'lodash'
 import { useIntl }                     from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { NetworkSaveData }        from '@acx-ui/rc/utils'
-import { useParams }              from '@acx-ui/react-router-dom'
+import { NetworkSaveData } from '@acx-ui/rc/utils'
+import { useParams }       from '@acx-ui/react-router-dom'
 
 
 import { ApCompatibilityToolTip, ApCompatibilityDrawer, ApCompatibilityType, InCompatibilityFeatures } from '../../../../ApCompatibility'
@@ -49,7 +48,7 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
   const tooltipInfo = $t({ defaultMessage: `QoS mirroring duplicates network traffic to ensure
   quality of service for specific multimedia clients or all clients on your Wi-Fi network.
   Ensure that APs meet the minimum required version 7.0` })
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [
@@ -73,7 +72,7 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
           {$t({ defaultMessage: 'QoS Mirroring' })}
           <ApCompatibilityToolTip
             title={tooltipInfo}
-            visible={supportApCompatibleCheck}
+            visible={true}
             onClick={() => setDrawerVisible(true)}
           />
         </Space>
@@ -104,15 +103,14 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
                 }
               />
       }
-      {supportApCompatibleCheck &&
-        <ApCompatibilityDrawer
-          visible={drawerVisible}
-          type={params.networkId?ApCompatibilityType.NETWORK:ApCompatibilityType.ALONE}
-          networkId={params.networkId}
-          featureName={InCompatibilityFeatures.QOS_MIRRORING}
-          onClose={() => setDrawerVisible(false)}
-        />
-      }
+
+      <ApCompatibilityDrawer
+        visible={drawerVisible}
+        type={params.networkId?ApCompatibilityType.NETWORK:ApCompatibilityType.ALONE}
+        networkId={params.networkId}
+        featureName={InCompatibilityFeatures.QOS_MIRRORING}
+        onClose={() => setDrawerVisible(false)}
+      />
     </>
   )
 }

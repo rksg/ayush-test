@@ -46,6 +46,10 @@ jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => ({
 jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => ({
   ApSnmp: () => <div data-testid='ApSnmp' />
 }))
+jest.mock('./WifiConfigTab/ServerTab/LocationBasedService', () => ({
+  LocationBasedService: () => <div data-testid='LocationBasedService' />
+}))
+
 jest.mock('./WifiConfigTab/NetworkingTab/RadiusOptions', () => ({
   RadiusOptions: () => <div data-testid='RadiusOptions' />
 }))

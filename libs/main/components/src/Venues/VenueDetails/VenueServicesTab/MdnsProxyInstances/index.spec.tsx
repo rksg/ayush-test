@@ -108,6 +108,8 @@ describe('MdnsProxyInstances', () => {
       }
     )
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
     await waitFor(() => expect(queryFn).toBeCalled())
     await waitFor(() => expect(apQueryFn).toBeCalled())
 
@@ -389,7 +391,6 @@ describe('MdnsProxyInstances', () => {
     await userEvent.click(await screen.findByText(targetAp.name))
 
     await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
-
     await userEvent.click(await screen.findByText(targetMdnsProxyService.name))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
