@@ -9,7 +9,8 @@ import {
   SMSToken as UISMSToken, Google as UIGoogle,
   Facebook as UIFacebook, Twitter as UITwitter,
   LinkedIn as UILinkedIn, InformationSolid,
-  EnvelopClosedSolid as UIEmailOTP
+  EnvelopClosedSolid as UIEmailOTP,
+  WarningTriangleSolid as UITriangle
 } from '@acx-ui/icons'
 export const Diagram = styled.div`
   width: 358px;
@@ -107,6 +108,21 @@ export const SMSToken = styled(UISMSToken)`
 
 export const EMailOTP = styled(UIEmailOTP)`
   ${emailOTPIconStyle}
+`
+
+export const WarningTriangleSolid = styled(UITriangle)`
+  width: 16px;
+  height: 16px;
+  path {
+    stroke: white !important;
+  }
+  path:nth-child(1) {
+    stroke: var(--acx-semantics-red-70) !important;
+    fill: var(--acx-semantics-red-70);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-semantics-red-70) !important;
+  }
 `
 
 export const Google = styled(UIGoogle)`
