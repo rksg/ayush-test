@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, Form, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd'
 import { useIntl }                                                     from 'react-intl'
@@ -71,12 +71,16 @@ const useVenueWifiSettings = (venueId: string | undefined) => {
     params: { venueId }, isWifiMeshIndependents56GEnable },
   { skip: !isWifiRbacEnabled })
 
+  const rbacVerData = useMemo(() => {
+    return {
+      dhcpServiceSetting: { enabled: !!dhcpList?.data[0] },
+      mesh: venueMeshSettings
+    } as VenueSettings
+  }, [venueMeshSettings, dhcpList])
+
   return isWifiRbacEnabled
     ? ((venueMeshSettings && dhcpList)
-      ? {
-        dhcpServiceSetting: { enabled: !!dhcpList?.data[0] },
-        mesh: venueMeshSettings
-      } as VenueSettings
+      ? rbacVerData
       : undefined)
     : venueSettings
 }
