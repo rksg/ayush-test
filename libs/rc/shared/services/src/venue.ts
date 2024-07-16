@@ -334,10 +334,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    // only exist in v1(RBAC version)
     getVenueMesh: build.query<Mesh, RequestPayload>({
-      query: ({ params }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
         return {
           ...req
@@ -356,9 +355,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isWifiMeshIndependents56GEnable }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = GetApiVersionHeader(
+          enableRbac ? (isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1) : undefined)
         const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
           ...req,
