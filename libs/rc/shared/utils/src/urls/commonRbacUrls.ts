@@ -257,7 +257,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateSwitchPosition: {
     method: 'put',
     //url: '/switches/:serialNumber/position',
-    url: '/venues/:venueId/switches/:switchId/position',
+    url: '/venues/:venueId/switches/:serialNumber/positions',
     newApi: true
   },
   getVenueCityList: {
