@@ -31,7 +31,7 @@ const defaultPayload = {
 const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | undefined }) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data } = props
   const basicColumns: TableProps<Network>['columns'] = [
@@ -77,14 +77,14 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetNetworkTemplateListQuery :
-      isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
+      enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {
         id: data?.networkIds?.length ? data?.networkIds : ['none']
       }
     },
-    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac
   })
 
   return (

@@ -77,7 +77,7 @@ export default function AAAInstancesTable () {
 
 function useAaaInstanceTableQuery () {
   const { isTemplate } = useConfigTemplate()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const params = useParams()
   const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
@@ -85,7 +85,7 @@ function useAaaInstanceTableQuery () {
   })
   const [ aaaPolicyDataReady, setAaaPolicyDataReady ] = useState(false)
 
-  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+  const getNetworkListQuery = enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : getNetworkListQuery
   const tableQuery = useTableQuery<Network>({
     useQuery,
@@ -103,7 +103,7 @@ function useAaaInstanceTableQuery () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled,
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac,
     option: {
       skip: !aaaPolicyDataReady
     }

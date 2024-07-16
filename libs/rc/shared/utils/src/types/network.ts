@@ -70,14 +70,13 @@ export interface Network extends BaseNetwork{
   isOnBoarded?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string,
-  incompatible?: number
   certificateTemplateId?: string
   apSerialNumbers?: string[]
 }
 
 export interface WifiNetwork extends Network{
-  clientCount: number,
-  venueApGroups: VenueApGroup[],
+  clientCount: number,  // RBAC API only: replace the client field
+  venueApGroups: VenueApGroup[], // RBAC API only: replace the venues field
   tunnelWlanEnable?: boolean
 }
 

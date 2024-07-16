@@ -24,7 +24,7 @@ const defaultPayload = {
 const WifiCallingNetworksDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const basicColumns: TableProps<Network>['columns'] = [
     {
@@ -68,14 +68,14 @@ const WifiCallingNetworksDetail = () => {
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetNetworkTemplateListQuery :
-      isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
+      enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {
         id: networkIds?.length ? networkIds : ['none']
       }
     },
-    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac
   })
 
   return (
