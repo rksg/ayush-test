@@ -36,9 +36,9 @@ jest.mock('./multiVenue/AddEdgeSdLan', () => () => {
 jest.mock('./multiVenue/EditEdgeSdLan', () => () => {
   return <div data-testid='EditEdgeMvSdLan' />
 })
-// jest.mock('./P2/EdgeSdLanTable', () => () => {
-//   return <div data-testid='EdgeSdLanTableP2' />
-// })
+jest.mock('./multiVenue/EdgeSdLanTable', () => () => {
+  return <div data-testid='EdgeMvSdLanTable' />
+})
 // jest.mock('../P2/EdgeSdLanDetail', () => () => {
 //   return <div data-testid='EdgeSdLanDetailP2' />
 // })
@@ -54,9 +54,9 @@ describe('All enabled', () => {
     render(<Provider><EditEdgeSdLan /></Provider>)
     expect(screen.getByTestId('EditEdgeMvSdLan')).toBeVisible()
   })
-  it('should navigate to Edge SD-LAN P2 list page', async () => {
+  it('should navigate to Edge multi-venue SD-LAN list page', async () => {
     render(<Provider><EdgeSdLanTable /></Provider>)
-    expect(screen.getByTestId('EdgeSdLanTableP2')).toBeVisible()
+    expect(screen.getByTestId('EdgeMvSdLanTable')).toBeVisible()
   })
   it('should navigate to Edge SD-LAN P2 detail page', async () => {
     render(<Provider><EdgeSdLanDetail /></Provider>)
@@ -152,6 +152,7 @@ describe('All NOT enabled', () => {
   })
   it('should navigate to Edge SD-LAN P2 list page', async () => {
     render(<Provider><EdgeSdLanTable /></Provider>)
+    expect(screen.queryByTestId('EdgeMvSdLanTable')).toBe(null)
     expect(screen.queryByTestId('EdgeSdLanTableP2')).toBe(null)
     expect(screen.queryByTestId('EdgeSdLanTableP1')).toBe(null)
   })
