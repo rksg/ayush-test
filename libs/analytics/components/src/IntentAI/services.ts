@@ -60,9 +60,6 @@ export const api = intentAIApi.injectEndpoints({
             sliceType
             sliceValue
             metadata
-            excludedPaths {
-              name
-            }
             path {
               type
               name
