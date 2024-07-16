@@ -5,9 +5,10 @@ import { useIntl } from 'react-intl'
 
 import { Loader, Drawer, Table, TableProps }                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { APStatus, seriesMappingAP }                                       from '@acx-ui/rc/components'
+import { APStatus }                                                        from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export interface LbsServerVenueApsDrawerProps {
   venue: Venue,
@@ -29,7 +30,13 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
   const tableQuery = useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      fields: ['name', 'deviceStatus', 'apMac'],
+      fields: [
+        'name',
+        'deviceStatus',
+        'apMac',
+        'isLbsMgmtConnected',
+        'isLbsServerConnected',
+        'serialNumber'],
       filters: getVenueFilter(venue),
       search: {
         searchTargetFields: ['name', 'apMac']
@@ -56,13 +63,22 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
     setVisible(false)
   }
 
+  const renderConnectionState = (conn: boolean) => {
+    return conn ? $t({ defaultMessage: 'Connected' }) : $t({ defaultMessage: 'Disconnected' })
+  }
+
   const columns: TableProps<AP>['columns'] = [
     {
-      title: $t({ defaultMessage: 'AP' }),
+      title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
       key: 'name',
+      sorter: true,
+      fixed: 'left',
       searchable: true,
-      sorter: true
+      render: (_, row, __, highlightFn) => (
+        <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
+          {highlightFn(row.name || '--')}</TenantLink>
+      )
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -70,8 +86,6 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
       key: 'deviceStatus',
       sorter: true,
       disable: true,
-      filterKey: 'deviceStatusSeverity',
-      filterable: seriesMappingAP().map(item => ({ key: item.key, value: item.name })),
       render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
     },
     {
@@ -79,6 +93,25 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
       dataIndex: 'apMac',
       key: 'apMac',
       searchable: true
+    },
+    {
+      title: $t({ defaultMessage: 'LBS Mgmt. Connection' }),
+      dataIndex: 'isLbsMgmtConnected',
+      key: 'isLbsMgmtConnected',
+      width: 160,
+      sorter: true,
+      render: (_, { isLbsMgmtConnected }) => 
+        {return renderConnectionState(isLbsMgmtConnected as boolean)}
+      
+    },
+    {
+      title: $t({ defaultMessage: 'LBS Server Connection' }),
+      dataIndex: 'isLbsServerConnected',
+      key: 'isLbsServerConnected',
+      width: 160,
+      sorter: true,
+      render: (_, { isLbsServerConnected }) =>
+        { return renderConnectionState(isLbsServerConnected as boolean)}
     }
   ]
 
@@ -97,12 +130,12 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: '{venueName}: APs' }, { VenueName: venue.name })}
+      title={$t({ defaultMessage: '{venueName}: APs' }, { venueName: venue.name })}
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}
       children={content}
-      width={'800px'}
+      width={'900px'}
     />
   )
 }
