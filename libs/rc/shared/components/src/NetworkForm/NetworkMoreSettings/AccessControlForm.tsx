@@ -188,7 +188,6 @@ export function AccessControlForm () {
 
 function AddAcProfileModal (props: AcProfileModalProps) {
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
   const params = useParams()
 
   const { modalStatus, setModalStatus, updateSelectedACProfile } = props
