@@ -31,6 +31,31 @@ export async function handleCallbackWhenActivitySuccess (
   api: SocketActivityChangedParams[1],
   activityData: Transaction,
   targetUseCase: string,
+  callback?: unknown
+) {
+  try {
+    if (!callback || typeof callback !== 'function') return
+
+    const response = await api.cacheDataLoaded
+
+    if (!response) return
+
+    if (
+      activityData.useCase === targetUseCase &&
+      activityData.steps?.find(step => step.id === targetUseCase)?.status !== 'IN_PROGRESS'
+    ) {
+      callback()
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+  }
+}
+
+export async function handleCallbackWhenActivityDone (
+  api: SocketActivityChangedParams[1],
+  activityData: Transaction,
+  targetUseCase: string,
   callback?: unknown,
   failedCallback?: unknown
 ) {

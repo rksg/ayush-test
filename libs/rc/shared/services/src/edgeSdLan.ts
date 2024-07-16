@@ -28,8 +28,8 @@ import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import { serviceApi }                        from './service'
-import { handleCallbackWhenActivitySuccess } from './utils'
+import { serviceApi }                                                        from './service'
+import { handleCallbackWhenActivityDone, handleCallbackWhenActivitySuccess } from './utils'
 
 const versionHeader = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -375,7 +375,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(api, msg,
+          await handleCallbackWhenActivityDone(api, msg,
             EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
             requestArgs.callback,
             requestArgs.failedCallback
@@ -392,7 +392,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(api, msg,
+          await handleCallbackWhenActivityDone(api, msg,
             EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
             requestArgs.callback,
             requestArgs.failedCallback
@@ -501,7 +501,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(api, msg,
+          await handleCallbackWhenActivityDone(api, msg,
             EdgeSdLanActivityEnum.ADD,
             requestArgs.callback,
             requestArgs.failedCallback
@@ -520,7 +520,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeMvSdLan', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(api, msg,
+          await handleCallbackWhenActivityDone(api, msg,
             EdgeSdLanActivityEnum.UPDATE,
             requestArgs.callback,
             requestArgs.failedCallback
