@@ -258,7 +258,7 @@ export const apKeyMap = [
   { id: 254, value: 'initialState.ccmAp.radio5g.cband_channel_license', text: defineMessage({ defaultMessage: 'Based on country: 5.8 GHz Channel License' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 255, value: 'initialState.ccmAp.radio5g.channel_144_enable', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 256, value: 'initialState.ccmAp.radio5g.radio.radio_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 257, value: 'initialState.ccmAp.radio_configs.dual_5g_enable', text: defineMessage({ defaultMessage: 'Dual 5 GHz: Enabled' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 257, value: 'initialState.ccmAp.radio_configs.dual_5g_enable', text: defineMessage({ defaultMessage: 'Dual 5G: Enabled' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 258, value: 'initialState.ccmAp.radio_configs.radio24g.radio.adj_threshold', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 259, value: 'initialState.ccmAp.radio_configs.radio24g.radio.auto_cell_sizing', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 260, value: 'initialState.ccmAp.radio_configs.radio24g.radio.bg_scan', text: 'TBD', textAlto: defineMessage({ defaultMessage: 'Channel Selection Method: Background scanning (2.4 GHz)' }), enumType: '', incidents: {}, kpis: {} },
@@ -389,7 +389,7 @@ export const apKeyMap = [
   { id: 385, value: 'initialState.ccmAp.radio_configs.radio5gUpper.radio.wlan_service_enabled', text: defineMessage({ defaultMessage: 'Wlan Service (Upper 5 GHz)' }), textAlto: defineMessage({ defaultMessage: 'Enable Upper 5 GHz band' }), enumType: '', incidents: {}, kpis: {} },
   { id: 386, value: 'initialState.ccmAp.radio_configs.radio5gUpper.secondary_channel', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 387, value: 'initialState.ccmAp.radio_configs.radio6g.channel2_enable', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 388, value: 'initialState.ccmAp.radio_configs.radio6g.low_power_indoor_mode_enable', text: defineMessage({ defaultMessage: 'AFC Disable (6 GHz)' }), textAlto: defineMessage({ defaultMessage: 'AFC Disable (6 GHz)' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, userAuthentication: 1, association: 1, clientThroughput: 1, rss: 1 } },
+  { id: 388, value: 'initialState.ccmAp.radio_configs.radio6g.low_power_indoor_mode_enable', text: defineMessage({ defaultMessage: 'AFC Disable' }), textAlto: defineMessage({ defaultMessage: 'AFC Enable' }), enumType: '', incidents: {}, kpis: { connectionSuccess: 1, timeToConnect: 1, userAuthentication: 1, association: 1, clientThroughput: 1, rss: 1 } },
   { id: 389, value: 'initialState.ccmAp.radio_configs.radio6g.radio.adj_threshold', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 390, value: 'initialState.ccmAp.radio_configs.radio6g.radio.auto_cell_sizing', text: defineMessage({ defaultMessage: 'Auto Cell Sizing (6 GHz)' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 391, value: 'initialState.ccmAp.radio_configs.radio6g.radio.bg_scan', text: 'TBD', textAlto: defineMessage({ defaultMessage: 'Channel Selection Method: Background Scanning (6 GHz)' }), enumType: '', incidents: {}, kpis: {} },
@@ -455,6 +455,6 @@ export const apKeyMap = [
   { id: 451, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_port', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 452, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_protocol', text: 'TBD', textAlto: 'TBD', enumType: 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmSyslog.Protocol', incidents: {}, kpis: {} },
   { id: 453, value: 'initialState.ccmAp.syslog.custom_ap_syslog_server.secondary_server_ip', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 454, value: 'initialState.ccmAp.management_identifiers.map_entries.venueName', text: '', textAlto: defineMessage({ defaultMessage: '<VenueSingular></VenueSingular>' }), enumType: '', incidents: {}, kpis: {} },
-  { id: 455, value: 'initialState.ccmAp.management_identifiers.map_entries.apGroupName', text: '', textAlto: defineMessage({ defaultMessage: '<VenueSingular></VenueSingular> (AP configure AP Group change)' }), enumType: '', incidents: {}, kpis: {} }
+  { id: 454, value: 'initialState.ccmAp.management_identifiers.map_entries.venueName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue' }), enumType: '', incidents: {}, kpis: {} },
+  { id: 455, value: 'initialState.ccmAp.management_identifiers.map_entries.apGroupName', text: '', textAlto: defineMessage({ defaultMessage: 'Venue (AP configure AP Group change)' }), enumType: '', incidents: {}, kpis: {} }
 ]
