@@ -127,8 +127,9 @@ export function NetworkForm (props:{
 }) {
 
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = isUseWifiRbacApi && !isTemplate
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
 
   const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
@@ -534,7 +535,8 @@ export function NetworkForm (props:{
             'hotspot20Settings.identityProviders',
             'hotspot20Settings.originalProviders']))
 
-      const networkResponse = await addNetworkInstance({ params, payload, enableRbac }).unwrap()
+      // eslint-disable-next-line max-len
+      const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
@@ -621,7 +623,7 @@ export function NetworkForm (props:{
     try {
       processData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
-      await updateNetworkInstance({ params, payload, enableRbac }).unwrap()
+      await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
@@ -875,14 +877,17 @@ function useUpdateInstance () {
 
 function useGetInstance (isEdit: boolean) {
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const networkResult = useGetNetworkQuery({
     params,
     enableRbac: isUseWifiRbacApi
   }, { skip: isTemplate })
-  // eslint-disable-next-line max-len
-  const networkTemplateResult = useGetNetworkTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
+  const networkTemplateResult = useGetNetworkTemplateQuery({
+    params,
+    enableRbac: isConfigTemplateRbacEnabled
+  }, { skip: !isEdit || !isTemplate })
 
   return isTemplate ? networkTemplateResult : networkResult
 }

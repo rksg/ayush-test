@@ -45,6 +45,14 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/radiusServerProfiles/:policyId',
     newApi: true
   },
+  getAAAPolicyRbac: {
+    method: 'get',
+    url: '/radiusServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   addAAAPolicyRbac: {
     method: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/radius',
