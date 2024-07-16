@@ -4,6 +4,7 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps }         from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
 import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
@@ -40,6 +41,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     isOverridable,
     createOverrideModalProps
   } = useConfigTemplateOverride(selectedTemplate, selectedRows)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
@@ -64,7 +66,8 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
       return applyConfigTemplate({
         params: { templateId: selectedTemplate.id, tenantId: ec.id },
-        payload: transformOverrideValues(overrideValue)
+        payload: transformOverrideValues(overrideValue),
+        enableRbac: isConfigTemplateRbacEnabled
       }).unwrap()
     })
 

@@ -4,6 +4,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getConfigTemplates: {
     method: 'post',
     url: '/templates/query',
+    newApi: true
+  },
+  getConfigTemplatesRbac: {
+    method: 'post',
+    url: '/templates/query',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -11,6 +16,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   applyConfigTemplate: {
+    method: 'post',
+    url: '/templates/:templateId/tenant/:tenantId',
+    newApi: true
+  },
+  applyConfigTemplateRbac: {
     method: 'post',
     url: '/templates/:templateId/tenant/:tenantId',
     newApi: true,
