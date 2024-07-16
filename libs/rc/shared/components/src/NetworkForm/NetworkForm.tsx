@@ -541,10 +541,8 @@ export function NetworkForm (props:{
       await updateRadiusServer(saveState, data, networkId)
       await updateWifiCallingActivation(networkId, saveState)
       await updateAccessControl(saveState, data)
-      // eslint-disable-next-line max-len
-      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
-      const hasResult = certResponse ?? networkResponse?.response
-      if (hasResult && payload.venues) {
+      await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
+      if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)

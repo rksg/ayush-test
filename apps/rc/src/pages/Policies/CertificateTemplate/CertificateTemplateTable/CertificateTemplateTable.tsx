@@ -6,10 +6,9 @@ import { useIntl }              from 'react-intl'
 import { Button, Loader, Table, TableProps, showActionModal }                                                                                                                                                                    from '@acx-ui/components'
 import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel }                                                                                                                                                       from '@acx-ui/rc/components'
 import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                                                                                                 from '@acx-ui/rc/utils'
+import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, hasCloudpathAccess, useTableQuery }                                                                                                             from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                          from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                                                                                                                                                            from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                                                                                         from '@acx-ui/user'
+import { filterByAccess }                                                                                                                                                                                                        from '@acx-ui/user'
 import { noDataDisplay }                                                                                                                                                                                                         from '@acx-ui/utils'
 
 import { deleteDescription } from '../contentsMap'
@@ -192,13 +191,11 @@ export default function CertificateTemplateTable () {
             policyId: selectedRows[0].id
           })
         })
-      },
-      scopeKey: [WifiScopes.UPDATE]
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection),
-      scopeKey: [WifiScopes.DELETE]
+      onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection)
     }
   ]
 
@@ -254,7 +251,7 @@ export default function CertificateTemplateTable () {
         onChange={tableQuery.handleTableChange}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
+          hasCloudpathAccess() && { type: 'radio' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

@@ -1,8 +1,8 @@
 import moment from 'moment-timezone'
 
-import { algorithmLabel }                                                                                                                                             from '@acx-ui/rc/components'
-import { Certificate, CertificateStatusType, EXPIRATION_TIME_FORMAT, CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                     from '@acx-ui/utils'
+import { algorithmLabel }                                                                                                                                                                 from '@acx-ui/rc/components'
+import { Certificate, CertificateStatusType, EXPIRATION_TIME_FORMAT, CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, KeyUsageType, UsageType, hasCloudpathAccess } from '@acx-ui/rc/utils'
+import { getIntl, noDataDisplay }                                                                                                                                                         from '@acx-ui/utils'
 
 
 import { certificateStatusTypeLabel, keyUsagesLabel, usagesLabel } from '../contentsMap'
@@ -132,11 +132,11 @@ export const getCertificateDetails =
           }
         ]
       },
-      {
+      ...(hasCloudpathAccess() ? [{
         type: RenderType.DOWNLOAD,
         title: $t({ defaultMessage: 'Download' }),
         content: CertificateCategoryType.CERTIFICATE
-      },
+      }] : []),
       {
         type: RenderType.TITLE,
         title: $t({ defaultMessage: 'Usage' }),
@@ -264,11 +264,11 @@ export const getCertificateAuthorityDetails =
             }
           ]
       },
-      {
+      ...(hasCloudpathAccess() ? [{
         type: RenderType.DOWNLOAD,
         title: $t({ defaultMessage: 'Download' }),
         content: CertificateCategoryType.CERTIFICATE_AUTHORITY
-      },
+      }] : []),
       {
         type: RenderType.TITLE_WITH_DETAILS,
         title: $t({ defaultMessage: 'Sub CAs ({count})' }, { count: subCas?.length }),
