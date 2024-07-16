@@ -97,7 +97,8 @@ jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services'),
   useAddMspLabelMutation: () => (''),
   useUpdateMspLabelMutation: () => (''),
-  useGetUploadURLMutation: () => ('')
+  useGetUploadURLMutation: () => (''),
+  useGetMspUploadURLMutation: () => ('')
 }))
 const utils = require('@acx-ui/utils')
 jest.mock('@acx-ui/utils', () => ({
@@ -125,9 +126,14 @@ describe('PortalSettings', () => {
       return Promise.resolve(fileUrl + imageId)
     })
     jest.spyOn(services, 'useGetUploadURLMutation')
+    jest.spyOn(services, 'useGetMspUploadURLMutation')
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getUploadURL.url,
+        (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
+      ),
+      rest.post(
+        MspUrlsInfo.getUploadURL.url,
         (req, res, ctx) => res(ctx.json({ fileId: 'f1-001/xml', signedUrl: 'www.storage.com' }))
       )
     )

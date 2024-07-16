@@ -90,7 +90,9 @@ export const useCasesToRefreshRadiusServerTemplateList = [
 export const useCasesToRefreshWifiCallingTemplateList = [
   'AddWifiCallingServiceProfileTemplate',
   'UpdateWifiCallingServiceProfileTemplate',
-  'DeleteWifiCallingServiceProfileTemplate'
+  'DeleteWifiCallingServiceProfileTemplate',
+  'ActivateWifiCallingServiceProfileTemplateOnWifiNetworkTemplate',
+  'DeactivateWifiCallingServiceProfileTemplateOnWifiNetworkTemplate'
 ]
 
 export const useCasesToRefreshSyslogTemplateList = [

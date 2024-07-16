@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, MdnsProxyUrls } from '@acx-ui/rc/utils'
-import { Path, To }                      from '@acx-ui/react-router-dom'
-import { Provider }                      from '@acx-ui/store'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, MdnsProxyUrls } from '@acx-ui/rc/utils'
+import { Path, To }                                          from '@acx-ui/react-router-dom'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -92,7 +92,7 @@ describe('MdnsProxyInstances', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => {
           apQueryFn()
           return res(ctx.json(mockedApList))
@@ -164,7 +164,7 @@ describe('MdnsProxyInstances', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => {
           apQueryFn()
           return res(ctx.json(mockedApList))
@@ -357,6 +357,13 @@ describe('MdnsProxyInstances', () => {
       ),
       rest.post(
         CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => {
+          apQueryFn()
+          return res(ctx.json(mockedApList))
+        }
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => {
           apQueryFn()
           return res(ctx.json(mockedApList))
