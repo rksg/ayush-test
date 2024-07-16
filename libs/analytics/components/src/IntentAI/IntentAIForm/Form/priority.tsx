@@ -59,7 +59,6 @@ export function Priority () {
       </StepsForm.Subtitle>
       <Form.Item name={['preferences', 'crrmFullOptimization']}>
         <TradeOff
-          defaultValue={priority[0].value}
           radios={priority}
           headers={[
             $t({ defaultMessage: 'Intent Priority' }),
