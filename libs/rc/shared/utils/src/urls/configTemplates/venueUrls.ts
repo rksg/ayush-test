@@ -414,6 +414,15 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/api/viewmodel/:tenantId/venuetemplate/citylist',
     newApi: true
   },
+  getVenueCityListRbac: {
+    method: 'post',
+    url: '/templates/venues/citylist/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getVenueSwitchSetting: {
     method: 'get',
     url: '/templates/venues/:venueId/switchSettings',

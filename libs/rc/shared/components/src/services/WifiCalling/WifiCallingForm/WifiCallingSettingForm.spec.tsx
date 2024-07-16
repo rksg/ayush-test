@@ -11,8 +11,8 @@ import { EPDG, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls 
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
-import { mockRbacWifiCallingTableResult, mockWifiCallingTableResult, wifiCallingSettingTable } from '../__tests__/fixtures'
-import WifiCallingFormContext                                                                  from '../WifiCallingFormContext'
+import { mockRbacWifiCallingTableResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                                         from '../WifiCallingFormContext'
 
 import WifiCallingSettingForm from './WifiCallingSettingForm'
 
@@ -84,8 +84,6 @@ describe('WifiCallingSettingForm', () => {
           mockedEnhancedWifiCallingList()
           return res(ctx.json(mockWifiCallingTableResult))
         }),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(wifiCallingSettingTable))),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
         (req, res, ctx) => {
           return res(ctx.json(mockWifiCallingTableResult))
@@ -116,7 +114,7 @@ describe('WifiCallingSettingForm', () => {
     expect(desc).toBeEmptyDOMElement()
 
     await userEvent.type(serviceName, 'serviceTest')
-    expect(serviceName).toHaveValue('serviceTest')
+    expect(await screen.findByRole('textbox', { name: /service name/i })).toHaveValue('serviceTest')
 
     await userEvent.type(desc, 'desc')
     expect(desc).toHaveValue('desc')

@@ -16,14 +16,16 @@ const defaultPayload = {
     'name',
     'nwSubType',
     'venues',
-    'id'
+    'id',
+    'venueApGroups'
   ]
 }
 
 const WifiCallingNetworksDetail = () => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
@@ -72,7 +74,8 @@ const WifiCallingNetworksDetail = () => {
       filters: {
         id: networkIds?.length ? networkIds : ['none']
       }
-    }
+    },
+    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled
   })
 
   return (

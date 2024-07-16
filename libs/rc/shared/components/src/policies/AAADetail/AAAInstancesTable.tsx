@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -78,11 +78,12 @@ export default function AAAInstancesTable () {
 function useAaaInstanceTableQuery () {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const params = useParams()
   const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
     customPayload: { filters: { id: [ params?.policyId ] } }
   })
+  const [ aaaPolicyDataReady, setAaaPolicyDataReady ] = useState(false)
 
   const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : getNetworkListQuery
@@ -102,9 +103,9 @@ function useAaaInstanceTableQuery () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    enableRbac,
+    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled,
     option: {
-      skip: !aaaPolicyViewModel
+      skip: !aaaPolicyDataReady
     }
   })
 
@@ -117,6 +118,8 @@ function useAaaInstanceTableQuery () {
       ...tableQuery.payload,
       filters: { id: networkIds.length > 0 ? networkIds : ['NO_NETWORK'] }
     })
+
+    setAaaPolicyDataReady(true)
   }, [aaaPolicyViewModel])
 
   return tableQuery

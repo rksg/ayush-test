@@ -11,11 +11,13 @@ import { TenantLink }                                                           
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
 export default function DpskInstancesTable (props: { networkIds?: string[] }) {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const { $t } = useIntl()
   const { networkIds } = props
   const { isTemplate } = useConfigTemplate()
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery :
     isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
   const tableQuery = useTableQuery<Network|WifiNetwork>({
@@ -23,7 +25,8 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
     defaultPayload: {
       fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id', 'venueApGroups'],
       filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
-    }
+    },
+    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled
   })
 
   useEffect(() => {

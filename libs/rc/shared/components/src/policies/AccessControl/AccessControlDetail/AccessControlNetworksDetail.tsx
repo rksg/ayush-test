@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -29,10 +29,10 @@ const defaultPayload = {
 }
 
 const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | undefined }) => {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data } = props
   const basicColumns: TableProps<Network>['columns'] = [
     {
@@ -83,7 +83,8 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
       filters: {
         id: data?.networkIds?.length ? data?.networkIds : ['none']
       }
-    }
+    },
+    enableRbac: isTemplate ? enableTemplateRbac : isWifiRbacEnabled
   })
 
   return (

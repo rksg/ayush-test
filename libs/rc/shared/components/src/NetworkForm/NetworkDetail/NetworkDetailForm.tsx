@@ -53,6 +53,10 @@ export function NetworkDetailForm () {
 
   // eslint-disable-next-line max-len
   const isPortalServiceEnabled = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL)
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
@@ -85,14 +89,14 @@ export function NetworkDetailForm () {
 
   const nameValidator = async (value: string) => {
     const payload = { ...networkListPayload, searchString: value }
-    const list = (await getInstanceList({ params, payload }, true).unwrap()).data
+    // eslint-disable-next-line max-len
+    const list = (await getInstanceList({ params, payload, enableRbac: resolvedRbacEnabled }, true).unwrap()).data
       .filter(n => n.id !== params.networkId)
       .map(n => n.name)
 
     return checkObjectNotExists(list, value, intl.$t({ defaultMessage: 'Network' }))
   }
 
-  const { isTemplate } = useConfigTemplate()
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },

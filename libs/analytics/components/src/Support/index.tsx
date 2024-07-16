@@ -24,7 +24,7 @@ export const Support = () => {
 
   return <Loader states={[result]}>
     <Form layout='horizontal' labelAlign='left'>
-      <StepsForm.DescriptionWrapper>
+      <StepsForm.TextContent>
         <Form.Item>
           <Checkbox
             onChange={()=>setSupport({
@@ -37,12 +37,12 @@ export const Support = () => {
             {$t({ defaultMessage: 'Enable access to Ruckus Support' })}
           </Checkbox>
         </Form.Item>
-        <Typography.Paragraph className='description descriptionsWrapper greyText'>
+        <Typography.Paragraph className='indent greyText'>
           {$t({ defaultMessage: `Enable this when requested by RUCKUS support team.
             By enabling this, you are granting RUCKUS support with temporary
             administrator-level access.` })}
         </Typography.Paragraph>
-      </StepsForm.DescriptionWrapper>
+      </StepsForm.TextContent>
     </Form>
   </Loader>
 }

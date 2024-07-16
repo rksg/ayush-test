@@ -556,7 +556,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
 
-    newNetworkVenueTable: build.query<TableResult<Venue>, RequestPayload>({
+    newNetworkVenueTable: build.query<TableResult<Venue>, RequestPayload<{ isTemplate?: boolean }>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const {
           error: networkVenuesListQueryError,
