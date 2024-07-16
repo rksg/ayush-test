@@ -41,7 +41,8 @@ import {
   MspEntitlement,
   downloadFile,
   Venue,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -936,6 +937,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const request = createHttpRequest(mspUrlsInfo.getUploadURL, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1047,7 +1058,8 @@ export const {
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
   useAddBrandCustomersMutation,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useGetMspUploadURLMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'
