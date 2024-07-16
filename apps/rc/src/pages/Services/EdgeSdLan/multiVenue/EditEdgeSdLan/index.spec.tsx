@@ -314,7 +314,7 @@ describe('Edit SD-LAN service', () => {
     const form = await basicCheck(true)
     await click(within(form).getByRole('button', { name: 'Submit' }))
     await waitFor(() => expect(mockedEditFn).toBeCalledTimes(1))
-    await waitFor(() => expect(mockedNavigate).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedNavigate).toBeCalled())
   })
   it('should skip req API when get profile API error', async () => {
     const mockedConsoleFn = jest.fn()

@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { Col, Form, Row, Typography } from 'antd'
-import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
 
 import { StepsForm, useStepFormContext }        from '@acx-ui/components'
@@ -12,7 +11,8 @@ import {
   isVlanVxlanDefaultTunnelProfile,
   MtuTypeEnum,
   TunnelTypeEnum,
-  EdgeMvSdLanFormModel
+  EdgeMvSdLanFormModel,
+  EdgeMvSdLanFormNetwork
 } from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../messageMappings'
@@ -116,16 +116,20 @@ export const TunnelNetworkForm = () => {
       <Row >
         <Col span={24}>
           <Form.Item
-            noStyle
-            shouldUpdate={(prev, cur) => {
-              return _.get(prev, 'activatedNetworks') !== _.get(cur, 'activatedNetworks')
-                  || _.get(prev, 'activatedGuestNetworks') !== _.get(cur, 'activatedGuestNetworks')
-            }}
+            name='activatedNetworks'
+            rules={[
+              { required: true },
+              {
+                validator: (_, value) => {
+                  return value && Object.keys((value as EdgeMvSdLanFormNetwork)).length > 0
+                    ? Promise.resolve()
+                  // eslint-disable-next-line max-len
+                    : Promise.reject($t({ defaultMessage: 'Please select at least 1 <venueSingular></venueSingular> network' }))
+                }
+              }
+            ]}
           >
-            {({ getFieldValue }) => <EdgeSdLanVenueNetworksTable
-              activated={getFieldValue('activatedNetworks')}
-              activatedGuest={getFieldValue('activatedGuestNetworks')}
-            />}
+            <EdgeSdLanVenueNetworksTable />
           </Form.Item>
         </Col>
       </Row>

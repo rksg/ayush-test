@@ -103,14 +103,14 @@ const useMockedFormHook = (initData: Record<string, unknown>) => {
   return form
 }
 
-type MockedTargetComponentType = Pick<StepsFormProps, 'form' | 'editMode'> & {
+type MockedTargetComponentType = Pick<StepsFormProps, 'form' | 'editMode' | 'initialValues'> & {
   ctxValues?: EdgeMvSdLanContextType
 }
 const MockedTargetComponent = (props: MockedTargetComponentType) => {
-  const { form, editMode, ctxValues } = props
+  const { form, editMode, initialValues, ctxValues } = props
   return <Provider>
     <EdgeMvSdLanContext.Provider value={ctxValues ?? edgeMvSdlanContextValues}>
-      <StepsForm form={form} editMode={editMode}>
+      <StepsForm form={form} editMode={editMode} initialValues={initialValues}>
         <TunnelNetworkForm />
       </StepsForm>
     </EdgeMvSdLanContext.Provider>
@@ -172,17 +172,16 @@ describe('Tunneled Venue Networks Form', () => {
 
   it('should correctly render in edit mode', async () => {
     const mockedNetworkIds = ['network_1', 'network_2']
-    const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-      activatedNetworks: {
-        venue_00003: mockedNetworkIds.map(id => ({ id }))
-      }
-    }))
+    const { result: stepFormRef } = renderHook(() => useMockedFormHook())
 
     render(<MockedTargetComponent
       form={stepFormRef.current}
       editMode={true}
       initialValues={{
-        networkIds: mockedNetworkIds
+        networks: { venue_00003: mockedNetworkIds },
+        activatedNetworks: {
+          venue_00003: mockedNetworkIds.map(id => ({ id }))
+        }
       }}
     />, { route: { params: { tenantId: 't-id' } } })
 

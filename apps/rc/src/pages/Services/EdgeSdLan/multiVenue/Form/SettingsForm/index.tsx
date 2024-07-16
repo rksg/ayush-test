@@ -82,15 +82,19 @@ export const SettingsForm = () => {
   useEffect(() => {
     if (editMode && initialValues && clusterData) {
       const { edgeClusterId, guestEdgeClusterId } = initialValues
+
       // eslint-disable-next-line max-len
       const edgeClusterVenueId = clusterData.filter(i => i.clusterId === edgeClusterId)[0].venueId
-      // eslint-disable-next-line max-len
-      const guestEdgeClusterVenueId = clusterData.filter(i => i.clusterId === guestEdgeClusterId)[0].venueId
 
-      form.setFieldsValue({
-        venueId: edgeClusterVenueId,
-        guestEdgeClusterVenueId
-      })
+      const updateData: Record<string, string|undefined> = { venueId: edgeClusterVenueId }
+
+      if (guestEdgeClusterId) {
+      // eslint-disable-next-line max-len
+        const guestEdgeClusterVenueId = clusterData.filter(i => i.clusterId === guestEdgeClusterId)[0].venueId
+        updateData.guestEdgeClusterVenueId = guestEdgeClusterVenueId
+      }
+
+      form.setFieldsValue(updateData)
     }
   }, [clusterData, editMode, initialValues])
 

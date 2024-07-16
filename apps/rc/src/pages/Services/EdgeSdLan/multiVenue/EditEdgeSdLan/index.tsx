@@ -75,7 +75,9 @@ const EditEdgeMvSdLan = () => {
 
             navigate(linkToServiceList, { replace: true })
           }
-        // need to catch basic service profile failed
+        }).then(() => {
+          navigate(linkToServiceList, { replace: true })
+          // need to catch basic service profile failed
         }).catch(reject)
       })
     } catch(err) {

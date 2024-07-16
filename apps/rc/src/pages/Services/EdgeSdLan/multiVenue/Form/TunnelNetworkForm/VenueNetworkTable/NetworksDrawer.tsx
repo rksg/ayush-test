@@ -16,7 +16,7 @@ const toggleItemFromSelected = (
   data: Network,
   selectedNetworks: EdgeMvSdLanFormNetwork
 ) => {
-  let newSelected: EdgeMvSdLanFormNetwork = {}
+  let newSelected: EdgeMvSdLanFormNetwork = cloneDeep(selectedNetworks)
   if (checked) {
     newSelected[venueId] = unionBy(selectedNetworks?.[venueId],
       [pick(data, ['id', 'name'])], 'id')
@@ -71,7 +71,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     data: Network,
     checked: boolean
   ) => {
-    const { activatedNetworks = {}, activatedGuestNetworks = {} } = updateContent
+    const { activatedNetworks, activatedGuestNetworks } = updateContent
 
     // eslint-disable-next-line max-len
     const affectedNetworks = (fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks)
@@ -114,6 +114,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     Object.keys(updateContent).forEach(d => {
       formRef.setFieldValue(d, updateContent[d])
     })
+    formRef.validateFields(['activatedNetworks'])
     onClose()
   }
 

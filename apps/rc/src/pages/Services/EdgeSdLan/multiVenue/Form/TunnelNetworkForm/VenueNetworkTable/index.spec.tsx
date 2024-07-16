@@ -85,7 +85,7 @@ describe('Tunneled Venue Networks Table', () => {
 
   it('should correctly render', async () => {
     render(<MockedTargetComponent
-      activated={{
+      value={{
         venue_00002: [{
           id: 'network1',
           name: 'Network_1'
@@ -140,7 +140,7 @@ describe('Tunneled Venue Networks Table', () => {
     const venueId = 'venue_00002'
     const venueName = mockedVenueList.data.find(i => i.id === venueId)?.name
     render(<MockedTargetComponent
-      activated={{
+      value={{
         [venueId]: [{
           id: 'network_1',
           name: 'Network1'
@@ -168,8 +168,7 @@ describe('Tunneled Venue Networks Table', () => {
     const useMockedFormHook = (initData: Record<string, unknown>) => {
       const [ form ] = Form.useForm()
       form.setFieldsValue({
-        venueId: targetVenue.id,
-        name: targetVenue.name,
+        ...mockedOverlapSdLans[0],
         ...initData
       })
       return form
