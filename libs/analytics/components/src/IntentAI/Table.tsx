@@ -35,12 +35,14 @@ export function IntentAITable (
     {
       key: getShowWithoutRbacCheckKey('1-click-optimize'),
       label: $t({ defaultMessage: '1-Click Optimize' }),
-      visible: (rows) => rows?.filter(row =>
-        row.status !== 'new' ||
-        !(row.code.startsWith('c-probeflex-') || row.code.startsWith('c-crrm'))).length === 0,
-      onClick: async (rows) => {
-        intentActions.showOneClickOptimize(rows)
-        clearSelection()
+      visible: (rows) => {
+        const isVisible = rows?.filter(row =>
+          row.status !== 'New' ||
+          !(row.code.startsWith('c-probeflex-') || row.code.startsWith('c-crrm'))).length === 0
+        return isVisible
+      },
+      onClick: (rows) => {
+        intentActions.showOneClickOptimize(rows, ()=> clearSelection())
       }
     }
   ]
@@ -103,7 +105,7 @@ export function IntentAITable (
         columns={columns}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasPermission({ permission: 'WRITE_INCIDENTS' }) && {
+        rowSelection={hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
           type: 'checkbox',
           selectedRowKeys
         }}

@@ -94,7 +94,7 @@ describe('Recommendation services', () => {
         intent: 'Time to Connect vs. Client Density for 5 GHz',
         category: 'Wi-Fi Experience',
         scope: `vsz612 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
+> EDU-MeshZone_S12349 (Venue)`,
         status: 'New'
       },
       {

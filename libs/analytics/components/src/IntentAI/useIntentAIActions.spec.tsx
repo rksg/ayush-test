@@ -19,6 +19,7 @@ import {
 import { ScheduleResponse } from '../Recommendations/services'
 
 import { intentListResult }    from './__tests__/fixtures'
+import { IntentListItem }      from './services'
 import { useIntentAIActions  } from './useIntentAIActions'
 
 const mockedUseSchedule = jest.fn()
@@ -62,7 +63,8 @@ jest.mock('moment-timezone', () => {
       : moment('07-15-2023', 'MM-DD-YYYY').add(3, 'h')
   }
 })
-describe('RecommendationActions', () => {
+
+describe('useIntentAIActions', () => {
   beforeEach(() => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } } as ScheduleResponse
     mockedUseSchedule.mockReturnValue({ unwrap: () => Promise.resolve(resp) })
@@ -75,18 +77,18 @@ describe('RecommendationActions', () => {
     jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
   })
-  describe('R1 - showOneClickOptimize', () => {
+  describe('R1 - OneClickOptimize', () => {
     beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
     describe('r1 - crrm c-crrm-*', () => {
-      it('should handle same day apply mutation correctly', async () => {
+      it('should handle same day apply mutation correctly - single', async () => {
         const mockOK = jest.fn()
-        const selectedRow = intentListResult.intents[4]
+        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { showOneClickOptimize } = result.current
         act(() => {
-          showOneClickOptimize([selectedRow], mockOK)
+          showOneClickOptimize(selectedRow, mockOK)
         })
         const dialog = await screen.findByRole('dialog')
         expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
@@ -113,19 +115,19 @@ describe('RecommendationActions', () => {
     })
 
     describe('r1 - airflex c-probeflex-*', () => {
-      it('should handle same day apply mutation correctly', async () => {
-        const selectedRow = intentListResult.intents[5]
+      it('should handle same day apply mutation correctly  - single', async () => {
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { showOneClickOptimize } = result.current
         act(() => {
-          showOneClickOptimize([selectedRow], mockOK)
+          showOneClickOptimize(selectedRow, mockOK)
         })
         const dialog = await screen.findByRole('dialog')
-        expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
         expect(await within(dialog).findByText(/zone-1/)).toBeVisible()
+        expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
         expect(await within(dialog).findByText(/Change time/)).toBeVisible()
         userEvent.click(await within(dialog).findByText(/Change time/))
         await userEvent.click((await screen.findAllByRole('time-picker-minutes'))[0])
@@ -146,26 +148,73 @@ describe('RecommendationActions', () => {
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
       })
     })
+
+    it('should handle same day apply mutation correctly  - multiple', async () => {
+      const selectedRows = [
+        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' },
+        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI' }
+      ] as IntentListItem[]
+      const mockOK = jest.fn()
+      const { result } = renderHook(() => useIntentAIActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { showOneClickOptimize } = result.current
+      act(() => {
+        showOneClickOptimize(selectedRows, mockOK)
+      })
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/features across/)).toBeVisible()
+      expect(await within(dialog).findByText(/selected Zones/)).toBeVisible()
+      expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
+      expect(await within(dialog).findByText(/Change time/)).toBeVisible()
+      userEvent.click(await within(dialog).findByText(/Change time/))
+      await userEvent.click((await screen.findAllByRole('time-picker-minutes'))[0])
+      const checkMin = await screen.findAllByText('45')
+      await userEvent.click(checkMin[0])
+      await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
+      const checkHour = await screen.findAllByText('00')
+      await userEvent.click(checkHour[0])
+      await userEvent.click((await screen.findAllByText('Apply'))[0])
+      await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
+      expect(mockedUseSchedule).toHaveBeenCalledWith({
+        id: '15',
+        preferences: {
+          crrmFullOptimization: true
+        },
+        isRecommendationRevertEnabled: true,
+        scheduledAt: '2023-07-16T00:45:00.000Z',
+        type: 'Apply'
+      })
+      expect(mockedUseSchedule).toHaveBeenCalledWith({
+        id: '17',
+        isRecommendationRevertEnabled: true,
+        scheduledAt: '2023-07-16T00:45:00.000Z',
+        type: 'Apply',
+        wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+      })
+      await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+    })
   })
-  describe('RAI - showOneClickOptimize', () => {
+
+  describe('RAI - OneClickOptimize', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
     })
     describe('rai - crrm c-crrm-*', () => {
-      it('should handle same day apply mutation correctly', async () => {
+      it('should handle same day apply mutation correctly - single', async () => {
         const mockOK = jest.fn()
-        const selectedRow = intentListResult.intents[4]
+        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { showOneClickOptimize } = result.current
         act(() => {
-          showOneClickOptimize([selectedRow], mockOK)
+          showOneClickOptimize(selectedRow, mockOK)
         })
         const dialog = await screen.findByRole('dialog')
-        expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
         expect(await within(dialog).findByText(/zone-1/)).toBeVisible()
+        expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
         expect(await within(dialog).findByText(/Change time/)).toBeVisible()
         userEvent.click(await within(dialog).findByText(/Change time/))
         await userEvent.click((await screen.findAllByRole('time-picker-minutes'))[0])
@@ -188,15 +237,15 @@ describe('RecommendationActions', () => {
     })
 
     describe('rai - airflex c-probeflex-*', () => {
-      it('should handle same day apply mutation correctly', async () => {
-        const selectedRow = intentListResult.intents[5]
+      it('should handle same day apply mutation correctly  - single', async () => {
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { showOneClickOptimize } = result.current
         act(() => {
-          showOneClickOptimize([selectedRow], mockOK)
+          showOneClickOptimize(selectedRow, mockOK)
         })
         const dialog = await screen.findByRole('dialog')
         expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
@@ -221,15 +270,15 @@ describe('RecommendationActions', () => {
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
       })
 
-      it('should show error when apply same day', async () => {
-        const selectedRow = intentListResult.intents[5]
+      it('should show error when apply same day  - single', async () => {
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { showOneClickOptimize } = result.current
         act(() => {
-          showOneClickOptimize([selectedRow], mockOK)
+          showOneClickOptimize(selectedRow, mockOK)
         })
         const dialog = await screen.findByRole('dialog')
         expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()

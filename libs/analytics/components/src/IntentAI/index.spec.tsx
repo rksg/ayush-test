@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import userEvent from '@testing-library/user-event'
+
 import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
@@ -16,12 +18,21 @@ import {
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { setUpIntl, DateRange }              from '@acx-ui/utils'
 
-import { intentListResult } from './__tests__/fixtures'
+import { intentListResult, mockCrrmRow } from './__tests__/fixtures'
 import {
   api
 } from './services'
 
 import { IntentAITabContent } from './index'
+
+const mockedShowOneClickOptimize = jest.fn()
+
+jest.mock('./useIntentAIActions', () => ({
+  ...jest.requireActual('./useIntentAIActions'),
+  useIntentAIActions: () => ({
+    showOneClickOptimize: () => mockedShowOneClickOptimize()
+  })
+}))
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -40,7 +51,7 @@ jest.mock('@acx-ui/config', () => ({
 jest.mock('./services', () => ({
   ...jest.requireActual('./services')
 }))
-
+setUpIntl({ locale: 'en-US', messages: {} })
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
 describe('IntentAITabContent', () => {
   const filters = {
@@ -52,10 +63,6 @@ describe('IntentAITabContent', () => {
 
   beforeEach(() => {
     setRaiPermissions({ WRITE_AI_OPERATIONS: true } as RaiPermissions)
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
     store.dispatch(api.util.resetApiState())
 
     const pathFilters = { ...filters, path: defaultNetworkPath }
@@ -129,6 +136,23 @@ describe('IntentAITabContent', () => {
     expect(screen.queryByText('Venue')).toBeNull()
     //search test id
     expect(screen.getByTestId('intentAI')).toBeVisible()
+  })
+
+  it('should render 1-click-optimize', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: [mockCrrmRow] }
+    })
+    render(<IntentAITabContent/>, {
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('zone-1')).toBeVisible()
+    await userEvent.click(await within(table).findByText('zone-1'))
+    expect(await screen.findByRole('button', { name: '1-Click Optimize' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: '1-Click Optimize' }))
+    expect(mockedShowOneClickOptimize).toBeCalledTimes(1)
   })
 
 })

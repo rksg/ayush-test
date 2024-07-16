@@ -122,7 +122,7 @@ export function useIntentAIActions () {
       const wlans = await recommendationWlans({ id: row.id } ).unwrap()
       return wlans.map(wlan => ({ ...wlan, id: wlan.name }))
     }
-    const venueId = row.idPath?.filter(({ type }) => type === 'zone')?.[0].name
+    const venueId = row.path?.filter(({ type }) => type === 'zone')?.[0].name
     const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()
     return wlans.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
   }
