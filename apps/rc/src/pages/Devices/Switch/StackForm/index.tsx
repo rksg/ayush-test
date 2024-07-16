@@ -798,10 +798,6 @@ export function StackForm () {
       setTableData(tableData.splice(0, miniMembers))
     }
 
-    // setCurrentFirmwareV1002(venueVersions || [])
-
-
-
     setApGroupOption(options as DefaultOptionType[])
   }
 

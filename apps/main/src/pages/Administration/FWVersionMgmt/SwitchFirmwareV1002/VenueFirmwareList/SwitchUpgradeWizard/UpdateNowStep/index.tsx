@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react'
 
 
-import { Form, Radio, RadioChangeEvent, Space, Tag } from 'antd'
-import _                                             from 'lodash'
-import { useIntl }                                   from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space } from 'antd'
+import _                                        from 'lodash'
+import { useIntl }                              from 'react-intl'
 
 import {
   Subtitle,
@@ -63,7 +62,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   }
 
   const getAvailableVersions =
-  (modelGroup: SwitchFirmwareModelGroup, currentScheduleVersion?: string) => {
+  (modelGroup: SwitchFirmwareModelGroup) => {
     let firmwareAvailableVersions = availableVersions?.filter(
       (v: SwitchFirmwareVersion1002) => v.modelGroup === modelGroup
     )

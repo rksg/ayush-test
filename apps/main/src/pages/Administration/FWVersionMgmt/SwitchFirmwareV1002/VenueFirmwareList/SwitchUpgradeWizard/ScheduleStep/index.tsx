@@ -42,8 +42,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const intl = useIntl()
   const { form, current } = useStepFormContext()
   const { getSwitchVersionLabelV1002 } = useSwitchFirmwareUtils()
-  // const [selectedVersion, setSelectedVersion] = useState('')
-  // const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
 
   //Switch model group
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
@@ -84,63 +82,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const [checked, setChecked] = useState(getCurrentChecked())
 
-  // const getCurrentSchedule = function () {
-  //   if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
-  //     return upgradeVenueList.length === 1 ?
-  //       upgradeVenueList[0].nextSchedule : upgradeSwitchList[0].switchNextSchedule
-  //   }
-  //   return {} as switchSchedule
-  // }
-
-  // const currentSchedule = getCurrentSchedule()
-  // const currentScheduleVersion = currentSchedule?.version?.name ?? ''
-  // const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
-
-
   useEffect(()=>{
     setShowSubTitle(false)
   }, [current])
 
-  // useEffect(() => {
-  //   if ((hasVenue || nonIcx8200Count > 0)) {
-  //     setSelectedVersion(currentScheduleVersion || '')
-  //     form.setFieldValue('switchVersion', currentScheduleVersion)
-  //   }
-
-  //   if ((hasVenue || icx8200Count > 0)) {
-  //     setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
-  //     form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
-  //   }
-
-  //   form.setFieldValue('preDownloadChecked', getCurrentChecked())
-
-  // }, [upgradeVenueList, upgradeSwitchList])
-
-  // const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
-  //   aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
-  //   let firmwareAvailableVersions = availableVersions?.filter(
-  //     (v: FirmwareVersion) => aboveTenPrefix ? v.id.startsWith('100') : !v.id.startsWith('100')
-  //   )
-  //   if (currentScheduleVersion) {
-  //     const currentVersionInSchedule = firmwareAvailableVersions?.filter((v: FirmwareVersion) =>
-  //       currentScheduleVersion === v.id)
-
-  //     if (currentVersionInSchedule?.length === 0) {
-  //       firmwareAvailableVersions?.push({
-  //         id: currentScheduleVersion,
-  //         name: currentScheduleVersion,
-  //         category: FirmwareCategory.REGULAR
-  //       } as FirmwareVersion)
-  //     }
-  //   }
-
-  //   if (_.isArray(firmwareAvailableVersions)) {
-  //     firmwareAvailableVersions =
-  //       firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
-  //   }
-
-  //   return firmwareAvailableVersions
-  // }
 
   const startDate = dayjs().endOf('day')
   const endDate = startDate.add(21, 'day')
@@ -166,7 +111,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }
 
   const getAvailableVersions =
-  (modelGroup: SwitchFirmwareModelGroup, currentScheduleVersion?: string) => {
+  (modelGroup: SwitchFirmwareModelGroup) => {
     let firmwareAvailableVersions = availableVersions?.filter(
       (v: SwitchFirmwareVersion1002) => v.modelGroup === modelGroup
     )
@@ -174,9 +119,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
     if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
       return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
     }
-
-    //Need setting current schedule
-    console.log(currentScheduleVersion) // eslint-disable-line no-console
 
     return []
   }
