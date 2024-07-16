@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -8,6 +10,7 @@ import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { noDataDisplay, PathFilter } from '@acx-ui/utils'
 
+import { AIFeatureIcon } from './AIFeatureIcon'
 import {
   useIntentAIListQuery,
   IntentListItem
@@ -29,7 +32,14 @@ export function IntentAITable (
       title: $t({ defaultMessage: 'AI Feature' }),
       width: 110,
       dataIndex: 'aiFeature',
-      key: 'aiFeature'
+      key: 'aiFeature',
+      render: (_: ReactNode, row: IntentListItem) => {
+        return (<AIFeatureIcon
+          text={row.aiFeature}
+          // onClick={() => {
+          // }}
+        />)
+      }
     },
     {
       title: $t({ defaultMessage: 'Intent' }),
