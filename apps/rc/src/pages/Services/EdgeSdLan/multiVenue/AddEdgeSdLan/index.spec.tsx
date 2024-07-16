@@ -1,7 +1,7 @@
 import userEvent     from '@testing-library/user-event'
 import { transform } from 'lodash'
 
-import { getServiceRoutePath, ServiceOperation, ServiceType, EdgeMvSdLanNetworks } from '@acx-ui/rc/utils'
+import { getServiceRoutePath, ServiceOperation, ServiceType, EdgeMvSdLanNetworks, EdgeMvSdLanFormModel } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -11,8 +11,6 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 import { RequestPayload } from '@acx-ui/types'
-
-import { EdgeMvSdLanFormModel } from '../Form'
 
 import AddEdgeSdLan from '.'
 
@@ -236,7 +234,7 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedConsoleFn).toBeCalled()
     })
-    expect(mockedNavigate).toBeCalledTimes(0)
+    expect(mockedNavigate).toBeCalledTimes(1)
   })
   it('should catch relation API error', async () => {
     const mockedConsoleFn = jest.fn()

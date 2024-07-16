@@ -79,6 +79,7 @@ jest.mock('@acx-ui/rc/components', () => ({
       mockedEditFn(req.payload)
       const cbData = mockedApiReqCallbackData()
       const isSucceed = mockedApiReqSucceed()
+
       return new Promise((resolve, reject) => {
         isSucceed ? resolve(true) : reject()
         if (isSucceed) {
@@ -293,11 +294,9 @@ describe('Edit SD-LAN service', () => {
     await click(within(form).getByRole('button', { name: 'Submit' }))
     await waitFor(() => expect(mockedEditFn).toBeCalledTimes(1))
     await waitFor(() => expect(mockedConsoleFn).toBeCalled())
-    expect(mockedNavigate).toBeCalledTimes(0)
+    expect(mockedNavigate).toBeCalledTimes(1)
   })
   it('should catch relation API error', async () => {
-    const mockedConsoleFn = jest.fn()
-    jest.spyOn(console, 'log').mockImplementation(mockedConsoleFn)
     mockedSubmitDataGen.mockReturnValue(mockedDmzData)
     mockedApiReqSucceed.mockReturnValue(true)
     mockedApiReqCallbackData.mockReturnValue({ status: 400 })
@@ -314,7 +313,7 @@ describe('Edit SD-LAN service', () => {
     const form = await basicCheck(true)
     await click(within(form).getByRole('button', { name: 'Submit' }))
     await waitFor(() => expect(mockedEditFn).toBeCalledTimes(1))
-    await waitFor(() => expect(mockedNavigate).toBeCalled())
+    await waitFor(() => expect(mockedNavigate).toBeCalledTimes(1))
   })
   it('should skip req API when get profile API error', async () => {
     const mockedConsoleFn = jest.fn()

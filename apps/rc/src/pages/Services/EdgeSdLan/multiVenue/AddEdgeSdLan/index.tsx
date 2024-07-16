@@ -60,15 +60,16 @@ const AddEdgeMvSdLan = () => {
             } else {
               reject(result)
             }
-
-            navigate(linkToServiceList, { replace: true })
           }
         // need to catch basic service profile failed
         }).catch(reject)
       })
+
+      navigate(linkToServiceList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
+      navigate(linkToServiceList, { replace: true })
     }
   }
 
