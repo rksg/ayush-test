@@ -2,10 +2,10 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { isSwitchPath } from '@acx-ui/analytics/utils'
 import {
   Loader,
-  TableProps }        from '@acx-ui/components'
+  TableProps,
+  Table }        from '@acx-ui/components'
 import { get }                                                       from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
@@ -24,12 +24,10 @@ export function IntentAITable (
   const { $t } = useIntl()
   const intentActions = useIntentAIActions()
 
-  const switchPath = isSwitchPath(pathFilters.path)
   const queryResults = useIntentAIListQuery(
-    { ...pathFilters },
-    { skip: switchPath }
+    { ...pathFilters }
   )
-  const data = switchPath ? [] : queryResults?.data
+  const data = queryResults?.data
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
@@ -95,7 +93,9 @@ export function IntentAITable (
 
   return (
     <Loader states={[queryResults]}>
-      <UI.IntentAITableWrapper
+      <UI.IntentAITableStyle/>
+      <Table
+        className='intentai-table'
         data-testid='intentAI'
         settingsId={'intentai-table'}
         type='tall'

@@ -40,7 +40,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-        type: 'Venue',
         status: 'Applied'
       },
       {
@@ -50,7 +49,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-        type: 'Venue',
         status: 'Revert Scheduled'
       },
       {
@@ -60,7 +58,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
-        type: 'Venue',
         status: 'Revert Failed'
       },
       {
@@ -71,7 +68,6 @@ describe('Recommendation services', () => {
         scope: `vsz34 (SZ Cluster)
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,
-        type: 'Venue',
         status: 'New'
       },
       {
@@ -81,7 +77,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-        type: 'Venue',
         status: 'New'
       },
       {
@@ -91,7 +86,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-        type: 'Venue',
         status: 'New'
       },
       {
@@ -101,7 +95,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-        type: 'Venue',
         status: 'New'
       },
       {
@@ -111,7 +104,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-        type: 'Venue',
         status: 'New'
       },
       {
@@ -122,7 +114,6 @@ describe('Recommendation services', () => {
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
-        type: 'Venue',
         status: 'No recommendation, Not enough license'
       },
       {
@@ -133,7 +124,6 @@ describe('Recommendation services', () => {
         scope: `vsz34 (SZ Cluster)
 > 22-US-CA-D22-Aaron-Home (Domain)
 > 22-US-CA-Z22-Aaron-Home (Venue)`,
-        type: 'Venue',
         status: 'No recommendation, Not enough data'
       },
       {
@@ -144,7 +134,6 @@ describe('Recommendation services', () => {
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
-        type: 'Venue',
         status: 'Verified'
       },
       {
@@ -155,7 +144,6 @@ describe('Recommendation services', () => {
         scope: `vsz34 (SZ Cluster)
 > 23-IND-BNG-D23-Keshav-Home (Domain)
 > 23-IND-BNG-D23-Keshav-Home (Venue)`,
-        type: 'Venue',
         status: 'No recommendation, Conflicting Configuration'
       },
       {
@@ -165,7 +153,6 @@ describe('Recommendation services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz-h-bdc-home-network-05 (SZ Cluster)
 > 22-US-CA-Z22-Aaron-Home (Venue)`,
-        type: 'Venue',
         status: 'No recommendation, Unknown reason'
       },
       {
@@ -176,7 +163,6 @@ describe('Recommendation services', () => {
         scope: `vsz34 (SZ Cluster)
 > 25-US-CA-D25-SandeepKour-home (Domain)
 > 25-US-CA-D25-SandeepKour-home (Venue)`,
-        type: 'Venue',
         status: 'No recommendation, No APs'
       }
     ]

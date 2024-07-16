@@ -60,7 +60,7 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('Incidents')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
-  it('should render intent AI tab', async () => {
+  it('should render IntentAI tab', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockGet.mockReturnValue(true)
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
@@ -69,7 +69,7 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(await screen.findByTestId('intentAI')).toBeVisible()
   })
-  it('should not render intent AI tab when FF or permission not enabled', async () => {
+  it('should not render IntentAI tab when FF or permission not enabled', async () => {
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('AI Assurance')).toBeVisible()

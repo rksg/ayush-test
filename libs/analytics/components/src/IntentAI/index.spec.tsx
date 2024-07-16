@@ -14,7 +14,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
-import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
+import { setUpIntl, DateRange }              from '@acx-ui/utils'
 
 import { intentListResult } from './__tests__/fixtures'
 import {
@@ -129,31 +129,6 @@ describe('IntentAITabContent', () => {
     expect(screen.queryByText('Venue')).toBeNull()
     //search test id
     expect(screen.getByTestId('intentAI')).toBeVisible()
-  })
-
-  it('renders no data for switch path', async () => {
-    const pathFilters = {
-      ...filters,
-      path: [
-        { type: 'network', name: 'Network' },
-        { type: 'system', name: 's1' },
-        { type: 'switchGroup', name: 'sg1' }
-      ] as NetworkPath
-    }
-    jest.mocked(useAnalyticsFilter).mockReturnValue({
-      filters,
-      pathFilters,
-      setNetworkPath: jest.fn(),
-      raw: []
-    })
-    render(<IntentAITabContent />, {
-      route: { params: { activeTab: 'aiOps' } },
-      wrapper: Provider
-    })
-
-    //search if any row text is rendered
-    expect(screen.queryByText('AI-Driven RRM')).toBe(null)
-    jest.clearAllMocks()
   })
 
 })

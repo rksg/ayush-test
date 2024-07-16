@@ -48,9 +48,9 @@ const useTabs = () : Tab[] => {
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
   }
 
-  const intenAITab = {
+  const intentAITab = {
     key: AIAnalyticsTabEnum.INTENTAI,
-    title: $t({ defaultMessage: 'Intent AI' }),
+    title: $t({ defaultMessage: 'IntentAI' }),
     component: <IntentAITabContent />,
     headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
@@ -83,7 +83,7 @@ const useTabs = () : Tab[] => {
   return [
     incidentsTab,
     ...getRecommendationTabs(),
-    ...(isIntentAIEnabled && displayIntentAI ? [intenAITab] : [])
+    ...(isIntentAIEnabled && displayIntentAI ? [intentAITab] : [])
   ]
 }
 

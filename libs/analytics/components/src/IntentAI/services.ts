@@ -1,12 +1,10 @@
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import {
-  nodeTypes,
-  formattedPath } from '@acx-ui/analytics/utils'
-import { intentAIApi }                                        from '@acx-ui/store'
-import { NodeType, getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
-import type { PathFilter }                                    from '@acx-ui/utils'
+import { formattedPath }                            from '@acx-ui/analytics/utils'
+import { intentAIApi }                              from '@acx-ui/store'
+import { getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
+import type { PathFilter }                          from '@acx-ui/utils'
 
 import {
   states,
@@ -89,7 +87,7 @@ export const api = intentAIApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.intents.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, sliceType, code, status, displayStatus
+            id, path, sliceValue, code, status, displayStatus
           } = intent
           const statusEnum = displayStatus.startsWith('na-')
             ? displayStatus as StateType
@@ -101,7 +99,6 @@ export const api = intentAIApi.injectEndpoints({
             aiFeature: $t(detail.aiFeature),
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
-            type: nodeTypes(sliceType as NodeType),
             category: $t(detail.category),
             status: $t(states[statusEnum].text)
           } as (IntentListItem))
