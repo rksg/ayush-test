@@ -24,7 +24,7 @@ export function Introduction () {
   const descriptions = [
     {
       title: crrmIntent.full.title,
-      text: crrmIntent.partial.content
+      text: crrmIntent.full.content
     },
     {
       title: crrmIntent.partial.title,

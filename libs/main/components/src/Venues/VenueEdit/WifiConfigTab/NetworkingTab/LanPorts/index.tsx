@@ -14,7 +14,8 @@ import {
   useUpdateVenueLanPortsMutation,
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
-  useUpdateVenueTemplateLanPortsMutation
+  useUpdateVenueTemplateLanPortsMutation,
+  useGetDHCPProfileListViewModelQuery
 } from '@acx-ui/rc/services'
 import {
   CapabilitiesApModel,
@@ -37,6 +38,27 @@ import { VenueEditContext } from '../../../index'
 
 const { useWatch } = Form
 
+const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueSettings } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: isWifiRbacEnabled
+  })
+
+  const { data: dhcpList } = useGetDHCPProfileListViewModelQuery({
+    payload: {
+      fields: ['id', 'venueIds'],
+      filters: { venueIds: [venueId] }
+    }
+  }, { skip: !isWifiRbacEnabled || !venueId })
+
+  return isWifiRbacEnabled
+    ? !!dhcpList?.data[0]
+    : venueSettings?.dhcpServiceSetting?.enabled ?? false
+}
+
 export function LanPorts () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
@@ -52,10 +74,11 @@ export function LanPorts () {
   const customGuiChagedRef = useRef(false)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
-  const venueSettings = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+  // const venueSettings = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+  //   useQueryFn: useGetVenueSettingsQuery,
+  //   useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  // })
+  const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
@@ -69,7 +92,7 @@ export function LanPorts () {
   )
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
-  const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
+  // const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const [lanPortOrinData, setLanPortOrinData] = useState(venueLanPorts?.data)
   const [lanPortData, setLanPortData] = useState(venueLanPorts?.data)
@@ -96,12 +119,12 @@ export function LanPorts () {
     }
   }, [setReadyToScroll, venueLanPorts?.data])
 
-  useEffect(() => {
-    if (!venueSettings?.isLoading) {
-      const { data } = venueSettings
-      setIsDhcpEnabled(data?.dhcpServiceSetting?.enabled || false)
-    }
-  }, [venueSettings?.data])
+  // useEffect(() => {
+  //   if (!venueSettings?.isLoading) {
+  //     const { data } = venueSettings
+  //     setIsDhcpEnabled(data?.dhcpServiceSetting?.enabled || false)
+  //   }
+  // }, [venueSettings?.data])
 
   useEffect(() => {
     const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
