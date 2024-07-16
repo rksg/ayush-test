@@ -366,15 +366,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? AccessControlUrls.getAccessControlProfileRbac : AccessControlUrls.getAccessControlProfile,
-          params
-        )
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.getAccessControlProfile, AccessControlUrls.getAccessControlProfileRbac),
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     activateAccessControlProfileOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
