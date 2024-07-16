@@ -41,7 +41,6 @@ const AddEdgeSdLanP2 = () => {
     }
   ]
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
     try {
       const payload = {
