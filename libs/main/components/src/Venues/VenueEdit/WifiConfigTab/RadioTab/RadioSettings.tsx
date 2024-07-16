@@ -311,14 +311,15 @@ export function RadioSettings () {
     }
 
     if (apList) {
-      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res || {}
-        if (data) {
-          const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
-            .map((ap: APExtended) => ap.model)
-          setVenueTriBandApModels(uniq(venueTriBandApModels))
-        }
-      })
+      apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
+        .then((res)=>{
+          const { data } = res || {}
+          if (data) {
+            const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
+              .map((ap: APExtended) => ap.model)
+            setVenueTriBandApModels(uniq(venueTriBandApModels))
+          }
+        })
     }
   }, [triBandApModels])
 
@@ -591,11 +592,17 @@ export function RadioSettings () {
     if (!validateChannels(outdoorChannel5, outdoorTitle5)) return false
 
     const channelBandwidth6 = radioParams6G?.channelBandwidth
-    const channel6 = radioParams6G?.allowedChannels
-    const title6 = $t({ defaultMessage: '6 GHz - Channel selection' })
-    if (!validateChannels(channel6, title6)) return false
+    const indoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedIndoorChannels : radioParams6G?.allowedChannels
+    const indoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Indoor AP channel selection' }) :
+      $t({ defaultMessage: '6 GHz - Channel selection' })
+    if (!validateChannels(indoorChannel6, indoorTitle6)) return false
+    const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
+    const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
+      ''
+    if (outdoorChannel6 && !validateChannels(outdoorChannel6, outdoorTitle6)) return false
     if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
-      if (!validate320MHzIsolatedGroup(channel6, title6)) return false
+      if (!validate320MHzIsolatedGroup(indoorChannel6, indoorTitle6)) return false
+      if (outdoorChannel6 && !validate320MHzIsolatedGroup(outdoorChannel6, outdoorTitle6)) return false
     }
 
     const { radioParamsLower5G, radioParamsUpper5G,

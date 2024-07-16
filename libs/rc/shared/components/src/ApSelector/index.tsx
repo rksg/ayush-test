@@ -2,8 +2,9 @@ import { Form, FormItemProps, Select } from 'antd'
 import { useIntl }                     from 'react-intl'
 import { useParams }                   from 'react-router-dom'
 
-import { useApListQuery } from '@acx-ui/rc/services'
-import { APExtended }     from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useApListQuery }         from '@acx-ui/rc/services'
+import { APExtended }             from '@acx-ui/rc/utils'
 
 
 export interface ApSelectorProps {
@@ -22,6 +23,8 @@ const apListQueryDefaultPayload = {
 
 export function ApSelector (props: ApSelectorProps) {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const {
     placeholder = $t({ defaultMessage: 'Select AP...' }),
     venueId
@@ -38,7 +41,8 @@ export function ApSelector (props: ApSelectorProps) {
     payload: {
       ...apListQueryDefaultPayload,
       filters: { venueId: venueId ? [venueId] : [] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   }, {
     selectFromResult ({ data }) {
       return {

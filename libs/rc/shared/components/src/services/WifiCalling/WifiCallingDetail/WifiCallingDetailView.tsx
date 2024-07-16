@@ -9,12 +9,14 @@ import {
   Button,
   PageHeader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
   ServiceOperation,
   ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   WifiCallingDetailContextType
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -27,10 +29,12 @@ export const WifiCallingDetailContext = createContext({} as WifiCallingDetailCon
 export const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [networkIds, setNetworkIds] = useState([] as string[])
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
-    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
+    enableRbac
   })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
@@ -50,6 +54,7 @@ export const WifiCallingDetailView = () => {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={ServiceType.WIFI_CALLING}
             oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}

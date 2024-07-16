@@ -95,7 +95,8 @@ const updateUnitFn = jest.fn()
 const getPersonaGroupSpy = jest.fn()
 const getApSpy = jest.fn()
 const getSwitchSpy = jest.fn()
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+// eslint-disable-next-line max-len
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API && ff !== Features.WIFI_RBAC_API)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()

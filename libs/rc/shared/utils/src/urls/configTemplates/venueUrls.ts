@@ -348,7 +348,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  getVenueDhcpProfile: {
+  getVenueDHCPServiceProfile: {
     method: 'get',
     url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
     newApi: true
@@ -373,10 +373,55 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
     newApi: true
   },
-  getVenueCityList: { // TODO
+  getDhcpUsagesRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiDhcpPoolUsages',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindVenueDhcpProfile: {
+    method: 'put',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  unbindVenueDhcpProfile: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVenueDhcpServiceProfileRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVenueCityList: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/venuetemplate/citylist',
     newApi: true
+  },
+  getVenueCityListRbac: {
+    method: 'post',
+    url: '/templates/venues/citylist/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueSwitchSetting: {
     method: 'get',

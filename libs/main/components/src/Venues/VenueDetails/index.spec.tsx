@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { venueApi }                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                 from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
-import { mockServer, render, screen }     from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { venueApi }                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, CommonRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
+import { mockServer, render, screen }         from '@acx-ui/test-utils'
+import { RolesEnum }                          from '@acx-ui/types'
+import { getUserProfile, setUserProfile }     from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 
@@ -62,6 +62,10 @@ describe('VenueDetails', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json(venueDetailHeaderData))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getRwgListByVenueId.url,
+        (req, res, ctx) => res(ctx.json({ response: { data: [] } }))
       )
     )
   })

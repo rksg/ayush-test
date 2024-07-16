@@ -1,9 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Card, Loader, Table, TableProps }         from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                       from '@acx-ui/rc/components'
-import { useVenuesListQuery, useVenuesTableQuery } from '@acx-ui/rc/services'
+import { Card, Loader, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }               from '@acx-ui/rc/components'
+import { useVenuesListQuery }              from '@acx-ui/rc/services'
 import {
   LbsServerProfileViewModel,
   Venue,
@@ -27,11 +26,10 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
   const { $t } = useIntl()
   const { data } = props
 
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const venueIds = data?.venueIds || []
 
   const tableQuery = useTableQuery<Venue>({
-    useQuery: supportApCompatibleCheck ? useVenuesTableQuery : useVenuesListQuery,
+    useQuery: useVenuesListQuery,
     defaultPayload: {
       ...defaultVenuePayload,
       filters: { id: venueIds }
@@ -43,7 +41,7 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
 
   const columns: TableProps<Venue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'name',
       key: 'name',
       searchable: true,

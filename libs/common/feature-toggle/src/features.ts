@@ -66,6 +66,7 @@ export enum Features {
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
+  MFA_ALTERNATE_QR_CODE_TOGGLE = 'acx-ui-mfa-qr-code-display-toggle',
   MSP_AGGREGATE_NOTIFICATION_TOGGLE = 'aggregate-notification-toggle',
   MSP_BRAND_360 = 'acx-ui-msp-brand360-toggle',
   MSP_DATA_STUDIO = 'acx-ui-msp-data-studio-toggle',
@@ -127,7 +128,6 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
   VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
-  WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -143,7 +143,6 @@ export enum Features {
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
   WIFI_ANTENNA_TYPE_TOGGLE = 'wifi-antenna-type-selection-toggle',
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
-  WIFI_API_V2_TOGGLE = 'wifi-api-network-activations-by-query-v2-toggle',
   WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
@@ -165,7 +164,8 @@ export enum Features {
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
-  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle'
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
+  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

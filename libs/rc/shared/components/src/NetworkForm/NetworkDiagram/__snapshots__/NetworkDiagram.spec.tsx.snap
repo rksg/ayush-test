@@ -1,47 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (Cloud) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="AaaCloudpathCloudDeployment"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - AAA should render AAA (On Premise) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Enterprise AAA (802.1X)"
-          src="AaaCloudpathOnPremDeployment"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram successfully 1`] = `
 <DocumentFragment>
   <div
@@ -139,48 +97,6 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
         <img
           alt="Captive Portal"
           src="ClickThrough"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath - Cloud) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Captive Portal"
-          src="CaptivePortalCloudpathCloudDeployment"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Cloudpath - On Premise) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Captive Portal"
-          src="CaptivePortalCloudpathOnPremDeployment"
         />
       </div>
     </div>
@@ -314,48 +230,6 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 </DocumentFragment>
 `;
 
-exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (Cloud) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Dynamic Pre-Shared Key (DPSK)"
-          src="DpskCloudpathCloudDeployment"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK (On Premise) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Dynamic Pre-Shared Key (DPSK)"
-          src="DpskCloudpathOnPremDeployment"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
 exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram successfully 1`] = `
 <DocumentFragment>
   <div
@@ -390,48 +264,6 @@ exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagr
       >
         <img
           src="Hotspot20"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (Cloud) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Open Network"
-          src="OpenCloudpathCloudDeployment"
-        />
-      </div>
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN (On Premise) diagram successfully 1`] = `
-<DocumentFragment>
-  <div
-    class="ant-row ant-row-center"
-  >
-    <div
-      class="ant-col"
-    >
-      <div
-        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
-      >
-        <img
-          alt="Open Network"
-          src="OpenCloudpathOnPremDeployment"
         />
       </div>
     </div>

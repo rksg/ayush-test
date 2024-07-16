@@ -1,12 +1,14 @@
 import '@testing-library/jest-dom'
-import userEvent   from '@testing-library/user-event'
-import { message } from 'antd'
-import { rest }    from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { message }   from 'antd'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { apApi }                  from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo,
+  APGeneralFixtures,
+  CommonRbacUrlsInfo,
   DHCPUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
@@ -22,7 +24,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { apList, dhcpApSetting, dhcpList, dhcpResponse } from './__tests__/fixtures'
+import { dhcpApSetting, dhcpList, dhcpResponse } from './__tests__/fixtures'
 
 import { useApActions } from '.'
 
@@ -30,6 +32,12 @@ const serialNumber = ':serialNumber'
 const tenantId = ':tenantId'
 const venueId = ':venueId'
 
+const { mockAPList } = APGeneralFixtures
+const apList = cloneDeep(mockAPList)
+apList.data.splice(1, 1)
+apList.totalCount = apList.data.length
+apList.data[0].firmwareVersion ='6.2.0.103.261' // invalid Ap Fw version for reset
+apList.data[0].venueId = dhcpList.data[0].venueIds[0]
 describe('Test useApActions', () => {
 
   beforeEach(() => {
@@ -39,7 +47,7 @@ describe('Test useApActions', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (req, res, ctx) => res(ctx.json(apList))
       ),
       rest.post(
@@ -70,7 +78,7 @@ describe('Test useApActions', () => {
   it('showDeleteAp', async () => {
     mockServer.use(
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
@@ -162,7 +170,7 @@ describe('Test useApActions', () => {
   it('should show warning when there is an active dhcp ap', async () => {
     mockServer.use(
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json(dhcpList))
       ),
       rest.get(

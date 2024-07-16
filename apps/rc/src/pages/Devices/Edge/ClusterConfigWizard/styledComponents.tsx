@@ -8,3 +8,7 @@ export const WarningTitle = styled(Typography.Title)`
 export const WarningTxt = styled(Typography.Text)`
   color: var(--acx-semantics-red-50);
 `
+
+export const SubTitle1 = styled.span`
+  color: var(--acx-neutrals-60);
+`

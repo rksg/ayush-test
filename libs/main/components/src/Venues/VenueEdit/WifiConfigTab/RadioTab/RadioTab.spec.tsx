@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { venueApi }                                                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, VenueRadioCustomization, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                         from '@acx-ui/store'
@@ -144,7 +144,7 @@ describe('RadioTab', () => {
   }
 
   it.skip('should render Wi-Fi Radio 24G Settings correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
     render(<Provider>
       <VenueEditContext.Provider value={{
         ...venueEditContextDataObject,
@@ -189,7 +189,7 @@ describe('RadioTab', () => {
   })
 
   it.skip('should render Wi-Fi Radio 5G Settings correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
     render(<Provider>
       <VenueEditContext.Provider value={{
         ...venueEditContextDataObject,
@@ -234,7 +234,8 @@ describe('RadioTab', () => {
   })
 
   it('should render Load balancing correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
+
     render(<Provider>
       <VenueEditContext.Provider value={{
         ...venueEditContextDataObject,
@@ -256,7 +257,8 @@ describe('RadioTab', () => {
   })
 
   it('should render Client Admission Control correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
+
     render(<Provider>
       <VenueEditContext.Provider value={venueEditContextDataObject}>
         <RadioTab />

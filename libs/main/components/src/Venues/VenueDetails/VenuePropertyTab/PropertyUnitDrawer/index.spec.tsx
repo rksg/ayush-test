@@ -2,16 +2,17 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                from '@acx-ui/store'
-import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitForElementToBeRemoved }                          from '@acx-ui/test-utils'
 import { EdgeScopes, RolesEnum, WifiScopes }                                              from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
-  UserProfileContextProps }         from '@acx-ui/user'
+  UserProfileContextProps
+} from '@acx-ui/user'
 
 import {
   mockPersonaGroupWithoutNSG,
@@ -64,7 +65,7 @@ const userProfile = {
 } as unknown as UserProfileInterface
 
 
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 describe('Property Unit Drawer', () => {
   beforeEach(() => {
     closeFn.mockClear()
@@ -127,12 +128,12 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should render simple drawer', async () => {
-    window.HTMLElement.prototype.scrollIntoView = function () {}
+    window.HTMLElement.prototype.scrollIntoView = function () { }
     render(<Provider>
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}
       ></UserProfileContext.Provider>
-      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
+      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId} />
     </Provider>)
 
     await screen.findByText('Unit Name')
@@ -150,13 +151,13 @@ describe('Property Unit Drawer', () => {
         PropertyUrlsInfo.getPropertyUnitList.url,
         (_, res, ctx) => res(ctx.json(mockPropertyUnitList)))
     )
-    window.HTMLElement.prototype.scrollIntoView = function () {}
+    window.HTMLElement.prototype.scrollIntoView = function () { }
 
     render(<Provider>
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}
       ></UserProfileContext.Provider>
-      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId}/>
+      <PropertyUnitDrawer isEdit={false} visible onClose={closeFn} venueId={params.noNsgVenueId} />
     </Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -176,7 +177,7 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit no nsg drawer', async () => {
-    window.HTMLElement.prototype.scrollIntoView = function () {}
+    window.HTMLElement.prototype.scrollIntoView = function () { }
     render(<Provider>
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}
@@ -205,7 +206,7 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should edit nsg drawer', async () => {
-    window.HTMLElement.prototype.scrollIntoView = function () {}
+    window.HTMLElement.prototype.scrollIntoView = function () { }
     render(<Provider>
       <UserProfileContext.Provider
         value={{ data: userProfile } as UserProfileContextProps}

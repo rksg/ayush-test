@@ -12,13 +12,11 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, Fieldset, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { GuestNetworkTypeEnum }      from '@acx-ui/rc/utils'
+import { StepsForm, Button, Fieldset, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { GuestNetworkTypeEnum }                 from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
-
-import * as UI from './styledComponents'
 
 const { Option } = Select
 const sessionMapping: { [key:string]:number }={
@@ -199,13 +197,14 @@ export function UserConnectionForm () {
     <>
       <Row justify='space-between'>
         <Col>
-          <UI.Subtitle style={{ marginTop: 5 }}>{guestType!==GuestNetworkTypeEnum.ClickThrough &&
-        $t({ defaultMessage: 'User Connection Settings' })}
-          {guestType===GuestNetworkTypeEnum.ClickThrough &&useDefaultSetting&&
-        $t({ defaultMessage: 'User Connection Settings (Default)' })}
-          {guestType===GuestNetworkTypeEnum.ClickThrough &&!useDefaultSetting&&
-        $t({ defaultMessage: 'User Connection Settings (Time limited)' })}
-          </UI.Subtitle>
+          <StepsForm.Subtitle style={{ marginTop: 5 }}>
+            {guestType!==GuestNetworkTypeEnum.ClickThrough &&
+              $t({ defaultMessage: 'User Connection Settings' })}
+            {guestType===GuestNetworkTypeEnum.ClickThrough && useDefaultSetting &&
+              $t({ defaultMessage: 'User Connection Settings (Default)' })}
+            {guestType===GuestNetworkTypeEnum.ClickThrough && !useDefaultSetting &&
+              $t({ defaultMessage: 'User Connection Settings (Time limited)' })}
+          </StepsForm.Subtitle>
         </Col>
         {guestType===GuestNetworkTypeEnum.ClickThrough&&
         <Col style={{ height: '20px', paddingTop: '20px', paddingBottom: '10px', marginTop: 5 }}>

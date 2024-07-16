@@ -93,8 +93,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
               `(${node.data._children.length})` : '')
           const deviceType = node.data.meshRole === 'EMAP' ? DeviceTypes.ApWired : node.data.type
           const nodeName = children !== '' && node.data.id !== 'Cloud' && node.data.name ?
-            node.data.name.substring(0,8)+children+'...'
-            :truncateLabel(node.data.name || node.data.id, 13)
+            node.data.name.substring(0,6)+children+'...'
+            :truncateLabel(node.data.name || node.data.id, 11)
           return (
             <g
               transform={coordinateTransform(node)}
@@ -106,6 +106,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
               className={`node tree-node ${(params?.switchId === node.data.id || params?.apId === node.data.id || selectedNode === node.data.id) && 'focusNode'} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
               }
               id={node.data.id}
+              key={node.data.id}
             >
               <g
                 onMouseEnter={(e) => handleMouseEnter(node, e)}
@@ -130,8 +131,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
                       stroke: node.data.status ? getDeviceColor(node.data.status) : 'black',
                       fill: node.data.status ? getDeviceColor(node.data.status) : 'black'
                     }}
-                    dominant-baseline='middle'
-                    text-anchor='middle'
+                    dominantBaseline='middle'
+                    textAnchor='middle'
                     dy='13'
                   >
                     {nodeName}
@@ -181,10 +182,10 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   placement='bottom'
                 >
                   <LeafSolidIcon
-                    x={nodeName.length + 6}
-                    y={8}
-                    width={8}
-                    height={8}
+                    x={nodeName.length*3/2 + (nodeName.includes('...') ? 0:2)}
+                    y={9}
+                    width={6}
+                    height={6}
                   />
                 </Tooltip>
               }

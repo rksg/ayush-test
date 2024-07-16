@@ -875,7 +875,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     getTwiliosIncomingPhoneNumbers: build.query<TwiliosIncommingPhoneNumbers, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosIncomingPhoneNumbers, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosIncomingPhoneNumbers,
+          params, { ...ignoreErrorModal })
         return {
           ...req,
           body: payload
