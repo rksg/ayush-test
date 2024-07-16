@@ -230,10 +230,8 @@ describe('AP group utils Fn', () => {
 
     // eslint-disable-next-line max-len
     expect(createHttpRequest).toHaveBeenCalledWith(
-      ApGroupConfigTemplateUrlsInfo.getApGroupsList,
-      args.params,
-      // eslint-disable-next-line max-len
-      { 'Accept': 'application/vnd.ruckus.v1+json', 'Content-Type': 'application/vnd.ruckus.v1+json' }
+      ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac,
+      args.params
     )
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify(mockTransformRbacPayload)
