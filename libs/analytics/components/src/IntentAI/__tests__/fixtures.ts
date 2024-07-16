@@ -358,7 +358,7 @@ export const intentListResult = {
       preferences: null,
       trigger: 'once'
     },
-    { ...crrmRow },
+    { ...mockCrrmRow },
     {
       id: '16',
       code: 'c-probeflex-24g',
