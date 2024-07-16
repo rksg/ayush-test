@@ -15,26 +15,32 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/vlanPools',
     newApi: true
   },
+  */
   getNetwork: {
     method: 'get',
-    url: '/networks/:networkId',
+    //url: '/networks/:networkId',
+    url: '/wifiNetworks/:networkId',
     newApi: true
   },
   addNetworkDeep: {
     method: 'post',
-    url: '/networks',
+    //url: '/networks',
+    url: '/wifiNetworks',
     newApi: true
   },
   updateNetworkDeep: {
     method: 'put',
-    url: '/networks/:networkId',
+    //url: '/networks/:networkId',
+    url: '/wifiNetworks/:networkId',
     newApi: true
   },
   deleteNetwork: {
     method: 'delete',
-    url: '/networks/:networkId',
+    //url: '/networks/:networkId',
+    url: '/wifiNetworks/:networkId',
     newApi: true
   },
+  /*
   addNetworkVenue: {
     method: 'post',
     url: '/networkActivations',
@@ -175,7 +181,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addAp: {
     method: 'post',
     // url: '/venues/aps',
+    url: '/venues/:venueId/apGroups/:apGroupId/aps',
+    newApi: true
+  },
+  addApWithDefaultGroup: {
+    method: 'post',
+    // url: '/venues/aps',
     url: '/venues/:venueId/aps',
+    newApi: true
+  },
+  moveApToTargetApGroup: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/aps/:serialNumber',
     newApi: true
   },
   updateAp: {
@@ -611,6 +628,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiFeatureSets/:featureName',
     newApi: true
   },
+  */
   getApCompatibilitiesVenue: {
     method: 'post',
     url: '/venues/:venueId/apCompatibilities/query',
@@ -625,8 +643,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
-  }
-  */
+  },
   activateRadiusServer: {
     method: 'put',
     url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',

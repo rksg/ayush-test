@@ -151,7 +151,13 @@ describe('DeviceOSDrawer Component setting I', () => {
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedDevicePolicyListResponse))),
       rest.post(AccessControlUrls.addDevicePolicy.url,
-        (_, res, ctx) => { return res(ctx.json(addDevicePolicyResponse)) })
+        (_, res, ctx) => { return res(ctx.json(addDevicePolicyResponse)) }),
+      rest.get(
+        AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
+        }
+      )
     )
   })
 

@@ -4,8 +4,7 @@ import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { FormattedMessage, useIntl }                       from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { cssStr, Tooltip }        from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { cssStr, Tooltip } from '@acx-ui/components'
 import {
   ApLanPortTypeEnum,
   CapabilitiesApModel,
@@ -67,7 +66,6 @@ export function LanPortSettings (props: {
     useVenueSettings
   } = props
 
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const { venueId } = useParams()
   const form = Form.useFormInstance()
@@ -168,7 +166,7 @@ export function LanPortSettings (props: {
         { lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
           <ApCompatibilityToolTip
             title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
-            visible={supportApCompatibleCheck}
+            visible={true}
             placement='bottom'
             onClick={() => setDrawerVisible(true)}
           />
@@ -178,15 +176,13 @@ export function LanPortSettings (props: {
             placement='bottom'
           />
         }
-        {supportApCompatibleCheck &&
-            <ApCompatibilityDrawer
-              visible={drawerVisible}
-              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
-              venueId={venueId}
-              featureName={InCompatibilityFeatures.TRUNK_PORT_VLAN_UNTAG_ID}
-              onClose={() => setDrawerVisible(false)}
-            />
-        }
+        <ApCompatibilityDrawer
+          visible={drawerVisible}
+          type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+          venueId={venueId}
+          featureName={InCompatibilityFeatures.TRUNK_PORT_VLAN_UNTAG_ID}
+          onClose={() => setDrawerVisible(false)}
+        />
       </>}
       rules={[{
         required: true,

@@ -85,7 +85,7 @@ const WifiOperatorNetworkDetail = () => {
       filters: { id: [] as string[] }
     },
     option: {
-      skip: networkFilters.id.length == 0
+      skip: !(networkFilters?.id?.length)
     }
   })
 

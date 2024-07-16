@@ -5,10 +5,12 @@ import { useIntl }           from 'react-intl'
 import { useParams, Params } from 'react-router-dom'
 
 import { Loader }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { useApListQuery, useGetApValidChannelQuery } from '@acx-ui/rc/services'
 import { ApContext }                                 from '@acx-ui/rc/utils'
 
 export function ApContextProvider (props: { children: ReactNode }) {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const params = useParams()
   const { $t } = useIntl()
   const fields = [
@@ -22,7 +24,8 @@ export function ApContextProvider (props: { children: ReactNode }) {
       fields,
       searchTargetFields: ['apMac', 'serialNumber'],
       searchString: params.apId
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: data?.data,

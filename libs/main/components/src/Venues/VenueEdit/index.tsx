@@ -10,19 +10,20 @@ import { VenueLed,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
-import { goToNotFound, hasPermission }           from '@acx-ui/user'
+import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
+import { hasPermission, hasRoles }               from '@acx-ui/user'
 import { getIntl }                               from '@acx-ui/utils'
 
-import { PropertyManagementTab }    from './PropertyManagementTab'
-import { SwitchConfigTab }          from './SwitchConfigTab'
-import { VenueDetailsTab }          from './VenueDetailsTab'
-import VenueEditPageHeader          from './VenueEditPageHeader'
-import { WifiConfigTab }            from './WifiConfigTab'
-import { AdvanceSettingContext }    from './WifiConfigTab/AdvancedTab'
-import { NetworkingSettingContext } from './WifiConfigTab/NetworkingTab'
-import { SecuritySettingContext }   from './WifiConfigTab/SecurityTab'
-import { ServerSettingContext }     from './WifiConfigTab/ServerTab'
+import { PropertyManagementTab }        from './PropertyManagementTab'
+import { SwitchConfigTab }              from './SwitchConfigTab'
+import { VenueDetailsTab }              from './VenueDetailsTab'
+import VenueEditPageHeader              from './VenueEditPageHeader'
+import { usePropertyManagementEnabled } from './VenueEditTabs'
+import { WifiConfigTab }                from './WifiConfigTab'
+import { AdvanceSettingContext }        from './WifiConfigTab/AdvancedTab'
+import { NetworkingSettingContext }     from './WifiConfigTab/NetworkingTab'
+import { SecuritySettingContext }       from './WifiConfigTab/SecurityTab'
+import { ServerSettingContext }         from './WifiConfigTab/ServerTab'
 
 
 const tabs = {
@@ -96,7 +97,9 @@ export function VenueEdit () {
   const basePath = useTenantLink('')
 
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
+  const enablePropertyManagement = usePropertyManagementEnabled()
+
+  const Tab = tabs[activeTab as keyof typeof tabs]
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as EditContext)
   const [
@@ -118,17 +121,32 @@ export function VenueEdit () {
   ] = useState({} as AdvanceSettingContext)
 
   useEffect(() => {
+    const notFound = { ...basePath, pathname: `${basePath.pathname}/not-found` }
+    const notPermissions = { ...basePath, pathname: `${basePath.pathname}/no-permissions` }
+    if (!activeTab) {
+      const navigateTo =
+      hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? 'details' :
+        hasPermission({ scopes: [WifiScopes.UPDATE] }) ? 'wifi' :
+          hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? 'switch' :
+            enablePropertyManagement ? 'property' : notFound
+      navigate(navigateTo, { replace: true })
+      return
+    }
+
+    if (!tabs[activeTab as keyof typeof tabs]) { // goToNotFound
+      navigate(notFound, { replace: true })
+      return
+    }
+
     const hasNoPermissions
     = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
     || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
+    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'details')
 
     if (hasNoPermissions) {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}/no-permissions`
-      }, { replace: true })
+      navigate(notPermissions, { replace: true })
     }
-  }, [activeTab, basePath, navigate])
+  }, [activeTab, basePath, enablePropertyManagement, navigate])
 
   return (
     <VenueEditContext.Provider value={{

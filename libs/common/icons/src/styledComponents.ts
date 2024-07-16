@@ -2,7 +2,8 @@ import styled from 'styled-components/macro'
 
 import {
   DeleteOutlined, EditOutlined,
-  LeafOutlined, LeafSolid
+  LeafOutlined, LeafSolid,
+  LinkDocument, LinkVideo
 } from './index'
 
 export const DeleteOutlinedIcon = styled(DeleteOutlined)`
@@ -37,5 +38,17 @@ export const LeafSolidIcon = styled(LeafSolid)`
 export const LeafOutlinedIcon = styled(LeafOutlined)`
   path {
     stroke: var(--acx-semantics-green-50);
+  }
+`
+
+export const LinkDocumentIcon = styled(LinkDocument)`
+  path {
+    fill: var(--acx-accents-blue-50);
+  }
+`
+
+export const LinkVideoIcon = styled(LinkVideo)`
+  path {
+    fill: var(--acx-accents-blue-50);
   }
 `
