@@ -26,7 +26,8 @@ import {
   UEDetail,
   ApiVersionEnum,
   GetApiVersionHeader,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  ClientInfo
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -126,6 +127,17 @@ export const clientApi = baseClientApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      }
+    }),
+    getClients: build.query<TableResult<ClientInfo>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClients,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -548,6 +560,7 @@ export const {
   useGetGuestsListQuery,
   useDisconnectClientMutation,
   useRevokeClientMutation,
+  useLazyGetClientsQuery,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
