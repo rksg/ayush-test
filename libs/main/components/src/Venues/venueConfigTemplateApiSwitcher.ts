@@ -13,13 +13,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
-  props: UseConfigTemplateQueryFnSwitcherProps<ResultType>
+export function useVenueConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
+  props: UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload>
 ){
   const { venueId } = useParams()
   const { skip = false, ...rest } = props
 
-  return useConfigTemplateQueryFnSwitcher<ResultType>({
+  return useConfigTemplateQueryFnSwitcher<ResultType, Payload>({
     ...rest,
     skip: skip || !venueId
   })

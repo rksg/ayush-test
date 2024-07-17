@@ -56,7 +56,9 @@ import {
   useGetVenueTemplateDefaultRadioCustomizationQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateRadioCustomizationMutation,
-  useUpdateVenueTemplateTripleBandRadioSettingsMutation
+  useUpdateVenueTemplateTripleBandRadioSettingsMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -160,8 +162,7 @@ export function RadioSettings () {
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
-      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery,
-      skip: isTemplate && isWifiSwitchableRfEnabled
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
     })
 
   // available channels from this venue country code
@@ -208,10 +209,17 @@ export function RadioSettings () {
   )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
-    useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })
+    useVenueConfigTemplateQueryFnSwitcher<VenueApModelBandModeSettings[], void>({
+      useQueryFn: useGetVenueApModelBandModeSettingsQuery,
+      useTemplateQueryFn: useGetVenueTemplateApModelBandModeSettingsQuery,
+      skip: !isWifiSwitchableRfEnabled
+    })
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
-    useUpdateVenueApModelBandModeSettingsMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueApModelBandModeSettingsMutation,
+      useUpdateVenueTemplateApModelBandModeSettingsMutation
+    )
 
   const [ apList ] = useLazyApListQuery()
 

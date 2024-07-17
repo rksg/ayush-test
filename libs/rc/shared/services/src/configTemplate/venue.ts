@@ -11,6 +11,7 @@ import {
   TacacsServer,
   TriBandSettings,
   Venue,
+  VenueApModelBandModeSettings,
   VenueBssColoring,
   VenueClientAdmissionControl,
   VenueConfigTemplateUrlsInfo,
@@ -402,6 +403,26 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
       }
     }),
+    // eslint-disable-next-line max-len
+    getVenueTemplateApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueApModelBandModeSettings, params)
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'BandModeSettings' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<VenueApModelBandModeSettings[]>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.updateVenueApModelBandModeSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'BandModeSettings' }]
+    }),
     getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getVenueCityList,
@@ -533,6 +554,8 @@ export const {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
   useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation,
   useGetVenueTemplateCityListQuery,
   useGetVenueTemplateSwitchSettingQuery,
   useUpdateVenueTemplateSwitchSettingMutation,
