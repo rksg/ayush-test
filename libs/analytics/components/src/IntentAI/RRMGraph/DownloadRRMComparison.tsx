@@ -13,7 +13,6 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-
 import { EnhancedRecommendation } from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
@@ -27,7 +26,7 @@ const useDownloadUrl = (data: unknown, type: string) => {
     if (!data) return
     setUrl(URL.createObjectURL(new Blob([data as BlobPart], { type })))
     return () => URL.revokeObjectURL(url!)
-  }, [data])
+  }, [data, type, url])
   return url
 }
 
@@ -54,6 +53,7 @@ export function DownloadRRMComparison (props: {
         icon={<DownloadOutlined/>}
         download={filename}
         href={url}
+        type={'primary'}
       >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button>
     </Loader>
   </DownloadWrapper>
