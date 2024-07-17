@@ -30,7 +30,7 @@ export function Summary () {
     initialValues as EnhancedRecommendation, crrmData)
 
   return <Row gutter={20}>
-    <Col span={15}>
+    <Col span={16}>
       <StepsForm.Title children={$t(steps.title.summary)} />
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Projected interfering links reduction' })}
@@ -67,7 +67,7 @@ export function Summary () {
         {$t({ defaultMessage: 'Schedule' })}
       </StepsForm.Subtitle>
     </Col>
-    <Col span={7} offset={2}>
+    <Col span={7} offset={1}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
           {$t(steps.sideNotes.title)}
