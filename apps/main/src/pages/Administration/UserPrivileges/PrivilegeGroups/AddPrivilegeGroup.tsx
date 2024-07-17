@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Checkbox,
@@ -18,9 +18,10 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { MspEcWithVenue }               from '@acx-ui/msp/utils'
-import { useAddPrivilegeGroupMutation } from '@acx-ui/rc/services'
+import { MspEcWithVenue }                                           from '@acx-ui/msp/utils'
+import { useAddPrivilegeGroupMutation, useGetPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
+  CustomGroupType,
   PrivilegePolicy,
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
@@ -35,6 +36,7 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RolesEnum } from '@acx-ui/types'
 
 import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
 import * as UI            from '../styledComponents'
@@ -75,11 +77,21 @@ export function AddPrivilegeGroup () {
 
   const navigate = useNavigate()
   const location = useLocation().state as boolean
+  const [groupNames, setGroupNames] = useState([] as RolesEnum[])
 
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const isOnboardedMsp = location ?? false
+
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
+  useEffect(() => {
+    if (privilegeGroupList) {
+      const nameList = privilegeGroupList.filter(item =>
+        item.type === CustomGroupType.CUSTOM).map(item => item.name)
+      setGroupNames(nameList as RolesEnum[])
+    }
+  }, [privilegeGroupList])
 
   const onClickSelectVenue = () => {
     setSelectVenueDrawer(true)
@@ -367,6 +379,14 @@ export function AddPrivilegeGroup () {
                 { required: true },
                 { min: 2 },
                 { max: 128 },
+                { validator: (_, value) => {
+                  if(groupNames.includes(value)) {
+                    return Promise.reject(
+                      `${intl.$t({ defaultMessage: 'Name already exists' })} `
+                    )
+                  }
+                  return Promise.resolve()}
+                },
                 { validator: (_, value) => systemDefinedNameValidator(value) },
                 { validator: (_, value) => specialCharactersRegExp(value),
                   message: intl.$t({ defaultMessage:
