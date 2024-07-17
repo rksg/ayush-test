@@ -220,7 +220,8 @@ export const NotificationsTable = () => {
 const Notifications = () => {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
-  const { data: mspProfile } = useGetMspProfileQuery({})
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const { data: mspProfile } = useGetMspProfileQuery({ enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const isMspAggregateNotification =
     useIsSplitOn(Features.MSP_AGGREGATE_NOTIFICATION_TOGGLE) && isOnboardedMsp
