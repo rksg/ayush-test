@@ -3,9 +3,6 @@ import { useIntl }     from 'react-intl'
 
 import { ActionType, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
-// FIXME: Use self definition style component to render
-// import { FieldLabel } from '../../../../NetworkForm/styledComponents'
-
 import { CommonActionSettings } from './CommonActionSettings'
 
 
