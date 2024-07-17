@@ -583,5 +583,15 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
     newApi: true
+  },
+  activateDpskService: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId'
+  },
+  activateMacRegistrationPool: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/macRegistrationPools/:macRegistrationPoolId'
   }
 }

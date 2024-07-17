@@ -61,6 +61,7 @@ import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { commonQueryFn, getDhcpProfileFn } from './servicePolicy.utils'
+import { addDpskFn, updateDpskFn }         from './servicePolicy.utils/dpsk'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -672,75 +673,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
 
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const res = await fetchWithBQ({
-            // eslint-disable-next-line max-len
-            ...createHttpRequest(DpskUrls.addDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
-            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
-          })
-          // Ensure the return type is QueryReturnValue
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-          const { id } = res.data as DpskMutationResult
-
-          if (enableRbac && payload!.policySetId) {
-            await fetchWithBQ({
-              ...createHttpRequest(DpskUrls.updateDpskPolicySet, {
-                serviceId: id,
-                policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
-            })
-          }
-
-          return { data: res.data as DpskMutationResult }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: addDpskFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const res = await fetchWithBQ({
-            ...createHttpRequest(DpskUrls.updateDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
-            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
-          })
-          // Ensure the return type is QueryReturnValue
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-
-          if (enableRbac) {
-            // Get the current Dpsk Service data
-            const getDpskRes = await fetchWithBQ({
-              ...createHttpRequest(DpskUrls.getDpsk, params)
-            })
-
-            if (getDpskRes.error) {
-              return { error: getDpskRes.error as FetchBaseQueryError }
-            }
-
-            const currentDpsk = getDpskRes.data as DpskSaveData
-            if (payload!.policySetId !== currentDpsk.policySetId) {
-              if (payload!.policySetId) {
-                await fetchWithBQ({
-                  ...createHttpRequest(DpskUrls.updateDpskPolicySet, { ...params, policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
-                })
-              } else {
-                await fetchWithBQ({
-                  ...createHttpRequest(DpskUrls.deleteDpskPolicySet, { ...params, policySetId: currentDpsk.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
-                })
-              }
-            }
-          }
-
-          return { data: res.data as DpskMutationResult }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: updateDpskFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({

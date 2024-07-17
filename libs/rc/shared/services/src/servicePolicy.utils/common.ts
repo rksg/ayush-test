@@ -12,7 +12,7 @@ export type QueryFn<ResultType, QueryArg = never> = ({ params, payload, enableRb
 export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo: ApiInfo = apiInfo) {
   return (queryArgs: RequestPayload) => {
     const { params, payload, enableRbac = false } = queryArgs
-    const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
+    const resolvedApiInfo = (enableRbac && rbacApiInfo) ? rbacApiInfo : apiInfo
     // eslint-disable-next-line max-len
     const resolvedPayload = resolvedApiInfo?.defaultHeaders?.['Content-Type'] ? JSON.stringify(payload) : payload
 

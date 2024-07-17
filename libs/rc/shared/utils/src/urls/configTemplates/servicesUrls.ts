@@ -4,27 +4,47 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getDpsk: {
     method: 'get',
     url: '/templates/dpskServices/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   addDpsk: {
     method: 'post',
     url: '/templates/dpskServices',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateDpsk: {
     method: 'put',
     url: '/templates/dpskServices/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteDpsk: {
     method: 'delete',
     url: '/templates/dpskServices/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedDpskList: {
     method: 'post',
     url: '/templates/dpskServices/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   addDhcp: {
     method: 'post',

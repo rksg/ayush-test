@@ -873,6 +873,24 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
+    activateDpskService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateDpskService, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    activateMacRegistrationPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateMacRegistrationPool, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     activateVlanPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const headers = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -1437,6 +1455,8 @@ export const {
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
   useActivateCertificateTemplateMutation,
+  useActivateDpskServiceMutation,
+  useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,
   useActivateRadiusServerMutation,

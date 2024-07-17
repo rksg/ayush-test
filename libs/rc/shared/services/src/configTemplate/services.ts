@@ -13,8 +13,8 @@ import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { createDpskHttpRequest }           from '../service'
 import { commonQueryFn, getDhcpProfileFn } from '../servicePolicy.utils'
+import { addDpskFn, updateDpskFn }         from '../servicePolicy.utils/dpsk'
 
 import {
   useCasesToRefreshDhcpTemplateList,
@@ -28,7 +28,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     getDpskTemplate: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const getDpskReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getDpsk, params)
+        const getDpskReq = createHttpRequest(ServicesConfigTemplateUrlsInfo.getDpsk, params)
         return {
           ...getDpskReq,
           body: JSON.stringify(payload)
@@ -37,33 +37,19 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'DpskTemplate', id: 'DETAIL' }]
     }),
     createDpskTemplate: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const createDpskReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.addDpsk, params)
-        return {
-          ...createDpskReq,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: addDpskFn(true),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
     updateDpskTemplate: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const updateDpskReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updateDpsk, params)
-        return {
-          ...updateDpskReq,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: updateDpskFn(true),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
     deleteDpskTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.deleteDpsk, params)
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.deleteDpsk, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -75,7 +61,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     getEnhancedDpskTemplateList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const getDpskListReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedDpskList, params)
+        const getDpskListReq = createHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedDpskList, params)
         const defaultPayload = {
           page: 1,
           pageSize: 10000,
@@ -358,9 +344,6 @@ export const {
 const v1TemplateHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v1+json'
-}
-function createDpskTemplateHttpRequest (apiInfo: ApiInfo, params?: Params<string>) {
-  return createDpskHttpRequest(apiInfo, params, v1TemplateHeaders)
 }
 
 const createPortalTemplateHttpRequest = (

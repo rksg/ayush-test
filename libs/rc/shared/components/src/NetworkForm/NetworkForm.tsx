@@ -23,7 +23,9 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useActivateMacRegistrationPoolMutation,
+  useActivateDpskServiceMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -129,6 +131,7 @@ export function NetworkForm (props:{
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
   const enableRbac = isUseWifiRbacApi && !isTemplate
+  const enableServiceRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
@@ -153,6 +156,8 @@ export function NetworkForm (props:{
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
   const activateCertificateTemplate = useCertificateTemplateActivation()
+  const activateDpskPool = useDpskServiceActivation()
+  const activateMacRegistrationPool = useMacRegistrationPoolActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
@@ -532,7 +537,9 @@ export function NetworkForm (props:{
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
-            'hotspot20Settings.originalProviders']))
+            'hotspot20Settings.originalProviders',
+            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
+          ]))
 
       const networkResponse = await addNetworkInstance({ params, payload, enableRbac }).unwrap()
       const networkId = networkResponse?.response?.id
@@ -542,9 +549,12 @@ export function NetworkForm (props:{
       await updateWifiCallingActivation(networkId, saveState)
       await updateAccessControl(saveState, data)
       // eslint-disable-next-line max-len
-      const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
-      const hasResult = certResponse ?? networkResponse?.response
-      if (hasResult && payload.venues) {
+      await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
+      if (enableServiceRbac) {
+        await activateDpskPool(saveState.dpskServiceProfileId, networkId)
+        await activateMacRegistrationPool(saveState.wlan?.macRegistrationListId, networkId)
+      }
+      if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
@@ -610,7 +620,8 @@ export function NetworkForm (props:{
             'pskProtocol',
             'isOweMaster',
             'owePairNetworkId',
-            'certificateTemplateId'
+            'certificateTemplateId',
+            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
           ]
         )
       }
@@ -623,6 +634,10 @@ export function NetworkForm (props:{
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+      if (enableServiceRbac) {
+        await activateDpskPool(formData.dpskServiceProfileId, payload.id)
+        await activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id)
+      }
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
       await updateWifiCallingActivation(payload.id, formData)
@@ -898,6 +913,26 @@ function useCertificateTemplateActivation () {
     }
 
   return activateCertificateTemplate
+}
+
+function useMacRegistrationPoolActivation () {
+  const [activate] = useActivateMacRegistrationPoolMutation()
+  return async (macRegistrationPoolId?: string, networkId?: string) => {
+    if (macRegistrationPoolId && networkId) {
+      return await activate({ params: { networkId, macRegistrationPoolId } }).unwrap()
+    }
+    return null
+  }
+}
+
+function useDpskServiceActivation () {
+  const [activate] = useActivateDpskServiceMutation()
+  return async (dpskServiceId?: string, networkId?: string) => {
+    if (dpskServiceId && networkId) {
+      return await activate({ params: { networkId, dpskServiceId } }).unwrap()
+    }
+    return null
+  }
 }
 
 function useWifiOperatorActivation () {
