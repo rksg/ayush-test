@@ -1,12 +1,12 @@
 import { FormInstance } from 'antd'
 import { rest }         from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                                                                                                      from '@acx-ui/feature-toggle'
-import { ClientIsolationUrls, ConfigTemplateType, DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, RadioEnum, TunnelProfileUrls, TunnelTypeEnum, WifiUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                                                    from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                                                                                                                                                             from '@acx-ui/test-utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                                                                                                                                 from '@acx-ui/feature-toggle'
+import { ClientIsolationUrls, ConfigTemplateType, DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, RadioEnum, TunnelProfileUrls, TunnelTypeEnum, WifiUrlsInfo, WifiCallingUrls, AaaUrls, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                                                                               from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                                                                                                                                                                                        from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate, useWifiCalling } from './utils'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useRadiusServer, useServicePolicyEnabledWithConfigTemplate, useWifiCalling } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -407,6 +407,144 @@ describe('Network utils test', () => {
       await result.current.updateClientIsolationActivations(saveData, oldSaveData, 'test-network-id')
 
       expect(mockUnbindClientIsolation).toHaveBeenCalled()
+    })
+  })
+
+  describe('useRadiusServer hook', () => {
+    const spyQueryFn = jest.fn()
+    const spyRadiusSettingsFn = jest.fn()
+    const spyGetAaaFn = jest.fn()
+
+    beforeEach(() => {
+      mockServer.use(
+        rest.post(
+          AaaUrls.queryAAAPolicyList.url,
+          (_, res, ctx) => {
+            spyQueryFn()
+            return res(ctx.json({
+              data: [
+                {
+                  id: 'mock-radius-server-id',
+                  type: 'AUTHENTICATION'
+                },
+                {
+                  id: 'mock-radius-server-id',
+                  type: 'ACCOUNTING'
+                }]
+            }))}
+        ),
+        rest.get(
+          WifiRbacUrlsInfo.getRadiusServerSettings.url,
+          (_, res, ctx) => {
+            spyRadiusSettingsFn()
+            return res(ctx.json({
+              enableAccountingProxy: false,
+              enableAuthProxy: false
+            }))}
+        ),
+        rest.get(
+          AaaUrls.getAAAPolicyRbac.url,
+          (_, res, ctx) => {
+            spyGetAaaFn()
+            return res(ctx.json({
+              primary: {
+                ip: '1.1.1.1',
+                port: '1812',
+                sharedSecret: '124124124214'
+              }
+            }))
+          }
+        )
+      )
+    })
+
+    afterEach(() => {
+      jest.clearAllMocks()
+      jest.restoreAllMocks()
+    })
+
+    it('radiusServerConfigurations should be undefined while RBAC disabled', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+
+      const { result } = renderHook(
+        () => useRadiusServer(),
+        {
+          wrapper: Provider,
+          route: { params: { networkId: 'mock-network-id' } }
+        })
+
+      expect(result.current.radiusServerConfigurations).toBeUndefined()
+    })
+
+    it('radiusServerConfigurations should not be undefined while RBAC enabled', async () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+      const { result } = renderHook(
+        () => useRadiusServer(),
+        {
+          wrapper: Provider,
+          route: { params: { networkId: 'mock-network-id' } }
+        })
+
+      await waitFor(() => expect(spyQueryFn).toHaveBeenCalled())
+      await waitFor(() => expect(spyRadiusSettingsFn).toHaveBeenCalled())
+      await waitFor(() => expect(spyGetAaaFn).toHaveBeenCalled())
+
+      await waitFor(() => expect(result.current.radiusServerConfigurations).not.toBeUndefined())
+    })
+
+    it('should updateRadiusServer successfully while RBAC enabled', async () => {
+      const spyUpdateRadiusSettingsFn = jest.fn()
+      const spyActivateRadiusFn = jest.fn()
+      const spyDeactivateRadiusFn = jest.fn()
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+      mockServer.use(
+        rest.put(
+          WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+          (_, res, ctx) => {
+            spyUpdateRadiusSettingsFn()
+            return res(ctx.json({}))
+          }
+        ),
+        rest.put(
+          WifiRbacUrlsInfo.activateRadiusServer.url,
+          (_, res, ctx) => {
+            spyActivateRadiusFn()
+            return res(ctx.json({}))
+          }
+        ),
+        rest.delete(
+          WifiRbacUrlsInfo.deactivateRadiusServer.url,
+          (_, res, ctx) => {
+            spyDeactivateRadiusFn()
+            return res(ctx.json({}))
+          }
+        )
+      )
+
+      const { result } = renderHook(
+        () => useRadiusServer(),
+        {
+          wrapper: Provider,
+          route: { params: { networkId: 'mock-network-id' } }
+        })
+
+      const updateRadius = result.current.updateRadiusServer
+
+      await updateRadius(
+        { authRadiusId: 'new-radius-id' },
+        { authRadiusId: 'old-radius-id' },
+        'new-networkId'
+      )
+
+      await waitFor(() => expect(spyUpdateRadiusSettingsFn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(spyActivateRadiusFn).toHaveBeenCalledTimes(1))
+      await waitFor(() => expect(spyDeactivateRadiusFn).toHaveBeenCalledTimes(0))
     })
   })
 
