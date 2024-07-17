@@ -62,18 +62,6 @@ export type EnhancedRecommendation = RecommendationDetails & {
   intentType?: string;
 }
 
-export type CrrmListItem = {
-  id: string
-  code: string
-  status: StateType
-  sliceValue: string
-  statusTrail: StatusTrail
-  crrmOptimizedState?: IconValue
-  summary?: string
-  updatedAt: string
-  metadata: {}
-} & Partial<RecommendationKpi>
-
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code,
