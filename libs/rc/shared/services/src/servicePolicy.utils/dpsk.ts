@@ -2,13 +2,14 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import _                       from 'lodash'
 
-import { QueryFn }                           from '@acx-ui/rc/services'
 import {
   DpskMutationResult,
   DpskSaveData,
   DpskUrls, ServicesConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { createHttpRequest } from '@acx-ui/utils'
+
+import { QueryFn } from './common'
 
 export function addDpskFn (isTemplate: boolean = false) : QueryFn<DpskMutationResult, DpskSaveData> {
   const api = (isTemplate) ? ServicesConfigTemplateUrlsInfo : DpskUrls

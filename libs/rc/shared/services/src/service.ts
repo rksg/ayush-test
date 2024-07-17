@@ -62,7 +62,7 @@ import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { commonQueryFn, getDhcpProfileFn, createWifiCallingFn, getWifiCallingFn, queryWifiCallingFn, updateWifiCallingFn } from './servicePolicy.utils'
-import { addDpskFn, updateDpskFn }                                                                                         from './servicePolicy.utils/dpsk'
+import { addDpskFn, updateDpskFn }                                                                                         from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
