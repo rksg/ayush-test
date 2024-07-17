@@ -124,7 +124,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  addNetworkVenue: {
+  addNetworkVenueTemplate: {
     method: 'post',
     url: '/templates/networkActivations',
     newApi: true
@@ -132,7 +132,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addNetworkVenueTemplateRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteNetworkVenueTemplate: {
     method: 'delete',
@@ -152,7 +156,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenueTemplateRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addNetworkVenuesTemplate: {
     method: 'post',

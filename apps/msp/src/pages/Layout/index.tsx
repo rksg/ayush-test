@@ -120,57 +120,55 @@ function Layout () {
   }, [data, userProfile, mspEntitlement])
 
   return (
-    <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
-      <LayoutComponent
-        logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-        menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
-        content={
-          <>
-            <CloudMessageBanner />
-            <Outlet />
-          </>
-        }
-        leftHeaderContent={<>
-          {isHspSupportEnabled && <TenantLink to='/dashboard'>
+    <LayoutComponent
+      logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
+      content={
+        <>
+          <CloudMessageBanner />
+          <Outlet />
+        </>
+      }
+      leftHeaderContent={<>
+        {isHspSupportEnabled && <TenantLink to='/dashboard'>
+          <UI.Home>
+            <LayoutUI.Icon children={<AdminSolid />} />
+            {$t({ defaultMessage: 'My Account' })}
+          </UI.Home></TenantLink>}
+        { showSupportHomeButton && (
+          <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
             <UI.Home>
-              <LayoutUI.Icon children={<AdminSolid />} />
-              {$t({ defaultMessage: 'My Account' })}
-            </UI.Home></TenantLink>}
-          { showSupportHomeButton && (
-            <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
-              <UI.Home>
-                <LayoutUI.Icon children={<HomeSolid />} />
-                {$t({ defaultMessage: 'Support Home' }) }
-              </UI.Home>
-            </a>)
-          }
-          <RegionButton/>
-          <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
-            <LicenseBanner isMSPUser={true}/>
-          </HeaderContext.Provider>
-          { isHospitality &&
+              <LayoutUI.Icon children={<HomeSolid />} />
+              {$t({ defaultMessage: 'Support Home' }) }
+            </UI.Home>
+          </a>)
+        }
+        <RegionButton/>
+        <HeaderContext.Provider value={{ licenseExpanded, setLicenseExpanded }}>
+          <LicenseBanner isMSPUser={true}/>
+        </HeaderContext.Provider>
+        { isHospitality &&
           <UI.VerticalTitle>
             <Typography.Title level={3}>
               {$t({ defaultMessage: 'Hospitality Edition' })}
             </Typography.Title>
           </UI.VerticalTitle>}
-        </>}
-        rightHeaderContent={<>
-          <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
-          {!(isGuestManager || isDPSKAdmin) &&
+      </>}
+      rightHeaderContent={<>
+        <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
+        {!(isGuestManager || isDPSKAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>
           </>}
-          <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-          <HelpButton
-            isMspEc={isTechPartner}
-            mspBrandData={mspBrandData}
-            supportStatus={supportStatus}/>
-          <UserButton/>
-        </>}
-      />
-    </ConfigTemplateContext.Provider>
+        <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
+        <HelpButton
+          isMspEc={isTechPartner}
+          mspBrandData={mspBrandData}
+          supportStatus={supportStatus}/>
+        <UserButton/>
+      </>}
+    />
   )
 }
 

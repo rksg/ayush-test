@@ -72,6 +72,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  addNetworkVenue: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateNetworkVenue: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getVenueApCapabilities: {
     method: 'get',
     //url: '/venues/:venueId/aps/capabilities',

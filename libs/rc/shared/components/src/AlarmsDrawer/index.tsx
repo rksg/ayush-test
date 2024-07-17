@@ -12,8 +12,7 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter }              from '@acx-ui/formatter'
+import { formatter }  from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
@@ -21,16 +20,14 @@ import {
   eventAlarmApi,
   networkApi,
   useClearAlarmByVenueMutation,
-  useVenuesListQuery,
-  useGetVenuesTemplateListQuery
+  useGetVenuesQuery
 } from '@acx-ui/rc/services'
 import {
   Alarm,
   CommonUrlsInfo,
   useTableQuery,
   EventSeverityEnum,
-  EventTypeEnum,
-  useConfigTemplateQueryFnSwitcher, TableResult, Venue, useConfigTemplate
+  EventTypeEnum
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
 import { store }                 from '@acx-ui/store'
@@ -74,14 +71,8 @@ const defaultPayload: {
 
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
   const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
-
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isTemplateRbacEnabled : isWifiRbacEnabled
-
   const { visible, setVisible } = props
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
@@ -122,13 +113,8 @@ export function AlarmsDrawer (props: AlarmsType) {
     { isLoading: isAlarmByVenueCleaning }
   ] = useClearAlarmByVenueMutation()
 
-  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
-    useQueryFn: useVenuesListQuery,
-    useTemplateQueryFn: useGetVenuesTemplateListQuery,
-    skip: false,
-    payload: venuesListPayload,
-    enableRbac: resolvedRbacEnabled
-  })
+  const { data: venuesList } =
+    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
 
   const tableQuery = useTableQuery({
@@ -219,7 +205,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   }
 
   const getVenueIdsOfAlarms = (venueNames: string[]) => {
-    const venueIds = (venuesList?.data?.data.filter(venue =>
+    const venueIds = (venuesList?.data.filter(venue =>
       venueNames.includes(venue.name)) || []).map(venue => venue.id)
 
     return venueIds

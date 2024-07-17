@@ -40,6 +40,7 @@ import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
+  addNetworkVenueFn,
   aggregatedRbacNetworksVenueData,
   aggregatedRbacVenueNetworksData,
   fetchRbacApGroupNetworkVenueList,
@@ -263,13 +264,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
-        return {
-          ...req,
-          body: payload
-        }
-      },
+      queryFn: addNetworkVenueFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     addNetworkVenues: build.mutation<CommonResult, RequestPayload>({
@@ -283,7 +278,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      queryFn: updateNetworkVenueFn(false),
+      queryFn: updateNetworkVenueFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenues: build.mutation<CommonResult, RequestPayload>({

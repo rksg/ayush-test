@@ -18,7 +18,7 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
 import { networkApi }           from '../network'
-import { addNetworkVenueFn }    from '../networkUtils'
+import { addNetworkVenueFn }    from '../networkVenueUtils'
 import { commonQueryFn }        from '../servicePolicy.utils'
 import { updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
