@@ -114,6 +114,40 @@ describe('hasRoles', () => {
       RolesEnum.READ_ONLY
     ])).toBe(false)
   })
+
+  it('check roles with enable abac', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      profile: {
+        ...profile.profile,
+        //  According to the current backend design, roles might be PG names that do not exist in RolesName.
+        //  However, this might change in the future, so we have not yet modified the type of roles.
+        roles: ['NEW_USER'],
+        customRoleType: 'System',
+        customRoleName: 'PRIME_ADMIN'
+      },
+      allowedOperations: ['GET:/networks', 'GET:/switches'],
+      accountTier: '',
+      betaEnabled: false,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: []
+    })
+
+
+    expect(hasRoles([
+      RolesEnum.PRIME_ADMIN,
+      RolesEnum.ADMINISTRATOR,
+      RolesEnum.DPSK_ADMIN
+    ])).toBe(true)
+
+    expect(hasRoles([
+      RolesEnum.READ_ONLY
+    ])).toBe(false)
+
+
+  })
 })
 
 describe('filterByAccess', () => {

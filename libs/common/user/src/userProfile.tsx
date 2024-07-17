@@ -157,9 +157,17 @@ export function hasScope (userScopes: ScopeKeys) {
 
 
 export function hasRoles (roles: string | string[]) {
-  const { profile } = getUserProfile()
+  const { profile, abacEnabled } = getUserProfile()
+
 
   if (!Array.isArray(roles)) roles = [roles]
+
+  // TODO: Backend needs to enhance the API to include system role names in roles
+  if (abacEnabled &&
+    profile.customRoleType === 'System' &&
+    profile.customRoleName) {
+    return roles.includes(profile.customRoleName)
+  }
 
   return profile?.roles?.some(role => roles.includes(role))
 }
