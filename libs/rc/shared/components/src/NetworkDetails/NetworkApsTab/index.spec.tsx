@@ -125,6 +125,9 @@ describe('NetworkApsTab', () => {
       rest.post(
         WifiUrlsInfo.getApGroupsList.url,
         (req, res, ctx) => res(ctx.json(apGroupList))
+      ),
+      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
