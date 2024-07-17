@@ -393,9 +393,8 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const mspUrlsInfo = getMspUrls(enableRbac)
-        const req = createHttpRequest(mspUrlsInfo.getMspEcProfile, params)
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
         return {
           ...req
         }
