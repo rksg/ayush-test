@@ -43,6 +43,13 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   width?: number
   /**
+   * Minimum width for the resizable column.
+   *
+   * If `minWidth` is set, column width cannot be resized to be less than `minWidth`.
+   * @default undefined
+   */
+  minWidth?: number
+  /**
    * Set the column to be searchable
    * If one column has this to true the table will start showing search input
    * @default false
@@ -53,7 +60,7 @@ type AdditionalColumnType <RecordType, ValueType> = {
    * the table will show a multi select dropdown to filter the column
    * @default false
    */
-  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode }) []
+  filterable?: boolean | ({ key: string, value: string, label?: React.ReactNode }) [] | OptionType[]
   /**
    * Set the key in filters of payload
    * It is useful when the dataIndex is different from the filter key
@@ -86,11 +93,13 @@ type AdditionalColumnType <RecordType, ValueType> = {
   /**
    * Allow filter to appear as one of the type specified
    */
-  filterComponent?: ({ type: 'checkbox' | 'rangepicker', label?: string })
+  filterComponent?: ({ type: 'checkbox' | 'rangepicker' , label?: string })
   /**
    * Overwrite filterableWidth of table attribute
    */
   filterableWidth?: number
+
+  fitlerCustomOptions?: OptionType[]
   /**
    * Set the key for Coordinated filters that have a hierarchical dependency
    * the relevant filter will be reset by key when changing the value

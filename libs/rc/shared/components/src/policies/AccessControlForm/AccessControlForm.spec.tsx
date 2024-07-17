@@ -73,6 +73,8 @@ describe('AccessControlForm Component', () => {
         (_, res, ctx) => res(ctx.json(aclDetail))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json(aclList))),
+      rest.get(AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedAccessControlProfiles.url,
         (req, res, ctx) => res(ctx.json(enhancedAccessControlList))),
       rest.get(AccessControlUrls.getL2AclPolicyList.url,
