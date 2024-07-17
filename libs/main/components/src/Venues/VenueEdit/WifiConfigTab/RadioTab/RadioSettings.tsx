@@ -162,7 +162,8 @@ export function RadioSettings () {
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
-      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery,
+      skip: resolvedRbacEnabled
     })
 
   // available channels from this venue country code
