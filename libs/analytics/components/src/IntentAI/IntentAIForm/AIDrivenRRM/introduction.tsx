@@ -9,7 +9,7 @@ import { get }                                                           from '@
 import { DateFormatEnum, formatter }                                     from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon }                               from '@acx-ui/icons'
 
-import { steps, crrmIntent, intentTypeMap, statusTrailMsgs } from '../config'
+import { steps, crrmIntent, intentTypeMap, statusTrailMsgs } from '../AIDrivenRRM'
 import { states }                                            from '../config'
 import { EnhancedRecommendation }                            from '../services'
 import * as UI                                               from '../styledComponents'

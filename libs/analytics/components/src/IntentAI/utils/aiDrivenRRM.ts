@@ -1,14 +1,11 @@
 import _                                    from 'lodash'
-import moment                               from 'moment-timezone'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { getIntl }   from '@acx-ui/utils'
 
 import { enumMap }     from '../../ConfigChange/Table/mapping/enumMap'
 import { json2keymap } from '../../ConfigChange/Table/util'
-
 
 type CrrmTextType = { recommended: string, txPowerAPCount?: number }
   | Array<{
@@ -74,9 +71,4 @@ export const crrmText = (value: CrrmTextType) => {
         : $t({ defaultMessage: 'no change in AP Tx Power' })
     })
   }
-}
-
-export const isDataRetained = (time?: string) => {
-  const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
-  return moment(time).isAfter(retainDate)
 }

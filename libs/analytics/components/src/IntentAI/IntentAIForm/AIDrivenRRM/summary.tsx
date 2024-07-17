@@ -5,7 +5,7 @@ import { useIntl }              from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { steps, crrmIntent, isOptimized } from '../config'
+import { steps, crrmIntent, isOptimized } from '../AIDrivenRRM'
 import { EnhancedRecommendation }         from '../services'
 import * as UI                            from '../styledComponents'
 

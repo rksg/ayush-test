@@ -4,21 +4,15 @@ import { recommendationUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery }         from '@acx-ui/test-utils'
 
 import {
-  mockedRecommendationApFirmware,
   mockedRecommendationCRRM,
   mockedRecommendationCRRMApplied
 } from './__tests__/fixtures'
-import { api, EnhancedRecommendation, kpiHelper, RecommendationAp } from './services'
+import { api, EnhancedRecommendation, kpiHelper } from './services'
 
 describe('recommendation services', () => {
   const recommendationPayload = {
     id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
     status: 'new'
-  }
-
-  const recommendationApPayload = {
-    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
-    search: ''
   }
 
   describe('crrm recommendation code', () => {
@@ -91,41 +85,6 @@ describe('recommendation services', () => {
         trigger: 'daily'
       } as unknown as EnhancedRecommendation)
     })
-  })
-
-  it('should return correct ap details', async () => {
-    mockGraphqlQuery(recommendationUrl, 'GetAps', {
-      data: {
-        recommendation: {
-          APs: mockedRecommendationApFirmware
-        }
-      }
-    })
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.getAps.initiate(recommendationApPayload)
-    )
-    expect(status).toBe('fulfilled')
-    expect(error).toBeUndefined()
-    expect(data).toStrictEqual<RecommendationAp[]>([
-      {
-        name: 'RuckusAP',
-        mac: '28:B3:71:27:38:E0',
-        model: 'R650',
-        version: 'Unknown'
-      },
-      {
-        name: 'RuckusAP',
-        mac: 'B4:79:C8:3E:7E:50',
-        model: 'R550',
-        version: 'Unknown'
-      },
-      {
-        name: 'RuckusAP',
-        mac: 'C8:84:8C:3E:46:B0',
-        model: 'R560',
-        version: 'Unknown'
-      }
-    ])
   })
 
   it('should return recommendation details with monitoring data for CRRM', async () => {

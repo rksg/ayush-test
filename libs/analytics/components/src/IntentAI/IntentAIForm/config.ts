@@ -4,7 +4,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { formatter } from '@acx-ui/formatter'
 
 import { CRRMStates } from './states'
-import { crrmText }   from './utils'
 
 export type IconValue = { order: number, label: MessageDescriptor }
 
@@ -33,7 +32,7 @@ export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
 }
 
-type CodeInfo = {
+export type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
   partialOptimizedSummary?: MessageDescriptor,
@@ -52,7 +51,7 @@ type RecommendationKPIConfig = {
   filter?: CallableFunction
 }
 
-type RecommendationConfig = {
+export type RecommendationConfig = {
   valueFormatter: ReturnType<typeof formatter>
   valueText: MessageDescriptor
   actionText: MessageDescriptor
@@ -71,7 +70,7 @@ type RecommendationConfig = {
   continuous: boolean
 }
 
-const categories = {
+export const categories = {
   'Wi-Fi Client Experience': defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
@@ -166,95 +165,3 @@ export const states = {
 }
 
 export type StateType = keyof typeof states
-
-export const codes = {
-  'c-crrm-channel24g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }],
-    continuous: true
-  },
-  'c-crrm-channel5g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }],
-    continuous: true
-  },
-  'c-crrm-channel6g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }],
-    continuous: true
-  }
-} as unknown as Record<string, RecommendationConfig & CodeInfo>
-
-export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
-  acc[key as StateType] = val.text
-  return acc
-}, {} as Record<StateType, MessageDescriptor>)
-
-export const steps = {
-  title: {
-    introduction: defineMessage({ defaultMessage: 'Introduction' }),
-    priority: defineMessage({ defaultMessage: 'Intent Priority' }),
-    settings: defineMessage({ defaultMessage: 'Settings' }),
-    summary: defineMessage({ defaultMessage: 'Summary' })
-  },
-  link: {
-    demoLink: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi',
-    guideLink: 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
-  },
-  sideNotes: {
-    title: defineMessage({ defaultMessage: 'Side Notes' }),
-    introduction: defineMessage({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' }),
-    tradeoff: defineMessage({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })
-  },
-  calendarText: defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
-}
-
-export const intentTypeMap = {
-  aiDrivenRRM: {
-    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
-    category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
-    clientDensity: defineMessage({ defaultMessage: 'Client Density' }),
-    clientThroughput: defineMessage({ defaultMessage: 'Client Throughput' })
-  }
-}
-
-export const crrmIntent = {
-  full: {
-    value: defineMessage({ defaultMessage: 'Client Density' }),
-    title: defineMessage({ defaultMessage: 'High number of clients in a dense network' }),
-    content: defineMessage({ defaultMessage: 'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })
-  },
-  partial: {
-    value: defineMessage({ defaultMessage: 'Client Throughput' }),
-    title: defineMessage({ defaultMessage: 'High client throughput in sparse network' }),
-    content: defineMessage({ defaultMessage: 'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })
-  }
-}
-
-export const isOptimized = (value: boolean) => value ? 'full' : 'partial'

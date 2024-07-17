@@ -9,7 +9,7 @@ import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/compone
 import { get }                                             from '@acx-ui/config'
 
 import { TradeOff }               from '../../../TradeOff'
-import { steps }                  from '../config'
+import { steps }                  from '../AIDrivenRRM'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 

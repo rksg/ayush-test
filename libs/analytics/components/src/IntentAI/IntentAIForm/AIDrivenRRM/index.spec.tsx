@@ -6,8 +6,9 @@ import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
-import { mockedRecommendationCRRM } from './__tests__/fixtures'
-import { AIDrivenRRM }              from './AIDrivenRRM'
+import { mockedRecommendationCRRM } from '../__tests__/fixtures'
+
+import { AIDrivenRRM } from '.'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
@@ -45,7 +46,7 @@ describe('AIDrivenRRM', () => {
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: { recommendation: mockedRecommendationCRRM }
     })
-    jest.spyOn(require('./utils'), 'isDataRetained')
+    jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
   })
 
