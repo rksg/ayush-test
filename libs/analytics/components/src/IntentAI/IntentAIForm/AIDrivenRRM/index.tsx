@@ -85,16 +85,9 @@ export const steps = {
     introduction: defineMessage({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' }),
     tradeoff: defineMessage({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })
   },
-  calendarText: defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
-}
-
-export const intentTypeMap = {
-  aiDrivenRRM: {
-    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
-    category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
-    clientDensity: defineMessage({ defaultMessage: 'Client Density' }),
-    clientThroughput: defineMessage({ defaultMessage: 'Client Throughput' })
-  }
+  calendarText: defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' }),
+  intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
+  category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' })
 }
 
 export const crrmIntent = {
@@ -150,7 +143,7 @@ export function AIDrivenRRM () {
         subTitle={[
           {
             label: $t({ defaultMessage: 'Intent' }),
-            value: [$t(intentTypeMap.aiDrivenRRM.intent) as string]
+            value: [$t(steps.intent) as string]
           },
           {
             label: get('IS_MLISA_SA')

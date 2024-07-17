@@ -13,7 +13,7 @@ import { states }                 from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 
-import { steps, crrmIntent, intentTypeMap, statusTrailMsgs } from '.'
+import { steps, crrmIntent, statusTrailMsgs } from '.'
 
 export function Introduction () {
   const { $t } = useIntl()
@@ -50,11 +50,11 @@ export function Introduction () {
       <Descriptions noSpace>
         <Descriptions.Item
           label={$t({ defaultMessage: 'Intent' })}
-          children={$t(intentTypeMap.aiDrivenRRM.intent)}
+          children={$t(steps.intent)}
         />
         <Descriptions.Item
           label={$t({ defaultMessage: 'Category' })}
-          children={$t(intentTypeMap.aiDrivenRRM.category)}
+          children={$t(steps.category)}
         />
         <Descriptions.Item
           label={get('IS_MLISA_SA')
