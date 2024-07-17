@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetMspProfileQuery }    from '@acx-ui/msp/services'
 import { MSPUtils }                 from '@acx-ui/msp/utils'
 import {
@@ -37,9 +38,10 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const params = useParams()
   const mspUtils = MSPUtils()
   const navigate = useNavigate()
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
   const { data: userProfileData } = useUserProfileContext()
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const { data: privilegeGroupList, isLoading, isFetching }
