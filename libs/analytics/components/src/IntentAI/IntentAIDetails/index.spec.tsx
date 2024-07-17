@@ -1,5 +1,6 @@
-import {IntentAIDetails} from "./index";
-import {CrrmDetails} from "./CrrmDetails";
+import { CrrmDetails } from './CrrmDetails'
+
+import { IntentAIDetails } from './index'
 
 const mockParams = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -17,7 +18,7 @@ describe('IntentAIDetails', () => {
       code: 'c-crrm-channel24g-auto'
     })
 
-    expect(IntentAIDetails()).toEqual(<CrrmDetails />)
+    expect(IntentAIDetails()).toEqual(<CrrmDetails/>)
   })
 
   it('should render a CrrmDetails when code is crrm 5g', () => {
@@ -25,7 +26,7 @@ describe('IntentAIDetails', () => {
       code: 'c-crrm-channel5g-auto'
     })
 
-    expect(IntentAIDetails()).toEqual(<CrrmDetails />)
+    expect(IntentAIDetails()).toEqual(<CrrmDetails/>)
   })
 
   it('should render a CrrmDetails when code is crrm 6g', () => {
@@ -33,6 +34,6 @@ describe('IntentAIDetails', () => {
       code: 'c-crrm-channel6g-auto'
     })
 
-    expect(IntentAIDetails()).toEqual(<CrrmDetails />)
+    expect(IntentAIDetails()).toEqual(<CrrmDetails/>)
   })
 })

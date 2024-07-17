@@ -4,8 +4,6 @@ import { useIntl } from 'react-intl'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
-import { WifiScopes }                           from '@acx-ui/types'
-import { hasPermission }                        from '@acx-ui/user'
 
 import { FixedAutoSizer }               from '../../DescriptionSection/styledComponents'
 import {
