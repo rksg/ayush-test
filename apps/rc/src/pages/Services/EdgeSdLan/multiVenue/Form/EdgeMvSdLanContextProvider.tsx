@@ -23,10 +23,8 @@ export function EdgeMvSdLanContextProvider (props: { children: ReactNode }) {
 
   const allSdLans = allSdLansQuery.data?.data ?? []
   return <EdgeMvSdLanContext.Provider value={{ allSdLans }}>
-    <Loader states={[allSdLansQuery]}>{
-      allSdLans && allSdLans.length
-        ? props.children
-        : null
-    }</Loader>
+    <Loader states={[allSdLansQuery]}>
+      {props.children}
+    </Loader>
   </EdgeMvSdLanContext.Provider>
 }
