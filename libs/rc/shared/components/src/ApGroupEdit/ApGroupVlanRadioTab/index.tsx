@@ -8,7 +8,6 @@ import { Loader, StepsFormLegacy }                from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetVLANPoolPolicyViewModelListQuery,
-  useLazyApGroupNetworkListQuery,
   useLazyApGroupNetworkListV2Query,
   useLazyNewApGroupNetworkListQuery,
   useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation,
@@ -48,7 +47,6 @@ export type VlanPoolNameMapType = { vlanPoolingNameMap: KeyValue<string, string>
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const {
     isApGroupTableFlag,
@@ -67,7 +65,6 @@ export function ApGroupVlanRadioTab () {
     ? `${basePath.pathname}/wifi/apgroups`
     : `${basePath.pathname}/wifi`)
 
-  const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
   const [getRbacApGroupNetworkList] = useLazyNewApGroupNetworkListQuery()
   const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
@@ -88,7 +85,7 @@ export function ApGroupVlanRadioTab () {
       filters: { isAllApGroups: [false] }
     })
 
-    const getApGroupNetworkData = async (isUseWifiApiV2: boolean, venueId: string) => {
+    const getApGroupNetworkData = async (venueId: string) => {
       if (isWifiRbacEnabled) {
         const { data } = await getRbacApGroupNetworkList({
           params: { venueId },
@@ -103,24 +100,18 @@ export function ApGroupVlanRadioTab () {
         })
 
         return data
-      } else if (isUseWifiApiV2) {
+      } else {
         const { data } = await getApGroupNetworkListV2({
           params: { tenantId, venueId, apGroupId },
           payload
         })
 
         return data
-      } else {
-        const { data } = await getApGroupNetworkList({
-          params: { tenantId, venueId, apGroupId },
-          payload
-        })
-        return data
       }
     }
 
     const getInitTableData = async () => {
-      const data = await getApGroupNetworkData(isUseWifiApiV2, venueId!)
+      const data = await getApGroupNetworkData(venueId!)
 
       const initData = data?.data || [] as Network[]
       setTableData(cloneDeep(initData))
@@ -128,7 +119,7 @@ export function ApGroupVlanRadioTab () {
 
     if (venueId)
       getInitTableData()
-  }, [isUseWifiApiV2, getApGroupNetworkList, getApGroupNetworkListV2,
+  }, [getApGroupNetworkListV2,
     tenantId, apGroupId, getRbacApGroupNetworkList, venueId])
 
   const handleUpdateAllApGroupVlanRadio = async () => {

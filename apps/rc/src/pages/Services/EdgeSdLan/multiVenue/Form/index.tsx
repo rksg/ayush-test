@@ -1,0 +1,119 @@
+import { FormInstance } from 'antd'
+import { find }         from 'lodash'
+
+import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
+import {
+  EdgeMvSdLanExtended,
+  getServiceRoutePath,
+  getVlanVxlanDefaultTunnelProfileOpt,
+  ServiceOperation,
+  ServiceType,
+  EdgeMvSdLanNetworks,
+  EdgeMvSdLanViewData,
+  EdgeSdLanTunneledWlan,
+  EdgeMvSdLanFormModel,
+  EdgeMvSdLanFormNetwork
+} from '@acx-ui/rc/utils'
+import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+
+import { EdgeMvSdLanContextProvider, useEdgeMvSdLanContext } from './EdgeMvSdLanContextProvider'
+
+export const sdLanFormDefaultValues = {
+  isGuestTunnelEnabled: false,
+  activatedNetworks: {} as EdgeMvSdLanFormNetwork,
+  activatedGuestNetworks: {} as EdgeMvSdLanFormNetwork
+}
+
+const getFormNetworksType = (
+  networks: EdgeMvSdLanNetworks,
+  wlans?: EdgeSdLanTunneledWlan[]
+): EdgeMvSdLanFormNetwork => {
+  const result: EdgeMvSdLanFormNetwork = {}
+  Object.entries(networks).forEach(([venueId, networkIds]) => {
+    result[venueId] = networkIds.map(id => ({
+      id,
+      name: find(wlans, { venueId, networkId: id })?.networkName
+    }))
+  })
+
+  return result
+}
+
+export const getSdLanFormDefaultValues
+  = (profileData?: EdgeMvSdLanExtended, viewData?: EdgeMvSdLanViewData): EdgeMvSdLanFormModel => {
+    return {
+      ...sdLanFormDefaultValues,
+      ...profileData,
+      ...(profileData
+        ? {
+          activatedNetworks: getFormNetworksType(profileData.networks, viewData?.tunneledWlans),
+          // eslint-disable-next-line max-len
+          activatedGuestNetworks: getFormNetworksType(profileData.guestNetworks, viewData?.tunneledGuestWlans)
+        }
+        : {}
+      )
+    } as EdgeMvSdLanFormModel
+  }
+
+interface EdgeSdLanFormStep {
+  title: string
+  content: React.FC
+}
+
+interface EdgeMvSdLanFormProps {
+  form: FormInstance,
+  steps: EdgeSdLanFormStep[]
+  editData?: EdgeMvSdLanExtended
+  onFinish: (values: EdgeMvSdLanFormModel, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
+}
+
+const EdgeMvSdLanForm = (props: EdgeMvSdLanFormProps) => {
+  const { form, steps, editData, onFinish } = props
+  const navigate = useNavigate()
+  const { allSdLans } = useEdgeMvSdLanContext()
+  const isEditMode = Boolean(editData)
+  const linkToServiceList = useTenantLink(getServiceRoutePath({
+    type: ServiceType.EDGE_SD_LAN,
+    oper: ServiceOperation.LIST
+  }))
+
+  const handleFinish = async (formData: EdgeMvSdLanFormModel, gotoStep: StepsFormGotoStepFn) => {
+    await onFinish(formData, gotoStep)
+  }
+
+  const editDataViewData = editData ? find(allSdLans, { id: editData?.id }) : undefined
+  const initFormValues = getSdLanFormDefaultValues(editData, editDataViewData)
+  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+  if (!isEditMode) {
+    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
+    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+  }
+
+  return (<StepsForm
+    form={form}
+    onCancel={() => navigate(linkToServiceList)}
+    onFinish={handleFinish}
+    editMode={isEditMode}
+    initialValues={initFormValues}
+  >
+    {
+      steps.map((item, index) =>
+        <StepsForm.StepForm
+          key={`step-${index}`}
+          name={index.toString()}
+          title={item.title}
+        >
+          <item.content />
+        </StepsForm.StepForm>)
+    }
+  </StepsForm>
+  )
+}
+
+const EdgeMvSdLanFormContainer = (props: EdgeMvSdLanFormProps) => {
+  return <EdgeMvSdLanContextProvider>
+    <EdgeMvSdLanForm {...props}/>
+  </EdgeMvSdLanContextProvider>
+}
+
+export default EdgeMvSdLanFormContainer

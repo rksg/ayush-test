@@ -91,6 +91,8 @@ describe('Aps', () => {
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(apCompatibilities))
       ),
+      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
         (req, res, ctx) => res(ctx.json(getApGroupsList))
