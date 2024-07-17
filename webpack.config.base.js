@@ -1,33 +1,6 @@
 const withModuleFederation = require('@nrwl/react/module-federation')
 const { merge } = require('webpack-merge')
 const modifyVars = require('./libs/common/components/src/theme/modify-vars')
-const path = require('path')
-const fs = require('fs')
-
-// Function to read dependencies from package.json
-function getDependenciesFromPackageJson() {
-  const packageJsonPath = path.resolve(__dirname, 'package.json')
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
-  const allDependencies = new Set([
-    ...Object.keys(packageJson.dependencies || {}),
-    '@acx-ui/components',
-    '@acx-ui/config',
-    '@acx-ui/feature-toggle',
-    '@acx-ui/formatter',
-    '@acx-ui/icons',
-    '@acx-ui/react-router-dom',
-    '@acx-ui/store',
-    '@acx-ui/theme',
-    '@acx-ui/types',
-    '@acx-ui/user',
-    '@acx-ui/utils'
-  ])
-
-  return allDependencies
-}
-
-// Get core libraries from package.json
-const coreLibraries = getDependenciesFromPackageJson()
 
 /**
  * @param {Parameters<typeof withModuleFederation>[0]} moduleFederationConfig
@@ -36,23 +9,7 @@ const coreLibraries = getDependenciesFromPackageJson()
   moduleFederationConfig,
   additionalWebpackConfig = {}
 ) {
-  const extendedModuleFederationConfig = {
-    ...moduleFederationConfig,
-    shared: (libraryName, defaultConfig) => {
-      if (coreLibraries.has(libraryName)) {
-        return {
-          ...defaultConfig,
-          singleton: true,
-          requiredVersion: defaultConfig.requiredVersion,
-        }
-      }
-      // You can add additional logic here for non-core libraries if needed
-      return false
-    }
-  }
-
-  const doModuleFederation = await withModuleFederation(process.env.NODE_ENV === 'production' ?
-  moduleFederationConfig : extendedModuleFederationConfig)
+  const doModuleFederation = await withModuleFederation(moduleFederationConfig)
   return function (config) {
     config = merge(doModuleFederation(config), additionalWebpackConfig)
     if (process.env.NODE_ENV === 'production') {
