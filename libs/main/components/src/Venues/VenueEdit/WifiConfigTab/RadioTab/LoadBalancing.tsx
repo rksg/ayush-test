@@ -13,7 +13,7 @@ import {
   useUpdateVenueLoadBalancingMutation,
   useUpdateVenueTemplateLoadBalancingMutation
 } from '@acx-ui/rc/services'
-import { LoadBalancingMethodEnum, SteeringModeEnum, VenueLoadBalancing } from '@acx-ui/rc/utils'
+import { LoadBalancingMethodEnum, SteeringModeEnum, useConfigTemplate, VenueLoadBalancing } from '@acx-ui/rc/utils'
 
 import { VenueEditContext }                                                                from '../..'
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
@@ -25,7 +25,11 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+
   const form = Form.useFormInstance()
   const [enabled, loadBalancingMethod, stickyClientSteeringEnabled, snrThreshold, percentageThreshold, bandBalancingEnabled ] = [
     useWatch('enabled'),
@@ -129,7 +133,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
       await updateVenueLoadBalancing({
         params: { venueId },
         payload,
-        enableRbac: isWifiRbacEnabled,
+        enableRbac: resolvedRbacEnabled,
         callback: callback
       }).unwrap()
 

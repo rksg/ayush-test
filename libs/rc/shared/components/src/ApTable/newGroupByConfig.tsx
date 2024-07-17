@@ -1,136 +1,117 @@
-// import { Button }                   from 'antd'
-// import { defineMessage, IntlShape } from 'react-intl'
+import { Button }                   from 'antd'
+import { defineMessage, IntlShape } from 'react-intl'
 
-// import { ApDeviceStatusEnum, APExtended, NewAPModelExtended } from '@acx-ui/rc/utils'
-// import { Params, TenantLink }                                 from '@acx-ui/react-router-dom'
-// import { getIntl }                                            from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APExtended, NewAPModelExtended } from '@acx-ui/rc/utils'
+import { TenantLink }                                         from '@acx-ui/react-router-dom'
+import { getIntl }                                            from '@acx-ui/utils'
 
-// import { APStatus } from '.'
+import { APStatus } from '.'
 
-// const commonAttributes = ($t: IntlShape['$t']) => [
-//   {
-//     key: 'members',
-//     renderer: (record: NewAPModelExtended) => (
-//       <div>
-//         {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
-//       </div>
-//     )
-//   },
-//   {
-//     key: 'incidents',
-//     renderer: (record: NewAPModelExtended) => (
-//       <div>
-//         {$t(defineMessage({ defaultMessage: 'Incidents (24 hours)' }))}: {record.incidents}
-//       </div>
-//     )
-//   },
-//   {
-//     key: 'clients',
-//     renderer: (record: NewAPModelExtended) => (
-//       <div>
-//         {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
-//       </div>
-//     )
-//   },
-//   {
-//     key: 'networks',
-//     renderer: (record: NewAPModelExtended) => (
-//       <div>
-//         {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
-//         {record.networks ? record.networks.count : 0}
-//       </div>
-//     )
-//   }
-// ]
+const commonAttributes = ($t: IntlShape['$t']) => [
+  {
+    key: 'members',
+    renderer: (record: NewAPModelExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Members' }))}: {record.members}
+      </div>
+    )
+  },
+  {
+    key: 'incidents',
+    renderer: (record: NewAPModelExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Incidents (24 hours)' }))}: {record.incidents}
+      </div>
+    )
+  },
+  {
+    key: 'clients',
+    renderer: (record: NewAPModelExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Connected Clients' }))}: {record.clients}
+      </div>
+    )
+  },
+  {
+    key: 'networks',
+    renderer: (record: NewAPModelExtended) => (
+      <div>
+        {$t(defineMessage({ defaultMessage: 'Wireless Networks' }))}:{' '}
+        {record.networks ? record.networks.count : 0}
+      </div>
+    )
+  }
+]
 
-// export const getGroupableConfig = (
-//   params? :Readonly<Params<string>>,
-//   apAction?: {
-//     showDeleteApGroups: (record: APExtended, tenantId: string) => void
-//   } ) => {
-//   const { $t } = getIntl()
-//   const deviceStatusGroupableOptions = {
-//     key: 'status',
-//     label: 'Status',
-//     attributes: [
-//       {
-//         key: 'status',
-//         renderer: (record: NewAPModelExtended) => (
-//           <APStatus status={record.status as ApDeviceStatusEnum} />
-//         )
-//       },
-//       ...commonAttributes($t)
-//     ]
-//   }
-//   const modelGroupableOptions = {
-//     key: 'model',
-//     label: 'Model',
-//     attributes: [
-//       {
-//         key: 'model',
-//         renderer: (record: NewAPModelExtended) =>
-//           <div style={{ fontStyle: 'bold' }}>{record.model}</div>
-//       },
-//       ...commonAttributes($t)
-//     ]
-//   }
-//   const deviceGroupNameGroupableOptions = {
-//     key: 'deviceGroupName',
-//     label: 'AP Group',
-//     actions: [
-//       {
-//         key: 'edit',
-//         renderer: (record: NewAPModelExtended) => record.apGroupName
-//           ? <TenantLink to={`devices/apgroups/${record.apGroupId}/edit/general`}>
-//             {$t(defineMessage({ defaultMessage: 'Edit' }))}
-//           </TenantLink>
-//           : <span></span>
-//       }, {
-//         key: 'delete',
-//         renderer: (record: NewAPModelExtended) => record.apGroupName
-//           ? <Button
-//             style={{
-//               padding: '0px',
-//               margin: '0px',
-//               height: '0px',
-//               top: '-1px'
-//             }}
-//             type='link'
-//             size='small'
-//             onClick={() => {
-//               apAction?.showDeleteApGroups(record as unknown as APExtended, params?.tenantId || '')
-//             }}
-//           >
-//             {$t(defineMessage({ defaultMessage: 'Delete' }))}
-//           </Button>
-//           : <span></span>
-
-//       }
-//     ],
-//     attributes: [
-//       {
-//         key: 'AP Group',
-//         renderer: (record: NewAPModelExtended) => record.apGroupName
-//           ? <div style={{ fontStyle: 'bold' }}>{record.apGroupName}</div>
-//           : $t({ defaultMessage: 'Ungrouped APs' })
-//       },
-//       ...commonAttributes($t)
-//     ]
-//   }
-//   return { deviceStatusGroupableOptions, deviceGroupNameGroupableOptions, modelGroupableOptions }
-// }
-
-// export const groupedFields = [
-//   'name',
-//   'status',
-//   'model',
-//   'meshRole',
-//   'networkStatus',
-//   'macAddress',
-//   'venueId',
-//   'apGroupId',
-//   'radioStatuses',
-//   'tags',
-//   'serialNumber',
-//   'firmwareVersion'
-// ]
+export const getGroupableConfig = (
+  apAction?: {
+    showDeleteApGroups: (record: APExtended, callBack?: () => void) => void
+  } ) => {
+  const { $t } = getIntl()
+  const deviceStatusGroupableOptions = {
+    key: 'status',
+    label: 'Status',
+    attributes: [
+      {
+        key: 'status',
+        renderer: (record: NewAPModelExtended) => (
+          <APStatus status={record.status as ApDeviceStatusEnum} />
+        )
+      },
+      ...commonAttributes($t)
+    ]
+  }
+  const modelGroupableOptions = {
+    key: 'model',
+    label: 'Model',
+    attributes: [
+      {
+        key: 'model',
+        renderer: (record: NewAPModelExtended) =>
+          <div style={{ fontStyle: 'bold' }}>{record.model}</div>
+      },
+      ...commonAttributes($t)
+    ]
+  }
+  const deviceGroupNameGroupableOptions = {
+    key: 'apGroupId',
+    label: 'AP Group',
+    actions: [
+      {
+        key: 'edit',
+        renderer: (record: NewAPModelExtended) => record.apGroupName &&
+          <TenantLink to={`devices/apgroups/${record.apGroupId}/edit/general`}>
+            {$t(defineMessage({ defaultMessage: 'Edit' }))}
+          </TenantLink>
+      }, {
+        key: 'delete',
+        renderer: (record: NewAPModelExtended) => record.apGroupName &&
+          <Button
+            style={{
+              padding: '0px',
+              margin: '0px',
+              height: '0px',
+              top: '-1px'
+            }}
+            type='link'
+            size='small'
+            onClick={() => {
+              apAction?.showDeleteApGroups(record as unknown as APExtended)
+            }}
+          >
+            {$t(defineMessage({ defaultMessage: 'Delete' }))}
+          </Button>
+      }
+    ],
+    attributes: [
+      {
+        key: 'AP Group',
+        renderer: (record: NewAPModelExtended) => record.apGroupName
+          ? <div style={{ fontStyle: 'bold' }}>{record.apGroupName}</div>
+          : $t({ defaultMessage: 'Ungrouped APs' })
+      },
+      ...commonAttributes($t)
+    ]
+  }
+  return { deviceStatusGroupableOptions, deviceGroupNameGroupableOptions, modelGroupableOptions }
+}
