@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
@@ -10,7 +10,9 @@ import { MSPUtils, MspEc }                                   from '@acx-ui/msp/u
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
+import { AccountType }                                       from '@acx-ui/utils'
 
+import HspContext                                                                         from '../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
 import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
 import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
@@ -42,12 +44,13 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     createOverrideModalProps
   } = useConfigTemplateOverride(selectedTemplate, selectedRows)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const { state: hspState } = useContext(HspContext)
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
     defaultPayload: {
       filters: ecFilters,
-      fields: ['id', 'name', 'status', 'streetAddress']
+      fields: ['id', 'name', 'status', 'streetAddress', 'tenantType']
     },
     search: {
       searchTargetFields: ['name'],
@@ -120,6 +123,17 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       key: 'streetAddress',
       sorter: true
     },
+    ...(hspState.isHsp ? [{
+      title: $t({ defaultMessage: 'Account Type' }),
+      dataIndex: 'tenantType',
+      key: 'tenantType',
+      sorter: false,
+      render: function (_: React.ReactNode, row: MspEc) {
+        return row.tenantType === AccountType.MSP_REC
+          ? $t({ defaultMessage: 'Brand Properties' })
+          : $t({ defaultMessage: 'MSP Customers' })
+      }
+    }] : []),
     ...(isOverridable(selectedTemplate) ? [{
       title: $t({ defaultMessage: 'Template Override Value' }),
       dataIndex: 'overrideValue',
@@ -200,7 +214,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
         onClose={onClose}
         footer={footer}
         destroyOnClose={true}
-        width={isOverridable(selectedTemplate) ? 850 : 700}
+        width={250 + (columns.length * 150)}
       >
         {content}
       </Drawer>
