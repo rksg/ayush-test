@@ -302,21 +302,23 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/mspCustomers/mspAdmins/associations',
     newApi: true
   },
-  // // getMspAggregations: {
-  // //   method: 'get',
-  // //   url: '/tenants/notificationAggregations',
-  // //   newApi: true
-  // // },
+  getMspAggregations: {
+    method: 'get',
+    url: '/tenants/settings/query',
+    oldUrl: '/tenants/notificationAggregations',
+    newApi: true
+  },
   // // addMspAggregations: {
   // //   method: 'post',
   // //   url: '/tenants/notificationAggregations',
   // //   newApi: true
   // // },
-  // // updateMspAggregations: {
-  // //   method: 'put',
-  // //   url: '/tenants/notificationAggregations',
-  // //   newApi: true
-  // // },
+  updateMspAggregations: {
+    method: 'PATCH',
+    url: '/tenants/settings',
+    oldUrl: '/tenants/notificationAggregations',
+    newApi: true
+  },
   // deleteMspAggregations: {
   //   method: 'delete',
   //   url: '/tenants/notificationAggregations',
@@ -357,6 +359,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addBrandCustomers: {
     method: 'post',
     url: '/tenants',
+    newApi: true
+  },
+  getUploadURL: {
+    method: 'post',
+    url: '/tenants/uploadurls',
+    oldUrl: '/files/uploadurls',
     newApi: true
   }
 }

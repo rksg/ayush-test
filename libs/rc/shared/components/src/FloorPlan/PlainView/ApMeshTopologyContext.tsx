@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useGetApMeshTopologyQuery, useGetFloorPlanMeshApsQuery } from '@acx-ui/rc/services'
 import { FloorPlanMeshAP, APMeshRole, ApMeshLink }                from '@acx-ui/rc/utils'
+import { TABLE_QUERY_POLLING_INTERVAL }                           from '@acx-ui/utils'
 
 export interface ApMeshTopologyDevice {
   serialNumber: string
@@ -38,6 +39,7 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
   const params = useParams<{ tenantId: string, venueId: string }>()
   const { children, isApMeshTopologyEnabled, floorplanId, venueId = params.venueId } = props
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const apMeshListPayload = {
     fields: ['name', 'serialNumber', 'apMac', 'downlink', 'apDownRssis', 'uplink', 'apUpRssi',
@@ -49,20 +51,26 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
       venueId: [venueId]
     }
   }
+
   // eslint-disable-next-line max-len
-  const { apMeshTopologyDeviceList } = useGetFloorPlanMeshApsQuery({ params, payload: apMeshListPayload }, {
+  const { apMeshTopologyDeviceList } = useGetFloorPlanMeshApsQuery({
+    params, payload: apMeshListPayload,
+    enableRbac: isWifiRbacEnabled
+  }, {
     selectFromResult ({ data }) {
       return {
         apMeshTopologyDeviceList: data && flatApMeshList(data.data)
       }
     },
-    skip: !isApMeshTopologyFFOn
+    skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
   const { data: apMeshTopologyData } = useGetApMeshTopologyQuery({
     params: { tenantId: params.tenantId, venueId }
   }, {
-    skip: !isApMeshTopologyFFOn
+    skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
   })
 
   const {

@@ -2,10 +2,10 @@
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { difference }                              from 'lodash'
 
-import { SyslogPolicyDetailType, PoliciesConfigTemplateUrlsInfo, SyslogUrls, GetApiVersionHeader, ApiVersionEnum, TableResult, SyslogPolicyListType, VenueSyslogSettingType } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                                     from '@acx-ui/types'
-import { CommonResult }                                                                                                                                                       from '@acx-ui/user'
-import { createHttpRequest, batchApi }                                                                                                                                        from '@acx-ui/utils'
+import { SyslogPolicyDetailType, PoliciesConfigTemplateUrlsInfo, SyslogUrls, TableResult, SyslogPolicyListType, VenueSyslogSettingType } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                from '@acx-ui/types'
+import { CommonResult }                                                                                                                  from '@acx-ui/user'
+import { createHttpRequest, batchApi }                                                                                                   from '@acx-ui/utils'
 
 import { QueryFn } from '../servicePolicy.utils'
 
@@ -13,10 +13,9 @@ export function addSyslogPolicyFn (isTemplate = false): QueryFn<CommonResult, Sy
   const syslogApis = isTemplate ? PoliciesConfigTemplateUrlsInfo : SyslogUrls
   return async (args, _queryApi, _extraOptions, fetchWithBQ) => {
     const { params, payload, enableRbac } = args
-    const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
     const { venues, ...rest } = payload!
     const res = await fetchWithBQ({
-      ...createHttpRequest(syslogApis.addSyslogPolicy, params, headers),
+      ...createHttpRequest(enableRbac ? syslogApis.addSyslogPolicyRbac : syslogApis.addSyslogPolicy, params),
       body: JSON.stringify(enableRbac ? { ...rest } : payload)
     })
     if (res.error) {
@@ -27,8 +26,7 @@ export function addSyslogPolicyFn (isTemplate = false): QueryFn<CommonResult, Sy
       const requests = venues?.map(venue => ({
         params: { policyId: response?.id, venueId: venue.id }
       }))
-      await batchApi(syslogApis.bindVenueSyslog, requests ?? [],
-        fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+      await batchApi(syslogApis.bindVenueSyslog, requests ?? [], fetchWithBQ)
     }
 
     return { data: res.data as CommonResult }
@@ -40,9 +38,8 @@ export function updateSyslogPolicyFn (isTemplate = false): QueryFn<CommonResult,
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions,
     fetchWithBQ) => {
     const { id, venues, oldVenues, ...rest } = payload!
-    const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
     const res = await fetchWithBQ({
-      ...createHttpRequest(syslogApis.updateSyslogPolicy, params, headers),
+      ...createHttpRequest(enableRbac ? syslogApis.updateSyslogPolicyRbac : syslogApis.updateSyslogPolicy, params),
       body: JSON.stringify(enableRbac ? { id, ...rest } : payload)
     })
 
@@ -57,8 +54,8 @@ export function updateSyslogPolicyFn (isTemplate = false): QueryFn<CommonResult,
         params: { policyId: id, venueId: venue.id }
       }))
       await Promise.all([
-        batchApi(syslogApis.unbindVenueSyslog, unbindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1)),
-        batchApi(syslogApis.bindVenueSyslog, bindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+        batchApi(syslogApis.unbindVenueSyslog, unbindReqs, fetchWithBQ),
+        batchApi(syslogApis.bindVenueSyslog, bindReqs, fetchWithBQ)
       ])
     }
     return { data: res.data as CommonResult }
@@ -69,8 +66,8 @@ export function getSyslogPolicyFn (isTemplate = false): QueryFn<SyslogPolicyDeta
   const syslogApis = isTemplate ? PoliciesConfigTemplateUrlsInfo : SyslogUrls
   return async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     if (enableRbac) {
-      const req = createHttpRequest(syslogApis.getSyslogPolicy, params, GetApiVersionHeader(ApiVersionEnum.v1_1))
-      const viewmodelReq = createHttpRequest(syslogApis.querySyslog, params, GetApiVersionHeader(ApiVersionEnum.v1))
+      const req = createHttpRequest(syslogApis.getSyslogPolicyRbac, params)
+      const viewmodelReq = createHttpRequest(syslogApis.querySyslog, params)
       const [res, viewmodelRes] = await Promise.all([
         fetchWithBQ(req),
         fetchWithBQ({

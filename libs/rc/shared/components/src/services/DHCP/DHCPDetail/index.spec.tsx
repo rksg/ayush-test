@@ -1,7 +1,8 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
-import { Provider }                 from '@acx-ui/store'
+import { useIsSplitOn, Features }                                                                                                               from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, ConfigTemplateContext, ConfigTemplateUrlsInfo, DHCPUrls, ServicesConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                             from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -9,44 +10,16 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
+import {
+  configTemplateWifiDhcpPoolUsages,
+  detailResult,
+  getConfigTemplateDhcpProfileDetail,
+  list,
+  mockVenueData,
+  queryConfigTemplate
+} from './__tests__/fixtures'
+
 import { DHCPDetail } from '.'
-
-const list = {
-  fields: ['name', 'switches', 'id', 'aggregatedApStatus'],
-  totalCount: 3,
-  page: 1,
-  data: [
-    { id: 'e16f5cb9aded49f6acd5891eb8897890', name: 'dfggsrgesr' },
-    { id: '57db532207814948aa61b156e1cf2b9e', name: 'RT Nagar' },
-    { id: '2725fdb455ec4785b1a633039b70b1aa', name: 'test_UK',
-      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 } }]
-}
-
-const detailResult = {
-  usage: [
-    {
-      venueId: 'e16f5cb9aded49f6acd5891eb8897890',
-      totalIpCount: 24,
-      usedIpCount: 3
-    }],
-  dhcpMode: 'EnableOnMultipleAPs',
-  dhcpPools: [
-    {
-      name: 'DhcpServiceProfile#1',
-      vlanId: 1001,
-      subnetAddress: '192.168.1.0',
-      subnetMask: '255.255.255.0',
-      startIpAddress: '192.168.1.1',
-      endIpAddress: '192.168.1.254',
-      leaseTimeHours: 0,
-      leaseTimeMinutes: 30,
-      id: '14eb1818309c434da928410fa2298ea5',
-      description: 'description1'
-    }
-  ],
-  serviceName: 'DhcpConfigServiceProfile1',
-  id: '78f92fbf80334e8b83cddd3210db4920'
-}
 
 describe('DHCP Detail Page', () => {
   let params: { tenantId: string, serviceId: string }
@@ -93,5 +66,36 @@ describe('DHCP Detail Page', () => {
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'My Services' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'DHCP for Wi-Fi' })).toBeVisible()
+  })
+
+  it('should render detail page with rbac api for config template correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    mockServer.use(
+      rest.post(ServicesConfigTemplateUrlsInfo.queryDhcpProfiles.url, (_, res, ctx) =>
+        res(ctx.json(queryConfigTemplate))
+      ),
+      rest.get(ServicesConfigTemplateUrlsInfo.getDHCProfileDetail.url, (_, res, ctx) =>
+        res(ctx.json(getConfigTemplateDhcpProfileDetail))
+      ),
+      rest.get(VenueConfigTemplateUrlsInfo.getDhcpUsagesRbac.url, (_, res, ctx) =>
+        res(ctx.json(configTemplateWifiDhcpPoolUsages))
+      ),
+      rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url, (_, res, ctx) =>
+        res(ctx.json(mockVenueData))
+      )
+    )
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <Provider>
+          <DHCPDetail />
+        </Provider>
+      </ConfigTemplateContext.Provider>, {
+        route: { params, path: '/:tenantId/t/services/dhcp/:serviceId/detail' }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(await screen.findByText(('Each APs'))).toBeInTheDocument()
+    expect(await screen.findByText(('Instances (1)'))).toBeInTheDocument()
+    expect(screen.getByRole('row', { name: new RegExp('testVenue') })).toBeInTheDocument()
   })
 })

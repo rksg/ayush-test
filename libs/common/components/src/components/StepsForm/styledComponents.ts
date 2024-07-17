@@ -1,9 +1,9 @@
 import { Typography, Steps as AntSteps, Space, Alert as AntAlert, AlertProps } from 'antd'
 import styled, { css }                                                         from 'styled-components/macro'
 
-import modifyVars                  from '../../theme/modify-vars'
-import { Subtitle }                from '../Subtitle'
-import { disableStickyPagination } from '../Table/styledComponents'
+import modifyVars                     from '../../theme/modify-vars'
+import { Subtitle as CommonSubtitle } from '../Subtitle'
+import { disableStickyPagination }    from '../Table/styledComponents'
 
 export const Wrapper = styled.section`
   --acx-steps-form-steps-title-color: var(--acx-primary-black);
@@ -196,7 +196,17 @@ export const Title = styled(Typography.Title).attrs({ level: 3 })`
   }
 `
 
-export const SectionTitle = styled(Subtitle).attrs({ level: 3 })`
+export const Subtitle = styled(CommonSubtitle).attrs({ level: 4 })`
+  &.ant-typography {
+    margin-top: 20px;
+    margin-bottom: 12px;
+  }
+  ${Title} + &.ant-typography {
+    margin-top: 4px;
+  }
+`
+
+export const SectionTitle = styled(CommonSubtitle).attrs({ level: 3 })`
   &.ant-typography {
     padding-bottom: 4px;
     border-bottom: 1px solid var(--acx-neutrals-30);
@@ -297,27 +307,29 @@ z-index: 5;
 }
 `
 
-export const DescriptionTextWrapper = css`
+export const greyTextStyles = css`
   .greyText {
     color: var(--acx-neutrals-50);
   }
 `
 
-export const DescriptionWrapper = styled.div`
+export const TextContent = styled.div`
+  &, .ant-list {
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    font-weight: var(--acx-body-font-weight);
+  }
+
   & .ant-checkbox-wrapper-in-form-item {
     color: var(--acx-neutrals-60);
   }
 
-  & .description {
-    font-size: var(--acx-body-4-font-size);
-  }
-
-  & .descriptionsWrapper {
+  & .indent {
     margin-left: 24px;
     flex-wrap: wrap;
     align-content: flex-start;
   }
 
-  ${DescriptionTextWrapper}
+  ${greyTextStyles}
 `
 

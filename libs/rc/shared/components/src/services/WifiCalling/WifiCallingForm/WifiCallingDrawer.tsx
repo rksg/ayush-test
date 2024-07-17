@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
@@ -35,6 +35,15 @@ const WifiCallingDrawer = (props: WifiCallingDrawerProps) => {
   const onClose = () => {
     setVisible(false)
   }
+
+  useEffect(() => {
+    if (serviceIndex !== undefined) {
+      form.setFieldsValue({
+        domain: state.ePDG[serviceIndex].domain,
+        ip: state.ePDG[serviceIndex].ip
+      })
+    }
+  }, [serviceIndex])
 
   const content = <Form layout='vertical'
     form={form}

@@ -489,6 +489,7 @@ describe('VlanPortsModal', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     expect(setVlan).toHaveBeenLastCalledWith({
+      id: '',
       model: 'ICX7150-C08P',
       slots: [
         { enable: undefined, option: undefined, slotNumber: undefined }

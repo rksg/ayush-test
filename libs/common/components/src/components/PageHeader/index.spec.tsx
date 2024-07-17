@@ -50,12 +50,43 @@ describe('PageHeader', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should render page header with subtitles and dividers', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          title='With Subtitles & Dividers'
+          breadcrumb={[
+            { text: 'Networks', link: '/networks' }
+          ]}
+          subTitle={[
+            { label: 'Label 1', value: ['Value 1'] },
+            { label: 'Label 2', value: ['Value 2'] },
+            { label: 'Label 3', value: ['Value 3', 'Value 4'] }
+          ]}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should render page header with titleExtra', () => {
     const { asFragment } = render(
       <BrowserRouter>
         <PageHeader
           title='With Subtitle'
           titleExtra={<div>Title Extra</div>}
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render page header with titlePrefix', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          titlePrefix={<div>Title Prefi</div>}
+          title='With Subtitle'
         />
       </BrowserRouter>
     )

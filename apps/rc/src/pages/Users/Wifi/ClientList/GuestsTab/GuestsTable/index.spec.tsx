@@ -443,6 +443,34 @@ describe('Guest Table', () => {
     await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
 
+  it('should show correct template file after guest-manual-password-toggle turn on', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: /Import from file/ })).toBeEnabled()
+    )
+
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    await userEvent.click(importBtn)
+
+    const manualRadio = screen.queryByTestId('manual-radio')
+    expect(manualRadio).not.toBeInTheDocument()
+
+    const link = screen.getByRole('link', {
+      name: /download template/i
+    })
+    // eslint-disable-next-line max-len
+    expect(link).toHaveAttribute('href', 'assets/templates/guests_import_template_with_guestpass.csv')
+  })
+
+
   it('should click "download" correctly', async () => {
     render(
       <Provider>

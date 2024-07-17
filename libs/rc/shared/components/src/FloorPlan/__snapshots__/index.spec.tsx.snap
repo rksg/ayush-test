@@ -277,7 +277,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                          
                         <div>
                           <div
-                            class="sc-ftvSup lbJblj device-container context-Album"
+                            class="sc-ftvSup iaMBxI device-container context-Album"
                             draggable="true"
                             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                           >
@@ -291,7 +291,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                         </div>
                         <div>
                           <div
-                            class="sc-ftvSup lbJblj device-container context-Album"
+                            class="sc-ftvSup iaMBxI device-container context-Album"
                             draggable="true"
                             style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                           >
@@ -398,7 +398,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
           </div>
           <div
             class="ant-space-item"
-            style="margin-right: 24px;"
           >
             <button
               class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger"
@@ -408,11 +407,6 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                 Unplaced Devices (2)
               </span>
             </button>
-          </div>
-          <div
-            class="ant-space-item"
-          >
-             
           </div>
         </div>
       </div>
@@ -502,7 +496,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                        
                       <div>
                         <div
-                          class="sc-ftvSup lbJblj device-container gallery"
+                          class="sc-ftvSup iaMBxI device-container gallery"
                           draggable="true"
                           style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                         >
@@ -519,7 +513,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       </div>
                       <div>
                         <div
-                          class="sc-ftvSup lbJblj device-container gallery"
+                          class="sc-ftvSup iaMBxI device-container gallery"
                           draggable="true"
                           style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                         >
@@ -667,7 +661,6 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
           </div>
           <div
             class="ant-space-item"
-            style="margin-right: 24px;"
           >
             <button
               class="ant-btn ant-btn-link ant-btn-sm styledComponents__Button-sc-zk1lj8-0 kBDiup ant-dropdown-trigger"
@@ -678,11 +671,6 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                 Unplaced Devices (2)
               </span>
             </button>
-          </div>
-          <div
-            class="ant-space-item"
-          >
-             
           </div>
         </div>
       </div>
