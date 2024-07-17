@@ -2,14 +2,15 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { edgeSdLanApi }           from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { edgeSdLanApi, useUpdateEdgeMvSdLanPartialMutation } from '@acx-ui/rc/services'
 import {
   EdgeSdLanUrls,
   EdgeSdLanSettingP2,
   CommonErrorsResult,
   CatchErrorDetails,
-  EdgeSdLanFixtures
+  EdgeSdLanFixtures,
+  EdgeMvSdLanExtended
 } from '@acx-ui/rc/utils'
 import { Provider, store }                         from '@acx-ui/store'
 import { mockServer, renderHook, waitFor, screen } from '@acx-ui/test-utils'
@@ -20,7 +21,8 @@ import {
   checkSdLanScopedNetworkDeactivateAction,
   useEdgeSdLanActions,
   useSdLanScopedVenueNetworks,
-  useSdLanScopedNetworkVenues
+  useSdLanScopedNetworkVenues,
+  useEdgeMvSdLanActions
 } from './useEdgeSdLanActions'
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
@@ -32,8 +34,33 @@ const mockedDeactivateDmzTunnelReq = jest.fn()
 const mockedActivateNetworkReq = jest.fn()
 const mockedDeactivateNetworkReq = jest.fn()
 const mockedToggleDmzReq = jest.fn()
+
+const mockedActivateMvNetworkReq = jest.fn()
+const mockedDeactivateMvNetworkReq = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
+  useAddEdgeMvSdLanMutation: () => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)({
+            response: { id: 'mocked_service_id' }
+          })
+        }, 300)
+      }) }
+    }]
+  },
+  useUpdateEdgeMvSdLanPartialMutation: jest.fn().mockImplementation(() => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)()
+        }, 300)
+      }) }
+    }]
+  }),
   useAddEdgeSdLanP2Mutation: () => {
     return [(req: RequestPayload) => {
       return { unwrap: () => new Promise((resolve) => {
@@ -57,6 +84,516 @@ jest.mock('@acx-ui/rc/services', () => ({
     }]
   }
 }))
+
+describe('useEdgeMvSdLanActions', () => {
+  beforeEach(() => {
+    mockedCallback.mockClear()
+    mockedActivateEdgeSdLanDmzClusterReq.mockClear()
+    mockedDeactivateEdgeSdLanDmzClusterReq.mockClear()
+    mockedActivateDmzTunnelReq.mockClear()
+    mockedDeactivateDmzTunnelReq.mockClear()
+    mockedActivateMvNetworkReq.mockClear()
+    mockedDeactivateMvNetworkReq.mockClear()
+    mockedToggleDmzReq.mockClear()
+
+    mockServer.use(
+      rest.put(
+        EdgeSdLanUrls.activateEdgeSdLanDmzCluster.url,
+        (req, res, ctx) => {
+          mockedActivateEdgeSdLanDmzClusterReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(
+        EdgeSdLanUrls.deactivateEdgeSdLanDmzCluster.url,
+        (req, res, ctx) => {
+          mockedDeactivateEdgeSdLanDmzClusterReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.put(
+        EdgeSdLanUrls.activateEdgeSdLanDmzTunnelProfile.url,
+        (req, res, ctx) => {
+          mockedActivateDmzTunnelReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(
+        EdgeSdLanUrls.deactivateEdgeSdLanDmzTunnelProfile.url,
+        (req, res, ctx) => {
+          mockedDeactivateDmzTunnelReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.put(
+        EdgeSdLanUrls.activateEdgeMvSdLanNetwork.url,
+        (req, res, ctx) => {
+          mockedActivateMvNetworkReq(req.params, req.body)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.delete(
+        EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork.url,
+        (req, res, ctx) => {
+          mockedDeactivateMvNetworkReq(req.params)
+          return res(ctx.status(202))
+        }
+      ),
+      rest.patch(
+        EdgeSdLanUrls.toggleEdgeSdLanDmz.url,
+        (req, res, ctx) => {
+          mockedToggleDmzReq(req.params, req.body)
+          return res(ctx.status(202))
+        }
+      )
+    )
+  })
+  describe('addSdLan', () => {
+    const mockedAddData = {
+      name: 'testAddDMZSdLanService',
+      venueId: 'mocked_venue_id',
+      edgeClusterId: '0000000002',
+      networks: { mocked_venue_id: ['network_1'] },
+      tunnelProfileId: 't-tunnelProfile-id',
+      isGuestTunnelEnabled: true,
+      guestEdgeClusterId: '0000000005',
+      guestEdgeClusterVenueId: 'mocked_venue_id',
+      guestTunnelProfileId: 't-tunnelProfile-id-2',
+      guestNetworks: { mocked_venue_id: ['network_1'] }
+    } as EdgeMvSdLanExtended
+
+    it('should add guest settings successfully', async () => {
+      const mockedData = {
+        ...mockedAddData,
+        networks: { mocked_venue_id: ['network_1', 'network_3'] }
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { addEdgeSdLan } = result.current
+      await addEdgeSdLan({
+        payload: mockedData,
+        callback: mockedCallback
+      })
+      await waitFor(() =>
+        expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+          edgeClusterId: '0000000005',
+          serviceId: 'mocked_service_id',
+          venueId: 'mocked_venue_id'
+        }))
+      expect(mockedToggleDmzReq).not.toBeCalled()
+      await waitFor(() =>
+        expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+          tunnelProfileId: 't-tunnelProfile-id-2',
+          serviceId: 'mocked_service_id'
+        }))
+      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+      expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true })
+
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(2)
+      expect(mockedActivateMvNetworkReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        wifiNetworkId: 'network_3',
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelUtilized: false })
+      expect(mockedActivateMvNetworkReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        wifiNetworkId: 'network_1',
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelUtilized: true })
+    })
+
+    it('should not trigger guest settings when it not enabled', async () => {
+      const mockData = _.cloneDeep(mockedAddData)
+      mockData.isGuestTunnelEnabled = false
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { addEdgeSdLan } = result.current
+      await addEdgeSdLan({
+        payload: mockData,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(1)
+      expect(mockedActivateMvNetworkReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        wifiNetworkId: 'network_1',
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelUtilized: false })
+    })
+
+    it('should not send guest tunnel enabled request when mandatory request failed', async () => {
+      const mockedDMZClusterReq = jest.fn()
+      mockServer.use(
+        rest.put(
+          EdgeSdLanUrls.activateEdgeSdLanDmzCluster.url,
+          (req, res, ctx) => {
+            mockedDMZClusterReq(req.params)
+            return res(ctx.status(403), ctx.json({
+              requestId: 'failed_req_id',
+              errors: [{
+                code: 'EDGE-00000',
+                message: 'test failed'
+              }]
+            }))
+          }
+        ))
+
+      const mockedCallbackInnerFn = jest.fn()
+      const mockedCBFn = jest.fn()
+        .mockImplementation((response: CommonErrorsResult<CatchErrorDetails>) => {
+          mockedCallbackInnerFn(response.data.errors[0].code)
+        })
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { addEdgeSdLan } = result.current
+      await addEdgeSdLan({
+        payload: mockedAddData,
+        callback: mockedCBFn
+      })
+
+      await waitFor(() => expect(mockedCBFn).toBeCalledTimes(1))
+      expect(mockedCallbackInnerFn).toBeCalledWith('EDGE-00000')
+      expect(mockedDMZClusterReq).toBeCalledWith({
+        edgeClusterId: '0000000005',
+        serviceId: 'mocked_service_id',
+        venueId: 'mocked_venue_id'
+      })
+      // other mandatory field is trigger at same time.
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(1)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
+    })
+  })
+
+  describe('editSdLan', () => {
+    const mockedEditData = {
+      id: 'mocked_service_id',
+      name: 'testEditDMZSdLanService',
+      venueId: 'mocked_venue_id',
+      edgeClusterId: '0000000002',
+      networks: { mocked_venue_id: ['network_4'] },
+      tunnelProfileId: 't-tunnelProfile-id',
+      isGuestTunnelEnabled: true,
+      guestEdgeClusterId: '0000000003',
+      guestEdgeClusterVenueId: 'mocked_venue_id',
+      guestTunnelProfileId: 't-tunnelProfile-id-2',
+      guestNetworks: { mocked_venue_id: ['network_4'] }
+    } as EdgeMvSdLanExtended
+
+    it('should edit guest settings successfully', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedPayload = {
+        ...mockedData,
+        networks: { mocked_venue_id: ['network_4', 'network_5'] },
+        guestTunnelProfileId: 't-tunnelProfile-id-3',
+        guestNetworks: { mocked_venue_id: ['network_4','network_5'] }
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedData, {
+        payload: mockedPayload,
+        callback: mockedCallback
+      })
+
+      // handle dmz tunnel changes
+      await waitFor(() => expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+        tunnelProfileId: 't-tunnelProfile-id-3',
+        serviceId: 'mocked_service_id'
+      }))
+
+      // should activate guest network
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(1)
+      expect(mockedActivateMvNetworkReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        wifiNetworkId: 'network_5',
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelUtilized: true })
+
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+    })
+
+    it('change DC to DMZ scenario', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      mockedData.isGuestTunnelEnabled = false
+      mockedData.guestEdgeClusterId = ''
+      mockedData.guestTunnelProfileId = ''
+      mockedData.guestNetworks = {}
+      const mockedPayload = {
+        ...mockedData,
+        isGuestTunnelEnabled: true,
+        networks: { mocked_venue_id: ['network_1', 'network_3'] },
+        guestEdgeClusterId: '0000000003',
+        guestTunnelProfileId: 't-tunnelProfile-id-3',
+        guestNetworks: { mocked_venue_id: ['network_1','network_3'] }
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedData, {
+        payload: mockedPayload,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledTimes(1))
+      expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true })
+
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+        edgeClusterId: '0000000003',
+        serviceId: 'mocked_service_id',
+        venueId: 'mocked_venue_id'
+      })
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+        tunnelProfileId: 't-tunnelProfile-id-3',
+        serviceId: 'mocked_service_id'
+      })
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(1)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        wifiNetworkId: 'network_4',
+        serviceId: 'mocked_service_id'
+      })
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(2)
+      Object.entries(mockedPayload.guestNetworks).forEach(([venueId, networkIds]) => {
+        networkIds.forEach(network => {
+          expect(mockedActivateMvNetworkReq).toBeCalledWith({
+            venueId,
+            wifiNetworkId: network,
+            serviceId: 'mocked_service_id'
+          }, { isGuestTunnelUtilized: true })
+        })
+      })
+    })
+
+    it('should only deactivate dmz network and activate dc network', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedPayload = {
+        ...mockedData,
+        networks: { mocked_venue_id: ['network_4','network_3'] },
+        guestTunnelProfileId: 't-tunnelProfile-id-2',
+        guestNetworks: {}
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedData, {
+        payload: mockedPayload,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedActivateMvNetworkReq).toBeCalledTimes(2))
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+
+      Object.entries(mockedPayload.networks).forEach(([venueId, networkIds]) => {
+        networkIds.forEach(network => {
+          expect(mockedActivateMvNetworkReq).toBeCalledWith({
+            venueId,
+            wifiNetworkId: network,
+            serviceId: 'mocked_service_id'
+          }, { isGuestTunnelUtilized: false })
+        })
+      })
+    })
+
+    it('should only activate dmz cluster when change from DC again', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      mockedData.isGuestTunnelEnabled = false
+      const mockedPayload = {
+        ...mockedData,
+        isGuestTunnelEnabled: true
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedData, {
+        payload: mockedPayload,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true }))
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('should skip update porfile when no change', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      mockedData.isGuestTunnelEnabled = false
+      const mockedPayload = {
+        ...mockedData,
+        networks: { mocked_venue_id: ['network_4','network_3'] },
+        isGuestTunnelEnabled: true
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedData, {
+        payload: mockedPayload,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true }))
+
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(1)
+      expect(mockedActivateMvNetworkReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        wifiNetworkId: 'network_3',
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelUtilized: false })
+      expect(mockedCallback).toBeCalledTimes(1)
+    })
+
+    it('should update porfile name', async () => {
+      const mockedData = _.cloneDeep(mockedEditData)
+      mockedData.name = 'newTestName'
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedEditData, {
+        payload: mockedData,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedCallback).toBeCalledTimes(1))
+
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('should handle relation requests failed', async () => {
+      const mockedReq = jest.fn()
+      mockServer.use(
+        rest.put(
+          EdgeSdLanUrls.activateEdgeMvSdLanNetwork.url,
+          (req, res, ctx) => {
+            mockedReq(req.params)
+            return res(ctx.status(403), ctx.json({
+              requestId: 'failed_req_id',
+              errors: [{
+                code: 'EDGE-00000',
+                message: 'test failed'
+              }]
+            }))
+          }
+        ))
+
+      const mockedCBFn = jest.fn()
+      const mockedPayload = {
+        ...mockedEditData,
+        networks: { mocked_venue_id: ['network_1', 'network_3'] },
+        guestNetworks: { mocked_venue_id: ['network_1','network_3'] }
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      const { editEdgeSdLan } = result.current
+      let errResult
+      try {
+        await editEdgeSdLan(mockedEditData, {
+          payload: mockedPayload,
+          callback: mockedCBFn
+        })
+      } catch(err) {
+        errResult = (err as CommonErrorsResult<CatchErrorDetails>).data.errors[0].code
+      }
+
+      expect(errResult).toBe('EDGE-00000')
+      expect(mockedReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        serviceId: 'mocked_service_id',
+        wifiNetworkId: 'network_1'
+      })
+      expect(mockedCBFn).toBeCalledTimes(0)
+      expect(mockedReq).toBeCalledWith({
+        venueId: 'mocked_venue_id',
+        serviceId: 'mocked_service_id',
+        wifiNetworkId: 'network_3'
+      })
+    })
+
+    it('should handle profile update failed', async () => {
+      (useUpdateEdgeMvSdLanPartialMutation as jest.Mock).mockImplementation(() => {
+        return [() => {
+          return { unwrap: () => new Promise((_resolve, reject) => {
+            reject('test rename failed') }) }
+        }]
+      })
+
+      const mockedCBFn = jest.fn()
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+
+      const { editEdgeSdLan } = result.current
+      let errResult
+      try {
+        await editEdgeSdLan(mockedEditData, {
+          payload: {
+            ...mockedEditData,
+            name: 'testRename'
+          },
+          callback: mockedCBFn
+        })
+      } catch(err) {
+        errResult = err
+      }
+
+      expect(errResult).toBe('test rename failed')
+      expect(mockedCBFn).toBeCalledTimes(0)
+    })
+  })
+})
+
 describe('useEdgeSdLanActions', () => {
   beforeEach(() => {
     mockedCallback.mockClear()
@@ -373,10 +910,10 @@ describe('useEdgeSdLanActions', () => {
       expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
       expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
       expect(mockedActivateNetworkReq).toBeCalledTimes(2)
-      mockedPayload.guestNetworkIds.forEach(network => {
+      mockedPayload.networkIds.forEach(network => {
         expect(mockedActivateNetworkReq).toBeCalledWith({
           wifiNetworkId: network,
-          serviceId: 'mocked_service_id_2'
+          serviceId: 'mocked_service_id'
         }, { isGuestTunnelUtilized: false })
       })
     })
