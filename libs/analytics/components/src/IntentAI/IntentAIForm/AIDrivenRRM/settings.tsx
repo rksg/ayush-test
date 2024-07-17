@@ -5,11 +5,12 @@ import { useIntl }              from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { steps, crrmIntent, isOptimized } from '../AIDrivenRRM'
-import { EnhancedRecommendation }         from '../services'
-import * as UI                            from '../styledComponents'
+import { EnhancedRecommendation } from '../services'
+import * as UI                    from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
+
+import { steps, crrmIntent, isOptimized } from '.'
 
 export function Settings () {
   const { $t } = useIntl()

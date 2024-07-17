@@ -9,11 +9,11 @@ import { get }                                                           from '@
 import { DateFormatEnum, formatter }                                     from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon }                               from '@acx-ui/icons'
 
-import { steps, crrmIntent, intentTypeMap, statusTrailMsgs } from '../AIDrivenRRM'
-import { states }                                            from '../config'
-import { EnhancedRecommendation }                            from '../services'
-import * as UI                                               from '../styledComponents'
+import { states }                 from '../config'
+import { EnhancedRecommendation } from '../services'
+import * as UI                    from '../styledComponents'
 
+import { steps, crrmIntent, intentTypeMap, statusTrailMsgs } from '.'
 
 export function Introduction () {
   const { $t } = useIntl()

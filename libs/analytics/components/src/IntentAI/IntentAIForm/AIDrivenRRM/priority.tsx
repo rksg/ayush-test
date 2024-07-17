@@ -9,9 +9,10 @@ import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/compone
 import { get }                                             from '@acx-ui/config'
 
 import { TradeOff }               from '../../../TradeOff'
-import { steps }                  from '../AIDrivenRRM'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
+
+import { steps } from '.'
 
 const name = ['preferences', 'crrmFullOptimization'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
