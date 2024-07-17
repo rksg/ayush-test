@@ -29,11 +29,8 @@ import {
   useAddNetworkVenueMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
-  useVenueNetworkListQuery,
-  useVenueNetworkTableQuery,
   useVenueDetailsHeaderQuery,
   useVenueNetworkTableV2Query,
-  useVenueNetworkListV2Query,
   useAddNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
@@ -111,16 +108,12 @@ const defaultRbacPayload = {
 const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) => {
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const nonRbacTableQuery = useTableQuery({
-    useQuery: isUseWifiApiV2
-      ? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
-      : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
+    useQuery: useVenueNetworkTableV2Query,
     defaultPayload: {
       ...defaultPayload,
       isTemplate: isTemplate
