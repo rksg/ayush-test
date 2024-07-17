@@ -1,7 +1,7 @@
 import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { ActionType, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
 // FIXME: Use self definition style component to render
 // import { FieldLabel } from '../../../../NetworkForm/styledComponents'
@@ -12,8 +12,9 @@ import { CommonActionSettings } from './CommonActionSettings'
 export function DisplayMessageSetting () {
   const { $t } = useIntl()
 
+
   return (<>
-    <CommonActionSettings actionType='DisplayMessage' />
+    <CommonActionSettings actionType={ActionType.DISPLAY_MESSAGE} />
     <Form.Item
       name={'title'}
       label={$t({ defaultMessage: 'Page Title' })}

@@ -14,8 +14,6 @@ import {
   WorkflowActionDefinition,
   NewTableResult,
   ActionType,
-  AupAction,
-  DataPromptAction,
   WorkflowStep,
   SplitOption,
   GenericActionData,
@@ -43,7 +41,7 @@ export interface AsyncResponse {
 }
 
 // FIXME: think about should I declare this variable here or not?
-type UnionAction = AupAction | DataPromptAction
+// type UnionAction = AupAction | DataPromptAction
 
 export const workflowApi = baseWorkflowApi.injectEndpoints({
   endpoints: build => ({

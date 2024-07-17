@@ -1,9 +1,12 @@
 import { useMemo } from 'react'
 
-import { Form, Input } from 'antd'
+import { Form, Input }  from 'antd'
+import { v4 as uuidv4 } from 'uuid'
+
+import { ActionType } from '@acx-ui/rc/utils'
 
 export interface commonActionProps {
-  actionType:string
+  actionType:ActionType
 }
 
 export function CommonActionSettings (props:commonActionProps) {
@@ -11,7 +14,7 @@ export function CommonActionSettings (props:commonActionProps) {
   const { actionType } = props
 
   const nameInitialValue = useMemo(() => {
-    return actionType + '-' + Math.floor(Math.random() * 10000000)
+    return actionType + '-' + uuidv4()
   }, [actionType])
 
   return <>
