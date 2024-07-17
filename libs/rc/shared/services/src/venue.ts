@@ -96,7 +96,8 @@ import {
   RWG,
   NetworkDevice,
   NetworkDeviceType,
-  NewAPModel
+  NewAPModel,
+  NetworkDevicePosition
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -334,10 +335,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    // only exist in v1(RBAC version)
     getVenueMesh: build.query<Mesh, RequestPayload>({
-      query: ({ params }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
         return {
           ...req
@@ -356,9 +356,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isWifiMeshIndependents56GEnable }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = GetApiVersionHeader(
+          enableRbac ? (isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1) : undefined)
         const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
           ...req,
@@ -714,12 +715,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateSwitchPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateSwitchPosition, params)
+    updateSwitchPosition: build.mutation<CommonResult, RequestPayload<NetworkDevicePosition>>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const req = createHttpRequest(urlsInfo.UpdateSwitchPosition, params)
+        const body = JSON.parse(JSON.stringify(payload))
+        if(enableRbac) {
+          body.floorPlanId = payload?.floorplanId
+          delete body.floorplanId
+        }
         return {
           ...req,
-          body: payload
+          body
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]

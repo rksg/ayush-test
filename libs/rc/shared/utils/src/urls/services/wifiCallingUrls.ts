@@ -7,6 +7,15 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
     newApi: true
   },
+  getWifiCallingRbac: {
+    method: 'get',
+    url: '/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getEnhancedWifiCallingList: {
     method: 'post',
     url: '/enhancedWifiCallingProfiles/query',
@@ -16,7 +25,11 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
   queryWifiCalling: {
     method: 'post',
     url: '/wifiCallingServiceProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   addWifiCalling: {
     method: 'post',
@@ -24,17 +37,44 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles',
     newApi: true
   },
+  addWifiCallingRbac: {
+    method: 'post',
+    url: '/wifiCallingServiceProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateWifiCalling: {
     method: 'put',
     url: '/wifiCallingServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
     newApi: true
   },
+  updateWifiCallingRbac: {
+    method: 'put',
+    url: '/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   deleteWifiCalling: {
     method: 'delete',
     url: '/wifiCallingServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/wificallingserviceprofiles/:serviceId',
     newApi: true
+  },
+  deleteWifiCallingRbac: {
+    method: 'delete',
+    url: '/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   deleteWifiCallingList: {
     method: 'delete',
@@ -45,11 +85,19 @@ export const WifiCallingUrls: { [key: string]: ApiInfo } = {
   activateWifiCalling: {
     method: 'put',
     url: '/wifiNetworks/:networkId/wifiCallingServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateWifiCalling: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/wifiCallingServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

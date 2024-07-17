@@ -16,7 +16,7 @@ import { AAAServerTypeEnum,
   excludeSpaceRegExp, LocalUser,
   notAllDigitsRegExp, portRegExp,
   RadiusServer, serverIpAddressRegExp,
-  TacacsServer, useConfigTemplateMutationFnSwitcher, validateUsername,
+  TacacsServer, useConfigTemplate, useConfigTemplateMutationFnSwitcher, validateUsername,
   validateUserPassword } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -39,7 +39,11 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const [isAdminUser, setIsAdminUser] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
+  const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+
   const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddAAAServerMutation,
     useTemplateMutationFn: useAddVenueTemplateSwitchAAAServerMutation
@@ -90,7 +94,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         await addAAAServer({
           params,
           payload,
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       } else {
         const payload = {
@@ -103,7 +107,7 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
             aaaServerId: payload.id
           },
           payload,
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     }

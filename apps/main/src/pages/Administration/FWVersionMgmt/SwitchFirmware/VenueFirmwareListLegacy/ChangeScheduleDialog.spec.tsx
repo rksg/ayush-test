@@ -146,7 +146,8 @@ describe('Firmware Venues Table', () => {
 
   // eslint-disable-next-line max-len
   it('should render the next schedule version of the selected row in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API &&
+      ff !== Features.SWITCH_FIRMWARE_V1002_TOGGLE)
 
     render(
       <Provider>
@@ -181,7 +182,8 @@ describe('Firmware Venues Table', () => {
 
   // eslint-disable-next-line max-len
   it('should render switch counts of the selected rows in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API &&
+      ff !== Features.SWITCH_FIRMWARE_V1002_TOGGLE)
 
     render(
       <Provider>

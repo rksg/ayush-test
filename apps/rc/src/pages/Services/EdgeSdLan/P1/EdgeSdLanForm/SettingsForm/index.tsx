@@ -10,7 +10,7 @@ import { SpaceWrapper, TunnelProfileAddModal }                                  
 import { useGetEdgeLagListQuery, useGetEdgeListQuery, useGetEdgeSdLanViewDataListQuery, useGetPortConfigQuery, useGetTunnelProfileViewDataListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { EdgeSdLanSetting, EdgeStatusEnum, getTunnelProfileOptsWithDefault, getEdgePortDisplayName, servicePolicyNameRegExp, TunnelProfileFormType, TunnelTypeEnum }      from '@acx-ui/rc/utils'
 
-import diagram from '../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
+import diagram from '../../../../../../assets/images/edge-sd-lan-diagrams/edge-sd-lan-early-access.png'
 
 import { CorePortFormItem } from './CorePortFormItem'
 import * as UI              from './styledComponents'

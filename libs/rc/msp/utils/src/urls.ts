@@ -353,5 +353,11 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants',
     newApi: true
+  },
+  getUploadURL: {
+    method: 'post',
+    url: '/files/uploadurls',
+    oldUrl: '/api/file/tenant/:tenantId/upload-url',
+    newApi: true
   }
 }
