@@ -49,7 +49,8 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasDpskAccess
+  hasDpskAccess,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -810,35 +811,38 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
           element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
+            <Route>
               <MacRegistrationListDetails />
-            </AuthRoute>}
+            </Route>}
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
           element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
+            <Route>
               <MacRegistrationListsTable />
-            </AuthRoute>}
+            </Route>}
         />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
-              <MacRegistrationListForm />
-            </AuthRoute>
-          } />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
-              <MacRegistrationListForm editMode={true}/>
-            </AuthRoute>
-          }
-        /> </> : <></> }
+        { hasCloudpathAccess() && <>
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+            element={
+              <Route>
+                <MacRegistrationListForm />
+              </Route>
+            } />
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
+            element={
+              <Route>
+                <MacRegistrationListForm editMode={true}/>
+              </Route>
+            }
+          />
+        </> }
+      </> : <></> }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
         element={
