@@ -7,7 +7,6 @@ const intentAIDetailsMap = {
   'c-crrm-channel5g-auto': CrrmDetails,
   'c-crrm-channel6g-auto': CrrmDetails
 }
-export { CrrmDetails as IntentAICrrmDetails }
 
 type IntentAIFormKey = keyof typeof intentAIDetailsMap
 

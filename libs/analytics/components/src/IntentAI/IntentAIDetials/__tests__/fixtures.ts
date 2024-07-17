@@ -1,4 +1,4 @@
-import { RecommendationDetails } from '../../AIDrivenRRM/services'
+import { RecommendationDetails } from '../../IntentAIForm/services'
 
 
 export const mockedRecommendationCRRM = {

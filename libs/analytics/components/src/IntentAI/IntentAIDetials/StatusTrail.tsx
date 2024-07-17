@@ -45,8 +45,8 @@ const trailFormatter = (
     if (matched) return $t(replacement)
   }
   const status = get(trail[trailIndex], 'status')
-  const msg = get(statusTrailMsgs, status, undefined)
-  return msg ? $t(msg) : $t({ defaultMessage: 'Unknown' })
+  const msg = get(statusTrailMsgs, status, { defaultMessage: 'Unknown' })
+  return $t(msg)
 }
 
 const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {

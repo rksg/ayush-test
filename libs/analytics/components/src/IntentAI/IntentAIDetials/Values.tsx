@@ -9,35 +9,6 @@ import { codes }                                      from '../IntentAIForm/conf
 import { EnhancedRecommendation, extractBeforeAfter } from '../IntentAIForm/services'
 import { isDataRetained }                             from '../IntentAIForm/utils'
 
-
-export const getValues = (details: EnhancedRecommendation) => {
-  const {
-    status,
-    originalValue,
-    currentValue,
-    recommendedValue,
-    code,
-    appliedOnce,
-    firstAppliedAt,
-    preferences
-  } = details
-  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes[code]
-  return {
-    status,
-    code,
-    appliedOnce,
-    firstAppliedAt,
-    preferences,
-    heading: valueText,
-    original: valueFormatter(originalValue),
-    current: valueFormatter(currentValue),
-    recommended: valueFormatter(recommendedValue),
-    tooltipContent: typeof recommendedValueTooltipContent === 'function'
-      ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
-      : recommendedValueTooltipContent
-  }
-}
-
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
   return codes[recommendation.code]
     .kpis
@@ -52,12 +23,15 @@ export const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: stri
   return { before, after }
 }
 
-export const translateMetadataValue = (value: string) => {
-  switch (value) {
-    case 'BACKGROUND_SCANNING': return 'Background Scanning'
-    case 'CHANNEL_FLY': return 'ChannelFly'
-    default: return value
-  }
+export const translateMetadataValue = (value: unknown) => {
+  // if (typeof value === 'string') {
+  //   switch (value) {
+  //     case 'BACKGROUND_SCANNING': return 'Background Scanning'
+  //     case 'CHANNEL_FLY': return 'ChannelFly'
+  //     default: return value
+  //   }
+  // }
+  return value
 }
 
 export const getRecommendationsText = (
@@ -80,7 +54,7 @@ export const getRecommendationsText = (
 
   const metadata = chain(details.metadata)
     .toPairs()
-    .map(([key, value]) => [key, typeof value === 'string' ? translateMetadataValue(value) : value])
+    .map(([key, value]) => [key, translateMetadataValue(value)])
     .fromPairs()
     .value()
 

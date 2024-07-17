@@ -42,10 +42,10 @@ export const CrrmDetails = () => {
         { text: $t({ defaultMessage: 'Intent AI' }),
           link: 'analytics/intentAI' }
       ]}
-      extra={hasPermission({ permission: 'WRITE_AI_DRIVEN_RRM', scopes: [WifiScopes.UPDATE] })
-        ? [] // TODO: Action buttom
-        : []
-      }
+      // extra={hasPermission({ permission: 'WRITE_AI_DRIVEN_RRM', scopes: [WifiScopes.UPDATE] })
+      //   ? [] // TODO: Action buttom
+      //   : []
+      // }
     />}
     <GridRow>
       <GridCol col={{ span: 4 }}>
