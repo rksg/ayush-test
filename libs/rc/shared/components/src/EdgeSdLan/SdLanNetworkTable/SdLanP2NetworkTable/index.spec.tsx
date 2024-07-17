@@ -348,7 +348,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
             activatedGuest={['network_3']}
             onActivateChange={mockedOnChangeFn}
             disabled={!hasUpdatePermission}
-            tooltip='Permission testing'
+            toggleButtonTooltip='Permission testing'
           />
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
