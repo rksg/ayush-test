@@ -803,7 +803,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const requests = args.payload!.map(policyId => ({ params: { policyId } }))
           return batchApi(
-            AaaUrls.deleteAAAPolicy, requests, baseQuery, GetApiVersionHeader(ApiVersionEnum.v1_1)
+            AaaUrls.deleteAAAPolicy, requests, baseQuery
           )
         } else {
           return baseQuery({
@@ -834,6 +834,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
+            'DeleteRadius',
             'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))

@@ -43,7 +43,11 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
   deleteAAAPolicy: {
     method: 'delete',
     url: '/radiusServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getAAAPolicyRbac: {
     method: 'get',

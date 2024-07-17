@@ -12,10 +12,12 @@ import {
   WifiNetwork,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  transformNetwork
+  transformNetwork,
+  NetworkRadiusSettings
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
 import { networkApi }           from '../network'
 import { commonQueryFn }        from '../servicePolicy.utils'
@@ -114,23 +116,23 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate, ConfigTemplateUrlsInfo.addAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplate: build.query<AAAPolicyType, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate, ConfigTemplateUrlsInfo.getAAAPolicyTemplateRbac),
       providesTags: [{ type: 'AAATemplate', id: 'DETAIL' }]
     }),
     deleteAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteAAAPolicyTemplate, ConfigTemplateUrlsInfo.deleteAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     updateAAAPolicyTemplate: build.mutation<AAAPolicyType, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.updateAAAPolicyTemplate, ConfigTemplateUrlsInfo.updateAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplateList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList, ConfigTemplateUrlsInfo.queryAAAPolicyTemplateList),
       providesTags: [{ type: 'AAATemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -141,6 +143,39 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    activateRadiusServerTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.activateRadiusServer, params)
+        }
+      },
+      invalidatesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }, { type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
+    deactivateRadiusServerTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.deactivateRadiusServer, params)
+        }
+      },
+      invalidatesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }, { type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
+    updateRadiusServerTemplateSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.updateRadiusServerSettings, params),
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }, { type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
+    getRadiusServerTemplateSettings: build.query<NetworkRadiusSettings, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.getRadiusServerSettings, params)
+        }
+      },
+      providesTags: [{ type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
     }),
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenueTemplate),
@@ -259,6 +294,10 @@ export const {
   useLazyGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateListQuery,
+  useActivateRadiusServerTemplateMutation,
+  useDeactivateRadiusServerTemplateMutation,
+  useGetRadiusServerTemplateSettingsQuery,
+  useUpdateRadiusServerTemplateSettingsMutation,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,

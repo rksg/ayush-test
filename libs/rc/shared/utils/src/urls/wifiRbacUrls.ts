@@ -647,21 +647,37 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   activateRadiusServer: {
     method: 'put',
     url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateRadiusServer: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateRadiusServerSettings: {
     method: 'put',
     url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getRadiusServerSettings: {
     method: 'get',
     url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
