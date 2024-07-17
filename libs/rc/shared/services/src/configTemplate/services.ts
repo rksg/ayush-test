@@ -21,7 +21,7 @@ import {
   getWifiCallingFn,
   queryWifiCallingFn
 } from '../servicePolicy.utils'
-import { addDpskFn, updateDpskFn }         from '../servicePolicy.utils/dpsk'
+import { addDpskFn, updateDpskFn } from '../servicePolicy.utils/dpsk'
 
 import {
   useCasesToRefreshDhcpTemplateList,
