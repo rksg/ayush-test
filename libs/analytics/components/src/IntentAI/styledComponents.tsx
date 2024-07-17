@@ -1,5 +1,4 @@
-import styled                from 'styled-components'
-import { createGlobalStyle } from 'styled-components/macro'
+import styled, { createGlobalStyle } from 'styled-components/macro'
 
 import { Reload } from '@acx-ui/icons'
 
@@ -48,5 +47,14 @@ export const ApplyModalStyle = createGlobalStyle`
     .ant-modal-confirm-content > span {
       display: inline-block;
     }
+  }
+`
+export const FeatureIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  > svg {
+    width: 16px;
+    height: 16px;
   }
 `

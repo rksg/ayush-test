@@ -1,22 +1,26 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
+
 
 import { useIntl } from 'react-intl'
 
-import {
-  Loader,
-  TableProps,
-  Table }        from '@acx-ui/components'
+import { Loader, TableProps, Table }                                 from '@acx-ui/components'
 import { get }                                                       from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }            from '@acx-ui/icons'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
-import {
-  useIntentAIListQuery,
-  IntentListItem
-} from './services'
-import * as UI                from './styledComponents'
-import { useIntentAIActions } from './useIntentAIActions'
+import { codes }                                from './config'
+import { useIntentAIListQuery, IntentListItem } from './services'
+import * as UI                                  from './styledComponents'
+import { useIntentAIActions }                   from './useIntentAIActions'
+
+const icons = {
+  'AI-Driven RRM': <AIDrivenRRM />,
+  'AirFlexAI': <AirFlexAI />,
+  'AI Operations': <AIOperation />,
+  'EcoFlexAI': <EcoFlexAI />
+}
 
 export function IntentAITable (
   { pathFilters }: { pathFilters: PathFilter }
@@ -52,7 +56,11 @@ export function IntentAITable (
       title: $t({ defaultMessage: 'AI Feature' }),
       width: 110,
       dataIndex: 'aiFeature',
-      key: 'aiFeature'
+      key: 'aiFeature',
+      render: (_: ReactNode, row: IntentListItem) => <UI.FeatureIcon>
+        {icons[codes[row.code].aiFeature]}
+        <span>{row.aiFeature}</span>
+      </UI.FeatureIcon>
     },
     {
       title: $t({ defaultMessage: 'Intent' }),

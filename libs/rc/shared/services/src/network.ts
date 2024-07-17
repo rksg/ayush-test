@@ -135,12 +135,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    // RBAC API
     wifiNetworkList: build.query<TableResult<WifiNetwork>, RequestPayload>({
       query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
         return {
           ...networkListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse (result: TableResult<WifiNetwork>) {
@@ -160,6 +162,52 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    /*
+    wifiNetworkTable: build.query<TableResult<WifiNetwork>, RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader)
+        const networkListQuery = await fetchWithBQ({ ...networkListReq, body: JSON.stringify(payload) })
+        const networkList = networkListQuery.data as TableResult<WifiNetwork>
+        const networkIds = networkList?.data?.filter(n => n.aps > 0).map(n => n.id) || []
+        const networkIdsToIncompatible:{ [key:string]: number } = {}
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const allApCompatibilitiesQuery:any = await Promise.all(networkIds.map(id => {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, { networkId: id }),
+              body: { filters: {} }
+            }
+            return fetchWithBQ(apCompatibilitiesReq)
+          }))
+          networkIds.forEach((id:string, index:number) => {
+            const allApCompatibilitiesResponse = allApCompatibilitiesQuery[index]?.data as ApCompatibilityResponse
+            const allApCompatibilitiesData = allApCompatibilitiesResponse?.apCompatibilities as ApCompatibility[]
+            networkIdsToIncompatible[id] = allApCompatibilitiesData[0]?.incompatible ?? 0
+          })
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('networkTable getApCompatibilitiesNetwork error:', e)
+        }
+        const aggregatedList = aggregatedNetworkCompatibilitiesData(
+          networkList, networkIdsToIncompatible) as TableResult<WifiNetwork>
+
+        return networkListQuery.data
+          ? { data: aggregatedList }
+          : { error: networkListQuery.error as FetchBaseQueryError }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, NetworkUseCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    */
     addNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -509,7 +557,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
 
-    newNetworkVenueTable: build.query<TableResult<Venue>, RequestPayload>({
+    newNetworkVenueTable: build.query<TableResult<Venue>, RequestPayload<{ isTemplate?: boolean }>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const {
           error: networkVenuesListQueryError,
@@ -1448,12 +1496,12 @@ export const {
   useUnbindClientIsolationMutation
 } = networkApi
 
-export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
+export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network> | TableResult<WifiNetwork>,
   apCompatibilities: { [key:string]: number }) => {
   networkList.data = networkList.data.map(item => ({
     ...transformNetwork(item),
     incompatible: apCompatibilities[item.id]
-  })) as Network[]
+  }))
   return networkList
 }
 

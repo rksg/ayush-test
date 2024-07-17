@@ -29,7 +29,7 @@ import { getIntl, noDataDisplay }     from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -149,7 +149,7 @@ function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: bo
                 : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
                   {row.aps}
                 </TenantLink>}
-              {supportApCompatibleCheck && row?.incompatible && row.incompatible > 0 ?
+              {row?.incompatible && row.incompatible > 0 ?
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
@@ -302,7 +302,6 @@ export function NetworkTable ({
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
@@ -424,9 +423,7 @@ export function NetworkTable ({
     ]}>
       <Table
         settingsId={settingsId}
-        columns={getCols(intl,
-          supportApCompatibleCheck
-        )}
+        columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}

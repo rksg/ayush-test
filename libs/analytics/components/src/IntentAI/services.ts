@@ -10,7 +10,9 @@ import {
   states,
   codes,
   StatusTrail,
-  StateType } from './config'
+  StateType,
+  aiFeaturesLabel
+} from './config'
 
 type Intent = {
   id: string
@@ -62,9 +64,6 @@ export const api = intentAIApi.injectEndpoints({
             sliceType
             sliceValue
             metadata
-            excludedPaths {
-              name
-            }
             path {
               type
               name
@@ -87,20 +86,17 @@ export const api = intentAIApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.intents.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, code, status, displayStatus
+            id, path, sliceValue, code, displayStatus
           } = intent
-          const statusEnum = displayStatus.startsWith('na-')
-            ? displayStatus as StateType
-            : status as StateType
           const detail = codes[code]
           detail && intents.push({
             ...intent,
             id: id,
-            aiFeature: $t(detail.aiFeature),
+            aiFeature: $t(aiFeaturesLabel[detail.aiFeature]),
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: $t(states[statusEnum].text)
+            status: $t(states[displayStatus].text)
           } as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)

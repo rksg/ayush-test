@@ -171,3 +171,66 @@ export enum GuestStatusEnum {
     ONLINE = 'Online',
     DISABLED = 'Disabled'
 }
+
+
+export interface ClientInfo {
+  modelName: string;
+  deviceType: string;
+  macAddress: string;
+  osType: string;
+  ipAddress: string;
+  username: string;
+  hostname: string;
+  authenticationStatus: number;
+  connectedTime: string;
+  lastUpdatedTime: string;
+  venueInformation: VenueInformation;
+  apInformation: ApInformation;
+  networkInformation: NetworkInformation;
+  signalStatus: SignalStatus;
+  radioStatus: RadioStatus;
+  trafficStatus: TrafficStatus;
+}
+
+interface VenueInformation {
+  id: string;
+  name: string;
+}
+
+interface ApInformation {
+  serialNumber: string;
+  name: string;
+  macAddress: string;
+  bssid: string;
+}
+
+interface NetworkInformation {
+  id: string;
+  type: string;
+  ssid: string;
+  encryptionMethod: string;
+  authenticationMethod: string;
+  vlan: number;
+}
+
+interface SignalStatus {
+  snr: number;
+  rssi: number;
+  noiseFloor: number;
+  health: string;
+  healthDescription: string;
+}
+
+interface RadioStatus {
+  type: string;
+  channel: number;
+}
+
+interface TrafficStatus {
+  trafficToClient: number;
+  trafficFromClient: number;
+  packetsToClient: number;
+  packetsFromClient: number;
+  framesDropped: number;
+  totalTraffic: number;
+}
