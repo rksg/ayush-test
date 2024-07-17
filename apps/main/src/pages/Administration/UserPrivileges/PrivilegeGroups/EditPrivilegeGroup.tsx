@@ -157,7 +157,7 @@ export function EditPrivilegeGroup () {
     if (privilegeGroupList) {
       const nameList = privilegeGroupList.filter(item =>
         item.type === CustomGroupType.CUSTOM &&
-        item.name !== location.selectedRow?.name).map(item => item.name)
+        item.name !== location.name).map(item => item.name)
       setGroupNames(nameList as RolesEnum[])
     }
   }, [privilegeGroupList])

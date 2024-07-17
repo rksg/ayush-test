@@ -34,7 +34,7 @@ interface PrivilegeGroupsTableProps {
 
 export interface PrivilegeGroupSateProps {
   isOnboardedMsp?: boolean;
-  selectedRow?: PrivilegeGroup;
+  name?: string;
 }
 
 const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
@@ -162,7 +162,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       onClick: (selectedRows) => {
         const stateProp: PrivilegeGroupSateProps = {
           isOnboardedMsp: isOnboardedMsp,
-          selectedRow: selectedRows[0]
+          name: selectedRows[0].name
         }
         navigate({
           ...linkAddPriviledgePath,
