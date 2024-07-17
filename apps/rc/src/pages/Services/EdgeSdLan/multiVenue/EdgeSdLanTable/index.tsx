@@ -188,6 +188,7 @@ const EdgeMvSdLanTable = () => {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       key: 'tunneledWlans.venueId',
       dataIndex: 'tunneledWlans.venueId',
+      align: 'center',
       sorter: true,
       filterable: venueOptions,
       render: (_, row) => {
