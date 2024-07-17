@@ -84,11 +84,8 @@ export const api = intentAIApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.intents.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, code, status, displayStatus
+            id, path, sliceValue, code, displayStatus
           } = intent
-          const statusEnum = displayStatus.startsWith('na-')
-            ? displayStatus as StateType
-            : status as StateType
           const detail = codes[code]
           detail && intents.push({
             ...intent,
@@ -97,7 +94,7 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: $t(states[statusEnum].text)
+            status: $t(states[displayStatus].text)
           } as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)
