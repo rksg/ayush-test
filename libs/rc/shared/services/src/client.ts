@@ -10,7 +10,6 @@ import {
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
-  DpskPassphrase,
   EventMeta,
   getClientHealthClass,
   Guest,
@@ -21,7 +20,6 @@ import {
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo,
   RequestFormData,
   ClientStatusEnum,
   UEDetail,
@@ -385,15 +383,6 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
@@ -662,8 +651,6 @@ export const {
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
-  useGetDpskPassphraseByQueryQuery,
-  useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetGuestsMutation,
