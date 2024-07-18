@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { throttle } from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
@@ -66,13 +67,13 @@ export default function PortalTable () {
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
-      onClick: ([{ id, serviceName }], clearSelection) => {
+      onClick: ([{ id, serviceName, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
           customContent: {
             action: 'DELETE',
             entityName: intl.$t({ defaultMessage: 'Portal Service' }),
-            entityValue: serviceName
+            entityValue: serviceName || name
           },
           onOk: () => {
             deletePortal({ params: { serviceId: id } }).then(clearSelection)
@@ -152,7 +153,7 @@ export default function PortalTable () {
       align: 'center',
       render: (_, row) =>{
         return (<div aria-label={row.id}
-          onClick={async (e)=>{
+          onClick={throttle(async (e)=>{
             const portalData = await getPortal({
               params: { serviceId: row.id as string },
               enableRbac: isEnabledRbacService }).unwrap() as Portal
@@ -174,7 +175,7 @@ export default function PortalTable () {
               setPortalLang(res)
             })
             e.stopPropagation()
-          }}><PortalPreviewModal
+          }, 1000)}><PortalPreviewModal
             demoValue={newDemo}
             portalLang={portalLang}
             id={row.id}

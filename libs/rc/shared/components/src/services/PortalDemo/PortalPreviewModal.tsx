@@ -1,8 +1,9 @@
 
 
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
-import { useIntl } from 'react-intl'
+import { throttle } from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import { showActionModal } from '@acx-ui/components'
 import { Demo }            from '@acx-ui/rc/utils'
@@ -20,22 +21,26 @@ export default function PortalPreviewModal (props:{
   id?: string
 }) {
   const { $t } = useIntl()
-  const getContent = <Provider><PortalDemo value={props.demoValue}
-    isPreview={true}
-    viewPortalLang={props.portalLang}
-  /></Provider>
-  const openModal= ()=>{
-    !props.fromPortalList&&showActionModal({
-      type: 'confirm',
-      content: getContent,
-      okCancel: false,
-      closable: true,
-      width: '100%',
-      okButtonProps: { style: { display: 'none' } },
-      bodyStyle: { padding: 0 },
-      className: UI.modalClassName
-    })
-  }
+
+  const openModal= useCallback(async () => {
+    const getContent = <Provider><PortalDemo value={props.demoValue}
+      isPreview={true}
+      viewPortalLang={props.portalLang}
+    /></Provider>
+    throttle(async () => {
+      !props.fromPortalList&&showActionModal({
+        type: 'confirm',
+        content: getContent,
+        okCancel: false,
+        closable: true,
+        width: '100%',
+        okButtonProps: { style: { display: 'none' } },
+        bodyStyle: { padding: 0 },
+        className: UI.modalClassName
+      })
+    }, 1000)
+  },[props])
+
 
   useEffect(()=>{
     if(props.portalLang.accept&&props.fromPortalList&&props.portalId===props.id){
@@ -56,7 +61,7 @@ export default function PortalPreviewModal (props:{
     }
   }, [props.portalLang, props.demoValue])
   return (
-    <UI.Button onClick={()=>openModal()} type='default' size='small'>
+    <UI.Button onClick={openModal} type='default' size='small'>
       <UI.ModalStyle />
       {props.fromPortalList?<UI.EyeOpenPreview/>:$t({ defaultMessage: 'Preview' })}
     </UI.Button>
