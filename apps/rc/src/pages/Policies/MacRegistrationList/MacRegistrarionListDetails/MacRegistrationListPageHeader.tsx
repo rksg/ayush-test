@@ -10,7 +10,6 @@ import {
   hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
@@ -42,7 +41,6 @@ function MacRegistrationListPageHeader () {
             oper: PolicyOperation.EDIT,
             policyId: policyId!
           })}
-          scopeKey={[WifiScopes.UPDATE]}
         >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
