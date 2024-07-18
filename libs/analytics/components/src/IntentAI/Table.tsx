@@ -41,8 +41,7 @@ export function IntentAITable (
       label: $t({ defaultMessage: '1-Click Optimize' }),
       visible: (rows) => {
         const isVisible = rows?.filter(row =>
-          row.status !== 'New' ||
-          !(row.code.startsWith('c-probeflex-') || row.code.startsWith('c-crrm'))).length === 0
+          row.status !== 'New').length === 0
         return isVisible
       },
       onClick: (rows) => {

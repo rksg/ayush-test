@@ -107,7 +107,6 @@ describe('useIntentAIActions', () => {
           id: '15',
           isRecommendationRevertEnabled: true,
           scheduledAt: '2023-07-16T00:45:00.000Z',
-          preferences: { crrmFullOptimization: true },
           type: 'Apply'
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
@@ -178,9 +177,6 @@ describe('useIntentAIActions', () => {
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
       expect(mockedUseSchedule).toHaveBeenCalledWith({
         id: '15',
-        preferences: {
-          crrmFullOptimization: true
-        },
         isRecommendationRevertEnabled: true,
         scheduledAt: '2023-07-16T00:45:00.000Z',
         type: 'Apply'
@@ -229,7 +225,6 @@ describe('useIntentAIActions', () => {
           id: '15',
           isRecommendationRevertEnabled: true,
           scheduledAt: '2023-07-16T00:45:00.000Z',
-          preferences: { crrmFullOptimization: true },
           type: 'Apply'
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))

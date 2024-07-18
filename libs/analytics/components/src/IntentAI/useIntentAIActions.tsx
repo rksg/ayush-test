@@ -137,13 +137,7 @@ export function useIntentAIActions () {
         scheduledAt,
         isRecommendationRevertEnabled
       }
-      if (code.startsWith('c-crrm')) {
-        const updatedPreference = {
-          ...(_.get(row, 'preferences') || {}),
-          crrmFullOptimization: true
-        }
-        schedule.preferences = updatedPreference
-      } else {
+      if (code.startsWith('c-probeflex-')) {
         // airflex c-probeflex-*
         schedule.wlans = await fetchWlans(row)
       }
