@@ -73,52 +73,12 @@ export interface Guest {
     name?: string
     maxNumberOfClients?: number,
     guestStatus: GuestStatusEnum,
-    clients?: GuestClient[],
+    clients?: ClientInfo[],
     langCode?: string,
     socialLogin?: string,
     hostApprovalEmail?: string,
     devicesMac?: string[],
     locale?: string
-}
-
-export interface GuestClient {
-    osType?: string
-    healthCheckStatus?: string
-    clientMac: string
-    ipAddress: string
-    username: string
-    hostname: string
-    venueId: string
-    venueName: string
-    apMac: string
-    apSerialNumber: string
-    apName: string
-    switchSerialNumber: string
-    switchName: string
-    networkId: string
-    networkName: string
-    networkSsid: string
-    timeConnectedMs: number
-    vlan?: number
-    bssid?: string
-    rfChannel?: number
-    status?: string
-    receivedBytes?: number
-    receivedPackets?: number
-    transmittedBytes?: number
-    transmittedPackets?: number
-    framesDropped?: number
-    receiveSignalStrength_dBm?: number
-    snr_dB?: number
-    lastSeenDateTime?: string
-    clientIP?: string
-    ssid?: string
-    serialNumber?: string
-    userId?: string
-    disconnectTime?: number
-    sessionDuration?: number
-    id?: string
-    connectSince?: string
 }
 
 export interface UEDetail {

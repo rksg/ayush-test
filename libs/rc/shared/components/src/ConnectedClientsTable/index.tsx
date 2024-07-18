@@ -32,11 +32,11 @@ export const defaultRbacClientPayload = {
   searchTargetFields: ['macAddress','ipAddress','username','hostname','osType','networkInformation.ssid','networkInformation.vni', 'networkInfornation.vlan'],
   filters: {},
   fields: [
-    'modelName', 'deviceType', 'macAddress', 'osType', 'ipAddress', 'username', 'hostname',
-    'authenticationStatus', 'mldMacAddress', 'cpeMacAddress',
+    'modelName', 'deviceType', 'osType', 'username', 'hostname',
+    'macAddress', 'ipAddress','mldMacAddress', 'cpeMacAddress',
     'connectedTime', 'lastUpdatedTime',
     'venueInformation', 'apInformation', 'networkInformation', 'switchInformation',
-    'signalStatus', 'radioStatus', 'trafficStatus'
+    'signalStatus', 'radioStatus', 'trafficStatus', 'authenticationStatus'
   ]
 }
 

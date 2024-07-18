@@ -267,7 +267,7 @@ export function convertEpochToRelativeTime (timestamp: number) {
   return moment(new Date().getTime()).diff(moment.unix(timestamp))
 }
 
-export function convertToRelativeTime(time: string) {
+export function convertToRelativeTime (time: string) {
   return moment(new Date().getTime()).diff(moment(time))
 }
 

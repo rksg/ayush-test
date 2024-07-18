@@ -13,7 +13,6 @@ import {
   EventMeta,
   getClientHealthClass,
   Guest,
-  GuestClient,
   Network,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -47,21 +46,16 @@ const historicalPayload = {
   pageSize: 10
 }
 
-const defaultClientPayload = {
+const defaultRbacClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac'],
-  fields: ['apMac','ssid','clientMac','connectSince','healthCheckStatus','hostname','ipAddress',
-    'networkId','networkType','noiseFloor_dBm','osType','radioChannel','receiveSignalStrength_dBm',
-    'rxBytes','rxPackets','serialNumber','snr_dB','ssid','txBytes','txDropDataPacket','txPackets',
-    'username','venueId','vlan','vni'],
-  page: 1,
-  pageSize: 10000
-}
-
-const defaultVenuePayload = {
-  searchString: '',
-  searchTargetFields: ['name'],
-  fields: ['id', 'name'],
+  searchTargetFields: ['macAddress'],
+  filters: {},
+  fields: [
+    'modelName', 'deviceType', 'macAddress', 'osType',
+    'ipAddress', 'username', 'hostname', 'connectedTime',
+    'venueInformation', 'apInformation', 'networkInformation', 'switchInformation',
+    'signalStatus', 'radioStatus', 'trafficStatus', 'authenticationStatus'
+  ],
   page: 1,
   pageSize: 10000
 }
@@ -218,7 +212,8 @@ export const clientApi = baseClientApi.injectEndpoints({
         const guestsList = guestsListQuery.data as TableResult<Guest>
         const guestIdWithMacMaps: Map<string, string[]> = new Map()
         const uniqueDeviceMacs: Set<string> = new Set()
-        const uniqueVenueIds: Set<string> = new Set()
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+
         guestsList?.data?.filter(g =>
           g.guestStatus?.indexOf('Online') > -1 &&
           g.devicesMac && g.devicesMac.length > 0)
@@ -236,36 +231,49 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
         // aggregated online clients
         const filter = { clientMac: distinctMacs }
-        const clientPayload = { ...defaultClientPayload, filter }
+        const clientPayload = { ...defaultRbacClientPayload, filter }
         const clientListQuery = await fetchWithBQ({
-          ...createHttpRequest(ClientUrlsInfo.getClientList,
+          ...createHttpRequest(ClientUrlsInfo.getClients,
             arg.params,
             GetApiVersionHeader(ApiVersionEnum.v1)),
           body: JSON.stringify(clientPayload)
         })
-        const clientList = clientListQuery.data as TableResult<GuestClient>
-        // retireve venueName
-        const clientData = clientList.data as GuestClient[]
-        clientData.forEach(client => {
-          uniqueVenueIds.add(client.venueId)
-        })
-        const venuePayload = { ...defaultVenuePayload,
-          filters: { id: Array.from(uniqueVenueIds) }
+        const clientList = clientListQuery.data as TableResult<ClientInfo>
+        // retireve switch infomation
+        if (clientList.totalCount > 0) {
+          const unqueClientApMacs: Set<string> = new Set()
+          clientList.data.forEach((clientInfo) => {
+            unqueClientApMacs.add(clientInfo.apInformation.macAddress)
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
         }
-        const venueListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonUrlsInfo.getVenues,
-            arg.params,
-            GetApiVersionHeader(ApiVersionEnum.v1)),
-          body: JSON.stringify(venuePayload)
-        })
-        const venueList = venueListQuery.data as TableResult<{ id:string, name:string }>
-        const venueMap = new Map(venueList.data.map(venue => [venue.id, venue.name]))
-        const clientResult = clientData.map(client => {
-          client.venueName = venueMap.get(client.venueId) ?? ''
-          return client
-        })
+
+        const aggregatedRbacClientList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+
         const aggregatedList = aggregatedGuestClientData(
-          guestsList, guestIdWithMacMaps, clientResult)
+          guestsList, guestIdWithMacMaps, aggregatedRbacClientList.data)
 
         return guestsListQuery.data
           ? { data: aggregatedList }
@@ -620,11 +628,13 @@ export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>
 }
 
 export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
-  guestIdWithMacMaps: Map<string, string[]>, clientList:GuestClient[]) => {
-  const guestIdWithClientMaps: Map<string, GuestClient[]> = new Map()
+  guestIdWithMacMaps: Map<string, string[]>, clientList:ClientInfo[]) => {
+
+  const guestIdWithClientMaps: Map<string, ClientInfo[]> = new Map()
+
   guestIdWithMacMaps.forEach((macs: string[], guestId: string) => {
     const matchingClients = clientList
-      .filter(client => macs.includes(client.clientMac.toLowerCase()))
+      .filter(client => macs.includes(client.macAddress))
     if (matchingClients.length > 0) {
       guestIdWithClientMaps.set(guestId, matchingClients)
     }

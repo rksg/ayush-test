@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, Features  }                                                from '@acx-ui/feature-toggle'
+import { useIsSplitOn  }                                                          from '@acx-ui/feature-toggle'
 import { ClientUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import {

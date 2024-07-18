@@ -111,10 +111,10 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
   const [ sendRevoke ] = useRevokeClientMutation()
   const [ sendDisconnect ] = useDisconnectClientMutation()
   const [ getApList] = useLazyApListQuery()
-  defaultRbacClientPayload.filters = params.venueId ? { venueId: [params.venueId] } :
-    params.serialNumber ? { serialNumber: [params.serialNumber] } :
-      params.apId ? { serialNumber: [params.apId] } :
-        params.networkId ? { networkId: [params.networkId] } : {}
+  defaultRbacClientPayload.filters = params.venueId ? { 'venueInformation.id': [params.venueId] } :
+    params.serialNumber ? { 'apInformation.serialNumber': [params.serialNumber] } :
+      params.apId ? { 'apInformation.serialNumber': [params.apId] } :
+        params.networkId ? { 'networkInformation.id': [params.networkId] } : {}
 
   const settingsId = 'connected-clients-table'
   const inlineTableQuery = usePollingTableQuery({
@@ -244,7 +244,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         sorter: true,
         disable: true,
         render: (_, { macAddress }) => {
-          const mac = macAddress?.toLowerCase() || undefined
+          const mac = macAddress || undefined
           return <Tooltip title={mac}>
             {mac || noDataDisplay}
           </Tooltip>
@@ -291,9 +291,9 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         }
       },
       ...(venueId ? [] : [{
-        key: 'venueInformation.name',
+        key: 'venueInformation.id',
         title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-        dataIndex: 'venueInformation.id',
+        dataIndex: 'venueInformation.name',
         sorter: true,
         filterKey: 'venueInformation.id',
         filterable: apId ? false : venueId ? false : GetVenueFilterOptions(tenantId),
@@ -309,10 +309,11 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
         }
       }]),
       {
-        key: 'apInformation.name',
+        key: 'apInformation.serialNumber',
         title: intl.$t({ defaultMessage: 'AP' }),
-        dataIndex: 'apInformation.serialNumber',
+        dataIndex: 'apInformation.name',
         sorter: true,
+        filterKey: 'apInformation.serialNumber',
         filterable: apId ? false : GetApFilterOptions(tenantId, venueId),
         render: (_, row) => {
           return AsyncLoadingInColumn(row, () => {
