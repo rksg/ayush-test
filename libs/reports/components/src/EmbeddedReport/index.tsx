@@ -228,7 +228,7 @@ export const getRLSClauseForSA = (
 }
 
 const scopeRegexMapping = {
-  none: /^((switch|wifi)-(c|d|u))$/,
+  both: /^((switch|wifi)-(c|d|u))$/,
   ap: /^((wifi)-(c|d|u))$/,
   switch: /^((switch)-(c|d|u))$/
 }
@@ -379,7 +379,7 @@ export function EmbeddedReport (props: ReportProps) {
 
   const isR1RoleReadOnly = () => {
     const { isApReport, isSwitchReport } = getReportType(reportName)
-    const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'none']
+    const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
 
     if (scopes) {
       const hasWriteScope = scopes.some(scope => regex.test(scope))
