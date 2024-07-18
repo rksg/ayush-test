@@ -214,8 +214,9 @@ export function renderFilter <RecordType> (
     showArrow
     allowClear
     style={{ width }}
+    options={column.fitlerCustomOptions}
   >
-    {options?.map((option, index) =>
+    {!Array.isArray(column.fitlerCustomOptions) && options?.map((option, index) =>
       <Select.Option
         value={option.key}
         key={`key-${index}-${option.key}`}

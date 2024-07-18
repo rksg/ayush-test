@@ -111,7 +111,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
   return {
     firmwareType: '',
     firmwareVersion: '',
-    search: '',
+    searchFilter: '',
     updateAvailable: ''
   }
 }
@@ -337,7 +337,10 @@ export const SelectSwitchStep = (
 
   const setSearchResultData = async function (searchText: string) {
     let selectedKey = [] as Key[]
-    const switchListPayload = {
+    const switchListPayload = isSwitchRbacEnabled ? {
+      venueIdList: data.map(d => d.id),
+      searchFilter: searchText
+    } : {
       venueIdList: data.map(d => d.id),
       search: searchText
     }
