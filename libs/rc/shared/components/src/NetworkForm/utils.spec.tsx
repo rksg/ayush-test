@@ -537,6 +537,7 @@ describe('Network utils test', () => {
       beforeAll(() => {
         jest.restoreAllMocks()
 
+        mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
         jest.mocked(useIsSplitOn)
           .mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
       })
