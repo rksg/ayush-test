@@ -21,6 +21,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockReturnValue({ state: {
+    isOnboardedMsp: true,
     name: 'custom role',
     description: 'custom role'
   } }),
@@ -394,7 +395,11 @@ describe('Edit Privilege Group', () => {
     })
   })
   it('should render correctly for not onboarded msp', async () => {
-    jest.spyOn(router, 'useLocation').mockReturnValue({})
+    jest.spyOn(router, 'useLocation').mockReturnValue({ state: {
+      isOnboardedMsp: false,
+      name: 'custom role'
+    } })
+
     render(
       <Provider>
         <EditPrivilegeGroup />

@@ -32,6 +32,11 @@ interface PrivilegeGroupsTableProps {
   tenantType?: string;
 }
 
+export interface PrivilegeGroupSateProps {
+  isOnboardedMsp?: boolean;
+  name?: string;
+}
+
 const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, tenantType } = props
@@ -155,10 +160,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
+        const stateProp: PrivilegeGroupSateProps = {
+          isOnboardedMsp: isOnboardedMsp,
+          name: selectedRows[0].name
+        }
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
-        }, { state: isOnboardedMsp })
+        }, { state: stateProp })
       }
     },
     {
