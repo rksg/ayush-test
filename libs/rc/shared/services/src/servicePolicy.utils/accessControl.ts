@@ -321,7 +321,7 @@ export function updateAccessControlProfileFn () : QueryFn<CommonResult, RequestP
       const updateProfileQuery = {
         // eslint-disable-next-line max-len
         ...createHttpRequest(enableRbac ? AccessControlUrls.updateAccessControlProfileRbac : AccessControlUrls.updateAccessControlProfile, params),
-        body: enableRbac ? JSON.stringify(payload) : payload
+        body: JSON.stringify(payload)
       }
 
       const updateProfileQueryRes = await fetchWithBQ(updateProfileQuery)
