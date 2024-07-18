@@ -23,7 +23,8 @@ const toggleItemFromSelected = (
   } else {
     newSelected[venueId] = cloneDeep(selectedNetworks[venueId])
     remove(newSelected[venueId], item => item.id === data.id)
-    if (newSelected[venueId].length === 0)
+    // prevent issue when delete a deleted item
+    if (!Boolean(newSelected[venueId]?.length))
       unset(newSelected, venueId)
   }
 
@@ -82,7 +83,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
       && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
 
       if (fieldName === 'activatedNetworks') {
-        const updateContent = {
+        const updateData = {
           [fieldName]: newSelected
         } as Record<string, EdgeMvSdLanFormNetwork>
 
@@ -90,10 +91,10 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
         const isVlanPooling = !isNil(data.vlanPool)
         if (!isVlanPooling || (isVlanPooling && !checked)) {
           // eslint-disable-next-line max-len
-          updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
+          updateData['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
-        setUpdateContent(updateContent)
+        setUpdateContent(updateData)
       } else {
         // eslint-disable-next-line max-len
         const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
