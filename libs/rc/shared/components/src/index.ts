@@ -191,6 +191,7 @@ export {
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
+  useEdgeMvSdLanActions,
   useEdgeSdLanActions,
   useGetEdgeSdLanByEdgeOrClusterId,
   useSdLanScopedVenueNetworks,
@@ -198,7 +199,10 @@ export {
   checkSdLanScopedNetworkDeactivateAction
 } from './EdgeSdLan/useEdgeSdLanActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
-export { useGetNetworkTunnelInfo } from './EdgeSdLan/edgeSdLanUtils'
+export {
+  useGetNetworkTunnelInfo,
+  edgeSdLanFormRequestPreProcess
+} from './EdgeSdLan/edgeSdLanUtils'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,

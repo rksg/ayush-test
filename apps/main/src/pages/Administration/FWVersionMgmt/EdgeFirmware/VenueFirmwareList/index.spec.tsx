@@ -2,10 +2,9 @@ import userEvent             from '@testing-library/user-event'
 import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { firmwareApi }     from '@acx-ui/rc/services'
-import { FirmwareUrlsInfo,
-  SwitchFirmwareFixtures }                            from '@acx-ui/rc/utils'
+import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { firmwareApi }                                 from '@acx-ui/rc/services'
+import { FirmwareUrlsInfo, SwitchFirmwareFixtures }    from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
@@ -15,9 +14,9 @@ import { ChangeScheduleDialogProps } from './ChangeScheduleDialog'
 
 import { VenueFirmwareList } from '.'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 const MockModal = (props: ModalProps) => <Modal {...props} />
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('./ChangeScheduleDialog', () => {
   const oriCompoents = jest.requireActual('./ChangeScheduleDialog')
@@ -42,10 +41,11 @@ jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchCurrentVersionsQuery: () => ({
+  useGetSwitcDefaultVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })
 }))
+
 
 describe('Edge venue firmware list', () => {
   let params: { tenantId: string }
