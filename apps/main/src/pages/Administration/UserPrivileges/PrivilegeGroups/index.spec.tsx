@@ -216,7 +216,7 @@ describe('Privilege Group Table', () => {
       pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/edit/99bb7b958a5544898cd0b938fa800a5a`,
       hash: '',
       search: ''
-    }, { state: true })
+    }, { state: { isOnboardedMsp: true, name: 'wi-fi privilege group' } })
   })
   it('should clone selected row', async () => {
     render(
