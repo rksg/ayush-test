@@ -279,7 +279,17 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       queryFn: getWifiCallingFn(true),
       providesTags: [
         { type: 'ConfigTemplate', id: 'DETAIL' }, { type: 'WifiCallingTemplate', id: 'DETAIL' }
-      ]
+      ],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshWifiCallingTemplateList, () => {
+            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
+              { type: 'ConfigTemplate' },
+              { type: 'WifiCallingTemplate' }
+            ]))
+          })
+        })
+      }
     }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceTemplateList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
@@ -314,6 +324,18 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
+    }),
+    activateWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(ServicesConfigTemplateUrlsInfo.activateWifiCalling, params)
+      },
+      invalidatesTags: [{ type: 'WifiCallingTemplate', id: 'DETAIL' }]
+    }),
+    deactivateWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(ServicesConfigTemplateUrlsInfo.deactivateWifiCalling, params)
+      },
+      invalidatesTags: [{ type: 'WifiCallingTemplate', id: 'DETAIL' }]
     })
   })
 })
@@ -346,7 +368,9 @@ export const {
   useGetWifiCallingServiceTemplateQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery,
   useUpdateWifiCallingServiceTemplateMutation,
-  useDeleteWifiCallingServiceTemplateMutation
+  useDeleteWifiCallingServiceTemplateMutation,
+  useActivateWifiCallingServiceTemplateMutation,
+  useDeactivateWifiCallingServiceTemplateMutation
 } = servicesConfigTemplateApi
 
 

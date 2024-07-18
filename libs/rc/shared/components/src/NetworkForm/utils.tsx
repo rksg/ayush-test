@@ -5,7 +5,7 @@ import { FormInstance } from 'antd'
 import _                from 'lodash'
 import { Params }       from 'react-router-dom'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -39,7 +39,10 @@ import {
   useActivateApplicationPolicyOnWifiNetworkMutation,
   useDeactivateApplicationPolicyOnWifiNetworkMutation,
   useActivateAccessControlProfileOnWifiNetworkMutation,
-  useDeactivateAccessControlProfileOnWifiNetworkMutation
+  useDeactivateAccessControlProfileOnWifiNetworkMutation,
+  useActivateWifiCallingServiceTemplateMutation,
+  useDeactivateWifiCallingServiceTemplateMutation,
+  useGetEnhancedWifiCallingServiceTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -56,7 +59,8 @@ import {
   CommonResult,
   VlanPool,
   useConfigTemplateMutationFnSwitcher,
-  NetworkVenue
+  NetworkVenue,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -425,18 +429,31 @@ export function useVlanPool () {
 }
 
 export function useWifiCalling (notReady: boolean) {
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+
   const { networkId } = useParams()
-  const { data: wifiCallingData } = useGetEnhancedWifiCallingServiceListQuery(
-    { payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } }, enableRbac },
-    { skip: !enableRbac || !networkId || notReady }
-  )
+  const { data: wifiCallingData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEnhancedWifiCallingServiceListQuery,
+    useTemplateQueryFn: useGetEnhancedWifiCallingServiceTemplateListQuery,
+    payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } },
+    enableRbac,
+    skip: !enableRbac || !networkId || notReady
+  })
   const wifiCallingIds = useMemo(() =>
     wifiCallingData?.data.map(p => p.id) || []
   , [wifiCallingData])
 
-  const [ activate ] = useActivateWifiCallingServiceMutation()
-  const [ deactivate ] = useDeactivateWifiCallingServiceMutation()
+  const [ activate ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateWifiCallingServiceMutation,
+    useTemplateMutationFn: useActivateWifiCallingServiceTemplateMutation
+  })
+  const [ deactivate ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateWifiCallingServiceMutation,
+    useTemplateMutationFn: useDeactivateWifiCallingServiceTemplateMutation
+  })
 
   const activateAll = async (networkId: string, ids: string[]) => {
     if (ids.length === 0) return
