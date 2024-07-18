@@ -810,36 +810,22 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
-          element={
-            <Route>
-              <MacRegistrationListDetails />
-            </Route>}
+          element={<MacRegistrationListDetails />}
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
-          element={
-            <Route>
-              <MacRegistrationListsTable />
-            </Route>}
+          element={<MacRegistrationListsTable />}
         />
         { hasCloudpathAccess() && <>
           <Route
           // eslint-disable-next-line max-len
             path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-            element={
-              <Route>
-                <MacRegistrationListForm />
-              </Route>
-            } />
+            element={<MacRegistrationListForm />} />
           <Route
           // eslint-disable-next-line max-len
             path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-            element={
-              <Route>
-                <MacRegistrationListForm editMode={true}/>
-              </Route>
-            }
+            element={<MacRegistrationListForm editMode={true}/>}
           />
         </> }
       </> : <></> }
