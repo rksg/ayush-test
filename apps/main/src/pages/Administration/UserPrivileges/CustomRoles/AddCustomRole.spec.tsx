@@ -12,6 +12,8 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { fakedCustomRoleLsit } from '../__tests__/fixtures'
+
 import { AddCustomRole } from './AddCustomRole'
 
 const services = require('@acx-ui/rc/services')
@@ -45,6 +47,9 @@ describe('Add Custom Role', () => {
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
+    services.useGetCustomRolesQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedCustomRoleLsit }
+    })
   })
   it('should render correctly for add', async () => {
     render(

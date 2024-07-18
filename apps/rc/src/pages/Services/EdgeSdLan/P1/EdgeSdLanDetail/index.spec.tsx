@@ -4,6 +4,7 @@ import { CommonUrlsInfo, EdgeSdLanFixtures, EdgeSdLanUrls }      from '@acx-ui/r
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+
 import { mockedNetworkViewData } from '../__tests__/fixtures'
 
 import EdgeSdLanDetail from '.'

@@ -6,6 +6,10 @@ import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import {
+  FirmwareSwitchVenueVersionsV1002,
+  SwitchModelGroupDisplayText
+} from '@acx-ui/rc/utils'
 
 import * as UI                     from './styledComponents'
 import { SwitchRequirementsModal } from './switchRequirementsModal'
@@ -28,7 +32,8 @@ export function SwitchUpgradeNotification (props: {
     type: SWITCH_UPGRADE_NOTIFICATION_TYPE,
     validateModel: string[],
     venueFirmware?: string,
-    venueAboveTenFirmware?: string
+    venueAboveTenFirmware?: string,
+    venueFirmwareV1002? : FirmwareSwitchVenueVersionsV1002[]
 }) {
   const [modalVisible, setModalVisible] = useState(false)
   const { $t } = useIntl()
@@ -40,7 +45,9 @@ export function SwitchUpgradeNotification (props: {
     stackUnitsMinLimitaion,
     venueFirmware,
     venueAboveTenFirmware,
+    venueFirmwareV1002,
     switchModel } = props
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
   const upgradeDescription = {
     stack: [{
       // normal
@@ -77,7 +84,7 @@ export function SwitchUpgradeNotification (props: {
   const content = upgradeDescription[type][descriptionIndex]
   const enableStackUnitLimitationFlag = useIsSplitOn(Features.SWITCH_STACK_UNIT_LIMITATION)
 
-  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+  const { parseSwitchVersion, checkSwitchModelGroup } = useSwitchFirmwareUtils()
 
   const StackUnitsMinLimitaionMsg = () => <FormattedMessage
     defaultMessage='For the {model} series, a stack may hold up to <b>{minStackes} switches</b>'
@@ -105,8 +112,28 @@ export function SwitchUpgradeNotification (props: {
     }
   }
 
-  const getVenueFirmware = function (){
-    return (switchModel?.includes('8200') ? venueAboveTenFirmware : venueFirmware) || ''
+  const getVenueFirmware = function () {
+    if (!switchModel) return ''
+
+    if (isSwitchFirmwareV1002Enabled) {
+      const model = checkSwitchModelGroup(validateModel[0])
+      return venueFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
+    } else {
+      return (switchModel.includes('8200') ? venueAboveTenFirmware : venueFirmware)
+    }
+  }
+
+  const getVenueCategory = function () {
+    if (!switchModel) return ''
+
+    if (isSwitchFirmwareV1002Enabled) {
+      const model = checkSwitchModelGroup(validateModel[0])
+
+      return SwitchModelGroupDisplayText[model]
+    } else {
+      return switchModel?.includes('8200') ? '8200' : '7000'
+    }
+
   }
 
   return isDisplay ? <UI.UpgradeNotification >
@@ -129,9 +156,9 @@ export function SwitchUpgradeNotification (props: {
 
         {(getVenueFirmware()) && <UI.FirmwareDescription>
           {$t({ defaultMessage: '<VenueSingular></VenueSingular> firmware version for ICX {venueCategory} Series: ' }, {
-            venueCategory: switchModel?.includes('8200') ? '8200' : '7000'
+            venueCategory: getVenueCategory()
           })}
-          <UI.MinFwVersion>{parseSwitchVersion(getVenueFirmware())}</UI.MinFwVersion>
+          <UI.MinFwVersion>{parseSwitchVersion(getVenueFirmware() || '')}</UI.MinFwVersion>
         </UI.FirmwareDescription>}
 
 
