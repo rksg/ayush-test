@@ -92,7 +92,7 @@ const LbsServerProfileSettingForm = () => {
             { type: 'number', min: 1 },
             { type: 'number', max: 65535 }
           ]}
-          initialValue={8443}
+          initialValue={8883}
           children={<InputNumber min={1} max={65535} />}
         />
       </div>
