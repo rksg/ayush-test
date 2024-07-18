@@ -23,8 +23,8 @@ import { useNavigate, useParams, useTenantLink }                                
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
-import ApFirmware       from './ApFirmware'
-import EdgeFirmware     from './EdgeFirmware'
+import ApFirmware      from './ApFirmware'
+import EdgeFirmware    from './EdgeFirmware'
 import {
   compareVersions,
   getApVersion,
