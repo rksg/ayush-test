@@ -35,6 +35,9 @@ const lastestFirmware = [
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitcDefaultVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  }),
   useGetSwitchCurrentVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })

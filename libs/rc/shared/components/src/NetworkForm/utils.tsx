@@ -27,6 +27,8 @@ import {
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useActivateVlanPoolTemplateOnWifiNetworkMutation,
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation,
   WifiActionMapType,
@@ -52,8 +54,9 @@ import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
   CommonResult,
-  NetworkVenue,
-  VlanPool
+  VlanPool,
+  useConfigTemplateMutationFnSwitcher,
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -200,18 +203,21 @@ export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveD
 }
 
 export function useRadiusServer () {
+  const { isTemplate } = useConfigTemplate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableServicePolicyRbac
   const { networkId } = useParams()
   const [ activateRadiusServer ] = useActivateRadiusServerMutation()
   const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
   const [ updateRadiusServerSettings ] = useUpdateRadiusServerSettingsMutation()
   const { data: radiusServerProfiles } = useGetAAAPolicyViewModelListQuery({
     payload: { filters: { networkIds: [networkId] } },
-    enableRbac: enableServicePolicyRbac
-  }, { skip: !networkId || !enableServicePolicyRbac })
+    enableRbac: resolvedRbacEnabled
+  }, { skip: !networkId || !resolvedRbacEnabled })
   const { data: radiusServerSettings } = useGetRadiusServerSettingsQuery({
     params: { networkId }
-  }, { skip: !networkId || !enableServicePolicyRbac })
+  }, { skip: !networkId || !resolvedRbacEnabled })
   // eslint-disable-next-line max-len
   const [ radiusServerConfigurations, setRadiusServerConfigurations ] = useState<Partial<NetworkSaveData>>()
 
@@ -248,7 +254,7 @@ export function useRadiusServer () {
 
   // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
-    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
 
@@ -270,7 +276,7 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },
@@ -363,9 +369,16 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()
+  const [activate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateVlanPoolMutation,
+    useTemplateMutationFn: useActivateVlanPoolTemplateOnWifiNetworkMutation
+  })
 
-  const [activate] = useActivateVlanPoolMutation()
-  const [deactivate] = useDeactivateVlanPoolMutation()
+  const [deactivate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateVlanPoolMutation,
+    useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
+  })
+
 
   const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
     payload: {

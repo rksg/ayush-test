@@ -158,6 +158,16 @@ export const ccdReasonCodes = [
   },
   {
     id: 31,
+    code: 'CCD_REASON_AUTH_FILTERED_BY_SMART_ROAM',
+    text: defineMessage({ defaultMessage: 'Dropped auth frame which filtered by SmartRoam' })
+  },
+  {
+    id: 32,
+    code: 'CCD_REASON_AUTH_WITHHELD_RSSI_THRESHOLD',
+    text: defineMessage({ defaultMessage: 'Auth withheld due to RSSI threshold' })
+  },
+  {
+    id: 33,
     code: 'CCD_REASON_MAX_VALUE',
     // This is a placeholder code use by AP team, no description for it
     text: defineMessage({ defaultMessage: 'CCD_REASON_MAX_VALUE' })

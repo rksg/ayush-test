@@ -5,6 +5,7 @@ import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { venueApi }           from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  CommonRbacUrlsInfo,
   CONFIG_TEMPLATE_LIST_PATH
 } from '@acx-ui/rc/utils'
 import { Provider, store }            from '@acx-ui/store'
@@ -37,6 +38,10 @@ describe('VenuePageHeader', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (_, res, ctx) => res(ctx.json(venueDetailHeaderData))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getRwgListByVenueId.url,
+        (req, res, ctx) => res(ctx.json({ response: { data: [] } }))
       )
     )
   })

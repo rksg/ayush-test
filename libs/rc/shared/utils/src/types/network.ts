@@ -42,15 +42,26 @@ export interface BaseNetwork {
   ssid: string
   vlan: number
   aps: number
-  clients: number
+  clients?: number  // non-RBAC only
   venues: { count: number, names: string[], ids: string[] }
   captiveType?: GuestNetworkTypeEnum
-  deepNetwork?: NetworkDetail
-  vlanPool?: { name: string }
+  deepNetwork?: NetworkDetail // non-RBAC only
+  vlanPool?: { name: string } // non-RBAC only
   activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean,
   incompatible?: number
 }
+
+export type DsaeOnboardNetwork = {
+  id: string
+  name: string
+  description: string
+  nwSubType: string
+  ssid: string
+  vlan: number
+  vlanPool?: { name: string, vlanMembers: string[] }
+}
+
 export interface Network extends BaseNetwork{
   children?: BaseNetwork[]
   dsaeOnboardNetwork?: BaseNetwork
@@ -63,8 +74,10 @@ export interface Network extends BaseNetwork{
 }
 
 export interface WifiNetwork extends Network{
+  clientCount: number,
   venueApGroups: VenueApGroup[],
-  apSerialNumbers?: string[]
+  apSerialNumbers?: string[],
+  tunnelWlanEnable?: boolean
 }
 
 export interface NetworkExtended extends Network {
