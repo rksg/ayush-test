@@ -2,7 +2,6 @@
 import { useCallback, useMemo, useRef, MutableRefObject } from 'react'
 
 import { Modal as AntModal }                          from 'antd'
-import _                                              from 'lodash'
 import moment, { Moment }                             from 'moment-timezone'
 import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
