@@ -453,3 +453,9 @@ export function useWifiCalling (notReady: boolean) {
     updateWifiCallingActivation
   }
 }
+
+export const getDefaultMloOptions = (wifi7Mlo3LinkFlag: boolean) => ({
+  enable24G: true,
+  enable50G: true,
+  enable6G: wifi7Mlo3LinkFlag ? true : false
+})
