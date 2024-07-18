@@ -109,6 +109,8 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
   const { settingsId, venueId } = props
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const nonRbacTableQuery = useTableQuery({
     useQuery: useVenueNetworkTableV2Query,
@@ -117,7 +119,7 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: isWifiRbacEnabled }
+    option: { skip: resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -127,10 +129,10 @@ const useVenueNetworkList = (props: { settingsId: string, venueId?: string } ) =
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: !isWifiRbacEnabled || !venueId }
+    option: { skip: !resolvedRbacEnabled || !venueId }
   })
 
-  return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 const defaultArray: NetworkExtended[] = []

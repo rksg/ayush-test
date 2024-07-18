@@ -288,6 +288,42 @@ describe('Network Drawer', () => {
         ] }
       )
     })
+
+    it('should be able to deactivate guest then deactivate dc tunnel', async () => {
+      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
+        isGuestTunnelEnabled: true,
+        activatedNetworks: { [mockedVenueId]: [
+          { name: 'MockedNetwork 4', id: 'network_4' }
+        ] },
+        activatedGuestNetworks: { [mockedVenueId]: [
+          { name: 'MockedNetwork 4', id: 'network_4' }
+        ] }
+      }))
+      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+
+      render(<MockedTargetComponent
+        form={stepFormRef.current}
+      />, { route: { params: { tenantId: 't-id' } } })
+
+      const rows = await basicCheck(true)
+      // when turn on DC captive portal network DMZ network should be ON by default
+      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
+      const switchBtns = within(rows[3]).getAllByRole('switch')
+      // should all activated
+      switchBtns.forEach((switchBtn) => expect(switchBtn).toBeChecked())
+
+      // deactivate guest tunnel
+      await click(switchBtns[1])
+      // deactivate dc tunnel
+      await click(switchBtns[0])
+
+      // should all deactivated
+      switchBtns.forEach((switchBtn) => expect(switchBtn).not.toBeChecked())
+
+      await click(screen.getByRole('button', { name: 'OK' }))
+      expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', {})
+      expect(mockedSetFieldValue).toBeCalledWith('activatedGuestNetworks', {})
+    })
   })
 })
 
