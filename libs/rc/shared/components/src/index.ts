@@ -201,7 +201,9 @@ export {
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
-  edgeSdLanFormRequestPreProcess
+  edgeSdLanFormRequestPreProcess,
+  NetworkMvTunnelModal,
+  NetworkMvTunnelModalProps
 } from './EdgeSdLan/edgeSdLanUtils'
 export {
   ApCompatibilityType,
