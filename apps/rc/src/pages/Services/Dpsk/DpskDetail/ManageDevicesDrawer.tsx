@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -7,11 +7,11 @@ import { useParams }                     from 'react-router-dom'
 
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { defaultClientPayload }                     from '@acx-ui/rc/components'
 import {
-  useDeleteDpskPassphraseDevicesMutation, useGetClientListQuery,
-  useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
+  useDeleteDpskPassphraseDevicesMutation,
+  useGetDpskPassphraseDevicesQuery, useGetDpskQuery,
   useUpdateDpskPassphraseDevicesMutation,
+  useNetworkListQuery,
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -21,7 +21,6 @@ import {
   NewDpskPassphrase,
   MacRegistrationFilterRegExp,
   useTableQuery,
-  usePollingTableQuery,
   sortProp,
   defaultSort,
   dateSort
@@ -59,30 +58,6 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   })
 
   const { data } = useGetDpskQuery({ params: { ...params } })
-
-  const clientTableQuery = usePollingTableQuery({
-    useQuery: useGetClientListQuery,
-    defaultPayload: {
-      ...defaultClientPayload
-    },
-    pagination: {
-      pageSize: 10000
-    },
-    search: {
-      searchTargetFields: defaultClientPayload.searchTargetFields
-    }
-  })
-
-  useEffect(() => {
-    if (devicesData) {
-      const connectedDevices = devicesData.filter(d => d.deviceConnectivity === 'CONNECTED') || []
-      const connectedDeviceMacs = connectedDevices.map(device => device.mac)
-      clientTableQuery.setPayload({
-        ...defaultClientPayload,
-        filters: { clientMac: connectedDeviceMacs }
-      })
-    }
-  }, [devicesData])
 
   useEffect(() => {
     if (data?.networkIds?.length) {

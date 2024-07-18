@@ -165,7 +165,7 @@ export const rbacClientList = {
       hostname: 'iphone',
       authenticationStatus: 1,
       connectedTime: '2022-11-27T07:43:15.658Z',
-      lastUpdateTime: '2022-11-29T07:43:15.658Z',
+      lastUpdatedTime: '2022-11-29T07:43:15.658Z',
       venueInformation: {
         id: '4c778ed630394b76b17bce7fe230cf9f',
         name: 'My-Venue'
@@ -209,7 +209,7 @@ export const rbacClientList = {
       hostname: '',
       authenticationStatus: 1,
       connectedTime: '2022-11-27T07:43:15.658Z',
-      lastUpdateTime: '2022-11-29T07:43:15.658Z',
+      lastUpdatedTime: '2022-11-29T07:43:15.658Z',
       venueInformation: {
         id: '4c778ed630394b76b17bce7fe230cf9f',
         name: 'My-Venue'
