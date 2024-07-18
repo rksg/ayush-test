@@ -5,11 +5,13 @@ import {
   ConfigTemplateUrlsInfo,
   ExternalAntenna,
   LocalUser,
+  Mesh,
   RadiusServer,
   TableResult,
   TacacsServer,
   TriBandSettings,
   Venue,
+  VenueApModelBandModeSettings,
   VenueBssColoring,
   VenueClientAdmissionControl,
   VenueConfigTemplateUrlsInfo,
@@ -201,12 +203,29 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
+    // only exist in v1(RBAC version)
+    getVenueTemplateMesh: build.query<Mesh, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueMeshRbac, params)
+        }
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, ['UpdateVenueTemplateApMeshSettings'], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]))
+          })
+        })
+      }
+    }),
     updateVenueTemplateMesh: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.updateVenueMesh,
         VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
       ),
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'WIFI_SETTINGS' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]
     }),
     getVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueLanPorts)
@@ -384,6 +403,26 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
       }
     }),
+    // eslint-disable-next-line max-len
+    getVenueTemplateApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueApModelBandModeSettings, params)
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'BandModeSettings' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<VenueApModelBandModeSettings[]>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.updateVenueApModelBandModeSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'BandModeSettings' }]
+    }),
     getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.getVenueCityList,
@@ -496,6 +535,7 @@ export const {
   useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueTemplateExternalAntennaMutation,
   useGetVenueTemplateSettingsQuery,
+  useGetVenueTemplateMeshQuery,
   useUpdateVenueTemplateMeshMutation,
   useGetVenueTemplateLanPortsQuery,
   useUpdateVenueTemplateLanPortsMutation,
@@ -514,6 +554,8 @@ export const {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
   useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation,
   useGetVenueTemplateCityListQuery,
   useGetVenueTemplateSwitchSettingQuery,
   useUpdateVenueTemplateSwitchSettingMutation,
