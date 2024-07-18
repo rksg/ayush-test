@@ -44,7 +44,7 @@ jest.mock('./VenueStatusDrawer', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchCurrentVersionsQuery: () => ({
+  useGetSwitcDefaultVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   })
 }))
@@ -55,6 +55,10 @@ describe('SwitchFirmware - VenueFirmwareList', () => {
   beforeEach(async () => {
     store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))

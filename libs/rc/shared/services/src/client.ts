@@ -9,7 +9,6 @@ import {
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
-  DpskPassphrase,
   EventMeta,
   getClientHealthClass,
   Guest,
@@ -20,13 +19,13 @@ import {
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo,
   RequestFormData,
   ClientStatusEnum,
   UEDetail,
   ApiVersionEnum,
   GetApiVersionHeader,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  ClientInfo
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -126,6 +125,17 @@ export const clientApi = baseClientApi.injectEndpoints({
         return {
           ...req,
           body: payload
+        }
+      }
+    }),
+    getClients: build.query<TableResult<ClientInfo>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.getClients,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -315,15 +325,6 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
-          ...req,
-          body: payload
-        }
-      }
-    }),
     getHistoricalClientList: build.query<TableResult<Client>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
@@ -392,7 +393,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
+        const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params)
         return {
           ...networkListReq,
           body: payload
@@ -548,11 +549,10 @@ export const {
   useGetGuestsListQuery,
   useDisconnectClientMutation,
   useRevokeClientMutation,
+  useLazyGetClientsQuery,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
-  useGetDpskPassphraseByQueryQuery,
-  useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
   useGetClientListQuery,

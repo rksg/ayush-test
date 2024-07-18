@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Descriptions }                                          from '@acx-ui/components'
 import { formatter }                                             from '@acx-ui/formatter'
 import { ApViewModel, CelluarInfo, CellularSim, SimPresentData } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                         from '@acx-ui/utils'
 
 import { SimPresent } from './SimPresent'
 
@@ -70,98 +71,98 @@ export const ApCellularProperties = (props: ApCellularPropertiesProps) => {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'SIM Present' })}
-        children={cellularSim.simPresent || $t({ defaultMessage: 'None' })}
+        children={cellularSim.simPresent || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Active SIM' })}
-        children={currentCellularInfo.cellularActiveSim || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularActiveSim || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Connection status' })}
-        children={currentCellularInfo.cellularConnectionStatus || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularConnectionStatus || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'WAN Interface' })}
-        children={currentCellularInfo.cellularWanInterface || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularWanInterface || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: '4G/3G channel' })}
-        children={currentCellularInfo.cellular3G4GChannel || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellular3G4GChannel || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Roaming Status' })}
-        children={currentCellularInfo.cellularRoamingStatus || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularRoamingStatus || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Current RF Band' })}
-        children={currentCellularInfo.cellularBand || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularBand || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'IMEI' })}
-        children={currentCellularInfo.cellularIMEI || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularIMEI || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'LTE Firmware' })}
-        children={currentCellularInfo.cellularLTEFirmware || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularLTEFirmware || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Operator' })}
-        children={currentCellularInfo.cellularOperator || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularOperator || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Country' })}
-        children={currentCellularInfo.cellularCountry || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularCountry || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'IP address' })}
-        children={currentCellularInfo.cellularIPaddress || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularIPaddress || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Subnet mask' })}
-        children={currentCellularInfo.cellularSubnetMask || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularSubnetMask || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Default gateway' })}
-        children={currentCellularInfo.cellularDefaultGateway || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularDefaultGateway || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Signal strength(RSSI)' })}
-        children={currentCellularInfo.cellularSignalStrength || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularSignalStrength || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Radio uptime' })}
         children={currentCellularInfo.cellularRadioUptime ?
           formatter('durationFormat')(currentCellularInfo.cellularRadioUptime)
-          : $t({ defaultMessage: 'None' })
+          : noDataDisplay
         }
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Uplink Bandwidth for LTE' })}
-        children={currentCellularInfo.cellularUplinkBandwidth || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularUplinkBandwidth || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Downlink Bandwidth for LTE' })}
-        children={currentCellularInfo.cellularDownlinkBandwidth || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularDownlinkBandwidth || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'RSRP' })}
-        children={currentCellularInfo.cellularRSRP || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularRSRP || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'RSRQ' })}
-        children={currentCellularInfo.cellularRSRQ || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularRSRQ || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'SINR' })}
-        children={currentCellularInfo.cellularSINR || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularSINR || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'ECIO' })}
-        children={currentCellularInfo.cellularECIO || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularECIO || noDataDisplay}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'RSCP' })}
-        children={currentCellularInfo.cellularRSCP || $t({ defaultMessage: 'None' })}
+        children={currentCellularInfo.cellularRSCP || noDataDisplay}
       />
     </Descriptions>
     {

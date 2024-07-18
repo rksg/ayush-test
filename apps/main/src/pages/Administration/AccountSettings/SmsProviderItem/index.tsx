@@ -394,7 +394,7 @@ const SmsProviderItem = () => {
                   ]}
                   renderItem={(item) => (
                     <List.Item>
-                      <Typography.Text className='description darkGreyText'>
+                      <Typography.Text className='darkGreyText'>
                         {item}
                       </Typography.Text>
                     </List.Item>
@@ -429,11 +429,13 @@ const SmsProviderItem = () => {
                 $t({ defaultMessage: 'Attention! RUCKUS SMS pool for Captive' }),
                 $t({ defaultMessage: 'Portal Self Sign-In is depleted. To avoid' }),
                 $t({ defaultMessage: 'service disruption, please set up an SMS' }),
-                $t({ defaultMessage: 'Provider before August 12, 2024.' })
+                $t({ defaultMessage: 'Provider before {graceEndDate}.' },
+                  { graceEndDate: <b>{'October 31, 2024'}</b> }
+                )
               ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text className='description darkGreyText'>
+                  <Typography.Text className='darkGreyText'>
                     {item}
                   </Typography.Text>
                 </List.Item>
@@ -562,7 +564,7 @@ const SmsProviderItem = () => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='description greyText'>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>

@@ -1,7 +1,6 @@
 import { Form, Collapse, Checkbox } from 'antd'
 import styled                       from 'styled-components/macro'
 
-import { Subtitle }         from '@acx-ui/components'
 import { InformationSolid } from '@acx-ui/icons'
 
 export const FieldLabel = styled.div<{ width: string }>`
@@ -56,14 +55,6 @@ export const RateLimitBlock = styled.div`
       width: 50px;
     }
 `
-
-const CustomSubtitle = styled(Subtitle).attrs({ level: 4 })`
-  margin-block-end: 12px;
-  padding-top: 20px;
-  padding-bottom: 10px;
-`
-
-export { CustomSubtitle as Subtitle }
 
 export const InfoIcon = styled(InformationSolid)`
 path {

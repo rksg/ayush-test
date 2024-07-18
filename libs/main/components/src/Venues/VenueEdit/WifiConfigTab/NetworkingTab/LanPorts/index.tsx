@@ -14,11 +14,15 @@ import {
   useUpdateVenueLanPortsMutation,
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
-  useUpdateVenueTemplateLanPortsMutation
+  useUpdateVenueTemplateLanPortsMutation,
+  useGetDHCPProfileListQuery,
+  useGetDhcpTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   CapabilitiesApModel,
+  DHCPSaveData,
   LanPort,
+  useConfigTemplate,
   VenueLanPorts,
   VenueSettings
 } from '@acx-ui/rc/utils'
@@ -37,6 +41,35 @@ import { VenueEditContext } from '../../../index'
 
 const { useWatch } = Form
 
+const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? enableTemplateRbac : isWifiRbacEnabled
+
+  const { data: venueSettings } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: resolvedRbacEnabled
+  })
+
+  const queryPayload = {
+    fields: ['id', 'venueIds'],
+    filters: { venueIds: [venueId] }
+  }
+  const { data: dhcpList } = useVenueConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery,
+    skip: !resolvedRbacEnabled,
+    payload: queryPayload,
+    templatePayload: queryPayload
+  })
+
+  return resolvedRbacEnabled
+    ? !!dhcpList?.[0]
+    : venueSettings?.dhcpServiceSetting?.enabled ?? false
+}
+
 export function LanPorts () {
   const { $t } = useIntl()
   const { tenantId, venueId } = useParams()
@@ -51,11 +84,7 @@ export function LanPorts () {
 
   const customGuiChagedRef = useRef(false)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
-
-  const venueSettings = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+  const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
@@ -69,7 +98,6 @@ export function LanPorts () {
   )
 
   const apModelsOptions = venueLanPorts?.data?.map(m => ({ label: m.model, value: m.model })) ?? []
-  const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
   const [activeTabIndex, setActiveTabIndex] = useState(0)
   const [lanPortOrinData, setLanPortOrinData] = useState(venueLanPorts?.data)
   const [lanPortData, setLanPortData] = useState(venueLanPorts?.data)
@@ -95,13 +123,6 @@ export function LanPorts () {
       setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
     }
   }, [setReadyToScroll, venueLanPorts?.data])
-
-  useEffect(() => {
-    if (!venueSettings?.isLoading) {
-      const { data } = venueSettings
-      setIsDhcpEnabled(data?.dhcpServiceSetting?.enabled || false)
-    }
-  }, [venueSettings?.data])
 
   useEffect(() => {
     const { model, lan, poeOut, poeMode } = form?.getFieldsValue()
@@ -200,7 +221,6 @@ export function LanPorts () {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGUIChanged = (fieldName: string) => {
-    //console.log('GUI Changed: '+ fieldName)
     customGuiChagedRef.current = true
   }
 

@@ -56,7 +56,9 @@ import {
   useGetVenueTemplateDefaultRadioCustomizationQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateRadioCustomizationMutation,
-  useUpdateVenueTemplateTripleBandRadioSettingsMutation
+  useUpdateVenueTemplateTripleBandRadioSettingsMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -160,7 +162,8 @@ export function RadioSettings () {
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
-      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery,
+      skip: resolvedRbacEnabled
     })
 
   // available channels from this venue country code
@@ -207,10 +210,17 @@ export function RadioSettings () {
   )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
-    useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })
+    useVenueConfigTemplateQueryFnSwitcher<VenueApModelBandModeSettings[], void>({
+      useQueryFn: useGetVenueApModelBandModeSettingsQuery,
+      useTemplateQueryFn: useGetVenueTemplateApModelBandModeSettingsQuery,
+      skip: !isWifiSwitchableRfEnabled
+    })
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
-    useUpdateVenueApModelBandModeSettingsMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueApModelBandModeSettingsMutation,
+      useUpdateVenueTemplateApModelBandModeSettingsMutation
+    )
 
   const [ apList ] = useLazyApListQuery()
 
@@ -311,14 +321,15 @@ export function RadioSettings () {
     }
 
     if (apList) {
-      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res || {}
-        if (data) {
-          const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
-            .map((ap: APExtended) => ap.model)
-          setVenueTriBandApModels(uniq(venueTriBandApModels))
-        }
-      })
+      apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
+        .then((res)=>{
+          const { data } = res || {}
+          if (data) {
+            const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
+              .map((ap: APExtended) => ap.model)
+            setVenueTriBandApModels(uniq(venueTriBandApModels))
+          }
+        })
     }
   }, [triBandApModels])
 

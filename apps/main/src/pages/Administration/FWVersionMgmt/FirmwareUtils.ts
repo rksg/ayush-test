@@ -13,7 +13,8 @@ import {
   FirmwareType,
   Schedule,
   LatestEdgeFirmwareVersion,
-  EolApFirmware
+  EolApFirmware,
+  FirmwareSwitchVenueV1002
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -155,6 +156,17 @@ export const getNextScheduleTpl = (intl: IntlShape, venue: FirmwareSwitchVenue) 
     const isVersionSkipped: boolean | string = getLastSkippedSwitchVersion(venue) && venue.availableVersions.some(version => version.version === getLastSkippedSwitchVersion(venue))
     // eslint-disable-next-line max-len
     return isVersionSkipped ? intl.$t({ defaultMessage: 'Not scheduled (Skipped)' }) : intl.$t({ defaultMessage: 'Not scheduled' })
+  }
+}
+
+export const getNextScheduleTplV1002 = (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
+  const schedule = venue.nextSchedule
+  if (schedule?.timeSlot?.startDateTime) {
+    let endTime = moment(schedule.timeSlot.startDateTime).add(2, 'hours')
+    // eslint-disable-next-line max-len
+    return getDateByFormat(schedule.timeSlot.startDateTime, SCHEDULE_START_TIME_FORMAT) + ' - ' + endTime.format(SCHEDULE_END_TIME_FORMAT)
+  } else {
+    return intl.$t({ defaultMessage: 'Not scheduled' })
   }
 }
 
