@@ -59,8 +59,9 @@ const UsersTable = (props: UsersTableProps) => {
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const idmDecouplngFF = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const { data: adminList, isLoading, isFetching } = useGetAdminListQuery({ params })
