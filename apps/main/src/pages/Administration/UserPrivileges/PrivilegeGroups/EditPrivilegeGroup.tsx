@@ -30,7 +30,6 @@ import {
 }                          from '@acx-ui/rc/services'
 import {
   CustomGroupType,
-  PrivilegeGroup,
   PrivilegePolicy,
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
@@ -55,6 +54,8 @@ import * as UI            from '../styledComponents'
 import { ChoiceCustomerEnum, ChoiceScopeEnum } from './AddPrivilegeGroup'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
+
+import { PrivilegeGroupSateProps } from '.'
 
 interface PrivilegeGroupData {
   name?: string,
@@ -132,12 +133,12 @@ export function EditPrivilegeGroup () {
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
-  const location = useLocation().state as PrivilegeGroup
+  const location = useLocation().state as PrivilegeGroupSateProps
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
-  const isOnboardedMsp = location ?? false
+  const isOnboardedMsp = location.isOnboardedMsp ?? false
   const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
@@ -156,7 +157,7 @@ export function EditPrivilegeGroup () {
     if (privilegeGroupList) {
       const nameList = privilegeGroupList.filter(item =>
         item.type === CustomGroupType.CUSTOM &&
-        item.name !== privilegeGroup?.name).map(item => item.name)
+        item.name !== location.name).map(item => item.name)
       setGroupNames(nameList as RolesEnum[])
     }
   }, [privilegeGroupList])
