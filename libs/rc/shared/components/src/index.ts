@@ -27,6 +27,7 @@ export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultClientPayload,
+  defaultRbacClientPayload,
   networkDisplayTransformer,
   isEqualCaptivePortal
 } from './ConnectedClientsTable'

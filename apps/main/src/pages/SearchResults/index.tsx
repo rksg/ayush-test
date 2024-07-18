@@ -10,6 +10,7 @@ import {
   defaultClientPayload,
   defaultHistoricalClientPayload,
   defaultNetworkPayload,
+  defaultRbacClientPayload,
   defaultRbacNetworkPayload,
   defaultSwitchClientPayload,
   defaultSwitchPayload,
@@ -25,6 +26,7 @@ import {
 import {
   useApListQuery,
   useGetClientListQuery,
+  useGetClientsQuery,
   useGetHistoricalClientListQuery,
   useGetSwitchClientListQuery,
   useNetworkListQuery,
@@ -37,6 +39,7 @@ import {
   APExtended,
   ApExtraParams,
   Client,
+  ClientInfo,
   ClientList,
   Network,
   NewAPModelExtended,
@@ -53,6 +56,7 @@ import { useDefaultVenuePayload, VenueTable } from '../Venues'
 
 import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
+
 
 interface EnableRbacType {
   isSwitchRbacEnabled?: boolean
@@ -162,15 +166,18 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
-      useQuery: useGetClientListQuery,
+  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+    const isWifiRbacEnabled = enableRbac.isWifiRbacEnabled
+    const defaultPayload = isWifiRbacEnabled? defaultRbacClientPayload : defaultClientPayload
+
+    const result = useTableQuery<ClientInfo|ClientList, RequestPayload<unknown>, unknown>({
+      useQuery: isWifiRbacEnabled? useGetClientsQuery : useGetClientListQuery,
       defaultPayload: {
-        ...defaultClientPayload
+        ...defaultPayload
       },
       search: {
         searchString,
-        searchTargetFields: defaultClientPayload.searchTargetFields
+        searchTargetFields: defaultPayload.searchTargetFields
       },
       pagination
     })

@@ -172,65 +172,77 @@ export enum GuestStatusEnum {
     DISABLED = 'Disabled'
 }
 
-
 export interface ClientInfo {
-  modelName: string;
-  deviceType: string;
-  macAddress: string;
-  osType: string;
-  ipAddress: string;
-  username: string;
-  hostname: string;
-  authenticationStatus: number;
-  connectedTime: string;
-  lastUpdatedTime: string;
-  venueInformation: VenueInformation;
-  apInformation: ApInformation;
-  networkInformation: NetworkInformation;
-  signalStatus: SignalStatus;
-  radioStatus: RadioStatus;
-  trafficStatus: TrafficStatus;
+  modelName: string
+  deviceType: string
+  macAddress: string
+  osType: string
+  ipAddress: string
+  username: string
+  hostname: string
+  authenticationStatus: number
+  connectedTime: string
+  lastUpdatedTime: string
+  venueInformation: VenueInformation
+  apInformation: ApInformation
+  networkInformation: NetworkInformation
+  signalStatus: SignalStatus
+  radioStatus: RadioStatus
+  trafficStatus: TrafficStatus
+  mldMacAddress: string
+  wifiCallingEnabled: string
+  cpeMacAddress: string
+  switchInformation?: SwitchInformation // form GUI
+  connectedTimeString: string // form GUI
+  connectedTimeParssed: boolean // form GUI
 }
 
-interface VenueInformation {
-  id: string;
-  name: string;
+type VenueInformation = {
+  id: string
+  name: string
 }
 
-interface ApInformation {
-  serialNumber: string;
-  name: string;
-  macAddress: string;
-  bssid: string;
+type ApInformation = {
+  serialNumber: string
+  name: string
+  macAddress: string
+  bssid: string
 }
 
-interface NetworkInformation {
-  id: string;
-  type: string;
-  ssid: string;
-  encryptionMethod: string;
-  authenticationMethod: string;
-  vlan: number;
+export type SwitchInformation = {
+  id: string
+  name: string
+  serialNumber: string
 }
 
-interface SignalStatus {
-  snr: number;
-  rssi: number;
-  noiseFloor: number;
-  health: string;
-  healthDescription: string;
+type NetworkInformation = {
+  id: string
+  type: string
+  ssid: string
+  encryptionMethod: string
+  authenticationMethod: string
+  vlan: number,
+  vni?: string
 }
 
-interface RadioStatus {
-  type: string;
-  channel: number;
+type SignalStatus = {
+  snr: number
+  rssi: number
+  noiseFloor: number
+  health: string
+  healthDescription: string
 }
 
-interface TrafficStatus {
-  trafficToClient: number;
-  trafficFromClient: number;
-  packetsToClient: number;
-  packetsFromClient: number;
-  framesDropped: number;
-  totalTraffic: number;
+type RadioStatus = {
+  type: string
+  channel: number
+}
+
+type TrafficStatus = {
+  trafficToClient: string
+  trafficFromClient: string
+  packetsToClient: string
+  packetsFromClient: string
+  framesDropped: string
+  totalTraffic: string
 }

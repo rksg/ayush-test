@@ -267,6 +267,10 @@ export function convertEpochToRelativeTime (timestamp: number) {
   return moment(new Date().getTime()).diff(moment.unix(timestamp))
 }
 
+export function convertToRelativeTime(time: string) {
+  return moment(new Date().getTime()).diff(moment(time))
+}
+
 function isIntlFormat (name: string): name is keyof typeof intlFormats {
   return name in intlFormats
 }

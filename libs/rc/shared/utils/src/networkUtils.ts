@@ -51,8 +51,8 @@ export const transformWifiNetwork = (item: WifiNetwork) => {
 // eslint-disable-next-line max-len
 export function transVenuesForNetwork (venueApGroups: WifiNetwork['venueApGroups'] = []): Network['venues'] {
   return {
-    count: venueApGroups?.length ?? 0,
+    count: venueApGroups.length,
     names: [],
-    ids: venueApGroups?.map(v => v.venueId) ?? []
+    ids: venueApGroups.map(v => v.venueId)
   }
 }

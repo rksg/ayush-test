@@ -1,7 +1,8 @@
 import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { cloneDeep }           from 'lodash'
 
-import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
+import { convertEpochToRelativeTime, convertToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
@@ -27,13 +28,16 @@ import {
   ApiVersionEnum,
   GetApiVersionHeader,
   CommonRbacUrlsInfo,
-  ClientInfo
+  ClientInfo,
+  SwitchRbacUrlsInfo,
+  SwitchClient,
+  SwitchInformation
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { latestTimeFilter } from './utils'
+import { isPayloadHasField, latestTimeFilter } from './utils'
 
 const historicalPayload = {
   fields: ['clientMac', 'clientIP', 'userId', 'username', 'userName', 'hostname', 'venueId',
@@ -130,15 +134,69 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
+    // RBAC API
     getClients: build.query<TableResult<ClientInfo>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getClients,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1))
-        return {
-          ...req,
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params, payload } = arg
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const clientListInfo = {
+          ...createHttpRequest(ClientUrlsInfo.getClients, params, apiCustomHeader),
           body: JSON.stringify(payload)
         }
+        const clientListQuery = await fetchWithBQ(clientListInfo)
+        const clientList = clientListQuery.data as TableResult<ClientInfo>
+
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+
+        const needSwitchData = isPayloadHasField(payload, 'switchInformation')
+        if (needSwitchData && clientList.totalCount > 0) {
+          const unqueClientApMacs: Set<string> = new Set()
+          clientList.data.forEach((clientInfo) => {
+            unqueClientApMacs.add(clientInfo.apInformation.macAddress)
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
+        }
+
+        const aggregatedList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+
+        return clientListQuery.data
+          ? { data: aggregatedList }
+          : { error: clientListQuery.error as FetchBaseQueryError }
+
+      },
+      providesTags: [{ type: 'Client', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'PatchApClient'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Client', id: 'LIST' }]))
+          })
+        })
       }
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
@@ -535,6 +593,43 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 
+export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>,
+  apSwitchInfoMap:Map<string, SwitchInformation>) => {
+  const data:ClientInfo[] = []
+
+  clientList?.data.forEach(client => {
+    const apMac = client.apInformation?.macAddress ?? ''
+    const switchInformation = apSwitchInfoMap.get(apMac)
+
+    const trafficStatus = client.trafficStatus? {
+      ...client.trafficStatus,
+      totalTraffic: transformByte(client.trafficStatus.totalTraffic),
+      trafficToClient: transformByte(client.trafficStatus.trafficToClient),
+      trafficFromClient: transformByte(client.trafficStatus.trafficFromClient)
+    } : undefined
+
+    const tmp = {
+      ...client,
+      switchInformation: cloneDeep(switchInformation),
+      ...(trafficStatus && { trafficStatus: trafficStatus }),
+      macAddress: client.macAddress.toLowerCase()
+    }
+
+    if (tmp.connectedTime && !tmp.connectedTimeParssed) {
+      tmp.connectedTimeString =
+        formatter('longDurationFormat')(convertToRelativeTime(client.connectedTime))
+      tmp.connectedTimeParssed = true
+    }
+
+    data.push(tmp)
+  })
+
+  return {
+    ...clientList,
+    data
+  }
+}
+
 export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
   guestIdWithMacMaps: Map<string, string[]>, clientList:GuestClient[]) => {
   const guestIdWithClientMaps: Map<string, GuestClient[]> = new Map()
@@ -557,10 +652,13 @@ export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
 
 
 export const {
+  useGetClientListQuery,
+  useLazyGetClientListQuery,
+  useGetClientsQuery,
+  useLazyGetClientsQuery,
   useGetGuestsListQuery,
   useDisconnectClientMutation,
   useRevokeClientMutation,
-  useLazyGetClientsQuery,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
@@ -568,8 +666,6 @@ export const {
   useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
-  useGetClientListQuery,
-  useLazyGetClientListQuery,
   useGetGuestsMutation,
   useDeleteGuestMutation,
   useEnableGuestsMutation,

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   FetchBaseQueryError
@@ -75,7 +75,7 @@ export const GuestsTable = () => {
   const filters = {
     includeExpired: ['true']
   }
-  const { setGuestCount } = useContext(GuestTabContext)
+  //const { setGuestCount } = useContext(GuestTabContext)
 
   const queryOptions = {
     defaultPayload: {
@@ -409,7 +409,7 @@ export const GuestsTable = () => {
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
-  setGuestCount?.(tableQuery.data?.totalCount || 0)
+  //setGuestCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader states={[
       tableQuery

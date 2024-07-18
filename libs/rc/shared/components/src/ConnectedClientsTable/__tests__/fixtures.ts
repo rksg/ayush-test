@@ -111,3 +111,138 @@ export const clientMeta = {
     }
   ]
 }
+
+export const rbacClientList = {
+  data: [
+    {
+      deviceType: 'Laptop',
+      macAddress: '3c:22:fb:97:c7:ef',
+      osType: 'macOS',
+      ipAddress: '10.206.1.189',
+      username: '3c22fb97c7ef',
+      hostname: 'MBP',
+      authenticationStatus: 0,
+      connectedTime: '2022-11-27T07:43:15.658Z',
+      lastUpdatedTime: '2022-11-29T07:43:15.658Z',
+      venueInformation: {
+        id: '4c778ed630394b76b17bce7fe230cf9f',
+        name: 'My-Venue'
+      },
+      apInformation: {
+        serialNumber: '422039000034',
+        name: 'UI team AP',
+        macAddress: 'mock_ap_mac',
+        bssid: 'mock_ap_bssid'
+      },
+      networkInformation: {
+        id: 'b2086d07eac34419953e00be56ff01b4',
+        type: 'Passphrase (PSK/SAE)',
+        ssid: 'NMS-app6-WLAN',
+        encryptionMethod: 'WPA2-AES',
+        vlan: 1
+      },
+      signalStatus: {
+        snr: 54,
+        rssi: -42,
+        health: 'Good'
+      },
+      trafficStatus: {
+        trafficToClient: 361400785,
+        trafficFromClient: 141104448,
+        packetsToClient: 577273,
+        packetsFromClient: 353909,
+        framesDropped: 0,
+        totalTraffic: 502505233
+      }
+    },
+    {
+      modelName: 'iOS Phone',
+      deviceType: 'Smartphone',
+      macAddress: 'aa:5c:7a:99:38:a2',
+      osType: 'iOS',
+      ipAddress: '10.206.1.25',
+      username: 'aa5c7a9938a2',
+      hostname: 'iphone',
+      authenticationStatus: 1,
+      connectedTime: '2022-11-27T07:43:15.658Z',
+      lastUpdateTime: '2022-11-29T07:43:15.658Z',
+      venueInformation: {
+        id: '4c778ed630394b76b17bce7fe230cf9f',
+        name: 'My-Venue'
+      },
+      apInformation: {
+        serialNumber: '422039000034',
+        name: 'UI team AP',
+        macAddress: 'mock_ap_mac',
+        bssid: 'mock_ap_bssid'
+      },
+      networkInformation: {
+        id: 'b2086d07eac34419953e00be56ff01b4',
+        type: 'Captive Portal',
+        ssid: 'NMS-app6-WLAN',
+        encryptionMethod: 'WPA2-AES',
+        authenticationMethod: 'Standard+Open',
+        vlan: 1
+      },
+      radioStatus: { type: 'a/n', channel: 104 },
+      signalStatus: {
+        snr: 52,
+        rssi: -44,
+        health: 'Good'
+      },
+      trafficStatus: {
+        trafficToClient: 61221,
+        trafficFromClient: 2644,
+        packetsToClient: 488,
+        packetsFromClient: 28,
+        framesDropped: 0,
+        totalTraffic: 63865
+      }
+    },
+    {
+      modelName: 'Mac OS X',
+      deviceType: 'Laptop',
+      macAddress: '',
+      osType: 'macOS',
+      ipAddress: '',
+      username: '',
+      hostname: '',
+      authenticationStatus: 1,
+      connectedTime: '2022-11-27T07:43:15.658Z',
+      lastUpdateTime: '2022-11-29T07:43:15.658Z',
+      venueInformation: {
+        id: '4c778ed630394b76b17bce7fe230cf9f',
+        name: 'My-Venue'
+      },
+      apInformation: {
+        serialNumber: '422039000034',
+        name: 'UI team AP',
+        macAddress: 'mock_ap_mac',
+        bssid: 'mock_ap_bssid'
+      },
+      networkInformation: {
+        id: 'f71a3a2b7051449c941ae18691ca31cb',
+        type: 'Captive Portal',
+        ssid: 'NMS-app6-JK-acx-hybrid',
+        encryptionMethod: 'WPA2-AES',
+        authenticationMethod: 'Standard+Open',
+        vlan: 1
+      },
+      radioStatus: { type: 'a/n/ac', channel: 104 },
+      signalStatus: {
+        snr: 52,
+        rssi: -44,
+        health: 'Good'
+      },
+      trafficStatus: {
+        trafficToClient: 61221,
+        trafficFromClient: 2644,
+        packetsToClient: 488,
+        packetsFromClient: 28,
+        framesDropped: 0,
+        totalTraffic: 36368390
+      }
+    }
+  ],
+  totalCount: 3
+}
