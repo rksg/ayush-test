@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect } from 'react'
 
-import { throttle } from 'lodash'
-import { useIntl }  from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { showActionModal } from '@acx-ui/components'
 import { Demo }            from '@acx-ui/rc/utils'
@@ -27,18 +26,16 @@ export default function PortalPreviewModal (props:{
       isPreview={true}
       viewPortalLang={props.portalLang}
     /></Provider>
-    throttle(async () => {
-      !props.fromPortalList&&showActionModal({
-        type: 'confirm',
-        content: getContent,
-        okCancel: false,
-        closable: true,
-        width: '100%',
-        okButtonProps: { style: { display: 'none' } },
-        bodyStyle: { padding: 0 },
-        className: UI.modalClassName
-      })
-    }, 1000)
+    !props.fromPortalList&&showActionModal({
+      type: 'confirm',
+      content: getContent,
+      okCancel: false,
+      closable: true,
+      width: '100%',
+      okButtonProps: { style: { display: 'none' } },
+      bodyStyle: { padding: 0 },
+      className: UI.modalClassName
+    })
   },[props])
 
 
