@@ -85,6 +85,7 @@ export const SubscriptionTable = () => {
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const queryResults = useGetEntitlementsListQuery({ params })
   const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
@@ -92,7 +93,7 @@ export const SubscriptionTable = () => {
   const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
   const mspUtils = MSPUtils()
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
 
