@@ -48,7 +48,7 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasDpskAccess
+  hasDpskAccess, hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -1052,97 +1052,66 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>
-            </AuthRoute>}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
         />
-        <Route
+        {hasCloudpathAccess() && <>
+          <Route
           // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
-              <RadiusAttributeGroupForm />
-            </AuthRoute>
-          }
-        />
-        <Route
+            path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
+            element={<RadiusAttributeGroupForm />}
+          />
+          <Route
           // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
-              <RadiusAttributeGroupForm editMode={true}/>
-            </AuthRoute>}
-        />
+            path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
+            element={<RadiusAttributeGroupForm editMode={true}/>}
+          />
+        </>}
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <RadiusAttributeGroupDetail />
-            </AuthRoute>}
+          element={<RadiusAttributeGroupDetail />}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>
-            </AuthRoute>}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
         />
-        <Route
+        {hasCloudpathAccess() && <>
+          <Route
           // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
-              <AdaptivePolicyForm/>
-            </AuthRoute>}
-        />
-        <Route
-          path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
-              <AdaptivePolicyForm editMode={true}/>
-            </AuthRoute>}
-        />
+            path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
+            element={<AdaptivePolicyForm/>}
+          />
+          <Route
+            path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
+            element={<AdaptivePolicyForm editMode={true}/>}
+          />
+        </> }
         <Route
           path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <AdaptivePolicyDetail/>
-            </AuthRoute>}
+          element={<AdaptivePolicyDetail/>}
         />
-        <Route
+        {hasCloudpathAccess() && <>
+          <Route
           // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
-              <AdaptivePolicySetForm/>
-            </AuthRoute>}
-        />
-        <Route
+            path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
+            element={<AdaptivePolicySetForm/>}
+          />
+          <Route
           // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
-              <AdaptivePolicySetForm editMode={true}/>
-            </AuthRoute>}
-        />
+            path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
+            element={<AdaptivePolicySetForm editMode={true}/>}
+          />
+        </>}
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <AdaptivePolicySetDetail/>
-            </AuthRoute>}
+          element={<AdaptivePolicySetDetail/>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>
-            </AuthRoute>}
+          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
       }
       {isCertificateTemplateEnabled && <>

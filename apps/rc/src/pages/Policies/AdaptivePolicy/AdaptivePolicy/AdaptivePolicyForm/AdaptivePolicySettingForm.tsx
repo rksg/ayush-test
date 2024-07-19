@@ -18,7 +18,8 @@ import {
   AttributeAssignment,
   checkObjectNotExists,
   CriteriaOption, defaultSort,
-  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
+  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -241,7 +242,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 columns={useColumns()}
                 dataSource={evaluationRules}
                 rowActions={filterByAccess(rowActions)}
-                rowSelection={{ type: 'radio' }}
+                rowSelection={hasCloudpathAccess() && { type: 'radio' }}
                 actions={filterByAccess([{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len
