@@ -17,13 +17,14 @@ import {
   useLazyGetDhcpTemplateQuery,
   useUpdateVenueDHCPProfileMutation,
   useUpdateVenueTemplateDhcpProfileMutation,
-  useGetVenueMeshQuery
+  useGetVenueMeshQuery,
+  useGetVenueTemplateMeshQuery
 } from '@acx-ui/rc/services'
 import {
-  DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
-  useConfigTemplate,
-  useConfigTemplateLazyQueryFnSwitcher,
-  useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
+  // eslint-disable-next-line max-len
+  DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, Mesh, ServiceOperation,ServiceType, VenueSettings,
+  // eslint-disable-next-line max-len
+  useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
 import { hasPermission } from '@acx-ui/user'
@@ -33,20 +34,25 @@ import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTempl
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
 
-const useIsMeshEnabled = (venueId: string | undefined) => {
+const useIsMeshEnabled = () => {
+  const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? enableTemplateRbac : isWifiRbacEnabled
 
   const { data: venueWifiSetting } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
     useQueryFn: useGetVenueSettingsQuery,
     useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
-    skip: isWifiRbacEnabled
+    skip: resolvedRbacEnabled
   })
 
-  const { data: venueMeshSettings } = useGetVenueMeshQuery({
-    params: { venueId } },
-  { skip: !isWifiRbacEnabled })
+  const { data: venueMeshSettings } = useVenueConfigTemplateQueryFnSwitcher<Mesh>({
+    useQueryFn: useGetVenueMeshQuery,
+    useTemplateQueryFn: useGetVenueTemplateMeshQuery,
+    skip: !resolvedRbacEnabled
+  })
 
-  return (isWifiRbacEnabled
+  return (resolvedRbacEnabled
     ? venueMeshSettings?.enabled
     : venueWifiSetting?.mesh?.enabled) ?? false
 }
@@ -71,7 +77,7 @@ export default function BasicInfo () {
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const meshEnable = useIsMeshEnabled(params.venueId)
+  const meshEnable = useIsMeshEnabled()
 
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac

@@ -10,6 +10,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetMspProfileQuery }    from '@acx-ui/msp/services'
 import { MSPUtils }                 from '@acx-ui/msp/utils'
 import {
@@ -31,15 +32,21 @@ interface PrivilegeGroupsTableProps {
   tenantType?: string;
 }
 
+export interface PrivilegeGroupSateProps {
+  isOnboardedMsp?: boolean;
+  name?: string;
+}
+
 const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const { $t } = useIntl()
   const { isPrimeAdminUser, tenantType } = props
   const params = useParams()
   const mspUtils = MSPUtils()
   const navigate = useNavigate()
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const [privilegeGroupData, setPrivilegeGroupData] = useState([] as PrivilegeGroup[])
   const { data: userProfileData } = useUserProfileContext()
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
 
   const { data: privilegeGroupList, isLoading, isFetching }
@@ -153,10 +160,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
+        const stateProp: PrivilegeGroupSateProps = {
+          isOnboardedMsp: isOnboardedMsp,
+          name: selectedRows[0].name
+        }
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/edit/${selectedRows[0].id}`
-        }, { state: isOnboardedMsp })
+        }, { state: stateProp })
       }
     },
     {
