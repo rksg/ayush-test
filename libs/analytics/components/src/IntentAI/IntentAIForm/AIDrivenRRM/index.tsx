@@ -62,7 +62,7 @@ export const codes = {
     }],
     continuous: true
   }
-} as unknown as Record<string, RecommendationConfig & CodeInfo>
+} as Record<string, Partial<RecommendationConfig> & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
   acc[key as StateType] = val.text
@@ -123,10 +123,7 @@ export function AIDrivenRRM () {
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
     { text: $t({ defaultMessage: 'AI Analytics' }) },
-    {
-      text: $t({ defaultMessage: 'IntentAI' }),
-      link: '/analytics/intentAI'
-    }
+    { text: $t({ defaultMessage: 'IntentAI' }), link: '/analytics/intentAI' }
   ]
   const defaultValue = {
     preferences: {
