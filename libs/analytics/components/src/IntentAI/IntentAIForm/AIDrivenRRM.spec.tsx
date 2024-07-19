@@ -23,7 +23,11 @@ jest.mock('@acx-ui/components', () => ({
       initialValues: {
         status: 'applyscheduled',
         sliceValue: '21_US_Beta_Samsung',
-        updatedAt: '2023-06-26T00:00:25.772Z'
+        updatedAt: '2023-06-26T00:00:25.772Z',
+        crrmInterferingLinks: {
+          before: 1,
+          after: 0
+        }
       },
       form: {
         getFieldValue: () => 'partial'

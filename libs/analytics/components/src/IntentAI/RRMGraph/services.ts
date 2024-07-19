@@ -49,7 +49,7 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
         )(Object.values(sortedData!).filter(v => v !== null), band)
 
-        processedGraphs.forEach(graph => {
+        const kpiGraph = processedGraphs.map(graph => {
           const affectedAPs = new Set()
           const interferingLinks = graph.links.filter(link => link.category === 'highlight')
 
@@ -60,11 +60,12 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
 
           graph.affectedAPs = affectedAPs.size
           graph.interferingLinks = interferingLinks.length * 2
+          return graph
         })
 
         return {
-          data: trimPairedGraphs(processedGraphs),
-          csv: getCrrmCsvData(processedGraphs, getIntl().$t)
+          data: trimPairedGraphs(kpiGraph),
+          csv: getCrrmCsvData(kpiGraph, getIntl().$t)
         }
       }
     })

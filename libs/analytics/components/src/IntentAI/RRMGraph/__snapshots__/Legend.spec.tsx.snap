@@ -3,38 +3,38 @@
 exports[`Legend should render properly 1`] = `
 <DocumentFragment>
   <div
-    class="sc-crXcEl ldlifF"
+    class="sc-himrzO gzxxst"
   >
     <span>
       <div
-        class="sc-breuTD kRWkZp"
+        class="sc-cCsOjp gjyolH"
       >
         Legend
       </div>
       <div
-        class="sc-evZas cUvuJc"
+        class="sc-gXmSlM igrZPb"
       >
         <span
-          class="sc-hAZoDl xmBsd"
+          class="sc-jdAMXn dYPrDh"
         />
         <div
-          class="sc-ksZaOG kGlrgu"
+          class="sc-ciZhAO ojAmr"
         >
           Has interfering links
         </div>
         <span
-          class="sc-hAZoDl dsVehc"
+          class="sc-jdAMXn iBsMxc"
         />
         <div
-          class="sc-ksZaOG kGlrgu"
+          class="sc-ciZhAO ojAmr"
         >
           Reduction in transmit power
         </div>
         <span
-          class="sc-hAZoDl krmaQs"
+          class="sc-jdAMXn iTlgqA"
         />
         <div
-          class="sc-ksZaOG kGlrgu"
+          class="sc-ciZhAO ojAmr"
         >
           No interfering links
         </div>

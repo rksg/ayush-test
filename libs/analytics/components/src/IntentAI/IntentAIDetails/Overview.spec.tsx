@@ -18,7 +18,7 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-jest.mock('./Graph/DownloadRRMComparison', () =>
+jest.mock('../RRMGraph/DownloadRRMComparison', () =>
   ({ DownloadRRMComparison: () => <div data-testid='download-button' /> }))
 
 describe('Recommendation Overview', () => {
