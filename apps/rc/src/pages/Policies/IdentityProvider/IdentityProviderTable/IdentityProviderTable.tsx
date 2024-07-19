@@ -8,7 +8,8 @@ import {
   useDeleteIdentityProviderMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetIdentityProviderListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -135,9 +136,12 @@ function useColumns () {
   const { $t } = useIntl()
   const params = useParams()
   const emptyResult: KeyValue<string, string>[] = []
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
   // eslint-disable-next-line max-len
-  const { networkNameMap }: { networkNameMap: KeyValue<string, string>[] } = useNetworkListQuery({
+  const { networkNameMap }: { networkNameMap: KeyValue<string, string>[] } = getNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
