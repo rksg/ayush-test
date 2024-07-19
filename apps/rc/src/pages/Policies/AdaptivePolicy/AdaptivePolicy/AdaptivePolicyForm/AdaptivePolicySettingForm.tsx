@@ -18,8 +18,7 @@ import {
   AttributeAssignment,
   checkObjectNotExists,
   CriteriaOption, defaultSort,
-  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces,
-  hasCloudpathAccess
+  RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
