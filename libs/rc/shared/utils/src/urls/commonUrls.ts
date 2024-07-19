@@ -29,12 +29,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
     newApi: true
   },
-  getCloudpathList: {
-    method: 'get',
-    url: '/cloudpaths',
-    oldUrl: '/api/tenant/:tenantId/wifi/cloudpath',
-    newApi: true
-  },
   getDashboardOverview: {
     method: 'get',
     url: '/dashboards/overviews/',
@@ -255,12 +249,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/aps/:serialNumber/floorPositions',
     oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/position',
-    newApi: true
-  },
-  UpdateCloudpathServerPosition: {
-    method: 'put',
-    url: '/cloudpaths/:cloudpathServerId/floorPositions',
-    oldUrl: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions',
     newApi: true
   },
   getVenueApModels: {

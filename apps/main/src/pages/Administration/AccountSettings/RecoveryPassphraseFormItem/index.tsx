@@ -72,7 +72,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
               ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text className='description greyText'>
+                  <Typography.Text className='greyText'>
                     {item}
                   </Typography.Text>
                 </List.Item>

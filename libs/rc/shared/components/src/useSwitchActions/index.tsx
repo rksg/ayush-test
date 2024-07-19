@@ -2,14 +2,15 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { showActionModal }         from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { showActionModal }              from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useDeleteSwitchesMutation,
   useRebootSwitchMutation,
   useSyncDataMutation,
   useSyncSwitchesDataMutation,
-  useRetryFirmwareUpdateMutation
+  useRetryFirmwareUpdateMutation,
+  useRetryFirmwareUpdateV1002Mutation
 } from '@acx-ui/rc/services'
 import {
   DeviceRequestAction,
@@ -27,6 +28,7 @@ export function useSwitchActions () {
   const [ syncData ] = useSyncDataMutation()
   const [ syncSwitchesData ] = useSyncSwitchesDataMutation()
   const [ retryFirmwareUpdate ] = useRetryFirmwareUpdateMutation()
+  const [ retryFirmwareUpdateV1002 ] = useRetryFirmwareUpdateV1002Mutation()
 
   function shouldHideConfirmation (selectedRows: SwitchRow[]) {
     const noVerificationStatus = [SwitchStatusEnum.NEVER_CONTACTED_CLOUD, SwitchStatusEnum.DISCONNECTED]
@@ -202,10 +204,15 @@ export function useSwitchActions () {
 
   }
 
-  const doRetryFirmwareUpdate= async (switchId: string, tenantId?: string, callBack?: ()=>void ) => {
+  const doRetryFirmwareUpdate = async (
+    params: {
+      switchId: string,
+      tenantId?: string,
+      venueId?: string
+    }, callBack?: () => void) => {
     try {
       await retryFirmwareUpdate({
-        params: { tenantId, switchId },
+        params,
         enableRbac: rbacApiToggle,
         payload: {}
       }).unwrap()
@@ -217,12 +224,33 @@ export function useSwitchActions () {
     }
   }
 
+
+  const doRetryFirmwareUpdateV1002 = async (
+    params: {
+      switchId: string,
+      tenantId?: string,
+      venueId?: string
+    }, callBack?: () => void) => {
+    try {
+      await retryFirmwareUpdateV1002({
+        params
+      }).unwrap()
+      setTimeout(() => {
+        callBack?.()
+      }, 1000)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+
   return {
     showDeleteSwitches,
     showDeleteSwitch,
     showRebootSwitch,
     doSyncData,
     doSyncAdminPassword,
-    doRetryFirmwareUpdate
+    doRetryFirmwareUpdate,
+    doRetryFirmwareUpdateV1002
   }
 }

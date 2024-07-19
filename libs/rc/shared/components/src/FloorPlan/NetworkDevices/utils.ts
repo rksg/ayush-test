@@ -20,9 +20,6 @@ export function calculateDeviceColor (device: NetworkDevice,
       const rogueType = device.rogueCategoryType?.toLowerCase()
       deviceColor = `ap-rogue-type-${rogueType}`
       break
-    case NetworkDeviceType.cloudpath:
-      deviceColor = 'cloudpath-server'
-      break
     case NetworkDeviceType.rwg:
       deviceColor = getRwgStatusColorClass(deviceStatus as RWGStatusEnum)
       break

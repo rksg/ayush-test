@@ -89,7 +89,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
          
         <div>
           <div
-            class="sc-ftvSup lbJblj device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(0%); left: calc(0%); opacity: 1;"
           >
@@ -106,7 +106,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
         </div>
         <div>
           <div
-            class="sc-ftvSup lbJblj device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -265,7 +265,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                    
                   <div>
                     <div
-                      class="sc-ftvSup lbJblj device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(0%); left: calc(0%); opacity: 1;"
                     >
@@ -279,7 +279,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-ftvSup lbJblj device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -434,7 +434,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
          
         <div>
           <div
-            class="sc-ftvSup lbJblj device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
           >
@@ -451,7 +451,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         </div>
         <div>
           <div
-            class="sc-ftvSup lbJblj device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -610,7 +610,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                    
                   <div>
                     <div
-                      class="sc-ftvSup lbJblj device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -624,7 +624,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                   </div>
                   <div>
                     <div
-                      class="sc-ftvSup lbJblj device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >

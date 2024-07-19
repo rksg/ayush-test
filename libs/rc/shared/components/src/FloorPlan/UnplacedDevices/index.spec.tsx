@@ -45,7 +45,6 @@ const unplacedDevicesState: TypeWiseNetworkDevices = {
     networkDeviceType: NetworkDeviceType.lte_ap
   }],
   RogueAP: [],
-  cloudpath: [],
   DP: [],
   rwg: [{
     deviceStatus: RWGStatusEnum.ONLINE,
@@ -101,7 +100,6 @@ describe('Floor Plans Unlpaced Device list', () => {
     expect(getDeviceFilterLabel(NetworkDeviceType.ap)).toBe('Wi-Fi APs')
     expect(getDeviceFilterLabel(NetworkDeviceType.lte_ap)).toBe('LTE APs')
     expect(getDeviceFilterLabel(NetworkDeviceType.switch)).toBe('Switches')
-    expect(getDeviceFilterLabel(NetworkDeviceType.cloudpath)).toBe('Cloudpath Servers')
     expect(getDeviceFilterLabel('undefined' as NetworkDeviceType)).toBe(undefined)
   })
 

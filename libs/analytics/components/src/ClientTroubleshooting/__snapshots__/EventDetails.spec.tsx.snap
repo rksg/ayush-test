@@ -24,7 +24,7 @@ exports[`EventDetails renders Details correctly 1`] = `
         class="styledComponents__ListDetails-sc-hmshlr-24 kbgxvy"
       >
         <div
-          class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 AfEyr"
+          class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 kEAbOg"
         >
           <div
             class="ant-descriptions-view"

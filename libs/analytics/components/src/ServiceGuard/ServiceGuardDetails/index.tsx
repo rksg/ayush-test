@@ -5,9 +5,9 @@ import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/rea
 import { WifiScopes }                                          from '@acx-ui/types'
 import { hasPermission }                                       from '@acx-ui/user'
 
-import { Details }                                     from './DetailsTable'
-import { Title, SubTitle, ReRunButton, TestRunButton } from './Header'
-import { Overview }                                    from './Overview'
+import { Details }                                        from './DetailsTable'
+import { Title, useSubTitle, ReRunButton, TestRunButton } from './Header'
+import { Overview }                                       from './Overview'
 
 type ServiceGuardTabs = 'overview' | 'details' | 'progress'
 
@@ -46,7 +46,7 @@ export function ServiceGuardDetails () {
     <>
       <PageHeader
         title={<Title />}
-        subTitle={<SubTitle />}
+        subTitle={useSubTitle()}
         breadcrumb={[
           { text: $t({ defaultMessage: 'AI Assurance' }) },
           { text: $t({ defaultMessage: 'Network Assurance' }) },

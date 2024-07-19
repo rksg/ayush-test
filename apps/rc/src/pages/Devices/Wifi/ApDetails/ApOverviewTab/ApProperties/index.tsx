@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/components'
 import { ApDetails, ApVenueStatusEnum, ApViewModel } from '@acx-ui/rc/utils'
 import { TenantLink }                                from '@acx-ui/react-router-dom'
+import { noDataDisplay }                             from '@acx-ui/utils'
 
 import { ApDetailsDrawer } from './ApDetailsDrawer'
 import * as UI             from './styledComponents'
@@ -24,6 +25,7 @@ export function ApProperties (props:{
   const onMoreAction = () => {
     setVisible(true)
   }
+
   return (
     <Loader states={[{ isLoading }]}>
       <Card title={$t({ defaultMessage: 'AP Properties' })}
@@ -87,9 +89,11 @@ export function ApProperties (props:{
                         (
                           <UI.TextNumber>
                             <label><Subtitle level={5}>{ '2.4 GHz' }</Subtitle></label>
-                            <span>{currentAP.channel24.channel || '--'}</span>
-                            <span>{currentAP.channel24.operativeChannelBandwidth || '--'}</span>
-                            <span>{currentAP.channel24.txPower || '--'}</span>
+                            <span>{currentAP.channel24.channel || noDataDisplay}</span>
+                            <span>
+                              {currentAP.channel24.operativeChannelBandwidth || noDataDisplay}
+                            </span>
+                            <span>{currentAP.channel24.txPower || noDataDisplay}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -98,9 +102,11 @@ export function ApProperties (props:{
                         (
                           <UI.TextNumber>
                             <label><Subtitle level={5}>{ '5 GHz' }</Subtitle></label>
-                            <span>{currentAP.channel50.channel || '--'}</span>
-                            <span>{currentAP.channel50.operativeChannelBandwidth || '--'}</span>
-                            <span>{currentAP.channel50.txPower || '--'}</span>
+                            <span>{currentAP.channel50.channel || noDataDisplay}</span>
+                            <span>
+                              {currentAP.channel50.operativeChannelBandwidth || noDataDisplay}
+                            </span>
+                            <span>{currentAP.channel50.txPower || noDataDisplay}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -109,9 +115,11 @@ export function ApProperties (props:{
                         (
                           <UI.TextNumber>
                             <label><Subtitle level={5}>{ 'LO 5 GHz' }</Subtitle></label>
-                            <span>{currentAP.channelL50.channel || '--'}</span>
-                            <span>{currentAP.channelL50.operativeChannelBandwidth || '--'}</span>
-                            <span>{currentAP.channelL50.txPower || '--'}</span>
+                            <span>{currentAP.channelL50.channel || noDataDisplay}</span>
+                            <span>
+                              {currentAP.channelL50.operativeChannelBandwidth || noDataDisplay}
+                            </span>
+                            <span>{currentAP.channelL50.txPower || noDataDisplay}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -120,9 +128,11 @@ export function ApProperties (props:{
                         (
                           <UI.TextNumber>
                             <label><Subtitle level={5}>{ 'HI 5 GHz' }</Subtitle></label>
-                            <span>{currentAP.channelU50.channel || '--'}</span>
-                            <span>{currentAP.channelU50.operativeChannelBandwidth || '--'}</span>
-                            <span>{currentAP.channelU50.txPower || '--'}</span>
+                            <span>{currentAP.channelU50.channel || noDataDisplay}</span>
+                            <span>
+                              {currentAP.channelU50.operativeChannelBandwidth || noDataDisplay}
+                            </span>
+                            <span>{currentAP.channelU50.txPower || noDataDisplay}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -131,9 +141,11 @@ export function ApProperties (props:{
                         (
                           <UI.TextNumber>
                             <label><Subtitle level={5}>{ '6 GHz' }</Subtitle></label>
-                            <span>{currentAP.channel60.channel || '--'}</span>
-                            <span>{currentAP.channel60.operativeChannelBandwidth || '--'}</span>
-                            <span>{currentAP.channel60.txPower || '--'}</span>
+                            <span>{currentAP.channel60.channel || noDataDisplay}</span>
+                            <span>
+                              {currentAP.channel60.operativeChannelBandwidth || noDataDisplay}
+                            </span>
+                            <span>{currentAP.channel60.txPower || noDataDisplay}</span>
                           </UI.TextNumber>
                         )
                         }
@@ -157,21 +169,21 @@ export function ApProperties (props:{
                     label={$t({ defaultMessage: 'Active SIM' })}
                     style={{ marginLeft: '10px', marginBottom: '0px' }}
                     children={
-                      currentAP.apStatusData.cellularInfo.cellularActiveSim || '--'
+                      currentAP.apStatusData.cellularInfo.cellularActiveSim || noDataDisplay
                     }
                   />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'Connection Status' })}
                     style={{ marginLeft: '10px', marginBottom: '0px' }}
                     children={
-                      currentAP.apStatusData.cellularInfo.cellularConnectionStatus || '--'
+                      currentAP.apStatusData.cellularInfo.cellularConnectionStatus || noDataDisplay
                     }
                   />
                   <Descriptions.Item
                     label={$t({ defaultMessage: 'Signal Strength' })}
                     style={{ marginLeft: '10px' }}
                     children={
-                      currentAP.apStatusData.cellularInfo.cellularSignalStrength || '--'
+                      currentAP.apStatusData.cellularInfo.cellularSignalStrength || noDataDisplay
                     }
                   />
                 </>
