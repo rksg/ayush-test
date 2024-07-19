@@ -113,12 +113,15 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
     }),
     getDhcpTemplateList: build.query<DHCPSaveData[], RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? ServicesConfigTemplateUrlsInfo.queryDhcpProfiles : ServicesConfigTemplateUrlsInfo.getDhcpList
         const req = createHttpRequest(url, params)
+        const resolvedPayload = enableRbac
+          ? { body: JSON.stringify({ ...(payload as {} ?? {}), pageSize: DHCP_LIMIT_NUMBER }) }
+          : {}
         return {
           ...req,
-          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
+          ...resolvedPayload
         }
       },
       providesTags: [{ type: 'DhcpTemplate', id: 'LIST' }],

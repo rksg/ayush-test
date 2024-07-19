@@ -105,12 +105,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfiles
         const req = createHttpRequest(url, params)
+        const resolvedPayload = enableRbac
+          ? { body: JSON.stringify({ ...(payload as {} ?? {}), pageSize: DHCP_LIMIT_NUMBER }) }
+          : {}
         return {
           ...req,
-          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
+          ...resolvedPayload
         }
       },
       transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {

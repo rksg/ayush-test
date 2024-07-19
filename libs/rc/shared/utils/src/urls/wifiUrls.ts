@@ -311,11 +311,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/capabilities',
     newApi: true
   },
-  getDpskPassphraseByQuery: {
-    method: 'post',
-    url: '/dpskPassphrasePools/query',
-    newApi: true
-  },
   getApLanPorts: {
     method: 'get',
     url: '/venues/aps/:serialNumber/lanPortSettings',

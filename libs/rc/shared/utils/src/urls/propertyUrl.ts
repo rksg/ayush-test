@@ -12,7 +12,7 @@ type PropertyUrlType =
   'getUnitById' |
   'getPropertyUnitList' |
   'updatePropertyUnit' |
-  'deletePropertyUnits' |
+  'deletePropertyUnit' |
   'notifyPropertyUnits' |
   'getResidentPortalList' |
   'getResidentPortalsQuery' |
@@ -79,10 +79,14 @@ export const PropertyUrlsInfo: { [key in PropertyUrlType]: ApiInfo } = {
     newApi: true,
     url: '/venues/:venueId/units/:unitId'
   },
-  deletePropertyUnits: {
+  deletePropertyUnit: {
     method: 'delete',
     newApi: true,
-    url: '/venues/:venueId/units'
+    url: '/venues/:venueId/units/:unitId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   notifyPropertyUnits: {
     method: 'post',
