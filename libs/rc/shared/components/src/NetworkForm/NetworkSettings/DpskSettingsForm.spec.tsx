@@ -3,13 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, render, screen }                      from '@acx-ui/test-utils'
 
 import {
-  cloudpathResponse,
   networkDeepResponse,
   venueListResponse,
   dpskListResponse,
@@ -35,8 +34,6 @@ describe('DpskSettingsForm', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -169,7 +166,8 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render proxy service', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
     render(
       <Provider>
         <NetworkFormContext.Provider value={{

@@ -2,12 +2,11 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { clientApi, networkApi }                         from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, switchApi }                                  from '@acx-ui/rc/services'
+import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
-  act,
   mockServer,
   render,
   screen,
@@ -18,7 +17,6 @@ import { WifiScopes }                     from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
-  VenueList,
   GuestClients,
   RegenerateGuestPassword
 } from '../../../__tests__/fixtures'
@@ -67,6 +65,8 @@ const openGuestDetailsAndClickAction = async (guestName: string) => {
   expect(menuitems).toHaveLength(4)
 }
 
+const mockGetClientList = jest.fn()
+
 describe('Guest Generate New Password Modal', () => {
   const params: { tenantId: string, networkId: string } = {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -86,11 +86,11 @@ describe('Guest Generate New Password Modal', () => {
   })
 
   beforeEach(() => {
+    mockGetClientList.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    act(() => {
-      store.dispatch(clientApi.util.resetApiState())
-      store.dispatch(networkApi.util.resetApiState())
-    })
+    store.dispatch(clientApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
 
     setUserProfile({
       ...userProfile,
@@ -111,12 +111,11 @@ describe('Guest Generate New Password Modal', () => {
         (_, res, ctx) => res(ctx.json(GuestList))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json(GuestClients))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(VenueList))
+        ClientUrlsInfo.getClients.url,
+        (_, res, ctx) => {
+          mockGetClientList()
+          return res(ctx.json(GuestClients))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
@@ -142,6 +141,10 @@ describe('Guest Generate New Password Modal', () => {
           mockedPatchReq()
           return res(ctx.json(RegenerateGuestPassword))
         }
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
     )
   })
@@ -326,6 +329,10 @@ describe('Guest Generate New Password Modal', () => {
         </Provider>, {
           route: { params, path: '/:tenantId/t/users/wifi/guests' }
         })
+
+      await waitFor(() => {
+        expect(mockGetClientList).toBeCalledTimes(2)
+      })
       expect(screen.queryByRole('button', { name: 'Add Guest' })).toBeNull()
     })
   })

@@ -68,7 +68,10 @@ export function GeneralSettingForm () {
   const navigate = useNavigate()
   const { tenantId, venueId, activeSubTab } = useParams()
   const isProfileDisabled = useSwitchProfileDisabled()
+  const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
@@ -186,7 +189,7 @@ export function GeneralSettingForm () {
           syslogPrimaryServer: formData?.syslogPrimaryServer,
           syslogSecondaryServer: formData?.syslogSecondaryServer
         },
-        enableRbac: isSwitchRbacEnabled })
+        enableRbac: resolvedRbacEnabled })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

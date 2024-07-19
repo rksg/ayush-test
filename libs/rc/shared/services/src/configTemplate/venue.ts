@@ -5,11 +5,13 @@ import {
   ConfigTemplateUrlsInfo,
   ExternalAntenna,
   LocalUser,
+  Mesh,
   RadiusServer,
   TableResult,
   TacacsServer,
   TriBandSettings,
   Venue,
+  VenueApModelBandModeSettings,
   VenueBssColoring,
   VenueClientAdmissionControl,
   VenueConfigTemplateUrlsInfo,
@@ -31,8 +33,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
-import { commonQueryFn }                                                                 from '../servicePolicy.utils'
+import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse }      from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                             from '../utils'
 import {
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
@@ -200,12 +203,29 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
+    // only exist in v1(RBAC version)
+    getVenueTemplateMesh: build.query<Mesh, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueMeshRbac, params)
+        }
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, ['UpdateVenueTemplateApMeshSettings'], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]))
+          })
+        })
+      }
+    }),
     updateVenueTemplateMesh: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
         VenueConfigTemplateUrlsInfo.updateVenueMesh,
         VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
       ),
-      invalidatesTags: [{ type: 'VenueTemplate', id: 'WIFI_SETTINGS' }]
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]
     }),
     getVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueLanPorts)
@@ -304,31 +324,53 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       )
     }),
     getVenueTemplateDhcpProfile: build.query<VenueDHCPProfile, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpProfile),
+      queryFn: getVenueDHCPProfileFn(true),
       providesTags: [{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           // eslint-disable-next-line max-len
-          onActivityMessageReceived(msg, ['UpdateVenueTemplateDhcpConfigServiceProfileSetting'], () => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueTemplateDhcpConfigServiceProfileSetting',
+              'ActivateDhcpConfigServiceProfileTemplateAndUpdateSettings',
+              'DeactivateDhcpConfigServiceProfileTemplate'
+            ], () => {
             // eslint-disable-next-line max-len
-            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }]))
-          })
+              api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }]))
+            })
         })
       }
 
     }),
     updateVenueTemplateDhcpProfile: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueDhcpProfile)
+      query: ({ params, payload, enableRbac, enableService }) => {
+        const url = !enableRbac ?
+          VenueConfigTemplateUrlsInfo.updateVenueDhcpProfile :
+          // eslint-disable-next-line max-len
+          (enableService ? VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile : VenueConfigTemplateUrlsInfo.unbindVenueDhcpProfile)
+        const req = createHttpRequest(url, params)
+        return {
+          ...req,
+          ...(enableRbac && !enableService ? {} : { body: JSON.stringify(payload) })
+        }
+      }
     }),
     getVenueTemplateDhcpPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpActivePools),
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac
+          ? VenueConfigTemplateUrlsInfo.getDhcpUsagesRbac
+          : VenueConfigTemplateUrlsInfo.getVenueDhcpActivePools
+        const req = createHttpRequest(url, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: transformGetVenueDHCPPoolsResponse,
       providesTags: [{ type: 'VenueTemplate', id: 'DHCP_POOL_LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'DeactivateVenueTemplateDhcpPool',
-            'ActivateVenueTemplateDhcpPool',
-            'UpdateVenueTemplateDhcpConfigServiceProfileSetting'
+            'ActivateVenueTemplateDhcpPool'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
@@ -338,13 +380,54 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     activateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.activateVenueDhcpPool)
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ?
+          VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile
+          : VenueConfigTemplateUrlsInfo.activateVenueDhcpPool
+        const req = createHttpRequest(url, params)
+        return {
+          ...req,
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
+        }
+      }
     }),
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ?
+          VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile
+          : VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool
+        const req = createHttpRequest(url, params)
+        return {
+          ...req,
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getVenueTemplateApModelBandModeSettings: build.query<VenueApModelBandModeSettings[], RequestPayload<void>>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        return createHttpRequest(VenueConfigTemplateUrlsInfo.getVenueApModelBandModeSettings, params)
+      },
+      providesTags: [{ type: 'VenueTemplate', id: 'BandModeSettings' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateApModelBandModeSettings: build.mutation<CommonResult, RequestPayload<VenueApModelBandModeSettings[]>>({
+      query: ({ params, payload }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(VenueConfigTemplateUrlsInfo.updateVenueApModelBandModeSettings, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueTemplate', id: 'BandModeSettings' }]
     }),
     getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueCityList),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueCityList,
+        VenueConfigTemplateUrlsInfo.getVenueCityListRbac
+      ),
       transformResponse: (result: { cityList: { name: string }[] }) => {
         return result.cityList
       }
@@ -452,6 +535,7 @@ export const {
   useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueTemplateExternalAntennaMutation,
   useGetVenueTemplateSettingsQuery,
+  useGetVenueTemplateMeshQuery,
   useUpdateVenueTemplateMeshMutation,
   useGetVenueTemplateLanPortsQuery,
   useUpdateVenueTemplateLanPortsMutation,
@@ -470,6 +554,8 @@ export const {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
   useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation,
   useGetVenueTemplateCityListQuery,
   useGetVenueTemplateSwitchSettingQuery,
   useUpdateVenueTemplateSwitchSettingMutation,

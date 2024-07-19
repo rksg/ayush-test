@@ -37,8 +37,13 @@ describe('VLAN Pool Instance Page', () => {
           ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
       ),
       rest.post(
+        VlanPoolRbacUrls.addVLANPoolPolicy.url,
+        (_, res, ctx) => {return res(
+          ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))}
+      ),
+      rest.post(
         VlanPoolUrls.addVLANPoolPolicy.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'request-id', id: '2', name: 'test2' }))
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })

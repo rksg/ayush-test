@@ -9,6 +9,7 @@ import {
   Network,
   NetworkSaveData,
   TableResult,
+  WifiNetwork,
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork
@@ -16,8 +17,9 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { networkApi }    from '../network'
-import { commonQueryFn } from '../servicePolicy.utils'
+import { networkApi }           from '../network'
+import { commonQueryFn }        from '../servicePolicy.utils'
+import { updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -50,31 +52,59 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.addNetworkTemplate,
+        ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.updateNetworkTemplate,
+        ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getNetworkTemplate,
+        ConfigTemplateUrlsInfo.getNetworkTemplateRbac
+      ),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.deleteNetworkTemplate,
+        ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
+      query: (queryArgs: RequestPayload<{ fields?: string[] }>) => {
+        const query = commonQueryFn(
+          ConfigTemplateUrlsInfo.getNetworkTemplateList,
+          ConfigTemplateUrlsInfo.getNetworkTemplateListRbac
+        )
+
+        const { payload, enableRbac = false } = queryArgs
+        if (enableRbac && payload?.fields?.includes('venues')) {
+          return query({
+            ...queryArgs,
+            payload: {
+              ...payload,
+              fields: [...payload.fields, 'venueApGroups']
+            }
+          })
+        }
+
+        return query(queryArgs)
+      },
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse (result: TableResult<Network>) {
-        result.data = result.data.map(item => ({
-          ...transformNetwork(item)
-        })) as Network[]
+      transformResponse (result: TableResult<Network | WifiNetwork>) {
+        result.data = result.data.map(item => transformNetwork(item)) as Network[]
         return result
       },
       keepUnusedDataFor: 0,
@@ -180,7 +210,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
+      queryFn: updateNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [

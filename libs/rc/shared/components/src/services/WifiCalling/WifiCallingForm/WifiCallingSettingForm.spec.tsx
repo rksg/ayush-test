@@ -5,13 +5,14 @@ import userEvent   from '@testing-library/user-event'
 import { Form }    from 'antd'
 import { rest }    from 'msw'
 
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { serviceApi }                                                             from '@acx-ui/rc/services'
 import { EPDG, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, mockServer, render, screen }                                        from '@acx-ui/test-utils'
 
-import { mockWifiCallingTableResult, wifiCallingSettingTable } from '../__tests__/fixtures'
-import WifiCallingFormContext                                  from '../WifiCallingFormContext'
+import { mockRbacWifiCallingTableResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                                         from '../WifiCallingFormContext'
 
 import WifiCallingSettingForm from './WifiCallingSettingForm'
 
@@ -34,7 +35,8 @@ const initState = {
   description,
   networkIds,
   networksName,
-  epdgs
+  epdgs,
+  oldNetworkIds: []
 }
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
@@ -68,6 +70,8 @@ jest.mock('antd', () => {
 
 describe('WifiCallingSettingForm', () => {
   beforeEach(() => {
+    mockedEnhancedWifiCallingList.mockClear()
+
     act(() => {
       store.dispatch(serviceApi.util.resetApiState())
     })
@@ -75,15 +79,11 @@ describe('WifiCallingSettingForm', () => {
     mockServer.use(
       rest.get(WifiCallingUrls.getWifiCalling.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(WifiCallingUrls.getWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(wifiCallingSettingTable))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
         (req, res, ctx) => {
           mockedEnhancedWifiCallingList()
           return res(ctx.json(mockWifiCallingTableResult))
         }),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(wifiCallingSettingTable))),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
         (req, res, ctx) => {
           return res(ctx.json(mockWifiCallingTableResult))
@@ -107,6 +107,57 @@ describe('WifiCallingSettingForm', () => {
       }
     )
     await waitFor(() => expect(mockedEnhancedWifiCallingList).toHaveBeenCalled())
+
+    let serviceName = screen.getByRole('textbox', { name: /service name/i })
+    expect(serviceName).toBeEmptyDOMElement()
+    let desc = screen.getByRole('textbox', { name: /description/i })
+    expect(desc).toBeEmptyDOMElement()
+
+    await userEvent.type(serviceName, 'serviceTest')
+    expect(await screen.findByRole('textbox', { name: /service name/i })).toHaveValue('serviceTest')
+
+    await userEvent.type(desc, 'desc')
+    expect(desc).toHaveValue('desc')
+
+    expect(screen.getByTestId('selectQosPriorityId')).toBeTruthy()
+    const combobox = await screen.findByRole('combobox', { name: /qos priority/i })
+    await userEvent.click(combobox)
+
+    await userEvent.selectOptions(combobox, 'Voice')
+
+    expect(screen.getByText('Voice')).toBeVisible()
+  })
+
+  it('should render WifiCallingSettingForm successfully with rbac api', async () => {
+    const rbacApiFn = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        WifiCallingUrls.queryWifiCalling.url,
+        (_, res, ctx) => {
+          rbacApiFn()
+          return res(ctx.json(mockRbacWifiCallingTableResult))
+        }
+      )
+    )
+
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: setWifiCallingSetting
+      }}>
+        <WifiCallingSettingForm />
+      </WifiCallingFormContext.Provider>,
+      {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+    await waitFor(() => expect(mockedEnhancedWifiCallingList).not.toHaveBeenCalled())
+    await waitFor(() => expect(rbacApiFn).toHaveBeenCalled())
 
     let serviceName = screen.getByRole('textbox', { name: /service name/i })
     expect(serviceName).toBeEmptyDOMElement()

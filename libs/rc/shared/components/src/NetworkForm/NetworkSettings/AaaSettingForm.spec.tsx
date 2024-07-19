@@ -16,7 +16,6 @@ import {
   venueListResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse,
   networkDeepResponse,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
@@ -84,8 +83,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
@@ -97,7 +94,9 @@ describe('NetworkForm', () => {
       rest.post(CertificateUrls.getCertificateTemplates.url,
         (_, res, ctx) => res(ctx.json(certificateTemplateList))),
       rest.post(CertificateUrls.getCAs.url,
-        (_, res, ctx) => res(ctx.json(certificateAuthorityList)))
+        (_, res, ctx) => res(ctx.json(certificateAuthorityList))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

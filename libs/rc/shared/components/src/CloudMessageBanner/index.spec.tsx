@@ -1,11 +1,11 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { FirmwareUrlsInfo }                      from '@acx-ui/rc/utils'
-import { EdgeFirmwareFixtures }                  from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
-import { UserRbacUrlsInfo, UserUrlsInfo }        from '@acx-ui/user'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { FirmwareRbacUrlsInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { EdgeFirmwareFixtures }                   from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { render, screen, mockServer, fireEvent }  from '@acx-ui/test-utils'
+import { UserRbacUrlsInfo, UserUrlsInfo }         from '@acx-ui/user'
 
 import {
   allUserSettings,
@@ -65,8 +65,16 @@ describe('cloud Message Banner', () => {
         (_, res, ctx) => res(ctx.json(switchVenueVersionList))
       ),
       rest.post(
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAllApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
