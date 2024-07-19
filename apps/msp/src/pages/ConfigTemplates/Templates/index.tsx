@@ -76,7 +76,8 @@ export function ConfigTemplateList () {
     defaultPayload: {},
     search: {
       searchTargetFields: ['name']
-    }
+    },
+    enableRbac
   })
   const addTemplateMenuProps = useAddTemplateMenuProps()
 
