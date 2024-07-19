@@ -3,15 +3,13 @@ import { rest } from 'msw'
 import { serviceApi } from '@acx-ui/rc/services'
 import {
   DpskUrls,
-  CommonUrlsInfo,
-  ClientUrlsInfo
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
-  waitFor
+  screen
 } from '@acx-ui/test-utils'
 
 import {
@@ -33,15 +31,10 @@ jest.mock('@acx-ui/utils', () => ({
   getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
 }))
 
-const mockGetClientList = jest.fn()
-const mockGetClientMeta = jest.fn()
-
 describe('ManageDevicesDrawer', () => {
   beforeEach(() => {
     store.dispatch(serviceApi.util.resetApiState())
 
-    mockGetClientList.mockClear()
-    mockGetClientMeta.mockClear()
     mockServer.use(
       rest.get(
         DpskUrls.getDpsk.url,
@@ -60,20 +53,6 @@ describe('ManageDevicesDrawer', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json({ data: [], totalCount: 0 }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => {
-          mockGetClientList()
-          return res(ctx.json({ data: [], page: 1, totalCount: 0 }))
-        }
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => {
-          mockGetClientMeta()
-          return res(ctx.json({ data: [] }))
-        }
       )
     )
   })
@@ -99,8 +78,6 @@ describe('ManageDevicesDrawer', () => {
       }
     )
 
-    await waitFor(() => expect(mockGetClientList).toBeCalled())
-    await waitFor(() => expect(mockGetClientMeta).toBeCalled())
     await screen.findByText('11:22:33:44:55:66')
 
     // mockedDevices.length == managePassphraseInfo.numberOfDevices
