@@ -12,19 +12,11 @@ import {
 } from '../../IntentAIForm/services'
 import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../styledComponents'
 
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/IntentAIDetails/CrrmDetails.tsx
-import { CrrmBenefits }                       from './CrrmBenefits'
-import { CrrmGraph }                          from './CrrmGraph'
-import { CrrmValuesExtra }                    from './CrrmValuesExtra'
-import { Overview }                           from './Overview'
-import { StatusTrail }                        from './StatusTrail'
-import { AIDrivenRRMHeader, AIDrivenRRMIcon } from './styledComponents'
-========
 import { CrrmBenefits }    from './CrrmBenefits'
+import { CrrmGraph }       from './CrrmGraph'
 import { CrrmValuesExtra } from './CrrmValuesExtra'
 import { Overview }        from './Overview'
 import { StatusTrail }     from './StatusTrail'
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetails/AIDrivenRRM/CrrmDetails.tsx
 
 export const CrrmDetails = () => {
   const { $t } = useIntl()

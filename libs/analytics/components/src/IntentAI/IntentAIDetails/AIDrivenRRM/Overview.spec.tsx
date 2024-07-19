@@ -3,7 +3,6 @@ import { get }             from '@acx-ui/config'
 import {  Provider }       from '@acx-ui/store'
 import { render, screen  } from '@acx-ui/test-utils'
 
-
 import { transformDetailsResponse } from '../../IntentAIForm/services'
 
 import {

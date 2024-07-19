@@ -1,39 +1,28 @@
-
 import { useIntl } from 'react-intl'
 
+import { TrendTypeEnum }                                             from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow, Loader, recommendationBandMapping } from '@acx-ui/components'
 
 import { EnhancedRecommendation } from '../../IntentAIForm/services'
+import { getGraphKPI }            from '../../RRMGraph'
+import { useIntentAICRRMQuery }   from '../../RRMGraph/services'
 import {
-  BenefitsBadge,
   BenefitsBody,
   BenefitsHeader,
   BenefitsValue,
   DetailsHeader,
-  DetailsWrapper
+  DetailsWrapper,
+  TrendPill
 } from '../styledComponents'
-
-import { useCRRMQuery }   from './Graph/services'
-import { kpiBeforeAfter } from './Values'
 
 export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-
-  const interfering = kpiBeforeAfter(details, 'number-of-interfering-links')
-  const interferingBefore = Number.parseInt(interfering.before, 10)
-  const interferingAfter = Number.parseInt(interfering.after, 10)
   const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useCRRMQuery(details, band)
-  const impactedApsCount = queryResult.data?.length ? queryResult.data[1].nodes.length : 0
-  const interferingPerApBefore = impactedApsCount === 0 ?
-    0 : Math.round(((interferingBefore / impactedApsCount) + Number.EPSILON) * 10) / 10
-  const interferingPerApAfter = impactedApsCount === 0 ?
-    0 : Math.round(((interferingAfter / impactedApsCount) + Number.EPSILON) * 10) / 10
+  const queryResult = useIntentAICRRMQuery(details, band)
+  const crrmData = queryResult?.data
 
-  const interferingImprovement = interferingBefore === 0 ? '0%' :
-    `${((interferingAfter - interferingBefore) / interferingBefore) * 100}%`
-  const interferingApImprovement = interferingPerApBefore === 0 ? '0%' :
-    `${((interferingPerApAfter - interferingPerApBefore) / interferingPerApBefore) * 100}%`
+  const { interferingLinks, linksPerAP } = getGraphKPI(
+    details as EnhancedRecommendation, crrmData)
 
   return <Loader states={[queryResult]}>
     <DetailsHeader>{$t({ defaultMessage: 'Benefits' })}</DetailsHeader>
@@ -42,9 +31,11 @@ export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) =
         <GridCol col={{ span: 12 }}>
           <Card type='default'>
             <BenefitsHeader>{$t({ defaultMessage: 'Interfering links' })}</BenefitsHeader>
-            <BenefitsBody data-testid='interfering-links'>
-              <BenefitsValue>{interferingBefore}</BenefitsValue>
-              <BenefitsBadge count={interferingImprovement}></BenefitsBadge>
+            <BenefitsBody>
+              <BenefitsValue>{interferingLinks.after}</BenefitsValue>
+              <TrendPill
+                value={interferingLinks.links.value as string}
+                trend={interferingLinks.links.trend as TrendTypeEnum} />
             </BenefitsBody>
           </Card>
         </GridCol>
@@ -53,9 +44,11 @@ export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) =
             <BenefitsHeader>
               {$t({ defaultMessage: 'Average interfering links per AP' })}
             </BenefitsHeader>
-            <BenefitsBody data-testid='interfering-links-per-ap'>
-              <BenefitsValue>{interferingPerApBefore}</BenefitsValue>
-              <BenefitsBadge count={interferingApImprovement}></BenefitsBadge>
+            <BenefitsBody>
+              <BenefitsValue>{Math.ceil(linksPerAP.after)}</BenefitsValue>
+              <TrendPill
+                value={linksPerAP.average.value as string}
+                trend={linksPerAP.average.trend as TrendTypeEnum} />
             </BenefitsBody>
           </Card>
         </GridCol>
