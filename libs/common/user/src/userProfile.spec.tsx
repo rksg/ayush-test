@@ -8,6 +8,7 @@ import {
   SwitchScopes,
   WifiScopes }               from '@acx-ui/types'
 
+import { CustomRoleType, type RaiPermissions } from './types'
 import {
   AuthRoute,
   filterByAccess,
@@ -22,7 +23,6 @@ import {
   hasRaiPermission
 } from './userProfile'
 
-import type { RaiPermissions } from './types'
 
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
   scopes?:ScopeKeys) {
@@ -124,7 +124,7 @@ describe('hasRoles', () => {
         //  According to the current backend design, roles might be PG names that do not exist in RolesName.
         //  However, this might change in the future, so we have not yet modified the type of roles.
         roles: ['NEW_USER'],
-        customRoleType: 'System',
+        customRoleType: CustomRoleType.SYSTEM,
         customRoleName: 'PRIME_ADMIN'
       },
       allowedOperations: ['GET:/networks', 'GET:/switches'],

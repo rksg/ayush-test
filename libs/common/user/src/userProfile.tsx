@@ -9,7 +9,12 @@ import {
   ScopeKeys
 } from '@acx-ui/types'
 
-import type { UserProfile, RaiPermission, RaiPermissions } from './types'
+import {
+  type UserProfile,
+  type RaiPermission,
+  type RaiPermissions,
+  CustomRoleType
+} from './types'
 
 type Profile = {
   profile: UserProfile
@@ -164,7 +169,7 @@ export function hasRoles (roles: string | string[]) {
 
   // TODO: Backend needs to enhance the API to include system role names in roles
   if (abacEnabled &&
-    profile.customRoleType === 'System' &&
+    profile.customRoleType === CustomRoleType.SYSTEM &&
     profile.customRoleName) {
     return roles.includes(profile.customRoleName)
   }
