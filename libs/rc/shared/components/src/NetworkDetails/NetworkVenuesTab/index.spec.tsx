@@ -5,8 +5,8 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }   from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
@@ -25,11 +25,9 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
-import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   network,
-  user,
   list,
   params,
   networkVenue_allAps,
@@ -106,9 +104,9 @@ const newVenues = [
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
-
     store.dispatch(networkApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
     mockedApplyFn.mockClear()
     mockedGetApCompatibilitiesNetwork.mockClear()
     mockedNetworkActivation.mockClear()
@@ -138,10 +136,6 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json({ response: [network] }))
-      ),
-      rest.get(
-        UserUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenues.url,
@@ -481,10 +475,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json({ response: [network] }))
-      ),
-      rest.get(
-        UserUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json(user))
       ),
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
