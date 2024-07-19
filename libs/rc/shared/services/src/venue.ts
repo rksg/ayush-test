@@ -99,9 +99,9 @@ import {
   NewAPModel,
   NetworkDevicePosition
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }                        from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseVenueApi }                                  from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacApList }                               from './apUtils'
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
@@ -1624,13 +1624,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    deletePropertyUnits: build.mutation<PropertyUnit, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.deletePropertyUnits, params)
-        return {
-          ...req,
-          body: payload
+    deletePropertyUnits: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload?.map(unitId => ({ params: { ...params, unitId } })) ?? []
+        const result = await batchApi(PropertyUrlsInfo.deletePropertyUnit, requests, fetchWithBQ)
+
+        if (result.error) {
+          return { error: result.error as FetchBaseQueryError }
         }
+
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
