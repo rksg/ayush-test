@@ -65,9 +65,10 @@ const defaultPayload: {
 
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
-  const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
   const { visible, setVisible } = props
+  const payload = { filters: { } }
+  const { data } = useGetAlarmCountQuery({ params, payload }, { skip: !visible })
 
   window.addEventListener('showAlarmDrawer',(function (e:CustomEvent){
     setVisible(true)
