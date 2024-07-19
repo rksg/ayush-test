@@ -25,7 +25,8 @@ import {
   useDeleteNetworkVenuesTemplateMutation,
   useDeactivateIdentityProviderOnWifiNetworkMutation,
   useActivateMacRegistrationPoolMutation,
-  useActivateDpskServiceMutation
+  useActivateDpskServiceMutation,
+  useActivateDpskServiceTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -132,7 +133,7 @@ export function NetworkForm (props:{
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
-  const enableServiceRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE) && !isTemplate
+  const enableServiceRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
@@ -931,7 +932,10 @@ function useMacRegistrationPoolActivation () {
 }
 
 function useDpskServiceActivation () {
-  const [activate] = useActivateDpskServiceMutation()
+  const [activate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateDpskServiceMutation,
+    useTemplateMutationFn: useActivateDpskServiceTemplateMutation
+  })
   return async (dpskServiceId?: string, networkId?: string) => {
     if (dpskServiceId && networkId) {
       return await activate({ params: { networkId, dpskServiceId } }).unwrap()

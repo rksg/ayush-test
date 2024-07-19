@@ -587,11 +587,19 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   activateDpskService: {
     method: 'PUT',
     newApi: true,
-    url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId'
+    url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateMacRegistrationPool: {
     method: 'PUT',
     newApi: true,
-    url: '/wifiNetworks/:networkId/macRegistrationPools/:macRegistrationPoolId'
+    url: '/wifiNetworks/:networkId/macRegistrationPools/:macRegistrationPoolId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
