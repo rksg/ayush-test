@@ -1,12 +1,15 @@
 import React from 'react'
 
-export default function PortalViewText (props: { value: string|undefined, id: string }) {
-  const displayText = props.value?.split('\n').map((text, index) => (
-    <React.Fragment key={`${props.id}_${index}`}>
-      {text}
-      <br />
+interface PortalViewTextProps {
+  value: string | undefined
+  id: string
+}
+export default function PortalViewText (props: PortalViewTextProps){
+  const { value = '', id } = props
+  const displayText = value.split('\n').map((text, index) => (
+    <React.Fragment key={`${id}_${index}`}>
+      {index > 0 && <br /> }{text}
     </React.Fragment>
   ))
-
-  return <div>{displayText ?? ''}</div>
+  return <> {displayText} </>
 }
