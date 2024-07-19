@@ -143,12 +143,14 @@ export const UserSelectionActionDefaultValue: {
 }
 
 export const DisplayMessageActionDefaultValue: {
-  [key in keyof DisplayMessageActionContext]: MessageDescriptor | string
+  [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
 } = {
   title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
   messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
-  backButtonText: defineMessage({ defaultMessage: 'Back' }),
-  continueButtonText: defineMessage({ defaultMessage: 'Continue' })
+  backButtonText: 'Back',
+  continueButtonText: 'Continue',
+  displayBackButton: true,
+  displayContinueButton: true
 }
 
 export const ActionDefaultValueMap: Record<ActionType, object> = {

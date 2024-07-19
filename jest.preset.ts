@@ -8,7 +8,8 @@ const esModules = [
   'react-dnd',
   'dnd-core',
   '@react-dnd',
-  'escape-string-regexp'
+  'escape-string-regexp',
+  'react-compare-slider'
 ].join('|')
 
 module.exports = {

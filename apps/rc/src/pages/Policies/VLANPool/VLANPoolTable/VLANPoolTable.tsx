@@ -2,6 +2,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
 import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
@@ -25,10 +26,18 @@ export default function VLANPoolTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
   const settingsId = 'policies-vlan-pool-table'
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
+    enableRbac: isPolicyRbacEnabled,
     defaultPayload: {
-      fields: [
+      fields: isPolicyRbacEnabled ? [
+        'id',
+        'name',
+        'vlanMembers',
+        'wifiNetworkIds',
+        'wifiNetworkVenueApGroups'
+      ] : [
         'id',
         'name',
         'vlanMembers',
@@ -57,7 +66,8 @@ export default function VLANPoolTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
+            deleteFn({ params: { ...params, policyId: id }, enableRbac: isPolicyRbacEnabled })
+              .then(clearSelection)
           }
         })
       }

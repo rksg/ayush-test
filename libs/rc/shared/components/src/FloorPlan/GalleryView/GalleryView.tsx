@@ -1,7 +1,8 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
 
-import { Col, Row }                            from 'antd'
+import { Col, Row, Typography }                from 'antd'
 import { DropTargetMonitor, useDrop, XYCoord } from 'react-dnd'
+import { useIntl }                             from 'react-intl'
 import { useParams }                           from 'react-router-dom'
 
 import { Card }                                                                   from '@acx-ui/components'
@@ -70,6 +71,7 @@ function GalleryCard (props: {
 
   const [imageUrl, setImageUrl] = useState('')
   const { venueId } = useParams()
+  const { $t } = useIntl()
 
   useEffect(() => {
     if (floorPlan?.imageId) {
@@ -147,7 +149,23 @@ function GalleryCard (props: {
 
   return <Card>
     <Card.Title>
-      { floorPlan?.name }
+      <Typography.Text
+        style={{
+          maxWidth: '200px'
+        }}
+        ellipsis={
+          { tooltip: floorPlan?.name }
+        }
+      >
+        { floorPlan?.name }
+      </Typography.Text> {
+        $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+        { floor: floorPlan?.floorNumber })}
     </Card.Title>
     <UI.StyledImageWrapper
       onClick={() => onFloorplanImageClick(floorPlan)}>

@@ -425,7 +425,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         params: {
           tenantId: params.tenantId,
           serialNumber: row.serialNumber,
-          venueId: params.venueId
+          venueId: row.venueId
         },
         enableRbac: isSwitchRbacEnabled
       }, true)
