@@ -35,6 +35,15 @@ export const DownloadWrapper = styled.div`
 
 export const DrawerGraphWrapper = styled.div`
   display: grid;
+  grid-template-columns: 3fr 3fr 1fr;
+  grid-template-rows: 19fr 1fr;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  ${DownloadWrapper} {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
     grid-row-end: 3;
     justify-self: center;
   }
