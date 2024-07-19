@@ -6,7 +6,7 @@ exports[`MeshNetwork should render correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <label
-      class="styledComponents__FieldLabel-sc-1ibvcih-6 iRGgyA"
+      class="styledComponents__FieldLabel-sc-1ibvcih-7 cCwAHN"
       width="180px"
     >
       Mesh Network
@@ -46,7 +46,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </div>
     </label>
     <div
-      class="sc-iuStju fogmca"
+      class="sc-jZiqTT jLBklO"
     >
       <ul>
         <li>
@@ -58,7 +58,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </ul>
     </div>
     <div
-      class="sc-ddcaxn iLrYfH"
+      class="sc-bxSTMQ jYAXuq"
     >
       Mesh Network Name
       <div
@@ -100,7 +100,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       />
     </div>
     <div
-      class="sc-egNfGp bsUAFn"
+      class="sc-jWquRx lkcmft"
     >
       Mesh PSK
       <div
@@ -143,7 +143,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       />
     </div>
     <label
-      class="styledComponents__FieldLabel-sc-1ibvcih-6 iRGgyA"
+      class="styledComponents__FieldLabel-sc-1ibvcih-7 cCwAHN"
       width="180px"
     >
       Mesh Radio
@@ -236,7 +236,7 @@ exports[`MeshNetwork should render disabled switch button correctly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <label
-      class="styledComponents__FieldLabel-sc-1ibvcih-6 iRGgyA"
+      class="styledComponents__FieldLabel-sc-1ibvcih-7 cCwAHN"
       width="180px"
     >
       Mesh Network

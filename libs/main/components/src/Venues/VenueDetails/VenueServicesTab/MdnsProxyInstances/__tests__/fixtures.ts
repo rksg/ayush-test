@@ -82,18 +82,21 @@ export const mockedMdnsProxyQueryResultWithoutActivation = {
       id: 'cb721ac1e8084f88b6bb5d730b8cf24d',
       rules: [
         {
+          id: 'rule1',
           enabled: true,
           service: 'AIRDISK',
           fromVlan: 1,
           toVlan: 2
         },
         {
+          id: 'rule2',
           enabled: true,
           service: 'AIRPLAY',
           fromVlan: 3,
           toVlan: 4
         },
         {
+          id: 'rule3',
           enabled: true,
           service: 'AIRPORT_MANAGEMENT',
           fromVlan: 5,

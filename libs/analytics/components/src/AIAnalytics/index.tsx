@@ -9,6 +9,7 @@ import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
+import { IntentAITabContent }       from '../IntentAI'
 import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
@@ -50,9 +51,10 @@ const useTabs = () : Tab[] => {
   const intentAITab = {
     key: AIAnalyticsTabEnum.INTENTAI,
     title: $t({ defaultMessage: 'IntentAI' }),
-    component: <div data-testid='intentAI' />,
+    component: <IntentAITabContent />,
     headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
+
   let displayIntentAI = false
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]

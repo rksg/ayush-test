@@ -459,6 +459,10 @@ describe('Guest Table', () => {
 
     const importBtn = await screen.findByRole('button', { name: 'Import from file' })
     await userEvent.click(importBtn)
+
+    const manualRadio = screen.queryByTestId('manual-radio')
+    expect(manualRadio).not.toBeInTheDocument()
+
     const link = screen.getByRole('link', {
       name: /download template/i
     })

@@ -1,13 +1,12 @@
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { CrrmDetails } from './CrrmDetails'
+import { CrrmDetails } from './AIDrivenRRM/CrrmDetails'
 
 const intentAIDetailsMap = {
   'c-crrm-channel24g-auto': CrrmDetails,
   'c-crrm-channel5g-auto': CrrmDetails,
   'c-crrm-channel6g-auto': CrrmDetails
 }
-export { CrrmDetails as IntentAICrrmDetails }
 
 type IntentAIFormKey = keyof typeof intentAIDetailsMap
 

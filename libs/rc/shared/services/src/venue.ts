@@ -95,14 +95,17 @@ import {
   WifiDhcpPoolUsages,
   RWG,
   NetworkDevice,
-  NetworkDeviceType
+  NetworkDeviceType,
+  NewAPModel,
+  NetworkDevicePosition
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacApList }                               from './apUtils'
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                                                                          from './utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField }                                                       from './utils'
 import {
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
@@ -332,10 +335,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    // only exist in v1(RBAC version)
     getVenueMesh: build.query<Mesh, RequestPayload>({
-      query: ({ params }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
         return {
           ...req
@@ -354,9 +356,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isWifiMeshIndependents56GEnable }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = GetApiVersionHeader(
+          enableRbac ? (isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1) : undefined)
         const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
           ...req,
@@ -379,22 +382,50 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     meshAps: build.query<TableResult<APMesh>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
+
+        const newPayload = enableRbac
+          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+          : payload
+
         return {
-          ...venueMeshReq,
-          body: payload
+          ...req,
+          body: newPayload
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }],
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      transformResponse: (
+        result: TableResult<APMesh>,
+        _: unknown,
+        args: RequestPayload) => {
+        return args.enableRbac
+          ? transformRbacApList(result as TableResult<NewAPModel>) as TableResult<APMesh>
+          : result
+      }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+
+        const newPayload = enableRbac
+          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+          : payload
+        const apListReq = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
+        const apListRes = await fetchWithBQ({ ...apListReq, body: newPayload })
+        const apListData = apListRes.data as TableResult<FloorPlanMeshAP>
+
+        // fetch ap position data
+        if (enableRbac && (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent'))) {
+          await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
+        }
+
         return {
-          ...venueMeshReq,
-          body: payload
+          data: apListData
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -684,12 +715,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateSwitchPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateSwitchPosition, params)
+    updateSwitchPosition: build.mutation<CommonResult, RequestPayload<NetworkDevicePosition>>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const req = createHttpRequest(urlsInfo.UpdateSwitchPosition, params)
+        const body = JSON.parse(JSON.stringify(payload))
+        if(enableRbac) {
+          body.floorPlanId = payload?.floorplanId
+          delete body.floorplanId
+        }
         return {
           ...req,
-          body: payload
+          body
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
