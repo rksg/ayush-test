@@ -20,11 +20,26 @@ export const IsNetworkSupport6g = (networkDetail?: NetworkDetail | NetworkSaveDa
   return IsSecuritySupport6g(wlanSecurity)
 }
 
-export const transformNetwork = (item: Network | WifiNetwork) => {
-  const resolvedVenues = item.venues ?? transVenuesForNetwork((item as WifiNetwork).venueApGroups)
+export const transformNetwork = (item: Network) => {
   return {
     ...item,
-    venues: resolvedVenues,
+    activated: item.activated ?? { isActivated: false },
+    ...(item?.dsaeOnboardNetwork &&
+      { children: [{ ...item?.dsaeOnboardNetwork,
+        isOnBoarded: true,
+        id: item?.name + 'onboard' } as Network] })
+  }
+}
+
+export const transformWifiNetwork = (item: WifiNetwork) => {
+  const { apSerialNumbers, clientCount, venueApGroups } = item
+  const venues = transVenuesForNetwork(venueApGroups)
+
+  return {
+    ...item,
+    aps: apSerialNumbers?.length ?? 0,
+    clients: clientCount ?? 0,
+    venues: venues,
     activated: item.activated ?? { isActivated: false },
     ...(item?.dsaeOnboardNetwork &&
       { children: [{ ...item?.dsaeOnboardNetwork,
