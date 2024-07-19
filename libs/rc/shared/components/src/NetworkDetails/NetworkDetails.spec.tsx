@@ -88,7 +88,7 @@ describe('NetworkDetails', () => {
         (req, res, ctx) => res(ctx.json(mockedVenuesResult))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (req, res, ctx) => res(ctx.json({ data: [] }))
       ),
       rest.post(
