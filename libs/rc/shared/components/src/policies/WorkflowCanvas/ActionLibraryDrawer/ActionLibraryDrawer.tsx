@@ -28,7 +28,7 @@ const starterActions: ActionType[] = [
   ActionType.DISPLAY_MESSAGE
 ]
 const authorizationActions: ActionType[] = [
-
+  ActionType.DPSK
 ]
 const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT

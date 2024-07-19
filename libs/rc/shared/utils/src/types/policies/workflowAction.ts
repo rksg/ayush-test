@@ -6,7 +6,8 @@ import { RcFile } from 'antd/lib/upload'
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
-  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE'
+  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
+  DPSK = 'DPSK'
 }
 
 export interface ActionBase {
