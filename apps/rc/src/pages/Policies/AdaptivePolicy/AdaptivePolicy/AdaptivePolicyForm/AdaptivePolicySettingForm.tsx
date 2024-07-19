@@ -242,7 +242,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 columns={useColumns()}
                 dataSource={evaluationRules}
                 rowActions={filterByAccess(rowActions)}
-                rowSelection={hasCloudpathAccess() && { type: 'radio' }}
+                rowSelection={{ type: 'radio' }}
                 actions={filterByAccess([{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len

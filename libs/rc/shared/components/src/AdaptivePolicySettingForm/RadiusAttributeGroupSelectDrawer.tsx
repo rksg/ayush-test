@@ -130,7 +130,7 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             dataSource={tableQuery.data?.data}
             showHeader={false}
             tableAlertRender={false}
-            rowSelection={hasCloudpathAccess() && {
+            rowSelection={{
               type: 'radio',
               onChange: onSelectChange,
               selectedRowKeys: selectedRowKeys }}
