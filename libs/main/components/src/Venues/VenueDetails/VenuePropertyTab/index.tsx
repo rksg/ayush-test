@@ -108,6 +108,7 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const PropertyUnitStatusOptions = [
     { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
     { key: PropertyUnitStatus.DISABLED, value: $t({ defaultMessage: 'Suspended' }) }
@@ -266,7 +267,10 @@ export function VenuePropertyTab () {
     // console.log('Fetch aps : ', apMac)
 
     setApMap(new Map())
-    getApList({ payload: { ...apViewModelPayload, filters: { apMac } } })
+    getApList({
+      payload: { ...apViewModelPayload, filters: { apMac } },
+      enableRbac: isWifiRbacEnabled
+    })
       .then(result => {
         if (result.data) {
           result.data.data.forEach(ap => {

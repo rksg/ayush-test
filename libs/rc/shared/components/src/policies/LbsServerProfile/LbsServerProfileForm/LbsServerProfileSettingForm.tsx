@@ -57,7 +57,7 @@ const LbsServerProfileSettingForm = () => {
       <div>
         <Form.Item
           name='lbsVenueName'
-          label={$t({ defaultMessage: 'LBS Venue Name' })}
+          label={$t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' })}
           rules={[
             { required: true },
             { min: 2 },
@@ -69,7 +69,7 @@ const LbsServerProfileSettingForm = () => {
         />
         <Form.Item
           name='serverAddress'
-          style={{ display: 'inline-block', width: 'calc(86%)', paddingRight: '20px' }}
+          style={{ display: 'inline-block', width: 'calc(80%)' }}
           rules={[
             { required: true },
             { validator: (_, value) => domainNameRegExp(value) }
@@ -80,14 +80,19 @@ const LbsServerProfileSettingForm = () => {
         />
         <Form.Item
           name='serverPort'
-          style={{ display: 'inline-block', width: 'calc(14%)' }}
+          style={{
+            display: 'inline-block',
+            width: 'calc(14%)',
+            float: 'right',
+            marginRight: '10px'
+          }}
           label={$t({ defaultMessage: 'Port' })}
           rules={[
             { required: true },
             { type: 'number', min: 1 },
             { type: 'number', max: 65535 }
           ]}
-          initialValue={8443}
+          initialValue={8883}
           children={<InputNumber min={1} max={65535} />}
         />
       </div>

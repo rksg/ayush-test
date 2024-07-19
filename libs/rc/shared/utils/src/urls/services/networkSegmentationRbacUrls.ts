@@ -7,6 +7,6 @@ export const NetworkSegmentationRbacUrls: { [key: string]: ApiInfo } = {
   getWebAuthTemplateSwitches: {
     method: 'get',
     newApi: true,
-    url: '/webAuthPageTemplates/:serviceId/switches/query'
+    url: '/webAuthPageTemplates/:serviceId/switches'
   }
 }

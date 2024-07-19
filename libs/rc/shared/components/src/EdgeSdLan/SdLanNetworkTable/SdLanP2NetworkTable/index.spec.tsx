@@ -3,9 +3,9 @@ import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import _                                      from 'lodash'
 import { rest }                               from 'msw'
 
-import { networkApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
+import { networkApi }                                            from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, NetworkTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,7 +14,7 @@ import {
 import { EdgeScopes, SwitchScopes, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, hasPermission, setUserProfile } from '@acx-ui/user'
 
-import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
+import { mockNetworkViewmodelList } from '../../__tests__/fixtures'
 
 import { EdgeSdLanP2ActivatedNetworksTable } from '.'
 
@@ -37,17 +37,23 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
 
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_req, res, ctx) => res(ctx.json({
+          data: mockNetworkViewmodelList,
+          page: 0,
+          totalCount: mockNetworkViewmodelList.length
+        }))
       ),
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_req, res, ctx) => {
           mockedGetNetworkViewmodelList()
           return res(ctx.json({
-            data: mockNetworkViewmodelList,
-            page: 0,
-            totalCount: mockNetworkViewmodelList.length
+            fields: [
+            ],
+            totalCount: 0,
+            page: 1,
+            data: []
           }))
         }
       )
@@ -238,24 +244,31 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
     })
 
     it('should grey out vlan pooling network tunnel to DMZ', async () => {
-      const withVlanPoolEnabled = _.cloneDeep(mockNetworkViewmodelList)
-      withVlanPoolEnabled.forEach((item) => {
-        if (item.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL) {
-          item.vlanPool = {
-            name: ''
-          }
-        }
-      })
+      // eslint-disable-next-line max-len
+      const withVlanPoolEnabledNetwork = _.find(mockNetworkViewmodelList, { nwSubType: NetworkTypeEnum.CAPTIVEPORTAL })
 
       mockServer.use(
         rest.post(
-          CommonUrlsInfo.getVenueNetworkList.url,
+          VlanPoolRbacUrls.getVLANPoolPolicyList.url,
           (_req, res, ctx) => {
             mockedGetNetworkViewmodelList()
             return res(ctx.json({
-              data: withVlanPoolEnabled,
-              page: 0,
-              totalCount: withVlanPoolEnabled.length
+              fields: [
+                'wifiNetworkIds',
+                'name',
+                'id'
+              ],
+              totalCount: 1,
+              page: 1,
+              data: [
+                {
+                  id: 'vlanPool_id_1',
+                  name: 'Pool1',
+                  wifiNetworkIds: [
+                    withVlanPoolEnabledNetwork?.id
+                  ]
+                }
+              ]
             }))
           }
         )
@@ -335,7 +348,7 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
             activatedGuest={['network_3']}
             onActivateChange={mockedOnChangeFn}
             disabled={!hasUpdatePermission}
-            tooltip='Permission testing'
+            toggleButtonTooltip='Permission testing'
           />
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
