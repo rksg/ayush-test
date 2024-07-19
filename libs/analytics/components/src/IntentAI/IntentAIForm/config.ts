@@ -39,7 +39,7 @@ export type CodeInfo = {
   priority: IconValue
 }
 
-type IntentKPIConfig = {
+type RecommendationKPIConfig = {
   key: string;
   label: MessageDescriptor;
   tooltipContent?: MessageDescriptor;
@@ -58,7 +58,7 @@ export type RecommendationConfig = {
   reasonText: MessageDescriptor
   tradeoffText: MessageDescriptor
   appliedReasonText?: MessageDescriptor
-  kpis: IntentKPIConfig[]
+  kpis: RecommendationKPIConfig[]
   recommendedValueTooltipContent?:
     string |
     ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
