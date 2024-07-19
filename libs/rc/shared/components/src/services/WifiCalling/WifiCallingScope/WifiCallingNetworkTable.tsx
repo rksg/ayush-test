@@ -10,7 +10,8 @@ import {
   useGetNetworkTemplateListQuery,
   useGetWifiCallingServiceQuery,
   useGetWifiCallingServiceTemplateQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
@@ -28,18 +29,21 @@ const defaultPayload = {
     'name',
     'nwSubType',
     'venues',
-    'id'
+    'id',
+    'venueApGroups'
   ]
 }
 
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+
   const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
-  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
@@ -93,7 +97,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   ]
 
   const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery :
+      enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload,
     enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac
   })
