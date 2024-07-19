@@ -9,6 +9,7 @@ import { DynamicSteps }      from './DynamicSteps'
 import { EditMode }          from './EditMode'
 import { GotoStep }          from './GotoStep'
 import { SingleStep }        from './SingleStep'
+import { TextContent }       from './TextContent'
 
 function MockLayout (props: React.PropsWithChildren) {
   return <div className='ant-pro-basicLayout'>{props.children}</div>
@@ -24,5 +25,6 @@ storiesOf('StepsForm', module)
   .add('Custom Submit Button', () => <MockLayout><CustomSubmitBtton /></MockLayout>)
   .add('Alert Message Bar', () => <MockLayout><AlertMessageBar /></MockLayout>)
   .add('GotoStep', () => <MockLayout><GotoStep /></MockLayout>)
+  .add('Text Content', () => <MockLayout><TextContent /></MockLayout>)
 
 export {}

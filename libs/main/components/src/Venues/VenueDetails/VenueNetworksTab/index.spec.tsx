@@ -36,7 +36,13 @@ import { VenueNetworksTab } from './index'
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 // isMapEnabled = false && SD-LAN not enabled
-const disabledFFs = [Features.G_MAP, Features.EDGES_SD_LAN_TOGGLE, Features.EDGES_SD_LAN_HA_TOGGLE, Features.WIFI_RBAC_API]
+const disabledFFs = [
+  Features.G_MAP,
+  Features.EDGES_SD_LAN_TOGGLE,
+  Features.EDGES_SD_LAN_HA_TOGGLE,
+  Features.WIFI_RBAC_API,
+  Features.RBAC_CONFIG_TEMPLATE_TOGGLE
+]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
 type MockDialogProps = React.PropsWithChildren<{

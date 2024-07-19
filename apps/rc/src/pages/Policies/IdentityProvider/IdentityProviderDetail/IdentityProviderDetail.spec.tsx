@@ -4,7 +4,7 @@ import { Path, To } from 'react-router-dom'
 import { networkApi, policyApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
-  CommonUrlsInfo,
+  CommonRbacUrlsInfo,
   IdentityProviderUrls,
   PolicyOperation,
   PolicyType,
@@ -60,10 +60,6 @@ describe('IdentityProviderDetail', () => {
         IdentityProviderUrls.getIdentityProviderList.url,
         (_, res, ctx) => res(ctx.json(dummyTableResult))
       ),
-      rest.post(
-        CommonUrlsInfo.getVMNetworksList.url,
-        (_, res, ctx) => res(ctx.json(dummyNetworksResult))
-      ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
         (req, res, ctx) => {
@@ -72,6 +68,11 @@ describe('IdentityProviderDetail', () => {
             ? res(ctx.json(dummyAuthRadius))
             : res(ctx.json(dummayAccounting))
         }
+      ),
+      // RBAC API
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(dummyNetworksResult))
       )
     )
   })

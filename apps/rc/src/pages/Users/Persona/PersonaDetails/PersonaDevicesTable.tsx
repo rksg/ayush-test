@@ -16,10 +16,10 @@ import {
   useAddPersonaDevicesMutation,
   useDeletePersonaDevicesMutation,
   useGetDpskPassphraseDevicesQuery,
-  useLazyGetClientListQuery
+  useLazyGetClientsQuery
 } from '@acx-ui/rc/services'
 import {
-  ClientList,
+  ClientInfo,
   dateSort,
   defaultSort,
   DPSKDeviceInfo,
@@ -34,11 +34,14 @@ import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { noDataDisplay }                 from '@acx-ui/utils'
 
 
-const defaultPayload = {
+const defaultClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac', 'ipAddress', 'Username', 'hostname', 'osType'],
-  fields: ['hostname','osType','clientMac','ipAddress','Username', 'venueName',
-    'apName', 'lastUpdateTime', 'authmethod']
+  searchTargetFields: ['macAddress', 'ipAddress', 'username', 'hostname', 'osType'],
+  fields: ['macAddress','ipAddress','username', 'hostname','osType',
+    'venueInformation.name', 'apInformation.name',
+    'lastUpdatedTime', 'networkInformation.authenticationMethod'],
+  page: 1,
+  pageSize: 10000
 }
 
 export function PersonaDevicesTable (props: {
@@ -56,7 +59,8 @@ export function PersonaDevicesTable (props: {
   const addClientMac = (mac: string) => setClientMac(prev => new Set(prev.add(mac)))
   const { customHeaders } = usePersonaAsyncHeaders()
 
-  const [getClientList] = useLazyGetClientListQuery()
+  const [getClientList] = useLazyGetClientsQuery()
+
   const { data: dpskDevicesData, ...dpskDevicesResult } = useGetDpskPassphraseDevicesQuery({
     params: {
       tenantId,
@@ -89,8 +93,8 @@ export function PersonaDevicesTable (props: {
     getClientList({
       params: { tenantId },
       payload: {
-        ...defaultPayload,
-        filters: { clientMac: [...clientMac] }
+        ...defaultClientPayload,
+        filters: { macAddress: [...clientMac] }
       }
     })
       .then(result => {
@@ -100,24 +104,25 @@ export function PersonaDevicesTable (props: {
       })
   }, [clientMac])
 
-  const aggregateDpskDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+  const aggregateDpskDevices = (devices: PersonaDevice[], clientList: ClientInfo[]) => {
     return devices.map(device => {
       // PersonaMAC format: AB-AB-AB-AB-AB-AB
       // ClientMAC format: ab:ab:ab:ab:ab:ab
       const deviceMac = toClientMacFormat(device.macAddress)
       const client = clientList
-        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+        .find(client => client.macAddress.toUpperCase() === deviceMac.toUpperCase())
       // if UE connected
       //  via MAC auth, the authmethod would be: "Standard+Mac"
       //  via DPSK,     the authmethod would be: "Standard+Open"
-      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
+      const authmethod = client?.networkInformation?.authenticationMethod
+      const isMacAuth = authmethod?.toUpperCase()?.includes('MAC')
 
       return client && !isMacAuth && device.online
         ? {
           ...device,
           os: client.osType,
           deviceName: client.hostname,
-          lastSeenAt: client.lastUpdateTime
+          lastSeenAt: client.lastUpdatedTime
         }
         : {
           ...device,
@@ -126,7 +131,7 @@ export function PersonaDevicesTable (props: {
     }) ?? []
   }
 
-  const aggregateMacAuthDevices = (devices: PersonaDevice[], clientList: ClientList[]) => {
+  const aggregateMacAuthDevices = (devices: PersonaDevice[], clientList: ClientInfo[]) => {
     // Combine client data and persona devices data
     return devices.map(device => {
       // this device does not register to MAC pool successfully.
@@ -136,18 +141,19 @@ export function PersonaDevicesTable (props: {
       // ClientMAC format: ab:ab:ab:ab:ab:ab
       const deviceMac = toClientMacFormat(device.macAddress)
       const client = clientList
-        .find(client => client.clientMac.toUpperCase() === deviceMac.toUpperCase())
+        .find(client => client.macAddress.toUpperCase() === deviceMac.toUpperCase())
       // if UE connected
       //  via MAC auth, the authmethod would be: "Standard+Mac"
       //  via DPSK,     the authmethod would be: "Standard+Open"
-      const isMacAuth = client?.authmethod?.toUpperCase()?.includes('MAC')
+      const authmethod = client?.networkInformation?.authenticationMethod
+      const isMacAuth = authmethod?.toUpperCase()?.includes('MAC')
 
       return client && isMacAuth
         ? {
           ...device,
           os: client.osType,
           deviceName: client.hostname,
-          lastSeenAt: client.lastUpdateTime
+          lastSeenAt: client.lastUpdatedTime
         }
         : device
     }) ?? []

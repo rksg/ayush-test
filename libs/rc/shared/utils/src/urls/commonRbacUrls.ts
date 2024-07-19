@@ -97,7 +97,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/aps/query',
     url: '/venues/aps/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   getApGroupsListByGroup: {
@@ -257,7 +261,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateSwitchPosition: {
     method: 'put',
     //url: '/switches/:serialNumber/position',
-    url: '/venues/:venueId/switches/:switchId/position',
+    url: '/venues/:venueId/switches/:serialNumber/positions',
     newApi: true
   },
   getVenueCityList: {
