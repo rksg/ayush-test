@@ -488,8 +488,8 @@ describe('Network utils test', () => {
 
         await result.current.updateWifiCallingActivation('network-id', saveData)
 
-        await waitFor(() => expect(activateFn).toHaveBeenCalledTimes(2))
-        await waitFor(() => expect(deactivateFn).not.toHaveBeenCalled())
+        expect(activateFn).toHaveBeenCalledTimes(2)
+        expect(deactivateFn).not.toHaveBeenCalled()
       })
 
       it('should deactivateAll via RBAC', async () => {
@@ -507,8 +507,8 @@ describe('Network utils test', () => {
 
         await result.current.updateWifiCallingActivation('network-id', saveData)
 
-        await waitFor(() => expect(activateFn).not.toHaveBeenCalled())
-        await waitFor(() => expect(deactivateFn).toHaveBeenCalledTimes(2))
+        expect(activateFn).not.toHaveBeenCalled()
+        expect(deactivateFn).toHaveBeenCalledTimes(2)
       })
 
       it('should activate/deactivate wifi calling via RBAC', async () => {
@@ -528,8 +528,8 @@ describe('Network utils test', () => {
 
         await result.current.updateWifiCallingActivation('network-id', saveData)
 
-        await waitFor(() => expect(activateFn).toHaveBeenCalled())
-        await waitFor(() => expect(deactivateFn).toHaveBeenCalled())
+        expect(activateFn).toHaveBeenCalled()
+        expect(deactivateFn).toHaveBeenCalled()
       })
     })
 
@@ -590,8 +590,8 @@ describe('Network utils test', () => {
 
         await result.current.updateWifiCallingActivation('network-id', saveData)
 
-        await waitFor(() => expect(activateFn).toHaveBeenCalled())
-        await waitFor(() => expect(deactivateFn).toHaveBeenCalled())
+        expect(activateFn).toHaveBeenCalled()
+        expect(deactivateFn).toHaveBeenCalled()
       })
 
     })
