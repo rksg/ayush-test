@@ -167,7 +167,6 @@ export function hasRoles (roles: string | string[]) {
 
   if (!Array.isArray(roles)) roles = [roles]
 
-  // TODO: Backend needs to enhance the API to include system role names in roles
   if (abacEnabled &&
     profile.customRoleType === CustomRoleType.SYSTEM &&
     profile.customRoleName) {

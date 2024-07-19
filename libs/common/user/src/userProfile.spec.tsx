@@ -121,8 +121,6 @@ describe('hasRoles', () => {
       ...profile,
       profile: {
         ...profile.profile,
-        //  According to the current backend design, roles might be PG names that do not exist in RolesName.
-        //  However, this might change in the future, so we have not yet modified the type of roles.
         roles: ['NEW_USER'],
         customRoleType: CustomRoleType.SYSTEM,
         customRoleName: 'PRIME_ADMIN'
