@@ -5,45 +5,11 @@ import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl }                     from '@acx-ui/utils'
 
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/IntentAIDetails/Values.tsx
-import { codes }                                      from '../IntentAIForm/config'
-import { EnhancedRecommendation, extractBeforeAfter } from '../IntentAIForm/services'
-import { isDataRetained }                             from '../IntentAIForm/utils'
-
-export const getValues = (details: EnhancedRecommendation) => {
-  const {
-    status,
-    originalValue,
-    currentValue,
-    recommendedValue,
-    code,
-    appliedOnce,
-    firstAppliedAt,
-    preferences
-  } = details
-  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes[code]
-  return {
-    status,
-    code,
-    appliedOnce,
-    firstAppliedAt,
-    preferences,
-    heading: valueText,
-    original: valueFormatter(originalValue),
-    current: valueFormatter(currentValue),
-    recommended: valueFormatter(recommendedValue),
-    tooltipContent: typeof recommendedValueTooltipContent === 'function'
-      ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
-      : recommendedValueTooltipContent
-  }
-}
-========
 import { StateType, StatusTrail }                    from '../../config'
 import { codes }                                     from '../../IntentAIForm/AIDrivenRRM'
 import { IconValue }                                 from '../../IntentAIForm/config'
 import { EnhancedRecommendation, RecommendationKpi } from '../../IntentAIForm/services'
 import { isDataRetained }                            from '../../utils'
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetails/AIDrivenRRM/Values.tsx
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
   return codes[recommendation.code]

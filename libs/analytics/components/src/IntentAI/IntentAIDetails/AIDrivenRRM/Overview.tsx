@@ -8,18 +8,10 @@ import { get }                               from '@acx-ui/config'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { truthy }                            from '@acx-ui/utils'
 
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/IntentAIDetails/Overview.tsx
-import { DescriptionSection }     from '../../DescriptionSection'
-import { codes, statusTrailMsgs } from '../IntentAIForm/config'
-import { EnhancedRecommendation } from '../IntentAIForm/services'
-import { DownloadRRMComparison }  from '../RRMGraph/DownloadRRMComparison'
-========
 import { DescriptionSection }     from '../../../DescriptionSection'
 import { statusTrailMsgs }        from '../../IntentAIForm/AIDrivenRRM'
 import { EnhancedRecommendation } from '../../IntentAIForm/services'
-
-import { DownloadRRMComparison } from './Graph/DownloadRRMComparison'
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetails/AIDrivenRRM/Overview.tsx
+import { DownloadRRMComparison }  from '../../RRMGraph/DownloadRRMComparison'
 
 export const Overview = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()

@@ -7,6 +7,7 @@ import { TrendTypeEnum }                                                        
 import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapping, TrendPill } from '@acx-ui/components'
 
 import { IntentAIRRMGraph, getGraphKPI } from '../../RRMGraph'
+import { useIntentAICRRMQuery }          from '../../RRMGraph/services'
 import { isDataRetained }                from '../../utils'
 import { EnhancedRecommendation }        from '../services'
 import * as UI                           from '../styledComponents'

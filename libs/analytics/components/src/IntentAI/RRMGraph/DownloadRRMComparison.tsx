@@ -13,11 +13,7 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/RRMGraph/DownloadRRMComparison.tsx
 import { EnhancedRecommendation } from '../IntentAIForm/services'
-========
-import { EnhancedRecommendation } from '../../../IntentAIForm/services'
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetails/AIDrivenRRM/Graph/DownloadRRMComparison.tsx
 
 import { useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }      from './styledComponents'

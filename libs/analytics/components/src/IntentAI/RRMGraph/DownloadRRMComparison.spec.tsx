@@ -1,13 +1,8 @@
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/RRMGraph/DownloadRRMComparison.spec.tsx
 import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../IntentAIForm/__tests__/fixtures'
 import { EnhancedRecommendation }                     from '../IntentAIForm/services'
-========
-import { EnhancedRecommendation }                     from '../../../IntentAIForm/services'
-import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../__tests__/fixtures'
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetails/AIDrivenRRM/Graph/DownloadRRMComparison.spec.tsx
 
 import { DownloadRRMComparison } from './DownloadRRMComparison'
 
