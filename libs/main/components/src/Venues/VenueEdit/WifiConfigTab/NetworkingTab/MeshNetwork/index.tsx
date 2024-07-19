@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, Form, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd'
 import { useIntl }                                                     from 'react-intl'
@@ -16,8 +16,8 @@ import {
   useGetVenueMeshQuery,
   useGetDHCPProfileListViewModelQuery
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
-import { validationMessages }                                          from '@acx-ui/utils'
+import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString, useConfigTemplate } from '@acx-ui/rc/utils'
+import { validationMessages }                                                             from '@acx-ui/utils'
 
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }                                                                from '../../../index'
@@ -52,6 +52,7 @@ const Mesh6GhzInfoIcon = () => {
 
 const useVenueWifiSettings = (venueId: string | undefined) => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
 
   const { data: venueSettings } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
     useQueryFn: useGetVenueSettingsQuery,
@@ -67,15 +68,19 @@ const useVenueWifiSettings = (venueId: string | undefined) => {
   }, { skip: !isWifiRbacEnabled || !venueId })
 
   const { data: venueMeshSettings } = useGetVenueMeshQuery({
-    params: { venueId } },
+    params: { venueId }, isWifiMeshIndependents56GEnable },
   { skip: !isWifiRbacEnabled })
+
+  const rbacVerData = useMemo(() => {
+    return {
+      dhcpServiceSetting: { enabled: !!dhcpList?.data[0] },
+      mesh: venueMeshSettings
+    } as VenueSettings
+  }, [venueMeshSettings, dhcpList])
 
   return isWifiRbacEnabled
     ? ((venueMeshSettings && dhcpList)
-      ? {
-        dhcpServiceSetting: { enabled: !!dhcpList?.data[0] },
-        mesh: venueMeshSettings
-      } as VenueSettings
+      ? rbacVerData
       : undefined)
     : venueSettings
 }
@@ -83,7 +88,10 @@ const useVenueWifiSettings = (venueId: string | undefined) => {
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
   const {
     editContextData,
@@ -114,7 +122,8 @@ export function MeshNetwork () {
   const [isPassphraseEditMode, setIsPassphraseEditMode] = useState(false)
   const [passphraseError, setPassphraseError] = useState<string>()
 
-  const [meshRadioType, setMeshRadioType] = useState<string>('5-GHz')
+  const [meshRadioType, setMeshRadioType] = useState<string>(
+    (isWifiMeshIndependents56GEnable ? '5-6-GHz' : '5-GHz'))
   const [meshZeroTouchEnabled, setMeshZeroTouchEnabled] = useState(false)
 
   const origSsid = useRef<string>()
@@ -329,7 +338,7 @@ export function MeshNetwork () {
         }
       }
 
-      await updateVenueMesh({ params, payload: meshData, enableRbac: isWifiRbacEnabled })
+      await updateVenueMesh({ params, payload: meshData, enableRbac: resolvedRbacEnabled, isWifiMeshIndependents56GEnable })
 
       setIsSsidEditMode(false)
       setIsPassphraseEditMode(false)

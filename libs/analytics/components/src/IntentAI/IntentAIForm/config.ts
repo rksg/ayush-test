@@ -1,11 +1,9 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 
 import { CRRMStates } from './states'
-import { crrmText }   from './utils'
 
 export type IconValue = { order: number, label: MessageDescriptor }
 
@@ -34,26 +32,11 @@ export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
 }
 
-type IntentType = {
-  introduction: MessageDescriptor,
-  intent: MessageDescriptor,
-  category: MessageDescriptor
-}
-
-const intentType: Record<string, IntentType> = {
-  aiDrivenRRM: {
-    introduction: defineMessage({ defaultMessage: 'Choose between a network with maximum throughput, allowing some interference, or one with minimal interference, for high client density.' }),
-    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
-    category: defineMessage({ defaultMessage: 'Wi-Fi Experience' })
-  }
-}
-
-type CodeInfo = {
+export type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
   partialOptimizedSummary?: MessageDescriptor,
-  priority: IconValue,
-  intentType: IntentType
+  priority: IconValue
 }
 
 type RecommendationKPIConfig = {
@@ -68,7 +51,7 @@ type RecommendationKPIConfig = {
   filter?: CallableFunction
 }
 
-type RecommendationConfig = {
+export type RecommendationConfig = {
   valueFormatter: ReturnType<typeof formatter>
   valueText: MessageDescriptor
   actionText: MessageDescriptor
@@ -87,7 +70,7 @@ type RecommendationConfig = {
   continuous: boolean
 }
 
-const categories = {
+export const categories = {
   'Wi-Fi Client Experience': defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
   'Security': defineMessage({ defaultMessage: 'Security' }),
   'Infrastructure': defineMessage({ defaultMessage: 'Infrastructure' }),
@@ -182,135 +165,3 @@ export const states = {
 }
 
 export type StateType = keyof typeof states
-
-export const codes = {
-  'c-crrm-channel24g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    intentType: intentType.aiDrivenRRM,
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    appliedActionText: defineMessage({ defaultMessage: '{scope} had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
-    appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
-    partialOptimizedTradeoffText: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }],
-    continuous: true
-  },
-  'c-crrm-channel5g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    intentType: intentType.aiDrivenRRM,
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    appliedActionText: defineMessage({ defaultMessage: '{scope} had experienced high co-channel interference in 5 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
-    appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
-    partialOptimizedTradeoffText: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }],
-    continuous: true
-  },
-  'c-crrm-channel6g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    intentType: intentType.aiDrivenRRM,
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    appliedActionText: defineMessage({ defaultMessage: '{scope} had experienced high co-channel interference in 6 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
-    appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    tradeoffText: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
-    partialOptimizedTradeoffText: get('IS_MLISA_SA')
-      ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }],
-    continuous: true
-  }
-} as unknown as Record<string, RecommendationConfig & CodeInfo>
-
-export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
-  acc[key as StateType] = val.text
-  return acc
-}, {} as Record<StateType, MessageDescriptor>)
-
-export const steps = {
-  title: {
-    introduction: defineMessage({ defaultMessage: 'Introduction' }),
-    priority: defineMessage({ defaultMessage: 'Intent Priority' }),
-    settings: defineMessage({ defaultMessage: 'Settings' }),
-    summary: defineMessage({ defaultMessage: 'Summary' })
-  },
-  link: {
-    demoLink: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi',
-    guideLink: 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
-  },
-  sideNotes: {
-    title: defineMessage({ defaultMessage: 'Side Notes' }),
-    introduction: defineMessage({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' }),
-    tradeoff: defineMessage({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })
-  },
-  calendarText: defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
-}
-
-export const intentTypeMap = {
-  aiDrivenRRM: {
-    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
-    category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
-    clientDensity: defineMessage({ defaultMessage: 'Client Density' }),
-    clientThroughput: defineMessage({ defaultMessage: 'Client Throughput' })
-  }
-}
-
-export const crrmIntent = {
-  full: {
-    value: defineMessage({ defaultMessage: 'Client Density' }),
-    title: defineMessage({ defaultMessage: 'High number of clients in a dense network' }),
-    content: defineMessage({ defaultMessage: 'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })
-  },
-  partial: {
-    value: defineMessage({ defaultMessage: 'Client Throughput' }),
-    title: defineMessage({ defaultMessage: 'High client throughput in sparse network' }),
-    content: defineMessage({ defaultMessage: 'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })
-  }
-}
-
-export const isOptimized = (value: boolean) => value ? 'full' : 'partial'

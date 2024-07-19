@@ -6,7 +6,8 @@ import { MessageDescriptor }   from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from './config'
+import { codes }                                                 from './AIDrivenRRM'
+import { StateType, IconValue, StatusTrail, ConfigurationValue } from './config'
 
 export type BasicRecommendation = {
   id: string;
@@ -61,30 +62,6 @@ export type EnhancedRecommendation = RecommendationDetails & {
   intentType?: string;
 }
 
-export type CrrmListItem = {
-  id: string
-  code: string
-  status: StateType
-  sliceValue: string
-  statusTrail: StatusTrail
-  crrmOptimizedState?: IconValue
-  summary?: string
-  updatedAt: string
-  metadata: {}
-} & Partial<RecommendationKpi>
-
-type RecommendationApPayload = {
-  id: string;
-  search: string;
-}
-
-export type RecommendationAp = {
-  name: string;
-  mac: string;
-  model: string;
-  version: string;
-}
-
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code,
@@ -133,13 +110,6 @@ export const kpiHelper = (code: string) => {
     .trim()
 }
 
-export function extractBeforeAfter (value: CrrmListItem['kpis']) {
-  const { current, previous, projected } = value!
-  const [before, after] = [previous, current, projected]
-    .filter(value => value !== null)
-  return [before, after]
-}
-
 type BasicRecommendationWithStatus = BasicRecommendation & {
   status: string
 }
@@ -183,36 +153,11 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: { recommendation: RecommendationDetails }) =>
         transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
-    }),
-    getAps: build.query<RecommendationAp[], RecommendationApPayload>({
-      query: (payload) => ({
-        document: gql`
-          query GetAps($id: String, $n: Int, $search: String, $key: String) {
-            recommendation(id: $id) {
-              APs: APs(n: $n, search: $search, key: $key) {
-                name
-                mac
-                model
-                version
-              }
-            }
-          }
-        `,
-        variables: {
-          id: payload.id,
-          n: 100,
-          search: payload.search,
-          key: 'aps-on-latest-fw-version'
-        }
-      }),
-      transformResponse: (response: { recommendation: { APs: RecommendationAp[] } }) =>
-        response.recommendation.APs
     })
   })
 })
 
 export const {
   useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery,
-  useGetApsQuery
+  useConfigRecommendationDetailsQuery
 } = api

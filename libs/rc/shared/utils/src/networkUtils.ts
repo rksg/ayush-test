@@ -1,5 +1,5 @@
-import { WlanSecurityEnum }                        from './constants'
-import { Network, NetworkDetail, NetworkSaveData } from './types/network'
+import { WlanSecurityEnum }                                     from './constants'
+import { Network, NetworkDetail, NetworkSaveData, WifiNetwork } from './types/network'
 
 const SupportRadio6gSecurityList = [
   WlanSecurityEnum.WPA3,
@@ -20,13 +20,24 @@ export const IsNetworkSupport6g = (networkDetail?: NetworkDetail | NetworkSaveDa
   return IsSecuritySupport6g(wlanSecurity)
 }
 
-export const transformNetwork = (item: Network) => {
+export const transformNetwork = (item: Network | WifiNetwork) => {
+  const resolvedVenues = item.venues ?? transVenuesForNetwork((item as WifiNetwork).venueApGroups)
   return {
     ...item,
+    venues: resolvedVenues,
     activated: item.activated ?? { isActivated: false },
     ...(item?.dsaeOnboardNetwork &&
       { children: [{ ...item?.dsaeOnboardNetwork,
         isOnBoarded: true,
         id: item?.name + 'onboard' } as Network] })
+  }
+}
+
+// eslint-disable-next-line max-len
+export function transVenuesForNetwork (venueApGroups: WifiNetwork['venueApGroups'] = []): Network['venues'] {
+  return {
+    count: venueApGroups.length,
+    names: [],
+    ids: venueApGroups.map(v => v.venueId)
   }
 }

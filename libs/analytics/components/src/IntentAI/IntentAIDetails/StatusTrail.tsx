@@ -4,8 +4,9 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 import { Card }                      from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { StatusTrail as StatusTrailType, statusTrailMsgs } from '../IntentAIForm/config'
-import { EnhancedRecommendation }                          from '../IntentAIForm/services'
+import { statusTrailMsgs }                from '../IntentAIForm/AIDrivenRRM'
+import { StatusTrail as StatusTrailType } from '../IntentAIForm/config'
+import { EnhancedRecommendation }         from '../IntentAIForm/services'
 
 import {
   DetailsHeader,
@@ -72,7 +73,7 @@ export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) =>
     <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
     <StatusTrailWrapper>
       <Card>
-        {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind} />)}
+        {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind}/>)}
       </Card>
     </StatusTrailWrapper>
   </div>

@@ -1,7 +1,7 @@
 
-import { Typography } from 'antd'
-import moment         from 'moment-timezone'
-import { useIntl }    from 'react-intl'
+import { Typography }             from 'antd'
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, recommendationBandMapping } from '@acx-ui/components'
 import { get }                               from '@acx-ui/config'
@@ -9,7 +9,7 @@ import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { truthy }                            from '@acx-ui/utils'
 
 import { DescriptionSection }     from '../../DescriptionSection'
-import { codes, statusTrailMsgs } from '../IntentAIForm/config'
+import { statusTrailMsgs }        from '../IntentAIForm/AIDrivenRRM'
 import { EnhancedRecommendation } from '../IntentAIForm/services'
 
 import { DownloadRRMComparison } from './Graph/DownloadRRMComparison'
@@ -19,18 +19,20 @@ export const Overview = ({ details }: { details: EnhancedRecommendation }) => {
   const {
     sliceValue,
     status,
-    updatedAt,
-    code
+    updatedAt
   } = details
-  const intentType = codes[code].intentType
+  // eslint-disable-next-line max-len
+  const introduction= defineMessage({ defaultMessage: 'Choose between a network with maximum throughput, allowing some interference, or one with minimal interference, for high client density.' })
+  const intent= defineMessage({ defaultMessage: 'Client density vs Client throughput' })
+  const category= defineMessage({ defaultMessage: 'Wi-Fi Experience' })
   const fields = [
-    intentType && {
+    {
       label: $t({ defaultMessage: 'Intent' }),
-      children: $t(intentType.intent)
+      children: $t(intent)
     },
-    intentType && {
+    {
       label: $t({ defaultMessage: 'Category' }),
-      children: $t(intentType.category)
+      children: $t(category)
     },
     {
       // eslint-disable-next-line max-len
@@ -48,7 +50,7 @@ export const Overview = ({ details }: { details: EnhancedRecommendation }) => {
   ].filter(truthy)
 
   return <Loader>
-    <Typography.Paragraph >{intentType && $t(intentType.introduction)}</Typography.Paragraph>
+    <Typography.Paragraph >{$t(introduction)}</Typography.Paragraph>
     <DescriptionSection fields={fields} layout='horizontal' />
     {Object.keys(recommendationBandMapping).includes(details.code as string) &&
       <DownloadRRMComparison details={details} title={$t({ defaultMessage: 'RRM comparison' })} />}

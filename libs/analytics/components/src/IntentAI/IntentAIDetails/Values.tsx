@@ -5,9 +5,11 @@ import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl }                     from '@acx-ui/utils'
 
-import { codes }                                      from '../IntentAIForm/config'
-import { EnhancedRecommendation, extractBeforeAfter } from '../IntentAIForm/services'
-import { isDataRetained }                             from '../IntentAIForm/utils'
+import { StateType, StatusTrail }                    from '../config'
+import { codes }                                     from '../IntentAIForm/AIDrivenRRM'
+import { IconValue }                                 from '../IntentAIForm/config'
+import { EnhancedRecommendation, RecommendationKpi } from '../IntentAIForm/services'
+import { isDataRetained }                            from '../utils'
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
   return codes[recommendation.code]
@@ -21,6 +23,25 @@ export const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: stri
   const [before, after] = extractBeforeAfter(recommendation[prop])
     .map(value => config!.format(value))
   return { before, after }
+}
+
+type CrrmListItem = {
+  id: string
+  code: string
+  status: StateType
+  sliceValue: string
+  statusTrail: StatusTrail
+  crrmOptimizedState?: IconValue
+  summary?: string
+  updatedAt: string
+  metadata: {}
+} & Partial<RecommendationKpi>
+
+function extractBeforeAfter (value: CrrmListItem['kpis']) {
+  const { current, previous, projected } = value!
+  const [before, after] = [previous, current, projected]
+    .filter(value => value !== null)
+  return [before, after]
 }
 
 export const translateMetadataValue = (value: unknown) => {

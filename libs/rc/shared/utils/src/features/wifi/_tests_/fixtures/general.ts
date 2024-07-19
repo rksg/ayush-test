@@ -388,3 +388,55 @@ export const mockVenueList = {
     }
   ]
 }
+
+export const mockGroupedApList = {
+  fields: [
+    'serialNumber',
+    'name',
+    'model',
+    'apGroupId'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      groupedField: 'apGroupId',
+      aps: []
+    },
+    {
+      groupedField: 'apGroupId',
+      groupedValue: 'f2863482681e489ab8566e2f229572aa',
+      aps: [
+        {
+          serialNumber: 'mock_ap_1',
+          name: 'mock-ap-1',
+          apGroupId: 'f2863482681e489ab8566e2f229572aa',
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+          clientCount: 1
+        }
+      ]
+    },
+    {
+      groupedField: 'apGroupId',
+      groupedValue: '58195e050b8a4770acc320f6233ad8d9',
+      aps: [
+        {
+          serialNumber: 'mock_ap_2',
+          name: 'mock-ap-2',
+          apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+          clientCount: 1,
+          model: 'R550'
+        },
+        {
+          serialNumber: 'mock_ap_3',
+          name: 'mock-ap-3',
+          apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+          clientCount: 1,
+          model: 'T750SE'
+        }
+      ]
+    }
+  ]
+}
