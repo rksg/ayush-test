@@ -46,7 +46,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </div>
     </label>
     <div
-      class="sc-ivmvlL gSOfgG"
+      class="sc-jZiqTT jLBklO"
     >
       <ul>
         <li>
@@ -58,7 +58,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </ul>
     </div>
     <div
-      class="sc-eCOUaW fjUhil"
+      class="sc-bxSTMQ jYAXuq"
     >
       Mesh Network Name
       <div
@@ -100,7 +100,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       />
     </div>
     <div
-      class="sc-isuzjp hmBohF"
+      class="sc-jWquRx lkcmft"
     >
       Mesh PSK
       <div
