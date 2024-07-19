@@ -5,11 +5,11 @@ import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl }                     from '@acx-ui/utils'
 
-import { StateType, StatusTrail }                    from '../config'
-import { codes }                                     from '../IntentAIForm/AIDrivenRRM'
-import { IconValue }                                 from '../IntentAIForm/config'
-import { EnhancedRecommendation, RecommendationKpi } from '../IntentAIForm/services'
-import { isDataRetained }                            from '../utils'
+import { StateType, StatusTrail }                    from '../../config'
+import { codes }                                     from '../../IntentAIForm/AIDrivenRRM'
+import { IconValue }                                 from '../../IntentAIForm/config'
+import { EnhancedRecommendation, RecommendationKpi } from '../../IntentAIForm/services'
+import { isDataRetained }                            from '../../utils'
 
 export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
   return codes[recommendation.code]

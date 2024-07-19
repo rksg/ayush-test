@@ -5,17 +5,17 @@ import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer }               from '../../DescriptionSection/styledComponents'
+import { FixedAutoSizer }               from '../../../DescriptionSection/styledComponents'
 import {
   useRecommendationCodeQuery,
   useConfigRecommendationDetailsQuery
-} from '../IntentAIForm/services'
+} from '../../IntentAIForm/services'
+import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../styledComponents'
 
-import { CrrmBenefits }                       from './CrrmBenefits'
-import { CrrmValuesExtra }                    from './CrrmValuesExtra'
-import { Overview }                           from './Overview'
-import { StatusTrail }                        from './StatusTrail'
-import { AIDrivenRRMHeader, AIDrivenRRMIcon } from './styledComponents'
+import { CrrmBenefits }    from './CrrmBenefits'
+import { CrrmValuesExtra } from './CrrmValuesExtra'
+import { Overview }        from './Overview'
+import { StatusTrail }     from './StatusTrail'
 
 export const CrrmDetails = () => {
   const { $t } = useIntl()

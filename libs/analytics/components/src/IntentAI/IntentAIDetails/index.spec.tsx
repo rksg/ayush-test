@@ -1,4 +1,4 @@
-import { CrrmDetails } from './CrrmDetails'
+import { CrrmDetails } from './AIDrivenRRM/CrrmDetails'
 
 import { IntentAIDetails } from './index'
 

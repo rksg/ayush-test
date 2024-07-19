@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { EnhancedRecommendation } from '../../IntentAIForm/services'
+import { DetailsHeader, Wrapper } from '../styledComponents'
 
-import { DetailsHeader, Wrapper } from './styledComponents'
 import { getRecommendationsText } from './Values'
 
 export const CrrmValuesExtra = ({ details }: { details: EnhancedRecommendation }) => {

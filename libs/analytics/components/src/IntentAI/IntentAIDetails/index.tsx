@@ -1,6 +1,6 @@
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { CrrmDetails } from './CrrmDetails'
+import { CrrmDetails } from './AIDrivenRRM/CrrmDetails'
 
 const intentAIDetailsMap = {
   'c-crrm-channel24g-auto': CrrmDetails,

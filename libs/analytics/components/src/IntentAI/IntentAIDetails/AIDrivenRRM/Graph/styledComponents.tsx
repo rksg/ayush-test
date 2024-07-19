@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { Card } from '@acx-ui/components'
 
-import { detailsHeaderFontStyles } from '../styledComponents'
+import { detailsHeaderFontStyles } from '../../styledComponents'
 
 export const Wrapper = styled.div`
   position: relative;

@@ -3,9 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow, Loader, recommendationBandMapping } from '@acx-ui/components'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
-
-import { useCRRMQuery } from './Graph/services'
+import { EnhancedRecommendation } from '../../IntentAIForm/services'
 import {
   BenefitsBadge,
   BenefitsBody,
@@ -13,7 +11,9 @@ import {
   BenefitsValue,
   DetailsHeader,
   DetailsWrapper
-} from './styledComponents'
+} from '../styledComponents'
+
+import { useCRRMQuery }   from './Graph/services'
 import { kpiBeforeAfter } from './Values'
 
 export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) => {
