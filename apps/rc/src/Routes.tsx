@@ -23,9 +23,9 @@ import {
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
   VLANPoolForm,
+  WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
+  WorkflowFormMode,
   VLANPoolDetail,
-  WifiCallingConfigureForm, WifiCallingDetailView,
-  WifiCallingForm,
   WifiOperatorForm,
   ConfigurationProfileForm,
   CliTemplateForm,
@@ -151,6 +151,9 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
+import WorkflowTable from './pages/Policies/Workflow/WorkflowTable'
+import WorkflowDetails from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm from './pages/Policies/Workflow/WorkflowPageForm'
 
 
 export default function RcRoutes () {
@@ -715,6 +718,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return rootRoutes(
@@ -1194,6 +1198,26 @@ function PolicyRoutes () {
             <AuthRoute scopes={[WifiScopes.READ]}>
               <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>
             </AuthRoute>}
+        /> </>
+      }
+      {isWorkflowEnabled &&
+      <>
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })}
+          element={<WorkflowTable/>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.DETAIL })}
+          element={<WorkflowDetails />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.CREATE })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.CREATE} />} />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.EDIT })}
+          element={<WorkflowPageForm mode={WorkflowFormMode.EDIT} />}
         /> </>
       }
       {isCertificateTemplateEnabled && <>

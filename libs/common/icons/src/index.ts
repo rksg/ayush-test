@@ -403,4 +403,12 @@ export { ReactComponent as Xbox } from './icons/Xbox.svg'
 export { ReactComponent as Xerox } from './icons/Xerox.svg'
 export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
 
+export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
+
+export { ReactComponent as StartFlag } from './icons/StartFlag.svg'
+export { ReactComponent as EndFlag } from './icons/StartFlag.svg'
+export { ReactComponent as AupIcon } from './icons/AupActionTypeIcon.svg'
+export { ReactComponent as DisplayMessageIcon } from './icons/DisplayMessageActionTypeIcon.svg'
+export { ReactComponent as DataPromptIcon } from './icons/DataPromptActionTypeIcon.svg'
+
 export * from './styledComponents'

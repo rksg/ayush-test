@@ -8,7 +8,8 @@ import {
   ClientIsolationUrls,
   ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
+  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -29,6 +30,15 @@ import MyPolicies from '.'
 const mockTableResult = {
   totalCount: 0,
   data: []
+}
+
+const mockNewTableResult = {
+  content: [],
+  paging: {
+    page: 0,
+    pageSize: 0,
+    totalCount: 0
+  }
 }
 
 describe('MyPolicies', () => {
@@ -78,6 +88,10 @@ describe('MyPolicies', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        WorkflowUrls.searchInProgressWorkflows.url.split('?')[0],
+        (req, res, ctx ) => res(ctx.json(mockNewTableResult))
       ),
       rest.post(
         RogueApUrls.getRoguePolicyListRbac.url,

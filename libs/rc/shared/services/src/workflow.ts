@@ -1,0 +1,492 @@
+
+import {
+  createNewTableHttpRequest,
+  TableChangePayload,
+  transferNewResToTableResult,
+  transferToNewTablePaginationParams,
+  Workflow,
+  WorkflowUrls,
+  NewAPITableResult,
+  TableResult,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
+  UIConfiguration,
+  WorkflowActionDefinition,
+  NewTableResult,
+  ActionType,
+  WorkflowStep,
+  SplitOption,
+  GenericActionData,
+  TxStatus,
+  ActionBase
+} from '@acx-ui/rc/utils'
+import { baseWorkflowApi }   from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
+
+
+export interface ActionQueryCriteria {
+  name?: string,
+  description?: string,
+  actionType?: ActionType,
+  version?: string,
+  sortFields?: string[],
+  page?: number,
+  pageSize?: number
+}
+
+export interface AsyncResponse {
+  id: string,
+  requestId: string
+}
+
+// FIXME: think about should I declare this variable here or not?
+// type UnionAction = AupAction | DataPromptAction
+
+export const workflowApi = baseWorkflowApi.injectEndpoints({
+  endpoints: build => ({
+    /** Workflow Management */
+    // eslint-disable-next-line max-len
+    addWorkflow: build.mutation<AsyncResponse, RequestPayload<Workflow> & { callback?: (response: AsyncResponse) => void }>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.createWorkflow, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Workflow', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === 'SUCCESS'
+              && msg.useCase === 'CREATE_WORKFLOW') {
+              requestArgs.callback?.(response.data)
+            }
+          } catch { }
+        })
+      }
+    }),
+    deleteWorkflow: build.mutation({
+      query: ({ params }) => {
+        const req = createHttpRequest(WorkflowUrls.deleteWorkflow, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Workflow', id: 'ID' }]
+    }),
+    getWorkflowById: build.query<Workflow, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WorkflowUrls.getWorkflowDetail, params)
+        return {
+          ...req
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UPDATE_WORKFLOW',
+            'PUBLISH_WORKFLOW'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Workflow', id: 'ID' }
+            ]))
+          })
+        })
+      },
+      providesTags: [
+        { type: 'Workflow', id: 'ID' }
+      ]
+    }),
+    updateWorkflow: build.mutation<Workflow, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.updateWorkflow, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Workflow' }]
+    }),
+    searchWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: WorkflowUrls.searchWorkflows,
+          params,
+          payload: payload as TableChangePayload
+        })
+
+        return {
+          ...req,
+          body: {
+            ...Object.assign({}, payload),
+            ...transferToNewTablePaginationParams (payload as TableChangePayload)
+          }
+        }
+      },
+      transformResponse (result: NewAPITableResult<Workflow>) {
+        return transferNewResToTableResult<Workflow>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_WORKFLOW',
+            'UPDATE_WORKFLOW',
+            'DELETE_WORKFLOW',
+            'PUBLISH_WORKFLOW'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Workflow', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Workflow', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    searchInProgressWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createNewTableHttpRequest({
+          apiInfo: WorkflowUrls.searchInProgressWorkflows,
+          params,
+          payload: payload as TableChangePayload
+        })
+        return {
+          ...req,
+          body: {
+            ...Object.assign({}, payload),
+            ...transferToNewTablePaginationParams (payload as TableChangePayload)
+          }
+        }
+      },
+      transformResponse (result: NewAPITableResult<Workflow>) {
+        return transferNewResToTableResult<Workflow>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_WORKFLOW',
+            'UPDATE_WORKFLOW',
+            'DELETE_WORKFLOW',
+            'PUBLISH_WORKFLOW'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Workflow', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Workflow', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getUIConfiguration: build.query<UIConfiguration, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfig, params)
+        return {
+          ...req
+        }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UPDATE_WORKFLOW',
+            'DELETE_WORKFLOW'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'WorkflowUIConfig', id: 'ID' }
+            ]))
+          })
+        })
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [
+        { type: 'WorkflowUIConfig', id: 'ID' }
+      ],
+      extraOptions: { maxRetries: 5 }
+    }),
+    updateUIConfiguration: build.mutation<UIConfiguration, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.updateWorkflowUIConfig, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'WorkflowUIConfig', id: 'ID' }]
+    }),
+    resetUIConfiguration: build.mutation({
+      query: ({ params }) => {
+        const req = createHttpRequest(WorkflowUrls.resetWorkflowUIConfig, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'WorkflowUIConfig', id: 'ID' }]
+    }),
+    /** Workflow Action Definitions */
+    getWorkflowActionDefinitionList:
+      build.query<NewTableResult<WorkflowActionDefinition>, RequestPayload>({
+        query: ({ params }) => {
+          return {
+            ...createHttpRequest(WorkflowUrls.getWorkflowActionDefinitions, params)
+          }
+        }
+      }),
+    // eslint-disable-next-line max-len
+    getWorkflowActionRequiredDefinitions: build.query<NewTableResult<WorkflowActionDefinition> ,RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.getWorkflowActionRequiredDefinitions, params)
+        }
+      }
+    }),
+
+    /** Workflow Step API */
+    createWorkflowStep: build.mutation<WorkflowStep, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.createWorkflowStep, params),
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+    createWorkflowChildStep: build.mutation<WorkflowStep, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.createWorkflowChildStep, params),
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+    deleteWorkflowStepById: build.mutation({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.deleteWorkflowStep, params)
+      },
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+    // FIXME: need to check response payload
+    getWorkflowStepsById: build.query<NewTableResult<WorkflowStep>, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getWorkflowStepsById, params)
+      },
+      providesTags: [{ type: 'Step', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_STEP',
+            'DELETE_STEP'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Step' }
+            ]))
+          })
+        })
+      }
+    }),
+    // FIXME: need to check
+    getWorkflowStepById: build.query<WorkflowStep, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getWorkflowStepById, params)
+      },
+      providesTags: [{ type: 'Step', id: 'ID' }]
+    }),
+
+    /** Workflow SplitOptions API */
+    createWorkflowStepUnderOption: build.mutation<WorkflowStep, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.createWorkflowStepUnderOption, params),
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+    createSplitOption: build.mutation<SplitOption, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.createWorkflowOption, params),
+          body: payload
+        }
+      },
+      // FIXME: Change the `type` to SplitOption
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+    getSplitOptionById: build.query<SplitOption, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getWorkflowStepById, params)
+      },
+      // FIXME: Change the `type` to SplitOption
+      providesTags: [{ type: 'Step' }]
+    }),
+    getSplitOptionsByStepId: build.query<NewTableResult<SplitOption>, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getWorkflowOptionsByStepId, params)
+      },
+      // FIXME: Change the `type` to SplitOption
+      providesTags: [{ type: 'Step' }]
+    }),
+    deleteSplitOptionById: build.mutation({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.deleteSplitOptionById, params)
+      },
+      // FIXME: Change the `type` to SplitOption
+      invalidatesTags: [{ type: 'Step' }]
+    }),
+
+
+    /** Workflow Actions API */
+    // eslint-disable-next-line max-len
+    createAction: build.mutation<AsyncResponse, RequestPayload & { callback?: (response: AsyncResponse) => void }>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.createAction, params),
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Action', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === TxStatus.SUCCESS
+              && msg.useCase === 'CREATE_WORKFLOW_ACTION') {
+              requestArgs.callback?.(response.data)
+            }
+          } catch {}
+        })
+      }
+    }),
+    getActionById: build.query<GenericActionData, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getActionById, params)
+      },
+      providesTags: [{ type: 'Action', id: 'ID' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UPDATE_WORKFLOW_ACTION'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Action', id: 'ID' }
+            ]))
+          })
+        })
+      }
+    }),
+    searchActions: build.query<NewTableResult<ActionBase>, RequestPayload<ActionQueryCriteria>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.queryActions, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Action', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UPDATE_WORKFLOW_ACTION'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Action', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    getAllActionsByType: build.query<NewTableResult<ActionBase>, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.getAllActionsByType, params)
+      },
+      providesTags: [{ type: 'Action', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_WORKFLOW_ACTION',
+            'UPDATE_WORKFLOW_ACTION'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Action', id: 'LIST' }
+            ]))
+          })
+        })
+      }
+    }),
+    patchAction: build.mutation<GenericActionData, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.patchAction, params),
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Action' }]
+    }),
+    deleteActionById: build.mutation({
+      query: ({ params }) => {
+        return createHttpRequest(WorkflowUrls.deleteAction, params)
+      },
+      invalidatesTags: [{ type: 'Action', id: 'LIST' }]
+    })
+  })
+})
+
+export const {
+  useAddWorkflowMutation,
+  useDeleteWorkflowMutation,
+  useGetWorkflowByIdQuery,
+  useLazyGetWorkflowByIdQuery,
+  useUpdateWorkflowMutation,
+  useSearchWorkflowListQuery,
+  useLazySearchWorkflowListQuery,
+  useSearchInProgressWorkflowListQuery,
+  useLazySearchInProgressWorkflowListQuery,
+  useGetUIConfigurationQuery,
+  useLazyGetUIConfigurationQuery,
+  useUpdateUIConfigurationMutation
+} = workflowApi
+
+export const {
+  useGetWorkflowActionDefinitionListQuery,
+  useGetWorkflowActionRequiredDefinitionsQuery,
+  useLazyGetWorkflowActionRequiredDefinitionsQuery
+} = workflowApi
+
+export const {
+  useCreateWorkflowStepMutation,
+  useCreateWorkflowChildStepMutation,
+  useGetWorkflowStepByIdQuery,
+  useGetWorkflowStepsByIdQuery,
+  useDeleteWorkflowStepByIdMutation,
+  useCreateSplitOptionMutation,
+  useCreateWorkflowStepUnderOptionMutation,
+  useGetSplitOptionsByStepIdQuery,
+  useGetSplitOptionByIdQuery,
+  useDeleteSplitOptionByIdMutation
+} = workflowApi
+
+export const {
+  useCreateActionMutation,
+  useLazySearchActionsQuery,
+  useGetActionByIdQuery,
+  useLazyGetActionByIdQuery,
+  useGetAllActionsByTypeQuery,
+  usePatchActionMutation,
+  useDeleteActionByIdMutation
+} = workflowApi
