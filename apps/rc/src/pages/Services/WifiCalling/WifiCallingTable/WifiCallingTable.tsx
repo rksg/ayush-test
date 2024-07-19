@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/components'
+import { Button, PageHeader, Table, TableProps, Loader }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { defaultNetworkPayload, defaultRbacNetworkPayload, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeleteWifiCallingServicesMutation,
   useGetEnhancedWifiCallingServiceListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -45,6 +46,7 @@ export default function WifiCallingTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
   const WIFICALLING_LIMIT_NUMBER = 5
@@ -59,9 +61,9 @@ export default function WifiCallingTable () {
   })
 
   const networkTableQuery = useTableQuery<Network>({
-    useQuery: useNetworkListQuery,
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
-      ...defaultNetworkPayload,
+      ...(isWifiRbacEnabled? defaultRbacNetworkPayload: defaultNetworkPayload),
       filters: {
         id: [...networkIds]
       }

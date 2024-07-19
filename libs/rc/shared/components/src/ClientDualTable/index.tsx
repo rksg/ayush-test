@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent, useContext } from 'react'
+import { useState, SyntheticEvent } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -7,11 +7,9 @@ import { Anchor, Tooltip, Table } from '@acx-ui/components'
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
 import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
-import { ClientTabContext }                         from './context'
 import { ClientLink, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
 export function ClientDualTable () {
-  const { setClientCount } = useContext(ClientTabContext)
   const { $t } = useIntl()
   const [searchValue, setSearchValue] = useState('')
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
@@ -36,7 +34,6 @@ export function ClientDualTable () {
       window.scrollTo({ top: element.offsetHeight })
     }
   }
-  setClientCount?.(connectedClientCount)
 
   return <>
     <div id='ClientsTable'>
