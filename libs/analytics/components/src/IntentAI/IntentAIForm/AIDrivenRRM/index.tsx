@@ -76,16 +76,6 @@ export const steps = {
     settings: defineMessage({ defaultMessage: 'Settings' }),
     summary: defineMessage({ defaultMessage: 'Summary' })
   },
-  link: {
-    demoLink: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi',
-    guideLink: 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
-  },
-  sideNotes: {
-    title: defineMessage({ defaultMessage: 'Side Notes' }),
-    introduction: defineMessage({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' }),
-    tradeoff: defineMessage({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })
-  },
-  calendarText: defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' }),
   intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
   category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' })
 }
@@ -145,7 +135,7 @@ export function AIDrivenRRM () {
           {
             label: get('IS_MLISA_SA')
               ? $t({ defaultMessage: 'Zone' })
-              : $t({ defaultMessage: 'Venue' }),
+              : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
             value: [details?.sliceValue]
           }
         ]}

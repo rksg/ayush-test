@@ -44,6 +44,15 @@ export function Introduction () {
     }
   ]
 
+  const sideNotes = {
+    title: defineMessage({ defaultMessage: 'Side Notes' }),
+    subtitle: defineMessage({ defaultMessage: 'Benefits' }),
+    text: defineMessage({ defaultMessage: `Low interference fosters improved throughput, lower 
+      latency, better signal quality, stable connections, enhanced user experience, longer battery 
+      life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading 
+      to higher data rates, higher SNR, consistent performance, and balanced network load.` })
+  }
+
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t(steps.title.introduction)} />
@@ -59,7 +68,7 @@ export function Introduction () {
         <Descriptions.Item
           label={get('IS_MLISA_SA')
             ? $t({ defaultMessage: 'Zone' })
-            : $t({ defaultMessage: 'Venue' })
+            : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
           }
           children={sliceValue}
         />
@@ -88,14 +97,14 @@ export function Introduction () {
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t(steps.sideNotes.title)}
+          {$t(sideNotes.title)}
         </Typography.Title>
         <StepsForm.Subtitle>
-          {$t({ defaultMessage: 'Benefits' })}
+          {$t(sideNotes.subtitle)}
         </StepsForm.Subtitle>
         <StepsForm.TextContent>
           <Typography.Paragraph>
-            {$t(steps.sideNotes.introduction)}
+            {$t(sideNotes.text)}
           </Typography.Paragraph>
         </StepsForm.TextContent>
         <StepsForm.Subtitle>
