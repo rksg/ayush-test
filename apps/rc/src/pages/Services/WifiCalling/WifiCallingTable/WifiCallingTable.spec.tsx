@@ -5,6 +5,7 @@ import { Path }  from 'react-router-dom'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApiVersionEnum,
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   GetApiVersionHeader,
   getServiceDetailsLink,
@@ -133,6 +134,10 @@ describe('WifiCallingTable', () => {
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockNetworkResult))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult))
       )
     )

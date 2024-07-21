@@ -19,7 +19,8 @@ import {
   TableQuery,
   GuestNetworkTypeEnum,
   checkVenuesNotInSetup,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes } from '@acx-ui/types'
@@ -67,7 +68,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
     }
     return _securityProtocol
   }
-  const columns: TableProps<Network>['columns'] = [
+  const columns: TableProps<Network|WifiNetwork>['columns'] = [
     {
       key: 'name',
       title: intl.$t({ defaultMessage: 'Name' }),
@@ -139,15 +140,16 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
+        const apCount = row.aps
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return row.aps
+          return apCount
         }else{
           return (
             <>
               {row?.isOnBoarded
-                ? <span>{row.aps || noDataDisplay}</span>
+                ? <span>{apCount || noDataDisplay}</span>
                 : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
-                  {row.aps}
+                  {apCount}
                 </TenantLink>}
               {row?.incompatible && row.incompatible > 0 ?
                 <Tooltip.Info isFilled
@@ -176,11 +178,13 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       sorter: false, // API does not seem to be working
       align: 'center',
       render: function (_, row) {
+        const clientCount = row.clients
+
         return (
           row?.isOnBoarded
-            ? <span>{row.clients || noDataDisplay}</span>
+            ? <span>{clientCount || noDataDisplay}</span>
             : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
-              {row.clients}
+              {clientCount}
             </TenantLink>
         )
       }
@@ -262,6 +266,31 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
+export const defaultRbacNetworkPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'description',
+    'nwSubType',
+    'venueApGroups',
+    'apSerialNumbers',
+    'clientCount',
+    'vlan',
+    'cog',
+    'ssid',
+    'vlanPool',
+    'captiveType',
+    'id',
+    'securityProtocol',
+    'dsaeOnboardNetwork',
+    'isOweMaster',
+    'owePairNetworkId',
+    'tunnelWlanEnable'
+  ],
+  page: 1,
+  pageSize: 2048
+}
+
 const rowSelection = () => {
   return {
     getCheckboxProps: (record: Network) => ({
@@ -292,7 +321,7 @@ const getDeleteMessage = (messageKey: string) => {
 
 interface NetworkTableProps {
   settingsId?: string
-  tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
+  tableQuery: TableQuery<Network|WifiNetwork, RequestPayload<unknown>, unknown>,
   selectable?: boolean
 }
 
@@ -345,7 +374,7 @@ export function NetworkTable ({
     return list
   }
 
-  const rowActions: TableProps<Network>['rowActions'] = [
+  const rowActions: TableProps<Network|WifiNetwork>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [WifiScopes.UPDATE],
@@ -449,7 +478,7 @@ export function NetworkTable ({
   )
 }
 
-function isSelectedGuestNetwork (networks: Network[]) {
+function isSelectedGuestNetwork (networks: Network[]|WifiNetwork[]) {
   const guestNetworks = networks.filter(network => {
     const { nwSubType, captiveType } = network
     return (nwSubType === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -459,7 +488,7 @@ function isSelectedGuestNetwork (networks: Network[]) {
   return guestNetworks?.length > 0
 }
 
-function isSelectedDpskNetwork (networks: Network[]) {
+function isSelectedDpskNetwork (networks: Network[]|WifiNetwork[]) {
   const dpskNetworks = networks.filter(network => network.nwSubType === NetworkTypeEnum.DPSK)
   return dpskNetworks?.length > 0
 }

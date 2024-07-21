@@ -1,9 +1,9 @@
 
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }                  from '@acx-ui/rc/utils'
-import { Provider }                        from '@acx-ui/store'
-import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }    from '@acx-ui/test-utils'
 
 import { networkList } from './__test__/fixtures'
 import { useFilters }  from './useFilters'
@@ -20,6 +20,12 @@ describe('ApTable > useFilters', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => {
+          return res(ctx.json(networkList))
+        }
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => {
           return res(ctx.json(networkList))
         }
