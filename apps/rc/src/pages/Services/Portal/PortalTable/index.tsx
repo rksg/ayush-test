@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { throttle } from 'lodash'
 import { useIntl }  from 'react-intl'
@@ -62,6 +62,11 @@ export default function PortalTable () {
       searchString: ''
     }
   })
+
+  const resetDemo = useCallback(() => {
+    setPortalId('')
+    setNewDemo({} as Demo)
+  }, [setPortalId, setNewDemo])
 
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
@@ -175,12 +180,15 @@ export default function PortalTable () {
               setPortalLang(res)
             })
             e.stopPropagation()
-          }, 1000)}><PortalPreviewModal
+          }, 1000)}>
+          <PortalPreviewModal
             demoValue={newDemo}
             portalLang={portalLang}
             id={row.id}
             portalId={portalId}
-            fromPortalList={true}/></div>
+            fromPortalList={true}
+            resetDemo={resetDemo}/>
+        </div>
         )
       }
     },

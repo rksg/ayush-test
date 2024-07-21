@@ -1,6 +1,6 @@
 
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -17,9 +17,16 @@ export default function PortalPreviewModal (props:{
   portalLang: { [key:string]:string },
   fromPortalList?: boolean,
   portalId?: string,
-  id?: string
+  id?: string,
+  resetDemo?: () => void
 }) {
   const { $t } = useIntl()
+  const [isVisibledDemoModal, setIsVisibledDemoModal]=useState(false)
+
+  const onCancel = useCallback(() => {
+    setIsVisibledDemoModal(false)
+    props.resetDemo && props.resetDemo()
+  }, [props])
 
   const openModal= useCallback(async () => {
     const getContent = <Provider><PortalDemo value={props.demoValue}
@@ -36,15 +43,23 @@ export default function PortalPreviewModal (props:{
       bodyStyle: { padding: 0 },
       className: UI.modalClassName
     })
-  },[props])
 
+  },[props.demoValue, props.portalLang, props.fromPortalList])
 
   useEffect(()=>{
-    if(props.portalLang.accept&&props.fromPortalList&&props.portalId===props.id){
+    if (isVisibledDemoModal && props.fromPortalList && props.portalId!==props.id) {
+      setIsVisibledDemoModal(false)
+    }
+  }, [props.portalId, props.id, isVisibledDemoModal, props.fromPortalList])
+
+  useEffect(()=>{
+    if(!isVisibledDemoModal && props.fromPortalList && props.portalLang.accept&&
+      props.portalId===props.id){
       const content = <Provider><PortalDemo value={props.demoValue}
         isPreview={true}
         viewPortalLang={props.portalLang}
       /></Provider>
+      setIsVisibledDemoModal(true)
       showActionModal({
         type: 'confirm',
         content: content,
@@ -53,10 +68,13 @@ export default function PortalPreviewModal (props:{
         width: '100%',
         okButtonProps: { style: { display: 'none' } },
         bodyStyle: { padding: 0 },
-        className: UI.modalClassName
+        className: UI.modalClassName,
+        onCancel
       })
     }
-  }, [props.portalLang, props.demoValue])
+  }, [props.portalLang, props.portalId,
+    props.fromPortalList, props.id,
+    props.demoValue, onCancel, isVisibledDemoModal])
   return (
     <UI.Button onClick={openModal} type='default' size='small'>
       <UI.ModalStyle />
