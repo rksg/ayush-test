@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useReducer } from 'react'
 
 
 import { Button, Form }              from 'antd'
@@ -23,22 +23,45 @@ enum SMSTokenAction {
 }
 
 interface SMSComponentState {
+    action: SMSTokenAction,
     checkboxDisable: boolean,
     tooltipVisible: boolean,
     alertVisible: boolean
 }
 
-function actionRunner (current: SMSTokenAction, next: SMSTokenAction){
-  switch(next) {
+const statesCollection = {
+  default: {
+    action: SMSTokenAction.default,
+    checkboxDisable: false,
+    tooltipVisible: true,
+    alertVisible: false
+  },
+  disable: {
+    action: SMSTokenAction.disable,
+    checkboxDisable: true,
+    tooltipVisible: true,
+    alertVisible: false
+  },
+  alert: {
+    action: SMSTokenAction.alert,
+    checkboxDisable: false,
+    tooltipVisible: false,
+    alertVisible: true
+  }
+}
+
+const actionRunner = (current: SMSComponentState, next: SMSComponentState) : SMSComponentState => {
+  switch(next.action) {
     case SMSTokenAction.default:
-      return
+      return statesCollection.default
     case SMSTokenAction.disable:
-      return
+      return statesCollection.disable
     case SMSTokenAction.alert:
-      return
+      return statesCollection.alert
     default:
+      // eslint-disable-next-line
       console.error(`Invalid action: ${next}`)
-      return
+      return statesCollection.default
   }
 }
 
@@ -48,7 +71,6 @@ export const isSMSTokenAvailable = (ruckusOneUsed: number, provider: SmsProvider
 }) : boolean => {
 
   const { isSmsProviderEnabled, isGracePeriodEnabled } = ff
-
   if (!isSmsProviderEnabled) {
     return true
   }
@@ -82,6 +104,29 @@ export const SMSTokenCheckbox = ({ SMSUsage, onChange }: {
   const { $t } = useIntl()
   const { useWatch } = Form
   const enableSmsLogin = useWatch(['guestPortal', 'enableSmsLogin'])
+
+  const [state, dispatch] = useReducer(actionRunner, statesCollection.default)
+
+  useEffect(() => {
+
+    // eslint-disable-next-line
+    if(!isSMSTokenAvailable(ruckusOneUsed, provider, { isSmsProviderEnabled, isGracePeriodEnabled })){
+      if (editMode) {
+        // Under edit mode and SMS Login is checked
+        if (enableSmsLogin && SmsProviderType.RUCKUS_ONE) {
+          dispatch(statesCollection.alert)
+        }
+        // Under edit mode and SMS Login is not checked
+        else {
+          dispatch(statesCollection.disable)
+        }
+      }
+      // create mode
+      else {
+        dispatch(statesCollection.disable)
+      }
+    }
+  },[enableSmsLogin, editMode, ruckusOneUsed, provider])
 
   const displaySMSTokenToolTips = () => {
     // eslint-disable-next-line max-len
@@ -154,29 +199,35 @@ export const SMSTokenCheckbox = ({ SMSUsage, onChange }: {
     }
   }
 
-  return <Form.Item name={['guestPortal', 'enableSmsLogin']}
-    initialValue={false}
-    style={SelfSignInAppStyle}>
-    <>
-      <UI.RedAlertCheckbox onChange={(e) => {
-        onChange(e.target.checked, ['guestPortal', 'enableSmsLogin'])
-      }}
-      checked={enableSmsLogin}
-      disabled={!editMode && !isSMSTokenAvailable(ruckusOneUsed, provider, {
-        isSmsProviderEnabled, isGracePeriodEnabled
-      })}
-      >
-        <UI.SMSToken />
-        {$t({ defaultMessage: 'SMS Token' })}
-      </UI.RedAlertCheckbox>
-      <Tooltip
-        title={displaySMSTokenToolTips()}
-        placement='bottom'>
-        <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-      </Tooltip>
-    </>
-  </Form.Item>
-
+  return (<>
+    <Form.Item name={['guestPortal', 'enableSmsLogin']}
+      initialValue={false}
+      style={SelfSignInAppStyle}>
+      <>
+        <UI.RedAlertCheckbox
+          alert={state.alertVisible}
+          onChange={(e) => {
+            onChange(e.target.checked, ['guestPortal', 'enableSmsLogin'])
+            if(state.action === SMSTokenAction.alert) {
+              dispatch(statesCollection.disable)
+            }
+          }}
+          checked={enableSmsLogin}
+          disabled={state.checkboxDisable}
+          data-testid='sms-check-box'
+        >
+          <UI.SMSToken />
+          {$t({ defaultMessage: 'SMS Token' })}
+        </UI.RedAlertCheckbox>
+        {state.tooltipVisible ? <Tooltip
+          title={displaySMSTokenToolTips()}
+          placement='bottom'>
+          <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+        </Tooltip> : undefined}
+      </>
+    </Form.Item>
+    {state.alertVisible ? <SMSRedAlert /> : undefined}
+  </>)
 }
 
 export const SMSRedAlert = () => {

@@ -16,6 +16,8 @@ import {
   venueListResponse,
   networkDeepResponse,
   selfsignData,
+  mock_SelfSignIn_SMS_ON,
+  mock_SelfSignIn_SMS_Off,
   mockSMS_R1_Under100,
   mockSMS_R1_Over100,
   mockSMS_TWILIO_Under100,
@@ -300,6 +302,8 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
         ).toBeInTheDocument()
       })
       expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
     })
     it('R1 - remain sms', async () => {
       services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
@@ -542,4 +546,137 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
     })
   })
+  describe('SMSTokenCheckbox Edit Mode', () => {
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
+
+    it('R1, Over 100, SMS checked', async () => {
+      const SelfSignInComponent = (<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_ON
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>)
+
+      const router = { route: { params } }
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Over100 }
+      })
+      render(SelfSignInComponent, router)
+
+      expect(await screen.findByTestId('red-alert-message')).toBeInTheDocument()
+
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+
+      fireEvent.click(formItem)
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      expect(formItem).toBeDisabled()
+    })
+    it('R1, Over 100, SMS unchecked',() => {
+      const SelfSignInComponent = (<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_Off
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>)
+
+      const router = { route: { params } }
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Over100 }
+      })
+      render(SelfSignInComponent, router)
+
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+
+      fireEvent.click(formItem)
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      expect(formItem).toBeDisabled()
+
+    })
+    it('R1, Under 100, SMS checked',() => {
+      const SelfSignInComponent = (<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_ON
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>)
+
+      const router = { route: { params } }
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Under100 }
+      })
+      render(SelfSignInComponent, router)
+
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+
+      fireEvent.click(formItem)
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      expect(formItem).not.toBeDisabled()
+    })
+    it('Unset, Under 100, SMS unchecked',() => {
+      const SelfSignInComponent = (<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: true, cloneMode: false, data: mock_SelfSignIn_SMS_Off
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <SelfSignInFormNetworkComponent/>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>)
+
+      const router = { route: { params } }
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Under100 }
+      })
+      render(SelfSignInComponent, router)
+
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+
+      fireEvent.click(formItem)
+
+      expect(screen.queryByTestId('red-alert-message')).not.toBeInTheDocument()
+
+      expect(formItem).toBeDisabled()
+    })
+  })
+
 })
