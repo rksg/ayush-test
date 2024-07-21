@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Card, Loader }                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   captiveNetworkTypes, ConfigTemplateType,
   GuestNetworkTypeEnum, Network, NetworkTypeEnum, networkTypes,
@@ -77,7 +77,7 @@ export default function AAAInstancesTable () {
 
 function useAaaInstanceTableQuery () {
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const params = useParams()
   const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
@@ -85,7 +85,8 @@ function useAaaInstanceTableQuery () {
   })
   const [ aaaPolicyDataReady, setAaaPolicyDataReady ] = useState(false)
 
-  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const getNetworkListQuery = enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : getNetworkListQuery
   const tableQuery = useTableQuery<Network>({
     useQuery,
     defaultPayload: {
@@ -102,7 +103,7 @@ function useAaaInstanceTableQuery () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    enableRbac: isTemplate ? enableTemplateRbac : enableRbac,
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac,
     option: {
       skip: !aaaPolicyDataReady
     }
