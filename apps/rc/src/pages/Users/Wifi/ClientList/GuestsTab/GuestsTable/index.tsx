@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   FetchBaseQueryError
@@ -35,7 +35,7 @@ import {
   GuestNetworkTypeEnum,
   FILTER,
   SEARCH,
-  GuestClient
+  ClientInfo
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
@@ -54,7 +54,7 @@ import {
   showNoSendConfirm,
   useHandleGuestPassResponse
 } from './addGuestDrawer'
-import { GuestTabContext } from './context'
+//import { GuestTabContext } from './context'
 
 const defaultGuestNetworkPayload = {
   fields: ['name', 'defaultGuestCountry', 'id', 'captiveType'],
@@ -75,7 +75,7 @@ export const GuestsTable = () => {
   const filters = {
     includeExpired: ['true']
   }
-  const { setGuestCount } = useContext(GuestTabContext)
+  //const { setGuestCount } = useContext(GuestTabContext)
 
   const queryOptions = {
     defaultPayload: {
@@ -202,7 +202,7 @@ export const GuestsTable = () => {
   const onClickGuest = (guest: Guest) => {
     const networkName = guestNetworkList
       .filter(network => network.id === guest.wifiNetworkId)[0]?.name ?? ''
-    const clients: GuestClient[] = []
+    const clients: ClientInfo[] = []
     guest.clients?.forEach(client => {
       clients.push({ ...client })
     })
@@ -409,7 +409,7 @@ export const GuestsTable = () => {
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
-  setGuestCount?.(tableQuery.data?.totalCount || 0)
+  //setGuestCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader states={[
       tableQuery

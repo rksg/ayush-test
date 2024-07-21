@@ -47,6 +47,9 @@ jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
 jest.mocked(useIsSplitOn).mockReturnValue(false)
 store.dispatch(userApi.util.resetApiState())
 store.dispatch(venueApi.util.resetApiState())
+services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+  return { data: mockSMS_R1_Over100 }
+})
 
 describe('CaptiveNetworkForm-SelfSignIn', () => {
   beforeEach(() => {

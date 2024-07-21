@@ -71,6 +71,16 @@ export const EdgeSdLanUrls: { [key: string]: ApiInfo } = {
     url: '/edgeSdLanServices/:serviceId/wifiNetworks/:wifiNetworkId',
     newApi: true
   },
+  activateEdgeMvSdLanNetwork: {
+    method: 'put',
+    url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
+    newApi: true
+  },
+  deactivateEdgeMvSdLanNetwork: {
+    method: 'delete',
+    url: '/edgeSdLanServices/:serviceId/venues/:venueId/wifiNetworks/:wifiNetworkId',
+    newApi: true
+  },
   toggleEdgeSdLanDmz: {
     method: 'PATCH',
     url: '/edgeSdLanServices/:serviceId/guestSettings',

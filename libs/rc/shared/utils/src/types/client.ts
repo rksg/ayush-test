@@ -73,52 +73,12 @@ export interface Guest {
     name?: string
     maxNumberOfClients?: number,
     guestStatus: GuestStatusEnum,
-    clients?: GuestClient[],
+    clients?: ClientInfo[],
     langCode?: string,
     socialLogin?: string,
     hostApprovalEmail?: string,
     devicesMac?: string[],
     locale?: string
-}
-
-export interface GuestClient {
-    osType?: string
-    healthCheckStatus?: string
-    clientMac: string
-    ipAddress: string
-    username: string
-    hostname: string
-    venueId: string
-    venueName: string
-    apMac: string
-    apSerialNumber: string
-    apName: string
-    switchSerialNumber: string
-    switchName: string
-    networkId: string
-    networkName: string
-    networkSsid: string
-    timeConnectedMs: number
-    vlan?: number
-    bssid?: string
-    rfChannel?: number
-    status?: string
-    receivedBytes?: number
-    receivedPackets?: number
-    transmittedBytes?: number
-    transmittedPackets?: number
-    framesDropped?: number
-    receiveSignalStrength_dBm?: number
-    snr_dB?: number
-    lastSeenDateTime?: string
-    clientIP?: string
-    ssid?: string
-    serialNumber?: string
-    userId?: string
-    disconnectTime?: number
-    sessionDuration?: number
-    id?: string
-    connectSince?: string
 }
 
 export interface UEDetail {
@@ -172,65 +132,77 @@ export enum GuestStatusEnum {
     DISABLED = 'Disabled'
 }
 
-
 export interface ClientInfo {
-  modelName: string;
-  deviceType: string;
-  macAddress: string;
-  osType: string;
-  ipAddress: string;
-  username: string;
-  hostname: string;
-  authenticationStatus: number;
-  connectedTime: string;
-  lastUpdatedTime: string;
-  venueInformation: VenueInformation;
-  apInformation: ApInformation;
-  networkInformation: NetworkInformation;
-  signalStatus: SignalStatus;
-  radioStatus: RadioStatus;
-  trafficStatus: TrafficStatus;
+  modelName: string
+  deviceType: string
+  macAddress: string
+  osType: string
+  ipAddress: string
+  username: string
+  hostname: string
+  authenticationStatus: number
+  connectedTime: string
+  lastUpdatedTime: string
+  venueInformation: VenueInformation
+  apInformation: ApInformation
+  networkInformation: NetworkInformation
+  signalStatus: SignalStatus
+  radioStatus: RadioStatus
+  trafficStatus: TrafficStatus
+  mldMacAddress: string
+  wifiCallingEnabled: string
+  cpeMacAddress: string
+  switchInformation?: SwitchInformation // form GUI
+  connectedTimeString: string // form GUI
+  connectedTimeParssed: boolean // form GUI
 }
 
-interface VenueInformation {
-  id: string;
-  name: string;
+type VenueInformation = {
+  id: string
+  name: string
 }
 
-interface ApInformation {
-  serialNumber: string;
-  name: string;
-  macAddress: string;
-  bssid: string;
+type ApInformation = {
+  serialNumber: string
+  name: string
+  macAddress: string
+  bssid: string
 }
 
-interface NetworkInformation {
-  id: string;
-  type: string;
-  ssid: string;
-  encryptionMethod: string;
-  authenticationMethod: string;
-  vlan: number;
+export type SwitchInformation = {
+  id: string
+  name: string
+  serialNumber: string
 }
 
-interface SignalStatus {
-  snr: number;
-  rssi: number;
-  noiseFloor: number;
-  health: string;
-  healthDescription: string;
+type NetworkInformation = {
+  id: string
+  type: string
+  ssid: string
+  encryptionMethod: string
+  authenticationMethod: string
+  vlan: number,
+  vni?: string
 }
 
-interface RadioStatus {
-  type: string;
-  channel: number;
+type SignalStatus = {
+  snr: number
+  rssi: number
+  noiseFloor: number
+  health: string
+  healthDescription: string
 }
 
-interface TrafficStatus {
-  trafficToClient: number;
-  trafficFromClient: number;
-  packetsToClient: number;
-  packetsFromClient: number;
-  framesDropped: number;
-  totalTraffic: number;
+type RadioStatus = {
+  type: string
+  channel: number
+}
+
+type TrafficStatus = {
+  trafficToClient: string
+  trafficFromClient: string
+  packetsToClient: string
+  packetsFromClient: string
+  framesDropped: string
+  totalTraffic: string
 }

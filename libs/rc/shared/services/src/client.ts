@@ -1,7 +1,8 @@
 import { QueryReturnValue }    from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { cloneDeep }           from 'lodash'
 
-import { convertEpochToRelativeTime, formatter } from '@acx-ui/formatter'
+import { convertEpochToRelativeTime, convertToRelativeTime, formatter } from '@acx-ui/formatter'
 import {
   Client,
   ClientList,
@@ -9,31 +10,31 @@ import {
   ClientUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
-  DpskPassphrase,
   EventMeta,
   getClientHealthClass,
   Guest,
-  GuestClient,
   Network,
   onSocketActivityChanged,
   onActivityMessageReceived,
   TableResult,
   downloadFile,
   transformByte,
-  WifiUrlsInfo,
   RequestFormData,
   ClientStatusEnum,
   UEDetail,
   ApiVersionEnum,
   GetApiVersionHeader,
   CommonRbacUrlsInfo,
-  ClientInfo
+  ClientInfo,
+  SwitchRbacUrlsInfo,
+  SwitchClient,
+  SwitchInformation
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { latestTimeFilter } from './utils'
+import { isPayloadHasField, latestTimeFilter } from './utils'
 
 const historicalPayload = {
   fields: ['clientMac', 'clientIP', 'userId', 'username', 'userName', 'hostname', 'venueId',
@@ -45,21 +46,16 @@ const historicalPayload = {
   pageSize: 10
 }
 
-const defaultClientPayload = {
+const defaultRbacClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac'],
-  fields: ['apMac','ssid','clientMac','connectSince','healthCheckStatus','hostname','ipAddress',
-    'networkId','networkType','noiseFloor_dBm','osType','radioChannel','receiveSignalStrength_dBm',
-    'rxBytes','rxPackets','serialNumber','snr_dB','ssid','txBytes','txDropDataPacket','txPackets',
-    'username','venueId','vlan','vni'],
-  page: 1,
-  pageSize: 10000
-}
-
-const defaultVenuePayload = {
-  searchString: '',
-  searchTargetFields: ['name'],
-  fields: ['id', 'name'],
+  searchTargetFields: ['macAddress'],
+  filters: {},
+  fields: [
+    'modelName', 'deviceType', 'macAddress', 'osType',
+    'ipAddress', 'username', 'hostname', 'connectedTime',
+    'venueInformation', 'apInformation', 'networkInformation', 'switchInformation',
+    'signalStatus', 'radioStatus', 'trafficStatus', 'authenticationStatus'
+  ],
   page: 1,
   pageSize: 10000
 }
@@ -130,15 +126,69 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
       }
     }),
+    // RBAC API
     getClients: build.query<TableResult<ClientInfo>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getClients,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1))
-        return {
-          ...req,
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params, payload } = arg
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const clientListInfo = {
+          ...createHttpRequest(ClientUrlsInfo.getClients, params, apiCustomHeader),
           body: JSON.stringify(payload)
         }
+        const clientListQuery = await fetchWithBQ(clientListInfo)
+        const clientList = clientListQuery.data as TableResult<ClientInfo>
+
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+
+        const needSwitchData = isPayloadHasField(payload, 'switchInformation')
+        if (needSwitchData && clientList.totalCount > 0) {
+          const unqueClientApMacs: Set<string> = new Set()
+          clientList.data.forEach((clientInfo) => {
+            unqueClientApMacs.add(clientInfo.apInformation.macAddress)
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
+        }
+
+        const aggregatedList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+
+        return clientListQuery.data
+          ? { data: aggregatedList }
+          : { error: clientListQuery.error as FetchBaseQueryError }
+
+      },
+      providesTags: [{ type: 'Client', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'PatchApClient'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(clientApi.util.invalidateTags([{ type: 'Client', id: 'LIST' }]))
+          })
+        })
       }
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
@@ -162,7 +212,8 @@ export const clientApi = baseClientApi.injectEndpoints({
         const guestsList = guestsListQuery.data as TableResult<Guest>
         const guestIdWithMacMaps: Map<string, string[]> = new Map()
         const uniqueDeviceMacs: Set<string> = new Set()
-        const uniqueVenueIds: Set<string> = new Set()
+        const apMacSwitchMap = new Map<string, SwitchInformation>()
+
         guestsList?.data?.filter(g =>
           g.guestStatus?.indexOf('Online') > -1 &&
           g.devicesMac && g.devicesMac.length > 0)
@@ -180,36 +231,49 @@ export const clientApi = baseClientApi.injectEndpoints({
         }
         // aggregated online clients
         const filter = { clientMac: distinctMacs }
-        const clientPayload = { ...defaultClientPayload, filter }
+        const clientPayload = { ...defaultRbacClientPayload, filter }
         const clientListQuery = await fetchWithBQ({
-          ...createHttpRequest(ClientUrlsInfo.getClientList,
+          ...createHttpRequest(ClientUrlsInfo.getClients,
             arg.params,
             GetApiVersionHeader(ApiVersionEnum.v1)),
           body: JSON.stringify(clientPayload)
         })
-        const clientList = clientListQuery.data as TableResult<GuestClient>
-        // retireve venueName
-        const clientData = clientList.data as GuestClient[]
-        clientData.forEach(client => {
-          uniqueVenueIds.add(client.venueId)
-        })
-        const venuePayload = { ...defaultVenuePayload,
-          filters: { id: Array.from(uniqueVenueIds) }
+        const clientList = clientListQuery.data as TableResult<ClientInfo>
+        // retireve switch infomation
+        if (clientList.totalCount > 0) {
+          const unqueClientApMacs: Set<string> = new Set()
+          clientList.data.forEach((clientInfo) => {
+            unqueClientApMacs.add(clientInfo.apInformation.macAddress)
+          })
+          const switchClientMacs: string[] = Array.from(unqueClientApMacs)
+          const switchApiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          const switchClientPayload = {
+            fields: ['clientMac', 'switchId', 'switchName', 'switchSerialNumber'],
+            page: 1,
+            pageSize: 10000,
+            filters: { clientMac: switchClientMacs }
+          }
+          const switchClistInfo = {
+            ...createHttpRequest(SwitchRbacUrlsInfo.getSwitchClientList, {}, switchApiCustomHeader),
+            body: JSON.stringify(switchClientPayload)
+          }
+          const switchClientsQuery = await fetchWithBQ(switchClistInfo)
+          const switchClients = switchClientsQuery.data as TableResult<SwitchClient>
+
+          switchClients?.data?.forEach((switchInfo) => {
+            const { clientMac, switchId, switchName, switchSerialNumber } = switchInfo
+            apMacSwitchMap.set(clientMac, {
+              id: switchId,
+              name: switchName,
+              serialNumber: switchSerialNumber
+            })
+          })
         }
-        const venueListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonUrlsInfo.getVenues,
-            arg.params,
-            GetApiVersionHeader(ApiVersionEnum.v1)),
-          body: JSON.stringify(venuePayload)
-        })
-        const venueList = venueListQuery.data as TableResult<{ id:string, name:string }>
-        const venueMap = new Map(venueList.data.map(venue => [venue.id, venue.name]))
-        const clientResult = clientData.map(client => {
-          client.venueName = venueMap.get(client.venueId) ?? ''
-          return client
-        })
+
+        const aggregatedRbacClientList = aggregatedRbacClientListData(clientList, apMacSwitchMap)
+
         const aggregatedList = aggregatedGuestClientData(
-          guestsList, guestIdWithMacMaps, clientResult)
+          guestsList, guestIdWithMacMaps, aggregatedRbacClientList.data)
 
         return guestsListQuery.data
           ? { data: aggregatedList }
@@ -324,15 +388,6 @@ export const clientApi = baseClientApi.injectEndpoints({
         return {
           ...req,
           body: JSON.stringify(payload)
-        }
-      }
-    }),
-    getDpskPassphraseByQuery: build.query<DpskPassphrase, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDpskPassphraseByQuery, params)
-        return{
-          ...req,
-          body: payload
         }
       }
     }),
@@ -535,12 +590,51 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
   }
 }
 
+export const aggregatedRbacClientListData = (clientList: TableResult<ClientInfo>,
+  apSwitchInfoMap:Map<string, SwitchInformation>) => {
+  const data:ClientInfo[] = []
+
+  clientList?.data.forEach(client => {
+    const apMac = client.apInformation?.macAddress ?? ''
+    const switchInformation = apSwitchInfoMap.get(apMac)
+
+    const trafficStatus = client.trafficStatus? {
+      ...client.trafficStatus,
+      totalTraffic: transformByte(client.trafficStatus.totalTraffic),
+      trafficToClient: transformByte(client.trafficStatus.trafficToClient),
+      trafficFromClient: transformByte(client.trafficStatus.trafficFromClient)
+    } : undefined
+
+    const tmp = {
+      ...client,
+      switchInformation: cloneDeep(switchInformation),
+      ...(trafficStatus && { trafficStatus: trafficStatus }),
+      macAddress: client.macAddress.toLowerCase()
+    }
+
+    if (tmp.connectedTime && !tmp.connectedTimeParssed) {
+      tmp.connectedTimeString =
+        formatter('longDurationFormat')(convertToRelativeTime(client.connectedTime))
+      tmp.connectedTimeParssed = true
+    }
+
+    data.push(tmp)
+  })
+
+  return {
+    ...clientList,
+    data
+  }
+}
+
 export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
-  guestIdWithMacMaps: Map<string, string[]>, clientList:GuestClient[]) => {
-  const guestIdWithClientMaps: Map<string, GuestClient[]> = new Map()
+  guestIdWithMacMaps: Map<string, string[]>, clientList:ClientInfo[]) => {
+
+  const guestIdWithClientMaps: Map<string, ClientInfo[]> = new Map()
+
   guestIdWithMacMaps.forEach((macs: string[], guestId: string) => {
     const matchingClients = clientList
-      .filter(client => macs.includes(client.clientMac.toLowerCase()))
+      .filter(client => macs.includes(client.macAddress))
     if (matchingClients.length > 0) {
       guestIdWithClientMaps.set(guestId, matchingClients)
     }
@@ -557,19 +651,18 @@ export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
 
 
 export const {
+  useGetClientListQuery,
+  useLazyGetClientListQuery,
+  useGetClientsQuery,
+  useLazyGetClientsQuery,
   useGetGuestsListQuery,
   useDisconnectClientMutation,
   useRevokeClientMutation,
-  useLazyGetClientsQuery,
   useLazyGetGuestsListQuery,
   useAddGuestPassMutation,
   useLazyGetGuestNetworkListQuery,
-  useGetDpskPassphraseByQueryQuery,
-  useLazyGetDpskPassphraseByQueryQuery,
   useGetHistoricalClientListQuery,
   useLazyGetHistoricalClientListQuery,
-  useGetClientListQuery,
-  useLazyGetClientListQuery,
   useGetGuestsMutation,
   useDeleteGuestMutation,
   useEnableGuestsMutation,
