@@ -41,7 +41,7 @@ export const ImpactedSwitchesTable = ({
     {
       ...payload,
       type: queryType,
-      n: 5
+      n: topImpactedSwitchesLimit + 1
     }, {
       selectFromResult: (result) => {
         const { data, ...rest } = result
