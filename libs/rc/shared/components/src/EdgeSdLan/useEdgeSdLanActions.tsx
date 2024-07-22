@@ -602,7 +602,8 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const result = useMemo(() => {
     if (isEdgeMvSdLanReady) {
       const mvSdlans = data?.data as EdgeMvSdLanViewData[]
-      const sdLansVenueMap: { [key in string]: (EdgeSdLanViewDataP2 | EdgeMvSdLanViewData)[] } = {}
+      // eslint-disable-next-line max-len
+      const sdLansVenueMap: { [venueId in string]: (EdgeSdLanViewDataP2 | EdgeMvSdLanViewData)[] } = {}
       const guestNetworkVenueIds: string[] = []
 
       mvSdlans?.forEach(sdlan => {
@@ -625,7 +626,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         networkVenueIds: Object.keys(sdLansVenueMap),
         guestNetworkVenueIds
       } as {
-        sdLansVenueMap: { [key in string]: EdgeSdLanViewDataP2[] },
+        sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
         networkVenueIds: string[] | undefined,
         guestNetworkVenueIds: string[] | undefined
       }
@@ -639,7 +640,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
             item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
           .filter(i => !!i)
       } as {
-        sdLansVenueMap: { [key in string]: EdgeSdLanViewDataP2[] },
+        sdLansVenueMap: { [venueId in string]: EdgeSdLanViewDataP2[] },
         networkVenueIds: string[] | undefined,
         guestNetworkVenueIds: string[] | undefined
       }

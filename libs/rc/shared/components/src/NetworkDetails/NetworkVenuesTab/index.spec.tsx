@@ -49,6 +49,7 @@ const disabledFFs = [
   Features.G_MAP,
   Features.EDGES_SD_LAN_TOGGLE,
   Features.EDGES_SD_LAN_HA_TOGGLE,
+  Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.SWITCH_RBAC_API
