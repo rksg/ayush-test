@@ -92,8 +92,6 @@ export const getRecommendationsText = (
     partialOptimizedTradeoffText
   } = recommendationInfo
 
-  const isCrrm = code.startsWith('c-crrm')
-
   let parameters: Record<string, string | JSX.Element | boolean> = {
     ...productNames,
     ...metadata,
@@ -102,37 +100,35 @@ export const getRecommendationsText = (
     recommendedValue: valueFormatter(recommendedValue),
     br: <br />
   }
-  if (isCrrm) {
-    const link = kpiBeforeAfter(details, 'number-of-interfering-links')
-    parameters = {
-      ...parameters,
-      ...link,
-      initialTime: formatter(
-        DateFormatEnum.DateTimeFormat)(details.statusTrail.slice(-1)[0].createdAt),
-      ...(status === 'applied' && { appliedTime: formatter(DateFormatEnum.DateTimeFormat)(
-        details.statusTrail.filter(r => r.status === 'applied')[0].createdAt)
-      }),
-      isDataRetained: isDataRetained(dataEndTime),
-      dataNotRetainedMsg: $t({
-        defaultMessage: `The initial optimization graph is no longer available below
+  const link = kpiBeforeAfter(details, 'number-of-interfering-links')
+  parameters = {
+    ...parameters,
+    ...link,
+    initialTime: formatter(
+      DateFormatEnum.DateTimeFormat)(details.statusTrail.slice(-1)[0].createdAt),
+    ...(status === 'applied' && { appliedTime: formatter(DateFormatEnum.DateTimeFormat)(
+      details.statusTrail.filter(r => r.status === 'applied')[0].createdAt)
+    }),
+    isDataRetained: isDataRetained(dataEndTime),
+    dataNotRetainedMsg: $t({
+      defaultMessage: `The initial optimization graph is no longer available below
         since the {scopeType} recommendation details has crossed the standard RUCKUS
         data retention policy.{isApplied, select, true { However your {scopeType}
         configuration continues to be monitored and adjusted for further optimization.} other {}}`
-      }, {
-        isApplied: status === 'applied',
-        scopeType: get('IS_MLISA_SA') ?
-          $t({ defaultMessage: 'zone' }) :
-          $t({ defaultMessage: '<venueSingular></venueSingular>' })
-      })
-    }
+    }, {
+      isApplied: status === 'applied',
+      scopeType: get('IS_MLISA_SA') ?
+        $t({ defaultMessage: 'zone' }) :
+        $t({ defaultMessage: '<venueSingular></venueSingular>' })
+    })
   }
 
   return {
-    actionText: $t(isCrrm
-      ? status === 'applied'
+    actionText: $t(
+      status === 'applied'
         ? appliedActionText!
         : isFullOptimization ? actionText : partialOptimizedActionText!
-      : actionText, parameters),
+      , parameters),
     reasonText: appliedOnce && appliedReasonText
       ? (isFullOptimization
         ? $t(appliedReasonText, parameters)
