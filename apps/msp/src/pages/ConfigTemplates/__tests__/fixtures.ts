@@ -1,4 +1,4 @@
-import { ConfigTemplate } from '@acx-ui/rc/utils'
+import { ConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
 
 export const mockedConfigTemplateList = {
   totalCount: 3,
@@ -10,7 +10,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598400000,
       createdBy: 'Author 1',
       appliedOnTenants: ['t1', '1969e24ce9af4348833968096ff6cb47'],
-      type: 'NETWORK',
+      type: ConfigTemplateType.NETWORK,
       lastModified: 1690598400000,
       lastApplied: 1690598405000
     },
@@ -20,7 +20,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598500000,
       createdBy: 'Author 2',
       appliedOnTenants: [],
-      type: 'NETWORK',
+      type: ConfigTemplateType.NETWORK,
       lastModified: 1690598500000,
       lastApplied: 1690598505000
     },
@@ -30,7 +30,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598500000,
       createdBy: 'Author 3',
       appliedOnTenants: ['t1'],
-      type: 'RADIUS',
+      type: ConfigTemplateType.RADIUS,
       lastModified: 1690598500000,
       lastApplied: 1690598510000
     },
@@ -39,13 +39,13 @@ export const mockedConfigTemplateList = {
       name: 'Template 4',
       createdOn: 1690598500000,
       createdBy: 'Author 4',
-      type: 'Layer 2 Policy',
+      type: ConfigTemplateType.LAYER_2_POLICY,
       lastModified: 1690598500000
     },
     {
       id: '974eea0ed9da41fa95608e8c34d74f35',
       name: 'Venue Template',
-      type: 'VENUE',
+      type: ConfigTemplateType.VENUE,
       tenantId: 'dc2146381a874d04a824bdd8c7bb991d',
       appliedOnTenants: [
         'a48e45a0331b4c7cac85965e3a72021e',
