@@ -595,7 +595,7 @@ export interface QosMapRule {
 }
 
 export const RWGStatusMap = {
-  [RWGStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Online' }),
+  [RWGStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Operational' }),
   [RWGStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Offline' }),
   [RWGStatusEnum.STAGING]: defineMessage({ defaultMessage: 'Staging' }),
   [RWGStatusEnum.DATA_INCOMPLETE]: defineMessage({ defaultMessage: 'Data Incomplete' }),
