@@ -55,7 +55,7 @@ export const dummyTableResult: TableResult<LbsServerProfileViewModel> = {
   page: 1,
   data: [{
     ...dummyLbsServerProfileViewmodel1,
-    venueIds: ['0c41e2e116514dc698c53dc8c752a1b8']
+    venueIds: []
   }, {
     ...dummyLbsServerProfileViewmodel2,
     venueIds: ['0c41e2e116514dc698c53dc8c752a1b8']

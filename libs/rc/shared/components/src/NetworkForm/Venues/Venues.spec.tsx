@@ -19,9 +19,9 @@ import {
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { useSdLanScopedNetworkVenues }                              from '../../EdgeSdLan/useEdgeSdLanActions'
-import { list, network, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
-import NetworkFormContext                                           from '../NetworkFormContext'
+import { useSdLanScopedNetworkVenues }                     from '../../EdgeSdLan/useEdgeSdLanActions'
+import { list, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
+import NetworkFormContext                                  from '../NetworkFormContext'
 
 import { Venues } from './Venues'
 
@@ -87,10 +87,6 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
       )
     )
   })

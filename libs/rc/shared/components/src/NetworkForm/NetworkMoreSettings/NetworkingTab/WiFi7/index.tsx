@@ -6,7 +6,7 @@ import { CheckboxChangeEvent } from 'antd/lib/checkbox/Checkbox'
 import _, { get, isUndefined } from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Tooltip }                                                from '@acx-ui/components'
+import { StepsForm, Tooltip }                                     from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { InformationSolid }                                       from '@acx-ui/icons'
 import {
@@ -208,14 +208,14 @@ function WiFi7 () {
   /* eslint-enable */
   return (
     <>
-      <UI.Subtitle>
+      <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Wi-Fi 7' })}
         <Tooltip.Question
           title={$t({ defaultMessage: 'Only work with Wi-Fi 7 Aps, e.g., R770' })}
           placement='right'
           iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
         />
-      </UI.Subtitle>
+      </StepsForm.Subtitle>
       <div>
         <UI.FieldLabel width='250px'>
           <Space>

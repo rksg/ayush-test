@@ -6,7 +6,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -139,16 +139,25 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           class="ant-page-header-content"
         >
           <span
-            aria-label="Start Time:
-            04/18/2023 10:21:13 | End Time:
-            04/18/2023 10:29:01 | Duration:
-            7 m 48 s"
             class="ant-typography ant-typography-ellipsis ant-typography-single-line"
           >
-            Start Time:
-            04/18/2023 10:21:13 | End Time:
-            04/18/2023 10:29:01 | Duration:
-            7 m 48 s
+            <span>
+              Start Time: 04/18/2023 10:21:13
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              End Time: 04/18/2023 10:29:01
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              Duration: 7 m 48 s
+            </span>
             <span
               aria-hidden="true"
               style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
@@ -5252,7 +5261,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -5370,10 +5379,23 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           <span
             class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
-            Start Time:
-            04/11/2023 04:40:20 | End Time:
-            04/11/2023 04:44:06 | Duration:
-            3 m 46 s
+            <span>
+              Start Time: 04/11/2023 04:40:20
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              End Time: 04/11/2023 04:44:06
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              Duration: 3 m 46 s
+            </span>
           </span>
         </div>
       </div>
@@ -10135,7 +10157,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -10241,10 +10263,23 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           <span
             class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
-            Start Time:
-            04/18/2023 10:21:13 | End Time:
-            04/18/2023 10:29:01 | Duration:
-            7 m 48 s
+            <span>
+              Start Time: 04/18/2023 10:21:13
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              End Time: 04/18/2023 10:29:01
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              Duration: 7 m 48 s
+            </span>
           </span>
         </div>
       </div>
@@ -15254,7 +15289,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -15372,10 +15407,23 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           <span
             class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
-            Start Time:
-            04/11/2023 05:04:58 | End Time:
-            04/11/2023 05:08:23 | Duration:
-            3 m 25 s
+            <span>
+              Start Time: 04/11/2023 05:04:58
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              End Time: 04/11/2023 05:08:23
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              Duration: 3 m 25 s
+            </span>
           </span>
         </div>
       </div>
@@ -16911,7 +16959,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+      class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
     >
       <div
         class="ant-page-header has-breadcrumb ant-page-header-ghost"
@@ -17029,10 +17077,23 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           <span
             class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
           >
-            Start Time:
-            04/11/2023 05:04:58 | End Time:
-            04/11/2023 05:08:23 | Duration:
-            3 m 25 s
+            <span>
+              Start Time: 04/11/2023 05:04:58
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              End Time: 04/11/2023 05:08:23
+              <div
+                class="ant-divider ant-divider-vertical"
+                role="separator"
+              />
+            </span>
+            <span>
+              Duration: 3 m 25 s
+            </span>
           </span>
         </div>
       </div>

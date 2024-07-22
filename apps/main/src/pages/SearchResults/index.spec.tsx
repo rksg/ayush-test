@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo }              from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockRestApiQuery, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { ClientUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                     from '@acx-ui/store'
+import { mockRestApiQuery, render, screen, waitForElementToBeRemoved }  from '@acx-ui/test-utils'
 
 import {
   apListData,
@@ -37,6 +37,7 @@ describe('Search Results', () => {
     mockRestApiQuery(SwitchUrlsInfo.getSwitchPortlist.url, 'post', { data: [], totalCount: 0 })
     mockRestApiQuery(ClientUrlsInfo.getClientMeta.url, 'post', {})
     mockRestApiQuery(SwitchUrlsInfo.getSwitchClientList.url, 'post', { data: [], totalCount: 0 })
+    mockRestApiQuery(WifiUrlsInfo.getWifiCapabilities.url, 'get', { data: [], totalCount: 0 })
     mockRestApiQuery(CommonUrlsInfo.getHistoricalClientList.url, 'post',
       { data: [], totalCount: 0 })
   })

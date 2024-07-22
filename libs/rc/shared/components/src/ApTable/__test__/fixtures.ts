@@ -257,3 +257,21 @@ export const getApGroupsList = {
     members: 0
   }]
 }
+
+export const networkList = {
+  fields: [
+    'id',
+    'apSerialNumbers'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'fd5d6b3a003c4cd0b6b5ab80159b1187',
+      apSerialNumbers: [
+        '123456789005',
+        '302002030366'
+      ]
+    }
+  ]
+}

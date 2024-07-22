@@ -3,10 +3,17 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { FormInstance } from 'antd'
 import _                from 'lodash'
+import { Params }       from 'react-router-dom'
 
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import {
+  ActionItem,
+  comparePayload,
+  ComparisonObjectType,
   covertAAAViewModalTypeToRadius,
+  UpdateActionItem,
+  useActivateL2AclOnWifiNetworkMutation,
+  useDeactivateL2AclOnWifiNetworkMutation,
   useActivateRadiusServerMutation,
   useActivateVlanPoolMutation,
   useBindClientIsolationMutation,
@@ -20,8 +27,19 @@ import {
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useActivateVlanPoolTemplateOnWifiNetworkMutation,
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
   useUnbindClientIsolationMutation,
-  useUpdateRadiusServerSettingsMutation
+  useUpdateRadiusServerSettingsMutation,
+  WifiActionMapType,
+  useActivateL3AclOnWifiNetworkMutation,
+  useDeactivateL3AclOnWifiNetworkMutation,
+  useActivateDeviceOnWifiNetworkMutation,
+  useDeactivateDeviceOnWifiNetworkMutation,
+  useActivateApplicationPolicyOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyOnWifiNetworkMutation,
+  useActivateAccessControlProfileOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -36,8 +54,9 @@ import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
   CommonResult,
-  NetworkVenue,
-  VlanPool
+  VlanPool,
+  useConfigTemplateMutationFnSwitcher,
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -184,18 +203,21 @@ export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveD
 }
 
 export function useRadiusServer () {
+  const { isTemplate } = useConfigTemplate()
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableServicePolicyRbac
   const { networkId } = useParams()
   const [ activateRadiusServer ] = useActivateRadiusServerMutation()
   const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
   const [ updateRadiusServerSettings ] = useUpdateRadiusServerSettingsMutation()
   const { data: radiusServerProfiles } = useGetAAAPolicyViewModelListQuery({
     payload: { filters: { networkIds: [networkId] } },
-    enableRbac: enableServicePolicyRbac
-  }, { skip: !networkId || !enableServicePolicyRbac })
+    enableRbac: resolvedRbacEnabled
+  }, { skip: !networkId || !resolvedRbacEnabled })
   const { data: radiusServerSettings } = useGetRadiusServerSettingsQuery({
     params: { networkId }
-  }, { skip: !networkId || !enableServicePolicyRbac })
+  }, { skip: !networkId || !resolvedRbacEnabled })
   // eslint-disable-next-line max-len
   const [ radiusServerConfigurations, setRadiusServerConfigurations ] = useState<Partial<NetworkSaveData>>()
 
@@ -232,7 +254,7 @@ export function useRadiusServer () {
 
   // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
-    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
 
@@ -254,7 +276,7 @@ export function useRadiusServer () {
   }
 
   const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
-    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+    if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     return await updateRadiusServerSettings({
       params: { networkId },
@@ -347,9 +369,16 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()
+  const [activate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateVlanPoolMutation,
+    useTemplateMutationFn: useActivateVlanPoolTemplateOnWifiNetworkMutation
+  })
 
-  const [activate] = useActivateVlanPoolMutation()
-  const [deactivate] = useDeactivateVlanPoolMutation()
+  const [deactivate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateVlanPoolMutation,
+    useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
+  })
+
 
   const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
     payload: {
@@ -451,6 +480,211 @@ export function useWifiCalling (notReady: boolean) {
   return {
     wifiCallingIds,
     updateWifiCallingActivation
+  }
+}
+
+// eslint-disable-next-line max-len
+export function useAccessControlActivation () {
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [ activateL2Acl ] = useActivateL2AclOnWifiNetworkMutation()
+  const [ deactivateL2Acl ] = useDeactivateL2AclOnWifiNetworkMutation()
+  const [ activateL3Acl ] = useActivateL3AclOnWifiNetworkMutation()
+  const [ deactivateL3Acl ] = useDeactivateL3AclOnWifiNetworkMutation()
+  const [ activateDevice ] = useActivateDeviceOnWifiNetworkMutation()
+  const [ deactivateDevice ] = useDeactivateDeviceOnWifiNetworkMutation()
+  const [ activateApplication ] = useActivateApplicationPolicyOnWifiNetworkMutation()
+  const [ deactivateApplication ] = useDeactivateApplicationPolicyOnWifiNetworkMutation()
+  const [ activateAccessControl ] = useActivateAccessControlProfileOnWifiNetworkMutation()
+  const [ deactivateAccessControl ] = useDeactivateAccessControlProfileOnWifiNetworkMutation()
+  const { networkId } = useParams()
+
+  const accessControlWifiActionMap = {
+    l2AclPolicyId: {
+      added: (params: Params<string>) => {
+        return activateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          deactivateL2Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          activateL2Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
+    },
+    l3AclPolicyId: {
+      added: (params: Params<string>) => {
+        return activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          deactivateL3Acl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
+    },
+    devicePolicyId: {
+      added: (params: Params<string>) => {
+        return activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          deactivateDevice({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
+    },
+    applicationPolicyId: {
+      added: (params: Params<string>) => {
+        return activateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          activateApplication({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
+    },
+    accessControlProfileId: {
+      added: (params: Params<string>) => {
+        return activateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          // eslint-disable-next-line max-len
+          activateAccessControl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
+    }
+  }
+
+  const filterForAccessControlComparison = (data: NetworkSaveData) => {
+    let object = {} as Record<string, unknown>
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('l2AclPolicyId')
+      && data.wlan?.advancedCustomization.l2AclEnable) {
+      object['l2AclPolicyId'] = data.wlan.advancedCustomization.l2AclPolicyId
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
+      && data.wlan?.advancedCustomization.l3AclEnable) {
+      object['l3AclPolicyId'] = data.wlan.advancedCustomization.l3AclPolicyId
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
+      && data.enableDeviceOs) {
+      object['devicePolicyId'] = data.wlan.advancedCustomization.devicePolicyId
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
+      && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
+      object['applicationPolicyId'] = data.wlan.advancedCustomization.applicationPolicyId
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('accessControlProfileId')
+      && data.wlan?.advancedCustomization.accessControlEnable) {
+      // eslint-disable-next-line max-len
+      object['accessControlProfileId'] = data.wlan.advancedCustomization.accessControlProfileId
+    }
+
+    return object
+  }
+
+  // eslint-disable-next-line max-len
+  const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown>, key: string, id: string) => {
+    if (!Object.keys(oldPayload).length) {
+      const keyObject = currentPayload[key]
+      return {
+        [key]: { networkId: id, [key]: keyObject }
+      } as ActionItem
+    }
+
+    const oldObject = oldPayload[key]
+    const updateObject = currentPayload[key]
+    return {
+      [key]: {
+        oldAction: { networkId: id, [key]: oldObject },
+        action: { networkId: id, [key]: updateObject }
+      }
+    } as UpdateActionItem
+  }
+
+  const operateAction = async (
+    comparisonObject: ComparisonObjectType, actionMap: WifiActionMapType, enableRbac: boolean
+  ) => {
+    if (!enableRbac) return Promise.resolve()
+
+    // eslint-disable-next-line max-len
+    const removeActions: Promise<CommonResult>[] = []
+    for (const removedObject of comparisonObject.removed) {
+      Object.entries(removedObject).forEach(([key, value]) => {
+        if (key in actionMap) {
+          removeActions.push(actionMap[key].removed(value))
+        }
+      })
+    }
+    // eslint-disable-next-line max-len
+    const addActions: Promise<CommonResult>[] = []
+    for (const addedObject of comparisonObject.added) {
+      Object.entries(addedObject).forEach(([key, value]) => {
+        if (key in actionMap) {
+          addActions.push(actionMap[key].added(value))
+        }
+      })
+    }
+
+    // eslint-disable-next-line max-len
+    const updateActions: Promise<CommonResult>[] = []
+    for(const updatedObject of comparisonObject.updated) {
+      Object.entries(updatedObject).forEach(([key, value]) => {
+        if (key in actionMap) {
+          const updatedActionRequests = actionMap[key].updated(value.oldAction, value.action)
+          for (const request of updatedActionRequests) {
+            updateActions.push(request)
+          }
+        }
+      })
+    }
+
+    return Promise.all([
+      ...addActions,
+      ...removeActions,
+      ...updateActions
+    ])
+  }
+
+  const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
+    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+
+    const comparisonResult = comparePayload(
+      filterForAccessControlComparison(formData),
+      filterForAccessControlComparison(data || {}),
+      networkId || '',
+      itemProcessFn
+    )
+
+    return await operateAction(
+      comparisonResult,
+      accessControlWifiActionMap,
+      enableServicePolicyRbac
+    )
+  }
+
+  return {
+    updateAccessControl
   }
 }
 

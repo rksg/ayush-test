@@ -113,11 +113,12 @@ const SmsProviderItem = () => {
   useEffect(() => {
     if (smsUsage) {
       const usedSms = smsUsage.data?.ruckusOneUsed || 0
+      const providerType = smsUsage.data?.provider
       setRuckusOneUsed(usedSms)
       setSmsThreshold(smsUsage.data?.threshold ?? 80)
-      setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
-      setSmsProviderConfigured((smsUsage.data?.provider &&
-        smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
+      setSmsProviderType(providerType ?? SmsProviderType.RUCKUS_ONE)
+      setSmsProviderConfigured((providerType && providerType !== SmsProviderType.RUCKUS_ONE &&
+        providerType !== SmsProviderType.SMSProvider_UNSET) ? true : false)
       setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
     }
     if(smsProvider && smsProvider.data) {
@@ -242,7 +243,7 @@ const SmsProviderItem = () => {
               onOk: () => {
                 const payload: NotificationSmsUsage = {
                   threshold: smsThreshold,
-                  provider: SmsProviderType.RUCKUS_ONE
+                  provider: SmsProviderType.SMSProvider_UNSET
                 }
                 updateNotificationSms({ params: params, payload: payload })
                   .then()
@@ -393,7 +394,7 @@ const SmsProviderItem = () => {
                   ]}
                   renderItem={(item) => (
                     <List.Item>
-                      <Typography.Text className='description darkGreyText'>
+                      <Typography.Text className='darkGreyText'>
                         {item}
                       </Typography.Text>
                     </List.Item>
@@ -428,11 +429,13 @@ const SmsProviderItem = () => {
                 $t({ defaultMessage: 'Attention! RUCKUS SMS pool for Captive' }),
                 $t({ defaultMessage: 'Portal Self Sign-In is depleted. To avoid' }),
                 $t({ defaultMessage: 'service disruption, please set up an SMS' }),
-                $t({ defaultMessage: 'Provider before August 12, 2024.' })
+                $t({ defaultMessage: 'Provider before {graceEndDate}.' },
+                  { graceEndDate: <b>{'October 31, 2024'}</b> }
+                )
               ]}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text className='description darkGreyText'>
+                  <Typography.Text className='darkGreyText'>
                     {item}
                   </Typography.Text>
                 </List.Item>
@@ -549,7 +552,9 @@ const SmsProviderItem = () => {
           </Col>
           }
 
-          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && <List
+          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL ||
+            smsProviderType === SmsProviderType.SMSProvider_UNSET ) && !smsProviderConfigured
+          && <List
             style={{ marginTop: '15px', marginBottom: 0 }}
             split={false}
             dataSource={[
@@ -559,15 +564,15 @@ const SmsProviderItem = () => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='description greyText'>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>
             )}
           />}
 
-          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod)
-          && <FreeSmsPool/>}
+          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod) &&
+           smsProviderType === SmsProviderType.RUCKUS_ONE && <FreeSmsPool/>}
         </Form>
       </Col>
     </Row>
