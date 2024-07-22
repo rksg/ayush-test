@@ -2,135 +2,20 @@
 
 exports[`WiredTab should render correctly 1`] = `
 <DocumentFragment>
-  .c2.ant-alert {
-  font-size: var(--acx-body-4-font-size);
-  padding: 10px 15px;
-  margin-bottom: var(--acx-content-vertical-space);
-}
-
-.c2.ant-alert svg {
-  font-size: var(--acx-body-3-font-size);
-}
-
-.c2 .ant-alert-close-icon .anticon-close {
-  color: var(--acx-primary-black);
-}
-
-.c2.ant-alert-info {
-  background-color: var(--acx-accents-orange-10);
-  border: 1px solid var(--acx-accents-orange-25);
-}
-
-.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
-  color: var(--acx-accents-orange-50);
-}
-
-h1.c5.ant-typography {
-  line-height: var(--acx-subtitle-1-line-height);
-  font-size: var(--acx-subtitle-1-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-1-font-weight);
-}
-
-h2.c5.ant-typography {
-  line-height: var(--acx-subtitle-2-line-height);
-  font-size: var(--acx-subtitle-2-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-2-font-weight);
-}
-
-h3.c5.ant-typography {
-  line-height: var(--acx-subtitle-3-line-height);
-  font-size: var(--acx-subtitle-3-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-3-font-weight);
-}
-
-h4.c5.ant-typography {
-  line-height: var(--acx-subtitle-4-line-height);
-  font-size: var(--acx-subtitle-4-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-4-font-weight);
-}
-
-h5.c5.ant-typography {
-  line-height: var(--acx-subtitle-5-line-height);
-  font-size: var(--acx-subtitle-5-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.c1 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  min-width: 0;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav {
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav:before {
-  border: 0;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
-  height: 3px;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
-  padding: 16px 8px 11px;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  font-size: var(--acx-subtitle-4-font-size);
-  font-weight: var(--acx-subtitle-4-font-weight);
-  line-height: var(--acx-subtitle-4-line-height);
-  text-shadow: none;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
-  margin-left: 20px;
-}
-
-.c6 {
-  padding: 16px 0px 11px;
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c4 {
-  margin-right: -20px;
-}
-
-<div
-    class="ant-row "
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
     style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-col ant-col-24 c0"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 105px;"
       >
         <div
-          class="ant-alert ant-alert-info c2"
+          class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
           data-show="true"
           role="alert"
         >
@@ -158,14 +43,14 @@ h5.c5.ant-typography {
       </div>
     </div>
     <div
-      class="ant-col ant-col-16 c0"
+      class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <div
-          class="ant-tabs ant-tabs-top c3 c4"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 keiQSr styledComponents__TabTitle-sc-10kgj1p-1 PcXvT"
         >
           <div
             class="ant-tabs-nav"
@@ -322,25 +207,25 @@ h5.c5.ant-typography {
       </div>
     </div>
     <div
-      class="ant-col ant-col-8 c0"
+      class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__ThresholdTitle-sc-10kgj1p-0 fPbHyn cuYTg"
         >
           Customized SLA Threshold
         </h4>
       </div>
     </div>
     <div
-      class="ant-col ant-col-24 c0"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <div>
           Kpi Section
@@ -353,135 +238,20 @@ h5.c5.ant-typography {
 
 exports[`WiredTab should render correctly when IS_MLISA_SA 1`] = `
 <DocumentFragment>
-  .c2.ant-alert {
-  font-size: var(--acx-body-4-font-size);
-  padding: 10px 15px;
-  margin-bottom: var(--acx-content-vertical-space);
-}
-
-.c2.ant-alert svg {
-  font-size: var(--acx-body-3-font-size);
-}
-
-.c2 .ant-alert-close-icon .anticon-close {
-  color: var(--acx-primary-black);
-}
-
-.c2.ant-alert-info {
-  background-color: var(--acx-accents-orange-10);
-  border: 1px solid var(--acx-accents-orange-25);
-}
-
-.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
-  color: var(--acx-accents-orange-50);
-}
-
-h1.c5.ant-typography {
-  line-height: var(--acx-subtitle-1-line-height);
-  font-size: var(--acx-subtitle-1-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-1-font-weight);
-}
-
-h2.c5.ant-typography {
-  line-height: var(--acx-subtitle-2-line-height);
-  font-size: var(--acx-subtitle-2-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-2-font-weight);
-}
-
-h3.c5.ant-typography {
-  line-height: var(--acx-subtitle-3-line-height);
-  font-size: var(--acx-subtitle-3-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-3-font-weight);
-}
-
-h4.c5.ant-typography {
-  line-height: var(--acx-subtitle-4-line-height);
-  font-size: var(--acx-subtitle-4-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-4-font-weight);
-}
-
-h5.c5.ant-typography {
-  line-height: var(--acx-subtitle-5-line-height);
-  font-size: var(--acx-subtitle-5-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.c1 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  min-width: 0;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav {
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav:before {
-  border: 0;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
-  height: 3px;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
-  padding: 16px 8px 11px;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  font-size: var(--acx-subtitle-4-font-size);
-  font-weight: var(--acx-subtitle-4-font-weight);
-  line-height: var(--acx-subtitle-4-line-height);
-  text-shadow: none;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
-  margin-left: 20px;
-}
-
-.c6 {
-  padding: 16px 0px 11px;
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c4 {
-  margin-right: -20px;
-}
-
-<div
-    class="ant-row "
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
     style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-col ant-col-24 c0"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 105px;"
       >
         <div
-          class="ant-alert ant-alert-info c2"
+          class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
           data-show="true"
           role="alert"
         >
@@ -513,14 +283,14 @@ h5.c5.ant-typography {
       </div>
     </div>
     <div
-      class="ant-col ant-col-16 c0"
+      class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <div
-          class="ant-tabs ant-tabs-top c3 c4"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 keiQSr styledComponents__TabTitle-sc-10kgj1p-1 PcXvT"
         >
           <div
             class="ant-tabs-nav"
@@ -677,25 +447,25 @@ h5.c5.ant-typography {
       </div>
     </div>
     <div
-      class="ant-col ant-col-8 c0"
+      class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__ThresholdTitle-sc-10kgj1p-0 fPbHyn cuYTg"
         >
           Customized SLA Threshold
         </h4>
       </div>
     </div>
     <div
-      class="ant-col ant-col-24 c0"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <div>
           Kpi Section
@@ -708,135 +478,20 @@ h5.c5.ant-typography {
 
 exports[`WiredTab should render correctly with filter passed as props 1`] = `
 <DocumentFragment>
-  .c2.ant-alert {
-  font-size: var(--acx-body-4-font-size);
-  padding: 10px 15px;
-  margin-bottom: var(--acx-content-vertical-space);
-}
-
-.c2.ant-alert svg {
-  font-size: var(--acx-body-3-font-size);
-}
-
-.c2 .ant-alert-close-icon .anticon-close {
-  color: var(--acx-primary-black);
-}
-
-.c2.ant-alert-info {
-  background-color: var(--acx-accents-orange-10);
-  border: 1px solid var(--acx-accents-orange-25);
-}
-
-.c2.ant-alert-info svg.ant-alert-icon path:nth-child(-n+2) {
-  color: var(--acx-accents-orange-50);
-}
-
-h1.c5.ant-typography {
-  line-height: var(--acx-subtitle-1-line-height);
-  font-size: var(--acx-subtitle-1-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-1-font-weight);
-}
-
-h2.c5.ant-typography {
-  line-height: var(--acx-subtitle-2-line-height);
-  font-size: var(--acx-subtitle-2-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-2-font-weight);
-}
-
-h3.c5.ant-typography {
-  line-height: var(--acx-subtitle-3-line-height);
-  font-size: var(--acx-subtitle-3-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-3-font-weight);
-}
-
-h4.c5.ant-typography {
-  line-height: var(--acx-subtitle-4-line-height);
-  font-size: var(--acx-subtitle-4-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-4-font-weight);
-}
-
-h5.c5.ant-typography {
-  line-height: var(--acx-subtitle-5-line-height);
-  font-size: var(--acx-subtitle-5-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.c1 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  min-width: 0;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav {
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav:before {
-  border: 0;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-ink-bar {
-  height: 3px;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
-  padding: 16px 8px 11px;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  font-size: var(--acx-subtitle-4-font-size);
-  font-weight: var(--acx-subtitle-4-font-weight);
-  line-height: var(--acx-subtitle-4-line-height);
-  text-shadow: none;
-}
-
-.c3.ant-tabs-top > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab + .ant-tabs-tab {
-  margin-left: 20px;
-}
-
-.c6 {
-  padding: 16px 0px 11px;
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c4 {
-  margin-right: -20px;
-}
-
-<div
-    class="ant-row "
+  <div
+    class="ant-row Grid__GridRow-sc-5irhjd-2"
     style="margin: -10px -10px -10px -10px;"
   >
     <div
-      class="ant-col ant-col-24 c0"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 105px;"
       >
         <div
-          class="ant-alert ant-alert-info c2"
+          class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
           data-show="true"
           role="alert"
         >
@@ -864,14 +519,14 @@ h5.c5.ant-typography {
       </div>
     </div>
     <div
-      class="ant-col ant-col-16 c0"
+      class="ant-col ant-col-16 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <div
-          class="ant-tabs ant-tabs-top c3 c4"
+          class="ant-tabs ant-tabs-top styledComponents__Tabs-sc-1afcsfc-0 keiQSr styledComponents__TabTitle-sc-10kgj1p-1 PcXvT"
         >
           <div
             class="ant-tabs-nav"
@@ -1028,25 +683,25 @@ h5.c5.ant-typography {
       </div>
     </div>
     <div
-      class="ant-col ant-col-8 c0"
+      class="ant-col ant-col-8 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <h4
-          class="ant-typography c5 c6"
+          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__ThresholdTitle-sc-10kgj1p-0 fPbHyn cuYTg"
         >
           Customized SLA Threshold
         </h4>
       </div>
     </div>
     <div
-      class="ant-col ant-col-24 c0"
+      class="ant-col ant-col-24 Grid__ColInner-sc-5irhjd-0 XtIJT"
       style="padding: 10px 10px 10px 10px;"
     >
       <div
-        class="c1"
+        class="Grid__Container-sc-5irhjd-1 dRhDDA"
       >
         <div>
           Kpi Section

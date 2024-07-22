@@ -2,71 +2,16 @@
 
 exports[`VenueFilterControlBox should render correctly 1`] = `
 <DocumentFragment>
-  .c2 {
-  margin-left: 0px !important;
-}
-
-.c1 {
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  font-weight: var(--acx-body-font-weight-bold);
-}
-
-.c0 {
-  display: grid;
-  grid-auto-flow: row;
-  grid-gap: 3px;
-  margin: 18px;
-  padding: 12px;
-  position: absolute;
-  width: 75px;
-  height: 173px;
-  opacity: 0.9;
-  border-radius: 4px;
-  box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
-  overflow: hidden;
-  background: none var(--acx-neutrals-20);
-}
-
-.c6 {
-  height: 20px;
-  width: 32px;
-  vertical-align: text-bottom;
-  fill: var(--acx-neutrals-50);
-}
-
-.c5 {
-  height: 20px;
-  width: 32px;
-  vertical-align: text-bottom;
-  fill: var(--acx-neutrals-50);
-}
-
-.c4 {
-  height: 20px;
-  width: 32px;
-  vertical-align: text-bottom;
-  fill: var(--acx-neutrals-50);
-}
-
-.c3 {
-  height: 20px;
-  width: 32px;
-  vertical-align: text-bottom;
-  fill: var(--acx-neutrals-50);
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__VenueFilterContainer-sc-1pind18-2 kqvAVX"
   >
     <span
-      class="c1"
+      class="styledComponents__FilterBoxTitle-sc-1pind18-1 HIa-Dx"
     >
       Show
     </span>
     <label
-      class="ant-checkbox-wrapper c2"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1pind18-0 ivWwnM"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -89,7 +34,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="c3"
+            class="styledComponents__VenueMarkerRedIcon-sc-1pind18-6 jnwUdv"
             data-testid="VenueMarkerRed"
             fill="currentColor"
             focusable="false"
@@ -100,7 +45,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
     </label>
     <label
-      class="ant-checkbox-wrapper c2"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1pind18-0 ivWwnM"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -123,7 +68,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="c4"
+            class="styledComponents__VenueMarkerOrangeIcon-sc-1pind18-5 dxBNFv"
             data-testid="VenueMarkerOrange"
             fill="currentColor"
             focusable="false"
@@ -134,7 +79,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
     </label>
     <label
-      class="ant-checkbox-wrapper c2"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1pind18-0 ivWwnM"
     >
       <span
         class="ant-checkbox"
@@ -156,7 +101,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="c5"
+            class="styledComponents__VenueMarkerGreyIcon-sc-1pind18-4 djSXpT"
             data-testid="VenueMarkerGrey"
             fill="currentColor"
             focusable="false"
@@ -167,7 +112,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
       </span>
     </label>
     <label
-      class="ant-checkbox-wrapper c2"
+      class="ant-checkbox-wrapper styledComponents__FilterCheckbox-sc-1pind18-0 ivWwnM"
     >
       <span
         class="ant-checkbox ant-checkbox-checked"
@@ -190,7 +135,7 @@ exports[`VenueFilterControlBox should render correctly 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="c6"
+            class="styledComponents__VenueMarkerGreenIcon-sc-1pind18-3 fnlrCC"
             data-testid="VenueMarkerGreen"
             fill="currentColor"
             focusable="false"

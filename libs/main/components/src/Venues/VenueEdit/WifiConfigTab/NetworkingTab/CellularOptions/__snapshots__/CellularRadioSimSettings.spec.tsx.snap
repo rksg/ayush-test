@@ -2,41 +2,7 @@
 
 exports[`CellularRadioSimSettings should render CellularRadioSimSettings successfully 1`] = `
 <DocumentFragment>
-  .c1,
-.ant-form .c1 {
-  color: var(--acx-primary-black);
-  width: -webkit-max-content;
-  width: -moz-max-content;
-  width: max-content;
-  border: 0;
-  margin: 0;
-}
-
-.c1,
-.ant-form .c1,
-.c1 > label,
-.ant-form .c1 > label {
-  padding: 0 4px;
-  font-size: var(--acx-subtitle-5-font-size);
-  font-weight: var(--acx-subtitle-5-font-weight);
-  line-height: var(--acx-subtitle-5-line-height);
-  cursor: pointer;
-}
-
-fieldset:disabled .c0,
-fieldset:disabled .ant-form .c1,
-fieldset:disabled .c1 > label,
-fieldset:disabled .ant-form .c1 > label {
-  cursor: not-allowed;
-}
-
-.c1 .ant-switch {
-  margin-left: 50px;
-  position: absolute;
-  background: var(--acx-primary-white);
-}
-
-<form
+  <form
     class="ant-form ant-form-horizontal"
   >
     <div
@@ -55,10 +21,10 @@ fieldset:disabled .ant-form .c1 > label {
               class="ant-form-item-control-input-content"
             >
               <fieldset
-                class=""
+                class="styledComponents__Fieldset-sc-azs30w-0"
               >
                 <legend
-                  class="c0 c1"
+                  class="styledComponents__Legend-sc-azs30w-1 fsDwqX"
                 >
                   <label>
                     0 Secondary SIM

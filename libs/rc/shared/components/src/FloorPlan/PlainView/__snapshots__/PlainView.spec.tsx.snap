@@ -2,54 +2,7 @@
 
 exports[`Floor Plan Plain View drag new AP 1`] = `
 <DocumentFragment>
-  .c0 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c0 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c0 svg:before {
-  content: 'a';
-}
-
-.c0 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c0.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c0[disabled] svg path,
-.c0.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c0[disabled].ant-btn-default svg path,
-.c0.ant-btn-disabled.ant-btn-default svg path,
-.c0[disabled].ant-btn-primary svg path,
-.c0.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-<div
+  <div
     class="ant-row ant-row-space-between"
     style="height: 2rem; align-items: center;"
   >
@@ -74,7 +27,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
           style="margin-right: 4px;"
         >
           <button
-            class="ant-btn ant-btn-link c0"
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="AddEditLinks"
             type="button"
           >
@@ -105,7 +58,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link c0"
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
             type="button"
           >
             <span>
@@ -121,188 +74,11 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
     role="separator"
     style="margin: 0px;"
   />
-  .c2.device-container {
-  z-index: 3;
-  width: 36px;
-  height: 36px;
-  position: absolute;
-}
-
-.c2.device-container:not(.context-Unplaced) {
-  margin: -21px 0 0 -21px;
-}
-
-.c2.device-container.context-Album {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-}
-
-.c2.device-container svg {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.c2.device-container .marker {
-  border: 3px solid white;
-  box-shadow: -2px 0px 4px -1px rgba(0,0,0,0.75);
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  border-radius: 50% 50% 50% 0;
-  position: absolute;
-  -webkit-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  cursor: 'pointer';
-}
-
-.c2.device-container .marker path {
-  fill: var(--acx-primary-white);
-  stroke: var(--acx-neutrals-50);
-}
-
-.c2.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-70) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-cleared {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-attention {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-minor {
-  background-color: var(--acx-semantics-yellow-50) !important;
-}
-
-.c2.device-container .marker.ap-rogue-type-offline {
-  opacity: .3;
-}
-
-.c2.device-container .marker.switch-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c2.device-container .marker.switch-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c2.device-container .marker.switch-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-invalid-api {
-  background-color: var(--acx-semantics-yellow-40) !important;
-}
-
-.c2.device-container .marker.ap-rogue-type-malicious {
-  background-color: var(--acx-accents-orange-50);
-}
-
-.c2.device-container .marker.ap-rogue-type-ignored {
-  background-color: var(--acx-semantics-green-70);
-}
-
-.c2.device-container .marker.ap-rogue-type-unclassified {
-  background-color: var(--acx-accents-blue-60);
-}
-
-.c2.device-container .marker.ap-rogue-type-known {
-  background-color: var(--acx-semantics-green-50);
-}
-
-.c2.device-container .marker:after {
-  position: relative;
-  border-radius: 50%;
-  font-family: ruckus;
-  color: white;
-  font-size: 26px;
-  bottom: 5px;
-  left: 4px;
-  position: absolute;
-  -webkit-transform: rotate(41deg);
-  -webkit-transform: rotate(41deg);
-  -ms-transform: rotate(41deg);
-  transform: rotate(41deg);
-}
-
-.c2.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-}
-
-.c2.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker:not(.gallery-mode):after {
-  content: '';
-}
-
-.c2.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker.gallery-mode:after {
-  bottom: 7px;
-  left: 7px;
-}
-
-.c2.device-container.gallery {
-  width: 24px;
-  height: 24px;
-}
-
-.c2.device-container.gallery .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-  padding: 4px;
-}
-
-.c2.device-container.gallery .marker.ap:after,
-.c2.device-container.gallery .marker.LTEAP:after,
-.c2.device-container.gallery .marker.switches:after {
-  font-size: 20px;
-  bottom: 2px;
-  left: 1px;
-}
-
-.c0 {
-  margin: 30px auto 20px;
-  position: relative;
-  display: block;
-  overflow: auto;
-  width: 100%;
-  height: 280px;
-  max-width: 100%;
-  max-height: 100%;
-  padding-right: 35px;
-}
-
-.c1 {
-  width: calc(26%);
-  position: relative;
-  margin: 0 auto;
-}
-
-<div
-    class="c0"
+  <div
+    class="sc-idiyUo cZKUFO"
   >
     <div
-      class="c1"
+      class="sc-dIouRR eTjiAb"
       data-testid="image-container"
     >
       <div
@@ -313,7 +89,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
          
         <div>
           <div
-            class="c2 device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(0%); left: calc(0%); opacity: 1;"
           >
@@ -330,7 +106,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
         </div>
         <div>
           <div
-            class="c2 device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -354,72 +130,16 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       />
     </div>
   </div>
-  .c1 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c1 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c1 svg:before {
-  content: 'a';
-}
-
-.c1 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c1[disabled] svg path,
-.c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c1[disabled].ant-btn-default svg path,
-.c1.ant-btn-disabled.ant-btn-default svg path,
-.c1[disabled].ant-btn-primary svg path,
-.c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-.c0 {
-  position: absolute;
-  bottom: 135px;
-  z-index: 1;
-  right: 15px;
-  border: 1px solid var(--acx-neutrals-30);
-  border-radius: 4px;
-}
-
-<div
+  <div
     alignbottom="0"
-    class="ant-space ant-space-vertical c0"
+    class="ant-space ant-space-vertical sc-dmRaPn jdnaZo"
   >
     <div
       class="ant-space-item"
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-in"
         type="button"
       >
@@ -443,7 +163,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-out"
         type="button"
       >
@@ -467,7 +187,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-original"
         type="button"
       >
@@ -490,7 +210,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-fit"
         type="button"
       >
@@ -500,307 +220,17 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       </button>
     </div>
   </div>
-  .c1 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c1 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c1 svg:before {
-  content: 'a';
-}
-
-.c1 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c1[disabled] svg path,
-.c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c1[disabled].ant-btn-default svg path,
-.c1.ant-btn-disabled.ant-btn-default svg path,
-.c1[disabled].ant-btn-primary svg path,
-.c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-.c6.device-container {
-  z-index: 3;
-  width: 36px;
-  height: 36px;
-  position: absolute;
-}
-
-.c6.device-container:not(.context-Unplaced) {
-  margin: -21px 0 0 -21px;
-}
-
-.c6.device-container.context-Album {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-}
-
-.c6.device-container svg {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.c6.device-container .marker {
-  border: 3px solid white;
-  box-shadow: -2px 0px 4px -1px rgba(0,0,0,0.75);
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  border-radius: 50% 50% 50% 0;
-  position: absolute;
-  -webkit-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  cursor: 'pointer';
-}
-
-.c6.device-container .marker path {
-  fill: var(--acx-primary-white);
-  stroke: var(--acx-neutrals-50);
-}
-
-.c6.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-70) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-cleared {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-attention {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-minor {
-  background-color: var(--acx-semantics-yellow-50) !important;
-}
-
-.c6.device-container .marker.ap-rogue-type-offline {
-  opacity: .3;
-}
-
-.c6.device-container .marker.switch-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c6.device-container .marker.switch-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c6.device-container .marker.switch-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-invalid-api {
-  background-color: var(--acx-semantics-yellow-40) !important;
-}
-
-.c6.device-container .marker.ap-rogue-type-malicious {
-  background-color: var(--acx-accents-orange-50);
-}
-
-.c6.device-container .marker.ap-rogue-type-ignored {
-  background-color: var(--acx-semantics-green-70);
-}
-
-.c6.device-container .marker.ap-rogue-type-unclassified {
-  background-color: var(--acx-accents-blue-60);
-}
-
-.c6.device-container .marker.ap-rogue-type-known {
-  background-color: var(--acx-semantics-green-50);
-}
-
-.c6.device-container .marker:after {
-  position: relative;
-  border-radius: 50%;
-  font-family: ruckus;
-  color: white;
-  font-size: 26px;
-  bottom: 5px;
-  left: 4px;
-  position: absolute;
-  -webkit-transform: rotate(41deg);
-  -webkit-transform: rotate(41deg);
-  -ms-transform: rotate(41deg);
-  transform: rotate(41deg);
-}
-
-.c6.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-}
-
-.c6.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker:not(.gallery-mode):after {
-  content: '';
-}
-
-.c6.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker.gallery-mode:after {
-  bottom: 7px;
-  left: 7px;
-}
-
-.c6.device-container.gallery {
-  width: 24px;
-  height: 24px;
-}
-
-.c6.device-container.gallery .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-  padding: 4px;
-}
-
-.c6.device-container.gallery .marker.ap:after,
-.c6.device-container.gallery .marker.LTEAP:after,
-.c6.device-container.gallery .marker.switches:after {
-  font-size: 20px;
-  bottom: 2px;
-  left: 1px;
-}
-
-.c3 {
-  -webkit-scroll-behavior: smooth;
-  -moz-scroll-behavior: smooth;
-  -ms-scroll-behavior: smooth;
-  scroll-behavior: smooth;
-  overflow-x: scroll;
-  width: 100%;
-  height: 80px;
-  overflow-y: hidden;
-  overflow: overlay;
-}
-
-.c5 {
-  width: 100px;
-  padding: 6px;
-  border-radius: 4px;
-  height: 68px;
-  border: 1px solid;
-  border-color: var(--acx-accents-orange-55);
-  box-shadow: none;
-}
-
-.c8 {
-  width: 100px;
-  padding: 6px;
-  border-radius: 4px;
-  height: 68px;
-  border: 1px solid;
-  border-color: var(--acx-neutrals-30);
-  box-shadow: none;
-}
-
-.c0 {
-  padding-right: 4px;
-}
-
-.c2 {
-  border: 1px solid var(--acx-neutrals-30);
-  height: 68px;
-  width: 28px;
-}
-
-.c2 svg {
-  width: 18px;
-  height: 18px;
-}
-
-.c7 {
-  position: absolute;
-  width: 100px;
-  height: 20px;
-  top: 48px;
-  opacity: 0.95;
-  border-radius: 0px 0px 4px 4px;
-  color: var(--acx-primary-white);
-  text-align: center;
-  font-style: normal;
-  font-weight: var(--acx-subtitle-6-font-weight);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  background: var(--acx-accents-orange-55);
-}
-
-.c9 {
-  position: absolute;
-  width: 100px;
-  height: 20px;
-  top: 48px;
-  opacity: 0.95;
-  border-radius: 0px 0px 4px 4px;
-  color: var(--acx-primary-white);
-  text-align: center;
-  font-style: normal;
-  font-weight: var(--acx-subtitle-6-font-weight);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  background: var(--acx-neutrals-80);
-}
-
-.c4 {
-  position: relative;
-  cursor: pointer;
-}
-
-<div
+  <div
     class="ant-row"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center c0"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl kAhuYg"
     >
       <div
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only c1 c2"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup sc-fnykZs hJyCci"
           data-testid="galleryIcon"
           type="button"
         >
@@ -814,18 +244,18 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
       class="ant-col ant-col-23"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center c3"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-breuTD dpDQlg"
       >
         <div
           class="ant-space-item"
           style="margin-right: 4px;"
         >
           <div
-            class="c4"
+            class="sc-bjUoiL cvisjM"
           >
             <div
               active="1"
-              class="ant-card-grid c5"
+              class="ant-card-grid sc-ksZaOG ZMwrC"
               data-testid="thumbnailBg"
             >
               <div
@@ -835,7 +265,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                    
                   <div>
                     <div
-                      class="c6 device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(0%); left: calc(0%); opacity: 1;"
                     >
@@ -849,7 +279,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
                   </div>
                   <div>
                     <div
-                      class="c6 device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -871,7 +301,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
               </div>
             </div>
             <div
-              class="c7"
+              class="sc-fEOsli gPwQCn"
             >
               TEST_2
             </div>
@@ -881,11 +311,11 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
           class="ant-space-item"
         >
           <div
-            class="c4"
+            class="sc-bjUoiL cvisjM"
           >
             <div
               active="0"
-              class="ant-card-grid c8"
+              class="ant-card-grid sc-ksZaOG cpIWPX"
               data-testid="thumbnailBg"
             >
               <div
@@ -903,7 +333,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
               </div>
             </div>
             <div
-              class="c9"
+              class="sc-fEOsli hqOLAR"
             >
               dscx
             </div>
@@ -917,54 +347,7 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
 
 exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
 <DocumentFragment>
-  .c0 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c0 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c0 svg:before {
-  content: 'a';
-}
-
-.c0 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c0.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c0[disabled] svg path,
-.c0.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c0[disabled].ant-btn-default svg path,
-.c0.ant-btn-disabled.ant-btn-default svg path,
-.c0[disabled].ant-btn-primary svg path,
-.c0.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-<div
+  <div
     class="ant-row ant-row-space-between"
     style="height: 2rem; align-items: center;"
   >
@@ -989,7 +372,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           style="margin-right: 4px;"
         >
           <button
-            class="ant-btn ant-btn-link c0"
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
             data-testid="AddEditLinks"
             type="button"
           >
@@ -1020,7 +403,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           class="ant-space-item"
         >
           <button
-            class="ant-btn ant-btn-link c0"
+            class="ant-btn ant-btn-link styledComponents__Button-sc-zk1lj8-0 kBDiup"
             type="button"
           >
             <span>
@@ -1036,188 +419,11 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
     role="separator"
     style="margin: 0px;"
   />
-  .c2.device-container {
-  z-index: 3;
-  width: 36px;
-  height: 36px;
-  position: absolute;
-}
-
-.c2.device-container:not(.context-Unplaced) {
-  margin: -21px 0 0 -21px;
-}
-
-.c2.device-container.context-Album {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-}
-
-.c2.device-container svg {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.c2.device-container .marker {
-  border: 3px solid white;
-  box-shadow: -2px 0px 4px -1px rgba(0,0,0,0.75);
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  border-radius: 50% 50% 50% 0;
-  position: absolute;
-  -webkit-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  cursor: 'pointer';
-}
-
-.c2.device-container .marker path {
-  fill: var(--acx-primary-white);
-  stroke: var(--acx-neutrals-50);
-}
-
-.c2.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-70) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-cleared {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-attention {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c2.device-container .marker.ap-status-severity-minor {
-  background-color: var(--acx-semantics-yellow-50) !important;
-}
-
-.c2.device-container .marker.ap-rogue-type-offline {
-  opacity: .3;
-}
-
-.c2.device-container .marker.switch-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c2.device-container .marker.switch-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c2.device-container .marker.switch-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c2.device-container .marker.rwg-status-invalid-api {
-  background-color: var(--acx-semantics-yellow-40) !important;
-}
-
-.c2.device-container .marker.ap-rogue-type-malicious {
-  background-color: var(--acx-accents-orange-50);
-}
-
-.c2.device-container .marker.ap-rogue-type-ignored {
-  background-color: var(--acx-semantics-green-70);
-}
-
-.c2.device-container .marker.ap-rogue-type-unclassified {
-  background-color: var(--acx-accents-blue-60);
-}
-
-.c2.device-container .marker.ap-rogue-type-known {
-  background-color: var(--acx-semantics-green-50);
-}
-
-.c2.device-container .marker:after {
-  position: relative;
-  border-radius: 50%;
-  font-family: ruckus;
-  color: white;
-  font-size: 26px;
-  bottom: 5px;
-  left: 4px;
-  position: absolute;
-  -webkit-transform: rotate(41deg);
-  -webkit-transform: rotate(41deg);
-  -ms-transform: rotate(41deg);
-  transform: rotate(41deg);
-}
-
-.c2.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-}
-
-.c2.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker:not(.gallery-mode):after {
-  content: '';
-}
-
-.c2.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker.gallery-mode:after {
-  bottom: 7px;
-  left: 7px;
-}
-
-.c2.device-container.gallery {
-  width: 24px;
-  height: 24px;
-}
-
-.c2.device-container.gallery .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-  padding: 4px;
-}
-
-.c2.device-container.gallery .marker.ap:after,
-.c2.device-container.gallery .marker.LTEAP:after,
-.c2.device-container.gallery .marker.switches:after {
-  font-size: 20px;
-  bottom: 2px;
-  left: 1px;
-}
-
-.c0 {
-  margin: 30px auto 20px;
-  position: relative;
-  display: block;
-  overflow: auto;
-  width: 100%;
-  height: 280px;
-  max-width: 100%;
-  max-height: 100%;
-  padding-right: 35px;
-}
-
-.c1 {
-  width: calc(26%);
-  position: relative;
-  margin: 0 auto;
-}
-
-<div
-    class="c0"
+  <div
+    class="sc-idiyUo cZKUFO"
   >
     <div
-      class="c1"
+      class="sc-dIouRR eTjiAb"
       data-testid="image-container"
     >
       <div
@@ -1228,7 +434,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
          
         <div>
           <div
-            class="c2 device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
           >
@@ -1245,7 +451,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
         </div>
         <div>
           <div
-            class="c2 device-container context-Ap"
+            class="sc-ftvSup iaMBxI device-container context-Ap"
             draggable="true"
             style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
           >
@@ -1269,72 +475,16 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       />
     </div>
   </div>
-  .c1 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c1 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c1 svg:before {
-  content: 'a';
-}
-
-.c1 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c1[disabled] svg path,
-.c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c1[disabled].ant-btn-default svg path,
-.c1.ant-btn-disabled.ant-btn-default svg path,
-.c1[disabled].ant-btn-primary svg path,
-.c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-.c0 {
-  position: absolute;
-  bottom: 135px;
-  z-index: 1;
-  right: 15px;
-  border: 1px solid var(--acx-neutrals-30);
-  border-radius: 4px;
-}
-
-<div
+  <div
     alignbottom="0"
-    class="ant-space ant-space-vertical c0"
+    class="ant-space ant-space-vertical sc-dmRaPn jdnaZo"
   >
     <div
       class="ant-space-item"
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-in"
         type="button"
       >
@@ -1358,7 +508,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-out"
         type="button"
       >
@@ -1382,7 +532,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-original"
         type="button"
       >
@@ -1405,7 +555,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-fit"
         type="button"
       >
@@ -1415,307 +565,17 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       </button>
     </div>
   </div>
-  .c1 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c1 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c1 svg:before {
-  content: 'a';
-}
-
-.c1 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c1[disabled] svg path,
-.c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c1[disabled].ant-btn-default svg path,
-.c1.ant-btn-disabled.ant-btn-default svg path,
-.c1[disabled].ant-btn-primary svg path,
-.c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-.c6.device-container {
-  z-index: 3;
-  width: 36px;
-  height: 36px;
-  position: absolute;
-}
-
-.c6.device-container:not(.context-Unplaced) {
-  margin: -21px 0 0 -21px;
-}
-
-.c6.device-container.context-Album {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-}
-
-.c6.device-container svg {
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-.c6.device-container .marker {
-  border: 3px solid white;
-  box-shadow: -2px 0px 4px -1px rgba(0,0,0,0.75);
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  border-radius: 50% 50% 50% 0;
-  position: absolute;
-  -webkit-transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-  -ms-transform: rotate(-45deg);
-  transform: rotate(-45deg);
-  cursor: 'pointer';
-}
-
-.c6.device-container .marker path {
-  fill: var(--acx-primary-white);
-  stroke: var(--acx-neutrals-50);
-}
-
-.c6.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-70) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-cleared {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-attention {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-critical {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c6.device-container .marker.ap-status-severity-minor {
-  background-color: var(--acx-semantics-yellow-50) !important;
-}
-
-.c6.device-container .marker.ap-rogue-type-offline {
-  opacity: .3;
-}
-
-.c6.device-container .marker.switch-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c6.device-container .marker.switch-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c6.device-container .marker.switch-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-never-contacted-cloud {
-  background-color: var(--acx-neutrals-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-operational {
-  background-color: var(--acx-semantics-green-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-disconnected {
-  background-color: var(--acx-semantics-red-50) !important;
-}
-
-.c6.device-container .marker.rwg-status-invalid-api {
-  background-color: var(--acx-semantics-yellow-40) !important;
-}
-
-.c6.device-container .marker.ap-rogue-type-malicious {
-  background-color: var(--acx-accents-orange-50);
-}
-
-.c6.device-container .marker.ap-rogue-type-ignored {
-  background-color: var(--acx-semantics-green-70);
-}
-
-.c6.device-container .marker.ap-rogue-type-unclassified {
-  background-color: var(--acx-accents-blue-60);
-}
-
-.c6.device-container .marker.ap-rogue-type-known {
-  background-color: var(--acx-semantics-green-50);
-}
-
-.c6.device-container .marker:after {
-  position: relative;
-  border-radius: 50%;
-  font-family: ruckus;
-  color: white;
-  font-size: 26px;
-  bottom: 5px;
-  left: 4px;
-  position: absolute;
-  -webkit-transform: rotate(41deg);
-  -webkit-transform: rotate(41deg);
-  -ms-transform: rotate(41deg);
-  transform: rotate(41deg);
-}
-
-.c6.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-}
-
-.c6.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker:not(.gallery-mode):after {
-  content: '';
-}
-
-.c6.device-container:not(.context-Venue):not(.context-Unplaced):not(.context-Ap):not(.context-LteAp):not(.context-Switch):not(.gallery):not(.context-RogueAp) .marker.gallery-mode:after {
-  bottom: 7px;
-  left: 7px;
-}
-
-.c6.device-container.gallery {
-  width: 24px;
-  height: 24px;
-}
-
-.c6.device-container.gallery .marker {
-  border-radius: 50% 50% 50% 50%;
-  border: 0;
-  padding: 4px;
-}
-
-.c6.device-container.gallery .marker.ap:after,
-.c6.device-container.gallery .marker.LTEAP:after,
-.c6.device-container.gallery .marker.switches:after {
-  font-size: 20px;
-  bottom: 2px;
-  left: 1px;
-}
-
-.c3 {
-  -webkit-scroll-behavior: smooth;
-  -moz-scroll-behavior: smooth;
-  -ms-scroll-behavior: smooth;
-  scroll-behavior: smooth;
-  overflow-x: scroll;
-  width: 100%;
-  height: 80px;
-  overflow-y: hidden;
-  overflow: overlay;
-}
-
-.c5 {
-  width: 100px;
-  padding: 6px;
-  border-radius: 4px;
-  height: 68px;
-  border: 1px solid;
-  border-color: var(--acx-accents-orange-55);
-  box-shadow: none;
-}
-
-.c8 {
-  width: 100px;
-  padding: 6px;
-  border-radius: 4px;
-  height: 68px;
-  border: 1px solid;
-  border-color: var(--acx-neutrals-30);
-  box-shadow: none;
-}
-
-.c0 {
-  padding-right: 4px;
-}
-
-.c2 {
-  border: 1px solid var(--acx-neutrals-30);
-  height: 68px;
-  width: 28px;
-}
-
-.c2 svg {
-  width: 18px;
-  height: 18px;
-}
-
-.c7 {
-  position: absolute;
-  width: 100px;
-  height: 20px;
-  top: 48px;
-  opacity: 0.95;
-  border-radius: 0px 0px 4px 4px;
-  color: var(--acx-primary-white);
-  text-align: center;
-  font-style: normal;
-  font-weight: var(--acx-subtitle-6-font-weight);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  background: var(--acx-accents-orange-55);
-}
-
-.c9 {
-  position: absolute;
-  width: 100px;
-  height: 20px;
-  top: 48px;
-  opacity: 0.95;
-  border-radius: 0px 0px 4px 4px;
-  color: var(--acx-primary-white);
-  text-align: center;
-  font-style: normal;
-  font-weight: var(--acx-subtitle-6-font-weight);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  background: var(--acx-neutrals-80);
-}
-
-.c4 {
-  position: relative;
-  cursor: pointer;
-}
-
-<div
+  <div
     class="ant-row"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center c0"
+      class="ant-space ant-space-horizontal ant-space-align-center sc-hAZoDl kAhuYg"
     >
       <div
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-default ant-btn-icon-only c1 c2"
+          class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup sc-fnykZs hJyCci"
           data-testid="galleryIcon"
           type="button"
         >
@@ -1729,18 +589,18 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
       class="ant-col ant-col-23"
     >
       <div
-        class="ant-space ant-space-horizontal ant-space-align-center c3"
+        class="ant-space ant-space-horizontal ant-space-align-center sc-breuTD dpDQlg"
       >
         <div
           class="ant-space-item"
           style="margin-right: 4px;"
         >
           <div
-            class="c4"
+            class="sc-bjUoiL cvisjM"
           >
             <div
               active="1"
-              class="ant-card-grid c5"
+              class="ant-card-grid sc-ksZaOG ZMwrC"
               data-testid="thumbnailBg"
             >
               <div
@@ -1750,7 +610,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                    
                   <div>
                     <div
-                      class="c6 device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                     >
@@ -1764,7 +624,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
                   </div>
                   <div>
                     <div
-                      class="c6 device-container context-Album"
+                      class="sc-ftvSup iaMBxI device-container context-Album"
                       draggable="true"
                       style="top: calc(undefined%); left: calc(undefined%); opacity: 1;"
                     >
@@ -1786,7 +646,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               </div>
             </div>
             <div
-              class="c7"
+              class="sc-fEOsli gPwQCn"
             >
               TEST_2
             </div>
@@ -1796,11 +656,11 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
           class="ant-space-item"
         >
           <div
-            class="c4"
+            class="sc-bjUoiL cvisjM"
           >
             <div
               active="0"
-              class="ant-card-grid c8"
+              class="ant-card-grid sc-ksZaOG cpIWPX"
               data-testid="thumbnailBg"
             >
               <div
@@ -1818,7 +678,7 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
               </div>
             </div>
             <div
-              class="c9"
+              class="sc-fEOsli hqOLAR"
             >
               dscx
             </div>
@@ -1855,92 +715,11 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
     role="separator"
     style="margin: 0px;"
   />
-  .c4 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-  background-color: var(--acx-neutrals-10);
-}
-
-.c5 {
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-
-.c0 {
-  margin: 30px auto 20px;
-  position: relative;
-  display: block;
-  overflow: auto;
-  width: 100%;
-  height: 280px;
-  max-width: 100%;
-  max-height: 100%;
-  padding-right: 35px;
-}
-
-.c2 {
-  width: calc(100%);
-  position: relative;
-  margin: 0 auto;
-}
-
-.c3 {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.c1.rogue-help-info {
-  position: absolute;
-  bottom: 30px;
-  left: 20px;
-  z-index: 2;
-}
-
-.c1.rogue-help-info svg path {
-  stroke: var(--acx-primary-white);
-}
-
-<div
-    class="c0"
+  <div
+    class="sc-idiyUo cZKUFO"
   >
     <div
-      class="c1 rogue-help-info"
+      class="sc-kgflAQ gYitxs rogue-help-info"
     >
       <svg
         class="ant-tooltip-open"
@@ -1948,7 +727,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       />
     </div>
     <div
-      class="c2"
+      class="sc-dIouRR cDjWRG"
       data-testid="image-container"
     >
       <div
@@ -1963,17 +742,17 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       />
     </div>
     <div
-      class="c3"
+      class="sc-hHLeRK bmGzTd"
     >
       <div
-        class="c4"
+        class="styledComponents__Wrapper-sc-1352uh8-0 ilNUvb"
       >
         <div
-          class="c5"
+          class="styledComponents__FallbackWrapper-sc-1352uh8-1 doEIjj"
         >
           <span
             aria-label="loader"
-            class=""
+            class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0"
             role="img"
           >
             <div
@@ -2003,72 +782,16 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       </div>
     </div>
   </div>
-  .c1 {
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  vertical-align: bottom;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.c1 svg {
-  width: 16px;
-  height: 16px;
-}
-
-.c1 svg:before {
-  content: 'a';
-}
-
-.c1 svg path {
-  stroke: var(--acx-primary-black);
-}
-
-.c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
-}
-
-.c1[disabled] svg path,
-.c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
-}
-
-.c1[disabled].ant-btn-default svg path,
-.c1.ant-btn-disabled.ant-btn-default svg path,
-.c1[disabled].ant-btn-primary svg path,
-.c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
-}
-
-.c0 {
-  position: absolute;
-  bottom: 88px;
-  z-index: 1;
-  right: 15px;
-  border: 1px solid var(--acx-neutrals-30);
-  border-radius: 4px;
-}
-
-<div
+  <div
     alignbottom="1"
-    class="ant-space ant-space-vertical c0"
+    class="ant-space ant-space-vertical sc-dmRaPn jCZBvj"
   >
     <div
       class="ant-space-item"
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-in"
         type="button"
       >
@@ -2092,7 +815,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-out"
         type="button"
       >
@@ -2116,7 +839,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       style="margin-bottom: 0px;"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-original"
         type="button"
       >
@@ -2139,7 +862,7 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
       class="ant-space-item"
     >
       <button
-        class="ant-btn ant-btn-link ant-btn-icon-only c1"
+        class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
         data-testid="image-zoom-fit"
         type="button"
       >

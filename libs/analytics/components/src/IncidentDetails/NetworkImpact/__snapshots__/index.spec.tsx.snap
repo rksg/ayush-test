@@ -2,110 +2,11 @@
 
 exports[`NetworkImpact handles charts data disabled 1`] = `
 <DocumentFragment>
-  .c1 {
-  height: 100%;
-  width: 100%;
-}
-
-.c1 .ant-card {
-  height: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  border-radius: 8px;
-}
-
-.c1 .ant-card-head {
-  padding: 0;
-  border-bottom: none;
-  min-height: 0;
-  margin-bottom: 10px;
-}
-
-.c1 .ant-card-head-title {
-  padding: 0;
-}
-
-.c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
-  line-height: 0;
-}
-
-.c1 .ant-card-head-wrapper {
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: start;
-}
-
-.c1 .ant-card-extra {
-  padding: 0;
-}
-
-.c1 .ant-card-body {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-flex: 1;
-  -webkit-flex-grow: 1;
-  -ms-flex-positive: 1;
-  flex-grow: 1;
-  padding: 0;
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-headline-4-font-size);
-  line-height: var(--acx-headline-4-line-height);
-  color: var(--acx-primary-black);
-  font-weight: var(--acx-headline-4-font-weight-bold);
-}
-
-.c3 {
-  width: 1280px;
-  word-break: break-word;
-  text-align: center;
-  margin-block-start: 5px;
-  padding: 0px calc(1280px * 0.18);
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-6-line-height);
-  font-weight: var(--acx-subtitle-6-font-weight);
-}
-
-.c0 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="c1"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 buyzwy"
       type="no-border"
     >
       <div
@@ -127,7 +28,7 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
                   class="ant-space-item"
                 >
                   <div
-                    class="c2"
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                   >
                     Network Impact
                   </div>
@@ -255,7 +156,7 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       10 rogue APs in Channel 00:00:00:00:00:00
@@ -384,7 +285,7 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       00:00:00:00:00:00 has the highest Rx PHY errors
@@ -417,110 +318,11 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
 
 exports[`NetworkImpact handles charts data with total & disabled 1`] = `
 <DocumentFragment>
-  .c1 {
-  height: 100%;
-  width: 100%;
-}
-
-.c1 .ant-card {
-  height: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  border-radius: 8px;
-}
-
-.c1 .ant-card-head {
-  padding: 0;
-  border-bottom: none;
-  min-height: 0;
-  margin-bottom: 10px;
-}
-
-.c1 .ant-card-head-title {
-  padding: 0;
-}
-
-.c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
-  line-height: 0;
-}
-
-.c1 .ant-card-head-wrapper {
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: start;
-}
-
-.c1 .ant-card-extra {
-  padding: 0;
-}
-
-.c1 .ant-card-body {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-flex: 1;
-  -webkit-flex-grow: 1;
-  -ms-flex-positive: 1;
-  flex-grow: 1;
-  padding: 0;
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-headline-4-font-size);
-  line-height: var(--acx-headline-4-line-height);
-  color: var(--acx-primary-black);
-  font-weight: var(--acx-headline-4-font-weight-bold);
-}
-
-.c3 {
-  width: 1280px;
-  word-break: break-word;
-  text-align: center;
-  margin-block-start: 5px;
-  padding: 0px calc(1280px * 0.18);
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-6-line-height);
-  font-weight: var(--acx-subtitle-6-font-weight);
-}
-
-.c0 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="c1"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 buyzwy"
       type="no-border"
     >
       <div
@@ -542,7 +344,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                   class="ant-space-item"
                 >
                   <div
-                    class="c2"
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                   >
                     Network Impact
                   </div>
@@ -670,7 +472,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       Enable rogue AP detection
@@ -799,7 +601,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       00:00:00:00:00:00 has the highest Rx PHY errors
@@ -832,110 +634,11 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
 
 exports[`NetworkImpact should match snapshot 1`] = `
 <DocumentFragment>
-  .c1 {
-  height: 100%;
-  width: 100%;
-}
-
-.c1 .ant-card {
-  height: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  border-radius: 8px;
-}
-
-.c1 .ant-card-head {
-  padding: 0;
-  border-bottom: none;
-  min-height: 0;
-  margin-bottom: 10px;
-}
-
-.c1 .ant-card-head-title {
-  padding: 0;
-}
-
-.c1 .ant-card-head-title .ant-space .ant-space-item:last-child {
-  line-height: 0;
-}
-
-.c1 .ant-card-head-wrapper {
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: start;
-}
-
-.c1 .ant-card-extra {
-  padding: 0;
-}
-
-.c1 .ant-card-body {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-flex: 1;
-  -webkit-flex-grow: 1;
-  -ms-flex-positive: 1;
-  flex-grow: 1;
-  padding: 0;
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-headline-4-font-size);
-  line-height: var(--acx-headline-4-line-height);
-  color: var(--acx-primary-black);
-  font-weight: var(--acx-headline-4-font-weight-bold);
-}
-
-.c3 {
-  width: 1280px;
-  word-break: break-word;
-  text-align: center;
-  margin-block-start: 5px;
-  padding: 0px calc(1280px * 0.18);
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-subtitle-6-font-size);
-  line-height: var(--acx-subtitle-6-line-height);
-  font-weight: var(--acx-subtitle-6-font-weight);
-}
-
-.c0 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="c1"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 buyzwy"
       type="no-border"
     >
       <div
@@ -957,7 +660,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                   class="ant-space-item"
                 >
                   <div
-                    class="c2"
+                    class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
                   >
                     Network Impact
                   </div>
@@ -1075,7 +778,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       This incident impacted 2 WLANs
@@ -1188,7 +891,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       100% of failures caused by 'AAA Auth Failure'
@@ -1308,7 +1011,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       This incident impacted 2 client manufacturers
@@ -1427,7 +1130,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       This incident impacted 2 radios
@@ -1574,7 +1277,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       Peak airtime busy was 65%
@@ -1715,7 +1418,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       Peak number of clients per AP was 60
@@ -1856,7 +1559,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
                     class="ant-space-item"
                   >
                     <div
-                      class="c3"
+                      class="sc-bczRLJ cUrAee"
                       width="1280"
                     >
                       Peak number of clients per AP was 60

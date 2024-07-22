@@ -2,18 +2,9 @@
 
 exports[`SuspenseBoundary renders default fallback in center 1`] = `
 <DocumentFragment>
-  .c0 {
-  position: absolute;
-  top: 50vh;
-  left: 50vw;
-  -webkit-transform: translate(-50%,-50%);
-  -ms-transform: translate(-50%,-50%);
-  transform: translate(-50%,-50%);
-}
-
-<span
+  <span
     aria-label="loader"
-    class="c0"
+    class="SuspenseBoundary__SpinWrapper-sc-l6mvnr-0 giriLP"
     role="img"
   >
     <div

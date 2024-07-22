@@ -2,89 +2,8 @@
 
 exports[`Alarm List should render list 1`] = `
 <DocumentFragment>
-  .c0 {
-  padding: 0px 5px;
-}
-
-.c0 .ant-list-item {
-  display: grid;
-  padding: 4px 0;
-}
-
-.c0 .ant-list-split .ant-list-item {
-  border: none;
-}
-
-.c1 {
-  position: relative;
-  display: inline-block;
-  top: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--acx-semantics-red-50);
-}
-
-.c6 {
-  position: relative;
-  display: inline-block;
-  top: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--acx-accents-orange-30);
-}
-
-.c2 {
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  font-weight: var(--acx-body-font-weight);
-  margin-left: -4px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.c3 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-}
-
-.c4 {
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  font-weight: var(--acx-body-font-weight);
-  margin-left: 12px;
-  color: var(--acx-accents-blue-50);
-}
-
-.c7 {
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  font-weight: var(--acx-body-font-weight);
-  margin-left: 12px;
-  color: var(--acx-neutrals-40);
-}
-
-.c5 {
-  font-family: var(--acx-neutral-brand-font);
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-  font-weight: var(--acx-body-font-weight);
-  color: var(--acx-neutrals-60);
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__AlarmListWrapper-sc-1yrqcde-0 jBjzuh"
     style="height: 300px; width: 300px;"
   >
     <div
@@ -111,14 +30,14 @@ exports[`Alarm List should render list 1`] = `
                   style="margin-right: 8px;"
                 >
                   <span
-                    class="c1"
+                    class="styledComponents__CriticalAlarmIcon-sc-1yrqcde-1 hgQgjo"
                   />
                 </div>
                 <div
                   class="ant-space-item"
                 >
                   <div
-                    class="c2"
+                    class="styledComponents__MesssageWrapper-sc-1yrqcde-3 bRxZcd"
                     style="width: 290px;"
                   >
                     FEK3224R08K disconnected from the cloud controller for more than 15 minutes.
@@ -126,15 +45,15 @@ exports[`Alarm List should render list 1`] = `
                 </div>
               </div>
               <div
-                class="c3"
+                class="styledComponents__SubTextContainer-sc-1yrqcde-4 fKOait"
               >
                 <a
-                  class="c4"
+                  class="styledComponents__Link-sc-1yrqcde-5 fPtqJK"
                 >
                   FEK3224R08K
                 </a>
                 <span
-                  class="c5"
+                  class="styledComponents__TimeStamp-sc-1yrqcde-7 gVQrdP"
                 >
                   Jul 13 04:20
                 </span>
@@ -152,14 +71,14 @@ exports[`Alarm List should render list 1`] = `
                   style="margin-right: 8px;"
                 >
                   <span
-                    class="c6"
+                    class="styledComponents__MajorAlarmIcon-sc-1yrqcde-2 gfKsCq"
                   />
                 </div>
                 <div
                   class="ant-space-item"
                 >
                   <div
-                    class="c2"
+                    class="styledComponents__MesssageWrapper-sc-1yrqcde-3 bRxZcd"
                     style="width: 290px;"
                   >
                     FEK3224R08J disconnected from the cloud controller for more than 15 minutes.
@@ -167,15 +86,15 @@ exports[`Alarm List should render list 1`] = `
                 </div>
               </div>
               <div
-                class="c3"
+                class="styledComponents__SubTextContainer-sc-1yrqcde-4 fKOait"
               >
                 <span
-                  class="c7"
+                  class="styledComponents__NoLink-sc-1yrqcde-6 eoTgJF"
                 >
                   FEK3224R08J
                 </span>
                 <span
-                  class="c5"
+                  class="styledComponents__TimeStamp-sc-1yrqcde-7 gVQrdP"
                 >
                   Jul 13 04:20
                 </span>

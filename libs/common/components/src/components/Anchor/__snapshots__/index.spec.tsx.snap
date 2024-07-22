@@ -2,25 +2,12 @@
 
 exports[`Anchor should render Anchor correctly 1`] = `
 <DocumentFragment>
-  .c0 .ant-anchor-ink-ball {
-  display: none;
-}
-
-.c0 .ant-anchor-ink:before {
-  display: none;
-}
-
-.c0 .ant-anchor-link-title {
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-}
-
-<div>
+  <div>
     <div
       class=""
     >
       <div
-        class="ant-anchor-wrapper c0"
+        class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 hxCRFY"
         style="max-height: 100vh;"
       >
         <div
@@ -53,77 +40,12 @@ exports[`Anchor should render Anchor correctly 1`] = `
 
 exports[`Anchor should render AnchorLayout correctly 1`] = `
 <DocumentFragment>
-  .c1.ant-anchor-wrapper {
-  background-color: var(--acx-neutrals-10);
-  border-radius: 4px;
-  margin-left: -2px;
-  padding-left: 2px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.c1 .ant-anchor-ink-ball {
-  display: inline-block;
-  height: 20px;
-  margin-top: -6px;
-  border-width: 1px;
-  border-radius: 0;
-  width: 3px;
-  background-color: var(--acx-accents-orange-50);
-}
-
-.c1 .ant-anchor-link {
-  padding: 10px 0 10px 16px;
-}
-
-.c1 .ant-anchor-link > .ant-anchor-link {
-  padding: 15px 0 0px 16px;
-}
-
-.c1 .ant-anchor-link-title {
-  color: var(--acx-primary-black);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  white-space: normal;
-}
-
-.c1 .ant-anchor-link-active > .ant-anchor-link-title {
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
-.c1 .ant-anchor-ink:before {
-  display: none;
-}
-
-.c1 .ant-anchor-link-title {
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-}
-
-.c0 > div > [aria-hidden] + .ant-affix {
-  position: fixed;
-  top: 0px !important;
-}
-
-.c0 > div .ant-anchor-wrapper .ant-anchor-ink-ball {
-  top: 13.5px;
-}
-
-.c2 {
-  margin: 12px 0 60px;
-}
-
-.c2:last-child {
-  min-height: 100vh;
-}
-
-<div
+  <div
     class="ant-row"
     style="margin-left: -10px; margin-right: -10px;"
   >
     <div
-      class="ant-col ant-col-4 c0"
+      class="ant-col ant-col-4 styledComponents__AnchorLayoutSidebar-sc-1u6w09d-1 fPRJAz"
       style="padding-left: 10px; padding-right: 10px;"
     >
       <div>
@@ -131,7 +53,7 @@ exports[`Anchor should render AnchorLayout correctly 1`] = `
           class=""
         >
           <div
-            class="ant-anchor-wrapper c1"
+            class="ant-anchor-wrapper styledComponents__Anchor-sc-1u6w09d-0 bzvdDJ"
             style="max-height: 100vh;"
           >
             <div
@@ -188,19 +110,19 @@ exports[`Anchor should render AnchorLayout correctly 1`] = `
       style="padding-left: 10px; padding-right: 10px;"
     >
       <div
-        class="c2"
+        class="styledComponents__Container-sc-1u6w09d-2 dfEISs"
         id="Anchor-1"
       >
         Content 1
       </div>
       <div
-        class="c2"
+        class="styledComponents__Container-sc-1u6w09d-2 dfEISs"
         id="Anchor-2"
       >
         Content 2
       </div>
       <div
-        class="c2"
+        class="styledComponents__Container-sc-1u6w09d-2 dfEISs"
         id="Anchor-3"
       >
         Content 3

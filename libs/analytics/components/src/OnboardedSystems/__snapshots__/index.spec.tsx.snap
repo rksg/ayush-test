@@ -7,13 +7,8 @@ exports[`TooltipContent should render correctly for error 1`] = `
   </div>
   <br />
   Errors:
-  .c0 {
-  padding-left: 15px;
-  margin-bottom: 0;
-}
-
-<ul
-    class="c0"
+  <ul
+    class="styledComponents__Errors-sc-lzcjki-0 cgiwSf"
   >
     <li>
       License API: Operation is not allowed because cluster is in read only state. (status code: 503)

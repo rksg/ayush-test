@@ -2,74 +2,11 @@
 
 exports[`MeshNetwork should render correctly 1`] = `
 <DocumentFragment>
-  .c0 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-}
-
-.c1 {
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  -webkit-align-items: baseline;
-  -webkit-box-align: baseline;
-  -ms-flex-align: baseline;
-  align-items: baseline;
-}
-
-.c2 {
-  margin-bottom: var(--acx-descriptions-space);
-  background-color: var(--acx-neutrals-10);
-  width: 600px;
-  padding-top: 10px;
-  padding-right: 100px;
-}
-
-.c2 ul li {
-  padding-bottom: 10px;
-}
-
-.c3 {
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  line-height: 32px;
-  grid-template-columns: 180px 300px 80px 45px;
-}
-
-.c3 svg {
-  margin-top: 8px;
-}
-
-.c4 {
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  line-height: 32px;
-  grid-template-columns: 180px 300px 80px 45px;
-}
-
-.c4 svg {
-  margin-top: 8px;
-}
-
-.c4 textarea {
-  resize: none;
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <label
-      class="c1"
+      class="styledComponents__FieldLabel-sc-1ibvcih-7 cCwAHN"
       width="180px"
     >
       Mesh Network
@@ -109,7 +46,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </div>
     </label>
     <div
-      class="c2"
+      class="sc-jZiqTT jLBklO"
     >
       <ul>
         <li>
@@ -121,7 +58,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </ul>
     </div>
     <div
-      class="c3"
+      class="sc-bxSTMQ jYAXuq"
     >
       Mesh Network Name
       <div
@@ -163,7 +100,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       />
     </div>
     <div
-      class="c4"
+      class="sc-jWquRx lkcmft"
     >
       Mesh PSK
       <div
@@ -206,7 +143,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       />
     </div>
     <label
-      class="c1"
+      class="styledComponents__FieldLabel-sc-1ibvcih-7 cCwAHN"
       width="180px"
     >
       Mesh Radio
@@ -295,36 +232,11 @@ exports[`MeshNetwork should render correctly 1`] = `
 
 exports[`MeshNetwork should render disabled switch button correctly 1`] = `
 <DocumentFragment>
-  .c0 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-}
-
-.c1 {
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  -webkit-align-items: baseline;
-  -webkit-box-align: baseline;
-  -ms-flex-align: baseline;
-  align-items: baseline;
-}
-
-<div
-    class="c0"
+  <div
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <label
-      class="c1"
+      class="styledComponents__FieldLabel-sc-1ibvcih-7 cCwAHN"
       width="180px"
     >
       Mesh Network

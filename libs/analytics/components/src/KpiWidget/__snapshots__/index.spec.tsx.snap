@@ -1,51 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`KpiWidget should render component having healthy icon: percentDiv 1`] = `
-.c1 {
-  position: relative;
-  display: inline-block;
-  top: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--acx-semantics-green-30);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-body-2-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
-}
-
-.c0 {
-  width: 100%;
-  height: 100%;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center c0"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
     style="margin-right: 8px;"
   >
     <span
-      class="c1"
+      class="styledComponents__HealthyIcon-sc-s2cdzz-2 jkYkbP"
     />
   </div>
   <div
     class="ant-space-item"
   >
     <span
-      class="c2"
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
     >
       100%
     </span>
@@ -54,51 +25,22 @@ exports[`KpiWidget should render component having healthy icon: percentDiv 1`] =
 `;
 
 exports[`KpiWidget should render component having major icon: percentDiv 1`] = `
-.c1 {
-  position: relative;
-  display: inline-block;
-  top: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--acx-accents-orange-30);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-body-2-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
-}
-
-.c0 {
-  width: 100%;
-  height: 100%;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center c0"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
     style="margin-right: 8px;"
   >
     <span
-      class="c1"
+      class="styledComponents__MajorIcon-sc-s2cdzz-1 iFLByV"
     />
   </div>
   <div
     class="ant-space-item"
   >
     <span
-      class="c2"
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
     >
       33%
     </span>
@@ -107,10 +49,6 @@ exports[`KpiWidget should render component having major icon: percentDiv 1`] = `
 `;
 
 exports[`KpiWidget should render component having major icon: svg 1`] = `
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <svg
   baseProfile="full"
   height="800"
@@ -177,51 +115,22 @@ exports[`KpiWidget should render component having major icon: svg 1`] = `
 `;
 
 exports[`KpiWidget should render component properly with sparkline: percentDiv 1`] = `
-.c1 {
-  position: relative;
-  display: inline-block;
-  top: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--acx-semantics-green-30);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-body-2-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
-}
-
-.c0 {
-  width: 100%;
-  height: 100%;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center c0"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
     style="margin-right: 8px;"
   >
     <span
-      class="c1"
+      class="styledComponents__HealthyIcon-sc-s2cdzz-2 jkYkbP"
     />
   </div>
   <div
     class="ant-space-item"
   >
     <span
-      class="c2"
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
     >
       94%
     </span>
@@ -230,10 +139,6 @@ exports[`KpiWidget should render component properly with sparkline: percentDiv 1
 `;
 
 exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <svg
   baseProfile="full"
   height="800"
@@ -300,51 +205,22 @@ exports[`KpiWidget should render component properly with sparkline: svg 1`] = `
 `;
 
 exports[`KpiWidget should render for empty data: percentDiv 1`] = `
-.c1 {
-  position: relative;
-  display: inline-block;
-  top: -1px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--acx-semantics-red-50);
-}
-
-.c2 {
-  font-family: var(--acx-accent-brand-font);
-  font-size: var(--acx-body-2-font-size);
-  font-weight: var(--acx-body-font-weight-bold);
-}
-
-.c0 {
-  width: 100%;
-  height: 100%;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <div
-  class="ant-space ant-space-horizontal ant-space-align-center c0"
+  class="ant-space ant-space-horizontal ant-space-align-center styledComponents__Wrapper-sc-s2cdzz-8 eMamIy"
 >
   <div
     class="ant-space-item"
     style="margin-right: 8px;"
   >
     <span
-      class="c1"
+      class="styledComponents__CriticalIcon-sc-s2cdzz-0 eWNVNd"
     />
   </div>
   <div
     class="ant-space-item"
   >
     <span
-      class="c2"
+      class="styledComponents__Percent-sc-s2cdzz-3 gXkkpv"
     >
       0%
     </span>
@@ -353,10 +229,6 @@ exports[`KpiWidget should render for empty data: percentDiv 1`] = `
 `;
 
 exports[`KpiWidget should render for empty data: svg 1`] = `
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
 <svg
   baseProfile="full"
   height="800"

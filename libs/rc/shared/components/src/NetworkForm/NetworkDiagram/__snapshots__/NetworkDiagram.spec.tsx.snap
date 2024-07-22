@@ -2,19 +2,14 @@
 
 exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -28,19 +23,14 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram suc
 
 exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram when enabling Authentication Service button 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -54,19 +44,14 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA Proxy diagram whe
 
 exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           src="Aaa"
@@ -79,19 +64,14 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram successfu
 
 exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram when enabling Accounting Service button 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -105,19 +85,14 @@ exports[`NetworkDiagram NetworkDiagram - AAA should render AAA diagram when enab
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Click Through) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -131,19 +106,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Guest Pass) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -157,19 +127,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Host Approval) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -183,19 +148,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (Self Sign In) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -209,19 +169,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (WISPr With Psk) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -235,19 +190,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal (WISPr) diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -261,19 +211,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive portal default diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Captive Portal"
@@ -287,19 +232,14 @@ exports[`NetworkDiagram NetworkDiagram - Captive portal should render Captive po
 
 exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Dynamic Pre-Shared Key (DPSK)"
@@ -313,19 +253,14 @@ exports[`NetworkDiagram NetworkDiagram - DPSK should render DPSK diagram success
 
 exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           src="Hotspot20"
@@ -338,19 +273,14 @@ exports[`NetworkDiagram NetworkDiagram - Hotspot20 should render Hotspot20 diagr
 
 exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Open Network"
@@ -364,19 +294,14 @@ exports[`NetworkDiagram NetworkDiagram - OPEN should render OPEN diagram success
 
 exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Enterprise AAA (802.1X)"
@@ -390,19 +315,14 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render AAA diagram successfu
 
 exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           alt="Passphrase (PSK/SAE)"
@@ -416,19 +336,14 @@ exports[`NetworkDiagram NetworkDiagram - PSK should render PSK diagram successfu
 
 exports[`NetworkDiagram should render default diagram successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  width: 358px;
-  margin-top: 40px;
-}
-
-<div
+  <div
     class="ant-row ant-row-center"
   >
     <div
       class="ant-col"
     >
       <div
-        class="c0"
+        class="styledComponents__Diagram-sc-bsypt3-0 etPTIs"
       >
         <img
           src="None"

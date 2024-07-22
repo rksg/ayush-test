@@ -2,14 +2,7 @@
 
 exports[`LoadControlForm should render More settings form successfully 1`] = `
 <DocumentFragment>
-  .c0 {
-  font-size: var(--acx-body-4-font-size);
-  display: grid;
-  line-height: 32px;
-  grid-template-columns: 250px 1fr;
-}
-
-<form
+  <form
     class="ant-form ant-form-horizontal"
   >
     <div
@@ -186,7 +179,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="c0"
+      class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
       width="250px"
     >
       Enable load balancing between all radios
@@ -227,7 +220,7 @@ exports[`LoadControlForm should render More settings form successfully 1`] = `
       </div>
     </div>
     <div
-      class="c0"
+      class="styledComponents__FieldLabel-sc-1jfjsg1-0 fIJRPI"
       width="250px"
     >
       Enable load balancing between APs

@@ -2,40 +2,7 @@
 
 exports[`ExpirationDateSelector should render the selector 1`] = `
 <DocumentFragment>
-  .c0 {
-  display: grid;
-  grid-template-columns: auto;
-  grid-column-gap: 20px;
-  height: auto;
-  min-height: 45px;
-  -webkit-align-content: start;
-  -ms-flex-line-pack: start;
-  align-content: start;
-}
-
-.c1 {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  grid-column-gap: 20px;
-  height: auto;
-  min-height: 45px;
-  -webkit-align-content: start;
-  -ms-flex-line-pack: start;
-  align-content: start;
-}
-
-.c2 {
-  display: grid;
-  grid-template-columns: 140px auto 120px;
-  grid-column-gap: 20px;
-  height: auto;
-  min-height: 45px;
-  -webkit-align-content: start;
-  -ms-flex-line-pack: start;
-  align-content: start;
-}
-
-<form
+  <form
     class="ant-form ant-form-horizontal"
   >
     <div
@@ -70,7 +37,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                 id="expirationDate_mode"
               >
                 <div
-                  class="c0"
+                  class="sc-ftvSup jccYBE"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-in-form-item"
@@ -94,7 +61,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   </label>
                 </div>
                 <div
-                  class="c1"
+                  class="sc-ftvSup iQLqkf"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"
@@ -117,7 +84,7 @@ exports[`ExpirationDateSelector should render the selector 1`] = `
                   </label>
                 </div>
                 <div
-                  class="c2"
+                  class="sc-ftvSup beoJfO"
                 >
                   <label
                     class="ant-radio-wrapper ant-radio-wrapper-in-form-item"

@@ -2,331 +2,17 @@
 
 exports[`HistoricalClientsTable should render correctly 1`] = `
 <DocumentFragment>
-  h1.c1.ant-typography {
-  line-height: var(--acx-subtitle-1-line-height);
-  font-size: var(--acx-subtitle-1-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-1-font-weight);
-}
-
-h2.c1.ant-typography {
-  line-height: var(--acx-subtitle-2-line-height);
-  font-size: var(--acx-subtitle-2-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-2-font-weight);
-}
-
-h3.c1.ant-typography {
-  line-height: var(--acx-subtitle-3-line-height);
-  font-size: var(--acx-subtitle-3-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-3-font-weight);
-}
-
-h4.c1.ant-typography {
-  line-height: var(--acx-subtitle-4-line-height);
-  font-size: var(--acx-subtitle-4-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-4-font-weight);
-}
-
-h5.c1.ant-typography {
-  line-height: var(--acx-subtitle-5-line-height);
-  font-size: var(--acx-subtitle-5-font-size);
-  font-family: var(--acx-neutral-brand-font);
-  font-weight: var(--acx-subtitle-5-font-weight);
-}
-
-.c0 {
-  position: relative;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  height: 100%;
-}
-
-.c2 .ant-pro-table {
-  --acx-table-cell-horizontal-space: 8px;
-}
-
-.c2 .ant-pro-table .ant-pro-card .ant-pro-card-body {
-  padding: 0px;
-}
-
-.c2 .ant-pro-table .ant-table .parent-row-data,
-.c2 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-row-hover,
-.c2 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-right,
-.c2 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-fix-left,
-.c2 .ant-pro-table .ant-table .parent-row-data .ant-table-column-sort {
-  background-color: var(--acx-neutrals-20) !important;
-  overflow: visible !important;
-}
-
-.c2 .ant-pro-table .ant-table .parent-row-data .ant-table-cell-with-append .ant-table-row-expand-icon {
-  display: none;
-}
-
-.c2 .ant-pro-table .ant-table .ant-table-cell-with-append .indent-level-2 {
-  padding-left: 10px !important;
-}
-
-.c2 .ant-pro-table .ant-table-cell-fix-left {
-  border-bottom: 1px solid var(--acx-neutrals-30) !important;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr:first-child > th {
-  padding-top: 12px;
-  font-size: var(--acx-subtitle-4-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  font-weight: var(--acx-subtitle-4-font-weight);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr:not(:first-child) > th {
-  padding-top: 6px;
-  font-size: var(--acx-subtitle-5-font-size);
-  line-height: var(--acx-subtitle-5-line-height);
-  font-weight: var(--acx-subtitle-5-font-weight-semi-bold);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr:last-child > th,
-.c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan] {
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--acx-neutrals-30);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th {
-  border-bottom: 0;
-  padding: 0px var(--acx-table-cell-horizontal-space);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
-  width: 0px;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: left;
-  -webkit-justify-content: left;
-  -ms-flex-pack: left;
-  justify-content: left;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-title {
-  -webkit-flex: unset;
-  -ms-flex: unset;
-  flex: unset;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter {
-  --icon-size: 11px;
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  margin: 0;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up,
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
-  visibility: hidden;
-  width: 0;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up.active,
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down.active {
-  visibility: visible;
-  width: unset;
-  margin-left: calc(var(--icon-size) / 2);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-up {
-  margin-bottom: calc(var(--icon-size) / -2);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter-down {
-  margin-top: calc(var(--icon-size) / -2);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th.ant-table-column-has-sorters .ant-table-column-sorters .ant-table-column-sorter .anticon svg {
-  fill: var(--acx-primary-black);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: center"] .ant-table-column-sorters {
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th[style*="text-align: right"] .ant-table-column-sorters {
-  -webkit-box-pack: right;
-  -webkit-justify-content: right;
-  -ms-flex-pack: right;
-  justify-content: right;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td {
-  border-bottom: 1px solid var(--acx-neutrals-30);
-  padding: 14px var(--acx-table-cell-horizontal-space);
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td a {
-  font-size: unset;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: left;
-  -webkit-justify-content: left;
-  -ms-flex-pack: left;
-  justify-content: left;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td .ant-badge.ant-badge-status:not(.acx-chart-tooltip) .ant-badge-status-dot {
-  -webkit-flex-shrink: 0;
-  -ms-flex-negative: 0;
-  flex-shrink: 0;
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr:last-child > th:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover,.c2 .ant-pro-table .ant-table-thead > tr:first-child > th[rowspan]:not(.ant-table-selection-column):not(.ant-table-cell-fix-right):hover {
-  background: var(--acx-accents-orange-10);
-}
-
-.c2 .ant-pro-table .ant-table-thead > tr > th {
-  -webkit-user-select: none;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis a span.ant-typography {
-  color: inherit;
-  -webkit-text-decoration: inherit;
-  text-decoration: inherit;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) {
-  width: 100%;
-  max-width: -webkit-fit-content;
-  max-width: -moz-fit-content;
-  max-width: fit-content;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-btn.ant-btn-link:not(.ant-btn-icon-only) span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.c2 .ant-pro-table .ant-table-tbody > tr > td.ant-table-cell-ellipsis .ant-badge-status .ant-badge-status-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.c2 .ant-pro-table .ant-pro-card-body {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-}
-
-.c2 .ant-pro-table-list-toolbar {
-  -webkit-order: 2;
-  -ms-flex-order: 2;
-  order: 2;
-  height: 45px;
-  pointer-events: none;
-  z-index: 4;
-  overflow: visible;
-}
-
-.c2 .ant-pro-table-list-toolbar-container {
-  padding: 0;
-  position: relative;
-  height: 100%;
-}
-
-.c2 .ant-pro-table-list-toolbar-setting-item {
-  pointer-events: all;
-}
-
-.c2 .ant-pro-table-list-toolbar-setting-item svg {
-  margin-top: 3px;
-}
-
-.c2 .ant-pro-table-alert {
-  -webkit-order: 1;
-  -ms-flex-order: 1;
-  order: 1;
-  margin: 0px;
-  z-index: 4;
-  overflow: visible;
-}
-
-.c2 .ant-pro-table-alert .ant-alert {
-  height: 36px;
-  background-color: var(--acx-accents-blue-10);
-  border: var(--acx-accents-blue-10);
-  padding: 10px 16px;
-}
-
-.c2 .ant-pro-table-alert .ant-alert .ant-pro-table-alert-info {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c2 .ant-pro-table .ant-table-wrapper {
-  -webkit-order: 3;
-  -ms-flex-order: 3;
-  order: 3;
-  margin-top: -45px;
-}
-
-.c2 .ant-pro-table .ant-pagination {
-  position: relative;
-  z-index: 4;
-  background-color: var(--acx-primary-white);
-  padding: 16px 0;
-  margin: unset;
-}
-
-@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
-
-}
-
-<div>
+  <div>
     <div
-      class="c0"
+      class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
     >
       <h4
-        class="ant-typography c1 "
+        class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
       >
         Historical Clients
       </h4>
       <div
-        class="c2"
+        class="styledComponents__Wrapper-sc-1abm7iv-12 ejDZLO"
         style="--sticky-offset: 0px; --sticky-has-actions: 0; --sticky-has-row-actions-offset: 0;"
       >
         <div
@@ -435,7 +121,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <span
                                     class="ant-table-cell-content"
@@ -497,7 +183,7 @@ h5.c1.ant-typography {
                                     </div>
                                   </span>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -505,7 +191,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -563,7 +249,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -571,7 +257,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -629,7 +315,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -637,7 +323,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -695,7 +381,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -703,7 +389,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -761,7 +447,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -769,7 +455,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -827,7 +513,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -835,7 +521,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -893,7 +579,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
@@ -901,7 +587,7 @@ h5.c1.ant-typography {
                                   tabindex="0"
                                 >
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHover-sc-1abm7iv-8"
                                   />
                                   <div
                                     class="ant-table-column-sorters"
@@ -959,7 +645,7 @@ h5.c1.ant-typography {
                                     </span>
                                   </div>
                                   <div
-                                    class=""
+                                    class="styledComponents__ResizableHandle-sc-1abm7iv-9"
                                   />
                                 </th>
                                 <th
