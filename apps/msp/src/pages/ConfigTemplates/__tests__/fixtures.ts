@@ -30,7 +30,7 @@ export const mockedConfigTemplateList = {
       createdOn: 1690598500000,
       createdBy: 'Author 3',
       appliedOnTenants: ['t1'],
-      templateType: 'RADIUS',
+      type: 'RADIUS',
       lastModified: 1690598500000,
       lastApplied: 1690598510000
     },
@@ -39,7 +39,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 4',
       createdOn: 1690598500000,
       createdBy: 'Author 4',
-      templateType: 'Layer 2 Policy',
+      type: 'Layer 2 Policy',
       lastModified: 1690598500000
     },
     {
