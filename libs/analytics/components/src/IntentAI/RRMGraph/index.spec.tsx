@@ -5,7 +5,7 @@ import { GraphProps }                       from '@acx-ui/components'
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../IntentAIForm/__tests__/fixtures'
+import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../IntentAIDetails/__tests__/fixtures'
 import { EnhancedRecommendation }                     from '../IntentAIForm/services'
 
 import { IntentAIRRMGraph } from '.'

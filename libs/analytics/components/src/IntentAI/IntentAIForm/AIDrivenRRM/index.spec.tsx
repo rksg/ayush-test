@@ -6,7 +6,7 @@ import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../__tests__/fixtures'
+import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../../IntentAIDetails/__tests__/fixtures'
 
 import { AIDrivenRRM } from '.'
 

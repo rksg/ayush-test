@@ -6,7 +6,8 @@ import { mockGraphqlQuery }         from '@acx-ui/test-utils'
 import {
   mockedRecommendationCRRM,
   mockedRecommendationCRRMApplied
-} from './__tests__/fixtures'
+} from '../IntentAIDetails/__tests__/fixtures'
+
 import { api, EnhancedRecommendation, kpiHelper } from './services'
 
 describe('recommendation services', () => {

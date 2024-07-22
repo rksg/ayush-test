@@ -1,8 +1,4 @@
 import { RecommendationDetails } from '../../IntentAIForm/services'
-<<<<<<<< HEAD:libs/analytics/components/src/IntentAI/IntentAIDetails/__tests__/fixtures.ts
-========
-
->>>>>>>> feature/MLSA-7981:libs/analytics/components/src/IntentAI/IntentAIDetails/AIDrivenRRM/__tests__/fixtures.ts
 
 export const mockedRecommendationCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
