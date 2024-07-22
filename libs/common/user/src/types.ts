@@ -39,6 +39,11 @@ export interface RegionValue {
   current: boolean
 }
 
+export enum CustomRoleType {
+  SYSTEM = 'System',
+  CUSTOM = 'Custom'
+}
+
 export interface UserProfile {
   region: string
   swuId: string
@@ -47,8 +52,8 @@ export interface UserProfile {
   firstName: string
   lastName: string
   username: string
-  role: RolesEnum
-  roles: RolesEnum[]
+  role: RolesEnum | string
+  roles: RolesEnum[] | string[]
   detailLevel: DetailLevel
   dateFormat: string
   var: boolean
@@ -69,7 +74,7 @@ export interface UserProfile {
   fullName: string
   preferredLanguage?: string
   customRoleName?: string
-  customRoleType?: string
+  customRoleType?: CustomRoleType
   scopes?: []
 }
 

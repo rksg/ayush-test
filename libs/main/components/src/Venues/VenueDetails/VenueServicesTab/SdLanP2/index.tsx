@@ -180,7 +180,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
             activated={data.networkIds}
             activatedGuest={data.guestNetworkIds}
             disabled={!hasEdgeUpdatePermission}
-            tooltip={!hasEdgeUpdatePermission
+            toggleButtonTooltip={!hasEdgeUpdatePermission
               ? $t({ defaultMessage: 'No permission on this' })
               : undefined}
             onActivateChange={handleActivateChange}
