@@ -17,7 +17,6 @@ const modifyVars = require('./libs/common/components/src/theme/modify-vars')
       config.mode = 'production'
       config.optimization.minimize = true
     } else {
-      // config.cache = true
       config.cache = {
         type: 'filesystem',
         allowCollectingMemory: true,
