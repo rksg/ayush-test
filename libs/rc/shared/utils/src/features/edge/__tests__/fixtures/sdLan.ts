@@ -248,7 +248,31 @@ export const mockedMvSdLanDataList = [{
   guestVlanNum: 20,
   guestVxlanTunnelNum: 10,
   vlans: ['2-9', '20', '22', '62-63'],
-  guestVlans: ['11-15', '30', '32', '51-53']
+  guestVlans: ['11-15', '30', '32', '51-53'],
+  edgeClusterTunnelInfo: [
+    {
+      serialNumber: 'serialNumber-1',
+      activeApCount: 3,
+      allocatedApCount: 10
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      activeApCount: 6,
+      allocatedApCount: 10
+    }
+  ],
+  guestEdgeClusterTunnelInfo: [
+    {
+      serialNumber: 'serialNumber-1',
+      activeNodeCount: 2,
+      allocatedNodeCount: 2
+    },
+    {
+      serialNumber: 'serialNumber-2',
+      activeNodeCount: 1,
+      allocatedNodeCount: 2
+    }
+  ]
 }, {
   id: 'mocked-sd-lan-2',
   name: 'Mocked_SDLAN_2',
@@ -287,5 +311,7 @@ export const mockedMvSdLanDataList = [{
   edgeAlarmSummary: {} as EdgeAlarmSummary,
   serviceVersion: '1.0.0.100',
   vxlanTunnelNum: 20,
-  vlanNum: 15
+  vlanNum: 15,
+  edgeClusterTunnelInfo: [],
+  guestEdgeClusterTunnelInfo: []
 }] as EdgeMvSdLanViewData[]
