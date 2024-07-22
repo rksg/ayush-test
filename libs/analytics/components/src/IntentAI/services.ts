@@ -2,6 +2,7 @@ import { gql } from 'graphql-request'
 import _       from 'lodash'
 
 import { formattedPath }                            from '@acx-ui/analytics/utils'
+import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
 import { intentAIApi }                              from '@acx-ui/store'
 import { getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
 import type { PathFilter }                          from '@acx-ui/utils'
@@ -37,7 +38,35 @@ export type IntentListItem = Intent & {
   type: string
   category: string
   status: string
-  statusEnum: StateType
+  statusTooltip: string
+}
+
+type Metadata = {
+  error?: {
+    message?: string
+  }
+  scheduledAt?: string
+  updatedAt?: string
+  oneClickOptimize?: boolean
+  scheduledBy?: string
+}
+
+const getStatusTooltip = (state: StateType, sliceValue: string, metadata: Metadata) => {
+  const { $t } = getIntl()
+  let tooltipKey = 'tooltip'
+
+  if (state.includes('applyscheduled-by-user') && metadata.oneClickOptimize) {
+    tooltipKey = 'tooltipOneClickOptimize'
+  }
+
+  const stateConfig = states[state]
+  return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
+    errorMessage: metadata.error?.message,
+    scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
+    zoneName: sliceValue
+    // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
+    // newConfig: metadata.newConfig //TODO: how to display newConfig?
+  })
 }
 
 export const api = intentAIApi.injectEndpoints({
@@ -84,9 +113,13 @@ export const api = intentAIApi.injectEndpoints({
         const { $t } = getIntl()
         const items = response.intents.reduce((intents, intent) => {
           const {
-            id, path, sliceValue, code, displayStatus
+            id, path, sliceValue, code, displayStatus, metadata, updatedAt
           } = intent
           const detail = codes[code]
+          //Avoid UI showing errors when displayStatus is not defined in the UI code
+          const statusEnum = (states[displayStatus]?.text)
+            ? displayStatus as StateType
+            : 'status-not-defined-in-ui'
           detail && intents.push({
             ...intent,
             id: id,
@@ -94,7 +127,8 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: $t(states[displayStatus].text)
+            status: $t(states[statusEnum].text),
+            statusTooltip: getStatusTooltip(statusEnum, sliceValue, { ...metadata, updatedAt })
           } as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)
