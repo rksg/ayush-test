@@ -387,7 +387,7 @@ export function NetworkForm (props:{
   }
 
   const handleWlanAdvanced3MLO = (data: NetworkSaveData, wifi7Mlo3LinkFlag: boolean) => {
-    if (wifi7Mlo3LinkFlag && data.wlan?.advancedCustomization &&
+    if (data.wlan?.advancedCustomization &&
         !data.wlan?.advancedCustomization?.multiLinkOperationEnabled) {
       data.wlan.advancedCustomization = {
         ...data.wlan?.advancedCustomization,
@@ -575,7 +575,7 @@ export function NetworkForm (props:{
     }
 
     const dataConnection = handleUserConnection(data)
-    const dataWlan = handleWlanAdvanced3MLO(dataConnection,wifi7Mlo3LinkFlag)
+    const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
     const dataMore = handleGuestMoreSetting(dataWlan)
 
     if(isPortalWebRender(dataMore)){
