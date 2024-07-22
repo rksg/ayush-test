@@ -10,6 +10,8 @@ import { UploadDocument } from '@acx-ui/icons'
 import { Button } from '../Button'
 
 import * as UI from './styledComponents'
+
+export type Mode = 'my-network' | 'general'
 export interface FulfillmentMessage {
   data?: { incidentId: string },
   text?: { text: string[] },
@@ -29,7 +31,7 @@ export interface FulfillmentMessage {
     }[][]
   } }
 
-export type Content = { type: 'bot' | 'user', isRuckusAi?:boolean,
+export type Content = { type: 'bot' | 'user', mode?:Mode, isRuckusAi?:boolean,
 contentList:FulfillmentMessage[] }
 
 export interface ConversationProps {
@@ -37,7 +39,7 @@ export interface ConversationProps {
   classList: string
   style: CSSProperties
   isReplying: boolean
-  listCallback: CallableFunction
+  listCallback?: CallableFunction
   maxChar?: number
 }
 const { Panel } = UI.Collapse
@@ -52,20 +54,34 @@ function parseLink (link: string): string {
   return link.replace('<origin>',MELISSA_URL_ORIGIN)
 }
 
-const Expandable = (props: { text: string, maxChar: number, isRuckusAi?:boolean }) => {
+const Expandable = (props: { text: string, maxChar: number, isRuckusAi?:boolean, mode?:Mode }) => {
   const { $t } = useIntl()
   const [expanded, setExpanded] = useState(true)
   const RUCKUS_AI_TEXT = $t({ defaultMessage: 'RUCKUS AI' })
   const readMoreText = $t({ defaultMessage: 'Read more...' })
   const readLessText = $t({ defaultMessage: 'Read less' })
+  const myNetworkText = $t({ defaultMessage: 'My Network' })
+  const generalText = $t({ defaultMessage: 'General' })
+  const myNetwork = <UI.ModeText><br/>{myNetworkText}</UI.ModeText>
+  const general = <UI.ModeText><br/>{generalText}</UI.ModeText>
   const RUCKUS_AI_HEADER = props.isRuckusAi ? <>
     <strong><u>{RUCKUS_AI_TEXT}</u></strong><br/><br/></> : null
-  if(props.text.length <= props.maxChar) return <UI.Bot>{RUCKUS_AI_HEADER}{props.text}</UI.Bot>
+  if(props.text.length <= props.maxChar){
+    return (<UI.Bot>
+      {RUCKUS_AI_HEADER}{props.text}
+      { props.mode === 'my-network' && myNetwork}
+      { props.mode === 'general' && general}
+    </UI.Bot>)
+  }
   let formattedText = expanded ? props.text.substring(0, props.maxChar) : props.text
-  return <UI.Bot>{RUCKUS_AI_HEADER}{formattedText}{expanded ? '... ' : ''}
+  return (<UI.Bot>
+    {RUCKUS_AI_HEADER}{formattedText}{expanded ? '... ' : ''}
     <br/><br/>
     <Button size='small' type='link' onClick={() => {setExpanded(!expanded)}}>
-      {expanded? readMoreText : readLessText}</Button></UI.Bot>
+      {expanded? readMoreText : readLessText}</Button>
+    { props.mode === 'my-network' && myNetwork}
+    { props.mode === 'general' && general}
+  </UI.Bot>)
 }
 function Conversation ({
   content,
@@ -73,7 +89,7 @@ function Conversation ({
   isReplying,
   style,
   listCallback,
-  maxChar=300
+  maxChar=3000
 }: ConversationProps) {
   return (
     <UI.Wrapper style={style} className={classList}>
@@ -82,7 +98,10 @@ function Conversation ({
           list.type === 'bot' ? (
             <>{content.text?.text.map((msg) =>{
               const text = msg.startsWith('\n') ? msg.substring(1).trim() : msg.trim()
-              return <Expandable text={text} maxChar={maxChar} isRuckusAi={list.isRuckusAi}/>
+              return <Expandable text={text}
+                maxChar={maxChar}
+                isRuckusAi={list.isRuckusAi}
+                mode={list.mode}/>
             })
             }{content.payload?.richContent.map((data) =>(
               data.map((res) => {
@@ -127,7 +146,7 @@ function Conversation ({
                       data-testid='button-link-list'
                       style={{ fontSize: '12px', width: 'max-content', marginTop: '10px' }}
                       onClick={()=>{
-                        listCallback({
+                        listCallback && listCallback({
                           queryInput: {
                             event: res.event
                           }
