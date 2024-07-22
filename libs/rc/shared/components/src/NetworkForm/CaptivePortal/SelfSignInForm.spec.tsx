@@ -60,9 +60,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(selfSignInRes))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [selfSignInRes] })))
+        (_, res, ctx) => res(ctx.json(selfSignInRes)))
     )
   })
 
