@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { BaseQueryApi } from '@reduxjs/toolkit/query'
 import _                from 'lodash'
 
@@ -5,8 +6,6 @@ import { ExpirationType, PassphraseFormatEnum } from '@acx-ui/rc/utils'
 
 import { addDpskFn, updateDpskFn } from './dpsk'
 
-
-/* eslint-disable max-len */
 const mockQueryApi: BaseQueryApi = {
   dispatch: jest.fn(),
   getState: jest.fn(),

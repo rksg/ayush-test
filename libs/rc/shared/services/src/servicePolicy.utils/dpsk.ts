@@ -16,7 +16,6 @@ export function addDpskFn (isTemplate: boolean = false) : QueryFn<DpskMutationRe
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
       const res = await fetchWithBQ({
-        // eslint-disable-next-line max-len
         ...createHttpRequest(api.addDpsk, params),
         body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
       })

@@ -912,29 +912,26 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       }
     }),
     activateDpskService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateDpskService, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       }
     }),
     activateMacRegistrationPool: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateMacRegistrationPool, params)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       }
     }),
