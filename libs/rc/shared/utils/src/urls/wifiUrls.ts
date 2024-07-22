@@ -596,5 +596,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  queryDpskService: {
+    method: 'GET',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/dpskServices',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

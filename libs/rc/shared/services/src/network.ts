@@ -34,7 +34,8 @@ import {
   BaseNetwork,
   VlanPoolRbacUrls,
   VLANPoolViewModelRbacType,
-  transformWifiNetwork
+  transformWifiNetwork,
+  DpskSaveData
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -927,6 +928,14 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
+    getDpskService: build.query<TableResult<DpskSaveData>, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryDpskService, params)
+        return {
+          ...req
+        }
+      }
+    }),
     activateMacRegistrationPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateMacRegistrationPool, params)
@@ -1501,6 +1510,7 @@ export const {
   useExternalProvidersQuery,
   useActivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
+  useGetDpskServiceQuery,
   useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,

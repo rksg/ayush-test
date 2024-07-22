@@ -26,7 +26,7 @@ import {
   useDeactivateIdentityProviderOnWifiNetworkMutation,
   useActivateMacRegistrationPoolMutation,
   useActivateDpskServiceMutation,
-  useActivateDpskServiceTemplateMutation
+  useActivateDpskServiceTemplateMutation, useGetDpskServiceQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -211,6 +211,13 @@ export function NetworkForm (props:{
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
     })
+  const { dpskServiceProfileId } = useGetDpskServiceQuery(
+    { params: { networkId: data?.id } },
+    {
+      // eslint-disable-next-line max-len
+      skip: !enableServiceRbac || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.DPSK),
+      selectFromResult: ({ data }) => ({ dpskServiceProfileId: data?.data[0]?.id })
+    })
 
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([
@@ -241,9 +248,9 @@ export function NetworkForm (props:{
         form?.resetFields()
         form?.setFieldsValue(resolvedData)
       }
-      updateSaveData({ ...resolvedData, certificateTemplateId })
+      updateSaveData({ ...resolvedData, certificateTemplateId, dpskServiceProfileId })
     }
-  }, [data, certificateTemplateId])
+  }, [data, certificateTemplateId, dpskServiceProfileId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0) return
