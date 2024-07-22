@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { SummaryCard }               from '@acx-ui/components'
 import { LbsServerProfileViewModel } from '@acx-ui/rc/utils'
+import { Badge, Space } from 'antd'
 
 export function LbsServerProfileOverview (props: { data: LbsServerProfileViewModel }) {
   const { $t } = useIntl()
@@ -14,11 +15,29 @@ export function LbsServerProfileOverview (props: { data: LbsServerProfileViewMod
     },
     {
       title: $t({ defaultMessage: 'Server' }),
-      content: data.server
+      content: <LbsServerConnectionStatus
+        isConnected={data.isServerConnected ?? false}
+        address={data.server} />
     }
   ]
 
   return (
     <SummaryCard data={lbsServerProfileInfo} colPerRow={6} />
+  )
+}
+
+const handleConnectionColor = (connected: boolean) => {
+  return connected ? 'var(--acx-semantics-green-50)' : 'var(--acx-semantics-red-50)'
+}
+
+export const LbsServerConnectionStatus = (
+  { isConnected, address }: { isConnected: boolean, address: string }
+) => {
+  return (
+    <Space>
+      <Badge color={handleConnectionColor(isConnected)}
+        text={address}
+      />
+    </Space>
   )
 }
