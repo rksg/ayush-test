@@ -12508,7 +12508,7 @@ exports[`Topology should render correctly 1`] = `
         style="position: absolute; width: 348px; max-height: 350px; z-index: 9999;"
       >
         <div
-          class="styledComponents__Wrapper-sc-13w5wfx-4 eXKnGb"
+          class="styledComponents__Wrapper-sc-13w5wfx-4 drhBSB"
           type="no-border"
         >
           <div
@@ -12618,6 +12618,15 @@ exports[`Topology should render correctly 1`] = `
                 </div>
               </div>
             </div>
+            <ul
+              class="ant-card-actions"
+            >
+              <li
+                style="width: 100%;"
+              >
+                <span />
+              </li>
+            </ul>
           </div>
         </div>
       </div>
