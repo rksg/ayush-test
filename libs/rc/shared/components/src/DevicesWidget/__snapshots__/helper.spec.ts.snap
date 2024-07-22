@@ -26,6 +26,32 @@ Array [
 ]
 `;
 
+exports[`getApStackedBarChartData should return correct formatted data: omit-InSetupPhase 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 3,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 3,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
 exports[`getApStackedBarChartData should return empty array if no data 1`] = `
 Array [
   Object {
@@ -78,6 +104,32 @@ Array [
 ]
 `;
 
+exports[`getEdgeStackedBarChartData should return correct formatted data: omit-InSetupPhase 1`] = `
+Array [
+  Object {
+    "category": "",
+    "series": Array [
+      Object {
+        "name": "<0>In Setup Phase",
+        "value": 1,
+      },
+      Object {
+        "name": "<1>Requires Attention",
+        "value": 2,
+      },
+      Object {
+        "name": "<2>Transient Issue",
+        "value": 0,
+      },
+      Object {
+        "name": "<3>Operational",
+        "value": 0,
+      },
+    ],
+  },
+]
+`;
+
 exports[`getEdgeStackedBarChartData should return empty array if no data 1`] = `
 Array [
   Object {
@@ -111,7 +163,7 @@ Object {
       "category": "",
       "series": Array [
         Object {
-          "name": "Disconnected",
+          "name": "Offline",
           "value": 1,
         },
       ],
