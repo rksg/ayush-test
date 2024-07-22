@@ -549,9 +549,8 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   })
   describe('SMSTokenCheckbox Edit Mode', () => {
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
-
     it('R1, Over 100, SMS checked', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
@@ -585,6 +584,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       expect(formItem).toBeDisabled()
     })
     it('R1, Over 100, SMS unchecked',() => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
@@ -617,6 +617,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
 
     })
     it('R1, Under 100, SMS checked',() => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
@@ -648,6 +649,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       expect(formItem).not.toBeDisabled()
     })
     it('Unset, Under 100, SMS unchecked',() => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
       const SelfSignInComponent = (<Provider>
         <NetworkFormContext.Provider
           value={{
