@@ -61,10 +61,6 @@ describe('ApGroupDetails', () => {
           return res(ctx.json(networkApGroup))
         }
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json(networkDeepList))
-      ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepList.response))

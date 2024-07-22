@@ -207,7 +207,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
 
   if (networkIds.length > 0) {
     // eslint-disable-next-line max-len
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, true)
   }
   return {
     error: networkListResult.error as FetchBaseQueryError,

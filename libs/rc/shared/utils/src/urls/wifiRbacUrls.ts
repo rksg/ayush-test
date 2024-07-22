@@ -413,11 +413,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
-  getDpskPassphraseByQuery: {
-    method: 'post',
-    url: '/dpskPassphrasePools/query',
-    newApi: true
-  },
   getApLanPorts: {
     method: 'get',
     url: '/venues/aps/:serialNumber/lanPortSettings',
