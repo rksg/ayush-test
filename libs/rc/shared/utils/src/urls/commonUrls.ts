@@ -321,16 +321,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/networkActivations/query',
     newApi: true
   },
-  getNetworkDeepList: {
-    // [New API] request not support list
-    // method: 'get',
-    // url: '/networks/:networkId',
-    // oldMethod: 'post',
-    // oldUrl: '/api/tenant/:tenantId/wifi/network/get/deep',
-    // newApi: false
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/get/deep'
-  },
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/venues/:venueId/dosProtectionSettings',
