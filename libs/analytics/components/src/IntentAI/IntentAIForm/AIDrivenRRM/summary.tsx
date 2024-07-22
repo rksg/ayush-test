@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Row, Col, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Row, Col, Typography }   from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { TrendTypeEnum }                                                                         from '@acx-ui/analytics/utils'
 import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapping, TrendPill } from '@acx-ui/components'
@@ -26,9 +26,12 @@ export function Summary () {
     initialValues?.code as keyof typeof recommendationBandMapping]
   const queryResult = useIntentAICRRMQuery(initialValues as EnhancedRecommendation, band)
   const crrmData = queryResult?.data
-
   const { interferingLinks, linksPerAP } = getGraphKPI(
     initialValues as EnhancedRecommendation, crrmData)
+
+  const sideNotes = {
+    title: defineMessage({ defaultMessage: 'Side Notes' })
+  }
 
   return <Row gutter={20}>
     <Col span={16}>
@@ -71,7 +74,7 @@ export function Summary () {
     <Col span={7} offset={1}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t(steps.sideNotes.title)}
+          {$t(sideNotes.title)}
         </Typography.Title>
         <StepsForm.Subtitle>
           {$t(crrmIntent[isOptimized(intentPriority) as IntentPriority]?.title)}

@@ -129,7 +129,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
 
 export const kpiHelper = (code: string) => {
   if (!code) return ''
-  return codes[code].kpis
+  return codes[code].kpis!
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
       return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
