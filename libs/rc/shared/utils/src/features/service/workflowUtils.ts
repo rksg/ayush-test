@@ -5,7 +5,8 @@ import { Node }                   from 'reactflow'
 import {
   AupIcon,
   DataPromptIcon,
-  DisplayMessageIcon
+  DisplayMessageIcon,
+  DpskActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -79,8 +80,7 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.AUP]: AupIcon,
   [ActionType.DATA_PROMPT]: DataPromptIcon,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon,
-  //  TODO: update this
-  [ActionType.DPSK]: DisplayMessageIcon
+  [ActionType.DPSK]: DpskActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {

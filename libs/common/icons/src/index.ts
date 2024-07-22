@@ -1,3 +1,5 @@
+import exp from 'constants'
+
 /* eslint-disable max-len */
 export { ReactComponent as AccessPointOutlined } from './icons/AccessPointOutlined.svg'
 export { ReactComponent as AccessPointSolid } from './icons/AccessPointSolid.svg'
@@ -409,6 +411,7 @@ export { ReactComponent as StartFlag } from './icons/StartFlag.svg'
 export { ReactComponent as EndFlag } from './icons/StartFlag.svg'
 export { ReactComponent as AupIcon } from './icons/AupActionTypeIcon.svg'
 export { ReactComponent as DisplayMessageIcon } from './icons/DisplayMessageActionTypeIcon.svg'
+export { ReactComponent as DpskActionTypeIcon } from './icons/DpskActionTypeIcon.svg'
 export { ReactComponent as DataPromptIcon } from './icons/DataPromptActionTypeIcon.svg'
 
 export * from './styledComponents'
