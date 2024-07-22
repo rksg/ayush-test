@@ -36,11 +36,13 @@ export function PortalInstancesTable (){
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isEnabledWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEnabledTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isNewDefined = isTemplate || isEnabledRbacService
-  const isEnabledNonTemplateWifiRbac = !isTemplate && isEnabledWifiRbac
+  const isEnabledNonTemplateWifiRbac = !isTemplate && isWifiRbacEnabled
+
   const defaultPayload = {
     fields: ['id', 'name', 'wifiNetworkIds', 'displayLangCode'],
     filters: {
@@ -57,9 +59,9 @@ export function PortalInstancesTable (){
   })
 
   const useQuery = useMemo(() => {
-    const useNetworkQuery = isEnabledWifiRbac ? useWifiNetworkListQuery : useNetworkListQuery
+    const useNetworkQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
     return isTemplate ? useGetNetworkTemplateListQuery : useNetworkQuery
-  }, [isTemplate, isEnabledWifiRbac])
+  }, [isTemplate, isWifiRbacEnabled])
 
   const networkQueryFields = useMemo(() => {
     return isEnabledNonTemplateWifiRbac ?
@@ -142,13 +144,13 @@ export function PortalInstancesTable (){
       }
     },
     ...(isTemplate ? []: [{
-      key: isEnabledWifiRbac ? 'clientCount': 'clients',
+      key: isWifiRbacEnabled ? 'clientCount': 'clients',
       title: $t({ defaultMessage: 'Number of Clients' }),
       align: 'center' as AlignType,
-      dataIndex: isEnabledWifiRbac ? 'clientCount': 'clients',
+      dataIndex: isWifiRbacEnabled ? 'clientCount': 'clients',
       sorter: false,
       render: function (_:ReactNode, row:WifiNetwork|Network) {
-        return (isEnabledWifiRbac ? (row as WifiNetwork).clientCount : row.clients) ?? 0
+        return (isWifiRbacEnabled ? (row as WifiNetwork).clientCount : row.clients) ?? 0
       }
     }])
   ]

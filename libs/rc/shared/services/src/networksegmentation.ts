@@ -158,7 +158,7 @@ export const nsgApi = baseNsgApi.injectEndpoints({
       switchVenueInfos?: SwitchLite[]
     }, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const nsgUrls = getNsgUrls(enableRbac)
         const req = createHttpRequest( nsgUrls.getWebAuthTemplateSwitches, params, headers)
         return {
