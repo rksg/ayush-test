@@ -45,8 +45,8 @@ describe('Edge SD-LAN Detail - VenueTable', () => {
     expect((screen.getByRole('link', { name: 'Mocked-Venue-1' }) as HTMLAnchorElement).href).toContain(`/venues/${venueTableData[0].venueId}/venue-details/overview`)
     // eslint-disable-next-line max-len
     expect((screen.getByRole('link', { name: '0' }) as HTMLAnchorElement).href).toContain(`/venues/${venueTableData[0].venueId}/venue-details/devices`)
-    await userEvent.hover(screen.getByText('3'))
+    await userEvent.hover(screen.getByText('2'))
     expect(await screen.findByText('Mocked_network')).toBeInTheDocument()
-    expect((await screen.findAllByText('Mocked_network_4')).length).toBe(2)
+    expect(await screen.findByText('Mocked_network_4')).toBeInTheDocument()
   })
 })

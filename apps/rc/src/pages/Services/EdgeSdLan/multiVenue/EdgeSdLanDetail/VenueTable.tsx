@@ -91,7 +91,7 @@ export const VenueTable = (props: VenueTableProps) => {
         row.selectedNetworks?.length ?
           <Tooltip
             title={row.selectedNetworks.map(item => (
-              <Row>
+              <Row key={item.networkId}>
                 {item.networkName}
               </Row>
             ))}
