@@ -56,7 +56,6 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateL2AclPolicyRbac: {
     method: 'put',
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
-    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
@@ -132,7 +131,6 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addAppPolicyRbac: {
     method: 'post',
     url: '/templates/applicationPolicies',
-    oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
@@ -269,7 +267,6 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateAccessControlProfileRbac: {
     method: 'put',
     url: '/templates/accessControlProfiles/:policyId',
-    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
@@ -279,7 +276,6 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAccessControlProfile: {
     method: 'delete',
     url: '/templates/accessControlProfiles/:templateId',
-    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
     newApi: true
   },
   addDevicePolicy: {

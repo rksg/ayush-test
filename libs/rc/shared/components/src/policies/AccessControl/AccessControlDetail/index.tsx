@@ -22,16 +22,13 @@ import AccessControlOverview       from './AccessControlOverview'
 export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAccessControlProfileQuery,
     useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
-    enableRbac: resolvedRbacEnabled
+    enableRbac: enableRbac
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
 

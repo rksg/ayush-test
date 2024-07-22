@@ -113,27 +113,23 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     activateL2AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateL2AclOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.activateL2AclOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     deactivateL2AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateL2AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateL2AclOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.activateL2AclOnWifiNetwork
       )
     }),
     deactivateL2AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnWifiNetwork
       )
     }),
@@ -187,27 +183,23 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     activateL3AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateL3AclOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.activateL3AclOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     deactivateL3AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateL3AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateL3AclOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.activateL3AclOnWifiNetwork
       )
     }),
     deactivateL3AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnWifiNetwork
       )
     }),
@@ -246,14 +238,12 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     // eslint-disable-next-line max-len
     activateAccessControlProfileTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateAccessControlProfileOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.activateAccessControlProfileOnWifiNetwork
       )
     }),
     // eslint-disable-next-line max-len
     deactivateAccessControlProfileTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateAccessControlProfileOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.deactivateAccessControlProfileOnWifiNetwork
       )
     }),
@@ -307,27 +297,23 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     activateDeviceTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     deactivateDeviceTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateDeviceTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnWifiNetwork
       )
     }),
     deactivateDeviceTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnWifiNetwork
       )
     }),
@@ -382,7 +368,6 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     // eslint-disable-next-line max-len
     activateApplicationPolicyTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
@@ -390,20 +375,17 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     // eslint-disable-next-line max-len
     deactivateApplicationPolicyTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnAccessControlProfile,
         PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnAccessControlProfile
       ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateApplicationPolicyTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnWifiNetwork
       )
     }),
     deactivateApplicationPolicyTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnWifiNetwork,
         PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnWifiNetwork
       )
     }),
