@@ -8,7 +8,8 @@ import {
   WifiUrlsInfo,
   Client,
   ClientStatistic,
-  DpskUrls
+  DpskUrls,
+  SwitchRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, dataApi, dataApiURL, store } from '@acx-ui/store'
 import {
@@ -198,11 +199,12 @@ describe('ClientOverviewTab - ClientProperties', () => {
         (_, res, ctx) => res(ctx.json(clientNetworkList[0]))),
       rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
-      rest.post(ClientUrlsInfo.getClientList.url,
+      rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
-      rest.post(CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(VenueList))
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
     )
   })
@@ -320,11 +322,12 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
+          rest.post(ClientUrlsInfo.getClients.url, (_, res, ctx) =>
             res(ctx.json(GuestClients))
           ),
-          rest.post(CommonUrlsInfo.getVenues.url, (_eq, res, ctx) =>
-            res(ctx.json(VenueList))
+          rest.post(
+            SwitchRbacUrlsInfo.getSwitchClientList.url,
+            (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
           )
         )
         render(<Provider>
@@ -503,12 +506,13 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) => {
+          rest.post(ClientUrlsInfo.getClients.url, (_, res, ctx) => {
             mockGetClientList()
             return res(ctx.json(GuestClients))
           }),
-          rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
-            res(ctx.json(VenueList))
+          rest.post(
+            SwitchRbacUrlsInfo.getSwitchClientList.url,
+            (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
           )
         )
         render(<Provider>

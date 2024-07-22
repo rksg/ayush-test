@@ -57,10 +57,14 @@ describe('AP Group vlan & radio tab', () => {
         (req, res, ctx) => res(ctx.json(networkApGroup))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json(networkApGroup))
+      ),
+      rest.get(
+        WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => {
           mockGetNetworkDeep()
-          return res(ctx.json(networkDeepList))
+          return res(ctx.json(networkDeepList.response))
         }
       ),
       rest.get(

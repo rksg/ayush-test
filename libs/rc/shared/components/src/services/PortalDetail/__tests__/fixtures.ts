@@ -68,6 +68,28 @@ export const mockedNetworks = {
   ]
 }
 
+export const mockedWifiNetworks = {
+  fields: [
+    'id',
+    'name',
+    'nwSubType',
+    'captiveType',
+    'venues'
+  ],
+  totalCount: 4,
+  page: 1,
+  data: [
+    {
+      id: 'c7f79a85e76241199d78c52a491af29c',
+      name: 'NetU',
+      nwSubType: 'guest',
+      captiveType: 'HostApproval',
+      venueApGroups: [ { venueId: ['NetU_vId1','NetU_vId2'] }],
+      clientCount: 30
+    }
+  ]
+}
+
 export const mockedNetworkTemplates = {
   fields: [
     'id',
@@ -136,4 +158,31 @@ export const mockDetailResult = {
         { cs: true, zh_TW: false, fi: true,
           fr: true, de: true, el: true, hu: true, it: false }
   } as Demo
+}
+
+export const mockedWifiNetworkTemplates = {
+  fields: [
+    'id',
+    'name',
+    'nwSubType',
+    'captiveType',
+    'network',
+    'venueApGroups.venueId'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '1',
+      name: 'NetQ',
+      nwSubType: 'guest',
+      captiveType: 'GuestPass',
+      network: {
+        id: '6',
+        name: 'Network A',
+        captiveType: 'Guest Pass'
+      },
+      venueApGroups: [{ venueId: ['NetQ_vId1'] }]
+    }
+  ]
 }

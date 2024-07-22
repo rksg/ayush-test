@@ -19,10 +19,7 @@ import {
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
-  useNetworkVenueListQuery,
-  useNetworkVenueTableQuery,
   useNetworkVenueTableV2Query,
-  useNetworkVenueListV2Query,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
@@ -129,14 +126,13 @@ const defaultRbacPayload = {
 const useNetworkVenueList = (props: { settingsId: string, networkId?: string } ) => {
   const { settingsId, networkId } = props
   const { isTemplate } = useConfigTemplate()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const nonRbacTableQuery = useTableQuery({
     // eslint-disable-next-line max-len
-    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
-      : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
+    useQuery: useNetworkVenueTableV2Query,
     defaultPayload: {
       ...defaultPayload,
       isTemplate: isTemplate
@@ -145,7 +141,7 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
       searchTargetFields: defaultPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: isWifiRbacEnabled }
+    option: { skip: resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -159,10 +155,10 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
       searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
     },
     pagination: { settingsId },
-    option: { skip: !isWifiRbacEnabled || !networkId }
+    option: { skip: !resolvedRbacEnabled || !networkId }
   })
 
-  return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 const defaultArray: Venue[] = []
@@ -718,8 +714,12 @@ function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
-  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({
+    params,
+    enableRbac: isConfigTemplateRbacEnabled
+  }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
     }),

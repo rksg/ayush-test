@@ -7,7 +7,7 @@ import { useIntl }                                                             f
 import { Button, Modal }                                                from '@acx-ui/components'
 import { DeleteOutlinedIcon }                                           from '@acx-ui/icons'
 import { useLazyGetMacRegListQuery, useLazyGetPersonaGroupByIdQuery }   from '@acx-ui/rc/services'
-import { ClientList, MacRegistrationFilterRegExp, MacRegistrationPool } from '@acx-ui/rc/utils'
+import { ClientInfo, MacRegistrationFilterRegExp, MacRegistrationPool } from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import { SelectConnectedClientsTable } from '../../SelectConnectedClientsTable'
@@ -31,7 +31,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
   const { $t } = useIntl()
   const [form] = useForm()
   const [importMode, setImportMode] = useState(DevicesImportMode.FromClientDevices)
-  const [selectedClients, setSelectedClients] = useState<ClientList[]>([])
+  const [selectedClients, setSelectedClients] = useState<ClientInfo[]>([])
   const [getPersonaGroupById] = useLazyGetPersonaGroupByIdQuery()
   const [getMacRegistrationById] = useLazyGetMacRegListQuery()
   const [macRegistrationPool, setMacRegistrationPool] = useState<MacRegistrationPool>()
@@ -69,7 +69,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
         break
       case DevicesImportMode.FromClientDevices:
         const selectedDevices = selectedClients
-          .map(({ clientMac, hostname }) => ({ macAddress: clientMac, hostname }))
+          .map(({ macAddress, hostname }) => ({ macAddress, hostname }))
         onSubmit(selectedDevices)
         break
     }
@@ -120,7 +120,7 @@ export function PersonaDevicesImportDialog (props: DevicesImportDialogProps) {
         ? <SelectConnectedClientsTable
           onRowChange={(_, selectedRows) => {setSelectedClients(selectedRows)}}
           getCheckboxProps={(row) => ({
-            disabled: selectedMacAddress.includes(row.clientMac.toUpperCase())
+            disabled: selectedMacAddress.includes(row.macAddress.toUpperCase())
           })}
         />
         : <ImportManuallyForm form={form}/>
