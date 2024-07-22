@@ -47,8 +47,6 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [wisprRes] }))),
       rest.get(AaaUrls.getAAAPolicy.url,
         (req, res, ctx) => {
           // eslint-disable-next-line max-len

@@ -13,13 +13,13 @@ import {
   waitForElementToBeRemoved,
   waitFor
 } from '@acx-ui/test-utils'
-
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { preference } from '../../__tests__/fixtures'
 
 import { mockedApModelFirmwares, mockedFirmwareVenuesPerApModel, mockedFirmwareVersionIdList } from './__tests__/fixtures'
 
-import { VenueFirmwareListPerApModel } from '.'
+import { getApFirmwareStatusDescription, VenueFirmwareListPerApModel } from '.'
 
 jest.mock('antd', () => {
   const antd = jest.requireActual('antd')
@@ -82,8 +82,9 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord = mockedFirmwareVenuesPerApModel[0]
-    const testingRecordStatus = testingRecord.isFirmwareUpToDate ? 'Up to date' : 'Update available'
+    const testingRecord = mockedFirmwareVenuesPerApModel.data[0]
+    // eslint-disable-next-line max-len
+    const testingRecordStatus = testingRecord.isApFirmwareUpToDate ? 'Up to date' : 'Update available'
     const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
 
     expect(within(targetRow).getByText(testingRecordStatus)).toBeVisible()
@@ -111,11 +112,11 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord1 = mockedFirmwareVenuesPerApModel[0]
+    const testingRecord1 = mockedFirmwareVenuesPerApModel.data[0]
     const targetRow1 = screen.getByRole('row', { name: new RegExp(testingRecord1.name) })
     await userEvent.click(within(targetRow1).getByRole('checkbox'))
 
-    const testingRecord2 = mockedFirmwareVenuesPerApModel[2]
+    const testingRecord2 = mockedFirmwareVenuesPerApModel.data[2]
     const targetRow2 = screen.getByRole('row', { name: new RegExp(testingRecord2.name) })
     await userEvent.click(within(targetRow2).getByRole('checkbox'))
 
@@ -163,7 +164,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord = mockedFirmwareVenuesPerApModel[0]
+    const testingRecord = mockedFirmwareVenuesPerApModel.data[0]
     const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
 
     await userEvent.click(within(targetRow).getByRole('checkbox'))
@@ -237,11 +238,11 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord1 = mockedFirmwareVenuesPerApModel[0]
+    const testingRecord1 = mockedFirmwareVenuesPerApModel.data[0]
     const targetRow1 = screen.getByRole('row', { name: new RegExp(testingRecord1.name) })
     await userEvent.click(within(targetRow1).getByRole('checkbox'))
 
-    const testingRecord2 = mockedFirmwareVenuesPerApModel[1]
+    const testingRecord2 = mockedFirmwareVenuesPerApModel.data[1]
     const targetRow2 = screen.getByRole('row', { name: new RegExp(testingRecord2.name) })
     await userEvent.click(within(targetRow2).getByRole('checkbox'))
 
@@ -280,7 +281,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord = mockedFirmwareVenuesPerApModel[1]
+    const testingRecord = mockedFirmwareVenuesPerApModel.data[1]
     const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
     await userEvent.click(within(targetRow).getByRole('checkbox'))
 
@@ -305,5 +306,33 @@ describe('Firmware Venues Table Per AP Model', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: /Close/i }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  describe('renderApFirmwareStatus', () => {
+    it('should return noDataDisplay when isApFirmwareUpToDate is undefined', () => {
+      const data = { isApFirmwareUpToDate: undefined, currentApFirmwares: [] }
+      const result = getApFirmwareStatusDescription(data)
+      expect(result).toBe(noDataDisplay)
+    })
+
+    it('should return noDataDisplay when currentApFirmwares is empty', () => {
+      const data = { isApFirmwareUpToDate: true, currentApFirmwares: [] }
+      const result = getApFirmwareStatusDescription(data)
+      expect(result).toBe(noDataDisplay)
+    })
+
+    it('should return "Up to date" when isApFirmwareUpToDate is true', () => {
+      // eslint-disable-next-line max-len
+      const data = { isApFirmwareUpToDate: true, currentApFirmwares: [{ apModel: 'R550', firmware: '7.0.0.104.1220' }] }
+      const result = getApFirmwareStatusDescription(data)
+      expect(result).toBe('Up to date')
+    })
+
+    it('should return "Update available" when isApFirmwareUpToDate is false', () => {
+      // eslint-disable-next-line max-len
+      const data = { isApFirmwareUpToDate: false, currentApFirmwares: [{ apModel: 'R550', firmware: '7.0.0.104.1220' }] }
+      const result = getApFirmwareStatusDescription(data)
+      expect(result).toBe('Update available')
+    })
   })
 })
