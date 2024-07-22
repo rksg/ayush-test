@@ -3,7 +3,7 @@
 exports[`Topology Switch Card should render orrectly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
     type="default"
   >
     <div
@@ -259,6 +259,15 @@ exports[`Topology Switch Card should render orrectly 1`] = `
           </div>
         </div>
       </div>
+      <ul
+        class="ant-card-actions"
+      >
+        <li
+          style="width: 100%;"
+        >
+          <span />
+        </li>
+      </ul>
     </div>
   </div>
 </DocumentFragment>

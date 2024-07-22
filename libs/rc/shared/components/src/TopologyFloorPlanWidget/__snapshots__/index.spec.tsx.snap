@@ -3,7 +3,7 @@
 exports[`TopologyFloorPlanWidget should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
     type="default"
   >
     <div
@@ -119,6 +119,15 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
           />
         </div>
       </div>
+      <ul
+        class="ant-card-actions"
+      >
+        <li
+          style="width: 100%;"
+        >
+          <span />
+        </li>
+      </ul>
     </div>
   </div>
 </DocumentFragment>
@@ -127,7 +136,7 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
 exports[`TopologyFloorPlanWidget should render floorplan topology widget under AP overview 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
     type="default"
   >
     <div
@@ -325,6 +334,15 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
           />
         </div>
       </div>
+      <ul
+        class="ant-card-actions"
+      >
+        <li
+          style="width: 100%;"
+        >
+          <span />
+        </li>
+      </ul>
     </div>
   </div>
 </DocumentFragment>
@@ -333,7 +351,7 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
 exports[`TopologyFloorPlanWidget should render floorplan topology widget under Switch overview 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
     type="default"
   >
     <div
@@ -531,6 +549,15 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under S
           />
         </div>
       </div>
+      <ul
+        class="ant-card-actions"
+      >
+        <li
+          style="width: 100%;"
+        >
+          <span />
+        </li>
+      </ul>
     </div>
   </div>
 </DocumentFragment>

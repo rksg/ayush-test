@@ -3,7 +3,7 @@
 exports[`AP Information Widget should render "No active alarms" when no alarms exist 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 gGugHV"
     type="solid-bg"
   >
     <div
@@ -206,6 +206,15 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
           </div>
         </div>
       </div>
+      <ul
+        class="ant-card-actions"
+      >
+        <li
+          style="width: 100%;"
+        >
+          <span />
+        </li>
+      </ul>
     </div>
   </div>
 </DocumentFragment>

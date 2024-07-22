@@ -6,7 +6,7 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 fvQlhP"
       type="default"
     >
       <div
@@ -91,6 +91,15 @@ exports[`Alarm widget should render "No active alarms" when no alarms exist 1`] 
             />
           </div>
         </div>
+        <ul
+          class="ant-card-actions"
+        >
+          <li
+            style="width: 100%;"
+          >
+            <span />
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -103,7 +112,7 @@ exports[`Alarm widget v2 should render "No active alarms" when no alarms exist 1
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 kasAXB"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 fvQlhP"
       type="default"
     >
       <div
@@ -203,6 +212,15 @@ exports[`Alarm widget v2 should render "No active alarms" when no alarms exist 1
             />
           </div>
         </div>
+        <ul
+          class="ant-card-actions"
+        >
+          <li
+            style="width: 100%;"
+          >
+            <span />
+          </li>
+        </ul>
       </div>
     </div>
   </div>
