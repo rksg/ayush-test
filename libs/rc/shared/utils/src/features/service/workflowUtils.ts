@@ -13,7 +13,6 @@ import {
   AupActionContext,
   DataPromptActionContext,
   DisplayMessageActionContext,
-  UserSelectionSplitContext,
   WorkflowStep
 } from '../../types'
 
@@ -133,13 +132,6 @@ export const DataPromptActionDefaultValue: {
 } = {
   backButtonText: defineMessage({ defaultMessage: '< Back' }),
   continueButtonText: defineMessage({ defaultMessage: 'Continue >' })
-}
-
-export const UserSelectionActionDefaultValue: {
-  [key in keyof UserSelectionSplitContext]: MessageDescriptor | string
-} = {
-  title: defineMessage({ defaultMessage: 'DefaultUserSplitTitle' }),
-  messageHtml: defineMessage({ defaultMessage: 'Default HTML template.' })
 }
 
 export const DisplayMessageActionDefaultValue: {

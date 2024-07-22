@@ -1,21 +1,37 @@
-import { Typography } from 'antd'
 
-import { GenericActionData } from '@acx-ui/rc/utils'
+import { AupIcon }                  from '@acx-ui/icons'
+import { AupAction, UIColorSchema } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponent'
+import { StepNavigation } from './StepNavigation'
+import * as UI            from './styledComponent'
 
 
-export function AupPreview (props: { data?: GenericActionData }) {
+export function AupPreview (props: { data?: AupAction }) {
   const { data } = props
+  const uiColorSchema: UIColorSchema = {
+    titleFontColor: 'red',
+    bodyFontColor: 'red',
+    backgroundColor: 'yellow',
 
-  return (
-    <UI.PreviewContainer>
-      <Typography.Title>
-        {data?.title}
-      </Typography.Title>
-      <Typography.Paragraph>
-        {data?.messageHtml}
-      </Typography.Paragraph>
-    </UI.PreviewContainer>
+    buttonColor: 'blue',
+    buttonFontColor: 'orange'
+  }
+
+  return (<UI.PreviewContainer>
+    <UI.Icon>
+      <AupIcon/>
+    </UI.Icon>
+    <UI.Title>
+      {data?.title}
+    </UI.Title>
+    <UI.Body color={uiColorSchema.bodyFontColor}>
+      {data?.messageHtml}
+    </UI.Body>
+
+    <StepNavigation
+      onBack={() => {console.log('onBack')}}
+      onNext={() => {console.log('onNext')}}
+    />
+  </UI.PreviewContainer>
   )
 }
