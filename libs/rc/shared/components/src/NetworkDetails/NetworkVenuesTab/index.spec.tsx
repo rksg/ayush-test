@@ -134,10 +134,6 @@ describe('NetworkVenuesTab', () => {
         (_, res, ctx) => res(ctx.json(network))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
-      ),
-      rest.post(
         WifiUrlsInfo.addNetworkVenues.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
@@ -158,10 +154,6 @@ describe('NetworkVenuesTab', () => {
           mockedGetApCompatibilitiesNetwork()
           return res(ctx.json(networkVenueApCompatibilities))
         }
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
@@ -196,10 +188,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenue.url,
@@ -241,10 +229,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -285,10 +269,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
@@ -349,10 +329,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -404,10 +380,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenues.url,
@@ -471,10 +443,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
@@ -558,10 +526,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
-      ),
-      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [
           networkVenue_allAps,
@@ -632,10 +596,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -746,10 +706,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
