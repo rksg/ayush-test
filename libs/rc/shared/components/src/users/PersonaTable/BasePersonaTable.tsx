@@ -14,10 +14,9 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
-import { WifiScopes }                                                  from '@acx-ui/types'
-import { filterByAccess, hasPermission }                               from '@acx-ui/user'
-import { exportMessageMapping }                                        from '@acx-ui/utils'
+import { FILTER, hasCloudpathAccess, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                  from '@acx-ui/user'
+import { exportMessageMapping }                                                            from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -266,7 +265,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   }
 
   const actions: TableProps<PersonaGroup>['actions'] =
-    hasPermission({ scopes: [WifiScopes.CREATE] })
+    hasCloudpathAccess()
       ? [{
         label: $t({ defaultMessage: 'Add Identity' }),
         onClick: () => {
@@ -279,31 +278,31 @@ export function BasePersonaTable (props: PersonaTableProps) {
         onClick: () => setUploadCsvDrawerVisible(true)
       }] : []
 
-  const rowActions: TableProps<Persona>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: ([data], clearSelection) => {
-        setDrawerState({ data, isEdit: true, visible: true })
-        clearSelection()
-      },
-      visible: (selectedItems => selectedItems.length === 1),
-      scopeKey: [WifiScopes.UPDATE]
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      // We would not allow the user to delete the persons which was created by the Unit.
-      disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
-      scopeKey: [WifiScopes.DELETE],
-      onClick: (selectedItems, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Identity' }),
-            entityValue: selectedItems[0].name,
-            numOfEntities: selectedItems.length
+  const rowActions: TableProps<Persona>['rowActions'] =
+    hasCloudpathAccess()
+      ? [
+        {
+          label: $t({ defaultMessage: 'Edit' }),
+          onClick: ([data], clearSelection) => {
+            setDrawerState({ data, isEdit: true, visible: true })
+            clearSelection()
           },
-          content:
+          visible: (selectedItems => selectedItems.length === 1)
+        },
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          // We would not allow the user to delete the persons which was created by the Unit.
+          disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
+          onClick: (selectedItems, clearSelection) => {
+            showActionModal({
+              type: 'confirm',
+              customContent: {
+                action: 'DELETE',
+                entityName: $t({ defaultMessage: 'Identity' }),
+                entityValue: selectedItems[0].name,
+                numOfEntities: selectedItems.length
+              },
+              content:
             $t({
               // Display warning while one of the Persona contains devices.
               defaultMessage: `{hasDevices, select,
@@ -318,27 +317,27 @@ export function BasePersonaTable (props: PersonaTableProps) {
               hasDevices: !!selectedItems.find(p => (p?.deviceCount ?? 0) > 0),
               count: selectedItems.length
             }),
-          onOk: () => {
-            const ids = selectedItems.map(({ id }) => id)
+              onOk: () => {
+                const ids = selectedItems.map(({ id }) => id)
 
-            if (ids.length === 0) return
+                if (ids.length === 0) return
 
-            deletePersonas({
-              params: { groupId: personaGroupId ?? selectedItems[0].groupId },
-              payload: ids,
-              customHeaders
-            }).unwrap()
-              .then(() => {
-                clearSelection()
-              })
-              .catch((e) => {
-                console.log(e) // eslint-disable-line no-console
-              })
+                deletePersonas({
+                  params: { groupId: personaGroupId ?? selectedItems[0].groupId },
+                  payload: ids,
+                  customHeaders
+                }).unwrap()
+                  .then(() => {
+                    clearSelection()
+                  })
+                  .catch((e) => {
+                    console.log(e) // eslint-disable-line no-console
+                  })
+              }
+            })
           }
-        })
-      }
-    }
-  ]
+        }
+      ] : []
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -377,9 +376,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasPermission({
-            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
-          }) && { type: personaGroupId ? 'checkbox' : 'radio' }}
+          hasCloudpathAccess() && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,

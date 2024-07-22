@@ -46,7 +46,10 @@ function VenuePageHeader () {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/`)
+  const detailsPath = usePathBasedOnConfigTemplate(
+    `/venues/${venueId}/edit/`,
+    `/venues/${venueId}/edit/details`
+  )
 
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }

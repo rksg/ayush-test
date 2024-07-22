@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Card, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import {
+  useGetNetworkTemplateListQuery,
+  useNetworkListQuery,
+  useWifiNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   AccessControlInfoType,
   Network,
@@ -27,7 +31,7 @@ const defaultPayload = {
 const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | undefined }) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data } = props
   const basicColumns: TableProps<Network>['columns'] = [
@@ -72,14 +76,15 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
   }, [data])
 
   const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery :
+      enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {
         id: data?.networkIds?.length ? data?.networkIds : ['none']
       }
     },
-    enableRbac: isTemplate ? enableTemplateRbac : enableRbac
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac
   })
 
   return (

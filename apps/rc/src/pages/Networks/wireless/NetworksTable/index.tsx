@@ -2,22 +2,24 @@ import { useState, useEffect } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button }                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { NetworkTabContext, NetworkTable, defaultNetworkPayload } from '@acx-ui/rc/components'
-import { useNetworkListQuery, useNetworkTableQuery }              from '@acx-ui/rc/services'
-import { Network, usePollingTableQuery }                          from '@acx-ui/rc/utils'
-import { TenantLink }                                             from '@acx-ui/react-router-dom'
-import { WifiScopes }                                             from '@acx-ui/types'
+import { Button }                                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { NetworkTabContext, NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from '@acx-ui/rc/components'
+import { useNetworkTableQuery, useWifiNetworkTableQuery }                                    from '@acx-ui/rc/services'
+import { Network, usePollingTableQuery, WifiNetwork }                                        from '@acx-ui/rc/utils'
+import { TenantLink }                                                                        from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                        from '@acx-ui/types'
 
 export default function useNetworksTable () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const [ networkCount, setNetworkCount ] = useState(0)
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+
   const settingsId = 'network-table'
-  const tableQuery = usePollingTableQuery<Network>({
-    useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
-    defaultPayload: defaultNetworkPayload,
+  const tableQuery = usePollingTableQuery<Network|WifiNetwork>({
+    useQuery: isWifiRbacEnabled? useWifiNetworkTableQuery : useNetworkTableQuery,
+    defaultPayload: isWifiRbacEnabled? defaultRbacNetworkPayload : defaultNetworkPayload,
     pagination: { settingsId }
   })
 
