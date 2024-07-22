@@ -13,17 +13,12 @@ export function DataPromptSettings () {
   const { $t } = useIntl()
   const [showTitle, setShowTitle] = useState(true)
   const [showIntroText, setShowIntroText] = useState(true)
-  const switchContainerStyle = {
-    display: 'flex',
-    flexDirection: 'row',
-    marginBottom: '5px',
-    padding: '2px'
-  }
   return (
     <>
       <CommonActionSettings actionType={ActionType.DATA_PROMPT} />
       <div key={'title-switch'}
-        style={switchContainerStyle}>
+        style={{ display: 'flex', flexDirection: 'row',
+          marginBottom: '5px', padding: '2px' }}>
         <label htmlFor='Title' style={{ width: '100%' }}>
           {$t({ defaultMessage: 'Title' })}
         </label>
@@ -42,7 +37,8 @@ export function DataPromptSettings () {
         <Input />
       </Form.Item>
       <div key={'introText-switch'}
-        style={switchContainerStyle}>
+        style={{ display: 'flex', flexDirection: 'row',
+          marginBottom: '5px', padding: '2px' }}>
         <label htmlFor='Title' style={{ width: '100%' }}>
           {$t({ defaultMessage: 'Intro text' })}
         </label>
