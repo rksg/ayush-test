@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, Drawer, Table, TableProps }                               from '@acx-ui/components'
@@ -8,7 +7,7 @@ import { Features, useIsSplitOn }                                          from 
 import { APStatus }                                                        from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }                                                      from '@acx-ui/react-router-dom'
 
 export interface LbsServerVenueApsDrawerProps {
   venue: Venue,
@@ -34,8 +33,8 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
         'name',
         'deviceStatus',
         'apMac',
-        'isLbsMgmtConnected',
-        'isLbsServerConnected',
+        'isManagementConnected',
+        'isServerConnected',
         'serialNumber'],
       filters: getVenueFilter(venue),
       search: {
@@ -96,22 +95,22 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
     },
     {
       title: $t({ defaultMessage: 'LBS Mgmt. Connection' }),
-      dataIndex: 'isLbsMgmtConnected',
-      key: 'isLbsMgmtConnected',
+      dataIndex: 'isManagementConnected',
+      key: 'isManagementConnected',
       width: 160,
       sorter: true,
-      render: (_, { isLbsMgmtConnected }) => 
-        {return renderConnectionState(isLbsMgmtConnected as boolean)}
-      
+      render: (_, { isManagementConnected }) =>
+      {return renderConnectionState(isManagementConnected as boolean)}
+
     },
     {
       title: $t({ defaultMessage: 'LBS Server Connection' }),
-      dataIndex: 'isLbsServerConnected',
-      key: 'isLbsServerConnected',
+      dataIndex: 'isServerConnected',
+      key: 'isServerConnected',
       width: 160,
       sorter: true,
-      render: (_, { isLbsServerConnected }) =>
-        { return renderConnectionState(isLbsServerConnected as boolean)}
+      render: (_, { isServerConnected }) =>
+      { return renderConnectionState(isServerConnected as boolean)}
     }
   ]
 
