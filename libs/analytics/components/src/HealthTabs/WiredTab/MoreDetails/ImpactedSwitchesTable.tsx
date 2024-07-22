@@ -33,15 +33,15 @@ export const ImpactedSwitchesTable = ({
   }
   const getTableData = (data: PieChartResult, type: WidgetType) => {
     if (!data) return []
-    return data[topNQueryMapping[type] as keyof PieChartResult]
+    return (data[topNQueryMapping[type] as keyof PieChartResult] as Array<{ mac: string }>)
+      .filter(({ mac }) => mac !== 'Others') as PieChartResult[keyof PieChartResult]
   }
-
 
   const queryResults = useImpactedSwitchesDataQuery(
     {
       ...payload,
       type: queryType,
-      n: 10
+      n: 5
     }, {
       selectFromResult: (result) => {
         const { data, ...rest } = result

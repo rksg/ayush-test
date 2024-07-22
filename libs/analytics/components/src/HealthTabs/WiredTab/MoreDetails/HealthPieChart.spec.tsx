@@ -7,7 +7,7 @@ import {
 import { AnalyticsFilter } from '@acx-ui/utils'
 
 import { moreDetailsDataFixture, noDataFixture }                from './__tests__/fixtures'
-import { WidgetType }                                           from './config'
+import { TopNByCPUUsageResult, WidgetType }                     from './config'
 import { MoreDetailsPieChart, tooltipFormatter, transformData } from './HealthPieChart'
 import { moreDetailsApi }                                       from './services'
 
@@ -46,9 +46,9 @@ describe('MoreDetailsPieChart', () => {
       )
       expect(await screen.findByText(`switch1-${queryType} (mac1)`)).toBeVisible()
     })
-  it('should show "Top 5" in title when top 5 is available', async () => {
+  it('should not show "Top" in title when only 5 records available', async () => {
     let moreDetailsDataFixtureCopy = moreDetailsDataFixture
-    const cpuUsageArray = moreDetailsDataFixtureCopy.network.hierarchyNode.topNSwitchesByCpuUsage
+    const cpuUsageArray = moreDetailsDataFixture.network.hierarchyNode.topNSwitchesByCpuUsage
     const count = 5
 
     while (cpuUsageArray.length < count) {
@@ -73,7 +73,44 @@ describe('MoreDetailsPieChart', () => {
           queryType='cpuUsage' />
       </Provider>
     )
+    expect(screen.queryByText(/Top 5/)).not.toBeInTheDocument()
+    expect(screen.queryByText('Others')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Detailed breakup of all items beyond Top 5/))
+      .not.toBeInTheDocument()
+  })
+  it('should show "Top 5" in title when more than 5 records available', async () => {
+    let moreDetailsDataFixtureCopy = moreDetailsDataFixture
+    const cpuUsageArray = moreDetailsDataFixtureCopy.network.hierarchyNode.topNSwitchesByCpuUsage
+    const count = 5
+
+    while (cpuUsageArray.length < count) {
+      cpuUsageArray.push({
+        ...switchInfo,
+        ...switchDetails,
+        cpuUtilization: 0,
+        name: `switch${cpuUsageArray.length + 1}-cpuUsage`
+      })
+    }
+    const others = {
+      mac: 'Others', name: null, cpuUtilization: 91 } as unknown as TopNByCPUUsageResult
+    cpuUsageArray.push(others)
+
+    mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixtureCopy })
+    render(
+      <Provider>
+        <MoreDetailsPieChart
+          title='test'
+          filters={{
+            filter: {},
+            startDate: '2021-12-31T00:00:00+00:00',
+            endDate: '2022-01-01T00:00:00+00:00' } as AnalyticsFilter
+          }
+          queryType='cpuUsage' />
+      </Provider>
+    )
     expect(await screen.findByText('Top 5')).toBeVisible()
+    expect(await screen.findByText('Others')).toBeVisible()
+    expect(await screen.findByText(/Detailed breakup of all items beyond Top 5/)).toBeVisible()
   })
   it('should show no data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: noDataFixture })
