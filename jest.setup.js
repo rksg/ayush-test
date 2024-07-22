@@ -1,6 +1,5 @@
 require('whatwg-fetch')
 require('@testing-library/jest-dom')
-require('jest-styled-components')
 
 const { mockServer, mockDOMSize, mockLightTheme } = require('@acx-ui/test-utils')
 const config = require('@acx-ui/config')
