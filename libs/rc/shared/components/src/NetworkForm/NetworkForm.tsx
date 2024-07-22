@@ -553,7 +553,8 @@ export function NetworkForm (props:{
     try {
       const payload = processAddData(saveState)
 
-      const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
+      // eslint-disable-next-line max-len
+      const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
