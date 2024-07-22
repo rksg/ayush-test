@@ -6,7 +6,7 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 buyzwy"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 dUvkEs"
       type="no-border"
     >
       <div
@@ -310,6 +310,15 @@ exports[`NetworkImpact handles charts data disabled 1`] = `
             </div>
           </div>
         </div>
+        <ul
+          class="ant-card-actions"
+        >
+          <li
+            style="width: 100%;"
+          >
+            <span />
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -322,7 +331,7 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 buyzwy"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 dUvkEs"
       type="no-border"
     >
       <div
@@ -626,6 +635,15 @@ exports[`NetworkImpact handles charts data with total & disabled 1`] = `
             </div>
           </div>
         </div>
+        <ul
+          class="ant-card-actions"
+        >
+          <li
+            style="width: 100%;"
+          >
+            <span />
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -638,7 +656,7 @@ exports[`NetworkImpact should match snapshot 1`] = `
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="styledComponents__Wrapper-sc-13w5wfx-4 buyzwy"
+      class="styledComponents__Wrapper-sc-13w5wfx-4 dUvkEs"
       type="no-border"
     >
       <div
@@ -1584,6 +1602,15 @@ exports[`NetworkImpact should match snapshot 1`] = `
             </div>
           </div>
         </div>
+        <ul
+          class="ant-card-actions"
+        >
+          <li
+            style="width: 100%;"
+          >
+            <span />
+          </li>
+        </ul>
       </div>
     </div>
   </div>

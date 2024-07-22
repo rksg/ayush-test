@@ -975,7 +975,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -1509,6 +1509,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -1522,7 +1531,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -2071,6 +2080,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -2098,7 +2116,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -2667,6 +2685,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -2680,7 +2707,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -3229,6 +3256,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -3256,7 +3292,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -3710,6 +3746,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -3723,7 +3768,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -4212,6 +4257,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -4239,7 +4293,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -4726,6 +4780,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -4739,7 +4802,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -5246,6 +5309,15 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -6231,7 +6303,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -6735,6 +6807,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -6748,7 +6829,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -7237,6 +7318,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -7264,7 +7354,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -7748,6 +7838,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -7761,7 +7860,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -8250,6 +8349,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -8277,7 +8385,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -8721,6 +8829,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -8734,7 +8851,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -9218,6 +9335,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -9245,7 +9371,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -9687,6 +9813,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -9700,7 +9835,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -10142,6 +10277,15 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -11003,7 +11147,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -11537,6 +11681,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -11550,7 +11703,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -12099,6 +12252,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -12126,7 +12288,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -12695,6 +12857,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -12708,7 +12879,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -13257,6 +13428,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -13284,7 +13464,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -13738,6 +13918,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -13751,7 +13940,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -14240,6 +14429,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -14267,7 +14465,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -14754,6 +14952,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -14767,7 +14974,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -15274,6 +15481,15 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16243,7 +16459,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16314,6 +16530,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16327,7 +16552,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16398,6 +16623,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16425,7 +16659,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16496,6 +16730,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16509,7 +16752,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16580,6 +16823,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16607,7 +16859,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16678,6 +16930,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16691,7 +16952,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16762,6 +17023,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16789,7 +17059,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16860,6 +17130,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -16873,7 +17152,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -16944,6 +17223,15 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -17913,7 +18201,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -17984,6 +18272,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -17997,7 +18294,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -18506,6 +18803,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -18533,7 +18839,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -18604,6 +18910,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -18617,7 +18932,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -19141,6 +19456,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -19168,7 +19492,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -19239,6 +19563,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -19252,7 +19585,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -19661,6 +19994,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -19688,7 +20030,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -19759,6 +20101,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -19772,7 +20123,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 jbycja"
             type="default"
           >
             <div
@@ -19843,6 +20194,15 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                   />
                 </div>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>

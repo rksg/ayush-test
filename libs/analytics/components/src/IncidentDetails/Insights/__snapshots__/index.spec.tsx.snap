@@ -3,7 +3,7 @@
 exports[`Insights Component should render correctly 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+    class="styledComponents__Wrapper-sc-13w5wfx-4 gGugHV"
     type="solid-bg"
   >
     <div
@@ -128,6 +128,15 @@ exports[`Insights Component should render correctly 1`] = `
           </div>
         </section>
       </div>
+      <ul
+        class="ant-card-actions"
+      >
+        <li
+          style="width: 100%;"
+        >
+          <span />
+        </li>
+      </ul>
     </div>
   </div>
 </DocumentFragment>

@@ -537,7 +537,7 @@ exports[`incident details should render incident details correctly 1`] = `
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 gGugHV"
             type="solid-bg"
           >
             <div
@@ -642,6 +642,15 @@ exports[`incident details should render incident details correctly 1`] = `
                   </div>
                 </section>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -1294,7 +1303,7 @@ exports[`incident details should render incident details correctly when there is
           class="Grid__Container-sc-5irhjd-1 dRhDDA"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 cxtoBn"
+            class="styledComponents__Wrapper-sc-13w5wfx-4 gGugHV"
             type="solid-bg"
           >
             <div
@@ -1410,6 +1419,15 @@ exports[`incident details should render incident details correctly when there is
                   </div>
                 </section>
               </div>
+              <ul
+                class="ant-card-actions"
+              >
+                <li
+                  style="width: 100%;"
+                >
+                  <span />
+                </li>
+              </ul>
             </div>
           </div>
         </div>
