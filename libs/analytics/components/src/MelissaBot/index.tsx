@@ -243,10 +243,10 @@ export function MelissaBot (){
   },[])
   const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: $t({ defaultMessage: 'My Network' }),
-      tooltip: $t({ defaultMessage: 'Analyze network data and gain insights with ease.' }),
+      tooltip: $t({ defaultMessage: 'Provides AI assistance to retrieve network-specific information by interpreting your request, analyzing your network data, and delivering insightful responses and recommendations.' }),
       children: <div/>, value: 'my-network' },
     { label: $t({ defaultMessage: 'General' }),
-      tooltip: $t({ defaultMessage: 'Your go-to assistant for product details, user guides and technical information.' }),
+      tooltip: $t({ defaultMessage: 'Provides generative AI assistance by interpreting your request and retrieving product-focused technical information and usage guidelines from published RUCKUS AI resources.' }),
       children: <div/>, value: 'general' }
   ]
   return (<>{state.showFloatingButton && <MelissaIcon

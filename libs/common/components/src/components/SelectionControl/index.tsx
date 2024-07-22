@@ -40,14 +40,25 @@ export function SelectionControl (
         size={props.size || 'small'}
         value={props.value}
       >
-        {props.options.map(({ value, label, icon, disabled, tooltip }) => (
-          <Tooltip title={tooltip || ''}>
-            <Radio.Button {...{ value, disabled, key: value }}>
-              {icon}
-              {label}
-            </Radio.Button>
-          </Tooltip>
-        ))}
+        {props.options.map(({ value, label, icon, disabled, tooltip }) => {
+          if(tooltip){
+            return (
+              <Tooltip title={tooltip}>
+                <Radio.Button {...{ value, disabled, key: value }}>
+                  {icon}
+                  {label}
+                </Radio.Button>
+              </Tooltip>
+            )
+          }else{
+            return (
+              <Radio.Button {...{ value, disabled, key: value }}>
+                {icon}
+                {label}
+              </Radio.Button>
+            )
+          }
+        })}
       </Radio.Group>
       {props.extra ?
         <Container>{props.extra}</Container> : null}
