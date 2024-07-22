@@ -50,7 +50,17 @@ export function Priority () {
 
   const choose = get('IS_MLISA_SA')
     ? defineMessage({ defaultMessage: 'What is your primary network intent for Zone: {zone}' })
-    : defineMessage({ defaultMessage: 'What is your primary network intent for Venue: {zone}' })
+    : defineMessage({ defaultMessage: 'What is your primary network intent for Venue: <VenueSingular></VenueSingular>' })
+
+  const sideNotes = {
+    title: defineMessage({ defaultMessage: 'Side Notes' }),
+    subTitle: defineMessage({ defaultMessage: 'Potential trade-off?' }),
+    text: defineMessage({ defaultMessage: `In the quest for minimizing interference between access 
+      points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral 
+      efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially 
+      reducing throughput. Narrow channels limit data capacity, which could lower overall 
+      throughput.` })
+  }
 
   return <Row gutter={20}>
     <Col span={15}>
@@ -70,14 +80,12 @@ export function Priority () {
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t(steps.sideNotes.title)}
+          {$t(sideNotes.title)}
         </Typography.Title>
-        <StepsForm.Subtitle>
-          {$t({ defaultMessage: 'Potential trade-off?' })}
-        </StepsForm.Subtitle>
+        <StepsForm.Subtitle>{$t(sideNotes.subTitle)}</StepsForm.Subtitle>
         <StepsForm.TextContent>
           <Typography.Paragraph>
-            {$t(steps.sideNotes.tradeoff)}
+            {$t(sideNotes.text)}
           </Typography.Paragraph>
         </StepsForm.TextContent>
       </UI.SideNotes>

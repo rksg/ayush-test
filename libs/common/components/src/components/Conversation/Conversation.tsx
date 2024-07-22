@@ -37,7 +37,7 @@ export interface ConversationProps {
   classList: string
   style: CSSProperties
   isReplying: boolean
-  listCallback: CallableFunction
+  listCallback?: CallableFunction
   maxChar?: number
 }
 const { Panel } = UI.Collapse
@@ -127,7 +127,7 @@ function Conversation ({
                       data-testid='button-link-list'
                       style={{ fontSize: '12px', width: 'max-content', marginTop: '10px' }}
                       onClick={()=>{
-                        listCallback({
+                        listCallback && listCallback({
                           queryInput: {
                             event: res.event
                           }

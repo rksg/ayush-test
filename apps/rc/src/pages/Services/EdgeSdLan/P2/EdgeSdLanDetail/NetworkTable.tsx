@@ -3,9 +3,10 @@ import { useEffect } from 'react'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { CheckMark }                 from '@acx-ui/icons'
-import { useNetworkListQuery }       from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { CheckMark }                                    from '@acx-ui/icons'
+import { useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -20,6 +21,8 @@ interface NetworkTableProps {
 }
 
 export const NetworkTable = (props: NetworkTableProps) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { networkIds, guestNetworkIds } = props
   const { $t } = useIntl()
 
@@ -28,7 +31,7 @@ export const NetworkTable = (props: NetworkTableProps) => {
     filters: { id: networkIds }
   }
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: defaultPayload,
     option: {
       skip: networkIds.length === 0
