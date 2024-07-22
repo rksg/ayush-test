@@ -9,7 +9,12 @@ import {
   ScopeKeys
 } from '@acx-ui/types'
 
-import type { UserProfile, RaiPermission, RaiPermissions } from './types'
+import {
+  type UserProfile,
+  type RaiPermission,
+  type RaiPermissions,
+  CustomRoleType
+} from './types'
 
 type Profile = {
   profile: UserProfile
@@ -157,9 +162,16 @@ export function hasScope (userScopes: ScopeKeys) {
 
 
 export function hasRoles (roles: string | string[]) {
-  const { profile } = getUserProfile()
+  const { profile, abacEnabled } = getUserProfile()
+
 
   if (!Array.isArray(roles)) roles = [roles]
+
+  if (abacEnabled &&
+    profile.customRoleType === CustomRoleType.SYSTEM &&
+    profile.customRoleName) {
+    return roles.includes(profile.customRoleName)
+  }
 
   return profile?.roles?.some(role => roles.includes(role))
 }

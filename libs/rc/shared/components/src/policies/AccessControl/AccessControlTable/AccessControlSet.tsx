@@ -9,7 +9,8 @@ import {
   doProfileDelete,
   useDeleteAccessControlProfilesMutation,
   useGetEnhancedAccessControlProfileListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   AclOptionType,
@@ -17,7 +18,8 @@ import {
   getPolicyDetailsLink, Network,
   PolicyOperation,
   PolicyType,
-  useTableQuery
+  useTableQuery,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
@@ -52,6 +54,8 @@ const defaultPayload = {
 }
 
 const AccessControlSet = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const tenantBasePath: Path = useTenantLink('')
   const navigate = useNavigate()
@@ -70,8 +74,8 @@ const AccessControlSet = () => {
     enableRbac
   })
 
-  const networkTableQuery = useTableQuery<Network>({
-    useQuery: useNetworkListQuery,
+  const networkTableQuery = useTableQuery<Network|WifiNetwork>({
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultNetworkPayload,
       filters: {

@@ -373,6 +373,16 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
     newApi: true,
     defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateAccessControlProfileRbac: {
+    method: 'put',
+    url: '/accessControlProfiles/:policyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
+    newApi: true,
+    defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }

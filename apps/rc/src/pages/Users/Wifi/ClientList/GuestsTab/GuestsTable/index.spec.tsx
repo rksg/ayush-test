@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { clientApi, networkApi }                         from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { clientApi, networkApi }                                             from '@acx-ui/rc/services'
+import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -120,7 +120,7 @@ describe('Guest Table', () => {
         (_, res, ctx) => res(ctx.json(GuestList))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
       rest.post(
@@ -144,6 +144,10 @@ describe('Guest Table', () => {
           mockedDownloadReq()
           return res(ctx.json({}))
         }
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
     )
   })
