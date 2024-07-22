@@ -11,7 +11,7 @@ import {
 import {
   ActionType,
   AupActionContext,
-  DataPromptActionContext,
+  DataPromptActionContext, DataPromptVariable,
   DisplayMessageActionContext,
   UserSelectionSplitContext,
   WorkflowStep
@@ -23,7 +23,7 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
 
   return Object.entries(ActionDefaultValueMap[actionType])
     .reduce((acc: Record<string, string | boolean>, [key, value]) => {
-      if (typeof value === 'string' || typeof value === 'boolean') {
+      if (typeof value === 'string' || typeof value === 'boolean' || typeof value === 'object') {
         acc[key] = value
       } else {
         acc[key] = $t(value)
@@ -129,10 +129,15 @@ export const AupActionDefaultValue: {
 }
 
 export const DataPromptActionDefaultValue: {
-  [key in keyof DataPromptActionContext]: MessageDescriptor | string
+  [key in keyof DataPromptActionContext]: MessageDescriptor | boolean | string | DataPromptVariable[]
 } = {
-  backButtonText: defineMessage({ defaultMessage: '< Back' }),
-  continueButtonText: defineMessage({ defaultMessage: 'Continue >' })
+  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  backButtonText: 'Back',
+  continueButtonText: 'Continue',
+  displayBackButton: true,
+  displayContinueButton: true
+  , fields: [{ type: 'username', label: 'Username' }]
 }
 
 export const UserSelectionActionDefaultValue: {

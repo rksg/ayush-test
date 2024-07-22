@@ -1,4 +1,3 @@
-
 import { RcFile } from 'antd/lib/upload'
 
 // Mapping the enum based on enrollment-actions definitions:
@@ -45,14 +44,14 @@ export interface DpskActionContext {
 }
 
 export interface DataPromptActionContext {
-  backButtonText: string, // max = 20
-  continueButtonText: string, // max = 20
-
   title?: string,
   messageHtml?: string,
-  variables?: DataPromptVariable[],
-
+  fields?: DataPromptVariable[],
   bottomLabel?: string // max = 1000
+  backButtonText: string,
+  continueButtonText: string,
+  displayBackButton: boolean,
+  displayContinueButton: boolean
 }
 
 // TODO: need to confirm the nullable or not for each variables
@@ -66,9 +65,9 @@ export interface UserSelectionSplitContext {
 }
 
 export interface DataPromptVariable {
-  label: string,
+  type: string,
+  label?: string,
   regex?: string,
-  name?: string
 }
 
 export interface DisplayMessageActionContext {
