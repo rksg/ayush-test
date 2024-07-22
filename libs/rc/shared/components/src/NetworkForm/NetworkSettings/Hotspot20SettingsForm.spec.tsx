@@ -52,8 +52,6 @@ describe('Hotspot20SettingsForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(IdentityProviderUrls.getIdentityProviderList.url,
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))),
       rest.post(WifiOperatorUrls.getWifiOperatorList.url,
