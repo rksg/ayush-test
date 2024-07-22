@@ -69,9 +69,9 @@ export const intentListResult = {
     {
       id: '13',
       code: 'c-txpower-same',
-      status: 'revertfailed',
-      status_reason: '',
-      displayStatus: 'revertfailed',
+      status: 'paused',
+      status_reason: 'revertfailed',
+      displayStatus: 'paused-revertfailed',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:06:02.839Z',
       sliceType: 'zone',
@@ -274,9 +274,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
-      status: 'applyfailed',
-      status_reason: '',
-      displayStatus: 'applyfailed',
+      status: 'paused',
+      status_reason: 'applyfailed',
+      displayStatus: 'paused-applyfailed',
       metadata: {
         error: {
           message: 'unknown error'
@@ -300,9 +300,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
-      status: 'revertfailed',
-      status_reason: '',
-      displayStatus: 'revertfailed',
+      status: 'paused',
+      status_reason: 'revertfailed',
+      displayStatus: 'paused-revertfailed',
       metadata: {
         error: {
           message: 'unknown error'
@@ -311,9 +311,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
-      status: 'reverted',
-      status_reason: '',
-      displayStatus: 'reverted'
+      status: 'paused',
+      status_reason: 'reverted',
+      displayStatus: 'paused-reverted'
     },
     {
       ...intentStatus,

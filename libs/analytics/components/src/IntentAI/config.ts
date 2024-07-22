@@ -50,8 +50,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Active' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the zone {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
-  //TODO: confirm status-statusReason
-  'applyfailed': {
+  'paused-applyfailed': {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the zone {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
@@ -63,13 +62,11 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone {zoneName}.' })
   },
-  //TODO: confirm status-statusReason
-  'revertfailed': {
+  'paused-revertfailed': {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
     tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  //TODO: confirm status-statusReason
-  'reverted': {
+  'paused-reverted': {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
