@@ -159,7 +159,8 @@ export function Subscriptions () {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isComplianceEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
