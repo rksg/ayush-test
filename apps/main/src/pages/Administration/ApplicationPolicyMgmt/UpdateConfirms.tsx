@@ -4,6 +4,7 @@ import { Input, Modal }              from 'antd'
 import { useIntl,MessageDescriptor } from 'react-intl'
 
 import { Button, Collapse }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { ExpandSquareDown, ExpandSquareUp } from '@acx-ui/icons'
 import { useUpdateSigPackMutation }         from '@acx-ui/rc/services'
 import { ApplicationUpdateType }            from '@acx-ui/rc/utils'
@@ -19,6 +20,7 @@ import { changedApplicationTypeTextMap } from '.'
 export const UpdateConfirms = (props: UpdateConfirmsProps) => {
   const { changedAppsInfoMap } = props
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ updateSigPack ] = useUpdateSigPackMutation()
   const [ isUpdating, setIsUpdating ] = useState(false)
 
@@ -26,7 +28,11 @@ export const UpdateConfirms = (props: UpdateConfirmsProps) => {
     setIsUpdating(true)
 
     try{
-      updateSigPack({ params: {}, payload: { action: 'UPDATE' } }).unwrap()
+      updateSigPack({
+        params: {},
+        payload: { action: 'UPDATE' },
+        enableRbac: isWifiRbacEnabled
+      }).unwrap()
     } catch(error) {
       setIsUpdating(false)
     }
