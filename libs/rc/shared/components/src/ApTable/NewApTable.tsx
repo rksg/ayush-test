@@ -78,7 +78,7 @@ export const newDefaultApPayload = {
   searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
-    'switchName', 'meshRole', 'clientCount', 'apGroupId',
+    'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus'
   ]
