@@ -149,6 +149,7 @@ export const apApi = baseApApi.injectEndpoints({
         return await getApViewmodelListFn(args, fetchWithBQ)
       }
     }),
+    // for AP Table
     newApList: build.query<TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>,
     RequestPayload>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -1274,14 +1275,17 @@ export const apApi = baseApApi.injectEndpoints({
         return result?.data[0]
       }
     }),
-    downloadApsCSV: build.mutation<Blob, ApsExportPayload>({
-      query: (payload) => {
-        const req = createHttpRequest(CommonUrlsInfo.downloadApsCSV,
-          { tenantId: payload.tenantId }
-        )
+    downloadApsCSV: build.mutation<Blob, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        if(customHeaders) {
+          customHeaders.Accept = 'text/vnd.ruckus.v1+csv'
+        }
+        const req = createHttpRequest(urlsInfo.downloadApsCSV, params, customHeaders)
         return {
           ...req,
-          body: payload,
+          body: JSON.stringify(payload),
           responseHandler: async (response) => {
             const date = new Date()
             // eslint-disable-next-line max-len

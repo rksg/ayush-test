@@ -169,10 +169,19 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  getVenueSettings: { // TODO
+  getVenueSettings: {
     method: 'get',
     url: '/templates/venues/:venueId/wifiSettings',
     newApi: true
+  },
+  getVenueMeshRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apMeshSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueMesh: {
     method: 'put',
@@ -563,5 +572,23 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/networkActivations/query',
     newApi: true
+  },
+  getVenueApModelBandModeSettings: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apModelBandModeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateVenueApModelBandModeSettings: {
+    method: 'put',
+    url: '/templates/venues/:venueId/apModelBandModeSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

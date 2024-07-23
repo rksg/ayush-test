@@ -42,13 +42,6 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_req, res, ctx) => {
-          mockedGetNetworkDeepList()
-          return res(ctx.json(mockDeepNetworkList))
-        }
       )
     )
 

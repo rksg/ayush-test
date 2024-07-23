@@ -12,6 +12,8 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
+
 import { EditPrivilegeGroup } from './EditPrivilegeGroup'
 
 const mockedUsedNavigate = jest.fn()
@@ -19,6 +21,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
   useLocation: jest.fn().mockReturnValue({ state: {
+    isOnboardedMsp: true,
     name: 'custom role',
     description: 'custom role'
   } }),
@@ -248,6 +251,9 @@ describe('Edit Privilege Group', () => {
     mspServices.useMspCustomerListQuery = jest.fn().mockImplementation(() => {
       return { data: customerList }
     })
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
+    })
     mockServer.use(
       rest.put(
         AdministrationUrlsInfo.updatePrivilegeGroup.url,
@@ -389,7 +395,11 @@ describe('Edit Privilege Group', () => {
     })
   })
   it('should render correctly for not onboarded msp', async () => {
-    jest.spyOn(router, 'useLocation').mockReturnValue({})
+    jest.spyOn(router, 'useLocation').mockReturnValue({ state: {
+      isOnboardedMsp: false,
+      name: 'custom role'
+    } })
+
     render(
       <Provider>
         <EditPrivilegeGroup />

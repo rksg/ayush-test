@@ -47,7 +47,7 @@ describe('PortalTable', () => {
         PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
       ),
-      rest.post(
+      rest.get(
         PortalUrlsInfo.getPortal.url,
         (req, res, ctx) => res(ctx.json(mockDetailResult))
       ),

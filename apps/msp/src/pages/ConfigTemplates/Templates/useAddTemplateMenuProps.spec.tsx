@@ -1,7 +1,8 @@
+import { ItemType }           from '@acx-ui/components'
 import { ConfigTemplateType } from '@acx-ui/rc/utils'
 import { renderHook }         from '@acx-ui/test-utils'
 
-import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems } from './useAddTemplateMenuProps'
+import { useAddTemplateMenuProps, createPolicyMenuItem, createServiceMenuItem, useSwitchMenuItems, useWiFiMenuItems } from './useAddTemplateMenuProps'
 
 const mockedUseConfigTemplateVisibilityMap = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
@@ -77,5 +78,42 @@ describe('useAddTemplateMenuProps', () => {
 
     const allowedResult = useSwitchMenuItems()
     expect(allowedResult?.key).toBe('add-switch-profile')
+
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.SWITCH_REGULAR]: true,
+      [ConfigTemplateType.SWITCH_CLI]: true
+    })
+
+    const allowedAllResult = useSwitchMenuItems() as { children: ItemType[] }
+    expect(allowedAllResult?.children.length).toBe(2)
+  })
+
+  it('should create the correct wifi menu item', () => {
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.NETWORK]: false,
+      [ConfigTemplateType.AP_GROUP]: false
+    })
+
+    const disallowedResult = useWiFiMenuItems()
+    expect(disallowedResult).toBeNull()
+
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.NETWORK]: true
+    })
+
+    const allowedResult = useWiFiMenuItems()
+    expect(allowedResult?.key).toBe('add-wifi-profile')
+
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+      ...mockedConfigTemplateVisibilityMap,
+      [ConfigTemplateType.NETWORK]: true,
+      [ConfigTemplateType.AP_GROUP]: true
+    })
+
+    const allowedAllResult = useWiFiMenuItems() as { children: ItemType[] }
+    expect(allowedAllResult?.children.length).toBe(2)
   })
 })

@@ -30,10 +30,9 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { WifiScopes }                                  from '@acx-ui/types'
-import { filterByAccess, hasPermission }               from '@acx-ui/user'
-import { exportMessageMapping }                        from '@acx-ui/utils'
+import { FILTER, hasCloudpathAccess, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                  from '@acx-ui/user'
+import { exportMessageMapping }                                            from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -316,7 +315,7 @@ export function PersonaGroupTable () {
   }
 
   const actions: TableProps<PersonaGroup>['actions'] =
-    hasPermission({ scopes: [WifiScopes.CREATE] })
+    hasCloudpathAccess()
       ? [{
         label: $t({ defaultMessage: 'Add Identity Group' }),
         onClick: () => {
@@ -324,27 +323,27 @@ export function PersonaGroupTable () {
         }
       }] : []
 
-  const rowActions: TableProps<PersonaGroup>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      onClick: ([data], clearSelection) => {
-        setDrawerState({ data, isEdit: true, visible: true })
-        clearSelection()
-      },
-      scopeKey: [WifiScopes.UPDATE]
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      disabled: (([selectedItem]) =>
-        (selectedItem && selectedItem.identityCount)
-          ? selectedItem.identityCount > 0 : false
-      ),
-      onClick: ([selectedRow], clearSelection) => {
-        doDelete(selectedRow, clearSelection)
-      },
-      scopeKey: [WifiScopes.DELETE]
-    }
-  ]
+  const rowActions: TableProps<PersonaGroup>['rowActions'] =
+    hasCloudpathAccess()
+      ? [
+        {
+          label: $t({ defaultMessage: 'Edit' }),
+          onClick: ([data], clearSelection) => {
+            setDrawerState({ data, isEdit: true, visible: true })
+            clearSelection()
+          }
+        },
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          disabled: (([selectedItem]) =>
+            (selectedItem && selectedItem.identityCount)
+              ? selectedItem.identityCount > 0 : false
+          ),
+          onClick: ([selectedRow], clearSelection) => {
+            doDelete(selectedRow, clearSelection)
+          }
+        }
+      ] : []
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
@@ -383,9 +382,7 @@ export function PersonaGroupTable () {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasPermission({
-            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
-          }) && { type: 'radio' }}
+          hasCloudpathAccess() && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

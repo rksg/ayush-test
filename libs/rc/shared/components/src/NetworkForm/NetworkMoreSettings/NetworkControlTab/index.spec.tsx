@@ -14,9 +14,15 @@ import {
 import { Provider }                           from '@acx-ui/store'
 import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData, devicePolicyListResponse, policyListResponse, mockWifiCallingTableResult } from '../../__tests__/fixtures'
-import NetworkFormContext                                                                                        from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo }                                                                      from '../../utils'
+import {
+  mockedTunnelProfileViewData,
+  devicePolicyListResponse,
+  policyListResponse,
+  mockWifiCallingTableResult,
+  devicePolicyDetailResponse
+} from '../../__tests__/fixtures'
+import NetworkFormContext                   from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
 
 import { NetworkControlTab } from '.'
 
@@ -50,7 +56,29 @@ describe('Network More settings - Network Control Tab', () => {
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getDevicePolicy.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getL3AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getApplicationPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse)))
     )
   })
 

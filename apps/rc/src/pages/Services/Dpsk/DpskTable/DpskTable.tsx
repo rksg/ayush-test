@@ -9,9 +9,15 @@ import {
   Loader,
   TableColumn
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                               from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                                        from '@acx-ui/rc/components'
-import { doProfileDelete, useDeleteDpskMutation, useGetEnhancedDpskListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
+import {
+  doProfileDelete,
+  useDeleteDpskMutation,
+  useGetEnhancedDpskListQuery,
+  useNetworkListQuery,
+  useWifiNetworkListQuery
+} from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
@@ -141,11 +147,13 @@ export default function DpskTable () {
 }
 
 function useColumns () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const intl = useIntl()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const params = useParams()
 
-  const { networkNameMap } = useNetworkListQuery({
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+  const { networkNameMap } = getNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
