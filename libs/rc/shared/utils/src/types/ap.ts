@@ -90,8 +90,10 @@ export interface AP {
   downLinkCount?: number,
   apRadioDeploy?: string,
   powerSavingStatus?: string,
-  isManagementConnected?: boolean,
-  isServerConnected?: boolean
+  lbsStatus?: {
+    managementConnected?: boolean,
+    serverConnected?: boolean
+  }
 }
 
 export interface NewAPModel {

@@ -33,8 +33,8 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
         'name',
         'deviceStatus',
         'apMac',
-        'isManagementConnected',
-        'isServerConnected',
+        'lbsStatus.managementConnected',
+        'lbsStatus.serverConnected',
         'serialNumber'],
       filters: getVenueFilter(venue),
       search: {
@@ -95,22 +95,22 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
     },
     {
       title: $t({ defaultMessage: 'LBS Mgmt. Connection' }),
-      dataIndex: 'isManagementConnected',
-      key: 'isManagementConnected',
+      dataIndex: 'lbsStatus.managementConnected',
+      key: 'lbsStatus.managementConnected',
       width: 160,
       sorter: true,
-      render: (_, { isManagementConnected }) =>
-      {return renderConnectionState(isManagementConnected as boolean)}
+      render: (_, { lbsStatus }) =>
+      {return renderConnectionState(lbsStatus?.managementConnected as boolean)}
 
     },
     {
       title: $t({ defaultMessage: 'LBS Server Connection' }),
-      dataIndex: 'isServerConnected',
-      key: 'isServerConnected',
+      dataIndex: 'lbsStatus.serverConnected',
+      key: 'lbsStatus.serverConnected',
       width: 160,
       sorter: true,
-      render: (_, { isServerConnected }) =>
-      { return renderConnectionState(isServerConnected as boolean)}
+      render: (_, { lbsStatus }) =>
+      { return renderConnectionState(lbsStatus?.serverConnected as boolean)}
     }
   ]
 

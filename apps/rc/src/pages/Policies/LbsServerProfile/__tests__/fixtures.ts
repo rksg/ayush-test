@@ -68,11 +68,11 @@ export const dummyApList = {
     'name',
     'deviceStatus',
     'apMac',
-    'isManagementConnected',
-    'isServerConnected',
-    'serialNumber'
+    'serialNumber',
+    'lbsStatus.managementConnected',
+    'lbsStatus.serverConnected'
   ],
-  totalCount: 2,
+  totalCount: 1,
   page: 1,
   data: [
     {
@@ -81,17 +81,10 @@ export const dummyApList = {
       venueId: 'd6062edbdf57451facb33967c2160ccc',
       venueName: 'Venue 1',
       apMac: 'D8:38:FC:36:77:F0',
-      isManagementConnected: true,
-      isServerConnected: true
-    },
-    {
-      serialNumber: '121749001250',
-      name: 'AP-R510',
-      venueId: 'd6062edbdf57451facb33967c2160ccc',
-      venueName: 'Venue 1',
-      apMac: 'D8:38:FC:36:77:F1',
-      isManagementConnected: false,
-      isServerConnected: false
+      lbsStatus: {
+        managementConnected: true,
+        serverConnected: true
+      }
     }
   ]
 }
