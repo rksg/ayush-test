@@ -23,10 +23,6 @@ describe('ApGroupNetworksTable', () => {
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json(networkApGroup))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json(mockDeepNetworkList))
-      ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(mockDeepNetworkList.response))

@@ -87,8 +87,6 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(DpskUrls.getDpskList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(dpskListResponse)))
     )

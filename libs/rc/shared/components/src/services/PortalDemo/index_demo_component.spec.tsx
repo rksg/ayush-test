@@ -13,6 +13,7 @@ import Photo                     from './assets/images/portal-demo/PortalPhoto.s
 import Powered                   from './assets/images/portal-demo/PoweredLogo.svg'
 import Logo                      from './assets/images/portal-demo/RuckusCloud.svg'
 import { PortalDemoDefaultSize } from './commonUtils'
+import PortalViewText            from './PortalViewText'
 
 import { PortalDemo } from './index'
 
@@ -123,6 +124,14 @@ describe('PortalDemo', () => {
 
     await updateContent()
 
+  })
+
+  it('should render PortalViewText correct', async () => {
+    const text = 'test text'
+    render(
+      <PortalViewText value={text} id='test'/>
+    )
+    expect(await screen.findByText(text)).toBeVisible()
   })
 })
 async function updateContent () {
