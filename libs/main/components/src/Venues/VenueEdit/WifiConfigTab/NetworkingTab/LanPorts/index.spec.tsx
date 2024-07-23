@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                                      from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -47,6 +47,9 @@ describe('LanPortsForm', () => {
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(
+        CommonRbacUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,

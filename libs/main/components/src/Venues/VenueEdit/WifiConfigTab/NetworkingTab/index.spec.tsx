@@ -51,6 +51,9 @@ describe('NetworkingTab', () => {
       rest.get(
         CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(
+        CommonRbacUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.put(
         CommonUrlsInfo.updateVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
