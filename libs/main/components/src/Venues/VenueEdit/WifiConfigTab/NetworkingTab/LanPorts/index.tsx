@@ -85,10 +85,12 @@ export function LanPorts () {
   const customGuiChagedRef = useRef(false)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
   const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
-    useTemplateQueryFn: useGetVenueTemplateLanPortsQuery
+    useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
+    enableRbac: isWifiRbacEnabled
   })
 
   // eslint-disable-next-line max-len
