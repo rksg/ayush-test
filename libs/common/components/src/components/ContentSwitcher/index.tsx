@@ -9,6 +9,7 @@ interface TabDetail {
   children: ReactNode
   icon?: ReactNode
   disabled?: boolean
+  tooltip?: string
 }
 
 export interface ContentSwitcherProps {
@@ -35,7 +36,8 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
       label: tabDetail.label,
       value: tabDetail.value,
       icon: tabDetail.icon,
-      disabled: tabDetail.disabled
+      disabled: tabDetail.disabled,
+      tooltip: tabDetail.tooltip
     }
   })
   const isDefaultOptionVisible = options.find(o => o.value === defaultValue)
