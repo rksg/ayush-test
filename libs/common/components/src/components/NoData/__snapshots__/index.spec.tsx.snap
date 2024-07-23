@@ -2,20 +2,63 @@
 
 exports[`NoActiveContent should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+  .c0 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c0 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c1 {
+  --size: 32px;
+  height: var(--size);
+  width: var(--size);
+  margin-block-end: 0;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0"
   >
     <div
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 doQiPx"
+        class="c1"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+  .c0 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c0 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c1 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0 c1"
   >
     <div
       class="ant-space-item"
@@ -28,20 +71,63 @@ exports[`NoActiveContent should render correctly 1`] = `
 
 exports[`NoActiveContent should render correctly with custom text 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+  .c0 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c0 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c1 {
+  --size: 32px;
+  height: var(--size);
+  width: var(--size);
+  margin-block-end: 0;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0"
   >
     <div
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 doQiPx"
+        class="c1"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+  .c0 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c0 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c1 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0 c1"
   >
     <div
       class="ant-space-item"
@@ -54,20 +140,63 @@ exports[`NoActiveContent should render correctly with custom text 1`] = `
 
 exports[`NoActiveContent should render correctly with large tick 1`] = `
 <DocumentFragment>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+  .c0 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c0 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c1 {
+  --size: 48px;
+  height: var(--size);
+  width: var(--size);
+  margin-block-end: 13px;
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0"
   >
     <div
       class="ant-space-item"
     >
       <svg
-        class="styledComponents__GreenTickIcon-sc-m7jeli-3 jzWEPO"
+        class="c1"
         data-testid="CheckMarkCircleSolid"
       />
     </div>
   </div>
-  <div
-    class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+  .c0 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c0 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c1 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="ant-space ant-space-horizontal ant-space-align-center c0 c1"
   >
     <div
       class="ant-space-item"
@@ -80,23 +209,63 @@ exports[`NoActiveContent should render correctly with large tick 1`] = `
 
 exports[`NoActiveData should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c3 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+.c2 {
+  --size: 32px;
+  height: var(--size);
+  width: var(--size);
+  margin-block-end: 0;
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+      class="ant-space ant-space-horizontal ant-space-align-center c1"
     >
       <div
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 doQiPx"
+          class="c2"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c3"
     >
       <div
         class="ant-space-item"
@@ -110,23 +279,63 @@ exports[`NoActiveData should render correctly 1`] = `
 
 exports[`NoActiveData should render correctly with custom text 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c3 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+.c2 {
+  --size: 32px;
+  height: var(--size);
+  width: var(--size);
+  margin-block-end: 0;
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+      class="ant-space ant-space-horizontal ant-space-align-center c1"
     >
       <div
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 doQiPx"
+          class="c2"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c3"
     >
       <div
         class="ant-space-item"
@@ -140,23 +349,63 @@ exports[`NoActiveData should render correctly with custom text 1`] = `
 
 exports[`NoActiveData should render correctly with large tick 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c3 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+.c2 {
+  --size: 48px;
+  height: var(--size);
+  width: var(--size);
+  margin-block-end: 13px;
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+      class="ant-space ant-space-horizontal ant-space-align-center c1"
     >
       <div
         class="ant-space-item"
       >
         <svg
-          class="styledComponents__GreenTickIcon-sc-m7jeli-3 jzWEPO"
+          class="c2"
           data-testid="CheckMarkCircleSolid"
         />
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c3"
     >
       <div
         class="ant-space-item"
@@ -170,11 +419,44 @@ exports[`NoActiveData should render correctly with large tick 1`] = `
 
 exports[`NoData should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c2 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c2"
     >
       <div
         class="ant-space-item"
@@ -188,11 +470,44 @@ exports[`NoData should render correctly 1`] = `
 
 exports[`NoData should render correctly with custom text 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c2 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c2"
     >
       <div
         class="ant-space-item"
@@ -206,11 +521,44 @@ exports[`NoData should render correctly with custom text 1`] = `
 
 exports[`NoDataIcon should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c2 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+      class="ant-space ant-space-horizontal ant-space-align-center c1"
     >
       <div
         class="ant-space-item"
@@ -264,7 +612,7 @@ exports[`NoDataIcon should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c2"
     >
       <div
         class="ant-space-item"
@@ -278,11 +626,44 @@ exports[`NoDataIcon should render correctly 1`] = `
 
 exports[`NoDataIcon should render correctly with custom text 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  .c0 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  width: 100%;
+  padding: 0 16px;
+}
+
+.c1 {
+  text-align: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.c1 .ant-empty-normal {
+  margin: 0;
+  margin-block-end: 17px;
+}
+
+.c2 {
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-body-4-font-weight);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 izicZw"
+      class="ant-space ant-space-horizontal ant-space-align-center c1"
     >
       <div
         class="ant-space-item"
@@ -336,7 +717,7 @@ exports[`NoDataIcon should render correctly with custom text 1`] = `
       </div>
     </div>
     <div
-      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+      class="ant-space ant-space-horizontal ant-space-align-center c1 c2"
     >
       <div
         class="ant-space-item"
@@ -350,8 +731,24 @@ exports[`NoDataIcon should render correctly with custom text 1`] = `
 
 exports[`NoGranularityText should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__RollupText-sc-m7jeli-4 cMVkAo"
+  .c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: -webkit-fill-available;
+}
+
+<div
+    class="c0"
   >
     Data granularity at this level is not available
   </div>
