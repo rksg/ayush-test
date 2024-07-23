@@ -762,14 +762,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    apLanPorts: build.query<ApLanPort, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
-        return {
-          ...req
-        }
-      }
-    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -985,8 +977,10 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApLanPorts: build.query<WifiApSetting, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
         return {
           ...req,
           body: payload
@@ -1439,7 +1433,6 @@ export const {
   useApDetailHeaderQuery,
   useApViewModelQuery,
   useApDetailsQuery,
-  useApLanPortsQuery,
   useAddApMutation,
   usePingApMutation,
   useTraceRouteApMutation,

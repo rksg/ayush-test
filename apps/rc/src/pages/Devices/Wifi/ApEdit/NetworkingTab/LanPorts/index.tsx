@@ -69,6 +69,7 @@ export function LanPorts () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -86,8 +87,10 @@ export function LanPorts () {
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apLanPortsData, isLoading: isApLanPortsLoading }
-    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } = useGetApLanPortsQuery({
+    params: { tenantId, serialNumber },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const getDhcpEnabled = useFetchIsVenueDhcpEnabled()

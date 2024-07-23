@@ -62,7 +62,10 @@ export function ApPacketCaptureForm () {
     enableRbac: isUseWifiRbacApi
   })
 
-  const getApLanPorts = useGetApLanPortsQuery({ params })
+  const getApLanPorts = useGetApLanPortsQuery({
+    params,
+    enableRbac: isUseWifiRbacApi
+  })
   const getApRadioCustomization =
     useGetApRadioCustomizationQuery({ params, enableRbac: isUseWifiRbacApi })
 
