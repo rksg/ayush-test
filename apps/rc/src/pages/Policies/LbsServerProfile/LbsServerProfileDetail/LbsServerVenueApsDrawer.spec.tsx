@@ -1,10 +1,15 @@
-import { CommonUrlsInfo, PolicyOperation, PolicyType, Venue, getPolicyRoutePath } from "@acx-ui/rc/utils"
-import { mockServer, render, waitForElementToBeRemoved, screen } from "@acx-ui/test-utils"
-import { rest } from "msw"
-import { dummyApList, dummyVenue, mockedPolicyId1, mockedTenantId } from "../__tests__/fixtures"
-import { Provider } from "@acx-ui/store"
-import { LbsServerVenueApsDrawer } from "./LbsServerVenueApsDrawer"
-import userEvent from "@testing-library/user-event"
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { CommonUrlsInfo, PolicyOperation, PolicyType, Venue, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, waitForElementToBeRemoved, screen }                  from '@acx-ui/test-utils'
+
+import { dummyApList, dummyVenue, mockedPolicyId1, mockedTenantId } from '../__tests__/fixtures'
+
+
+import { LbsServerVenueApsDrawer } from './LbsServerVenueApsDrawer'
+
 
 describe('LbsServerVenueApsDrawer', () => {
   const params = {
@@ -46,12 +51,12 @@ describe('LbsServerVenueApsDrawer', () => {
 
     const targetAp = dummyApList.data[0]
 
-    await screen.findByRole('row', { name: new RegExp(targetAp.name)})
+    await screen.findByRole('row', { name: new RegExp(targetAp.name) })
     expect(screen.getByTestId('LbsServerVenueApsTable')).toBeVisible()
     expect(screen.getByText('Venue 1: APs')).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: 'Close' }))
     expect(mockSetVisible).toHaveBeenLastCalledWith(false)
   })
-  
+
 })

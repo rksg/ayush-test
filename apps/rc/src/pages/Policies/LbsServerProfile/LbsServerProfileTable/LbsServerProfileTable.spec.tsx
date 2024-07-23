@@ -3,7 +3,7 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { policyApi }     from '@acx-ui/rc/services'
+import { policyApi }      from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   getPolicyRoutePath,

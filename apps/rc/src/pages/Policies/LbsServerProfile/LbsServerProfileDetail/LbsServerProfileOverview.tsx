@@ -1,8 +1,8 @@
-import { useIntl } from 'react-intl'
+import { Badge, Space } from 'antd'
+import { useIntl }      from 'react-intl'
 
 import { SummaryCard }               from '@acx-ui/components'
 import { LbsServerProfileViewModel } from '@acx-ui/rc/utils'
-import { Badge, Space } from 'antd'
 
 export function LbsServerProfileOverview (props: { data: LbsServerProfileViewModel }) {
   const { $t } = useIntl()

@@ -1,6 +1,8 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Button, Card, Loader, Table, TableProps }         from '@acx-ui/components'
+import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                       from '@acx-ui/rc/components'
 import { useVenuesListQuery, useVenuesTableQuery } from '@acx-ui/rc/services'
@@ -10,7 +12,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
-import { useState } from 'react'
+
 import { LbsServerVenueApsDrawer } from './LbsServerVenueApsDrawer'
 
 const defaultVenuePayload = {
@@ -101,7 +103,6 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
   ]
 
   return (
-    <>
     <Card title={$t({ defaultMessage: 'Instances ({count})' },
       { count: tableQuery.data?.totalCount ?? 0 }
     )}>
@@ -118,10 +119,9 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
           venue={selectedVenue}
           visible={drawerVisible}
           setVisible={setDrawerVisible}
-          />
+        />
         : null
       }
     </Card>
-    </>
   )
 }
