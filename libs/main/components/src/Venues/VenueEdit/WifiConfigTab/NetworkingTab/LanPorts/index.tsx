@@ -213,7 +213,8 @@ export function LanPorts () {
         setLanPortOrinData(payload)
         await updateVenueLanPorts({
           params: { tenantId, venueId },
-          payload
+          payload,
+          enableRbac: isWifiRbacEnabled
         }).unwrap()
       }
     } catch (error) {

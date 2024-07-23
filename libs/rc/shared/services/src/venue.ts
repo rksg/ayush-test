@@ -837,11 +837,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.updateVenueLanPorts, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
