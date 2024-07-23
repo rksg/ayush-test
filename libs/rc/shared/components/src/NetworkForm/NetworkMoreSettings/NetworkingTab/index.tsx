@@ -46,14 +46,16 @@ export function NetworkingTab (props: {
     enableAirtimeDecongestion,
     enableJoinRSSIThreshold,
     enableTransientClientManagement,
-    enableOce
+    enableOce,
+    pskProtocol
   ] = [
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableFastRoaming']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableAirtimeDecongestion']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableJoinRSSIThreshold']),
     useWatch<boolean>(['wlan', 'advancedCustomization', 'enableTransientClientManagement']),
     useWatch<boolean>(['wlan', 'advancedCustomization',
-      'enableOptimizedConnectivityExperience'])
+      'enableOptimizedConnectivityExperience']),
+    useWatch<WlanSecurityEnum>(['pskProtocol'])
   ]
   useEffect(() => {
     if(enableAirtimeDecongestion === true) {
@@ -69,11 +71,23 @@ export function NetworkingTab (props: {
     WlanSecurityEnum.WPA23Mixed,
     WlanSecurityEnum.WPA3]
 
-  const isNetworkWPASecured = wlanData?.wlan?.wlanSecurity ?
-    networkWPASecuredList.includes(wlanData?.wlan.wlanSecurity) : false
+  const isFastBssVisible = () => {
 
-  const isFastBssVisible = data?.type === NetworkTypeEnum.AAA ? true : (
-    data?.type !== NetworkTypeEnum.DPSK && isNetworkWPASecured )
+    if(data?.type === NetworkTypeEnum.AAA) {
+      return true
+    }
+    if (data?.type === NetworkTypeEnum.DPSK) {
+      return false
+    }
+    if(data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+        data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
+      return networkWPASecuredList.includes(pskProtocol)
+    }
+    if(wlanData?.wlan?.wlanSecurity) {
+      return networkWPASecuredList.includes(wlanData?.wlan?.wlanSecurity)
+    }
+    return false
+  }
 
   const additionalRegulatoryDomains80211dInfoMessage = defineMessage({
     // eslint-disable-next-line max-len
@@ -129,7 +143,7 @@ export function NetworkingTab (props: {
         />
       </UI.FieldLabel>
 
-      {isFastBssVisible &&
+      {isFastBssVisible() &&
         <UI.FieldLabel width={labelWidth}>
           {$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })}
           <Form.Item
