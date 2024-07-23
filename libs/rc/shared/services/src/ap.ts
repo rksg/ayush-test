@@ -27,7 +27,6 @@ import {
   ApFeatureSet,
   ApGroup,
   ApGroupViewModel,
-  ApLanPort,
   ApLedSettings,
   ApLldpNeighborsResponse,
   ApManagementVlan,
