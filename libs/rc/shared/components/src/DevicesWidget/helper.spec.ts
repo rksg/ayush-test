@@ -323,7 +323,7 @@ describe('getRwgDonutChartData', () => {
   it('should return correct formatted data', async () => {
     expect(getRwgDonutChartData(rwgList.response.data)).toEqual([{
       color: '#ED1C24',
-      name: 'Disconnected',
+      name: 'Offline',
       value: 1
     }])
   })

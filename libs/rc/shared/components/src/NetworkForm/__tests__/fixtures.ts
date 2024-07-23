@@ -2205,3 +2205,43 @@ export const mockSMS_Unset_Under100 = {
   provider: SmsProviderType.SMSProvider_UNSET,
   ruckusOneUsed: 80
 }
+
+export const mock_SelfSignIn_SMS_ON = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    socialDomains: ['http://123.com'],
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
+
+export const mock_SelfSignIn_SMS_Off = {
+  guestPortal: {
+    redirectUrl: 'dbaidu.com',
+    guestNetworkType: GuestNetworkTypeEnum.SelfSignIn,
+    enableSmsLogin: true,
+    socialIdentities: {
+      facebook: { source: SocialIdentitySource.CUSTOM },
+      google: { source: SocialIdentitySource.CUSTOM },
+      twitter: { source: SocialIdentitySource.CUSTOM },
+      linkedin: { source: SocialIdentitySource.CUSTOM }
+    },
+    socialEmails: true,
+    socialDomains: ['http://123.com'],
+    smsPasswordDuration: {
+      duration: 12,
+      unit: TimeUnitEnum.HOUR
+    }
+  }
+}
