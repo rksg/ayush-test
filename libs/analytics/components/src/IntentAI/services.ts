@@ -55,7 +55,7 @@ export const api = intentAIApi.injectEndpoints({
             id
             code
             status
-            status_reason
+            statusReason
             displayStatus
             createdAt
             updatedAt
