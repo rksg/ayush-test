@@ -6,7 +6,7 @@ import { Loader, Drawer, Table, TableProps }                               from 
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { APStatus }                                                        from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
-import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
+import { AP, ApDeviceStatusEnum, useTableQuery, Venue }                    from '@acx-ui/rc/utils'
 import { TenantLink }                                                      from '@acx-ui/react-router-dom'
 
 export interface LbsServerVenueApsDrawerProps {
@@ -22,8 +22,7 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const getVenueFilter = (venue: Venue) => ({
-    venueId: [venue.id],
-    deviceStatusSeverity: [ApVenueStatusEnum.OPERATIONAL]
+    venueId: [venue.id]
   })
 
   const tableQuery = useTableQuery({
@@ -33,13 +32,14 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
         'name',
         'deviceStatus',
         'apMac',
-        'lbsStatus.managementConnected',
-        'lbsStatus.serverConnected',
+        'lbsStatus',
         'serialNumber'],
       filters: getVenueFilter(venue),
       search: {
         searchTargetFields: ['name', 'apMac']
-      }
+      },
+      sortField: 'name',
+      sortOrder: 'ASC'
     },
     enableRbac: isWifiRbacEnabled
   })
