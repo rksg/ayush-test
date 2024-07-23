@@ -5,7 +5,7 @@ import { FormInstance } from 'antd'
 import _                from 'lodash'
 import { Params }       from 'react-router-dom'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -39,7 +39,17 @@ import {
   useActivateApplicationPolicyOnWifiNetworkMutation,
   useDeactivateApplicationPolicyOnWifiNetworkMutation,
   useActivateAccessControlProfileOnWifiNetworkMutation,
-  useDeactivateAccessControlProfileOnWifiNetworkMutation
+  useDeactivateAccessControlProfileOnWifiNetworkMutation,
+  useActivateL2AclTemplateOnWifiNetworkMutation,
+  useDeactivateL2AclTemplateOnWifiNetworkMutation,
+  useActivateL3AclTemplateOnWifiNetworkMutation,
+  useDeactivateL3AclTemplateOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useActivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useDeactivateDeviceTemplateOnWifiNetworkMutation,
+  useActivateDeviceTemplateOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useActivateApplicationPolicyTemplateOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -486,16 +496,46 @@ export function useWifiCalling (notReady: boolean) {
 // eslint-disable-next-line max-len
 export function useAccessControlActivation () {
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const [ activateL2Acl ] = useActivateL2AclOnWifiNetworkMutation()
-  const [ deactivateL2Acl ] = useDeactivateL2AclOnWifiNetworkMutation()
-  const [ activateL3Acl ] = useActivateL3AclOnWifiNetworkMutation()
-  const [ deactivateL3Acl ] = useDeactivateL3AclOnWifiNetworkMutation()
-  const [ activateDevice ] = useActivateDeviceOnWifiNetworkMutation()
-  const [ deactivateDevice ] = useDeactivateDeviceOnWifiNetworkMutation()
-  const [ activateApplication ] = useActivateApplicationPolicyOnWifiNetworkMutation()
-  const [ deactivateApplication ] = useDeactivateApplicationPolicyOnWifiNetworkMutation()
-  const [ activateAccessControl ] = useActivateAccessControlProfileOnWifiNetworkMutation()
-  const [ deactivateAccessControl ] = useDeactivateAccessControlProfileOnWifiNetworkMutation()
+  const [ activateL2Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateL2AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateL2AclTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateL2Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateL2AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateL2AclTemplateOnWifiNetworkMutation
+  })
+  const [ activateL3Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateL3AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateL3AclTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateL3Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateL3AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateL3AclTemplateOnWifiNetworkMutation
+  })
+  const [ activateDevice ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateDeviceOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateDeviceTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateDevice ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateDeviceOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateDeviceTemplateOnWifiNetworkMutation
+  })
+  const [ activateApplication ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateApplicationPolicyOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateApplicationPolicyTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateApplication ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateApplicationPolicyOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation
+  })
+  const [ activateAccessControl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateAccessControlProfileOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateAccessControlProfileTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateAccessControl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
+  })
   const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
