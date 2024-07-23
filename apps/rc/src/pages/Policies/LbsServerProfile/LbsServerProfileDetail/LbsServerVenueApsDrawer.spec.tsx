@@ -1,0 +1,57 @@
+import { CommonUrlsInfo, PolicyOperation, PolicyType, Venue, getPolicyRoutePath } from "@acx-ui/rc/utils"
+import { mockServer, render, waitForElementToBeRemoved, screen } from "@acx-ui/test-utils"
+import { rest } from "msw"
+import { dummyApList, dummyVenue, mockedPolicyId1, mockedTenantId } from "../__tests__/fixtures"
+import { Provider } from "@acx-ui/store"
+import { LbsServerVenueApsDrawer } from "./LbsServerVenueApsDrawer"
+import userEvent from "@testing-library/user-event"
+
+describe('LbsServerVenueApsDrawer', () => {
+  const params = {
+    tenantId: mockedTenantId,
+    policyId: mockedPolicyId1
+  }
+
+  const path = '/:tenantId/t/' + getPolicyRoutePath({
+    type: PolicyType.LBS_SERVER_PROFILE,
+    oper: PolicyOperation.DETAIL
+  })
+
+  beforeEach(async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json(dummyApList))
+      )
+    )
+  })
+
+  it('should render drawer with the given data', async () => {
+    const mockSetVisible = jest.fn()
+
+    render(
+      <Provider>
+        <LbsServerVenueApsDrawer
+          visible={true}
+          venue={dummyVenue as Venue}
+          setVisible={mockSetVisible}
+        />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(
+      () => screen.queryByRole('img', { name: 'loader' }))
+
+    const targetAp = dummyApList.data[0]
+
+    await screen.findByRole('row', { name: new RegExp(targetAp.name)})
+    expect(screen.getByTestId('LbsServerVenueApsTable')).toBeVisible()
+    expect(screen.getByText('Venue 1: APs')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Close' }))
+    expect(mockSetVisible).toHaveBeenLastCalledWith(false)
+  })
+  
+})
