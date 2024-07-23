@@ -6,6 +6,7 @@ import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
   RolesEnum as Role,
+  RolesEnum,
   ScopeKeys
 } from '@acx-ui/types'
 
@@ -70,10 +71,10 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  * DO NOT use hasAccess. It will be private after RBAC feature release.
  */
 
-export function hasAccess (id?: string) {
+export function hasAccess (id?: string, roles?: RolesEnum[]) {
   if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
-  if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
+  if (!id) return hasRoles(roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   return hasAllowedOperations(id)
 }
 
@@ -115,23 +116,24 @@ export function hasPermission (props?: {
     // RAI
     permission?: RaiPermission,
     // R1
+    roles?: RolesEnum[],
     scopes?: ScopeKeys,
     allowedOperations?:string
 }): boolean {
-  const { scopes = [], allowedOperations, permission } = props || {}
+  const { scopes = [], allowedOperations, permission, roles } = props || {}
   if (get('IS_MLISA_SA')) {
     return !!(permission && permissions[permission])
   } else {
     const { abacEnabled, isCustomRole } = getUserProfile()
     if(!abacEnabled) {
-      return hasAccess(allowedOperations)
+      return hasAccess(allowedOperations, roles)
     }else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
         const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
         return !!(isScopesValid && isOperationsValid)
       } else {
-        return hasAccess(allowedOperations)
+        return hasAccess(allowedOperations, roles)
       }
     }
   }
