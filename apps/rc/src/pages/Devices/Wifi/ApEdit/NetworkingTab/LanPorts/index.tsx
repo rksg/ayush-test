@@ -82,13 +82,14 @@ export function LanPorts () {
     apData: apDetails,
     apCapabilities: apCaps,
     venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } = useGetApLanPortsQuery({
-    params: { tenantId, serialNumber },
+    params: { tenantId, serialNumber, venueId },
     enableRbac: isUseWifiRbacApi
   })
 
@@ -110,7 +111,6 @@ export function LanPorts () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const venueId = venueData?.id
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');

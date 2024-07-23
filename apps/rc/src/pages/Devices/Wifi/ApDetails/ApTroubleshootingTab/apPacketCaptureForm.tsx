@@ -63,7 +63,7 @@ export function ApPacketCaptureForm () {
   })
 
   const getApLanPorts = useGetApLanPortsQuery({
-    params,
+    params: { serialNumber, venueId },
     enableRbac: isUseWifiRbacApi
   })
   const getApRadioCustomization =
