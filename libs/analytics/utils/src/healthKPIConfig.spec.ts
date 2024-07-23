@@ -79,8 +79,37 @@ describe('Health KPI', () => {
       performance: {
         kpis: [
           'switchPortUtilization',
+          'switchUplinkPortUtilization'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
+        ]
+      }
+    })
+  })
+  it('should return correct config for wired in RA with kpi 10010e FF', () => {
+    expect(wiredKPIsForTab(true)).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchAuthentication'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
           'switchUplinkPortUtilization',
-          'switchInterfaceAnomalies'
+          'switchInterfaceAnomalies',
+          'switchStormControl'
         ]
       },
       infrastructure: {
