@@ -3,12 +3,12 @@ import React from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, GridCol, GridRow, PageHeader }                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
-import { useGetAccessControlProfileQuery, useGetAccessControlProfileTemplateQuery }          from '@acx-ui/rc/services'
+import { Button, GridCol, GridRow, PageHeader }                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { useGetAccessControlProfileQuery, useGetAccessControlProfileTemplateQuery } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
-  PolicyType, useConfigTemplate, useConfigTemplateQueryFnSwitcher, usePolicyListBreadcrumb
+  PolicyType, useConfigTemplateQueryFnSwitcher, usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
