@@ -16,7 +16,7 @@ export function LbsServerProfileOverview (props: { data: LbsServerProfileViewMod
     {
       title: $t({ defaultMessage: 'Server' }),
       content: <LbsServerConnectionStatus
-        isConnected={data.isServerConnected ?? false}
+        isConnected={data.serverConnected ?? false}
         address={data.server} />
     }
   ]
