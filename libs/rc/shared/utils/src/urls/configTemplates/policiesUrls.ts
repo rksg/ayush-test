@@ -481,14 +481,5 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
-  },
-  activateDpskService: {
-    method: 'PUT',
-    newApi: true,
-    url: '/templates/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
   }
 }

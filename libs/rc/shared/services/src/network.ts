@@ -856,12 +856,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
-    getDpskService: build.query<TableResult<DpskSaveData>, RequestPayload> ({
+    getDpskService: build.query<DpskSaveData, RequestPayload> ({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.queryDpskService, params)
         return {
           ...req
         }
+      },
+      transformResponse: (response: TableResult<DpskSaveData>) => {
+        return response?.data[0]
       }
     }),
     activateMacRegistrationPool: build.mutation<CommonResult, RequestPayload>({

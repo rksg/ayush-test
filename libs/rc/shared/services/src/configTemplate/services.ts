@@ -65,6 +65,20 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
+    activateDpskServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.activateDpskService)
+    }),
+    getDpskServiceTemplate: build.query<DpskSaveData, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.queryDpskService, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<DpskSaveData>) => {
+        return response?.data[0]
+      }
+    }),
     getEnhancedDpskTemplateList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
@@ -311,6 +325,8 @@ export const {
   useGetDpskTemplateQuery,
   useCreateDpskTemplateMutation,
   useUpdateDpskTemplateMutation,
+  useActivateDpskServiceTemplateMutation,
+  useGetDpskServiceTemplateQuery,
   useGetEnhancedDpskTemplateListQuery,
   useLazyGetEnhancedDpskTemplateListQuery,
   useDeleteDpskTemplateMutation,

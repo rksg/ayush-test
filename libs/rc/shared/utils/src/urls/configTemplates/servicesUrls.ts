@@ -268,5 +268,23 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json',
       'Accept': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activateDpskService: {
+    method: 'PUT',
+    newApi: true,
+    url: '/templates/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  queryDpskService: {
+    method: 'GET',
+    newApi: true,
+    url: '/templates/wifiNetworks/:networkId/dpskServices',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

@@ -421,9 +421,6 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     deactivateVlanPoolTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deactivateVlanPool)
-    }),
-    activateDpskServiceTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.activateDpskService)
     })
   })
 })
@@ -477,6 +474,5 @@ export const {
   useGetVenueRogueApTemplateQuery,
   useUpdateVenueRogueApTemplateMutation,
   useActivateVlanPoolTemplateOnWifiNetworkMutation,
-  useDeactivateVlanPoolTemplateOnWifiNetworkMutation,
-  useActivateDpskServiceTemplateMutation
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation
 } = policiesConfigTemplateApi
