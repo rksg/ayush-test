@@ -107,7 +107,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAccessControlProfile: {
     method: 'get',
     url: '/templates/accessControlProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getAccessControlProfileList: {
     method: 'get',
