@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Drawer, Table, TableProps }                               from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { APStatus }                                                        from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, useTableQuery, Venue }                    from '@acx-ui/rc/utils'
@@ -19,7 +18,6 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
   const { $t } = useIntl()
   const { venue, visible, setVisible } = props
   const [ tableData, setTableData ] = useState<AP[]>([])
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const getVenueFilter = (venue: Venue) => ({
     venueId: [venue.id]
@@ -41,7 +39,7 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
       sortField: 'name',
       sortOrder: 'ASC'
     },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: true
   })
 
   useEffect(() => {
