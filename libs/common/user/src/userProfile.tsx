@@ -6,7 +6,6 @@ import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
   RolesEnum as Role,
-  RolesEnum,
   ScopeKeys
 } from '@acx-ui/types'
 
