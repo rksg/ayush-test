@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, ScopeKeys }                    from '@acx-ui/types'
-import { hasRoles, hasScope }                      from '@acx-ui/user'
+import { hasPermission }                           from '@acx-ui/user'
 
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
@@ -36,7 +36,10 @@ export function ServiceCard (props: ServiceCardProps) {
     if (serviceType === ServiceType.DPSK) return hasDpskAccess()
     // eslint-disable-next-line max-len
     const scopeKeyForCreate = servicePolicyCardDataToScopeKeys([{ scopeKeysMap, categories }], 'create')
-    return hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) || hasScope(scopeKeyForCreate)
+    return hasPermission({
+      roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
+      scopes: scopeKeyForCreate
+    })
   }
 
   const formatServiceName = () => {
