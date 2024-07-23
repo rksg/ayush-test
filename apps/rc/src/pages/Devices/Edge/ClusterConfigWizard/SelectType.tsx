@@ -9,9 +9,9 @@ import {
   ClusterInterface as ClusterInterfaceIcon,
   Port as PortIcon
 } from '@acx-ui/icons'
-import { EdgeClusterTypeCard, SpaceWrapper }                   from '@acx-ui/rc/components'
-import { CommonCategory, Device, genUrl, validateEdgeGateway } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
+import { EdgeClusterTypeCard, SpaceWrapper }                                                    from '@acx-ui/rc/components'
+import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from './ClusterConfigWizardDataProvider'
 import * as UI                        from './styledComponents'
@@ -81,9 +81,13 @@ export const SelectType = () => {
             && Math.ceil(+memoryVal) === Math.ceil(+targetMemoryVal)
       })
 
+  const isAaCluster = clusterInfo?.highAvailabilityMode ===
+    ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
   const typeCards = [{
     id: 'interface',
-    title: $t({ defaultMessage: 'LAG, Port & Virtual IP Settings' }),
+    title: isAaCluster ?
+      $t({ defaultMessage: 'LAG, Port, HA Settings' }) :
+      $t({ defaultMessage: 'LAG, Port & Virtual IP Settings' }),
     icon: <PortIcon />,
     targetUrl: genUrl([
       CommonCategory.Device,
