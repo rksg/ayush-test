@@ -1,8 +1,7 @@
-import { Col, Form, InputNumber, Radio, Row, Space, Switch, TimePicker, Typography } from 'antd'
-import { useIntl }                                                                   from 'react-intl'
+import { Col, Form, InputNumber, Radio, Row, Space, Switch, TimePicker } from 'antd'
+import { useIntl }                                                       from 'react-intl'
 
 import { Select, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { TypeForm }                                       from '@acx-ui/rc/components'
 import { ClusterHaFallbackScheduleTypeEnum }              from '@acx-ui/rc/utils'
 
 import { dayOfWeek, loadDistributions } from './utils'
@@ -36,10 +35,6 @@ export const HaSettingForm = () => {
     label: $t(item[1]),
     value: item[0]
   }))
-
-  const header = <Typography.Title level={2}>
-    {$t({ defaultMessage: 'HA Settings' })}
-  </Typography.Title>
 
   const content = <Row>
     <Col span={14}>
@@ -224,10 +219,5 @@ export const HaSettingForm = () => {
     </Col>
   </Row>
 
-  return (
-    <TypeForm
-      header={header}
-      content={content}
-    />
-  )
+  return content
 }
