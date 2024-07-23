@@ -8,7 +8,8 @@ import {
   servicePolicyCardDataToScopeKeys,
   ServiceType,
   serviceTypeDescMapping,
-  serviceTypeLabelMapping
+  serviceTypeLabelMapping,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, ScopeKeys }                    from '@acx-ui/types'
@@ -29,12 +30,13 @@ export function ServiceCard (props: ServiceCardProps) {
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.LIST }))
   const navigate = useNavigate()
-  const isReadOnly = !hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const isAddButtonAllowed = () => {
+    if (cardType !== 'button') return false
+    if (serviceType === ServiceType.DPSK) return hasDpskAccess()
     // eslint-disable-next-line max-len
     const scopeKeyForCreate = servicePolicyCardDataToScopeKeys([{ scopeKeysMap, categories }], 'create')
-    return cardType === 'button' && !isReadOnly && hasScope(scopeKeyForCreate)
+    return hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) || hasScope(scopeKeyForCreate)
   }
 
   const formatServiceName = () => {
@@ -59,11 +61,7 @@ export function ServiceCard (props: ServiceCardProps) {
       categories={categories}
       onClick={() => {
         if (isAddButtonAllowed()) {
-          navigate(linkToCreate, {
-            state: {
-              from: location
-            }
-          })
+          navigate(linkToCreate, { state: { from: location } })
         } else if (cardType === 'default') {
           navigate(linkToList)
         }
