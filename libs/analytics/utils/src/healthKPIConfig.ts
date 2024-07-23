@@ -659,23 +659,23 @@ export const kpiConfig = {
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 2000,
+      initialThreshold: 80,
       apiMetric: 'switchPortStormCount',
-      splits: [1000, 2000, 3000, 4000, 5000, 6000],
-      xUnit: defineMessage({ defaultMessage: 'packets/sec' }),
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
       yUnit: 'Ports',
-      shortXFormat: formatter('countFormatRound'),
+      shortXFormat: noFormat,
       longXFormat: noFormat,
       reFormatFromBarChart: noFormat
     },
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
       thresholdDesc: [
-        defineMessage({ defaultMessage: 'below' }),
-        defineMessage({ defaultMessage: '{threshold} packets/sec' })
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} stormy' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: noFormat,
+      thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
     }
   },
@@ -737,8 +737,8 @@ export const kpisForTab = (isMLISA? : string) => {
   }
 }
 
-export const wiredKPIsForTab = () => {
-  return {
+export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
+  const kpis = {
     overview: {
       kpis: [
         'switchUplinkPortUtilization'
@@ -759,7 +759,7 @@ export const wiredKPIsForTab = () => {
         'switchUplinkPortUtilization'
         // TODO: revisit these kpis: https://jira.ruckuswireless.com/browse/RSA-6826
         // 'switchInterfaceAnomalies'
-        //'switchStormControl'
+
       ]
     },
     infrastructure: {
@@ -773,4 +773,8 @@ export const wiredKPIsForTab = () => {
       ]
     }
   }
+  if (is10010eKPIsEnabled) {
+    kpis.performance.kpis.push('switchStormControl')
+  }
+  return kpis
 }
