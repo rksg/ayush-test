@@ -155,7 +155,10 @@ export const NetworkMvTunnelModal = (props: NetworkMvTunnelModalProps) => {
       <Space direction='vertical'>
         <Form.Item
           help={<div style={{ marginLeft: '20px' }}>
-            { $t({ defaultMessage: 'All network traffic will local breakout on this venue' }) }
+            {
+            // eslint-disable-next-line max-len
+              $t({ defaultMessage: 'All network traffic will local breakout on this <venueSingular></venueSingular>' })
+            }
           </div>}
         >
           <Radio value={false}>
