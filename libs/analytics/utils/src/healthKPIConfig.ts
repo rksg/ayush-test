@@ -672,11 +672,11 @@ export const kpiConfig = {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
       thresholdDesc: [
         defineMessage({ defaultMessage: 'under' }),
-        defineMessage({ defaultMessage: '{threshold} stormy' })
+        defineMessage({ defaultMessage: '{threshold} multicast packets storm' })
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to multicast packets received is >= 80%, when port is at or more than 80% of its in utilization.' })
     }
   },
   switchAuthentication: {
