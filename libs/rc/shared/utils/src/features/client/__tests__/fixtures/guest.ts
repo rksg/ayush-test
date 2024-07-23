@@ -60,22 +60,34 @@ export const GuestList = {
       devicesMac: ['AA:AA:AA:AA:AA:AA'],
       clients: [{
         osType: 'ios',
-        healthCheckStatus: 'good',
-        clientMac: 'AA:AA:AA:AA:AA:AA',
+        macAddress: 'AA:AA:AA:AA:AA:AA',
         ipAddress: '1.1.1.1',
         username: 'user',
         hostname: 'host',
-        venueId: '0004e252a9d04180855813131d007aca',
-        venueName: 'testVenue',
-        apMac: 'BB:BB:BB:BB:BB:BB',
-        apSerialNumber: '422039000038',
-        apName: 'testAp',
-        switchSerialNumber: '',
-        switchName: '',
-        networkId: 'tenant-id',
-        networkName: 'guest pass wlan',
-        networkSsid: 'guest pass wlan',
-        connectSince: '2022-11-28T14:55:15.924Z'
+        authenticationStatus: 0,
+        connectedTime: '2022-11-28T14:55:15.924Z',
+        venueInformation: {
+          id: '0004e252a9d04180855813131d007aca',
+          name: 'testVenue'
+        },
+        apInformation: {
+          serialNumber: '422039000038',
+          name: 'testAp',
+          macAddress: 'BB:BB:BB:BB:BB:BB',
+          bssid: 'mock_ap_bssid'
+        },
+        networkInformation: {
+          id: 'mock-network-id',
+          type: 'Passphrase (PSK/SAE)',
+          ssid: 'guest pass wlan',
+          encryptionMethod: 'WPA2-AES',
+          vlan: 1
+        },
+        signalStatus: {
+          snr: 54,
+          rssi: -42,
+          health: 'Good'
+        }
       }]
     },
     {

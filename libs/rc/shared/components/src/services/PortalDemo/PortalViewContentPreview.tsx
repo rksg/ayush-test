@@ -11,6 +11,7 @@ import PortalViewHostApproval     from './PortalViewHostApproval'
 import PortalViewSelfSignConnect  from './PortalViewSelfSignConnect'
 import PortalViewSelfSignRegister from './PortalViewSelfSignRegister'
 import PortalViewTerms            from './PortalViewTerms'
+import PortalViewText             from './PortalViewText'
 import * as UI                    from './styledComponents'
 export default function PortalViewContentPreview (props:{
   networkSocial?: { [key:string]:boolean },
@@ -65,7 +66,10 @@ export default function PortalViewContentPreview (props:{
         width: 310*((demoValue.welcomeSize)
           /PortalDemoDefaultSize.welcomeSize), maxWidth: 425, color: demoValue.welcomeColor,
         fontSize: (demoValue.welcomeSize) }}
-      >{demoValue.welcomeText!==undefined?demoValue.welcomeText:portalLang.welcomeText}</div>}
+      ><PortalViewText
+          id='welcomeText'
+          value={demoValue.welcomeText!==undefined?demoValue.welcomeText:portalLang.welcomeText}/>
+      </div>}
       {componentDisplay.photo &&<UI.Img src={demoValue.photo}
         alt={'Photo png'}
         style={{ height: (demoValue.photoRatio||PortalDemoDefaultSize.photoRatio) ,
@@ -76,7 +80,9 @@ export default function PortalViewContentPreview (props:{
           PortalDemoDefaultSize.secondarySize)/PortalDemoDefaultSize.secondarySize)+'px' ,
         maxWidth: 425, color: demoValue.secondaryColor,
         fontSize: (demoValue.secondarySize||PortalDemoDefaultSize.secondarySize) }}
-      >{demoValue.secondaryText!==undefined?demoValue.secondaryText:portalLang.secondaryText}
+      ><PortalViewText
+          id='secondaryText'
+          value={demoValue.secondaryText!==undefined?demoValue.secondaryText:portalLang.secondaryText}/>
       </UI.FieldText>}
       {((view === PortalViewEnum.ClickThrough && !networkViewType) ||
         networkViewType === GuestNetworkTypeEnum.ClickThrough) && <PortalViewGoThrough

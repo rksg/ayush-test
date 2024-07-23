@@ -132,10 +132,6 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
       ),

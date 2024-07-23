@@ -10,13 +10,15 @@ import {
   doProfileDelete,
   useDelDevicePoliciesMutation,
   useGetEnhancedDeviceProfileListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   AclOptionType,
   DevicePolicy,
   Network,
-  useTableQuery
+  useTableQuery,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
@@ -40,6 +42,8 @@ const defaultPayload = {
   page: 1
 }
 const DevicePolicyComponent = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const params = useParams()
   const [addModeStatus, setAddModeStatus] = useState(
@@ -53,8 +57,8 @@ const DevicePolicyComponent = () => {
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const networkTableQuery = useTableQuery<Network>({
-    useQuery: useNetworkListQuery,
+  const networkTableQuery = useTableQuery<Network|WifiNetwork>({
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultNetworkPayload,
       filters: {
