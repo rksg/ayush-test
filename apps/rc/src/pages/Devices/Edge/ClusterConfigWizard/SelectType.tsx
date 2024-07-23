@@ -9,7 +9,7 @@ import {
   ClusterInterface as ClusterInterfaceIcon,
   Port as PortIcon
 } from '@acx-ui/icons'
-import { EdgeClusterTypeCard, SpaceWrapper }                                                    from '@acx-ui/rc/components'
+import { ClusterConfigWizardSubtitle, EdgeClusterTypeCard, SpaceWrapper }                       from '@acx-ui/rc/components'
 import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl, validateEdgeGateway } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                from '@acx-ui/react-router-dom'
 
@@ -146,6 +146,7 @@ export const SelectType = () => {
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Cluster & SmartEdge Configuration Wizard' })}
+      subTitle={<ClusterConfigWizardSubtitle clusterInfo={clusterInfo} />}
       breadcrumb={[
         { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
       ]}
