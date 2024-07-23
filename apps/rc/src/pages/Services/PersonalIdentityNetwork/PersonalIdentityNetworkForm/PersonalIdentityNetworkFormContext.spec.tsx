@@ -90,12 +90,6 @@ describe('PersonalIdentityNetworkFormContext', () => {
         (req, res, ctx) => res(ctx.json(mockNetworkGroup))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
-          return res(ctx.json(mockDeepNetworkList))
-        }
-      ),
-      rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (req, res, ctx) => res(ctx.json(pinTunnelData))
       ),
