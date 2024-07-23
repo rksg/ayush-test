@@ -6,9 +6,17 @@ import { Params }                                  from 'react-router-dom'
 
 import {
   AccessControlUrls,
-  ApiVersionEnum, ApplicationPolicy, appPolicyInfoType,
-  CommonResult, DevicePolicy, devicePolicyInfoType, EnhancedAccessControlInfoType,
-  GetApiVersionHeader, L2AclPolicy, l2AclPolicyInfoType, L3AclPolicy, l3AclPolicyInfoType,
+  ApplicationPolicy,
+  appPolicyInfoType,
+  CommonResult,
+  DevicePolicy,
+  devicePolicyInfoType,
+  EnhancedAccessControlInfoType,
+  L2AclPolicy,
+  l2AclPolicyInfoType,
+  L3AclPolicy,
+  l3AclPolicyInfoType,
+  PoliciesConfigTemplateUrlsInfo,
   TableResult
 } from '@acx-ui/rc/utils'
 import { RequestPayload }    from '@acx-ui/types'
@@ -109,28 +117,24 @@ export const accessControlActionMap = {
     added: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.activateL2AclOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     removed: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.deactivateL2AclOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     updated: (oldParams: Params<string>, params: Params<string>) => {
       return [
         createHttpRequest(
           AccessControlUrls.deactivateL2AclOnAccessControlProfile,
-          oldParams,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          oldParams
         ),
         createHttpRequest(
           AccessControlUrls.activateL2AclOnAccessControlProfile,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          params
         )
       ]
     }
@@ -139,28 +143,24 @@ export const accessControlActionMap = {
     added: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.activateL3AclOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     removed: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.deactivateL3AclOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     updated: (oldParams: Params<string>, params: Params<string>) => {
       return [
         createHttpRequest(
           AccessControlUrls.deactivateL3AclOnAccessControlProfile,
-          oldParams,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          oldParams
         ),
         createHttpRequest(
           AccessControlUrls.activateL3AclOnAccessControlProfile,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          params
         )
       ]
     }
@@ -169,28 +169,24 @@ export const accessControlActionMap = {
     added: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.activateDevicePolicyOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     removed: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.deactivateDevicePolicyOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     updated: (oldParams: Params<string>, params: Params<string>) => {
       return [
         createHttpRequest(
           AccessControlUrls.deactivateDevicePolicyOnAccessControlProfile,
-          oldParams,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          oldParams
         ),
         createHttpRequest(
           AccessControlUrls.activateDevicePolicyOnAccessControlProfile,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          params
         )
       ]
     }
@@ -199,28 +195,131 @@ export const accessControlActionMap = {
     added: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.activateApplicationPolicyOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     removed: (params: Params<string>) => {
       return createHttpRequest(
         AccessControlUrls.deactivateApplicationPolicyOnAccessControlProfile,
-        params,
-        GetApiVersionHeader(ApiVersionEnum.v1)
+        params
       )
     },
     updated: (oldParams: Params<string>, params: Params<string>) => {
       return [
         createHttpRequest(
           AccessControlUrls.deactivateApplicationPolicyOnAccessControlProfile,
-          oldParams,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          oldParams
         ),
         createHttpRequest(
           AccessControlUrls.activateApplicationPolicyOnAccessControlProfile,
-          params,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          params
+        )
+      ]
+    }
+  }
+} as ActionMapType
+
+export const accessControlTemplateActionMap = {
+  l2AclPolicyId: {
+    added: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.activateL2AclOnAccessControlProfile,
+        params
+      )
+    },
+    removed: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnAccessControlProfile,
+        params
+      )
+    },
+    updated: (oldParams: Params<string>, params: Params<string>) => {
+      return [
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnAccessControlProfile,
+          oldParams
+        ),
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.activateL2AclOnAccessControlProfile,
+          params
+        )
+      ]
+    }
+  },
+  l3AclPolicyId: {
+    added: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.activateL3AclOnAccessControlProfile,
+        params
+      )
+    },
+    removed: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnAccessControlProfile,
+        params
+      )
+    },
+    updated: (oldParams: Params<string>, params: Params<string>) => {
+      return [
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnAccessControlProfile,
+          oldParams
+        ),
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.activateL3AclOnAccessControlProfile,
+          params
+        )
+      ]
+    }
+  },
+  devicePolicyId: {
+    added: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnAccessControlProfile,
+        params
+      )
+    },
+    removed: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnAccessControlProfile,
+        params
+      )
+    },
+    updated: (oldParams: Params<string>, params: Params<string>) => {
+      return [
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnAccessControlProfile,
+          oldParams
+        ),
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnAccessControlProfile,
+          params
+        )
+      ]
+    }
+  },
+  applicationPolicyId: {
+    added: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnAccessControlProfile,
+        params
+      )
+    },
+    removed: (params: Params<string>) => {
+      return createHttpRequest(
+        PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnAccessControlProfile,
+        params
+      )
+    },
+    updated: (oldParams: Params<string>, params: Params<string>) => {
+      return [
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnAccessControlProfile,
+          oldParams
+        ),
+        createHttpRequest(
+          PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnAccessControlProfile,
+          params
         )
       ]
     }
@@ -272,12 +371,13 @@ export const operateAction = async (
 }
 
 // eslint-disable-next-line max-len
-export function addAccessControlProfileFn () : QueryFn<CommonResult, RequestPayload> {
+export function addAccessControlProfileFn (isTemplate: boolean = false) : QueryFn<CommonResult, RequestPayload> {
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     try {
       const addProfileQuery = {
         // eslint-disable-next-line max-len
-        ...createHttpRequest(enableRbac ? AccessControlUrls.addAccessControlProfileRbac : AccessControlUrls.addAccessControlProfile, params),
+        ...createHttpRequest(enableRbac ? apis.addAccessControlProfileRbac : apis.addAccessControlProfile, params),
         body: enableRbac ? JSON.stringify(payload) : payload
       }
       const addProfileQueryRes = await fetchWithBQ(addProfileQuery)
@@ -299,7 +399,9 @@ export function addAccessControlProfileFn () : QueryFn<CommonResult, RequestPayl
         itemProcessFn
       )
 
-      await operateAction(comparisonResult, accessControlActionMap, fetchWithBQ, enableRbac)
+      const actionMap = isTemplate ? accessControlTemplateActionMap : accessControlActionMap
+
+      await operateAction(comparisonResult, actionMap, fetchWithBQ, enableRbac)
 
       if (addProfileQueryRes.error) {
         return { error: addProfileQueryRes.error as FetchBaseQueryError }
@@ -314,14 +416,15 @@ export function addAccessControlProfileFn () : QueryFn<CommonResult, RequestPayl
 }
 
 // eslint-disable-next-line max-len
-export function updateAccessControlProfileFn () : QueryFn<CommonResult, RequestPayload> {
+export function updateAccessControlProfileFn (isTemplate: boolean = false) : QueryFn<CommonResult, RequestPayload> {
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac, oldPayload }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     try {
       const updateProfileQuery = {
         // eslint-disable-next-line max-len
-        ...createHttpRequest(enableRbac ? AccessControlUrls.updateAccessControlProfileRbac : AccessControlUrls.updateAccessControlProfile, params),
-        body: enableRbac ? JSON.stringify(payload) : payload
+        ...createHttpRequest(enableRbac ? apis.updateAccessControlProfileRbac : apis.updateAccessControlProfile, params),
+        body: JSON.stringify(payload)
       }
 
       const updateProfileQueryRes = await fetchWithBQ(updateProfileQuery)
@@ -354,7 +457,9 @@ export function updateAccessControlProfileFn () : QueryFn<CommonResult, RequestP
         itemProcessFn
       )
 
-      await operateAction(comparisonResult, accessControlActionMap, fetchWithBQ, enableRbac)
+      const actionMap = isTemplate ? accessControlTemplateActionMap : accessControlActionMap
+
+      await operateAction(comparisonResult, actionMap, fetchWithBQ, enableRbac)
 
       if (updateProfileQueryRes.error) {
         return { error: updateProfileQueryRes.error as FetchBaseQueryError }
@@ -369,12 +474,13 @@ export function updateAccessControlProfileFn () : QueryFn<CommonResult, RequestP
 }
 
 // eslint-disable-next-line max-len
-export function getEnhancedAccessControlProfileListFn () : QueryFn<TableResult<EnhancedAccessControlInfoType>, RequestPayload> {
+export function getEnhancedAccessControlProfileListFn (isTemplate: boolean = false) : QueryFn<TableResult<EnhancedAccessControlInfoType>, RequestPayload> {
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     const aclPolicyListInfo = {
       // eslint-disable-next-line max-len
-      ...createHttpRequest(enableRbac ? AccessControlUrls.getAccessControlProfileQueryList : AccessControlUrls.getEnhancedAccessControlProfiles, params),
+      ...createHttpRequest(enableRbac ? apis.getAccessControlProfileQueryList : apis.getEnhancedAccessControlProfiles, params),
       body: enableRbac ? JSON.stringify(payload) : payload
     }
 
@@ -388,7 +494,7 @@ export function getEnhancedAccessControlProfileListFn () : QueryFn<TableResult<E
       try {
         const aclPolicyDetail = createHttpRequest(
           // eslint-disable-next-line max-len
-          enableRbac ? AccessControlUrls.getAccessControlProfileRbac : AccessControlUrls.getAccessControlProfile,
+          enableRbac ? apis.getAccessControlProfileRbac : apis.getAccessControlProfile,
           { policyId: policy.id }
         )
         const acl = await fetchWithBQ(aclPolicyDetail)
@@ -417,12 +523,13 @@ export function getEnhancedAccessControlProfileListFn () : QueryFn<TableResult<E
 }
 
 // eslint-disable-next-line max-len
-export function getEnhancedL2AclProfileListFn () : QueryFn<TableResult<L2AclPolicy>, RequestPayload> {
+export function getEnhancedL2AclProfileListFn (isTemplate: boolean = false) : QueryFn<TableResult<L2AclPolicy>, RequestPayload> {
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     const l2AclPolicyListInfo = {
       // eslint-disable-next-line max-len
-      ...createHttpRequest(enableRbac ? AccessControlUrls.getL2AclPolicyListQuery : AccessControlUrls.getEnhancedL2AclPolicies, params),
+      ...createHttpRequest(enableRbac ? apis.getL2AclPolicyListQuery : apis.getEnhancedL2AclPolicies, params),
       body: enableRbac ? JSON.stringify(payload) : payload
     }
 
@@ -436,7 +543,7 @@ export function getEnhancedL2AclProfileListFn () : QueryFn<TableResult<L2AclPoli
       try {
         // eslint-disable-next-line max-len
         const l2AclPolicyDetail = createHttpRequest(
-          enableRbac ? AccessControlUrls.getL2AclPolicyRbac : AccessControlUrls.getL2AclPolicy,
+          enableRbac ? apis.getL2AclPolicyRbac : apis.getL2AclPolicy,
           { l2AclPolicyId: policy.id }
         )
         const l2Acl = await fetchWithBQ(l2AclPolicyDetail)
@@ -464,13 +571,14 @@ export function getEnhancedL2AclProfileListFn () : QueryFn<TableResult<L2AclPoli
 }
 
 // eslint-disable-next-line max-len
-export function getEnhancedL3AclProfileListFn () : QueryFn<TableResult<L3AclPolicy>, RequestPayload> {
+export function getEnhancedL3AclProfileListFn (isTemplate: boolean = false) : QueryFn<TableResult<L3AclPolicy>, RequestPayload> {
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     const l3AclPolicyListInfo = {
       ...createHttpRequest(
         // eslint-disable-next-line max-len
-        enableRbac ? AccessControlUrls.getL3AclPolicyListQuery : AccessControlUrls.getEnhancedL3AclPolicies,
+        enableRbac ? apis.getL3AclPolicyListQuery : apis.getEnhancedL3AclPolicies,
         params
       ),
       body: enableRbac ? JSON.stringify(payload) : payload
@@ -485,7 +593,7 @@ export function getEnhancedL3AclProfileListFn () : QueryFn<TableResult<L3AclPoli
 
       try {
         const l3AclPolicyDetail = createHttpRequest(
-          enableRbac ? AccessControlUrls.getL3AclPolicyRbac : AccessControlUrls.getL3AclPolicy,
+          enableRbac ? apis.getL3AclPolicyRbac : apis.getL3AclPolicy,
           { l3AclPolicyId: policy.id }
         )
         const l3Acl = await fetchWithBQ(l3AclPolicyDetail)
@@ -513,12 +621,13 @@ export function getEnhancedL3AclProfileListFn () : QueryFn<TableResult<L3AclPoli
 }
 
 // eslint-disable-next-line max-len
-export function getEnhancedDeviceProfileListFn () : QueryFn<TableResult<DevicePolicy>, RequestPayload> {
+export function getEnhancedDeviceProfileListFn (isTemplate: boolean = false) : QueryFn<TableResult<DevicePolicy>, RequestPayload> {
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     const devicePolicyListInfo = {
       // eslint-disable-next-line max-len
-      ...createHttpRequest(enableRbac ? AccessControlUrls.getDevicePolicyListQuery : AccessControlUrls.getEnhancedDevicePolicies, params),
+      ...createHttpRequest(enableRbac ? apis.getDevicePolicyListQuery : apis.getEnhancedDevicePolicies, params),
       body: enableRbac ? JSON.stringify(payload) : payload
     }
 
@@ -531,7 +640,7 @@ export function getEnhancedDeviceProfileListFn () : QueryFn<TableResult<DevicePo
 
       try {
         const devicePolicyDetail = createHttpRequest(
-          enableRbac ? AccessControlUrls.getDevicePolicyRbac : AccessControlUrls.getDevicePolicy,
+          enableRbac ? apis.getDevicePolicyRbac : apis.getDevicePolicy,
           { devicePolicyId: policy.id }
         )
         const devicePolicy = await fetchWithBQ(devicePolicyDetail)
@@ -559,9 +668,10 @@ export function getEnhancedDeviceProfileListFn () : QueryFn<TableResult<DevicePo
 }
 
 // eslint-disable-next-line max-len
-export function getEnhancedApplicationProfileListFn () : QueryFn<TableResult<ApplicationPolicy>, RequestPayload> {
+export function getEnhancedApplicationProfileListFn (isTemplate: boolean = false) : QueryFn<TableResult<ApplicationPolicy>, RequestPayload> {
   // eslint-disable-next-line max-len
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     const applicationPolicyListInfo = {
       // eslint-disable-next-line max-len
       ...createHttpRequest(enableRbac ? AccessControlUrls.getApplicationPolicyListQuery : AccessControlUrls.getEnhancedApplicationPolicies, params),
@@ -578,7 +688,7 @@ export function getEnhancedApplicationProfileListFn () : QueryFn<TableResult<App
 
       try {
         const applicationPolicyDetail = createHttpRequest(
-          enableRbac ? AccessControlUrls.getAppPolicyRbac : AccessControlUrls.getAppPolicy,
+          enableRbac ? apis.getAppPolicyRbac : apis.getAppPolicy,
           { applicationPolicyId: policy.id }
         )
         const applicationPolicy = await fetchWithBQ(applicationPolicyDetail)

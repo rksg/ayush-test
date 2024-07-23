@@ -29,7 +29,7 @@ import { switchLatestV1002,
   switchVenueV1002
 } from './SwitchFirmwareV1002/__tests__/fixtures'
 
-import FWVersionMgmt from '.'
+import FWVersionMgmt, { isApFirmwareUpToDate } from '.'
 
 const { mockedVenueFirmwareList, mockedLatestEdgeFirmwares } = EdgeFirmwareFixtures
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
@@ -229,5 +229,11 @@ describe('Firmware Version Management', () => {
 
     const apFirmwareTab = await screen.findByRole('tab', { name: /AP Firmware/ })
     expect(await within(apFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
+  })
+
+  it('should return the correct isApFirmwareUpToDate value', () => {
+    expect(isApFirmwareUpToDate()).toBe(true)
+    expect(isApFirmwareUpToDate(true)).toBe(true)
+    expect(isApFirmwareUpToDate(false)).toBe(false)
   })
 })

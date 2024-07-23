@@ -17,7 +17,8 @@ import {
   useGetNetworkSegmentationViewDataListQuery,
   useNetworkListQuery,
   useSwitchListQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   getServiceDetailsLink,
@@ -76,6 +77,7 @@ const switchDefaultPayload = {
 const PersonalIdentityNetworkTable = () => {
 
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const navigate = useNavigate()
   const location = useLocation()
@@ -117,7 +119,8 @@ const PersonalIdentityNetworkTable = () => {
       }
     })
 
-  const { networkOptions = [] } = useNetworkListQuery(
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+  const { networkOptions = [] } = getNetworkListQuery(
     { payload: networkDefaultPayload },
     {
       selectFromResult: ({ data }) => ({

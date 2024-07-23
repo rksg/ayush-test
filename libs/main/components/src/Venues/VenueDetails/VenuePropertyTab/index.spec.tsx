@@ -135,7 +135,7 @@ describe('Property Unit Page', () => {
         }
       ),
       rest.delete(
-        PropertyUrlsInfo.deletePropertyUnits.url,
+        PropertyUrlsInfo.deletePropertyUnit.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
       rest.patch(
