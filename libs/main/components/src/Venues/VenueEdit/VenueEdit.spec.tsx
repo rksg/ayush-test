@@ -283,6 +283,9 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
+        rest.put(CommonRbacUrlsInfo.updateVenueLanPorts.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
         rest.get(CommonUrlsInfo.getVenueBssColoring.url,
           (_, res, ctx) => res(ctx.json({}))
         )
