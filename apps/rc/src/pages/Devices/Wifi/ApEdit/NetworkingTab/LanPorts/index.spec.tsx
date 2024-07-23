@@ -50,6 +50,8 @@ describe('AP Lan port settings', () => {
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
       rest.put(WifiUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
+      rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.delete(WifiUrlsInfo.resetApLanPorts.url,
         (_, res, ctx) => res(ctx.json({})))
     )
