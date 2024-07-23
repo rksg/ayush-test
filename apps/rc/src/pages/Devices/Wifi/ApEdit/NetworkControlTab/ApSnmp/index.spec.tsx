@@ -42,6 +42,9 @@ describe('Ap Snmp', () => {
       rest.get(ApSnmpUrls.getApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfGetApSnmpAgentSettings))
       }),
+      rest.get(ApSnmpRbacUrls.getApSnmpSettings.url, (req, res, ctx) => {
+        return res(ctx.json(resultOfGetApSnmpAgentSettings))
+      }),
       rest.post(ApSnmpUrls.updateVenueApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
       }),
