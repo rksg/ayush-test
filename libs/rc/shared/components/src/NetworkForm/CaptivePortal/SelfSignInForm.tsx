@@ -97,13 +97,32 @@ export function SelfSignInForm () {
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
-  const isSMSTokenAvailable = isSmsProviderEnabled ?
-    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
-     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
-    : true
-  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
+  const isSMSTokenAvailable = () : boolean=> {
+    const provider = smsUsage?.data?.provider
+    const usedSMS = smsUsage?.data?.ruckusOneUsed ?? 0
+    if (!isSmsProviderEnabled) {
+      return true
+    }
+    // if Provider unset, disable SMS option even used SMS is not over 100
+    if (provider === SmsProviderType.SMSProvider_UNSET){
+      return false
+    }
+    if (provider === SmsProviderType.RUCKUS_ONE){
+      // When Provider is R1 and Grace Period is on, Client can still use R1 SMS even used SMS over 100
+      if (isGracePeriodEnabled) {
+        return true
+      }
+      // When Provider is R1 and used SMS over 100, disable the SMS option
+      if (usedSMS >= 100) {
+        return false
+      }
+    }
+    return true
+  }
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable()
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -144,11 +163,17 @@ export function SelfSignInForm () {
     }
 
     // when provider is not ruckus one, no needs to consider used pools at this condition
-    if (provider !== SmsProviderType.RUCKUS_ONE) {
+    if (provider !== SmsProviderType.RUCKUS_ONE && provider !== SmsProviderType.SMSProvider_UNSET) {
       return defaultMessage
     }
+
+    // when provider is ruckus one and grace period is on, no needs to consider the used SMS count
+    if(provider === SmsProviderType.RUCKUS_ONE && isGracePeriodEnabled){
+      return defaultMessage
+    }
+
     // when provider is ruckus one but there's pool still remains
-    if(usedPools < 100) {
+    if(provider === SmsProviderType.RUCKUS_ONE && usedPools < 100) {
       return (
         <FormattedMessage
           defaultMessage={
@@ -285,7 +310,7 @@ export function SelfSignInForm () {
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
                 checked={enableSmsLogin}
-                disabled={!editMode && !isSMSTokenAvailable}
+                disabled={!editMode && !isSMSTokenAvailable()}
                 >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}

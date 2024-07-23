@@ -62,7 +62,7 @@ describe('ApEditTabs', () => {
         (_, res, ctx) => res(ctx.json(r650Cap))
       ),
       rest.post(
-        MdnsProxyUrls.getMdnsProxyListRbac.url,
+        MdnsProxyUrls.queryMdnsProxy.url,
         (_, res, ctx) => res(ctx.json({}))
       )
     )

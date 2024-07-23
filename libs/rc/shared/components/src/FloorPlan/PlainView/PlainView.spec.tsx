@@ -3,7 +3,6 @@ import '@testing-library/jest-dom'
 import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-import { act }          from 'react-dom/test-utils'
 
 import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum,
@@ -97,7 +96,6 @@ const networkDevices: {
     }],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
     DP: [],
     rwg: []
   }
@@ -358,10 +356,12 @@ describe('Floor Plan Plain View', () => {
         setCoordinates={jest.fn()}/></DndProvider></Provider>)
     const component = await screen.findByRole('button', { name: /Edit/i })
     await fireEvent.click(component)
+
+    const dialog = await screen.findByRole('dialog')
     const editForm: HTMLFormElement = await screen.findByTestId('floor-plan-form')
-    await act(() => {
-      editForm.submit()
-    })
+    editForm.submit()
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await expect(editHandler).toBeCalledTimes(1)
   })
 
@@ -540,4 +540,3 @@ describe('Floor Plan Plain View', () => {
     })
   })
 })
-

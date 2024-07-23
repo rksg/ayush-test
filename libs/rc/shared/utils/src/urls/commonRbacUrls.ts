@@ -33,12 +33,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
     newApi: true
   },
-  getCloudpathList: {
-    method: 'get',
-    url: '/cloudpaths',
-    oldUrl: '/api/tenant/:tenantId/wifi/cloudpath',
-    newApi: true
-  },
   getDashboardOverview: {
     method: 'get',
     url: '/dashboards/overviews/',
@@ -103,7 +97,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/aps/query',
     url: '/venues/aps/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   getApGroupsListByGroup: {
@@ -263,7 +261,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateSwitchPosition: {
     method: 'put',
     //url: '/switches/:serialNumber/position',
-    url: '/venues/:venueId/switches/:switchId/position',
+    url: '/venues/:venueId/switches/:serialNumber/positions',
     newApi: true
   },
   getVenueCityList: {
@@ -289,12 +287,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
-  UpdateCloudpathServerPosition: {
-    method: 'put',
-    url: '/cloudpaths/:cloudpathServerId/floorPositions',
-    oldUrl: '/api/tenant/:tenantId/wifi/cloudpaths/:cloudpathServerId/floorPositions',
-    newApi: true
-  },
   getVenueApModels: {
     method: 'get',
     url: '/venues/:venueId/apModels',
@@ -368,16 +360,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/networkActivations/query',
     newApi: true
-  },
-  getNetworkDeepList: {
-    // [New API] request not support list
-    // method: 'get',
-    // url: '/networks/:networkId',
-    // oldMethod: 'post',
-    // oldUrl: '/api/tenant/:tenantId/wifi/network/get/deep',
-    // newApi: false
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
   */
   getDenialOfServiceProtection: {

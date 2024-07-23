@@ -1,8 +1,10 @@
-import { Form, Input, Tooltip, Typography } from 'antd'
-import { useIntl }                          from 'react-intl'
-import styled                               from 'styled-components/macro'
+import { Form, Input, Row, Tooltip, Typography } from 'antd'
+import { QRCodeSVG }                             from 'qrcode.react'
+import { useIntl }                               from 'react-intl'
+import styled                                    from 'styled-components/macro'
 
-import { Drawer }              from '@acx-ui/components'
+import { Drawer }                 from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MFAMethod,
   useMfaRegisterPhoneQuery,
@@ -24,6 +26,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
   const [form] = Form.useForm()
   const { data } = useMfaRegisterPhoneQuery({ params: { userId: userId } })
   const [setupMFAAccount] = useSetupMFAAccountMutation()
+  const isAlternateQRcodeEnabled = useIsSplitOn(Features.MFA_ALTERNATE_QR_CODE_TOGGLE)
 
   const onClose = () => {
     setVisible(false)
@@ -90,7 +93,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
                   { $t({ defaultMessage: 'Open the app, then select "Add Account"' }) }
                 </Typography.Text>
               </li>
-              {/* <li>
+              {isAlternateQRcodeEnabled ? <li>
                 <Typography.Text>
                   { $t({ defaultMessage: 'Scan the QR code below:' }) }
                 </Typography.Text>
@@ -112,15 +115,16 @@ export const AuthApp = styled((props: AuthAppProps) => {
                     </Typography.Text>
                   </Row>
                 </UI.QRCodeImgWrapper>
-              </li> */}
+              </li>
+                : <li>
+                  <div><Typography.Text>
+                    { $t({ defaultMessage: 'Enter this key into the app:' }) }
+                  </Typography.Text></div>
+                  <div><Typography.Text strong>
+                    { data?.key ?? '' }
+                  </Typography.Text></div>
+                </li>}
               <li>
-                <div><Typography.Text>
-                  { $t({ defaultMessage: 'Enter this key into the app:' }) }
-                </Typography.Text></div>
-                <div><Typography.Text strong>
-                  { data?.key ?? '' }
-                </Typography.Text></div>
-              </li>              <li>
                 <Typography.Text>
                   {
                     $t({ defaultMessage: 'Enter the verification code generated '+

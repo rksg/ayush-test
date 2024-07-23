@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
@@ -35,8 +35,7 @@ import {
   apGroupsResponse,
   externalProviders,
   vlanList,
-  mockRbacVlanList,
-  networkDeepResponse
+  mockRbacVlanList
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -165,16 +164,14 @@ const networkResponse = {
 
 describe('NetworkForm', () => {
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
       ),
       rest.get(WifiUrlsInfo.getNetwork.url, (_, res, ctx) =>
         res(ctx.json(networkResponse))
-      ),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url, (_, res, ctx) =>
-        res(ctx.json({ response: [networkResponse] }))
       ),
       rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venuesResponse))
@@ -185,9 +182,6 @@ describe('NetworkForm', () => {
       rest.put(
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(successResponse))
-      ),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
-        res(ctx.json([]))
       ),
       rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venueListResponse))
@@ -231,7 +225,7 @@ describe('NetworkForm', () => {
       ),
       // RBAC API
       rest.get(WifiRbacUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))
+        (_, res, ctx) => res(ctx.json(networkResponse))
       ),
       rest.post(CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json({ data: WifiNetworkFixtures.mockedRbacWifiNetworkList }))

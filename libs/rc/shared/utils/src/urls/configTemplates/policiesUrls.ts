@@ -107,7 +107,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAccessControlProfile: {
     method: 'get',
     url: '/templates/accessControlProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getAccessControlProfileList: {
     method: 'get',
@@ -402,6 +406,80 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRogueApRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/roguePolicySettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  addVlanPoolPolicyRbac: {
+    method: 'post',
+    url: '/templates/vlanPoolProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVlanPoolPolicyRbac: {
+    method: 'get',
+    url: '/templates/vlanPoolProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateVlanPoolPolicyRbac: {
+    method: 'put',
+    url: '/templates/vlanPoolProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deleteVlanPoolPolicyRbac: {
+    method: 'delete',
+    url: '/templates/vlanPoolProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateVlanPool: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    // eslint-disable-next-line max-len
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    // eslint-disable-next-line max-len
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

@@ -16,9 +16,12 @@ import {
   venueListResponse,
   networkDeepResponse,
   selfsignData,
-  mockNotificationSmsResponse,
-  mockNotificationSmsHasPoolResponse,
-  mockNotificationSmsProviderNotR1Response
+  mockSMS_R1_Under100,
+  mockSMS_R1_Over100,
+  mockSMS_TWILIO_Under100,
+  mockSMS_TWILIO_Over100,
+  mockSMS_Unset_Over100,
+  mockSMS_Unset_Under100
 } from '../__tests__/fixtures'
 import { MLOContext }     from '../NetworkForm'
 import NetworkFormContext from '../NetworkFormContext'
@@ -42,6 +45,9 @@ jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
 jest.mocked(useIsSplitOn).mockReturnValue(false)
 store.dispatch(userApi.util.resetApiState())
 store.dispatch(venueApi.util.resetApiState())
+services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+  return { data: mockSMS_R1_Over100 }
+})
 
 describe('CaptiveNetworkForm-SelfSignIn', () => {
   beforeEach(() => {
@@ -53,12 +59,8 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json([]))),
       rest.get(WifiUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(selfSignInRes))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [selfSignInRes] })))
+        (_, res, ctx) => res(ctx.json(selfSignInRes)))
     )
   })
 
@@ -134,7 +136,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   it('should uncheck and disable SMS Token checkbox when clone network', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsResponse }
+      return { data: mockSMS_R1_Over100 }
     })
     render(<Provider>
       <NetworkFormContext.Provider
@@ -158,7 +160,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     async () => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NUVO_SMS_PROVIDER_TOGGLE)
       services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-        return { data: mockNotificationSmsResponse }
+        return { data: mockSMS_R1_Over100 }
       })
       render(<Provider>
         <NetworkFormContext.Provider
@@ -195,7 +197,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   it('should disable SMS Token checkbox when create network', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsResponse }
+      return { data: mockSMS_R1_Over100 }
     })
     render(<Provider>
       <NetworkFormContext.Provider
@@ -234,7 +236,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   it('should not disable SMS Token checkbox when edit network', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsResponse }
+      return { data: mockSMS_R1_Over100 }
     })
     render(<Provider>
       <NetworkFormContext.Provider
@@ -255,12 +257,9 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     expect(formItem).not.toBeDisabled()
   })
 
-  it('should display SMS tooltips correctly - Provider not Ruckus One', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsProviderNotR1Response }
-    })
-    render(<Provider>
+  describe('SMS Tooltips Unit Tests, NUVO_SMS_PROVIDER_TOGGLE on',()=> {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
+    const SelfSignInComponent = (<Provider>
       <NetworkFormContext.Provider
         value={{
           editMode: false, cloneMode: false, data: selfsignData
@@ -273,59 +272,275 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
           <SelfSignInFormNetworkComponent/>
         </MLOContext.Provider>
       </NetworkFormContext.Provider>
-    </Provider>, { route: { params } })
-    // eslint-disable-next-line
-    const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    </Provider>)
 
-    fireEvent.mouseOver(tooltips[0])
+    const router = { route: { params } }
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('tooltip', {
-          value: {
-            text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
-          }
-        })
-      ).toBeInTheDocument()
-    })
-    expect(screen.queryByTestId('button-no-pool')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('button-has-pool')).not.toBeInTheDocument()
-  })
+    it('R1 - no left sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Over100 }
+      })
+      render(SelfSignInComponent, router)
 
-  // eslint-disable-next-line
-  it('should display SMS tooltips correctly - Provider is Ruckus One has pool remain', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsHasPoolResponse }
-    })
-    render(<Provider>
-      <NetworkFormContext.Provider
-        value={{
-          editMode: false, cloneMode: false, data: selfsignData
-        }}
-      >
-        <MLOContext.Provider value={{
-          isDisableMLO: false,
-          disableMLO: jest.fn()
-        }}>
-          <SelfSignInFormNetworkComponent/>
-        </MLOContext.Provider>
-      </NetworkFormContext.Provider>
-    </Provider>, { route: { params } })
-    // eslint-disable-next-line
+      // eslint-disable-next-line
       const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
 
-    fireEvent.mouseOver(tooltips[0])
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeChecked()
+      expect(formItem).toBeDisabled()
 
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('tooltip', {
-          value: {
-            text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
-          }
-        })
-      ).toBeInTheDocument()
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
     })
-    expect(await screen.findByTestId('button-has-pool')).toBeInTheDocument()
+    it('R1 - remain sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Under100 }
+      })
+      render(SelfSignInComponent, router)
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(await screen.findByTestId('button-has-pool')).toBeInTheDocument()
+    })
+    it('Unset - no left sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Over100 }
+      })
+      render(SelfSignInComponent, router)
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeChecked()
+      expect(formItem).toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
+    })
+    it('Unset - remain sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Under100 }
+      })
+      render(SelfSignInComponent, router)
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
+    })
+    it('Other Provider - no left sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_TWILIO_Over100 }
+      })
+      render(SelfSignInComponent, router)
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeDisabled()
+
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByTestId('button-no-pool')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('button-has-pool')).not.toBeInTheDocument()
+    })
+
+    it('Other Provider - remain sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_TWILIO_Under100 }
+      })
+      render(SelfSignInComponent, router)
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByTestId('button-no-pool')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('button-has-pool')).not.toBeInTheDocument()
+    })
+  })
+  // eslint-disable-next-line max-len
+  describe('SMS Tooltips Unit Tests, NUVO_SMS_PROVIDER_TOGGLE and NUVO_SMS_GRACE_PERIOD_TOGGLE on',()=> {
+    beforeEach(()=> {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => {
+        return (ff === Features.NUVO_SMS_PROVIDER_TOGGLE ||
+                ff === Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
+      })
+    })
+
+    const SelfSignInComponent = (<Provider>
+      <NetworkFormContext.Provider
+        value={{
+          editMode: false, cloneMode: false, data: selfsignData
+        }}
+      >
+        <MLOContext.Provider value={{
+          isDisableMLO: false,
+          disableMLO: jest.fn()
+        }}>
+          <SelfSignInFormNetworkComponent/>
+        </MLOContext.Provider>
+      </NetworkFormContext.Provider>
+    </Provider>)
+
+    const router = { route: { params } }
+
+    it('R1 - no left sms', async () => {
+
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Over100 }
+      })
+      render(SelfSignInComponent, router)
+
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByTestId('button-no-pool')).not.toBeInTheDocument()
+    })
+    it('R1 - remain sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_R1_Under100 }
+      })
+      render(SelfSignInComponent, router)
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).not.toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByTestId('button-has-pool')).not.toBeInTheDocument()
+    })
+    it('Unset - no left sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Over100 }
+      })
+      render(SelfSignInComponent, router)
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
+    })
+    it('Unset - remain sms', async () => {
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockSMS_Unset_Under100 }
+      })
+      render(SelfSignInComponent, router)
+      // eslint-disable-next-line
+      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).toBeDisabled()
+
+      fireEvent.mouseOver(tooltips[0])
+
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+            }
+          })
+        ).toBeInTheDocument()
+      })
+      expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
+    })
   })
 })

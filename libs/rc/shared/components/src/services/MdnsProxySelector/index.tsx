@@ -2,6 +2,7 @@ import { Form, FormItemProps, Select } from 'antd'
 import { useIntl }                     from 'react-intl'
 import { useParams }                   from 'react-router-dom'
 
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetMdnsProxyListQuery } from '@acx-ui/rc/services'
 import { MdnsProxyFormData }        from '@acx-ui/rc/utils'
 
@@ -17,6 +18,7 @@ export interface MdnsProxySelectorProps {
 export function MdnsProxySelector (props: MdnsProxySelectorProps) {
   const { $t } = useIntl()
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const {
     placeholder = $t({ defaultMessage: 'Select mDNS Proxy Services...' })
@@ -29,7 +31,7 @@ export function MdnsProxySelector (props: MdnsProxySelectorProps) {
   }
 
   const selectedServiceId = useWatch<string>(formItemProps.name ?? '')
-  const { mdnsProxyList, selectedMdnsProxy } = useGetMdnsProxyListQuery({ params }, {
+  const { mdnsProxyList, selectedMdnsProxy } = useGetMdnsProxyListQuery({ params, enableRbac }, {
     selectFromResult ({ data }) {
       return {
         mdnsProxyList: data,

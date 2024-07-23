@@ -5,6 +5,7 @@ import { disableStickyPagination } from '../Table/styledComponents'
 
 export {
   Title,
+  Subtitle,
   SectionTitle,
   FieldLabel,
   MultiSelect,

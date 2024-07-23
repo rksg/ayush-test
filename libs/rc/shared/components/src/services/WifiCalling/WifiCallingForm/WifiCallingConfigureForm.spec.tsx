@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Path, To }                                                                         from '@acx-ui/react-router-dom'
-import { Provider }                                                                         from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                            from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                                            from '@acx-ui/feature-toggle'
+import { ApiVersionEnum, CommonUrlsInfo, GetApiVersionHeader, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingFormContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Path, To }                                                                                                                                          from '@acx-ui/react-router-dom'
+import { Provider }                                                                                                                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                                                    from '@acx-ui/test-utils'
 
 import { mockNetworkResult, mockWifiCallingDetail, mockWifiCallingTableResult } from '../__tests__/fixtures'
 import WifiCallingFormContext                                                   from '../WifiCallingFormContext'
@@ -44,24 +45,6 @@ const wifiCallingServiceResponse = {
   ]
 }
 
-const wifiCallingListResponse = [
-  {
-    networkIds: [
-      'c8cd8bbcb8cc42caa33c991437ecb983',
-      '44c5604da90443968e1ee91706244e63'
-    ],
-    qosPriority: 'WIFICALLING_PRI_VOICE',
-    serviceName: 'wifiCSP1',
-    id: 'ad7309563e004b36861f662bfbfd0144',
-    epdgs: [
-      {
-        ip: '1.2.3.4',
-        domain: 'abc.com'
-      }
-    ]
-  }
-]
-
 const initState = {
   serviceName: '',
   ePDG: [],
@@ -70,6 +53,7 @@ const initState = {
   description: '',
   networkIds: [],
   networksName: [],
+  oldNetworkIds: [],
   epdgs: []
 }
 
@@ -111,15 +95,13 @@ jest.mock('antd', () => {
 
 describe('WifiCallingConfigureForm', () => {
   beforeEach(() => {
+    mockedUpdateService.mockClear()
+
     mockServer.use(
       rest.post(WifiCallingUrls.updateWifiCalling.url,
         (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
       rest.post(ServicesConfigTemplateUrlsInfo.updateWifiCalling.url,
         (req, res, ctx) => res(ctx.json(wifiCallingServiceResponse))),
-      rest.get(WifiCallingUrls.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.put(WifiCallingUrls.updateWifiCalling.url,
         (req, res, ctx) => {
           mockedUpdateService()
@@ -232,5 +214,54 @@ describe('WifiCallingConfigureForm', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
     expect(mockedUseNavigate).toBeCalledTimes(2)
+  })
+
+  it('should update association with rbac api', async () => {
+    const rbacUpdateApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1_1)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        WifiCallingUrls.queryWifiCalling.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.put(WifiCallingUrls.updateWifiCalling.url,
+        (req, res, ctx) => {
+          if (req.headers.get('content-type') === rbacUpdateApiHeaders?.['Content-Type']) {
+            mockedUpdateService(req.body)
+            return res(ctx.json(wifiCallingServiceResponse))
+          }
+          return res(ctx.status(400))
+        }
+      )
+    )
+
+    render(
+      <WifiCallingFormContext.Provider
+        value={{ state: { ...initState, oldNetworkIds: ['123'] }, dispatch: jest.fn }}
+      >
+        <Provider>
+          <WifiCallingConfigureForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1', serviceId: 'serviceId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+
+    await screen.findByText('abc.com')
+
+
+    await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => expect(mockedUpdateService).toBeCalledTimes(1))
+    // RBAC api will not provide `networkIds` in the payload
+    const payload = mockedUpdateService.mock.calls[0][0] as WifiCallingFormContextType
+    expect(payload.networkIds).toBeUndefined()
   })
 })
