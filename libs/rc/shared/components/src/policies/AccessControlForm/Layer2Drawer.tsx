@@ -35,7 +35,7 @@ import {
   defaultSort,
   L2AclPolicy,
   MacAddressFilterRegExp,
-  sortProp, TableResult,
+  sortProp, TableResult, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -93,6 +93,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -120,6 +121,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const MAC_ADDRESS_LIMIT = 128
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -146,7 +149,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   })
 
   const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(
-    editMode.isEdit, enableRbac
+    editMode.isEdit, resolvedRbacEnabled
   )
 
   const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher({
@@ -154,7 +157,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
     skip: skipFetch,
     extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId },
-    enableRbac
+    enableRbac: resolvedRbacEnabled
   })
 
   const isViewMode = () => {
@@ -427,7 +430,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         const l2AclRes: CommonResult = await createL2AclPolicy({
           params: params,
           payload: convertToPayload(),
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
         // let responseData = l2AclRes.response as {
         //   [key: string]: string
@@ -440,7 +443,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         await updateL2AclPolicy({
           params: { ...params, l2AclPolicyId: queryPolicyId },
           payload: convertToPayload(queryPolicyId),
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {
