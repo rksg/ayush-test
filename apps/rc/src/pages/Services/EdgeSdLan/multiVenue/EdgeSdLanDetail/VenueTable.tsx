@@ -54,7 +54,7 @@ export const VenueTable = (props: VenueTableProps) => {
 
   const columns: TableProps<VenueTableDataType>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
       sorter: true,

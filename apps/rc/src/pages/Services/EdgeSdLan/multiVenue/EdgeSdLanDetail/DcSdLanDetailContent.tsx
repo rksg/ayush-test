@@ -80,7 +80,7 @@ export const DcSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
         <Tabs type='third'>
           <Tabs.TabPane
             tab={$t(
-              { defaultMessage: 'Venues({count})' },
+              { defaultMessage: '<VenuePlural></VenuePlural>({count})' },
               { count: venueTableData?.length ?? 0 }
             )}
             key='venues'
