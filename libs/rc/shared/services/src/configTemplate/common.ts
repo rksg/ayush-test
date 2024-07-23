@@ -9,6 +9,7 @@ import {
   Network,
   NetworkSaveData,
   TableResult,
+  WifiNetwork,
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork
@@ -28,7 +29,10 @@ import {
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getConfigTemplates),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getConfigTemplates,
+        ConfigTemplateUrlsInfo.getConfigTemplatesRbac
+      ),
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -41,35 +45,66 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.applyConfigTemplate,
+        ConfigTemplateUrlsInfo.applyConfigTemplateRbac
+      ),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.addNetworkTemplate,
+        ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.updateNetworkTemplate,
+        ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getNetworkTemplate,
+        ConfigTemplateUrlsInfo.getNetworkTemplateRbac
+      ),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.deleteNetworkTemplate,
+        ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
+      query: (queryArgs: RequestPayload<{ fields?: string[] }>) => {
+        const query = commonQueryFn(
+          ConfigTemplateUrlsInfo.getNetworkTemplateList,
+          ConfigTemplateUrlsInfo.getNetworkTemplateListRbac
+        )
+
+        const { payload, enableRbac = false } = queryArgs
+        if (enableRbac && payload?.fields?.includes('venues')) {
+          return query({
+            ...queryArgs,
+            payload: {
+              ...payload,
+              fields: [...payload.fields, 'venueApGroups']
+            }
+          })
+        }
+
+        return query(queryArgs)
+      },
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse (result: TableResult<Network>) {
-        result.data = result.data.map(item => ({
-          ...transformNetwork(item)
-        })) as Network[]
+      transformResponse (result: TableResult<Network | WifiNetwork>) {
+        result.data = result.data.map(item => transformNetwork(item)) as Network[]
         return result
       },
       keepUnusedDataFor: 0,

@@ -96,11 +96,12 @@ import {
   RWG,
   NetworkDevice,
   NetworkDeviceType,
-  NewAPModel
+  NewAPModel,
+  NetworkDevicePosition
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }                        from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseVenueApi }                                  from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacApList }                               from './apUtils'
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
@@ -334,10 +335,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    // only exist in v1(RBAC version)
     getVenueMesh: build.query<Mesh, RequestPayload>({
-      query: ({ params }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
         return {
           ...req
@@ -356,9 +356,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isWifiMeshIndependents56GEnable }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = GetApiVersionHeader(
+          enableRbac ? (isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1) : undefined)
         const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
           ...req,
@@ -714,12 +715,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateSwitchPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateSwitchPosition, params)
+    updateSwitchPosition: build.mutation<CommonResult, RequestPayload<NetworkDevicePosition>>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const req = createHttpRequest(urlsInfo.UpdateSwitchPosition, params)
+        const body = JSON.parse(JSON.stringify(payload))
+        if(enableRbac) {
+          body.floorPlanId = payload?.floorplanId
+          delete body.floorplanId
+        }
         return {
           ...req,
-          body: payload
+          body
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -1617,13 +1624,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    deletePropertyUnits: build.mutation<PropertyUnit, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.deletePropertyUnits, params)
-        return {
-          ...req,
-          body: payload
+    deletePropertyUnits: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload?.map(unitId => ({ params: { ...params, unitId } })) ?? []
+        const result = await batchApi(PropertyUrlsInfo.deletePropertyUnit, requests, fetchWithBQ)
+
+        if (result.error) {
+          return { error: result.error as FetchBaseQueryError }
         }
+
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),

@@ -149,6 +149,7 @@ export const apApi = baseApApi.injectEndpoints({
         return await getApViewmodelListFn(args, fetchWithBQ)
       }
     }),
+    // for AP Table
     newApList: build.query<TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>,
     RequestPayload>({
       queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {

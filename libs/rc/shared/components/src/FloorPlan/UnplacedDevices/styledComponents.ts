@@ -24,7 +24,7 @@ export const DeviceList = styled(List)`
     }
 `
 
-export const ListItem = styled(List.Item)<{ isdragging: boolean }>`
+export const ListItem = styled(List.Item)<{ isdragging: boolean, disabled: boolean }>`
     opacity: ${props => props.isdragging ? '0.5' : '1' };
     border: ${props => props.isdragging ? '1px dashed var(--acx-neutrals-40) !important' : 'none' };
     padding: 8px 8px !important;
@@ -35,7 +35,7 @@ export const ListItem = styled(List.Item)<{ isdragging: boolean }>`
     align-items: center;
     justify-content: start;
     align-content: center;
-    cursor: move;
+    cursor: ${props => props.disabled ? 'not-allowed' : 'move' }; ;
 
     &:hover {
         box-shadow: 0px 4px 8px var(--acx-neutrals-30);
