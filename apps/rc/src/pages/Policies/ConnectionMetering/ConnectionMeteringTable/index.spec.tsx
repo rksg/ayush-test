@@ -155,7 +155,6 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-
 describe('ConnectionMeteringTable', () => {
   const searchConnectionMeteringApi = jest.fn()
   const deleteFn = jest.fn()
@@ -198,7 +197,9 @@ describe('ConnectionMeteringTable', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><ConnectionMeteringTable /></Provider>, {
+    render(<Provider>
+      <ConnectionMeteringTable />
+    </Provider>, {
       route: { params, path: tablePath }
     })
 
@@ -216,7 +217,9 @@ describe('ConnectionMeteringTable', () => {
   })
 
   it('should add connection profile', async () => {
-    render(<Provider><ConnectionMeteringTable /></Provider>, {
+    render(<Provider>
+      <ConnectionMeteringTable />
+    </Provider>, {
       route: { params, path: tablePath }
     })
 

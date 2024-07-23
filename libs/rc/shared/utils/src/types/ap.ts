@@ -89,7 +89,7 @@ export interface AP {
   healthStatus?: string,
   downLinkCount?: number,
   apRadioDeploy?: string,
-  powerSavingStatus?: string,
+  powerSavingStatus?: string
 }
 
 export interface NewAPModel {
@@ -118,6 +118,7 @@ export interface NewAPModel {
   cellularStatus?: NewCelluarInfo
   afcStatus?: NewAFCInfo
   floorplanId?: string
+  powerSavingStatus?: string
 }
 
 export interface ApViewModel extends AP {

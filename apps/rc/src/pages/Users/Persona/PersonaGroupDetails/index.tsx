@@ -21,10 +21,8 @@ import {
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }   from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { hasCloudpathAccess, PersonaGroup } from '@acx-ui/rc/utils'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -34,11 +32,11 @@ function PersonaGroupDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = filterByAccess([
-    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
+  const extra = hasCloudpathAccess() && [
+    <Button type={'primary'} onClick={onClick} >
       {$t({ defaultMessage: 'Configure' })}
     </Button>
-  ])
+  ]
 
   return (
     <PageHeader

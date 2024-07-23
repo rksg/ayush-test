@@ -67,7 +67,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'status',
       filterable: filterables ? filterables['status'] : false,
-      sorter: false,
+      sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
         const { name, color } = getRwgStatus(row.status)
         return !row.isCluster ? (
@@ -88,7 +88,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'venueName',
       filterable: filterables ? filterables['venueName'] : false,
-      sorter: false,
+      sorter: { compare: sortProp('venueName', defaultSort) },
       render: function (_, row) {
         return !row.isCluster ? (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>

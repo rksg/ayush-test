@@ -123,6 +123,7 @@ export enum Features {
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
+  SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
@@ -165,6 +166,7 @@ export enum Features {
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
+  WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle'
 }
 

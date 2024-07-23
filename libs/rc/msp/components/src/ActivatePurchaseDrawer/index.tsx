@@ -70,7 +70,10 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       const region = _.find(userProfile?.allowedRegions,(item)=>{
         return item.current === true
       })
-      setCurrentRegion(region?.name as RegionRadioButtonEnum)
+      const cRegion = region?.name === 'Asia' ? RegionRadioButtonEnum.AS
+        : (region?.name as RegionRadioButtonEnum)
+      setCurrentRegion(cRegion)
+      form.setFieldValue(['region'], cRegion )
     }
   },[userProfile])
 
@@ -160,7 +163,6 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
     <Form.Item
       name='region'
       label={$t({ defaultMessage: 'Select the region for your RUCKUS One hosted cloud servicese' })}
-      initialValue={currentRegion}
       rules={[
         {
           required: true,
