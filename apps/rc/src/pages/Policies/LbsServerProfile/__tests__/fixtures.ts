@@ -69,8 +69,7 @@ export const dummyApList = {
     'deviceStatus',
     'apMac',
     'serialNumber',
-    'lbsStatus.managementConnected',
-    'lbsStatus.serverConnected'
+    'lbsStatus'
   ],
   totalCount: 1,
   page: 1,
