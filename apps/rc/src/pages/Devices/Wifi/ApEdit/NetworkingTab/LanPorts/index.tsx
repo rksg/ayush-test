@@ -190,24 +190,36 @@ export function LanPorts () {
       })
       setUseVenueSettings(values?.useVenueSettings)
 
-      if (values?.useVenueSettings) {
-        await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
-      } else {
-        //const { lan, poeOut, poeMode } = values
-        const { lan, poeOut } = values
+      const { lan, poeOut, useVenueSettings } = values
+
+      if (isUseWifiRbacApi) {
         const payload: WifiApSetting = {
           ...apLanPorts,
           lanPorts: lan,
-          //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
           ...(poeOut && isObject(poeOut) &&
               { poeOut: Object.values(poeOut).some(item => item === true) }),
-          useVenueSettings: false
+          useVenueSettings
         }
-
-        //console.log('values: ', values)
-        //console.log('payload: ', payload)
-
-        await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await updateApCustomization({
+          params: { tenantId, serialNumber, venueId },
+          payload,
+          enableRbac: isUseWifiRbacApi
+        }).unwrap()
+      } else {
+        if (values?.useVenueSettings) {
+          await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
+        } else {
+          const { lan, poeOut } = values
+          const payload: WifiApSetting = {
+            ...apLanPorts,
+            lanPorts: lan,
+            //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
+            ...(poeOut && isObject(poeOut) &&
+                { poeOut: Object.values(poeOut).some(item => item === true) }),
+            useVenueSettings: false
+          }
+          await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+        }
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
