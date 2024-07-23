@@ -2,8 +2,142 @@
 
 exports[`Topology Switch Card should render orrectly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+  .c0 {
+  height: 100%;
+  width: 100%;
+}
+
+.c0 .ant-card {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid var(--acx-neutrals-20);
+  box-shadow: 0px 2px 4px rgba(51,51,51,0.08);
+}
+
+.c0 .ant-card-head {
+  display: none;
+  padding: 0;
+  border-bottom: none;
+  min-height: 0;
+  margin-bottom: 10px;
+}
+
+.c0 .ant-card-head-title {
+  padding: 0;
+}
+
+.c0 .ant-card-head-title .ant-space .ant-space-item:last-child {
+  line-height: 0;
+}
+
+.c0 .ant-card-head-wrapper {
+  -webkit-align-items: start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: start;
+}
+
+.c0 .ant-card-extra {
+  padding: 0;
+}
+
+.c0 .ant-card-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  padding: 0;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c1 {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-headline-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+}
+
+.c4 {
+  padding: calc(var(--acx-descriptions-space) / 2) 0;
+}
+
+.c4 .ant-descriptions-row:last-child .ant-descriptions-item {
+  padding-bottom: 0;
+}
+
+.c4 .ant-descriptions-item {
+  padding: 0;
+  padding-bottom: var(--acx-descriptions-space);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container {
+  -webkit-align-items: baseline;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
+.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
+  width: 50%;
+  color: var(--acx-neutrals-60);
+}
+
+.c4 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
+  display: unset;
+}
+
+.c3 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c2 {
+  width: 288px;
+  display: inline-block;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+<div
+    class="c0"
     type="default"
   >
     <div
@@ -25,7 +159,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
                 class="ant-space-item"
               >
                 <div
-                  class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+                  class="c1"
                 />
               </div>
             </div>
@@ -43,7 +177,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
         class="ant-card-body"
       >
         <div
-          class="styledComponents__Title-sc-13w5wfx-5 hYNJuf"
+          class="c1"
         >
           <div
             class="ant-space ant-space-horizontal ant-space-align-center"
@@ -54,7 +188,7 @@ exports[`Topology Switch Card should render orrectly 1`] = `
               style="margin-right: 8px;"
             >
               <a
-                class="sc-breuTD iOAXfV"
+                class="c2"
                 href="/undefined/t/devices/switch/c0:c5:20:aa:24:7b/FEK3224R08J/details/overview"
               >
                 test
@@ -76,10 +210,10 @@ exports[`Topology Switch Card should render orrectly 1`] = `
           </div>
         </div>
         <div
-          class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+          class="c3"
         >
           <div
-            class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 gbgdBl"
+            class="ant-descriptions c4"
           >
             <div
               class="ant-descriptions-view"
