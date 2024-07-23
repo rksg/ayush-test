@@ -381,6 +381,8 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
         rest.get(WifiUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json(apLanPorts[0]))),
+        rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json(apLanPorts[0]))),
         rest.get(WifiUrlsInfo.getApCapabilities.url,
           (_, res, ctx) => res(ctx.json(r650Cap))),
         rest.get(CommonUrlsInfo.getVenue.url,
@@ -450,6 +452,11 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json({
             ...apLanPorts[0],
             useVenueSettings: false
+          }))),
+        rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
           })))
       )
 
@@ -482,6 +489,11 @@ describe('ApEdit', () => {
         rest.post(CommonUrlsInfo.getApsList.url,
           (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
+          }))),
+        rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json({
             ...apLanPorts[0],
             useVenueSettings: false
