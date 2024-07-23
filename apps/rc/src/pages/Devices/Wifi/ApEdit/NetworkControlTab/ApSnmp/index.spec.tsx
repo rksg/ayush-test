@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls }                                                                from '@acx-ui/rc/utils'
+import { ApSnmpRbacUrls, ApSnmpUrls }                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -34,6 +34,9 @@ describe('Ap Snmp', () => {
         return res(ctx.json(resultOfGetApSnmpAgentProfiles))
       }),
       rest.get(ApSnmpUrls.getVenueApSnmpSettings.url, (req, res, ctx) => {
+        return res(ctx.json(resultOfGetVenueApSnmpAgentSettings))
+      }),
+      rest.get(ApSnmpRbacUrls.getApSnmpFromViewModel.url, (req, res, ctx) => {
         return res(ctx.json(resultOfGetVenueApSnmpAgentSettings))
       }),
       rest.get(ApSnmpUrls.getApSnmpSettings.url, (req, res, ctx) => {
