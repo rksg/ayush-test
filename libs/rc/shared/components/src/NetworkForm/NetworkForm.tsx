@@ -75,7 +75,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance          from './PortalInstance'
+import PortalInstance    from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveFieldsFromServerData,
@@ -83,7 +83,8 @@ import {
   useVlanPool,
   useClientIsolationActivations,
   useWifiCalling,
-  useAccessControlActivation
+  useAccessControlActivation,
+  getDefaultMloOptions
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -142,6 +143,7 @@ export function NetworkForm (props:{
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
+  const wifi7Mlo3LinkFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE)
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
   const editMode = params.action === 'edit'
@@ -412,6 +414,17 @@ export function NetworkForm (props:{
     return data
   }
 
+  const handleWlanAdvanced3MLO = (data: NetworkSaveData, wifi7Mlo3LinkFlag: boolean) => {
+    if (data.wlan?.advancedCustomization &&
+        !data.wlan?.advancedCustomization?.multiLinkOperationEnabled) {
+      data.wlan.advancedCustomization = {
+        ...data.wlan?.advancedCustomization,
+        multiLinkOperationOptions: getDefaultMloOptions(wifi7Mlo3LinkFlag)
+      }
+    }
+    return data
+  }
+
   const handlePortalWebPage = async (data: NetworkSaveData) => {
     if(!data.guestPortal?.socialIdentities?.facebook){
       delete data.guestPortal?.socialIdentities?.facebook
@@ -536,26 +549,31 @@ export function NetworkForm (props:{
     }
   }
 
+  const processAddData = function (data: NetworkSaveData) {
+    const dataConnection = handleUserConnection(data)
+    const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
+    const saveData = handleGuestMoreSetting(dataWlan)
+    const payload = updateClientIsolationAllowlist(
+      // omit id to handle clone
+      _.omit(saveData,
+        ['id',
+          'networkSecurity',
+          'enableOwe',
+          'pskProtocol',
+          'isOweMaster',
+          'owePairNetworkId',
+          'certificateTemplateId',
+          'hotspot20Settings.wifiOperator',
+          'hotspot20Settings.originalOperator',
+          'hotspot20Settings.identityProviders',
+          'hotspot20Settings.originalProviders',
+          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
+        ]))
+    return payload
+  }
   const handleAddNetwork = async () => {
     try {
-      const dataConnection = handleUserConnection(saveState)
-      const saveData = handleGuestMoreSetting(dataConnection)
-      const payload = updateClientIsolationAllowlist(
-        // omit id to handle clone
-        _.omit(saveData,
-          ['id',
-            'networkSecurity',
-            'enableOwe',
-            'pskProtocol',
-            'isOweMaster',
-            'owePairNetworkId',
-            'certificateTemplateId',
-            'hotspot20Settings.wifiOperator',
-            'hotspot20Settings.originalOperator',
-            'hotspot20Settings.identityProviders',
-            'hotspot20Settings.originalProviders',
-            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
-          ]))
+      const payload = processAddData(saveState)
 
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
@@ -583,7 +601,7 @@ export function NetworkForm (props:{
     }
   }
 
-  const processData = function (data: NetworkSaveData) {
+  const processEditData = function (data: NetworkSaveData) {
     handleSettings(data)
 
     if(data?.type === NetworkTypeEnum.CAPTIVEPORTAL){
@@ -591,7 +609,8 @@ export function NetworkForm (props:{
     }
 
     const dataConnection = handleUserConnection(data)
-    const dataMore = handleGuestMoreSetting(dataConnection)
+    const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
+    const dataMore = handleGuestMoreSetting(dataWlan)
 
     if(isPortalWebRender(dataMore)){
       handlePortalWebPage(dataMore)
@@ -647,7 +666,7 @@ export function NetworkForm (props:{
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
-      processData(formData)
+      processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
