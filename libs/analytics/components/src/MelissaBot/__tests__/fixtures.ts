@@ -78,6 +78,20 @@ export const responseBody = {
   },
   agentId: 'melissa-agent'
 }
+export const gptResponseBody = {
+  queryResult: {
+    fulfillmentMessages: [
+      {
+        text: {
+          text: [
+            'Response from AI.'
+          ]
+        }
+      }
+    ]
+  },
+  agentId: 'melissa-agent'
+}
 export const uploadRes = [
   {
     text: {

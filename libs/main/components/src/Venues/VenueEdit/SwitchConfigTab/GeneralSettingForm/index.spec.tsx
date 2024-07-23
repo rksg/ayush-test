@@ -279,7 +279,9 @@ describe('GeneralSettingForm', () => {
       [ConfigTemplateType.APPLICATION_POLICY]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SYSLOG]: false,
-      [ConfigTemplateType.SWITCH_REGULAR]: false
+      [ConfigTemplateType.SWITCH_REGULAR]: false,
+      [ConfigTemplateType.SWITCH_CLI]: false,
+      [ConfigTemplateType.AP_GROUP]: false
     }
     beforeEach(() => {
       mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })

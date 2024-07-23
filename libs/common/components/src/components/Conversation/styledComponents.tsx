@@ -167,6 +167,11 @@ path {
   }
 `
 
+export const ModeText = styled.div`
+  font-size: 10px;
+  color: gray;
+`
+
 export const ChatTyping=()=>{
   return(
     <ChatTypingWrapper>
