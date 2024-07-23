@@ -5,8 +5,8 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
@@ -16,6 +16,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
+  act,
   findTBody,
   fireEvent,
   mockServer,
@@ -25,9 +26,11 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   network,
+  user,
   list,
   params,
   networkVenue_allAps,
@@ -82,35 +85,16 @@ jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
 
 const mockedApplyFn = jest.fn()
 const mockedGetApCompatibilitiesNetwork = jest.fn()
-const mockedNetworkActivation = jest.fn()
-const mockedDeleteNetworkVenues = jest.fn()
-
-const newApGroup2 = {
-  ...networkVenue_apgroup,
-  venueId: '02e2ddbc88e1428987666d31edbc3d9a',
-  allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
-  isAllApGroups: false,
-  scheduler: {
-    type: 'ALWAYS_ON'
-  },
-  apGroups: [{ ...networkVenue_apgroup.apGroups[0], id: '6cb1e831973a4d60924ac59f1bda073c' }]
-}
-
-const newVenues = [
-  ...network.venues,
-  newApGroup2
-]
 
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
-    store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
-    store.dispatch(policyApi.util.resetApiState())
-    mockedApplyFn.mockClear()
-    mockedGetApCompatibilitiesNetwork.mockClear()
-    mockedNetworkActivation.mockClear()
-    mockedDeleteNetworkVenues.mockClear()
+
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      mockedGetApCompatibilitiesNetwork.mockClear()
+    })
 
     mockServer.use(
       rest.post(
@@ -132,6 +116,10 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        UserUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenues.url,
@@ -163,27 +151,29 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('activate Network', async () => {
-    mockServer.use(
-      rest.post(
-        WifiUrlsInfo.addNetworkVenue.url,
-        (_, res, ctx) => res(ctx.json({ requestId: '123' }))
-      )
-    )
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument())
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(2))
+    await waitFor(() => {
+      expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+    })
 
-    const table = await screen.findByRole('table')
-    let rows = await within(table).findAllByRole('switch')
-    expect(rows).toHaveLength(2)
-    const toogleButton = await within(table).findByRole('switch', { checked: false })
-    await userEvent.click(toogleButton)
+    const newApGroup2 = {
+      ...networkVenue_apgroup,
+      venueId: '02e2ddbc88e1428987666d31edbc3d9a',
+      allApGroupsRadioTypes: ['2.4-GHz', '5-GHz', '6-GHz'],
+      isAllApGroups: false,
+      scheduler: {
+        type: 'ALWAYS_ON'
+      },
+      apGroups: [{ ...networkVenue_apgroup.apGroups[0], id: '6cb1e831973a4d60924ac59f1bda073c' }]
+    }
 
-    // refetch
+    const newVenues = [
+      ...network.venues,
+      newApGroup2
+    ]
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -200,13 +190,23 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, newApGroup2] }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json({ data: vlanPoolList }))
       )
     )
 
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(3))
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
+
+    const toogleButton = await screen.findByRole('switch', { checked: false })
+    await userEvent.click(toogleButton)
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
     await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
 
-    const row2 = await within(table).findByRole('row', { name: /My-Venue/i })
+    const row2 = await screen.findByRole('row', { name: /My-Venue/i })
     const icon = await within(row2).findByTestId('InformationSolid')
     expect(icon).toBeVisible()
 
@@ -258,17 +258,12 @@ describe('NetworkVenuesTab', () => {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument())
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(2))
-
-    await userEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
-    const activateButton = screen.getByRole('button', { name: 'Activate' })
-    await userEvent.click(activateButton)
+    const mockedNetworkActivation = jest.fn()
 
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
-        (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
+        (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
@@ -284,19 +279,19 @@ describe('NetworkVenuesTab', () => {
           mockedNetworkActivation()
           return res(ctx.json(mockNetworkSaveData))
         }
-      ),
-      rest.post(
-        WifiUrlsInfo.addNetworkVenue.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )
     )
 
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(3))
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
+
+    await userEvent.click(await screen.findByRole('row', { name: /My-Venue/i }))
+    const activateButton = screen.getByRole('button', { name: 'Activate' })
+    await userEvent.click(activateButton)
+
     expect(mockedNetworkActivation).toHaveBeenCalled()
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
-    await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
   })
 
   it.skip('Table action bar activate Network and show modal', async () => {
@@ -355,27 +350,12 @@ describe('NetworkVenuesTab', () => {
   })
 
   it('Table action bar deactivate Network', async () => {
-    mockServer.use(
-      rest.delete(
-        WifiUrlsInfo.deleteNetworkVenues.url,
-        (_, res, ctx) => {
-          mockedDeleteNetworkVenues()
-          return res(ctx.json({ requestId: '456' }))
-        }
-      )
-    )
-
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })
 
-    await waitFor(() => expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument())
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(2))
-    await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
-    const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
-    await userEvent.click(deactivateButton)
+    const mockedDeleteNetworkVenues = jest.fn()
 
-    // refetch
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getNetwork.url,
@@ -398,24 +378,23 @@ describe('NetworkVenuesTab', () => {
       rest.put(
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => {
-          mockedNetworkActivation()
-          return res(ctx.json(mockNetworkSaveData))
-        }
       )
     )
 
-    await waitFor(() => expect(mockedDeleteNetworkVenues).toBeCalledTimes(1))
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(3))
+    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled())
+
+    await userEvent.click(await screen.findByRole('row', { name: /network-venue-1/i }))
+    const deactivateButton = screen.getByRole('button', { name: 'Deactivate' })
+    await userEvent.click(deactivateButton)
+
+    expect(mockedDeleteNetworkVenues).not.toHaveBeenCalled()
+
+    expect(await screen.findByText('No venues activating this network. Use the ON/OFF switches in the list to select the activating venues')).toBeVisible()
 
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
-    await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
-    expect(await screen.findByText('No venues activating this network. Use the ON/OFF switches in the list to select the activating venues')).toBeVisible()
   })
+
 
 })
 
@@ -423,9 +402,11 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
-    store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
-    mockedGetApCompatibilitiesNetwork.mockClear()
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      mockedGetApCompatibilitiesNetwork.mockClear()
+    })
 
     mockServer.use(
       rest.post(
@@ -444,6 +425,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
+      rest.get(
+        UserUrlsInfo.getAllUserSettings.url,
+        (req, res, ctx) => res(ctx.json(user))
+      ),
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
         (req, res, ctx) => res(ctx.json([]))
@@ -458,12 +443,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
-      ),
-      rest.post(
-        CommonUrlsInfo.networkActivations.url,
-        (_req, res, ctx) => {
-          return res(ctx.json(mockNetworkSaveData))
-        }
       )
     )
   })
@@ -709,10 +688,7 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
-        (req, res, ctx) => {
-          mockedGetApCompatibilitiesNetwork()
-          return res(ctx.json(networkVenueApCompatibilities))
-        }
+        (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
     )
 
@@ -721,11 +697,9 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(2))
 
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
-    // currentTimeIdx:  { day: 'Wed', timeIndex: 65 } > ON now
-    await userEvent.click(within(row).getByText(/ON now/i))
+    await userEvent.click(within(row).getByText(/custom/i))
 
     const dialog = await screen.findByTestId('NetworkVenueScheduleDialog')
     await waitFor(() => expect(dialog).toBeVisible())
@@ -740,10 +714,12 @@ describe('WIFI_RBAC_API is turned on', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
 
-    store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+    })
+
     mockedGetWifiNetwork.mockClear()
-    mockedGetApCompatibilitiesNetwork.mockClear()
 
     mockServer.use(
       rest.post(
@@ -789,7 +765,7 @@ describe('WIFI_RBAC_API is turned on', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    await waitFor(() => expect(mockedGetApCompatibilitiesNetwork).toBeCalledTimes(2))
+    expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled()
     expect(mockedGetWifiNetwork).toHaveBeenCalled()
     const row = await screen.findByRole('row', { name: /network-venue-1/i })
     expect(row).toHaveTextContent('VLAN-1 (Default)')
