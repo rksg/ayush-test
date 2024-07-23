@@ -608,14 +608,14 @@ function GuestDetails ({ guestDetail, clientMac }: {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Other devices' })}
-        children={guestDetail?.clients?.filter(client => clientMac !== client.clientMac).map(
+        children={guestDetail?.clients?.filter(client => clientMac !== client.macAddress).map(
           client =>
             <TenantLink
               // eslint-disable-next-line max-len
-              to={`/users/wifi/clients/${client.clientMac}/details/overview`}
-              key={client.clientMac}
+              to={`/users/wifi/clients/${client.macAddress}/details/overview`}
+              key={client.macAddress}
             >
-              {client.clientMac}
+              {client.macAddress}
             </TenantLink>) || '--'}
       />
     </Descriptions>

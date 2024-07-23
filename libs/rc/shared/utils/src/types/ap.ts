@@ -120,6 +120,7 @@ export interface NewAPModel {
   cellularStatus?: NewCelluarInfo
   afcStatus?: NewAFCInfo
   floorplanId?: string
+  powerSavingStatus?: string
 }
 
 export interface ApViewModel extends AP {

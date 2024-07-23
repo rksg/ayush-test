@@ -249,8 +249,12 @@ describe('RogueAPDetectionForm', () => {
         (_, res, ctx) => res(
           ctx.json(policyListContent)
         )
-      ),
-      rest.post(
+      ), rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (_, res, ctx) => res(
+          ctx.json(policyListContent)
+        )
+      ), rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
       ))

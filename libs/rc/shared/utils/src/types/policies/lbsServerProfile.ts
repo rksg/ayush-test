@@ -27,3 +27,8 @@ export interface LbsServerProfileDetailContextType {
     setFiltersId: (filtersId: string[]) => void
     setProfileName: (profileName: string) => void
 }
+
+export interface VenueLbsActivationType {
+    enableLbs: boolean
+    lbsServerProfileId?: string
+}

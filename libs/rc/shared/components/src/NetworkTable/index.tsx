@@ -19,7 +19,8 @@ import {
   TableQuery,
   GuestNetworkTypeEnum,
   checkVenuesNotInSetup,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes } from '@acx-ui/types'
@@ -29,7 +30,7 @@ import { getIntl, noDataDisplay }     from '@acx-ui/utils'
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -67,7 +68,7 @@ function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: bo
     }
     return _securityProtocol
   }
-  const columns: TableProps<Network>['columns'] = [
+  const columns: TableProps<Network|WifiNetwork>['columns'] = [
     {
       key: 'name',
       title: intl.$t({ defaultMessage: 'Name' }),
@@ -139,17 +140,18 @@ function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: bo
       sortDirections: ['descend', 'ascend', 'descend'],
       align: 'center',
       render: function (_, row) {
+        const apCount = row.aps
         if(disabledType.indexOf(row.nwSubType as NetworkTypeEnum) > -1){
-          return row.aps
+          return apCount
         }else{
           return (
             <>
               {row?.isOnBoarded
-                ? <span>{row.aps || noDataDisplay}</span>
+                ? <span>{apCount || noDataDisplay}</span>
                 : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
-                  {row.aps}
+                  {apCount}
                 </TenantLink>}
-              {supportApCompatibleCheck && row?.incompatible && row.incompatible > 0 ?
+              {row?.incompatible && row.incompatible > 0 ?
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
@@ -176,11 +178,13 @@ function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: bo
       sorter: false, // API does not seem to be working
       align: 'center',
       render: function (_, row) {
+        const clientCount = row.clients
+
         return (
           row?.isOnBoarded
-            ? <span>{row.clients || noDataDisplay}</span>
+            ? <span>{clientCount || noDataDisplay}</span>
             : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
-              {row.clients}
+              {clientCount}
             </TenantLink>
         )
       }
@@ -262,6 +266,31 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
+export const defaultRbacNetworkPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'description',
+    'nwSubType',
+    'venueApGroups',
+    'apSerialNumbers',
+    'clientCount',
+    'vlan',
+    'cog',
+    'ssid',
+    'vlanPool',
+    'captiveType',
+    'id',
+    'securityProtocol',
+    'dsaeOnboardNetwork',
+    'isOweMaster',
+    'owePairNetworkId',
+    'tunnelWlanEnable'
+  ],
+  page: 1,
+  pageSize: 2048
+}
+
 const rowSelection = () => {
   return {
     getCheckboxProps: (record: Network) => ({
@@ -292,7 +321,7 @@ const getDeleteMessage = (messageKey: string) => {
 
 interface NetworkTableProps {
   settingsId?: string
-  tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
+  tableQuery: TableQuery<Network|WifiNetwork, RequestPayload<unknown>, unknown>,
   selectable?: boolean
 }
 
@@ -302,7 +331,6 @@ export function NetworkTable ({
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
   const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
@@ -346,7 +374,7 @@ export function NetworkTable ({
     return list
   }
 
-  const rowActions: TableProps<Network>['rowActions'] = [
+  const rowActions: TableProps<Network|WifiNetwork>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [WifiScopes.UPDATE],
@@ -424,9 +452,7 @@ export function NetworkTable ({
     ]}>
       <Table
         settingsId={settingsId}
-        columns={getCols(intl,
-          supportApCompatibleCheck
-        )}
+        columns={getCols(intl)}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -452,7 +478,7 @@ export function NetworkTable ({
   )
 }
 
-function isSelectedGuestNetwork (networks: Network[]) {
+function isSelectedGuestNetwork (networks: Network[]|WifiNetwork[]) {
   const guestNetworks = networks.filter(network => {
     const { nwSubType, captiveType } = network
     return (nwSubType === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -462,7 +488,7 @@ function isSelectedGuestNetwork (networks: Network[]) {
   return guestNetworks?.length > 0
 }
 
-function isSelectedDpskNetwork (networks: Network[]) {
+function isSelectedDpskNetwork (networks: Network[]|WifiNetwork[]) {
   const dpskNetworks = networks.filter(network => network.nwSubType === NetworkTypeEnum.DPSK)
   return dpskNetworks?.length > 0
 }
