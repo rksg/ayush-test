@@ -6,9 +6,9 @@ export const intentListResult = {
     {
       id: '11',
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: 'active',
       status_reason: '',
-      displayStatus: 'applied',
+      displayStatus: 'active',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -70,8 +70,8 @@ export const intentListResult = {
       id: '13',
       code: 'c-txpower-same',
       status: 'paused',
-      status_reason: 'revertfailed',
-      displayStatus: 'paused-revertfailed',
+      status_reason: 'revert-failed',
+      displayStatus: 'paused-revert-failed',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:06:02.839Z',
       sliceType: 'zone',
@@ -232,24 +232,24 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
-      status: 'applyscheduled',
-      status_reason: 'by-user',
-      displayStatus: 'applyscheduled-by-user'
+      status: 'scheduled',
+      status_reason: '',
+      displayStatus: 'scheduled'
     },
     {
       ...intentStatus,
-      status: 'applyscheduled',
-      status_reason: 'by-user',
-      displayStatus: 'applyscheduled-by-user',
+      status: 'scheduled',
+      status_reason: '',
+      displayStatus: 'scheduled',
       metadata: {
         oneClickOptimize: false
       }
     },
     {
       ...intentStatus,
-      status: 'applyscheduled',
-      status_reason: 'by-user',
-      displayStatus: 'applyscheduled-by-user',
+      status: 'scheduled',
+      status_reason: '',
+      displayStatus: 'scheduled',
       metadata: {
         oneClickOptimize: true
       }
@@ -257,8 +257,8 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'applyscheduled',
-      status_reason: 'by-etl',
-      displayStatus: 'applyscheduled-by-etl'
+      status_reason: '',
+      displayStatus: 'applyscheduled'
     },
     {
       ...intentStatus,
@@ -268,15 +268,15 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
-      status: 'applied',
+      status: 'active',
       status_reason: '',
-      displayStatus: 'applied'
+      displayStatus: 'active'
     },
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'applyfailed',
-      displayStatus: 'paused-applyfailed',
+      status_reason: 'apply-failed',
+      displayStatus: 'paused-apply-failed',
       metadata: {
         error: {
           message: 'unknown error'
@@ -301,8 +301,8 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'revertfailed',
-      displayStatus: 'paused-revertfailed',
+      status_reason: 'revert-failed',
+      displayStatus: 'paused-revert-failed',
       metadata: {
         error: {
           message: 'unknown error'
@@ -318,20 +318,20 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'waiting-to-reset',
-      displayStatus: 'paused-waiting-to-reset'
-    },
-    {
-      ...intentStatus,
-      status: 'paused',
-      status_reason: 'from-applied',
-      displayStatus: 'paused-from-applied'
-    },
-    {
-      ...intentStatus,
-      status: 'paused',
       status_reason: '',
       displayStatus: 'paused'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'from-active',
+      displayStatus: 'paused-from-active'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'by-default',
+      displayStatus: 'paused-by-default'
     },
     {
       ...intentStatus,

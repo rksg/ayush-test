@@ -55,7 +55,7 @@ const getStatusTooltip = (state: StateType, sliceValue: string, metadata: Metada
   const { $t } = getIntl()
   let tooltipKey = 'tooltip'
 
-  if (state.includes('applyscheduled-by-user') && metadata.oneClickOptimize) {
+  if (state === 'scheduled' && metadata.oneClickOptimize) {
     tooltipKey = 'tooltipOneClickOptimize'
   }
 

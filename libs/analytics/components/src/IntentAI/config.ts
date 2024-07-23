@@ -33,12 +33,12 @@ export const states = {
     text: defineMessage({ defaultMessage: 'New' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.' })
   },
-  'applyscheduled-by-user': {
+  'scheduled': {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via user action "Optimize".' }), //TODO: initiated by the user {userName}
     tooltipOneClickOptimize: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
-  'applyscheduled-by-etl': {
+  'applyscheduled': {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled by IntentAI.' })
   },
@@ -46,11 +46,11 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the zone {zoneName}.' })
   },
-  'applied': {
+  'active': {
     text: defineMessage({ defaultMessage: 'Active' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the zone {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
-  'paused-applyfailed': {
+  'paused-apply-failed': {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the zone {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
@@ -62,7 +62,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone {zoneName}.' })
   },
-  'paused-revertfailed': {
+  'paused-revert-failed': {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
     tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
@@ -70,15 +70,15 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  'paused-waiting-to-reset': {
+  'paused': {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },
-  'paused-from-applied': {
+  'paused-from-active': {
     text: defineMessage({ defaultMessage: 'Paused' }),
-    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO:  initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },
-  'paused': {
+  'paused-by-default': {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
