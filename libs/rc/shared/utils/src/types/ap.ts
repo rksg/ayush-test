@@ -89,7 +89,11 @@ export interface AP {
   healthStatus?: string,
   downLinkCount?: number,
   apRadioDeploy?: string,
-  powerSavingStatus?: string
+  powerSavingStatus?: string,
+  lbsStatus?: {
+    managementConnected?: boolean,
+    serverConnected?: boolean
+  }
 }
 
 export interface NewAPModel {

@@ -60,23 +60,23 @@ export type DsaeOnboardNetwork = {
   ssid: string
   vlan: number
   vlanPool?: { name: string, vlanMembers: string[] }
+  securityProtocol?: string
 }
 
 export interface Network extends BaseNetwork{
   children?: BaseNetwork[]
-  dsaeOnboardNetwork?: BaseNetwork
+  dsaeOnboardNetwork?: DsaeOnboardNetwork
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string,
-  incompatible?: number
   certificateTemplateId?: string
+  apSerialNumbers?: string[]
 }
 
 export interface WifiNetwork extends Network{
-  clientCount: number,
-  venueApGroups: VenueApGroup[],
-  apSerialNumbers?: string[],
+  clientCount: number,  // RBAC API only: replace the client field
+  venueApGroups: VenueApGroup[], // RBAC API only: replace the venues field
   tunnelWlanEnable?: boolean
 }
 

@@ -7,7 +7,8 @@ import {
   doProfileDelete,
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -138,10 +139,16 @@ export default function AAATable () {
 }
 
 function useColumns () {
+
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const params = useParams()
   const emptyNetworks: { key: string, value: string }[] = []
-  const { networkNameMap } = useNetworkListQuery({
+
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+
+  const { networkNameMap } = getNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],

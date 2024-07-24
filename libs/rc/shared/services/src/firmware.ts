@@ -667,18 +667,11 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     // eslint-disable-next-line max-len
     getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, {}, v1Header)
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList)
         return {
           ...req,
-          body: JSON.stringify(covertVenueApModelFirmwareListPayload(payload))
+          body: JSON.stringify(payload)
         }
-      },
-      transformResponse (result: FirmwareVenuePerApModel[] ) {
-        return {
-          data: result,
-          page: 1,
-          totalCount: result.length
-        } as TableResult<FirmwareVenuePerApModel>
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -813,24 +806,3 @@ export const {
   useBatchSkipSwitchUpgradeSchedulesMutation,
   useRetryFirmwareUpdateV1002Mutation
 } = firmwareApi
-
-
-interface VenueApModelFirmwareListPayload {
-  filters?: {
-    currentApFirmwares?: string[]
-  }
-  searchString?: string
-}
-// eslint-disable-next-line max-len
-function covertVenueApModelFirmwareListPayload (originPayload?: unknown): { firmwareVersion?: string, search?: string } {
-  if (!originPayload) return {}
-
-  const payload = originPayload as VenueApModelFirmwareListPayload
-  const targetVersion = payload.filters?.currentApFirmwares?.[0] as string
-  const serachString = payload.searchString
-
-  return {
-    ...(targetVersion ? { firmwareVersion: targetVersion } : {}),
-    ...(serachString ? { search: serachString } : {})
-  }
-}
