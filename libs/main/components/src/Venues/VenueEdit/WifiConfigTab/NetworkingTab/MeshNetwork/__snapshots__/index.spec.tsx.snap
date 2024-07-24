@@ -109,11 +109,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </div>
     </label>
     <div
-<<<<<<< HEAD
-      class="sc-jZiqTT jLBklO"
-=======
       class="c2"
->>>>>>> master
     >
       <ul>
         <li>
@@ -125,11 +121,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       </ul>
     </div>
     <div
-<<<<<<< HEAD
-      class="sc-bxSTMQ jYAXuq"
-=======
       class="c3"
->>>>>>> master
     >
       Mesh Network Name
       <div
@@ -171,11 +163,7 @@ exports[`MeshNetwork should render correctly 1`] = `
       />
     </div>
     <div
-<<<<<<< HEAD
-      class="sc-jWquRx lkcmft"
-=======
       class="c4"
->>>>>>> master
     >
       Mesh PSK
       <div
