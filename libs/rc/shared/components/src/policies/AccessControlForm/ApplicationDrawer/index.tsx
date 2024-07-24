@@ -35,7 +35,7 @@ import {
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp, TableResult,
+  sortProp, TableResult, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -164,6 +164,7 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
 export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -192,6 +193,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [contentForm] = Form.useForm()
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -220,7 +223,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   })
 
   const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(
-    editMode.isEdit, enableRbac
+    editMode.isEdit, resolvedRbacEnabled
   )
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
@@ -231,7 +234,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     extraParams: {
       applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
     },
-    enableRbac
+    enableRbac: resolvedRbacEnabled
   })
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
@@ -243,7 +246,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       ...params,
       applicationLibraryId: librarySettings?.version
     },
-    enableRbac
+    enableRbac: resolvedRbacEnabled
   }, {
     skip: !librarySettings?.version
   })
@@ -253,7 +256,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       ...params,
       applicationLibraryId: librarySettings?.version
     },
-    enableRbac
+    enableRbac: resolvedRbacEnabled
   }, {
     skip: !avcCategoryList
   })
@@ -506,7 +509,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             description: description,
             tenantId: params.tenantId
           },
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
         let responseData = appRes.response as {
           [key: string]: string
@@ -525,7 +528,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             description: description,
             tenantId: params.tenantId
           },
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {

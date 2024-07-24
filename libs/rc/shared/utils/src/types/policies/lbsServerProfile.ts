@@ -4,6 +4,7 @@ export interface LbsServerProfileViewModel {
     lbsVenueName: string
     server: string
     venueIds?: string[]
+    serverConnected?: boolean
 }
 
 export interface LbsServerProfile {
