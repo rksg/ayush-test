@@ -49,7 +49,7 @@ function reset (form: FormInstance, typeWithSchedule: TestTypeWithSchedule) {
 export function Schedule () {
   const { $t } = useIntl()
   const typeWithSchedule = useTypeWithSchedule()
-  const { DailySchedule, WeeklySchedule, MonthlySchedule } = TimeDropdown();
+  // const { Daily, Weekly, Monthly } = TimeDropdown();
 
   if (!typeWithSchedule || typeWithSchedule === TestType.OnDemand) return null
 
@@ -69,16 +69,7 @@ export function Schedule () {
     >
       <Row align='middle' justify='center'>
         {
-          typeWithSchedule === ScheduleFrequency.Daily &&
-            <DailySchedule name={name} />
-        }
-        {
-          typeWithSchedule === ScheduleFrequency.Weekly &&
-            <WeeklySchedule name={name} />
-        }
-        {
-          typeWithSchedule === ScheduleFrequency.Monthly &&
-            <MonthlySchedule name={name} />
+          <Button>bottom</Button>
         }
       </Row>
     </Form.Item>
