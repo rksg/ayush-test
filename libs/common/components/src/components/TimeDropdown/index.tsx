@@ -62,7 +62,6 @@ function timeMap () {
     defaultMessage: '<day></day> <at>at</at> <hour></hour>'
   })
 
-
 export const getDisplayTime =
 {
   Daily: (hour: number) => (timeMap().get(hour)),
@@ -86,113 +85,6 @@ export const getDisplayTime =
   )
 }
 
-// const { $t } = useIntl()
-// export function DailySchedule () {
-//   <Col span={24}>
-//       <Form.Item
-//         name={["testing", 'hour']}
-//         rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-//         noStyle
-//       >
-//         <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
-//           {timeOptions()}
-//         </Select>
-//       </Form.Item>
-//     </Col>
-// }
-
-
-
-
-// export function TimeDropdown () {
-
-//   const { $t } = useIntl()
-
-//   const Daily = ({ name }) => (
-//     <Col span={24}>
-//       <Form.Item
-//         name={[name, 'hour']}
-//         rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-//         noStyle
-//       >
-//         <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
-//           {timeOptions()}
-//         </Select>
-//       </Form.Item>
-//     </Col>
-// )
-
-//   const Weekly = ({ name }) => (
-//     <FormattedMessage {...atDayHour}
-//       values={{
-//         day: () => (
-//           <Col span={11}>
-//             <Form.Item
-//               name={[name, 'day']}
-//               rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
-//               noStyle
-//             >
-//               <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-//                 {dayOfWeekOptions()}
-//               </Select>
-//             </Form.Item>
-//           </Col>
-//         ),
-//         at: (children) => <UI.AtCol span={2}>{children}</UI.AtCol>,
-//         hour: () => (
-//           <Col span={11}>
-//             <Form.Item
-//               name={[name, 'hour']}
-//               rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-//               noStyle
-//             >
-//               <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
-//                 {timeOptions()}
-//               </Select>
-//             </Form.Item>
-//           </Col>
-//         )
-//       }}
-//     />
-//   )
-
-//   const Monthly = ({ name }) => (
-//     <FormattedMessage {...atDayHour}
-//       values={{
-//         day: () => (
-//           <Col span={11}>
-//             <Form.Item
-//               name={[name, 'day']}
-//               rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
-//               noStyle
-//             >
-//               <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-//                 {dayOfMonthOptions()}
-//               </Select>
-//             </Form.Item>
-//           </Col>
-//         ),
-//         at: (children) => <UI.AtCol span={2}>{children}</UI.AtCol>,
-//         hour: () => (
-//           <Col span={11}>
-//             <Form.Item
-//               name={[name, 'hour']}
-//               rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-//               noStyle
-//             >
-//               <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
-//                 {timeOptions()}
-//               </Select>
-//             </Form.Item>
-//           </Col>
-//         )
-//       }}
-//     />
-//   )
-//   return { Daily,Weekly, Monthly };
-// }
-
-
 interface TimeDropdownProps {
   timeType: string,
   name: string
@@ -201,8 +93,28 @@ interface TimeDropdownProps {
 export function TimeDropdown ( {timeType, name }:TimeDropdownProps ) {
   const { $t } = useIntl();
 
-    if (timeType === 'Daily') {
-      return (
+  const renderHour = (spanLength:number) => (
+        <Col span={spanLength}>
+          <Form.Item
+            name={[name, 'hour']}
+            rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
+            noStyle
+          >
+            <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
+              {timeOptions()}
+            </Select>
+          </Form.Item>
+        </Col>
+  )
+
+  if (timeType === 'Daily') {
+    return renderHour(24)
+  }
+  else {
+    return (
+    <FormattedMessage {...atDayHour}
+    values={{
+      day: () => (
         <Col span={11}>
           <Form.Item
             name={[name, 'day']}
@@ -210,44 +122,14 @@ export function TimeDropdown ( {timeType, name }:TimeDropdownProps ) {
             noStyle
           >
             <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-              {timeOptions()}
+              {timeType == 'Weekly' ? dayOfWeekOptions() : dayOfMonthOptions()}
             </Select>
           </Form.Item>
         </Col>
-      )
-    }
-    else {
-      return (
-      <FormattedMessage {...atDayHour}
-      values={{
-        day: () => (
-          <Col span={11}>
-            <Form.Item
-              name={[name, 'day']}
-              rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
-              noStyle
-            >
-              <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-                {timeType == 'Weekly' ? dayOfWeekOptions() : dayOfMonthOptions()}
-              </Select>
-            </Form.Item>
-          </Col>
-        ),
-        at: (children) => <UI.AtCol span={2}>{children}</UI.AtCol>,
-        hour: () => (
-          <Col span={11}>
-            <Form.Item
-              name={[name, 'hour']}
-              rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-              noStyle
-            >
-              <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
-                {timeOptions()}
-              </Select>
-            </Form.Item>
-          </Col>
-        )
-      }}
+      ),
+      at: (children) => <UI.AtCol span={2}>{children}</UI.AtCol>,
+      hour: () => renderHour(11)
+    }}
     />
   )}
 }

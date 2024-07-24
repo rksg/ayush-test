@@ -6,7 +6,7 @@ describe('TimeDropdown', () => {
   it('renders Daily dropdown correctly', async () => {
     render(<TimeDropdown timeType='Daily' name='daily' />)
 
-    expect(screen.getByText('Select day')).toBeInTheDocument();
+    expect(screen.getByText('Select hour')).toBeInTheDocument();
   })
 
   it('renders Weekly dropdown correctly', () => {
