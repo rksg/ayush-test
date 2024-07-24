@@ -1,12 +1,12 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, Tabs }                                                                  from '@acx-ui/components'
-import { Features }                                                                                  from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                                                                     from '@acx-ui/rc/components'
-import { useGetEdgeClusterListQuery, useGetEdgeClusterNetworkSettingsQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
-import { ClusterHighAvailabilityModeEnum, CommonOperation, Device, EdgeStatusEnum, getUrl }          from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                             from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, Tabs }                                                         from '@acx-ui/components'
+import { Features }                                                                         from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                            from '@acx-ui/rc/components'
+import { useGetEdgeClusterListQuery, useGetEdgeClusterQuery }                               from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, CommonOperation, Device, EdgeStatusEnum, getUrl } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                    from '@acx-ui/react-router-dom'
 
 import { ClusterDetails }   from './ClusterDetails'
 import { ClusterInterface } from './ClusterInterface'
