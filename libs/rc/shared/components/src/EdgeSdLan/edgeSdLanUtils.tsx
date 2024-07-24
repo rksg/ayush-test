@@ -7,6 +7,7 @@ import { getIntl }                                                              
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
+
 export const useGetNetworkTunnelInfo = () => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 

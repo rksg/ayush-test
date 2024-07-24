@@ -33,7 +33,7 @@ const AddEdgeMvSdLan = () => {
 
   const steps = [
     {
-      title: $t({ defaultMessage: 'Settings' }),
+      title: $t({ defaultMessage: 'General' }),
       content: SettingsForm
     },
     {
