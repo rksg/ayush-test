@@ -3,9 +3,11 @@ import React from 'react'
 import { Form, Input, Select }        from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { Button }               from '@acx-ui/components'
-import { DeleteOutlined }       from '@acx-ui/icons'
-import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { Button }                                     from '@acx-ui/components'
+import { DeleteOutlined, DeleteOutlinedDisabledIcon } from '@acx-ui/icons'
+import { whitespaceOnlyRegExp }                       from '@acx-ui/rc/utils'
+
+import { FieldLabel } from '../../../../NetworkForm/styledComponents'
 
 interface FieldType {
   value: string,
@@ -34,16 +36,14 @@ export function DataPromptField () {
           <>
             {fields.map((field, index) => (
               <div key={field.key}>
-                <div key={`${index}`}
-                  style={{ display: 'flex', flexDirection: 'row' }}>
-                  <label style={{ width: '100%' }}>
-                    {`Field ${index + 1}`}
-                  </label>
-                  <Button shape={'circle'}
-                    icon={<DeleteOutlined />}
+                <FieldLabel width='555px' key={`label_${index}`}>
+                  {`${$t({ defaultMessage: 'Field' })} ${index + 1}`}
+                  <Button
+                    type='link'
+                    key={`btn-${index}`}
+                    icon={(index >0) ? <DeleteOutlined/> : <DeleteOutlinedDisabledIcon/>}
                     onClick={() => remove(field.name)}/>
-                </div>
-
+                </FieldLabel>
                 <Form.Item {...field}
                   key={field.key + '_label'}
                   name={[field.name, 'label']}
