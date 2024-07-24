@@ -1,16 +1,17 @@
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, Tabs }                           from '@acx-ui/components'
-import { Features }                                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                              from '@acx-ui/rc/components'
-import { useGetEdgeClusterListQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
-import { CommonOperation, Device, EdgeStatusEnum, getUrl }    from '@acx-ui/rc/utils'
-import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, Tabs }                                                                  from '@acx-ui/components'
+import { Features }                                                                                  from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                     from '@acx-ui/rc/components'
+import { useGetEdgeClusterListQuery, useGetEdgeClusterNetworkSettingsQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, CommonOperation, Device, EdgeStatusEnum, getUrl }          from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                             from '@acx-ui/react-router-dom'
 
 import { ClusterDetails }   from './ClusterDetails'
 import { ClusterInterface } from './ClusterInterface'
 import { EdgeClusterDhcp }  from './EdgeClusterDhcp'
+import { HaSettings }       from './HaSettings'
 import { VirtualIp }        from './VirtualIp'
 
 
@@ -19,6 +20,7 @@ const EditEdgeCluster = () => {
   const { activeTab, clusterId } = useParams()
   const navigate = useNavigate()
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
   const basePath = useTenantLink(getUrl({
     feature: Device.EdgeCluster,
     oper: CommonOperation.Edit,
@@ -51,6 +53,8 @@ const EditEdgeCluster = () => {
     skip: !currentClusterStatus?.venueId
   })
 
+  const isAaCluster = isEdgeHaAaReady &&
+    currentClusterStatus?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
   const basicTabs = {
     'cluster-details': {
       title: $t({ defaultMessage: 'Cluster Details' }),
@@ -58,13 +62,22 @@ const EditEdgeCluster = () => {
         currentClusterStatus={currentClusterStatus}
       />
     },
-    'virtual-ip': {
-      title: $t({ defaultMessage: 'Virtual IP' }),
-      content: <VirtualIp
-        currentClusterStatus={currentClusterStatus}
-        currentVipConfig={currentCluster?.virtualIpSettings}
-      />
-    },
+    ...(isAaCluster? {
+      'ha-settings': {
+        title: $t({ defaultMessage: 'HA Settings' }),
+        content: <HaSettings
+          currentClusterStatus={currentClusterStatus}
+        />
+      }
+    } : {
+      'virtual-ip': {
+        title: $t({ defaultMessage: 'Virtual IP' }),
+        content: <VirtualIp
+          currentClusterStatus={currentClusterStatus}
+          currentVipConfig={currentCluster?.virtualIpSettings}
+        />
+      }
+    }),
     'cluster-interface': {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       content: <ClusterInterface
