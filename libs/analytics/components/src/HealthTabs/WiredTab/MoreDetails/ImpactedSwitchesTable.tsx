@@ -12,7 +12,7 @@ import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult, SwitchDetails,
-  showTopResult, topImpactedSwitchesLimit
+  showTopNTableResult, topImpactedSwitchesLimit
 } from './config'
 import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
 import { ChartTitle }                                                from './styledComponents'
@@ -142,7 +142,7 @@ export const ImpactedSwitchesTable = ({
             other {Switches}
           }`}
           values={{
-            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
           }}

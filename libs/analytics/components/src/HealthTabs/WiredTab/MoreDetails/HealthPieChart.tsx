@@ -7,9 +7,11 @@ import { formatter }                                       from '@acx-ui/formatt
 import { InformationOutlined }                             from '@acx-ui/icons'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
+import { showTopNPieChartResult } from '../../../Health/HealthDrillDown/config'
+
 import {
   PieChartResult, TopNByCPUUsageResult,
-  TopNByDHCPFailureResult, WidgetType, showTopResult,
+  TopNByDHCPFailureResult, WidgetType,
   TopNByPortCongestionResult, TopNByStormPortCountResult
 } from './config'
 import { usePieChartDataQuery }        from './services'
@@ -112,7 +114,7 @@ export const MoreDetailsPieChart = ({
       other {Switches}
     }`}
       values={{
-        count: showTopResult($t, queryResults?.data?.length, n),
+        count: showTopNPieChartResult($t, queryResults?.data?.length, n),
         title,
         totalCount,
         b: (chunk) => <b>{chunk}</b>
