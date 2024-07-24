@@ -7,7 +7,7 @@ import {
 } from 'react-intl'
 
 import * as UI from './styledComponents'
-import moment from 'moment';
+import moment from 'moment'
 
 function timeMap () {
     const timeMap = new Map<number, string>()
@@ -65,22 +65,22 @@ function timeMap () {
 
 export const getDisplayTime =
 {
-  Daily: (value) => (timeMap().get(value!.hour!)),
-  Weekly: (value) => (
+  Daily: (hour: number) => (timeMap().get(hour)),
+  Weekly: (day: number, hour: number) => (
     <FormattedMessage {...atDayHour}
       values={{
-        day: () => dayOfWeekMap().get(value!.day!),
+        day: () => dayOfWeekMap().get(day),
         at: (text) => text,
-        hour: () => timeMap().get(value!.hour!)
+        hour: () => timeMap().get(hour)
       }}
     />
   ),
-  Monthly: (value) => (
+  Monthly: (day: number, hour: number) => (
     <FormattedMessage {...atDayHour}
       values={{
-        day: () => dayOfMonthMap().get(value!.day!),
+        day: () => dayOfMonthMap().get(day),
         at: (text) => text,
-        hour: () => timeMap().get(value!.hour!)
+        hour: () => timeMap().get(hour)
       }}
     />
   )

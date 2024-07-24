@@ -1,49 +1,25 @@
 import { render, screen } from '@acx-ui/test-utils';
 import '@testing-library/jest-dom/extend-expect';
 import { TimeDropdown } from '.';
-import { IntlProvider } from 'react-intl';
-
-
-const messages = {
-  'Please enter hour': 'Please enter hour',
-  'Select hour': 'Select hour',
-  'Please enter day': 'Please enter day',
-  'Select day': 'Select day'
-};
-
-const renderWithIntl = (component) => {
-  return render(<IntlProvider locale="en" messages={messages}>{component}</IntlProvider>);
-};
 
 describe('TimeDropdown', () => {
-  it('renders DailySchedule correctly', () => {
-    const name = 'testName';
-    renderWithIntl(<TimeDropdown />);
-    renderWithIntl(<TimeDropdown.DailySchedule name={name} />);
+  it('renders Daily dropdown correctly', async () => {
+    render(<TimeDropdown timeType='Daily' name='daily' />)
 
-    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument();
-    expect(screen.getByText('Please enter hour')).toBeInTheDocument();
-  });
+    expect(screen.getByText('Select day')).toBeInTheDocument();
+  })
 
-  it('renders WeeklySchedule correctly', () => {
-    const name = 'testName';
-    renderWithIntl(<TimeDropdown />);
-    renderWithIntl(<TimeDropdown.WeeklySchedule name={name} />);
+  it('renders Weekly dropdown correctly', () => {
+    render(<TimeDropdown timeType='Weekly' name='weekly' />)
 
-    expect(screen.getByPlaceholderText('Select day')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument();
-    expect(screen.getByText('Please enter day')).toBeInTheDocument();
-    expect(screen.getByText('Please enter hour')).toBeInTheDocument();
-  });
+    expect(screen.getByText('Select day')).toBeInTheDocument();
+    expect(screen.getByText('Select hour')).toBeInTheDocument();
+  })
 
-  it('renders MonthlySchedule correctly', () => {
-    const name = 'testName';
-    renderWithIntl(<TimeDropdown />);
-    renderWithIntl(<TimeDropdown.MonthlySchedule name={name} />);
+  it('renders Month dropdown correctly', () => {
+    render(<TimeDropdown timeType='Monthly' name='weekly' />)
 
-    expect(screen.getByPlaceholderText('Select day')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument();
-    expect(screen.getByText('Please enter day')).toBeInTheDocument();
-    expect(screen.getByText('Please enter hour')).toBeInTheDocument();
-  });
+    expect(screen.getByText('Select day')).toBeInTheDocument();
+    expect(screen.getByText('Select hour')).toBeInTheDocument();
+  })
 });

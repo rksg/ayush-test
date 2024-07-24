@@ -68,8 +68,17 @@ export function Schedule () {
       required
     >
       <Row align='middle' justify='center'>
+      {
+          typeWithSchedule === ScheduleFrequency.Daily &&
+          <TimeDropdown timeType='Daily' name={name} />
+        }
         {
-          <Button>bottom</Button>
+          typeWithSchedule === ScheduleFrequency.Weekly &&
+          <TimeDropdown timeType='Weekly' name={name} />
+        }
+        {
+          typeWithSchedule === ScheduleFrequency.Monthly &&
+          <TimeDropdown timeType='Weekly' name={name} />
         }
       </Row>
     </Form.Item>
@@ -92,11 +101,11 @@ Schedule.FieldSummary = function ScheduleFieldSummary () {
     children={<StepsForm.FieldSummary<ScheduleType> convert={(value) => {
       switch (value!.frequency) {
         case ScheduleFrequency.Daily:
-          return getDisplayTime.Daily(value)
+          return getDisplayTime.Daily(value?.day!)
         case ScheduleFrequency.Weekly:
-          return getDisplayTime.Weekly(value)
+          return getDisplayTime.Weekly(value?.day!,value?.hour!)
         default:
-          return getDisplayTime.Monthly(value)
+          return getDisplayTime.Monthly(value?.day!,value?.hour!)
       }
     }}/>}
   />
