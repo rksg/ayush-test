@@ -14,9 +14,9 @@ import {
 
 import { mockDeepNetworkList } from '../__tests__/fixtures'
 
-import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from './EdgeMvSdLanContextProvider'
+import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from './useEdgeMvSdlanData'
 
-import { NetworkMvTunnelModal } from '.'
+import { NetworkTunnelActionModal } from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
@@ -80,7 +80,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={{
@@ -112,7 +112,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={{
@@ -166,7 +166,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={defaultNetworkData}
@@ -194,7 +194,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={{
@@ -239,7 +239,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={defaultNetworkData}
@@ -267,7 +267,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={{
@@ -295,7 +295,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={defaultNetworkData}
@@ -320,7 +320,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         render(
           <Provider>
             <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
+              <NetworkTunnelActionModal
                 visible={true}
                 onClose={() => {}}
                 network={defaultNetworkData}
@@ -357,7 +357,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
       render(
         <Provider>
           <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-            <NetworkMvTunnelModal
+            <NetworkTunnelActionModal
               visible={true}
               onClose={() => {}}
               network={mockedNetworkData}

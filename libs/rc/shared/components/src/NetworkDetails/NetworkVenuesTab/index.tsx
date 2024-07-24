@@ -52,8 +52,7 @@ import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
 import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
-import { NetworkMvTunnelModal, NetworkMvTunnelModalProps }                      from '../../EdgeSdLan/NetworkMvTunnelModal'
-import { EdgeMvSdLanContextProvider }                                           from '../../EdgeSdLan/NetworkMvTunnelModal/EdgeMvSdLanContextProvider'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps }              from '../../EdgeSdLan/NetworkTunnelActionModal'
 import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
@@ -195,9 +194,9 @@ export function NetworkVenuesTab () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
-  const [tunnelModalState, setTunnelModalState] = useState<NetworkMvTunnelModalProps>({
+  const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
     visible: false
-  } as NetworkMvTunnelModalProps)
+  } as NetworkTunnelActionModalProps)
   const [systemNetwork, setSystemNetwork] = useState(false)
 
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
@@ -602,7 +601,7 @@ export function NetworkVenuesTab () {
                   venueId: row.id,
                   venueName: row.name
                 }
-              } as NetworkMvTunnelModalProps)
+              } as NetworkTunnelActionModalProps)
             }}>
             {!!destinationsInfo
               ? $t({ defaultMessage: 'Tunneled ({clusterName})' },
@@ -645,7 +644,7 @@ export function NetworkVenuesTab () {
     })
   }
 
-  const handleCloseTunnelModal = () => setTunnelModalState({ visible: false } as NetworkMvTunnelModalProps)
+  const handleCloseTunnelModal = () => setTunnelModalState({ visible: false } as NetworkTunnelActionModalProps)
 
   const handleFormFinish = (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
@@ -754,9 +753,7 @@ export function NetworkVenuesTab () {
         />
       </Form.Provider>
       {isEdgeMvSdLaneady &&
-      <EdgeMvSdLanContextProvider>
-        <NetworkMvTunnelModal {...tunnelModalState} onClose={handleCloseTunnelModal}/>
-      </EdgeMvSdLanContextProvider>
+        <NetworkTunnelActionModal {...tunnelModalState} onClose={handleCloseTunnelModal}/>
       }
     </Loader>
   )
