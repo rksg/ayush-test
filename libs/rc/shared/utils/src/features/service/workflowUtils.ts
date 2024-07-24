@@ -22,8 +22,8 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
 
   return Object.entries(ActionDefaultValueMap[actionType])
-    .reduce((acc: Record<string, string | boolean>, [key, value]) => {
-      if (typeof value === 'string' || typeof value === 'boolean' || typeof value === 'object') {
+    .reduce((acc: Record<string, string | boolean | object>, [key, value]) => {
+      if (typeof value === 'string' || typeof value === 'boolean' || Array.isArray(value)) {
         acc[key] = value
       } else {
         acc[key] = $t(value)
