@@ -13,7 +13,6 @@ export const CrrmValuesExtra = ({ details }: { details: EnhancedRecommendation }
   const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
   const recommendationText = getRecommendationsText(details, isFullOptimization)
   return <Wrapper>
-    {/*  */}
     <GridRow>
       <GridCol col={{ span: 12 }}>
         <DetailsHeader>{$t({ defaultMessage: 'Why this recommendation?' })}</DetailsHeader>

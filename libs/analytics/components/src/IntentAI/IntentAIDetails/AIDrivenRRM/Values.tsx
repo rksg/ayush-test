@@ -45,6 +45,7 @@ function extractBeforeAfter (value: CrrmListItem['kpis']) {
 }
 
 export const translateMetadataValue = (value: unknown) => {
+  // TODO: add correct translation for intent ai
   // if (typeof value === 'string') {
   //   switch (value) {
   //     case 'BACKGROUND_SCANNING': return 'Background Scanning'
