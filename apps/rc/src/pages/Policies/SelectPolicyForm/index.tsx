@@ -150,18 +150,21 @@ export default function SelectPolicyForm () {
           >
             <Radio.Group style={{ width: '100%' }}>
               <GridRow>
-                {sets.filter(set => isServicePolicyCardEnabled(set, 'create')).map(set => {
-                  return <GridCol col={{ span: 6 }} key={set.type}>
-                    <RadioCard
-                      type={'radio'}
-                      key={set.type}
-                      value={set.type}
-                      title={$t(policyTypeLabelMapping[set.type])}
-                      description={$t(policyTypeDescMapping[set.type])}
-                      categories={set.categories}
-                    />
-                  </GridCol>
-                })}
+                {
+                  // eslint-disable-next-line max-len
+                  sets.filter(set => isServicePolicyCardEnabled<PolicyType>(set, 'create')).map(set => {
+                    return <GridCol col={{ span: 6 }} key={set.type}>
+                      <RadioCard
+                        type={'radio'}
+                        key={set.type}
+                        value={set.type}
+                        title={$t(policyTypeLabelMapping[set.type])}
+                        description={$t(policyTypeDescMapping[set.type])}
+                        categories={set.categories}
+                      />
+                    </GridCol>
+                  })
+                }
               </GridRow>
             </Radio.Group>
           </Form.Item>

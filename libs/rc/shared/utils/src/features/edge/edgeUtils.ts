@@ -22,7 +22,7 @@ import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../
 
 const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
-const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-2])\\d{10}'
+const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-3])\\d{10}'
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
