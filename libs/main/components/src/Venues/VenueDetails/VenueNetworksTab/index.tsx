@@ -101,7 +101,7 @@ const defaultRbacPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'dsaeOnboardNetwork',
-    'venueApGroups.venueId'
+    'venueApGroups'
   ]
 }
 

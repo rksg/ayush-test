@@ -389,6 +389,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    /*
     venueNetworkList: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const { venueNetworkListQuery,
@@ -455,6 +456,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    */
 
 
     networkVenueListV2: build.query<TableResult<Venue>, RequestPayload>({
@@ -1003,6 +1005,7 @@ export const aggregatedNetworksVenueData = (venueList: TableResult<Venue>,
   }
 }
 
+/*
 export const fetchVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
@@ -1097,6 +1100,7 @@ export const fetchApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => 
     venueNetworkApGroupList
   }
 }
+*/
 
 
 // API V2
@@ -1325,10 +1329,10 @@ export const {
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
   useApNetworkListQuery,
-  useApGroupNetworkListQuery,
-  useLazyApGroupNetworkListQuery,
-  useVenueNetworkListQuery,
-  useVenueNetworkTableQuery,
+  //useApGroupNetworkListQuery,
+  //useLazyApGroupNetworkListQuery,
+  //useVenueNetworkListQuery,
+  //useVenueNetworkTableQuery,
   useVenueNetworkListV2Query,
   useNewVenueNetworkTableQuery,
   useVenueRadioActiveNetworksQuery,
