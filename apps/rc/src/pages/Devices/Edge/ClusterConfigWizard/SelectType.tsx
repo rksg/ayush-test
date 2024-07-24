@@ -155,7 +155,7 @@ export const SelectType = () => {
       <Row>
         <Typography.Text>
           {$t({ defaultMessage: `Select which configuration you want to quickly set up for
-      all SmartEdges in this cluster ({clusterName}):` },
+      all SmartEdges in this cluster:` },
           { clusterName })}
         </Typography.Text>
       </Row>
