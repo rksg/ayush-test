@@ -110,6 +110,14 @@ exports[`Topology Switch Card should render orrectly 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
+.c0 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c0 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c1 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);

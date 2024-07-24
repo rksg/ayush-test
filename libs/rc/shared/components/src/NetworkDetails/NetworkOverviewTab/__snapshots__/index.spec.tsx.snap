@@ -78,6 +78,14 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
   line-height: var(--acx-body-4-line-height);
 }
 
+.c3 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c3 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c4 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -371,6 +379,14 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
   padding: 0;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c3 .ant-card-actions >li {
+  margin: 0;
 }
 
 .c4 {
@@ -672,6 +688,14 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
   padding: 0;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
+}
+
+.c3 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c3 .ant-card-actions >li {
+  margin: 0;
 }
 
 .c4 {

@@ -940,6 +940,14 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
+.c2 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c2 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c3 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
