@@ -4,7 +4,6 @@ import {
   Row,
   Input
 } from 'antd'
-
 import {
   defineMessage,
   useIntl
@@ -68,7 +67,7 @@ export function Schedule () {
       required
     >
       <Row align='middle' justify='center'>
-      {
+        {
           typeWithSchedule === ScheduleFrequency.Daily &&
           <TimeDropdown timeType='Daily' name={name} />
         }
