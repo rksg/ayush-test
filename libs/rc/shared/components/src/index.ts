@@ -204,6 +204,7 @@ export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess
 } from './EdgeSdLan/edgeSdLanUtils'
+export * from './EdgeSdLan/NetworkMvTunnelModal'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,

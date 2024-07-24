@@ -53,7 +53,7 @@ describe('Edge SD-LAN Detail - DC', () => {
       policyId: mockedSdLanData.tunnelProfileId!
     }))
     expect(screen.getByText('Instances')).toBeVisible()
-    expect(screen.getByRole('tab', { name: 'Venues(1)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Venues(2)' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'SmartEdges(1)' })).toBeVisible()
   })
 })
