@@ -1411,6 +1411,14 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
+.c7 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c7 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -1552,7 +1560,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -2108,7 +2116,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -2693,7 +2701,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -3284,7 +3292,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -3869,7 +3877,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -4345,7 +4353,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -4870,7 +4878,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -5379,7 +5387,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -7328,6 +7336,14 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
   line-height: var(--acx-body-4-line-height);
 }
 
+.c7 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c7 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -7469,7 +7485,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -7995,7 +8011,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -8520,7 +8536,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -9026,7 +9042,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -9551,7 +9567,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -10017,7 +10033,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -10537,7 +10553,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -11001,7 +11017,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -12749,6 +12765,14 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
   line-height: var(--acx-body-4-line-height);
 }
 
+.c7 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c7 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -12890,7 +12914,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -13446,7 +13470,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -14031,7 +14055,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -14622,7 +14646,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -15207,7 +15231,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -15683,7 +15707,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -16208,7 +16232,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -16717,7 +16741,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -18642,6 +18666,14 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
   line-height: var(--acx-body-4-line-height);
 }
 
+.c7 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c7 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -18809,7 +18841,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -18902,7 +18934,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -19009,7 +19041,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -19102,7 +19134,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -19209,7 +19241,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -19302,7 +19334,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -19409,7 +19441,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -19502,7 +19534,7 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -20998,6 +21030,14 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
   line-height: var(--acx-body-4-line-height);
 }
 
+.c7 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c7 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -21172,7 +21212,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -21265,7 +21305,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -21810,7 +21850,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -21903,7 +21943,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -22463,7 +22503,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -22556,7 +22596,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -23001,7 +23041,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div
@@ -23094,7 +23134,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
           style="height: 200px;"
         >
           <div
-            class="styledComponents__Wrapper-sc-13w5wfx-4 duyTWo"
+            class="c7"
             type="default"
           >
             <div

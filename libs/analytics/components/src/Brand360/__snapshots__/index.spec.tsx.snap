@@ -112,6 +112,14 @@ exports[`Brand360 resets SLAs 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
+.c10 .ant-card-actions {
+  border-top: 1px;
+}
+
+.c10 .ant-card-actions >li {
+  margin: 0;
+}
+
 .c11 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);

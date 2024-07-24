@@ -21,8 +21,7 @@ export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) =
   const queryResult = useIntentAICRRMQuery(details, band)
   const crrmData = queryResult?.data
 
-  const { interferingLinks, linksPerAP } = getGraphKPI(
-    details as EnhancedRecommendation, crrmData)
+  const { interferingLinks, linksPerAP } = getGraphKPI(details as EnhancedRecommendation, crrmData)
 
   return <Loader states={[queryResult]}>
     <DetailsHeader>{$t({ defaultMessage: 'Benefits' })}</DetailsHeader>
