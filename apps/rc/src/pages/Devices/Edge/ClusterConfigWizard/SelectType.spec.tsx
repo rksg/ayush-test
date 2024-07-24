@@ -291,6 +291,5 @@ describe('SelectType', () => {
 })
 
 const checkDataRendered = async () => {
-  const subTitle = screen.getByText(/set up for all SmartEdges in this cluster/i)
-  await waitFor(() => expect(subTitle).toHaveTextContent('(Edge Cluster 1):'))
+  expect(screen.getByText(/Edge Cluster 1 \(Active-(Active|Standby) HA mode\)/i)).toBeVisible()
 }
