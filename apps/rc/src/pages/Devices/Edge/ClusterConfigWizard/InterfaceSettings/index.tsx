@@ -5,9 +5,9 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityStatusBar, CompatibilityStatusEnum, TypeForm }              from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { CompatibilityStatusBar, CompatibilityStatusEnum, EdgeHaSettingsForm, TypeForm } from '@acx-ui/rc/components'
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
@@ -17,7 +17,6 @@ import { useTenantLink }                                                        
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { HaSettingForm }      from './HaSettingForm'
 import { LagForm }            from './LagForm'
 import { PortForm }           from './PortForm'
 import { Summary }            from './Summary'
@@ -240,7 +239,7 @@ export const InterfaceSettings = () => {
           id: InterfaceSettingsTypeEnum.HA_SETTING,
           content: <TypeForm
             header={haSettingHeader}
-            content={<HaSettingForm />}
+            content={<EdgeHaSettingsForm />}
           />
         }]:
         [{
