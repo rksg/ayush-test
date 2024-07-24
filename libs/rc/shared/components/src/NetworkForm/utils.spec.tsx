@@ -6,7 +6,7 @@ import { ClientIsolationUrls, ConfigTemplateType, DpskWlanAdvancedCustomization,
 import { Provider }                                                                                                                                                                                                    from '@acx-ui/store'
 import { mockServer, renderHook, waitFor }                                                                                                                                                                             from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate, useWifiCalling } from './utils'
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useClientIsolationActivations, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate, useWifiCalling, getDefaultMloOptions } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -527,6 +527,29 @@ describe('Network utils test', () => {
 
       await waitFor(() => expect(activateFn).toHaveBeenCalled())
       await waitFor(() => expect(deactivateFn).toHaveBeenCalled())
+    })
+  })
+
+  describe('test getDefaultMloOptions func', () => {
+    it('should get default Mlo options correctly when FF is off', () => {
+      const wifi7Mlo3LinkFlag = false
+      const defaultWithFFoff = {
+        enable24G: true,
+        enable50G: true,
+        enable6G: false
+      }
+      const actual = getDefaultMloOptions(wifi7Mlo3LinkFlag)
+      expect(actual).toEqual(defaultWithFFoff)
+    })
+    it('should get default Mlo options correctly when FF is on', () => {
+      const wifi7Mlo3LinkFlag = true
+      const defaultWithFFon = {
+        enable24G: true,
+        enable50G: true,
+        enable6G: true
+      }
+      const actual = getDefaultMloOptions(wifi7Mlo3LinkFlag)
+      expect(actual).toEqual(defaultWithFFon)
     })
   })
 })
