@@ -176,10 +176,13 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
         return (selectedRows.length === 1 && selectedRows[0].name !== RolesEnum.PRIME_ADMIN)
       },
       onClick: (selectedRows) => {
+        const stateProp: PrivilegeGroupSateProps = {
+          isOnboardedMsp: isOnboardedMsp
+        }
         navigate({
           ...linkAddPriviledgePath,
           pathname: `${linkAddPriviledgePath.pathname}/clone/${selectedRows[0].id}`
-        }, { state: isOnboardedMsp })
+        }, { state: stateProp })
       }
     },
     {

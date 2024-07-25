@@ -138,7 +138,7 @@ export function EditPrivilegeGroup () {
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
-  const isOnboardedMsp = location.isOnboardedMsp ?? false
+  const isOnboardedMsp = location?.isOnboardedMsp ?? false
   const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
@@ -157,7 +157,7 @@ export function EditPrivilegeGroup () {
     if (privilegeGroupList) {
       const nameList = privilegeGroupList.filter(item =>
         item.type === CustomGroupType.CUSTOM &&
-        item.name !== location.name).map(item => item.name)
+        item.name !== location?.name).map(item => item.name)
       setGroupNames(nameList as RolesEnum[])
     }
   }, [privilegeGroupList])
