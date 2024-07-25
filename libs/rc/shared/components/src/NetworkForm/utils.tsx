@@ -42,8 +42,7 @@ import {
   useDeactivateAccessControlProfileOnWifiNetworkMutation,
   useActivateWifiCallingServiceTemplateMutation,
   useDeactivateWifiCallingServiceTemplateMutation,
-  useGetEnhancedWifiCallingServiceTemplateListQuery
-  useDeactivateAccessControlProfileOnWifiNetworkMutation,
+  useGetEnhancedWifiCallingServiceTemplateListQuery,
   useActivateL2AclTemplateOnWifiNetworkMutation,
   useDeactivateL2AclTemplateOnWifiNetworkMutation,
   useActivateL3AclTemplateOnWifiNetworkMutation,
