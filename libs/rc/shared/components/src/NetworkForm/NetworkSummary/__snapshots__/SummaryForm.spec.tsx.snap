@@ -2,11 +2,67 @@
 
 exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
 <DocumentFragment>
-  <form
+  h1.c1.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c1.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c1.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c1.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c1.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c0 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+<form
     class="ant-form ant-form-horizontal"
   >
     <h3
-      class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
+      class="ant-typography c0"
     >
       Summary
     </h3>
@@ -19,7 +75,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          class="ant-typography c1 "
         >
           Network Info
         </h4>
@@ -216,7 +272,7 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          class="ant-typography c1 "
         >
           Activated in venues
         </h4>
@@ -272,11 +328,67 @@ exports[`SummaryForm should render cloudpath disabled successfully 1`] = `
 
 exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
 <DocumentFragment>
-  <form
+  h1.c1.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c1.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c1.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c1.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c1.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c0 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+<form
     class="ant-form ant-form-horizontal"
   >
     <h3
-      class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
+      class="ant-typography c0"
     >
       Summary
     </h3>
@@ -289,7 +401,7 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          class="ant-typography c1 "
         >
           Network Info
         </h4>
@@ -548,7 +660,7 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          class="ant-typography c1 "
         >
           Activated in venues
         </h4>
@@ -604,11 +716,67 @@ exports[`SummaryForm should render cloudpath enabled successfully 1`] = `
 
 exports[`SummaryForm should show proxy service disable for non proxy support 1`] = `
 <DocumentFragment>
-  <form
+  h1.c1.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c1.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c1.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c1.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c1.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c0 {
+  font-size: var(--acx-steps-form-form-title-font-size);
+  line-height: var(--acx-steps-form-form-title-line-height);
+  font-weight: var(--acx-steps-form-form-title-font-weight);
+  margin-bottom: var(--acx-steps-form-form-title-margin-bottom) !important;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.c0 svg {
+  width: 16px;
+  height: 16px;
+}
+
+<form
     class="ant-form ant-form-horizontal"
   >
     <h3
-      class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
+      class="ant-typography c0"
     >
       Summary
     </h3>
@@ -621,7 +789,7 @@ exports[`SummaryForm should show proxy service disable for non proxy support 1`]
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          class="ant-typography c1 "
         >
           Network Info
         </h4>
@@ -880,7 +1048,7 @@ exports[`SummaryForm should show proxy service disable for non proxy support 1`]
         style="padding-left: 10px; padding-right: 10px; flex: 1 1 auto;"
       >
         <h4
-          class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+          class="ant-typography c1 "
         >
           Activated in venues
         </h4>

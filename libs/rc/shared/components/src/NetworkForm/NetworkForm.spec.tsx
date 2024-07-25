@@ -84,8 +84,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))),
       rest.post(PortalUrlsInfo.createPortal.url,

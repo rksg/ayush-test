@@ -56,10 +56,6 @@ describe('Scope Form', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (_, res, ctx) => res(ctx.json(mockNetworkSaveData))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json(mockDeepNetworkList))
       )
     )
   })

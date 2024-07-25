@@ -2,8 +2,16 @@
 
 exports[`StatusIcon render FAIL StatusIcon 1`] = `
 <DocumentFragment>
-  <svg
-    class="styledComponents__FailIcon-sc-1px55aj-1 cirwSw"
+  .c0 path:nth-child(1) {
+  fill: var(--acx-semantics-red-50);
+}
+
+.c0 path:nth-child(2) {
+  stroke: var(--acx-semantics-red-50);
+}
+
+<svg
+    class="c0"
     data-testid="CancelCircleSolid"
   />
 </DocumentFragment>
@@ -11,8 +19,18 @@ exports[`StatusIcon render FAIL StatusIcon 1`] = `
 
 exports[`StatusIcon render INPROGRESS StatusIcon 1`] = `
 <DocumentFragment>
-  <svg
-    class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
+  .c0 {
+  -webkit-animation: rotate 1s linear infinite;
+  animation: rotate 1s linear infinite;
+}
+
+.c0 circle {
+  fill: var(--acx-neutrals-60);
+  stroke: var(--acx-neutrals-60);
+}
+
+<svg
+    class="c0"
     data-testid="InProgress"
   />
 </DocumentFragment>
@@ -20,8 +38,13 @@ exports[`StatusIcon render INPROGRESS StatusIcon 1`] = `
 
 exports[`StatusIcon render PENDING StatusIcon 1`] = `
 <DocumentFragment>
-  <svg
-    class="styledComponents__PendingsIcon-sc-1px55aj-2 jYPowK"
+  .c0 circle {
+  fill: var(--acx-neutrals-60);
+  stroke: var(--acx-neutrals-60);
+}
+
+<svg
+    class="c0"
     data-testid="Pending"
   />
 </DocumentFragment>
@@ -29,8 +52,16 @@ exports[`StatusIcon render PENDING StatusIcon 1`] = `
 
 exports[`StatusIcon render SUCCESS StatusIcon 1`] = `
 <DocumentFragment>
-  <svg
-    class="styledComponents__SuccessIcon-sc-1px55aj-0 gPcOex"
+  .c0 path:nth-child(1) {
+  fill: var(--acx-semantics-green-50);
+}
+
+.c0 path:nth-child(3) {
+  stroke: var(--acx-semantics-green-50);
+}
+
+<svg
+    class="c0"
     data-testid="CheckMarkCircleSolid"
   />
 </DocumentFragment>
