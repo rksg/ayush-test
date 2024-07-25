@@ -2,47 +2,23 @@ import { useEffect, useState } from 'react'
 
 import { Form, Radio, Space, Typography } from 'antd'
 
-import { Modal }                                from '@acx-ui/components'
-import { Features }                             from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanViewData, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }                              from '@acx-ui/utils'
+import { Modal }            from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
+import {  NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }          from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
-import { useEdgeMvSdLanActions } from '../useEdgeSdLanActions'
 
-import { EdgeSdLanRadioOption } from './EdgeSdLanRadioOption'
-import * as UI                  from './styledComponents'
-import { useEdgeMvSdlanData }   from './useEdgeMvSdlanData'
+import { EdgeSdLanRadioOption }                                                          from './EdgeSdLanRadioOption'
+import { NetworkTunnelInfoButton }                                                       from './NetworkTunnelInfoButton'
+import * as UI                                                                           from './styledComponents'
+import { NetworkTunnelTypeEnum, NetworkTunnelActionModalProps, NetworkTunnelActionForm } from './types'
+import { useEdgeMvSdlanData }                                                            from './useEdgeMvSdlanData'
+import { getTunnelType }                                                                 from './utils'
 
-export enum NetworkTunnelTypeEnum {
-  None = 'None',
-  SdLan = 'SdLan',
-  SoftGre = 'SoftGre'
-}
-
-const getTunnelType = (
-  network: NetworkTunnelActionModalProps['network'],
-  venueSdLanInfo?: EdgeMvSdLanViewData) => {
-  const isSdLanTunneled = Boolean(venueSdLanInfo?.tunneledWlans?.find(wlan =>
-    wlan.networkId === network?.id && wlan.venueId === network?.venueId))
-
-  return isSdLanTunneled ? NetworkTunnelTypeEnum.SdLan : NetworkTunnelTypeEnum.None
-}
-
-export interface NetworkTunnelActionModalProps {
-  visible: boolean
-  onClose: () => void
-  network?: {
-    id: string,
-    type: NetworkTypeEnum,
-    venueId: string,
-    venueName?: string,
-  }
-}
-
-export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
+const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
-  const { visible, onClose, network } = props
+  const { visible, network, onClose, onFinish } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -50,7 +26,6 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const [form] = Form.useForm()
   const tunnelType = Form.useWatch(['tunnelType'], form)
 
-  const { toggleNetwork } = useEdgeMvSdLanActions()
   // eslint-disable-next-line max-len
   const { getVenueSdLan } = useEdgeMvSdlanData({ 'tunneledWlans.venueId': [network?.venueId!] }, !network)
 
@@ -60,52 +35,15 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
   const networkVenueName = network?.venueName
 
   const venueSdLanInfo = networkVenueId ? getVenueSdLan(networkVenueId) : undefined
+
   const tunnelTypeInitVal = getTunnelType(network, venueSdLanInfo)
 
   const handleApply = async () => {
-    const formValues = form.getFieldsValue(true)
+    if (!networkVenueId)  return
+    const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
 
-    const venueId = networkVenueId
-    if (!venueId)  return
-
-    const formTunnelType = formValues.tunnelType
-    const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
-    const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled
-
-    // activate/deactivate SDLAN tunneling
-    if (tunnelType !== tunnelTypeInitVal) {
-      setIsSubmitting(true)
-
-      // activate/deactivate network
-      await toggleNetwork(
-        venueSdLanInfo?.id!,
-        venueId,
-        sdLanTunneled ? sdLanTunnelGuest : false,
-        networkId!,
-        sdLanTunneled
-      )
-    } else {
-      // tunnelType still SDLAN
-      if (tunnelTypeInitVal === NetworkTunnelTypeEnum.SdLan) {
-        const isGuestTunnelEnabledInitState = !!venueSdLanInfo?.isGuestTunnelEnabled
-        && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
-          wlan.networkId === networkId && wlan.venueId === networkVenueId))
-
-        // check if tunnel guest changed
-        if(isGuestTunnelEnabledInitState !== sdLanTunnelGuest) {
-          setIsSubmitting(true)
-
-          await toggleNetwork(
-              venueSdLanInfo?.id!,
-              venueId,
-              sdLanTunnelGuest,
-              networkId!,
-              sdLanTunneled
-          )
-        }
-      }
-    }
-
+    setIsSubmitting(true)
+    await onFinish(formValues, { venueSdLan: venueSdLanInfo })
     setIsSubmitting(false)
     onClose()
   }
@@ -190,4 +128,11 @@ export const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) =
       </Form.Item>
     </Form>
   </Modal>
+}
+
+export {
+  NetworkTunnelTypeEnum,
+  type NetworkTunnelActionModalProps,
+  NetworkTunnelInfoButton,
+  NetworkTunnelActionModal
 }

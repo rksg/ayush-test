@@ -197,6 +197,7 @@ export {
   useGetEdgeSdLanByEdgeOrClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
+  SdLanScopedNetworkVenuesData,
   checkSdLanScopedNetworkDeactivateAction
 } from './EdgeSdLan/useEdgeSdLanActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'

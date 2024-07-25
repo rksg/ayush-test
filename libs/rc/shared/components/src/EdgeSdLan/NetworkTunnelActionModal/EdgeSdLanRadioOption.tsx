@@ -4,9 +4,8 @@ import { useIntl }                                     from 'react-intl'
 import { EdgeMvSdLanViewData, NetworkTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink, useHelpPageLink } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                  from '@acx-ui/react-router-dom'
 
-import * as UI from './styledComponents'
-
-import { NetworkTunnelTypeEnum } from '.'
+import * as UI                   from './styledComponents'
+import { NetworkTunnelTypeEnum } from './utils'
 
 interface SdLanRadioOptionProps {
   currentTunnelType: NetworkTunnelTypeEnum

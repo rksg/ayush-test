@@ -570,6 +570,11 @@ export const useSdLanScopedVenueNetworks = (
   }
 }
 
+export interface SdLanScopedNetworkVenuesData {
+    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] },
+    networkVenueIds: string[] | undefined,
+    guestNetworkVenueIds: string[] | undefined
+}
 export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -625,11 +630,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         sdLansVenueMap,
         networkVenueIds: Object.keys(sdLansVenueMap),
         guestNetworkVenueIds
-      } as {
-        sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
-        networkVenueIds: string[] | undefined,
-        guestNetworkVenueIds: string[] | undefined
-      }
+      } as SdLanScopedNetworkVenuesData
     } else {
       return {
         sdLansVenueMap: groupBy(data?.data, 'venueId'),
@@ -639,11 +640,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
             // eslint-disable-next-line max-len
             item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
           .filter(i => !!i)
-      } as {
-        sdLansVenueMap: { [venueId in string]: EdgeSdLanViewDataP2[] },
-        networkVenueIds: string[] | undefined,
-        guestNetworkVenueIds: string[] | undefined
-      }
+      } as SdLanScopedNetworkVenuesData
     }
 
   }, [data?.data, networkId])

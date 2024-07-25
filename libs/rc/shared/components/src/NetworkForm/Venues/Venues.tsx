@@ -1,9 +1,8 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useContext, useRef, ReactNode } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
 import { useIntl }      from 'react-intl'
-
 
 import {
   Loader,
@@ -30,11 +29,13 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
-import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
-import NetworkFormContext                                                       from '../NetworkFormContext'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../EdgeSdLan/NetworkTunnelActionModal'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }             from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                             from '../../NetworkApGroupDialog'
+import { NetworkVenueScheduleDialog }                                                       from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                               from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                                                            from '../../useEdgeActions'
+import NetworkFormContext                                                                   from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -84,6 +85,7 @@ interface VenuesProps {
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
   const { isTemplate } = useConfigTemplate()
+  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -114,6 +116,9 @@ export function Venues (props: VenuesProps) {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
+    visible: false
+  } as NetworkTunnelActionModalProps)
   const isDefaultVenueSetted = useRef(false)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
@@ -364,7 +369,22 @@ export function Venues (props: VenuesProps) {
         return transformScheduling(
           getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
-    }
+    },
+    ...(isEdgeSdLanMvEnabled ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneledInfo',
+      render: function (_: ReactNode, row: Venue) {
+        const currentNetwork = data
+
+        return <NetworkTunnelInfoButton
+          network={currentNetwork}
+          currentVenue={row}
+          sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
+          onClick={() => handleClickNetworkTunnel(row, currentNetwork)}
+        />
+      }
+    }]: [])
   ]
 
   const getCurrentVenue = (row: Venue) => {
@@ -374,6 +394,19 @@ export function Venues (props: VenuesProps) {
     const venueId = row.id
     // Need to get deepVenue from data(NetworkFormContext) since this table doesn't post data immediately
     return data?.venues?.find(v => v.venueId === venueId)
+  }
+
+  const handleClickNetworkTunnel = (row: Venue, currentNetwork: NetworkSaveData) => {
+    // show modal
+    setTunnelModalState({
+      visible: true,
+      network: {
+        id: currentNetwork?.id,
+        type: currentNetwork?.type,
+        venueId: row.id,
+        venueName: row.name
+      }
+    } as NetworkTunnelActionModalProps)
   }
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -423,6 +456,9 @@ export function Venues (props: VenuesProps) {
       visible: false
     })
   }
+
+  const handleCloseTunnelModal = () =>
+    setTunnelModalState({ visible: false } as NetworkTunnelActionModalProps)
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
     let scheduleData = _.cloneDeep(scheduleModalState.networkVenue)
@@ -513,6 +549,9 @@ export function Venues (props: VenuesProps) {
               onCancel={handleCancel}
             />
           </Form.Provider>
+          {isEdgeSdLanMvEnabled &&
+            <NetworkTunnelActionModal {...tunnelModalState} onClose={handleCloseTunnelModal}/>
+          }
         </Loader>
       </Form.Item>
     </>
