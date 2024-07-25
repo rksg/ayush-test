@@ -5,7 +5,7 @@ import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/compone
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
-  useLocation,
+  // useLocation,
   useNavigate,
   useParams,
   useTenantLink
@@ -25,9 +25,9 @@ import {
   RecentLogin
 } from './RecentLogin'
 
-interface fromLoc {
-  from: string
-}
+// interface fromLoc {
+//   from: string
+// }
 
 export function UserProfile () {
   const { $t } = useIntl()
@@ -37,23 +37,25 @@ export function UserProfile () {
   const navigate = useNavigate()
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
-  const location = useLocation().state as fromLoc
-  const dashboardPath = useTenantLink('/dashboard')
-  const backPathname = location?.from ?? dashboardPath.pathname
+  // const location = useLocation().state as fromLoc
+  // const dashboardPath = useTenantLink('/dashboard')
+  // const backPathname = location?.from ?? dashboardPath.pathname
   const basePath = useTenantLink('/userprofile')
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
-    navigate({
-      pathname: backPathname
-    }, { replace: true })
+    // navigate({
+    //   pathname: backPathname
+    // }, { replace: true })
     window.location.reload()
+    navigate(-1)
   }
 
   const handleCancel = () => {
-    navigate({
-      pathname: backPathname
-    }, { replace: true })
+    navigate(-1)
+    // navigate({
+    //   pathname: backPathname
+    // }, { replace: true })
   }
 
   const SettingsTab = () => {
