@@ -73,7 +73,7 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
-  [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK' })
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
