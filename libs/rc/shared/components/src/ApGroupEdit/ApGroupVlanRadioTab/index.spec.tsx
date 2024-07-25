@@ -27,7 +27,7 @@ const venueId = oneApGroupList.data[0].venueId
 const defaultApGroupCxtdata = {
   isEditMode: true,
   isApGroupTableFlag: true,
-  isWifiRbacEnabled: false,
+  isRbacEnabled: false,
   venueId,
   setEditContextData: setEditContextDataFn
 }

@@ -558,12 +558,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     activateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WifiCallingUrls.activateWifiCalling, params)
-      }
+      },
+      invalidatesTags: [{ type: 'WifiCalling' }]
     }),
     deactivateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WifiCallingUrls.deactivateWifiCalling, params)
-      }
+      },
+      invalidatesTags: [{ type: 'WifiCalling' }]
     }),
 
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({

@@ -57,7 +57,7 @@ export function ApGroupGeneralTab () {
   const {
     isEditMode,
     isApGroupTableFlag,
-    isWifiRbacEnabled,
+    isRbacEnabled,
     setEditContextData,
     venueId
   } = useContext(ApGroupEditContext)
@@ -77,7 +77,8 @@ export function ApGroupGeneralTab () {
     useQueryFn: useVenuesListQuery,
     useTemplateQueryFn: useGetVenuesTemplateListQuery,
     skip: false,
-    payload: defaultVenuePayload
+    payload: defaultVenuePayload,
+    enableRbac: isRbacEnabled
   })
 
   const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher({
@@ -103,10 +104,10 @@ export function ApGroupGeneralTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !isEditMode || (isWifiRbacEnabled && !venueId),
+    skip: !isEditMode || (isRbacEnabled && !venueId),
     payload: null,
     extraParams: { tenantId, venueId, apGroupId },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: isRbacEnabled
   })
 
   const locationState = location.state as { venueId?: string, history?: string }
@@ -155,7 +156,7 @@ export function ApGroupGeneralTab () {
 
     if (value) {
       // get venue default ap group and its members options
-      if (isWifiRbacEnabled) {
+      if (isRbacEnabled) {
         // use ap group viewmodel API
         const payload = {
           fields: ['id', 'members'],
@@ -163,7 +164,7 @@ export function ApGroupGeneralTab () {
         }
         const list = (await apGroupsList({
           payload,
-          enableRbac: isWifiRbacEnabled
+          enableRbac: isRbacEnabled
         }, true).unwrap())?.data ?? []
 
         defaultApGroupOption.push(...(list?.flatMap(item =>
@@ -211,13 +212,13 @@ export function ApGroupGeneralTab () {
             apGroupId
           },
           payload,
-          enableRbac: isWifiRbacEnabled
+          enableRbac: isRbacEnabled
         }).unwrap()
       } else {
         await addApGroup({
           params: { tenantId, venueId: formVenueId },
           payload,
-          enableRbac: isWifiRbacEnabled
+          enableRbac: isRbacEnabled
         }).unwrap()
       }
 
@@ -247,7 +248,7 @@ export function ApGroupGeneralTab () {
       }
       const list = (await apGroupsList({
         payload,
-        enableRbac: isWifiRbacEnabled
+        enableRbac: isRbacEnabled
       }, true)
         .unwrap()).data
         .filter(n => n.id !== apGroupId)

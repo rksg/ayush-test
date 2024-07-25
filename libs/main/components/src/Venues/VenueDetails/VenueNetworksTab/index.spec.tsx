@@ -11,8 +11,16 @@ import {
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, VlanPoolRbacUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                            from '@acx-ui/store'
+import {
+  ApCompatibility,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  EdgeSdLanFixtures,
+  VlanPoolRbacUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -216,8 +224,8 @@ describe('VenueNetworksTab', () => {
     })
 
     mockServer.use(
-      rest.post(
-        WifiUrlsInfo.addNetworkVenue.url,
+      rest.put(
+        WifiRbacUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => {
           requestSpy()
           return res(ctx.json({ requestId: '123' }))
