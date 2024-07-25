@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react'
+import React, { useState } from 'react'
 
 import _                                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
@@ -7,13 +7,15 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import {
   PageHeader,
   StepsForm,
-  Loader
+  Loader,
+  recommendationBandMapping
 } from '@acx-ui/components'
 import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { useParams }              from '@acx-ui/react-router-dom'
 
+import { useIntentAICRRMQuery }                                                      from '../../RRMGraph/services'
 import { crrmText }                                                                  from '../../utils'
 import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
 import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }           from '../services'
@@ -140,6 +142,8 @@ export function AIDrivenRRM () {
   const { $t } = useIntl()
   const params = useParams()
   const id = params?.recommendationId!
+  const [urlBefore, setUrlBefore] = useState<string>('')
+  const [urlAfter, setUrlAfter] = useState<string>('')
 
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
@@ -151,6 +155,11 @@ export function AIDrivenRRM () {
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!
+
+  const band = recommendationBandMapping[
+    details?.code as keyof typeof recommendationBandMapping]
+  const queryResult = useIntentAICRRMQuery(details, band)
+  const crrmData = queryResult.data!
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
     { text: $t({ defaultMessage: 'AI Analytics' }) },
@@ -189,7 +198,7 @@ export function AIDrivenRRM () {
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}
-          children={<Introduction />}
+          children={<Introduction urlBefore={urlBefore} urlAfter={urlAfter} setUrlBefore={setUrlBefore} setUrlAfter={setUrlAfter} crrmData={crrmData} />}
         />
         <StepsForm.StepForm
           title={$t(steps.title.priority)}
@@ -201,7 +210,7 @@ export function AIDrivenRRM () {
         />
         <StepsForm.StepForm
           title={$t(steps.title.summary)}
-          children={<Summary />}
+          children={<Summary urlBefore={urlBefore} urlAfter={urlAfter} crrmData={crrmData} />}
         />
       </StepsForm>
     </Loader>

@@ -3,11 +3,10 @@ import React from 'react'
 import { Row, Col, Typography }   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { TrendTypeEnum }                                                                         from '@acx-ui/analytics/utils'
-import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapping, TrendPill } from '@acx-ui/components'
+import { TrendTypeEnum }                                                                      from '@acx-ui/analytics/utils'
+import { StepsForm, useLayoutContext, useStepFormContext, TrendPill, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
 import { IntentAIRRMGraph, getGraphKPI } from '../../RRMGraph'
-import { useIntentAICRRMQuery }          from '../../RRMGraph/services'
 import { isDataRetained }                from '../../utils'
 import { EnhancedRecommendation }        from '../services'
 import * as UI                           from '../styledComponents'
@@ -16,16 +15,13 @@ import { IntentPriority, Priority } from './priority'
 
 import { steps, crrmIntent, isOptimized } from '.'
 
-export function Summary () {
+export function Summary (
+  { urlBefore, urlAfter, crrmData } :
+  { urlBefore?: string, urlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
   const { form, initialValues } = useStepFormContext<EnhancedRecommendation>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
-
-  const band = recommendationBandMapping[
-    initialValues?.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(initialValues as EnhancedRecommendation, band)
-  const crrmData = queryResult?.data
   const { interferingLinks, linksPerAP } = getGraphKPI(
     initialValues as EnhancedRecommendation, crrmData)
 
@@ -44,6 +40,10 @@ export function Summary () {
           && <IntentAIRRMGraph
             details={initialValues as EnhancedRecommendation}
           />}
+      <div>Before</div>
+      {<img src={urlBefore} alt='urlBefore' />}
+      <div>After</div>
+      {<img src={urlAfter} alt='urlAfter' />}
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Interfering links' })}
       </StepsForm.Subtitle>

@@ -32,40 +32,63 @@ function useGraph (
   legend: string[],
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean
+  // setUrlBefore?: (url: string) => void,
+  // setUrlAfter?: (url: string) => void
 ) {
   const { $t } = useIntl()
-
-  const connectChart = (chart: ReactECharts | null) => {
+  const [ urlBefore, setUrlBefore ] = useState('')
+  const [ urlAfter, setUrlAfter ] = useState('')
+  const connectChart = (chart: ReactECharts | null, title: string) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'graphGroup'
+      const url = instance.getDataURL()
+      if (title === 'before' && setUrlBefore) {
+        setUrlBefore(url)
+      } else if (title === 'recommended' && setUrlAfter) {
+        setUrlAfter(url)
+      }
+      // if (chart.props.title === 'Before') {
+      //   urlBefore = url
+      // } else {
+      //   urlAfter = url
+      // }
+      console.log('1111111chart', chart)
+      console.log('1111111url', url)
     }
   }
   useEffect(() => { connect('graphGroup') }, [])
 
+  console.log('urlBefore', urlBefore)
+  console.log('urlAfter', urlAfter)
+
+  const beforeGraph = <div key='crrm-graph-before'><AutoSizer>{({ height, width }) => <BasicGraph
+    style={{ width, height }}
+    chartRef={chart => connectChart(chart, 'before')}
+    title={$t({ defaultMessage: 'Before' })}
+    subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
+      dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
+    })}
+    data={graphs[0]}
+    zoomScale={zoomScale}
+    grayBackground={isDrawer}
+  />}</AutoSizer></div>
+  const beforeImage = <img src={urlBefore} alt='beforeImage' />
+  const afterGraph = <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
+    style={{ width, height }}
+    chartRef={chart => connectChart(chart, 'recommended')}
+    title={$t({ defaultMessage: 'Recommended' })}
+    data={graphs[1]}
+    zoomScale={zoomScale}
+    grayBackground={isDrawer}/>}</AutoSizer></div>
+  const afterImage = <img src={urlAfter} alt='afterImage' />
+
   return (graphs?.length)
-    ? [
-      <div key='crrm-graph-before'><AutoSizer>{({ height, width }) => <BasicGraph
-        style={{ width, height }}
-        chartRef={connectChart}
-        title={$t({ defaultMessage: 'Before' })}
-        subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
-          dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
-        })}
-        data={graphs[0]}
-        zoomScale={zoomScale}
-        grayBackground={isDrawer}
-      />}</AutoSizer></div>,
+    ? [ isDrawer ? beforeGraph : beforeImage,
       ...(!isDrawer ? [<div key='crrm-arrow' style={{ display: 'flex', alignItems: 'center' }}>
         <UI.RightArrow/>
       </div>] : []),
-      <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
-        style={{ width, height }}
-        chartRef={connectChart}
-        title={$t({ defaultMessage: 'Recommended' })}
-        data={graphs[1]}
-        zoomScale={zoomScale}
-        grayBackground={isDrawer}/>}</AutoSizer></div>,
+      isDrawer ? afterGraph : afterImage,
       ...(legend?.length ? [<Legend key='crrm-graph-legend' bandwidths={legend}/>] : [])
     ]
     : null
@@ -80,11 +103,17 @@ const drawerZoomScale = scalePow()
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.07])
 
-export const IntentAIRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
+export const IntentAIRRMGraph = ({
+  details } : {
+    details: EnhancedRecommendation,
+    // setUrlBefore?: (url: string) => void,
+    // setUrlAfter?: (url: string) => void
+  }) => {
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
+
   const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
   const queryResult = useIntentAICRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
@@ -99,7 +128,15 @@ export const IntentAIRRMGraph = ({ details }: { details: EnhancedRecommendation 
           onActionClick: showDrawer
         }}
         children={<UI.GraphWrapper>{
-          useGraph(queryResult.data, details, bandwidthMapping[band], detailsZoomScale, false)
+          useGraph(
+            queryResult.data,
+            details,
+            bandwidthMapping[band],
+            detailsZoomScale,
+            false
+            // setUrlBefore,
+            // setUrlAfter
+          )
         }</UI.GraphWrapper>} />
       <Drawer
         key={key}
@@ -116,6 +153,8 @@ export const IntentAIRRMGraph = ({ details }: { details: EnhancedRecommendation 
               bandwidthMapping[band],
               drawerZoomScale,
               true
+              // setUrlBefore,
+              // setUrlAfter
             )}
           </UI.DrawerGraphWrapper>
         }/>

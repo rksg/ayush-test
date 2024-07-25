@@ -7,6 +7,7 @@ import {
   deriveInterferingGraphs,
   deriveTxPowerHighlight,
   getCrrmCsvData,
+  mockCloudRRMGraphData,
   pairGraphs,
   trimPairedGraphs
 } from '@acx-ui/components'
@@ -39,7 +40,13 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
         _,
         { band }
       ) => {
+        const mockData = mockCloudRRMGraphData(BandEnum._5_GHz, 800, 200, 100)
         const data = response.recommendation.graph
+        // const sortedData = {
+        //   previous: mockData,
+        //   current: mockData,
+        //   projected: mockData
+        // }
         const sortedData = {
           previous: data.previous,
           current: data.current,
@@ -74,8 +81,8 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
 
 export function useIntentAICRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
   const queryResult = useIntentCloudRRMGraphQuery(
-    { id: String(details.id), band }, {
-      skip: !Boolean(details.id),
+    { id: String(details?.id), band }, {
+      skip: !Boolean(details?.id),
       selectFromResult: result => {
         const { data = [], csv = '' } = result.data ?? {}
         return { ...result, data, csv }
