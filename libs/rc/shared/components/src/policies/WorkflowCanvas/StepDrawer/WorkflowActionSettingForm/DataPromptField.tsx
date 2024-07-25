@@ -36,9 +36,10 @@ export function DataPromptField () {
           <>
             {fields.map((field, index) => (
               <div key={field.key}>
-                <FieldLabel width='555px' key={`label_${index}`}>
+                <FieldLabel width='555px' key={'label_'+index}>
                   {`${$t({ defaultMessage: 'Field' })} ${index + 1}`}
                   <Button
+                    disabled={index < 1}
                     type='link'
                     key={`btn-${index}`}
                     icon={(index >0) ? <DeleteOutlined/> : <DeleteOutlinedDisabledIcon/>}
