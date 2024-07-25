@@ -56,7 +56,6 @@ export const SigPackUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/applicationLibrarySettings',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   }

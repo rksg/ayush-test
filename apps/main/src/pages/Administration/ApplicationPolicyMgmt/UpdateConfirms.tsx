@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { Input, Modal }              from 'antd'
 import { useIntl,MessageDescriptor } from 'react-intl'
 
-import { Button, Collapse }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { ExpandSquareDown, ExpandSquareUp } from '@acx-ui/icons'
-import { useUpdateSigPackMutation }         from '@acx-ui/rc/services'
-import { ApplicationUpdateType }            from '@acx-ui/rc/utils'
-import { getIntl }                          from '@acx-ui/utils'
+import { Button, Collapse }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { ExpandSquareDown, ExpandSquareUp }             from '@acx-ui/icons'
+import { useGetSigPackQuery, useUpdateSigPackMutation } from '@acx-ui/rc/services'
+import { ApplicationUpdateType }                        from '@acx-ui/rc/utils'
+import { getIntl }                                      from '@acx-ui/utils'
 
 import * as UI                                                                                    from './styledComponents'
 import { cautionDescription, confirmationContentMap, confirmationText }                           from './UpdateConfirmsConstants'
@@ -21,20 +21,17 @@ export const UpdateConfirms = (props: UpdateConfirmsProps) => {
   const { changedAppsInfoMap } = props
   const { $t } = useIntl()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const [ updateSigPack ] = useUpdateSigPackMutation()
-  const [ isUpdating, setIsUpdating ] = useState(false)
+  const { updateSigPack, isLoading: isUpdating, payload } = useUpdateSigPack()
 
   const doUpdate = () => {
-    setIsUpdating(true)
-
     try{
       updateSigPack({
         params: {},
-        payload: { action: 'UPDATE' },
+        payload,
         enableRbac: isWifiRbacEnabled
       }).unwrap()
     } catch(error) {
-      setIsUpdating(false)
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -172,4 +169,25 @@ function getUpdatedCount (changedAppsInfoMap: ChangedAppsInfoMap): number {
 
 function getRemovedCount (changedAppsInfoMap: ChangedAppsInfoMap): number {
   return changedAppsInfoMap[ApplicationUpdateType.APPLICATION_REMOVED]?.totalImpacted ?? 0
+}
+
+function useUpdateSigPack () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [ updateSigPack, { isLoading } ] = useUpdateSigPackMutation()
+  const { data } = useGetSigPackQuery({
+    params: { changesIncluded: 'false' },
+    enableRbac: true
+  }, {
+    refetchOnMountOrArgChange: 300,
+    skip: !isWifiRbacEnabled
+  })
+  const payload = isWifiRbacEnabled
+    ? { version: data?.latestVersion }
+    : { action: 'UPDATE' }
+
+  return {
+    updateSigPack,
+    isLoading,
+    payload
+  }
 }

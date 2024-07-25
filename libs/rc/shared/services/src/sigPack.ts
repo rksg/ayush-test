@@ -1,11 +1,11 @@
 import {
   ApplicationPolicyMgmt,
   ApplicationPolicyMgmtRbac,
+  CommonResult,
   downloadFile,
+  onActivityMessageReceived,
   onSocketActivityChanged,
-  SigPackUrlsInfo,
-  Transaction,
-  TxStatus
+  SigPackUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseSigPackApi } from '@acx-ui/store'
 import { RequestPayload } from '@acx-ui/types'
@@ -32,9 +32,11 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          if (isTriggerSigPackFinished(msg)) {
+          onActivityMessageReceived(msg, [
+            'TriggerApplicationLibraryAction', 'PatchApplicationLibrarySettings'
+          ], () => {
             api.dispatch(sigPackApi.util.invalidateTags([{ type: 'SigPack', id: 'LIST' }]))
-          }
+          })
         })
       }
     }),
@@ -76,21 +78,11 @@ export const sigPackApi = baseSigPackApi.injectEndpoints({
         }
       }
     }),
-    updateSigPack: build.mutation<{ [key:string]: string }, RequestPayload>({
+    updateSigPack: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(SigPackUrlsInfo.updateSigPack, SigPackUrlsInfo.updateSigPackRbac)
     })
   })
 })
-
-function isTriggerSigPackFinished (tx: Transaction): boolean {
-  const targetUseCase = 'TriggerApplicationLibraryAction'
-
-  if (tx.useCase !== targetUseCase) return false
-
-  const targetStep = tx.steps?.find(step => step.id === targetUseCase)
-
-  return targetStep ? targetStep.status !== TxStatus.IN_PROGRESS : false
-}
 
 export const {
   useGetSigPackQuery,
