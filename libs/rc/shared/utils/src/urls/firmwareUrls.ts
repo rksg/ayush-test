@@ -233,36 +233,65 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   getAllApModelFirmwareList: {
     method: 'get',
     url: '/apModelFirmwares',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   patchVenueApModelFirmwares: {
     method: 'PATCH',
-    url: '/venues/:venueId/apModelFirmwares',
-    newApi: true
+    url: '/venues/:venueId/apModelFirmwares/:batchId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueApModelFirmwares: {
     method: 'get',
     url: '/venues/:venueId/apModelFirmwares',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueSchedulesPerApModel: {
     method: 'post',
-    url: '/venues/:venueId/apModelFirmwareSchedules',
-    newApi: true
+    url: '/venues/:venueId/apModelFirmwareSchedules/:batchId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   skipVenueSchedulesPerApModel: {
     method: 'delete',
-    url: '/venues/:venueId/apModelFirmwareSchedules',
-    newApi: true
+    url: '/venues/:venueId/apModelFirmwareSchedules/:batchId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getApModelScheduledFirmware: {
     method: 'get',
     url: '/apModelFirmwares?status=scheduled',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   getDistinctFirmwareIdList: {
     method: 'get',
     url: '/apModelFirmwares?status=distinctFirmwareVersion',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
+  startFirmwareBatchOperation: {
+    method: 'put',
+    url: '/apModelFirmwares',
     newApi: true
   }
 }

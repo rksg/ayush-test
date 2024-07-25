@@ -64,6 +64,10 @@ describe('Firmware Venues Table Per AP Model', () => {
       rest.post(
         FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
         (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
+      ),
+      rest.put(
+        FirmwareUrlsInfo.startFirmwareBatchOperation.url,
+        (req, res, ctx) => res(ctx.json({ batchId: 'BATCH_ID_12345' }))
       )
     )
   })
