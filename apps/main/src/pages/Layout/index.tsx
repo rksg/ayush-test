@@ -46,6 +46,7 @@ function Layout () {
   const location = useLocation()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const logo = useLogo(tenantId)
 
@@ -53,7 +54,8 @@ function Layout () {
   const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
   const { data: mspEcProfile } = useGetMspEcProfileQuery({ params })
   const isMspEc = MSPUtils().isMspEc(mspEcProfile)
-  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isMspEc })
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params, enableRbac: isRbacEnabled },
+    { skip: !isMspEc })
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType

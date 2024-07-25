@@ -152,7 +152,8 @@ const useNetworkVenueList = (props: { settingsId: string, networkId?: string } )
     apiParams: { networkId: networkId! },
     defaultPayload: {
       ...defaultRbacPayload,
-      isTemplate: isTemplate
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled: isConfigTemplateRbacEnabled
     },
     search: {
       searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
