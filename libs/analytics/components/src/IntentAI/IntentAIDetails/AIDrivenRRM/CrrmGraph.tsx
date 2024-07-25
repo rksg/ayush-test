@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { EnhancedRecommendation } from '../../IntentAIForm/services'
-import { IntentAIRRMGraph }       from '../../RRMGraph'
-import { isDataRetained }         from '../../utils'
+import { EnhancedRecommendation }            from '../../IntentAIForm/services'
+import { IntentAIRRMGraph }                  from '../../RRMGraph'
+import { dataRetentionText, isDataRetained } from '../../utils'
 import {
   DetailsHeader,
   DetailsWrapper,
@@ -15,9 +15,9 @@ export const CrrmGraph = ({ details }: { details: EnhancedRecommendation }) => {
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indications' })}</DetailsHeader>
     <DetailsWrapper>
       { details && isDataRetained(details.dataEndTime)
-        && <IntentAIRRMGraph
+        ? <IntentAIRRMGraph
           details={details as EnhancedRecommendation}
-        />
+        /> : $t(dataRetentionText)
       }
     </DetailsWrapper>
   </Wrapper>

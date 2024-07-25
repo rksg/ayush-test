@@ -14,7 +14,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { useParams }              from '@acx-ui/react-router-dom'
 
-import { crrmText }                                                                  from '../../utils'
+import { crrmText }                                                                  from '../../utils/aiDrivenRRM'
 import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
 import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }           from '../services'
 import * as UI                                                                       from '../styledComponents'
