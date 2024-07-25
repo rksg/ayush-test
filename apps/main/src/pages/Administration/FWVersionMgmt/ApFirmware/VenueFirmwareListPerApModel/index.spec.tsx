@@ -65,7 +65,7 @@ describe('Firmware Venues Table Per AP Model', () => {
         FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
         (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
       ),
-      rest.put(
+      rest.post(
         FirmwareUrlsInfo.startFirmwareBatchOperation.url,
         (req, res, ctx) => res(ctx.json({ batchId: 'BATCH_ID_12345' }))
       )
@@ -98,7 +98,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     const updateFn = jest.fn()
 
     mockServer.use(
-      rest.patch(
+      rest.put(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           updateFn(req.body)
@@ -151,7 +151,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     const changeScheduleFn = jest.fn()
     mockServer.use(
-      rest.post(
+      rest.put(
         FirmwareUrlsInfo.updateVenueSchedulesPerApModel.url,
         (req, res, ctx) => {
           changeScheduleFn(req.body)
@@ -203,8 +203,10 @@ describe('Firmware Venues Table Per AP Model', () => {
     await userEvent.click(saveButton)
 
     await waitFor(() => expect(changeScheduleFn).toHaveBeenCalledWith({
-      date: '2024-04-21',
-      time: '00:00-02:00',
+      schedule: {
+        date: '2024-04-21',
+        time: '00:00-02:00'
+      },
       targetFirmwares: [
         {
           apModel: 'R720',
@@ -267,7 +269,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     const downgradeFn = jest.fn()
 
     mockServer.use(
-      rest.patch(
+      rest.put(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           downgradeFn(req.body)

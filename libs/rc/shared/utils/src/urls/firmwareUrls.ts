@@ -239,8 +239,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   patchVenueApModelFirmwares: {
-    method: 'PATCH',
-    url: '/venues/:venueId/apModelFirmwares/:batchId',
+    method: 'put',
+    url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -256,8 +256,8 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   updateVenueSchedulesPerApModel: {
-    method: 'post',
-    url: '/venues/:venueId/apModelFirmwareSchedules/:batchId',
+    method: 'put',
+    url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -266,7 +266,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
   },
   skipVenueSchedulesPerApModel: {
     method: 'delete',
-    url: '/venues/:venueId/apModelFirmwareSchedules/:batchId',
+    url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -290,8 +290,12 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     }
   },
   startFirmwareBatchOperation: {
-    method: 'put',
-    url: '/apModelFirmwares',
-    newApi: true
+    method: 'post',
+    url: '/apModelFirmwares/batchOperations',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

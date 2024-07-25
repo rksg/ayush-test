@@ -470,8 +470,10 @@ export interface UpdateFirmwarePerApModelPayload {
 }
 
 export interface UpdateFirmwareSchedulePerApModelPayload extends UpdateFirmwarePerApModelPayload {
-  date: string;
-  time: string;
+  schedule: {
+    date: string;
+    time: string;
+  }
 }
 
 export enum ApFirmwareBatchOperationType {
