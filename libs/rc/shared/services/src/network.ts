@@ -34,7 +34,8 @@ import {
   BaseNetwork,
   VlanPoolRbacUrls,
   VLANPoolViewModelRbacType,
-  transformWifiNetwork
+  transformWifiNetwork,
+  DpskSaveData
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -837,11 +838,37 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
         return {
-          ...req,
-          body: payload
+          ...req
+        }
+      }
+    }),
+    activateDpskService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateDpskService, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getDpskService: build.query<DpskSaveData, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryDpskService, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<DpskSaveData>) => {
+        return response?.data[0]
+      }
+    }),
+    activateMacRegistrationPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateMacRegistrationPool, params)
+        return {
+          ...req
         }
       }
     }),
@@ -1364,6 +1391,9 @@ export const {
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
   useActivateCertificateTemplateMutation,
+  useActivateDpskServiceMutation,
+  useGetDpskServiceQuery,
+  useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,
   useActivateRadiusServerMutation,

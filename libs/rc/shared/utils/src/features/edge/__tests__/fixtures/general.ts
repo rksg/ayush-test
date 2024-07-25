@@ -203,7 +203,7 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
           cpuCores: 2,
           cpuUsedPercentage: 25,
           memoryUsedKb: 4626208,
