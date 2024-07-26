@@ -45,7 +45,7 @@ function AllRoutes () {
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='dashboard' element={<Dashboard />} />
-          <Route path='userprofile' element={<UserProfile />} />
+          <Route path='userprofile/*' element={<UserProfileRoutes />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
             <Route path='*' element={<AnalyticsRoutes />} />
           </Route>
@@ -150,6 +150,19 @@ function RWGRoutes () {
       <Route path=':venueId/:gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
       <Route path=':venueId/:gatewayId/gateway-details/:activeTab/:clusterNodeId'
         element={<RWGDetails />} />
+    </Route>
+  )
+}
+
+function UserProfileRoutes () {
+  return rootRoutes(
+    <Route path=':tenantId/t/userprofile'>
+      <Route
+        index
+        element={<TenantNavigate replace to='/userprofile/settings' />}
+      />
+      <Route path='*' element={<PageNotFound />} />
+      <Route path=':activeTab' element={<UserProfile />} />
     </Route>
   )
 }

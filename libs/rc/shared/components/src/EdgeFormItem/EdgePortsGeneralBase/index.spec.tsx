@@ -140,6 +140,30 @@ describe('EditEdge ports - ports general', () => {
       await screen.findByText('Please enter a valid subnet mask')
     })
 
+    it('Should validate whether gateway is in the subnet correctly', async () => {
+      render(<MockedComponent />)
+
+      const ipInput = await screen.findByRole('textbox', { name: 'IP Address' })
+      await userEvent.clear(ipInput)
+      await userEvent.type(ipInput, '10.10.10.10')
+
+      const subnetInput = await screen.findByRole('textbox', { name: 'Subnet Mask' })
+      await userEvent.clear(subnetInput)
+      await userEvent.type(subnetInput, '255.255.255.0')
+
+      const gatewayInput = await screen.findByRole('textbox', { name: 'Gateway' })
+
+      // Enter gateway not in the same subnet
+      await userEvent.clear(gatewayInput)
+      await userEvent.type(gatewayInput, '10.10.11.10')
+      await screen.findByText('Gateway must be in the same subnet as the IP address.')
+
+      // Enter gateway in the same subnet
+      await userEvent.clear(gatewayInput)
+      await userEvent.type(gatewayInput, '10.10.10.11')
+      expect(screen.queryByText('Gateway must be in the same subnet as the IP address.')).toBeNull()
+    })
+
     it('Broadcast and IPs above 224.0.0.0 should be blocked', async () => {
       render(<MockedComponent />)
 
