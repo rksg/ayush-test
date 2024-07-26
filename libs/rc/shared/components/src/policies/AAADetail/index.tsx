@@ -8,6 +8,7 @@ import {
   AAAPolicyType,
   PolicyOperation,
   PolicyType,
+  useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -22,7 +23,10 @@ import AAAOverview       from './AAAOverview'
 export function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
   const queryResults = useConfigTemplateQueryFnSwitcher<AAAPolicyType>({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
