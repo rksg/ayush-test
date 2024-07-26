@@ -21,11 +21,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/l2AclPolicies/:l2AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
-    newApi: true
-    // defaultHeaders: {
-    //   'Accept': 'application/vnd.ruckus.v1+json',
-    //   'Content-Type': 'application/vnd.ruckus.v1+json'
-    // }
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getL2AclPolicyRbac: {
     method: 'get',
@@ -95,11 +95,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/l3AclPolicies/:l3AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
-    newApi: true
-    // defaultHeaders: {
-    //   'Accept': 'application/vnd.ruckus.v1+json',
-    //   'Content-Type': 'application/vnd.ruckus.v1+json'
-    // }
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getL3AclPolicyRbac: {
     method: 'get',
@@ -169,11 +169,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/applicationPolicies/:applicationPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
-    newApi: true
-    // defaultHeaders: {
-    //   'Accept': 'application/vnd.ruckus.v1+json',
-    //   'Content-Type': 'application/vnd.ruckus.v1+json'
-    // }
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getAppPolicyRbac: {
     method: 'get',
@@ -314,11 +314,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/accessControlProfiles/:policyId',
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
-    newApi: true
-    // defaultHeaders: {
-    //   'Accept': 'application/vnd.ruckus.v1+json',
-    //   'Content-Type': 'application/vnd.ruckus.v1+json'
-    // }
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getAccessControlProfileRbac: {
     method: 'get',
@@ -429,11 +429,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/devicePolicies/:devicePolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId',
-    newApi: true
-    // defaultHeaders: {
-    //   'Accept': 'application/vnd.ruckus.v1+json',
-    //   'Content-Type': 'application/vnd.ruckus.v1+json'
-    // }
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getDevicePolicyRbac: {
     method: 'get',

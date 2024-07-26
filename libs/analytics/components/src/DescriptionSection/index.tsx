@@ -31,9 +31,10 @@ export const DescriptionRow: React.FC<DescriptionRowProps> = (props) => {
 }
 
 export const DescriptionSection: React.FC<{
-  fields: DescriptionRowProps[], column?: number
+  fields: DescriptionRowProps[], column?: number,
+  layout?: 'vertical' | 'horizontal' | undefined
 }> = props => {
-  return <Descriptions column={props.column || 1} layout='vertical'>
+  return <Descriptions column={props.column || 1} layout={props.layout??'vertical'}>
     {props.fields.map((field, key) =>
       <Descriptions.Item key={key} label={field.label}>
         <DescriptionRow {...field}/>

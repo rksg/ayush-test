@@ -3,6 +3,7 @@ import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import { goToNotFound }          from '@acx-ui/user'
 
 import AddEdgeMvSdLan    from './multiVenue/AddEdgeSdLan'
+import EdgeMvSdLanDetail from './multiVenue/EdgeSdLanDetail'
 import EdgeMvSdLanTable  from './multiVenue/EdgeSdLanTable'
 import EditEdgeMvSdLan   from './multiVenue/EditEdgeSdLan'
 import AddEdgeSdLanP1    from './P1/AddEdgeSdLan'
@@ -35,7 +36,9 @@ export const EdgeSdLanDetail = () => {
   if (!(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled || isEdgeSdLanMvEnabled))
     return goToNotFound()
 
-  return isEdgeSdLanHaEnabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetailP1 />
+  return isEdgeSdLanMvEnabled
+    ? <EdgeMvSdLanDetail />
+    : (isEdgeSdLanHaEnabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetailP1 />)
 }
 
 export const AddEdgeSdLan = () => {

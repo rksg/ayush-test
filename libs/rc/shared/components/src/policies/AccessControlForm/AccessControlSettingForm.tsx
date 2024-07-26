@@ -5,11 +5,12 @@ import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow }         from '@acx-ui/components'
-import { StepsFormLegacy }          from '@acx-ui/components'
+import { GridCol, GridRow }                     from '@acx-ui/components'
+import { StepsFormLegacy }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
-  useGetAccessControlProfileListQuery,
-  useGetAccessControlProfileQuery
+  useGetAccessControlProfileQuery,
+  useGetEnhancedAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
   useGetAccessControlProfileTemplateListQuery,
@@ -19,7 +20,7 @@ import {
   AccessControlInfoType,
   AclEmbeddedObject,
   useConfigTemplate,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher, useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -41,10 +42,17 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   } = props
   const form = Form.useFormInstance()
 
+  const { isTemplate } = useConfigTemplate()
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAccessControlProfileQuery,
     useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
-    skip: !editMode
+    skip: !editMode,
+    enableRbac: resolvedRbacEnabled
   })
 
   const aclProfileList : AccessControlInfoType[] = GetAclPolicyListInstance(editMode)
@@ -166,14 +174,28 @@ const GetAclPolicyListInstance = (editMode: boolean) => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
   const tableQuery = useGetAccessControlProfileTemplateListQuery({
-    params, payload: QUERY_DEFAULT_PAYLOAD
+    params,
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: resolvedRbacEnabled
   }, { skip: !isTemplate })
 
   const useAclPolicyTemplateList = (tableQuery?.data?.data ?? []) as AccessControlInfoType[]
 
-  // eslint-disable-next-line max-len
-  const { data: useAclPolicyList } = useGetAccessControlProfileListQuery({ params }, { skip: !editMode || isTemplate })
+  const nonTableQuery = useTableQuery({
+    useQuery: useGetEnhancedAccessControlProfileListQuery,
+    defaultPayload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac,
+    option: {
+      skip: !editMode || isTemplate
+    }
+  })
+
+  const useAclPolicyList = nonTableQuery?.data?.data as AccessControlInfoType[]
 
   return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
 }
