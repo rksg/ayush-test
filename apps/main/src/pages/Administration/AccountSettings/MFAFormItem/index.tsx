@@ -97,7 +97,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
           </Checkbox>
         </Form.Item>
 
-        <SpaceWrapper full className='descriptionsWrapper'>
+        <SpaceWrapper full className='indent'>
           <List
             split={false}
             size='small'
@@ -109,7 +109,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='description greyText'>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>
@@ -119,10 +119,10 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             title={$t({ defaultMessage: 'Recovery Codes' })}
             type='no-border'
           >
-            <Typography.Text className='description darkGreyText'>
+            <Typography.Text className='darkGreyText'>
               {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
             </Typography.Text>
-            <Typography.Text className='description darkGreyText'>
+            <Typography.Text className='darkGreyText'>
               {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
             </Typography.Text>
             <TextArea
