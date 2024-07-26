@@ -22,7 +22,11 @@ export function OnDemandCliTab () {
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
     defaultPayload: {},
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: isSwitchRbacEnabled,
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    }
   })
 
   const columns: TableProps<SwitchCliTemplateModel>['columns'] = [{
@@ -30,6 +34,7 @@ export function OnDemandCliTab () {
     title: $t({ defaultMessage: 'CLI Template Name' }),
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
+    searchable: true,
     sorter: true
   },{
     key: 'switches',
@@ -113,6 +118,7 @@ export function OnDemandCliTab () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox' }}
