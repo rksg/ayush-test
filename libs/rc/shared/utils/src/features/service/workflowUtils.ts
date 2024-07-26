@@ -145,6 +145,6 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
-  [ActionType.DPSK]: {},
+  [ActionType.DPSK]: {}
 }
 /* eslint-enable max-len */

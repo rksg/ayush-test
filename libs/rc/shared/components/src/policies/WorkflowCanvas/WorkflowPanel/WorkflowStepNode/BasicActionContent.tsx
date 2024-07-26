@@ -1,9 +1,9 @@
 import { ReactElement } from 'react'
 
-import { Space } from 'antd'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
 
 import * as UI from './styledComponents'
-import { useIntl } from 'react-intl'
 
 interface BasicActionContentProps {
   icon: ReactElement,
@@ -25,17 +25,17 @@ export default function BasicActionContent (props: BasicActionContentProps) {
         {icon}
       </UI.ActionTypeIcon>
       <Space direction={'vertical'}
-      align={'start'}
-      size={4}>
+        align={'start'}
+        size={4}>
         <div>{title}</div>
         {content ?
           <UI.Popover
             content={content}
             trigger='hover'
-            overlayInnerStyle={{backgroundColor: 'var(--acx-primary-black)'}}
+            overlayInnerStyle={{ backgroundColor: 'var(--acx-primary-black)' }}
             color='var(--acx-primary-black)'
           >
-            {$t({defaultMessage: 'Details'})}
+            {$t({ defaultMessage: 'Details' })}
           </UI.Popover>
           : ''}
       </Space>

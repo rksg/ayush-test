@@ -1,6 +1,6 @@
-import { Typography } from 'antd'
-import styled from 'styled-components/macro'
+import { Typography }            from 'antd'
 import { Popover as AntPopover } from 'antd'
+import styled                    from 'styled-components/macro'
 
 export const StepNode = styled.div<{ selected?: boolean }>`
   font-size: 12px;
@@ -152,6 +152,9 @@ export const Popover = styled(AntPopover)`
       display: block;
     }
   `
+export const Spacer = styled.div`
+  height: var(--acx-content-vertical-space);
+`
 
 export const PopoverTitle = styled(Typography.Text)`
   color: var(--acx-neutrals-40);
