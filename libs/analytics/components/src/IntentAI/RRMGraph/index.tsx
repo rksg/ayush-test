@@ -201,7 +201,7 @@ export const SliderGraphBefore = (
           alignItems: 'center',
           width: 300
         }}
-        backgroundColor='#342D2C'
+        backgroundColor='#333333'
         titleColor='white'
       />}
     </div>
