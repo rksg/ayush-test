@@ -68,7 +68,7 @@ const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [SwitchScopes.DELETE],
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows, clearSelection) => {
         deleteSwitchStaticRoutes({
           params: { ...params, venueId: switchDetail?.venueId || '' },
