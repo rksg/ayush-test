@@ -37,6 +37,80 @@ export const mockedVenueApList = [
   }
 ]
 
+export const mockedMdnsProxyQueryResult = {
+  data: [
+    {
+      name: 'JackyBonjure2',
+      id: 'cb721ac1e8084f88b6bb5d730b8cf24d',
+      rules: [
+        {
+          enabled: true,
+          service: 'AIRDISK',
+          fromVlan: 1,
+          toVlan: 2
+        },
+        {
+          enabled: true,
+          service: 'AIRPLAY',
+          fromVlan: 3,
+          toVlan: 4
+        },
+        {
+          enabled: true,
+          service: 'AIRPORT_MANAGEMENT',
+          fromVlan: 5,
+          toVlan: 6
+        }
+      ],
+      tenantId: mockedTenantId,
+      activations: [
+        {
+          venueId: 'd6062edbdf57451facb33967c2160c72',
+          apSerialNumbers: ['121749001049']
+        }
+      ]
+    }
+  ],
+  page: 0,
+  totalCount: 1
+}
+
+export const mockedMdnsProxyQueryResultWithoutActivation = {
+  data: [
+    {
+      name: 'JackyBonjure2',
+      id: 'cb721ac1e8084f88b6bb5d730b8cf24d',
+      rules: [
+        {
+          id: 'rule1',
+          enabled: true,
+          service: 'AIRDISK',
+          fromVlan: 1,
+          toVlan: 2
+        },
+        {
+          id: 'rule2',
+          enabled: true,
+          service: 'AIRPLAY',
+          fromVlan: 3,
+          toVlan: 4
+        },
+        {
+          id: 'rule3',
+          enabled: true,
+          service: 'AIRPORT_MANAGEMENT',
+          fromVlan: 5,
+          toVlan: 6
+        }
+      ],
+      tenantId: mockedTenantId,
+      activations: []
+    }
+  ],
+  page: 0,
+  totalCount: 1
+}
+
 export const mockedMdnsProxyList = [
   {
     rules: [

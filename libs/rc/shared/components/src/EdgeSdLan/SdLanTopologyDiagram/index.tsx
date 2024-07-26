@@ -58,7 +58,7 @@ export const SdLanTopologyDiagram = (props: {
           />
       }
     </Row>
-    <Row justify='center'>
+    <Row justify='end'>
       <Space
         size={vertical ? 5 : 30}
         direction={vertical ? 'vertical' : 'horizontal'}

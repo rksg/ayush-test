@@ -6,6 +6,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { switchApi, venueApi }    from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  FirmwareRbacUrlsInfo,
   FirmwareUrlsInfo,
   SwitchFirmwareFixtures,
   SwitchUrlsInfo
@@ -21,7 +22,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { staticRoutes, switchFirmwareVenue } from '../__tests__/fixtures'
+import { staticRoutes, switchFirmwareVenue, switchVenueV1002 } from '../__tests__/fixtures'
 
 import {
   swtichListResponse,
@@ -33,7 +34,7 @@ import {
 
 import { SwitchForm } from '.'
 
-const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
+const { mockSwitchCurrentVersions, mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -43,8 +44,14 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitcDefaultVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  }),
   useGetSwitchCurrentVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
+  }),
+  useGetSwitchCurrentVersionsV1002Query: () => ({
+    data: mockSwitchCurrentVersionsV1002
   })
 }))
 
@@ -58,6 +65,8 @@ describe('Add switch form', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchFirmwareVenue))),
+      rest.post(FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchVenueV1002))),
       rest.post(SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json(swtichListResponse))),
       rest.get(SwitchUrlsInfo.getVlansByVenue.url,
@@ -121,7 +130,7 @@ describe('Add switch form', () => {
         path: '/:tenantId/t/devices/switch/:action'
       }
     })
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    // await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
 
     await userEvent.click(screen.getByRole('combobox', {
@@ -149,7 +158,6 @@ describe('Add switch form', () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
     fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
     const venue = await screen.findAllByText('My-Venue')
@@ -179,7 +187,6 @@ describe('Add switch form', () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
 
     const serialNumberInput = await screen.findByLabelText(/serial number/i)
@@ -203,7 +210,6 @@ describe('Add switch form', () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
     fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
     const venue = await screen.findAllByText('My-Venue')
@@ -236,7 +242,6 @@ describe('Add switch form', () => {
     render(<Provider><SwitchForm /></Provider>, {
       route: { params, path: '/:tenantId/t/devices/switch/:action' }
     })
-    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
     fireEvent.mouseDown(await screen.findByLabelText(/Venue/))
     const venue = await screen.findAllByText('My-Venue')
@@ -290,6 +295,8 @@ describe('Edit switch form', () => {
         (_, res, ctx) => res(ctx.json(switchDetailHeader))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.post(FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (_, res, ctx) => res(ctx.json(switchVenueV1002))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
         (_, res, ctx) => {
           mockUpdateSwitch()

@@ -53,8 +53,6 @@ describe('OpenNetwork form', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(WifiUrlsInfo.getVlanPools.url,
         (_, res, ctx) => res(ctx.json([]))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,

@@ -35,6 +35,8 @@ export function PortalSummaryForm (props: {
         children={<>
           {summaryData.guestPortal?.enableSmsLogin&&
             <div><UI.SMSToken/>{$t({ defaultMessage: 'SMS Token' })}</div>}
+          {summaryData.guestPortal?.enableEmailLogin&&
+            <div><UI.EMailOTP/>{$t({ defaultMessage: 'Email' })}</div>}
           {summaryData.guestPortal?.socialIdentities?.facebook&&
             <div><UI.Facebook/>{$t({ defaultMessage: 'Facebook' })}</div>}
           {summaryData.guestPortal?.socialIdentities?.google&&

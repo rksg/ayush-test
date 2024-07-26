@@ -4,7 +4,8 @@ import {
   formatter,
   formats,
   convertEpochToRelativeTime,
-  DateFormatEnum
+  DateFormatEnum,
+  convertToRelativeTime
 } from './formatter'
 
 function testFormat (
@@ -377,6 +378,14 @@ describe('formatter', () => {
     describe('convertEpochToRelativeTime', () => {
       it('Should return relative time', () => {
         expect(typeof formatter('longDurationFormat')(convertEpochToRelativeTime(1669693917)))
+          .toBe('string')
+      })
+    })
+
+    describe('convertToRelativeTime', () => {
+      it('Should return relative time', () => {
+        // eslint-disable-next-line max-len
+        expect(typeof formatter('longDurationFormat')(convertToRelativeTime('2022-11-27T07:43:15.658Z')))
           .toBe('string')
       })
     })

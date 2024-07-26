@@ -73,7 +73,7 @@ describe('DHCPTable', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(

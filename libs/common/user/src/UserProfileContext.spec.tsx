@@ -8,8 +8,8 @@ import {
   screen } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { UserUrlsInfo }     from './services'
-import { UserProfile }      from './types'
+import { UserUrlsInfo }                from './services'
+import { CustomRoleType, UserProfile } from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -186,7 +186,7 @@ describe('UserProfileContext', () => {
         ...mockedUserProfile,
         scopes: ['switch-r'],
         customRoleName: 'CUSTOM_USER',
-        customRoleType: 'Custom'
+        customRoleType: CustomRoleType.CUSTOM
       }
       return { data: transformResponse(profile as UserProfile) }
     })
@@ -217,7 +217,7 @@ describe('UserProfileContext', () => {
         roles: ['CUSTOM_ROLE'],
         scopes: ['switch-r'],
         customRoleName: 'CUSTOM_USER',
-        customRoleType: 'Custom'
+        customRoleType: CustomRoleType.CUSTOM
       }
       return { data: transformResponse(profile as UserProfile) }
     })
@@ -248,7 +248,7 @@ describe('UserProfileContext', () => {
         roles: ['PRIME_ADMIN'],
         scopes: ['switch-r'],
         customRoleName: 'PRIME_ADMIN',
-        customRoleType: 'Custom'
+        customRoleType: CustomRoleType.CUSTOM
       }
       return { data: transformResponse(profile as UserProfile) }
     })

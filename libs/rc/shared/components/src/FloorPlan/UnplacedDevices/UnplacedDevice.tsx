@@ -7,6 +7,8 @@ import { useIntl }       from 'react-intl'
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { DeviceOutlined, DevicesOutlined, SignalUp }    from '@acx-ui/icons'
 import { APMeshRole, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
+import { SwitchScopes, WifiScopes }                     from '@acx-ui/types'
+import { hasPermission }                                from '@acx-ui/user'
 
 import { NetworkDeviceContext } from '..'
 import { getDeviceName }        from '../NetworkDevices/utils'
@@ -28,6 +30,15 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
   const deviceContext = useContext(NetworkDeviceContext) as Function
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
 
+  const canDrag = () => {
+    if(device?.networkDeviceType === NetworkDeviceType.ap) {
+      return hasPermission({ scopes: [WifiScopes.UPDATE] })
+    } else if(device?.networkDeviceType === NetworkDeviceType.switch) {
+      return hasPermission({ scopes: [SwitchScopes.UPDATE] })
+    }
+    return true
+  }
+
   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
     type: 'device',
     item: { device: device, markerRef: null },
@@ -41,7 +52,8 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
         // device unplaced
         deviceContext(item)
       }
-    }
+    },
+    canDrag: canDrag()
   }), [device])
 
   const getDeviceIcon = (deviceType: NetworkDeviceType) => {
@@ -68,7 +80,9 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
   return <> <div key={device?.id}>
     <UI.ListItem
       ref={drag}
-      isdragging={isDragging ? true : false}>
+      isdragging={isDragging ? true : false}
+      disabled={!canDrag()}
+    >
       { isDragging ?
         <div style={{
           display: 'flex',

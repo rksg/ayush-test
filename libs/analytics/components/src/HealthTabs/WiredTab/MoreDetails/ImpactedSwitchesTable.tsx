@@ -65,8 +65,9 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
+      fixed: 'left',
       render: (_, row: SwitchDetails) => (
-        <TenantLink to={`/devices/switch/${row.mac}/serial/details/incidents`}>
+        <TenantLink to={`/devices/switch/${row.mac}/serial/details/reports`}>
           {row.name}
         </TenantLink>
       ),
@@ -76,6 +77,7 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
       key: 'mac',
+      fixed: 'left',
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -108,14 +110,29 @@ export const ImpactedSwitchesTable = ({
       title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
       dataIndex: metricField,
       key: metricField,
+      width: 160,
       sorter: { compare: sortProp(metricField, defaultSort) },
       render: (_, row) => {
         return formatter('countFormat')(row[metricField as keyof SwitchDetails])
       }
     }
   ]
+  const isSwitchDetails = (item: SwitchDetails): item is SwitchDetails => {
+    return 'serial' in item && 'model' in item && 'status' in item &&
+    'firmware' in item && 'numOfPorts' in item
+  }
 
   const totalCount = queryResults?.data?.length
+  const data = queryResults?.data?.map((item, i) => {
+    if (isSwitchDetails(item as SwitchDetails)) {
+      return {
+        ...item,
+        rowId: i + 1 // added to make rowKey unique
+      }
+    }
+    return item
+  })
+
   return (
     <Loader states={[queryResults]}>
       <ChartTitle>
@@ -134,8 +151,8 @@ export const ImpactedSwitchesTable = ({
       <Table
         settingsId='switch-health-impacted-switches-table'
         columns={columns}
-        dataSource={queryResults.data as SwitchDetails[]}
-        rowKey='mac'
+        dataSource={data as SwitchDetails[]}
+        rowKey='rowId'
         type='tall'
       />
     </Loader>

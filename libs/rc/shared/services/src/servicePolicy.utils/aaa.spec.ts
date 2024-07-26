@@ -1,6 +1,6 @@
-import { AAAViewModalType, AAARbacViewModalType, Radius, TableResult } from '@acx-ui/rc/utils'
+import { AAAViewModalType, AAARbacViewModalType, TableResult } from '@acx-ui/rc/utils'
 
-import { convertRbacDataToAAAViewModelPolicyList, covertAAAViewModalTypeToRadius } from '.'
+import { convertRbacDataToAAAViewModelPolicyList } from '.'
 
 describe('aaa.utils', () => {
   it('should convert RBAC data to AAA view model policy list', () => {
@@ -21,42 +21,5 @@ describe('aaa.utils', () => {
       ]
     }
     expect(convertRbacDataToAAAViewModelPolicyList(input)).toEqual(expectedOutput)
-  })
-
-  it('should convert AAA view model type to Radius', () => {
-    const data: AAAViewModalType = {
-      id: '1',
-      name: 'Policy 1',
-      primary: '192.168.1.1:8080',
-      secondary: '192.168.1.2:9090',
-      type: 'ACCOUNTING',
-      networkIds: ['network1', 'network2']
-    }
-    const expectedOutput: Radius = {
-      id: '1',
-      name: 'Policy 1',
-      type: 'ACCOUNTING',
-      primary: { ip: '192.168.1.1', port: 8080 },
-      secondary: { ip: '192.168.1.2', port: 9090 }
-    }
-    expect(covertAAAViewModalTypeToRadius(data)).toEqual(expectedOutput)
-  })
-
-  it('should convert AAA view model type to Radius - empty secondary', () => {
-    const data: AAAViewModalType = {
-      id: '1',
-      name: 'Policy 1',
-      primary: '192.168.1.1:8080',
-      secondary: '',
-      type: 'ACCOUNTING',
-      networkIds: ['network1', 'network2']
-    }
-    const expectedOutput: Radius = {
-      id: '1',
-      name: 'Policy 1',
-      type: 'ACCOUNTING',
-      primary: { ip: '192.168.1.1', port: 8080 }
-    }
-    expect(covertAAAViewModalTypeToRadius(data)).toEqual(expectedOutput)
   })
 })

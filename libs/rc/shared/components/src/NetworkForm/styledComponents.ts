@@ -9,7 +9,8 @@ import {
   SMSToken as UISMSToken, Google as UIGoogle,
   Facebook as UIFacebook, Twitter as UITwitter,
   LinkedIn as UILinkedIn, InformationSolid,
-  EnvelopClosedSolid as UIEmailOTP
+  EnvelopClosedSolid as UIEmailOTP,
+  WarningTriangleSolid as UITriangle
 } from '@acx-ui/icons'
 export const Diagram = styled.div`
   width: 358px;
@@ -42,6 +43,31 @@ export const Drawer = styled(UIDrawer)`
 export const Checkbox = styled(UICheckbox)`
   width: 130px;
 `
+export const RedAlertCheckbox = styled(UICheckbox)<{ alert?: boolean }>`
+  ${(props) => {
+    if(props.alert) {
+      return `
+        width: 130px;
+        > span > span {
+          background-color: white !important;
+          border-color: var(--acx-semantics-red-70) !important;
+        }
+        .ant-checkbox-inner::after {
+          border: 2px solid var(--acx-semantics-red-70);
+          border-top: 0;
+          border-left: 0;
+        }
+        > span:nth-of-type(2) {
+          color: var(--acx-semantics-red-70);
+        }
+        > span:nth-of-type(2) > svg > path {
+          fill: var(--acx-semantics-red-70);
+        }
+      `
+    }
+    return 'width: 130px;'
+  }}
+`
 
 export const ConfigurationSolid = styled(UIConfigurationSolid)`
   &:hover{
@@ -62,12 +88,41 @@ const socialIconStyle=css`
     fill:var(--acx-neutrals-60);
   }
 `
+
+const emailOTPIconStyle=css`
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+  path:first-of-type {
+    fill:var(--acx-neutrals-60);
+  }
+  path {
+    stroke:var(--acx-neutrals-60);
+  }
+`
+
 export const SMSToken = styled(UISMSToken)`
   ${socialIconStyle}
 `
 
 export const EMailOTP = styled(UIEmailOTP)`
-  ${socialIconStyle}
+  ${emailOTPIconStyle}
+`
+
+export const WarningTriangleSolid = styled(UITriangle)`
+  width: 16px;
+  height: 16px;
+  path {
+    stroke: white !important;
+  }
+  path:nth-child(1) {
+    stroke: var(--acx-semantics-red-70) !important;
+    fill: var(--acx-semantics-red-70);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-semantics-red-70) !important;
+  }
 `
 
 export const Google = styled(UIGoogle)`

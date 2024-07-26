@@ -7,10 +7,12 @@ import { rest }  from 'msw'
 
 import { AccessControlUrls, CommonUrlsInfo, NetworkSaveData, PskWlanAdvancedCustomization, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                       from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                             from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitFor, within }                                                    from '@acx-ui/test-utils'
 
 import {
   accessControlListResponse,
+  applicationPolicyListResponse,
+  devicePolicyListResponse,
   layer2PolicyListResponse,
   layer3PolicyListResponse,
   policyListResponse
@@ -19,38 +21,37 @@ import NetworkFormContext from '../NetworkFormContext'
 
 import { AccessControlForm } from './AccessControlForm'
 
+const mockAccessControlReq = jest.fn()
+const mockLayer2Req = jest.fn()
+const mockLayer3Req = jest.fn()
+
 describe('AccessControlForm', () => {
 
   beforeEach(() => {
-
-    const devicePolicyResponse = [{
-      data: [{
-        id: 'e3ea3749907f4feb95e9b46fe69aae0b',
-        name: 'p1',
-        rulesCount: 1,
-        networksCount: 0
-      }],
-      fields: [ 'name', 'id'],
-      totalCount: 1,
-      totalPages: 1,
-      page: 1
-    }]
-
     mockServer.use(
-      rest.get(AccessControlUrls.getDevicePolicyList.url,
-        (req, res, ctx) => res(ctx.json(devicePolicyResponse))),
-      rest.get(AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(applicationPolicyListResponse))),
       rest.get(CommonUrlsInfo.getWifiCallingProfileList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(WifiUrlsInfo.getVlanPools.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.get(AccessControlUrls.getAccessControlProfileList.url,
-        (_, res, ctx) => res(ctx.json(accessControlListResponse))),
-      rest.get(AccessControlUrls.getL2AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
-      rest.get(AccessControlUrls.getL3AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => {
+          mockAccessControlReq()
+          return res(ctx.json(accessControlListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => {
+          mockLayer2Req()
+          return res(ctx.json(layer2PolicyListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => {
+          mockLayer3Req()
+          return res(ctx.json(layer3PolicyListResponse))
+        })
     )
   })
 
@@ -126,15 +127,6 @@ describe('AccessControlForm', () => {
 
   it('render access control profile detail with existing profile', async () => {
 
-    mockServer.use(
-      rest.get(AccessControlUrls.getAccessControlProfileList.url,
-        (_, res, ctx) => res(ctx.json(accessControlListResponse))),
-      rest.get(AccessControlUrls.getL2AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
-      rest.get(AccessControlUrls.getL3AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
-    )
-
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
 
     const data = {
@@ -142,6 +134,7 @@ describe('AccessControlForm', () => {
       type: 'psk',
       isCloudpathEnabled: false,
       venues: [],
+      accessControlProfileEnable: true,
       wlan: {
         wlanSecurity: 'WPA2Personal',
         advancedCustomization: {
@@ -218,11 +211,19 @@ describe('AccessControlForm', () => {
         route: { params }
       })
 
-    await userEvent.click(await screen.findByText(/access control policy/i))
+    await waitFor(() => expect(mockAccessControlReq).toBeCalled())
+    await waitFor(() => expect(mockLayer2Req).toBeCalled())
+    await waitFor(() => expect(mockLayer3Req).toBeCalled())
 
-    await screen.findByText(/layer2policy1/i)
+
+    await userEvent.click(await screen.findByRole('combobox', {
+      name: /access control policy/i
+    }))
 
     expect(screen.getByText(/select separate profiles/i)).toBeVisible()
+
+    expect(await screen.findByText(/acl-1/i)).toBeInTheDocument()
+
     expect(within(screen.getByText(/device & os/i)).getByText(/--/)).toBeVisible()
     expect(within(screen.getByText(/layer 2/i)).getByText(/layer2policy1/)).toBeVisible()
     expect(within(screen.getByText(/layer 3/i)).getByText(/layer3policy1/)).toBeVisible()

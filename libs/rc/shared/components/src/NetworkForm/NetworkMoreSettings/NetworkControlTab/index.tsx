@@ -5,6 +5,7 @@ import { Checkbox, Form, InputNumber, Select, Space, Switch } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
+import { StepsForm }                                                                        from '@acx-ui/components'
 import { Features }                                                                         from '@acx-ui/feature-toggle'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
@@ -268,9 +269,9 @@ export function NetworkControlTab () {
         />
       </UI.FieldLabel>
 
-      <UI.Subtitle>
+      <StepsForm.Subtitle>
         {$t({ defaultMessage: 'DHCP' })}
-      </UI.Subtitle>
+      </StepsForm.Subtitle>
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Force DHCP' })}
         <Form.Item

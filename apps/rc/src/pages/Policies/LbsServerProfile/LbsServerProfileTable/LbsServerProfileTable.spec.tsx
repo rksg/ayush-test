@@ -5,6 +5,7 @@ import { Path, To } from 'react-router-dom'
 
 import { policyApi }     from '@acx-ui/rc/services'
 import {
+  CommonUrlsInfo,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -60,6 +61,9 @@ describe('LbsServerProfileTable', () => {
           mockDeleteFn()
           return res(ctx.status(202))
         }
+      ),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })

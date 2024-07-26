@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useGetClientIsolationQuery }                        from '@acx-ui/rc/services'
 import {
   ClientIsolationSaveData,
@@ -20,7 +21,8 @@ import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 export default function ClientIsolationDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data } = useGetClientIsolationQuery({ params })
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data } = useGetClientIsolationQuery({ params, enableRbac })
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
 

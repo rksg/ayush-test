@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { useCreateWifiCallingServiceMutation, useCreateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -15,7 +16,8 @@ import {
   QosPriorityEnum,
   ServiceOperation,
   ServiceType, useConfigTemplateMutationFnSwitcher,
-  useServiceListBreadcrumb, useServicePreviousPath
+  useServiceListBreadcrumb, useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -52,7 +54,8 @@ export const WifiCallingForm = () => {
     description,
     networkIds,
     networksName,
-    epdgs
+    epdgs,
+    oldNetworkIds: []
   })
 
   const [ createWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
@@ -62,12 +65,17 @@ export const WifiCallingForm = () => {
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
   const pageTitle = useServicePageHeaderTitle(false, ServiceType.WIFI_CALLING)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const handleAddWifiCallingService = async () => {
     try {
       await createWifiCallingService({
         params,
-        payload: WifiCallingFormValidate(state)
+        payload: WifiCallingFormValidate(state),
+        enableRbac
       }).unwrap()
       navigate(previousPath, { replace: true })
     } catch (error) {

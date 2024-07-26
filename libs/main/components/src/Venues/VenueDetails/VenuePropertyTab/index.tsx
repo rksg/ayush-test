@@ -32,6 +32,7 @@ import {
   ConnectionMetering,
   FILTER,
   getPolicyDetailsLink,
+  hasCloudpathAccess,
   Persona,
   PolicyOperation,
   PolicyType,
@@ -42,10 +43,9 @@ import {
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }                    from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { exportMessageMapping }          from '@acx-ui/utils'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import { filterByAccess }       from '@acx-ui/user'
+import { exportMessageMapping } from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
@@ -108,6 +108,7 @@ function ConnectionMeteringLink (props:{
 
 export function VenuePropertyTab () {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const PropertyUnitStatusOptions = [
     { key: PropertyUnitStatus.ENABLED, value: $t({ defaultMessage: 'Active' }) },
     { key: PropertyUnitStatus.DISABLED, value: $t({ defaultMessage: 'Suspended' }) }
@@ -266,7 +267,10 @@ export function VenuePropertyTab () {
     // console.log('Fetch aps : ', apMac)
 
     setApMap(new Map())
-    getApList({ payload: { ...apViewModelPayload, filters: { apMac } } })
+    getApList({
+      payload: { ...apViewModelPayload, filters: { apMac } },
+      enableRbac: isWifiRbacEnabled
+    })
       .then(result => {
         if (result.data) {
           result.data.data.forEach(ap => {
@@ -311,7 +315,7 @@ export function VenuePropertyTab () {
   }
 
   const actions: TableProps<PropertyUnit>['actions'] =
-    hasPermission({ scopes: [WifiScopes.CREATE] })
+    hasCloudpathAccess()
       ? [{
         label: $t({ defaultMessage: 'Add Unit' }),
         disabled: !hasAssociation,
@@ -323,121 +327,118 @@ export function VenuePropertyTab () {
         onClick: () => setUploadCsvDrawerVisible(true)
       }] : []
 
-  const rowActions: TableProps<PropertyUnit>['rowActions'] = [
-    {
-      label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [WifiScopes.UPDATE],
-      visible: (selectedItems => selectedItems.length <= 1 ||
+  const rowActions: TableProps<PropertyUnit>['rowActions'] =
+    hasCloudpathAccess()
+      ? [
+        {
+          label: $t({ defaultMessage: 'Edit' }),
+          visible: (selectedItems => selectedItems.length <= 1 ||
         (isConnectionMeteringAvailable && selectedItems.length > 1)),
-      onClick: (units, clearSelection) => {
-        setDrawerState({ units: units.map(u=> {return {
-          ...u,
-          trafficControl: personaMap.get(u.personaId)?.meteringProfileId ?
-            {
-              meteringProfileId: personaMap.get(u.personaId)?.meteringProfileId!!,
-              profileExpiry: personaMap.get(u.personaId)?.expirationDate!!
-            } : undefined }}), isEdit: true, visible: true })
-        clearSelection()
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Suspend' }),
-      scopeKey: [WifiScopes.UPDATE],
-      visible: (selectedRows => {
-        const activeCount = selectedRows.filter(row => enabled(row.status)).length
-        return activeCount > 0 && activeCount === selectedRows.length
-      }),
-      onClick: (items, clearSelection) => {
-        showActionModal({
-          type: 'confirm',
-          title: $t({
-            defaultMessage: `Suspend "{count, plural,
+          onClick: (units, clearSelection) => {
+            setDrawerState({ units: units.map(u=> {return {
+              ...u,
+              trafficControl: personaMap.get(u.personaId)?.meteringProfileId ?
+                {
+                  meteringProfileId: personaMap.get(u.personaId)?.meteringProfileId!!,
+                  profileExpiry: personaMap.get(u.personaId)?.expirationDate!!
+                } : undefined }}), isEdit: true, visible: true })
+            clearSelection()
+          }
+        },
+        {
+          label: $t({ defaultMessage: 'Suspend' }),
+          visible: (selectedRows => {
+            const activeCount = selectedRows.filter(row => enabled(row.status)).length
+            return activeCount > 0 && activeCount === selectedRows.length
+          }),
+          onClick: (items, clearSelection) => {
+            showActionModal({
+              type: 'confirm',
+              title: $t({
+                defaultMessage: `Suspend "{count, plural,
             one {{entityValue}}
             other {{count} {entityName}}
             }"?` }, {
-            count: items.length,
-            entityValue: items[0].name,
-            entityName: $t({ defaultMessage: 'Units' })
-          }),
-          content: $t({ defaultMessage: `Are you sure you want to suspend {count, plural,
+                count: items.length,
+                entityValue: items[0].name,
+                entityName: $t({ defaultMessage: 'Units' })
+              }),
+              content: $t({ defaultMessage: `Are you sure you want to suspend {count, plural,
               one {this Unit}
               other {these Units}
               }?` }, { count: items.length }),
-          okText: $t({ defaultMessage: 'Suspend' }),
-          onOk () {
+              okText: $t({ defaultMessage: 'Suspend' }),
+              onOk () {
+                items.forEach(unit => {
+                  updateUnitById({
+                    params: { venueId, unitId: unit.id },
+                    payload: { status: PropertyUnitStatus.DISABLED }
+                  })
+                    .then(clearSelection)
+                })
+              }
+            })
+          }
+        },
+        {
+          label: $t({ defaultMessage: 'Activate' }),
+          visible: (selectedRows => {
+            const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
+            return suspendCount > 0 && suspendCount === selectedRows.length
+          }),
+          onClick: (items, clearSelection) => {
             items.forEach(unit => {
               updateUnitById({
                 params: { venueId, unitId: unit.id },
-                payload: { status: PropertyUnitStatus.DISABLED }
+                payload: { status: PropertyUnitStatus.ENABLED }
               })
                 .then(clearSelection)
             })
           }
-        })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Activate' }),
-      scopeKey: [WifiScopes.UPDATE],
-      visible: (selectedRows => {
-        const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
-        return suspendCount > 0 && suspendCount === selectedRows.length
-      }),
-      onClick: (items, clearSelection) => {
-        items.forEach(unit => {
-          updateUnitById({
-            params: { venueId, unitId: unit.id },
-            payload: { status: PropertyUnitStatus.ENABLED }
-          })
-            .then(clearSelection)
-        })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'View Portal' }),
-      visible: (selectedItems => (selectedItems.length <= 1 && hasResidentPortalAssignment)),
-      onClick: ([{ id }], clearSelection) => {
-        directToPortal(id)
-        clearSelection()
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Resend' }),
-      scopeKey: [WifiScopes.UPDATE],
-      onClick: (selectedItems, clearSelection) => {
-        notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
-          .unwrap()
-          .then(() => {
-            showToast({
-              type: 'success',
-              content: $t(PropertyUnitMessages.RESEND_NOTIFICATION)
-            })
-          })
-          .catch(() => {})
-          .finally(clearSelection)
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [WifiScopes.DELETE],
-      onClick: (selectedItems, clearSelection) => {
-        setDrawerState({ isEdit: false, visible: false })
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Unit' }),
-            entityValue: selectedItems[0].name,
-            numOfEntities: selectedItems.length
-          },
-          onOk: () => {
-            deleteUnitByIds({ params: { venueId }, payload: selectedItems.map(i => i.id) })
-              .then(() => clearSelection())
+        },
+        {
+          label: $t({ defaultMessage: 'View Portal' }),
+          visible: (selectedItems => (selectedItems.length <= 1 && hasResidentPortalAssignment)),
+          onClick: ([{ id }], clearSelection) => {
+            directToPortal(id)
+            clearSelection()
           }
-        })
-      }
-    }
-  ]
+        },
+        {
+          label: $t({ defaultMessage: 'Resend' }),
+          onClick: (selectedItems, clearSelection) => {
+            notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
+              .unwrap()
+              .then(() => {
+                showToast({
+                  type: 'success',
+                  content: $t(PropertyUnitMessages.RESEND_NOTIFICATION)
+                })
+              })
+              .catch(() => {})
+              .finally(clearSelection)
+          }
+        },
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          onClick: (selectedItems, clearSelection) => {
+            setDrawerState({ isEdit: false, visible: false })
+            showActionModal({
+              type: 'confirm',
+              customContent: {
+                action: 'DELETE',
+                entityName: $t({ defaultMessage: 'Unit' }),
+                entityValue: selectedItems[0].name,
+                numOfEntities: selectedItems.length
+              },
+              onOk: () => {
+                deleteUnitByIds({ params: { venueId }, payload: selectedItems.map(i => i.id) })
+                  .then(() => clearSelection())
+              }
+            })
+          }
+        }
+      ] : []
 
   const columns: TableProps<PropertyUnit>['columns'] = [
     {
@@ -566,9 +567,7 @@ export function VenuePropertyTab () {
         actions={filterByAccess(hasAssociation ? actions : [])}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasPermission({
-            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
-          }) && { type: 'checkbox' }}
+          hasCloudpathAccess() && { type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

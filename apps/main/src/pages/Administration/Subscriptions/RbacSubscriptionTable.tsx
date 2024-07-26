@@ -104,13 +104,14 @@ export const RbacSubscriptionTable = () => {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const queryResults = useGetEntitlementsListQuery({ params },
     { skip: isEntitlementRbacApiEnabled })
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
   const mspUtils = MSPUtils()
-  const { data: mspProfile } = useGetMspProfileQuery({ params })
+  const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
   const { data: rbacQueryResults } = useRbacEntitlementListQuery(

@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                    from '@acx-ui/components'
-import { defaultSort, PersonaDevice, sortProp } from '@acx-ui/rc/utils'
-import { WifiScopes }                           from '@acx-ui/types'
-import { filterByAccess, hasPermission }        from '@acx-ui/user'
+import { Table, TableProps }                                        from '@acx-ui/components'
+import { defaultSort, hasCloudpathAccess, PersonaDevice, sortProp } from '@acx-ui/rc/utils'
+import { filterByAccess }                                           from '@acx-ui/user'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
 
@@ -55,7 +54,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
   ]
 
   const actions: TableProps<PersonaDeviceItem>['actions'] =
-    hasPermission({ scopes: [WifiScopes.CREATE] })
+    hasCloudpathAccess()
       ? [{
         label: $t({ defaultMessage: 'Add Device' }),
         disabled: !canAddDevices,
@@ -84,7 +83,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
         dataSource={value ?? []}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasPermission() && { defaultSelectedRowKeys: [] }}
+        rowSelection={hasCloudpathAccess() && { defaultSelectedRowKeys: [] }}
       />
       {modelVisible &&
         <PersonaDevicesImportDialog

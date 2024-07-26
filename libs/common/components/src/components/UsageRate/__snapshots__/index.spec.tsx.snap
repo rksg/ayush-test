@@ -2,14 +2,19 @@
 
 exports[`UsageRate should match snapshot 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
       0
     </div>
     <div
-      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
     >
       <div
         class="ant-progress-steps-outer"
@@ -37,14 +42,19 @@ exports[`UsageRate should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
       5
     </div>
     <div
-      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
     >
       <div
         class="ant-progress-steps-outer"
@@ -72,14 +82,19 @@ exports[`UsageRate should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
       33.33
     </div>
     <div
-      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
     >
       <div
         class="ant-progress-steps-outer"
@@ -107,14 +122,19 @@ exports[`UsageRate should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
       50
     </div>
     <div
-      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
     >
       <div
         class="ant-progress-steps-outer"
@@ -142,14 +162,19 @@ exports[`UsageRate should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
       66.66
     </div>
     <div
-      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+      class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
     >
       <div
         class="ant-progress-steps-outer"
@@ -177,14 +202,19 @@ exports[`UsageRate should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
       100
     </div>
     <div
-      class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__Usage-sc-1d489p3-0 fKNSiY"
+      class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default c0"
     >
       <div
         class="ant-progress-steps-outer"

@@ -76,7 +76,8 @@ export function ConfigTemplateList () {
     defaultPayload: {},
     search: {
       searchTargetFields: ['name']
-    }
+    },
+    enableRbac
   })
   const addTemplateMenuProps = useAddTemplateMenuProps()
 
@@ -107,6 +108,7 @@ export function ConfigTemplateList () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: (selectedRows) => selectedRows[0] && !!deleteMutationMap[selectedRows[0].type],
       onClick: (selectedRows, clearSelection) => {
         const selectedRow = selectedRows[0]
 
@@ -119,10 +121,7 @@ export function ConfigTemplateList () {
             numOfEntities: selectedRows.length
           },
           onOk: async () => {
-            const deleteFn = deleteMutationMap[selectedRow.type]
-
-            if (!deleteFn) return
-
+            const deleteFn = deleteMutationMap[selectedRow.type]!
             deleteFn({ params: { templateId: selectedRow.id! }, enableRbac }).then(clearSelection)
           }
         })

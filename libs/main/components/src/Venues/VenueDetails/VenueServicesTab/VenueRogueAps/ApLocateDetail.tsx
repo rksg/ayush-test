@@ -22,6 +22,20 @@ import {
 
 import { handleCategoryColor } from './index'
 
+const apViewModelRbacPayloadFields = [
+  'name', 'venueId', 'venueName', 'apGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'macAddress', 'networkStatus', 'model', 'firmwareVersion',
+  'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
+  'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
+  'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus']
+
+const apViewModelPayloadFields =[
+  'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+  'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+  'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+  'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags']
+
 const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   const params = useParams()
   const { row } = props
@@ -31,16 +45,13 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const apViewModelPayload = {
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
+    fields: isUseWifiRbacApi ? apViewModelRbacPayloadFields : apViewModelPayloadFields,
     filters: { serialNumber: [row.closestAp.apSerialNumber] }
   }
   const { data: currentAP }
     = useApViewModelQuery({
-      payload: apViewModelPayload
+      payload: apViewModelPayload,
+      enableRbac: isUseWifiRbacApi
     }, { skip: !row.closestAp.apSerialNumber })
   const { data: apDetails }
     = useApDetailsQuery({

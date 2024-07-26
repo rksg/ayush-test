@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { clientApi, networkApi }                         from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { clientApi, networkApi }                                             from '@acx-ui/rc/services'
+import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -120,7 +120,7 @@ describe('Guest Table', () => {
         (_, res, ctx) => res(ctx.json(GuestList))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
       rest.post(
@@ -144,6 +144,10 @@ describe('Guest Table', () => {
           mockedDownloadReq()
           return res(ctx.json({}))
         }
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
     )
   })
@@ -442,6 +446,34 @@ describe('Guest Table', () => {
     await waitFor(() => expect(mockedImportFileReq).toBeCalledTimes(1))
     await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
+
+  it('should show correct template file after guest-manual-password-toggle turn on', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: /Import from file/ })).toBeEnabled()
+    )
+
+    const importBtn = await screen.findByRole('button', { name: 'Import from file' })
+    await userEvent.click(importBtn)
+
+    const manualRadio = screen.queryByTestId('manual-radio')
+    expect(manualRadio).not.toBeInTheDocument()
+
+    const link = screen.getByRole('link', {
+      name: /download template/i
+    })
+    // eslint-disable-next-line max-len
+    expect(link).toHaveAttribute('href', 'assets/templates/guests_import_template_with_guestpass.csv')
+  })
+
 
   it('should click "download" correctly', async () => {
     render(

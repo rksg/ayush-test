@@ -4,6 +4,7 @@ export interface LbsServerProfileViewModel {
     lbsVenueName: string
     server: string
     venueIds?: string[]
+    serverConnected?: boolean
 }
 
 export interface LbsServerProfile {
@@ -25,4 +26,9 @@ export interface LbsServerProfileDetailContextType {
     profileName: string,
     setFiltersId: (filtersId: string[]) => void
     setProfileName: (profileName: string) => void
+}
+
+export interface VenueLbsActivationType {
+    enableLbs: boolean
+    lbsServerProfileId?: string
 }

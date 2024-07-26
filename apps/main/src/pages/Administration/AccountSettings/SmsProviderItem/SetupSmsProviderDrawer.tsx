@@ -4,14 +4,15 @@ import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Drawer, PasswordInput }             from '@acx-ui/components'
+import { Drawer, PasswordInput, Tooltip }    from '@acx-ui/components'
 import {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useUpdateNotificationSmsProviderMutation
 } from '@acx-ui/rc/services'
 import {
   SmsProviderType,
-  NotificationSmsConfig
+  NotificationSmsConfig,
+  URLRegExp
 } from '@acx-ui/rc/utils'
 
 import { MessageMapping } from '../MessageMapping'
@@ -72,6 +73,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
       setPhoneNumbers(myNumber)
       setIsValidTwiliosNumber(myNumber.length > 0)
+      form.setFieldValue('phoneNumber', myNumber.length > 0 ? myNumber[0] : '')
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -89,8 +91,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             fromNumber: form.getFieldValue('phoneNumber')
           }
           : {
-            // esendex
-            apiKey: form.getFieldValue('apiKey')
+            // esendex, other
+            apiKey: form.getFieldValue('apiKey'),
+            url: providerType === SmsProviderType.ESENDEX
+              ? undefined : form.getFieldValue('sendUrl')
           }
 
       await updateSmsProvider({
@@ -111,6 +115,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Esendex' }),
       value: SmsProviderType.ESENDEX
+    },
+    {
+      label: $t({ defaultMessage: 'Other' }),
+      value: SmsProviderType.OTHERS
     }
   ]
 
@@ -174,9 +182,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='phoneNumber'
         label={$t({ defaultMessage: 'Phone Number' })}
+        initialValue={editData?.providerData.fromNumber ?? ''}
         rules={[
           { validator: () => {
-            return !isValidTwiliosNumber ? Promise.reject(
+            const hasNumber = form.getFieldValue('phoneNumber')
+            return !isValidTwiliosNumber && hasNumber === '' ? Promise.reject(
               `${$t(MessageMapping.received_invalid_twilios_number)}`
             ) : Promise.resolve()}
           }
@@ -202,16 +212,27 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='apiKey'
         label={$t({ defaultMessage: 'API Key' })}
+        initialValue={editData?.providerData.apiKey ?? ''}
         rules={[
           { required: true }
         ]}
         children={<Input.TextArea rows={8} />}
       />
+
       <Form.Item
         name='sendUrl'
-        label={$t({ defaultMessage: 'Send URL' })}
+        label={<>
+          {$t({ defaultMessage: 'Send URL' })}
+          <Tooltip.Question
+            // eslint-disable-next-line max-len
+            title={$t({ defaultMessage: 'The URL of this SMS provider. This should include variables for phone number, message, and API key.' })}
+            placement='right'
+          />
+        </>}
+        initialValue={editData?.providerData.url ?? ''}
         rules={[
-          { required: true }
+          { required: true, message: $t({ defaultMessage: 'Please enter Send URL' }) },
+          { validator: (_, value) => URLRegExp(value) }
         ]}
         children={<Input />}
       />

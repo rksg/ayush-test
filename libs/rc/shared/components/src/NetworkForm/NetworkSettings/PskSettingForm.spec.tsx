@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }           from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, ExpirationType,
   MacRegListUrlsInfo, RulesManagementUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
@@ -135,16 +135,12 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json([]))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(
         MacRegListUrlsInfo.createMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json({}))
@@ -168,6 +164,10 @@ describe('NetworkForm', () => {
           vlanMembers: ['123'],
           id: '1c061cf2649344adaf1e79a9d624a451'
         }]))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -201,7 +201,8 @@ describe('NetworkForm', () => {
 
   it('should create PSK network with WPA2 and mac auth (for mac registration list)', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     mockServer.use(
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url

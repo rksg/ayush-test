@@ -15,7 +15,6 @@ import {
   TableResult,
   VLANPoolPolicyType,
   VLANPoolVenues,
-  SyslogContextType,
   SyslogPolicyDetailType,
   VenueSyslogPolicyType,
   ConfigTemplateUrlsInfo,
@@ -27,14 +26,30 @@ import {
   VenueRogueAp,
   VenueSyslogSettingType,
   VLANPoolViewModelType,
-  ApiVersionEnum,
   RoguePolicyRequest,
   RogueApSettingsRequest
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
-import { addRoguePolicyFn, commonQueryFn, updateRoguePolicyFn, getVenueRoguePolicyFn, updateVenueRoguePolicyFn } from '../servicePolicy.utils'
+import {
+  addRoguePolicyFn,
+  commonQueryFn,
+  updateRoguePolicyFn,
+  getVenueRoguePolicyFn,
+  updateVenueRoguePolicyFn,
+  addSyslogPolicyFn,
+  getSyslogPolicyFn,
+  transformGetVenueSyslog,
+  updateSyslogPolicyFn,
+  addAccessControlProfileFn,
+  updateAccessControlProfileFn,
+  getEnhancedAccessControlProfileListFn,
+  getEnhancedL2AclProfileListFn,
+  getEnhancedL3AclProfileListFn, getEnhancedDeviceProfileListFn, getEnhancedApplicationProfileListFn
+} from '../servicePolicy.utils'
+
 
 import { configTemplateApi }             from './common'
 import {
@@ -49,11 +64,17 @@ import { venueConfigTemplateApi } from './venue'
 export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     addL2AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addL2AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.addL2AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.addL2AclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     getL2AclPolicyTemplate: build.query<l2AclPolicyInfoType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getL2AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.getL2AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.getL2AclPolicyRbac
+      ),
       providesTags: [{ type: 'AccessControlTemplate', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -66,7 +87,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getL2AclPolicyTemplateList: build.query<TableResult<L2AclPolicy>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies),
+      queryFn: getEnhancedL2AclProfileListFn(true),
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -80,19 +101,50 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateL2AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateL2AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.updateL2AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.updateL2AclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delL2AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delL2AclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
+    activateL2AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateL2AclOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    deactivateL2AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    activateL2AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateL2AclOnWifiNetwork
+      )
+    }),
+    deactivateL2AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateL2AclOnWifiNetwork
+      )
+    }),
     addL3AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addL3AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.addL3AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.addL3AclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     getL3AclPolicyTemplate: build.query<l3AclPolicyInfoType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getL3AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.getL3AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.getL3AclPolicyRbac
+      ),
       providesTags: [{ type: 'AccessControlTemplate', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -105,7 +157,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getL3AclPolicyTemplateList: build.query<TableResult<L3AclPolicy>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies),
+      queryFn: getEnhancedL3AclProfileListFn(true),
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -119,24 +171,50 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateL3AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateL3AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.updateL3AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.updateL3AclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delL3AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delL3AclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
+    activateL3AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateL3AclOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    deactivateL3AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    activateL3AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateL3AclOnWifiNetwork
+      )
+    }),
+    deactivateL3AclTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateL3AclOnWifiNetwork
+      )
+    }),
     addAccessControlProfileTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addAccessControlProfile),
+      queryFn: addAccessControlProfileFn(true),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     getAccessControlProfileTemplate: build.query<AccessControlInfoType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getAccessControlProfile),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getAccessControlProfile, PoliciesConfigTemplateUrlsInfo.getAccessControlProfileRbac),
       providesTags: [{ type: 'AccessControlTemplate', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
     getAccessControlProfileTemplateList: build.query<TableResult<AccessControlInfoType>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedAccessControlProfiles),
+      queryFn: getEnhancedAccessControlProfileListFn(true),
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -150,19 +228,37 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateAccessControlProfileTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateAccessControlProfile),
+      queryFn: updateAccessControlProfileFn(true),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     deleteAccessControlProfileTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteAccessControlProfile),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
+    // eslint-disable-next-line max-len
+    activateAccessControlProfileTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateAccessControlProfileOnWifiNetwork
+      )
+    }),
+    // eslint-disable-next-line max-len
+    deactivateAccessControlProfileTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateAccessControlProfileOnWifiNetwork
+      )
+    }),
     addDevicePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addDevicePolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.addDevicePolicy,
+        PoliciesConfigTemplateUrlsInfo.addDevicePolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     getDevicePolicyTemplate: build.query<devicePolicyInfoType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getDevicePolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.getDevicePolicy,
+        PoliciesConfigTemplateUrlsInfo.getDevicePolicyRbac
+      ),
       providesTags: [{ type: 'AccessControlTemplate', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -175,7 +271,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getDevicePolicyTemplateList: build.query<TableResult<DevicePolicy>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedDevicePolicies),
+      queryFn: getEnhancedDeviceProfileListFn(true),
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -189,19 +285,50 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateDevicePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateDevicePolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.updateDevicePolicy,
+        PoliciesConfigTemplateUrlsInfo.updateDevicePolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delDevicePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delDevicePolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
+    activateDeviceTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    deactivateDeviceTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    activateDeviceTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateDevicePolicyOnWifiNetwork
+      )
+    }),
+    deactivateDeviceTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateDevicePolicyOnWifiNetwork
+      )
+    }),
     addAppPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addAppPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.addAppPolicy,
+        PoliciesConfigTemplateUrlsInfo.addAppPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     getAppPolicyTemplate: build.query<appPolicyInfoType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getAppPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.getAppPolicy,
+        PoliciesConfigTemplateUrlsInfo.getAppPolicyRbac
+      ),
       providesTags: [{ type: 'AccessControlTemplate', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -214,7 +341,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getAppPolicyTemplateList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies),
+      queryFn: getEnhancedApplicationProfileListFn(true),
       providesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -228,12 +355,39 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateAppPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateAppAclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.updateAppAclPolicy,
+        PoliciesConfigTemplateUrlsInfo.updateAppAclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delAppPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delAppAclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    activateApplicationPolicyTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    deactivateApplicationPolicyTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnAccessControlProfile
+      ),
+      invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
+    }),
+    activateApplicationPolicyTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.activateApplicationPolicyOnWifiNetwork
+      )
+    }),
+    deactivateApplicationPolicyTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deactivateApplicationPolicyOnWifiNetwork
+      )
     }),
     // eslint-disable-next-line max-len
     getEnhancedVlanPoolPolicyTemplateList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
@@ -250,7 +404,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getVlanPoolPolicyTemplateDetail: build.query<VLANPoolPolicyType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyRbac),
       transformResponse (data: VLANPoolPolicyType) {
         data.vlanMembers = (data.vlanMembers as string[]).join(',')
         return data
@@ -259,15 +414,18 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     addVlanPoolPolicyTemplate: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.addVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     updateVlanPoolPolicyTemplate: build.mutation<VLANPoolPolicyType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     delVlanPoolPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     getVlanPoolTemplateVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
@@ -275,24 +433,26 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    addSyslogPolicyTemplate: build.mutation<SyslogContextType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addSyslogPolicy),
+    addSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      queryFn: addSyslogPolicyFn(true),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     delSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy, PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicyRbac),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
-    updateSyslogPolicyTemplate: build.mutation<SyslogContextType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateSyslogPolicy),
+    updateSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      queryFn: updateSyslogPolicyFn(true),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplate: build.query<SyslogPolicyDetailType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicy),
+      queryFn: getSyslogPolicyFn(true),
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplateList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList, PoliciesConfigTemplateUrlsInfo.querySyslog),
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -305,16 +465,39 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getVenueTemplateForSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList, ConfigTemplateUrlsInfo.getVenuesTemplateListRbac),
       providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
       extraOptions: { maxRetries: 5 }
     }),
     getVenueTemplateSyslogSettings: build.query<VenueSyslogSettingType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings),
-      providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac ? PoliciesConfigTemplateUrlsInfo.querySyslog
+          : PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings
+        const req = createHttpRequest(url, params)
+        return{
+          ...req,
+          ...enableRbac ? {
+            body: JSON.stringify({ filters: { venueIds: [params!.venueId] } }) } : {}
+        }
+      },
+      providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
+      transformResponse: transformGetVenueSyslog
     }),
-    updateVenueTemplateSyslogSettings: build.mutation<VenueSyslogSettingType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateSyslogSettings: build.mutation<VenueSyslogSettingType, RequestPayload<VenueSyslogSettingType>>({
+      query: ({ params, payload, enableTemplateRbac: enableRbac }) => {
+        const url = enableRbac ?
+          // eslint-disable-next-line max-len
+          (payload!.enabled ? PoliciesConfigTemplateUrlsInfo.bindVenueSyslog : PoliciesConfigTemplateUrlsInfo.unbindVenueSyslog)
+          : PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings
+        const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
+        const req = createHttpRequest(url, param)
+        return {
+          ...req,
+          ...(enableRbac ? {} : { body: payload })
+        }
+      },
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
     }),
     addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
@@ -322,23 +505,13 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.getRoguePolicy,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }
-      ),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getRoguePolicy, PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac),
       providesTags: [{ type: 'RogueApTemplate', id: 'DETAIL' }]
     }),
     getRoguePolicyTemplateList: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }
-      ),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList, PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac),
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -357,13 +530,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     delRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.deleteRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }
-      ),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy, PoliciesConfigTemplateUrlsInfo.deleteRoguePolicyRbac),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
@@ -401,6 +569,12 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
       queryFn: updateVenueRoguePolicyFn(true),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'LIST' }]
+    }),
+    activateVlanPoolTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.activateVlanPool)
+    }),
+    deactivateVlanPoolTemplateOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deactivateVlanPool)
     })
   })
 })
@@ -411,26 +585,44 @@ export const {
   useGetL2AclPolicyTemplateListQuery,
   useUpdateL2AclPolicyTemplateMutation,
   useDelL2AclPolicyTemplateMutation,
+  useActivateL2AclTemplateOnAccessControlProfileMutation,
+  useDeactivateL2AclTemplateOnAccessControlProfileMutation,
+  useActivateL2AclTemplateOnWifiNetworkMutation,
+  useDeactivateL2AclTemplateOnWifiNetworkMutation,
   useAddL3AclPolicyTemplateMutation,
   useGetL3AclPolicyTemplateQuery,
   useGetL3AclPolicyTemplateListQuery,
   useDelL3AclPolicyTemplateMutation,
   useUpdateL3AclPolicyTemplateMutation,
+  useActivateL3AclTemplateOnAccessControlProfileMutation,
+  useDeactivateL3AclTemplateOnAccessControlProfileMutation,
+  useActivateL3AclTemplateOnWifiNetworkMutation,
+  useDeactivateL3AclTemplateOnWifiNetworkMutation,
   useAddAccessControlProfileTemplateMutation,
   useUpdateAccessControlProfileTemplateMutation,
   useDeleteAccessControlProfileTemplateMutation,
   useGetAccessControlProfileTemplateQuery,
   useGetAccessControlProfileTemplateListQuery,
+  useActivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation,
   useAddDevicePolicyTemplateMutation,
   useGetDevicePolicyTemplateQuery,
   useGetDevicePolicyTemplateListQuery,
   useDelDevicePolicyTemplateMutation,
   useUpdateDevicePolicyTemplateMutation,
+  useActivateDeviceTemplateOnAccessControlProfileMutation,
+  useDeactivateDeviceTemplateOnAccessControlProfileMutation,
+  useActivateDeviceTemplateOnWifiNetworkMutation,
+  useDeactivateDeviceTemplateOnWifiNetworkMutation,
   useAddAppPolicyTemplateMutation,
   useGetAppPolicyTemplateQuery,
   useGetAppPolicyTemplateListQuery,
   useUpdateAppPolicyTemplateMutation,
   useDelAppPolicyTemplateMutation,
+  useActivateApplicationPolicyTemplateOnAccessControlProfileMutation,
+  useDeactivateApplicationPolicyTemplateOnAccessControlProfileMutation,
+  useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useGetVlanPoolPolicyTemplateDetailQuery,
   useAddVlanPoolPolicyTemplateMutation,
@@ -452,5 +644,7 @@ export const {
   useDelRoguePolicyTemplateMutation,
   useGetVenueRoguePolicyTemplateQuery,
   useGetVenueRogueApTemplateQuery,
-  useUpdateVenueRogueApTemplateMutation
+  useUpdateVenueRogueApTemplateMutation,
+  useActivateVlanPoolTemplateOnWifiNetworkMutation,
+  useDeactivateVlanPoolTemplateOnWifiNetworkMutation
 } = policiesConfigTemplateApi
