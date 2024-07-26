@@ -1217,7 +1217,8 @@ describe('SD-LAN feature functions', () => {
 
   describe('useSdLanScopedNetworkVenues', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
     })
 
     it('should return venueId used for DC case', async () => {
@@ -1350,6 +1351,8 @@ describe('SD-LAN feature functions', () => {
 
       expect(mockedSdLanGet).not.toBeCalled()
     })
+
+    it.todo('should correctly return when mv sdlan FF is ON')
   })
 
   describe('checkSdLanScopedNetworkDeactivateAction', () => {

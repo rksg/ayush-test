@@ -101,6 +101,7 @@ jest.mock('@acx-ui/analytics/components', () => ({
   RecommendationDetails: () => <div data-testid='RecommendationDetails'/>,
   CrrmDetails: () => <div data-testid='CrrmDetails'/>,
   IntentAIForm: () => <div data-testid='IntentAIForm'/>,
+  IntentAIDetails: () => <div data-testid='IntentAIDetails'/>,
   UnknownDetails: () => <div data-testid='UnknownDetails'/>
 }))
 

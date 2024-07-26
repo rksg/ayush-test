@@ -18,6 +18,7 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
 import { networkApi }           from '../network'
+import { addNetworkVenueFn }    from '../networkVenueUtils'
 import { commonQueryFn }        from '../servicePolicy.utils'
 import { updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
@@ -149,7 +150,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenueTemplate),
+      queryFn: addNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
