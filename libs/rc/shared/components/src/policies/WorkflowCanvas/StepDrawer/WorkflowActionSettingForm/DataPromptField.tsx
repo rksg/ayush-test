@@ -7,7 +7,7 @@ import { Button }                                     from '@acx-ui/components'
 import { DeleteOutlined, DeleteOutlinedDisabledIcon } from '@acx-ui/icons'
 import { whitespaceOnlyRegExp }                       from '@acx-ui/rc/utils'
 
-import { FieldLabel } from '../../../../NetworkForm/styledComponents'
+import { FieldLabel } from './styledComponents'
 
 interface FieldType {
   value: string,
