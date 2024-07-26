@@ -42,7 +42,9 @@ export type AupActionFormContext = AupActionContext & {
 }
 
 export interface DpskActionContext {
-  dpskPoolId: string
+  dpskPoolId?: string,
+  identityId?: string,
+  identityGroupId?: string
 }
 
 export interface DataPromptActionContext {
@@ -84,10 +86,12 @@ export interface DisplayMessageActionContext {
 export type AupAction = ActionBase & AupActionFormContext
 export type DataPromptAction = ActionBase & DataPromptActionContext
 export type DisplayMessageAction = ActionBase & DisplayMessageActionContext
+export type DpskAction = ActionBase & DpskActionContext
 
 export type GenericActionData =
   ActionBase &
   AupActionFormContext &
   DataPromptActionContext &
-  DisplayMessageActionContext
+  DisplayMessageActionContext &
+  DpskAction
 

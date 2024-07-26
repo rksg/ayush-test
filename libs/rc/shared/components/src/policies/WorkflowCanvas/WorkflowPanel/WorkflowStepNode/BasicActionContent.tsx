@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { Popover, Space } from 'antd'
+import { Space } from 'antd'
 
 import * as UI from './styledComponents'
 import { useIntl } from 'react-intl'
@@ -28,14 +28,15 @@ export default function BasicActionContent (props: BasicActionContentProps) {
       align={'start'}
       size={4}>
         <div>{title}</div>
-        {content ? 
-          <UI.PopoverWrapper>
-            <UI.PopoverGlobalStyle />
-            <Popover content={content}
-              trigger={'click'}>
-              {$t({defaultMessage: 'Details'})}
-            </Popover>
-          </UI.PopoverWrapper>
+        {content ?
+          <UI.Popover
+            content={content}
+            trigger='hover'
+            overlayInnerStyle={{backgroundColor: 'var(--acx-primary-black)'}}
+            color='var(--acx-primary-black)'
+          >
+            {$t({defaultMessage: 'Details'})}
+          </UI.Popover>
           : ''}
       </Space>
     </Space>

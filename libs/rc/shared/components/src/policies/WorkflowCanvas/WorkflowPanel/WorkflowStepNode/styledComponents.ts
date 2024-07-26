@@ -1,5 +1,6 @@
 import { Typography } from 'antd'
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import styled from 'styled-components/macro'
+import { Popover as AntPopover } from 'antd'
 
 export const StepNode = styled.div<{ selected?: boolean }>`
   font-size: 12px;
@@ -143,6 +144,14 @@ export const PlusButton = styled.div`
     }
   }
 `
+// this styles the label of the popover
+export const Popover = styled(AntPopover)`
+    text-decoration: dotted underline;
+    :after {
+      content: '';
+      display: block;
+    }
+  `
 
 export const PopoverTitle = styled(Typography.Text)`
   color: var(--acx-neutrals-40);
@@ -153,75 +162,4 @@ export const PopoverContent = styled(Typography.Text)`
   color: var(--acx-primary-white);
   font-size: var(--acx-body-3-font-size);
   padding-bottom: 20px;
-`
-
-// slightly modified from analytics 
-// TODO: will this conflict with the version in analytics since it is global?
-export const PopoverGlobalStyle = createGlobalStyle`
-  .ant-popover {
-    font-size: var(--acx-body-4-font-size);
-    line-height: var(--acx-body-4-line-height);
-    filter: drop-shadow(0px 4px 8px rgba(51, 51, 51, 0.08));
-
-    &-arrow {
-
-      &-content { 
-        box-shadow: none; 
-        background-color: var(--acx-primary-black);
-        // Use linear gradient to mix box shadow of popover inner
-        --antd-arrow-background-color: linear-gradient(
-          to right bottom,
-          fadeout(var(--acx-primary-black), 10%),
-          var(--acx-primary-black)
-        );
-      }
-    }
-    &-inner {
-      box-shadow: none;
-      white-space: pre-line;
-      min-width: 30px;
-      min-height: 30px;
-      max-height: 300px;
-      overflow-y: hidden;
-      color: var(--acx-primary-white);
-
-      &-content {
-        background-color: var(--acx-primary-black);
-        border-radius: 4px;
-        padding: 8px 8px;
-        box-shadow: none;
-        white-space: pre-line;
-        min-width: 30px;
-        min-height: 30px;
-        color: var(--acx-primary-white);
-      }
-
-      > :last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    ul {
-      padding-inline-start: 15px;
-    }
-  }
-
-  .ant-spin {
-    &.ant-spin-sm {
-      .ant-spin-dot {
-        font-size: 12px;
-      }
-    }
-  }
-`
-
-export const PopoverWrapper = styled.span`
-  > span {
-    text-decoration: dotted underline;
-    :after {
-      content: '';
-      display: block;
-    }
-  }
-
 `
