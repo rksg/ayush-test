@@ -45,7 +45,9 @@ export interface DpskActionContext {
 
 export interface DataPromptActionContext {
   title?: string,
+  displayTitle: boolean,
   messageHtml?: string,
+  displayMessageHtml: boolean
   fields?: DataPromptVariable[],
   bottomLabel?: string // max = 1000
   backButtonText: string,

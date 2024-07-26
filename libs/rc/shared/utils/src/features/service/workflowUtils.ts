@@ -132,12 +132,14 @@ export const DataPromptActionDefaultValue: {
   [key in keyof DataPromptActionContext]: MessageDescriptor | boolean | string | DataPromptVariable[]
 } = {
   title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  displayTitle: true,
   messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  displayMessageHtml: true,
   backButtonText: 'Back',
   continueButtonText: 'Continue',
   displayBackButton: true,
-  displayContinueButton: true
-  , fields: [{ type: 'username', label: 'Username' }]
+  displayContinueButton: true,
+  fields: [{ type: 'username', label: 'Username' }]
 }
 
 export const UserSelectionActionDefaultValue: {
