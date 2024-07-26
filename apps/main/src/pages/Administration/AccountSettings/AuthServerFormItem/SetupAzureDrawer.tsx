@@ -21,9 +21,9 @@ import { useParams } from 'react-router-dom'
 import { Button, DrawerProps, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { formatter }                          from '@acx-ui/formatter'
+import { useGetMspUploadURLMutation }         from '@acx-ui/msp/services'
 import {
   useAddTenantAuthenticationsMutation,
-  useGetUploadURLMutation,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -103,7 +103,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
-  const [getUploadURL] = useGetUploadURLMutation()
+  const [getUploadURL] = useGetMspUploadURLMutation()
 
   const onClose = () => {
     setVisible(false)

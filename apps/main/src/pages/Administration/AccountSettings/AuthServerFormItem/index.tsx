@@ -167,8 +167,9 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                   setXmlData(authenticationData?.samlFileURL || '')
                 } else {
                   const rbacUrl = `/tenants/${authenticationData?.samlFileURL}/urls`
-                  const url = await loadImageWithJWT(isRbacEnabled ? rbacUrl
-                    : authenticationData?.samlFileURL as string)
+                  const url = await loadImageWithJWT(authenticationData?.samlFileURL as string,
+                    isRbacEnabled ? rbacUrl : undefined
+                  )
                   await fetch(url)
                     .then((response) => response.text())
                     .then((text) => {
