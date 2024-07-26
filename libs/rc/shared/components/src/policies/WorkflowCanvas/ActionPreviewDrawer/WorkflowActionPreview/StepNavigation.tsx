@@ -1,7 +1,7 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import * as UI from './styledComponent'
+import { Button } from '@acx-ui/components'
 
 
 interface StepNavigationProps {
@@ -16,19 +16,27 @@ export function StepNavigation (props: StepNavigationProps) {
 
   return (
     <Space
-      style={{ paddingTop: '35px' }}
+      style={{
+        paddingTop: '35px',
+        paddingBottom: '12px'
+      }}
       size={20}
     >
       {!isStart &&
-      <UI.Button
+      <Button
         type='primary'
         size='large'
         onClick={onBack}
       >
         {$t({ defaultMessage: '< Back' })}
-      </UI.Button>
+      </Button>
       }
-      <UI.Button
+      <Button
+        style={{
+          /* TODO: Use global configuration */
+          // backgroundColor: 'yellowgreen',
+          // borderColor: 'yellowgreen'
+        }}
         type='primary'
         size='large'
         onClick={onNext}
@@ -37,7 +45,7 @@ export function StepNavigation (props: StepNavigationProps) {
           ? $t({ defaultMessage: 'Start' })
           : $t({ defaultMessage: 'Next >' })
         }
-      </UI.Button>
+      </Button>
     </Space>
   )
 }

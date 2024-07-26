@@ -2,6 +2,8 @@ import { MessageDescriptor }      from '@formatjs/intl'
 import { defineMessage, useIntl } from 'react-intl'
 import { Node }                   from 'reactflow'
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { cssStr }      from '@acx-ui/components'
 import {
   AupIcon,
   DataPromptIcon,
@@ -13,6 +15,7 @@ import {
   AupActionContext,
   DataPromptActionContext,
   DisplayMessageActionContext,
+  UIConfiguration,
   WorkflowStep
 } from '../../types'
 
@@ -152,3 +155,22 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   // [ActionType.DPSK]: {},
 }
 /* eslint-enable max-len */
+
+// TODO:
+// - Remove `defaultConfiguration` in PortalDesign.tsx
+export const DefaultUIConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    titleFontColor: cssStr('--acx-neutrals-100'),
+    backgroundColor: cssStr('--acx-primary-white'),
+    bodyFontColor: cssStr('--acx-neutrals-100'),
+
+    buttonFontColor: cssStr('--acx-primary-white'),
+    buttonColor: cssStr('--acx-accents-orange-50')
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16,
+    bodyFontSize: 14
+  }
+}

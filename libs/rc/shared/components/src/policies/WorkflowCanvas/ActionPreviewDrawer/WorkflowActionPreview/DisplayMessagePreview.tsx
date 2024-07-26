@@ -1,10 +1,12 @@
 import { DisplayMessageAction } from '@acx-ui/rc/utils'
 
+import { ContentPreview } from './ContentPreview'
+
 export function DisplayMessagePreview (props: { data?: DisplayMessageAction }) {
   const { data } = props
 
-  return <>
-  I am DisplayMessage Preview component
-    <div>{data?.title}</div>
-  </>
+  return <ContentPreview
+    title={data?.title}
+    body={data?.messageHtml}
+  />
 }
