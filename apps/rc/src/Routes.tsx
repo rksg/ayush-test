@@ -49,7 +49,8 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasDpskAccess
+  hasDpskAccess,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -113,6 +114,9 @@ import TunnelProfileTable                                               from './
 import VLANPoolTable                                                    from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import { WifiOperatorDetailView }                                       from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
 import WifiOperatorTable                                                from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                                                  from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                                                 from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                                                    from './pages/Policies/Workflow/WorkflowTable'
 import DHCPTable                                                        from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                                                          from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                                                   from './pages/Services/DHCP/Edge/DHCPDetail'
@@ -151,9 +155,6 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
-import WorkflowTable from './pages/Policies/Workflow/WorkflowTable'
-import WorkflowDetails from './pages/Policies/Workflow/WorkflowDetail'
-import WorkflowPageForm from './pages/Policies/Workflow/WorkflowPageForm'
 
 
 export default function RcRoutes () {
@@ -1069,39 +1070,25 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ, EdgeScopes.READ]}>
-              <ConnectionMeteringTable />
-            </AuthRoute>
-          }
+          element={<ConnectionMeteringTable />}
         />
         <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
-              <ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />
-            </AuthRoute>
-          }
-        />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
-              <ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />
-            </AuthRoute>
-          }
-        />
-        <Route
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ, EdgeScopes.READ]}>
-              <ConnectionMeteringDetail/>
-            </AuthRoute>
-          }
+          element={<ConnectionMeteringDetail/>}
         />
+        { hasCloudpathAccess() && <>
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+          />
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
+            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+          />
+        </>}
       </>}
       {isCloudpathBetaEnabled && <>
         <Route

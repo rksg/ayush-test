@@ -13,10 +13,10 @@ import {
   useDeleteProfilesMutation,
   useGetProfilesQuery
 }      from '@acx-ui/rc/services'
-import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { SwitchScopes }                             from '@acx-ui/types'
-import { filterByAccess, hasPermission }            from '@acx-ui/user'
+import { SwitchProfileModel, ProfileTypeEnum, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                             from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -29,10 +29,18 @@ export function ProfilesTab () {
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
+  const typeFilterOptions = Object.values(ProfileTypeEnum).map(key => ({
+    key, value: key
+  }))
+
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
     enableRbac: isSwitchRbacEnabled,
-    defaultPayload: {}
+    defaultPayload: {},
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    }
   })
 
   const columns: TableProps<SwitchProfileModel>['columns'] = [{
@@ -40,11 +48,15 @@ export function ProfilesTab () {
     title: $t({ defaultMessage: 'Profile Name' }),
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
+    searchable: true,
     sorter: true
   },{
     key: 'profileType',
     title: $t({ defaultMessage: 'Type' }),
     dataIndex: 'profileType',
+    filterMultiple: false,
+    filterValueNullable: false,
+    filterable: typeFilterOptions,
     sorter: true
   },{
     key: 'venueCount',
@@ -114,6 +126,7 @@ export function ProfilesTab () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox' }}

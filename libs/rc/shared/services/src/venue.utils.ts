@@ -17,18 +17,18 @@ type ApiInfoType =
   'getVenueRadioCustomization' |
   'updateVenueRadioCustomization'
 
-type TemplateApiInfoType =
+type TemplateRbacApiInfoType =
   'getVenueDefaultRegulatoryChannelsRbac' |
   'getDefaultRadioCustomizationRbac' |
   'getVenueRadioCustomizationRbac' |
   'updateVenueRadioCustomizationRbac'
 
 // eslint-disable-next-line max-len
-function createVenueRadioRelatedFetchArgs (apiType: ApiInfoType, templateApiType: TemplateApiInfoType, isTemplate = false): QueryFnFor6GChannelSeparation {
+function createVenueRadioRelatedFetchArgs (apiType: ApiInfoType, templateRbacApiType: TemplateRbacApiInfoType, isTemplate = false): QueryFnFor6GChannelSeparation {
   return ({ params, payload, enableRbac, enableSeparation = false }) => {
-    // eslint-disable-next-line max-len
-    const regularApiInfo = ((enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo)[apiType]
-    const templateApiInfo = VenueConfigTemplateUrlsInfo[enableRbac ? templateApiType : apiType]
+    const useRbacApi = enableSeparation || enableRbac
+    const regularApiInfo = (useRbacApi ? WifiRbacUrlsInfo : WifiUrlsInfo)[apiType]
+    const templateApiInfo = VenueConfigTemplateUrlsInfo[useRbacApi ? templateRbacApiType : apiType]
     // eslint-disable-next-line max-len
     const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 : (enableRbac ? ApiVersionEnum.v1 : undefined)
     const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)

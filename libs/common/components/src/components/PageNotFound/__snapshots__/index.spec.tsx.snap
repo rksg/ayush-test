@@ -2,11 +2,66 @@
 
 exports[`PageNotFound should render correctly 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__PageStyle-sc-1tx3svs-0 hyRhcV"
+  h1.c1.ant-typography {
+  line-height: var(--acx-subtitle-1-line-height);
+  font-size: var(--acx-subtitle-1-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-1-font-weight);
+}
+
+h2.c1.ant-typography {
+  line-height: var(--acx-subtitle-2-line-height);
+  font-size: var(--acx-subtitle-2-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-2-font-weight);
+}
+
+h3.c1.ant-typography {
+  line-height: var(--acx-subtitle-3-line-height);
+  font-size: var(--acx-subtitle-3-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-3-font-weight);
+}
+
+h4.c1.ant-typography {
+  line-height: var(--acx-subtitle-4-line-height);
+  font-size: var(--acx-subtitle-4-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-4-font-weight);
+}
+
+h5.c1.ant-typography {
+  line-height: var(--acx-subtitle-5-line-height);
+  font-size: var(--acx-subtitle-5-font-size);
+  font-family: var(--acx-neutral-brand-font);
+  font-weight: var(--acx-subtitle-5-font-weight);
+}
+
+.c0 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-top: 100px;
+}
+
+.c0 .text {
+  margin-top: 30px;
+  font-size: var(--acx-body-2-font-size);
+}
+
+<div
+    class="c0"
   >
     <h2
-      class="ant-typography styledComponents__Subtitle-sc-tz062a-0 fPbHyn"
+      class="ant-typography c1 "
     >
       Oops. Something is going wrong...
     </h2>
