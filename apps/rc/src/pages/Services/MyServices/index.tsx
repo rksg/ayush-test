@@ -160,7 +160,7 @@ export default function MyServices () {
         ])}
       />
       <GridRow>
-        {services.filter(s => isServicePolicyCardEnabled(s, 'read')).map(service => {
+        {services.filter(s => isServicePolicyCardEnabled<ServiceType>(s, 'read')).map(service => {
           return (
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard

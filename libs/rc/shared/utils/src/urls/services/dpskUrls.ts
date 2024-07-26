@@ -47,13 +47,21 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: NewDpskBaseUrl,
     oldUrl: DpskBaseUrl,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   updateDpsk: {
     method: 'put',
     url: NewDpskBaseUrlWithId,
     oldUrl: DpskBaseUrlWithId,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   deleteDpsk: {
     method: 'delete',
@@ -140,11 +148,19 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   deleteDpskPolicySet: {
     method: 'delete',
     url: NewDpskBaseUrlWithId + '/policySets/:policySetId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateDpskPolicySet: {
     method: 'put',
     url: NewDpskBaseUrlWithId + '/policySets/:policySetId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
