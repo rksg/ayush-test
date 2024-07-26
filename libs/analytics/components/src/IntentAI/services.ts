@@ -18,7 +18,6 @@ type Intent = {
   id: string
   code: string
   status: string | StateType
-  status_reason?: string
   displayStatus: string
   createdAt: string
   updatedAt: string
