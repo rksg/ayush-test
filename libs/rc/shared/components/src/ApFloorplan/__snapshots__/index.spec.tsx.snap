@@ -2,7 +2,81 @@
 
 exports[`AP floorplan should render correctly 1`] = `
 <DocumentFragment>
-  <div
+  .c3 {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  vertical-align: bottom;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.c3 svg {
+  width: 16px;
+  height: 16px;
+}
+
+.c3 svg:before {
+  content: 'a';
+}
+
+.c3 svg path {
+  stroke: var(--acx-primary-black);
+}
+
+.c3.ant-btn-primary svg path {
+  stroke: var(--acx-primary-white) !important;
+  fill: var(--acx-primary-white) !important;
+}
+
+.c3[disabled] svg path,
+.c3.ant-btn-disabled svg path {
+  stroke: var(--acx-primary-white);
+}
+
+.c3[disabled].ant-btn-default svg path,
+.c3.ant-btn-disabled.ant-btn-default svg path,
+.c3[disabled].ant-btn-primary svg path,
+.c3.ant-btn-disabled.ant-btn-primary svg path {
+  stroke: var(--acx-neutrals-40);
+}
+
+.c0 {
+  margin: 30px auto 20px;
+  position: relative;
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height: 280px;
+  max-width: 100%;
+  max-height: 100%;
+  padding-right: 35px;
+}
+
+.c1 {
+  width: calc(100%);
+  position: relative;
+  margin: 0 auto;
+}
+
+.c2 {
+  position: absolute;
+  bottom: 88px;
+  z-index: 1;
+  right: 15px;
+  border: 1px solid var(--acx-neutrals-30);
+  border-radius: 4px;
+}
+
+<div
     style="width: 100%; position: relative; max-height: 300px; padding-right: 35px; margin-bottom: 35px;"
   >
     <div
@@ -24,10 +98,10 @@ exports[`AP floorplan should render correctly 1`] = `
       />
     </div>
     <div
-      class="sc-idiyUo cZKUFO"
+      class="c0"
     >
       <div
-        class="sc-dIouRR cDjWRG"
+        class="c1"
         style="margin: 0px auto;"
       >
         <img
@@ -40,7 +114,7 @@ exports[`AP floorplan should render correctly 1`] = `
     </div>
     <div
       alignbottom="1"
-      class="ant-space ant-space-vertical sc-dmRaPn jCZBvj"
+      class="ant-space ant-space-vertical c2"
       style="right: 5rem; bottom: 0rem;"
     >
       <div
@@ -48,7 +122,7 @@ exports[`AP floorplan should render correctly 1`] = `
         style="margin-bottom: 0px;"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          class="ant-btn ant-btn-link ant-btn-icon-only c3"
           data-testid="image-zoom-in"
           type="button"
         >
@@ -72,7 +146,7 @@ exports[`AP floorplan should render correctly 1`] = `
         style="margin-bottom: 0px;"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          class="ant-btn ant-btn-link ant-btn-icon-only c3"
           data-testid="image-zoom-out"
           type="button"
         >
@@ -96,7 +170,7 @@ exports[`AP floorplan should render correctly 1`] = `
         style="margin-bottom: 0px;"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          class="ant-btn ant-btn-link ant-btn-icon-only c3"
           data-testid="image-zoom-original"
           type="button"
         >
@@ -119,7 +193,7 @@ exports[`AP floorplan should render correctly 1`] = `
         class="ant-space-item"
       >
         <button
-          class="ant-btn ant-btn-link ant-btn-icon-only styledComponents__Button-sc-zk1lj8-0 kBDiup"
+          class="ant-btn ant-btn-link ant-btn-icon-only c3"
           data-testid="image-zoom-fit"
           type="button"
         >

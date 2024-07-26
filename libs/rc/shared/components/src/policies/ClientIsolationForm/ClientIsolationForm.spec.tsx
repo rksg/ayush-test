@@ -84,9 +84,6 @@ describe('ClientIsolationForm', () => {
       rest.get(
         websocketServerUrl,
         (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.post(ClientUrlsInfo.getClientMeta.url,
-        (_, res, ctx) => res(ctx.json(clientMeta))
       )
     )
   })
@@ -185,7 +182,7 @@ describe('ClientIsolationForm', () => {
       name: 'Client Isolation testing',
       description: 'Here is the description',
       allowlist: [{
-        mac: clientToAdd.clientMac,
+        mac: clientToAdd.macAddress,
         ipAddress: clientToAdd.ipAddress
       }]
     }
@@ -201,7 +198,7 @@ describe('ClientIsolationForm', () => {
         }
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: clientList }))
       )
     )
@@ -235,13 +232,13 @@ describe('ClientIsolationForm', () => {
 
     // Select the client
     // eslint-disable-next-line max-len
-    const targetRow = await within(drawer).findByRole('row', { name: new RegExp(clientToAdd.clientMac) })
+    const targetRow = await within(drawer).findByRole('row', { name: new RegExp(clientToAdd.macAddress) })
     await userEvent.click(await within(targetRow).findByRole('checkbox'))
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Add' }))
 
     // Verify the client has been added to the allow list
     // eslint-disable-next-line max-len
-    expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.clientMac) })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(clientToAdd.macAddress) })).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
 

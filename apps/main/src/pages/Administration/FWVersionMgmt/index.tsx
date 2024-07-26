@@ -18,8 +18,8 @@ import {
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
-import { compareSwitchVersion, SwitchFirmwareModelGroup } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }          from '@acx-ui/react-router-dom'
+import { compareSwitchVersion, SwitchFirmwareModelGroup, FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                   from '@acx-ui/react-router-dom'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 
@@ -208,8 +208,13 @@ function useIsApFirmwareAvailable () {
   const params = useParams()
   const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const [ isApFirmwareAvailable, setIsApFirmwareAvailable ] = useState(false)
-  // eslint-disable-next-line max-len
-  const { data: venueApModelFirmwareList } = useGetVenueApModelFirmwareListQuery({ params }, { skip: !isUpgradeByModelEnabled })
+  const { data: venueApModelFirmwareList } = useGetVenueApModelFirmwareListQuery(
+    { params, payload: {
+      fields: ['name', 'id', 'isApFirmwareUpToDate'],
+      page: 1, pageSize: 10000
+    } },
+    { skip: !isUpgradeByModelEnabled }
+  )
   // eslint-disable-next-line max-len
   const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params }, { skip: isUpgradeByModelEnabled })
   // eslint-disable-next-line max-len
@@ -228,10 +233,16 @@ function useIsApFirmwareAvailable () {
   useEffect(() => {
     if (!venueApModelFirmwareList?.data) return
 
-    // eslint-disable-next-line max-len
-    setIsApFirmwareAvailable(venueApModelFirmwareList.data.some(venueApModelFiwmrare => !venueApModelFiwmrare.isFirmwareUpToDate))
+    const hasOutdated = venueApModelFirmwareList.data.some(venueApModelFiwmrare => {
+      return !isApFirmwareUpToDate(venueApModelFiwmrare.isApFirmwareUpToDate)
+    })
+    setIsApFirmwareAvailable(hasOutdated)
 
   }, [venueApModelFirmwareList])
 
   return isApFirmwareAvailable
+}
+
+export function isApFirmwareUpToDate (status?: FirmwareVenuePerApModel['isApFirmwareUpToDate']) {
+  return status ?? true
 }

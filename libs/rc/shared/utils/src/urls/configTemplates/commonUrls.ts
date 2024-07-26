@@ -6,10 +6,28 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/query',
     newApi: true
   },
+  getConfigTemplatesRbac: {
+    method: 'post',
+    url: '/templates/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   applyConfigTemplate: {
     method: 'post',
     url: '/templates/:templateId/tenant/:tenantId',
     newApi: true
+  },
+  applyConfigTemplateRbac: {
+    method: 'post',
+    url: '/templates/:templateId/tenant/:tenantId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addNetworkTemplate: {
     method: 'post',
@@ -210,6 +228,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networkActivations',
     newApi: true
   },
+  addNetworkVenueTemplateRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   deleteNetworkVenueTemplate: {
     method: 'delete',
     url: '/templates/networkActivations/:networkVenueId',
@@ -224,6 +251,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/networkActivations/:networkVenueId?quickAck=true',
     newApi: true
+  },
+  updateNetworkVenueTemplateRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addNetworkVenuesTemplate: {
     method: 'post',

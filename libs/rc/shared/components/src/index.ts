@@ -27,6 +27,7 @@ export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultClientPayload,
+  defaultRbacClientPayload,
   networkDisplayTransformer,
   isEqualCaptivePortal
 } from './ConnectedClientsTable'
@@ -66,7 +67,7 @@ export { LanPortPoeSettings } from './LanPortPoeSettings'
 export { LanPortSettings, ConvertPoeOutToFormData } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
-export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
+export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
 export { MapWidget, MapWidgetV2 } from './MapWidget'
@@ -141,6 +142,12 @@ export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase
 export { EdgeEditContext }
 export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
 export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
+export { EdgeHaSettingsForm } from './EdgeFormItem/EdgeHaSettingsForm'
+export type { EdgeHaSettingsFormType } from './EdgeFormItem/EdgeHaSettingsForm'
+export {
+  transformEdgeHaSettingsToFormType,
+  transformEdgeHaSettingsFormToApiPayload
+} from './EdgeFormItem/EdgeHaSettingsForm/utils'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
@@ -203,6 +210,7 @@ export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess
 } from './EdgeSdLan/edgeSdLanUtils'
+export * from './EdgeSdLan/NetworkMvTunnelModal'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,

@@ -4,11 +4,13 @@ import { Divider, Space } from 'antd'
 import { useIntl }        from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps }         from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
 import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
 import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
 import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                         from '@acx-ui/user'
+import { AccountType }                                       from '@acx-ui/utils'
 
 import HspContext                                                                         from '../../../HspContext'
 import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
@@ -41,14 +43,14 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     isOverridable,
     createOverrideModalProps
   } = useConfigTemplateOverride(selectedTemplate, selectedRows)
-
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { state: hspState } = useContext(HspContext)
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
     defaultPayload: {
       filters: ecFilters,
-      fields: ['id', 'name', 'status', 'streetAddress']
+      fields: ['id', 'name', 'status', 'streetAddress', 'tenantType']
     },
     search: {
       searchTargetFields: ['name'],
@@ -67,7 +69,8 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
       return applyConfigTemplate({
         params: { templateId: selectedTemplate.id, tenantId: ec.id },
-        payload: transformOverrideValues(overrideValue)
+        payload: transformOverrideValues(overrideValue),
+        enableRbac: isConfigTemplateRbacEnabled
       }).unwrap()
     })
 
@@ -120,6 +123,17 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       key: 'streetAddress',
       sorter: true
     },
+    ...(hspState.isHsp ? [{
+      title: $t({ defaultMessage: 'Account Type' }),
+      dataIndex: 'tenantType',
+      key: 'tenantType',
+      sorter: false,
+      render: function (_: React.ReactNode, row: MspEc) {
+        return row.tenantType === AccountType.MSP_REC
+          ? $t({ defaultMessage: 'Brand Properties' })
+          : $t({ defaultMessage: 'MSP Customers' })
+      }
+    }] : []),
     ...(isOverridable(selectedTemplate) ? [{
       title: $t({ defaultMessage: 'Template Override Value' }),
       dataIndex: 'overrideValue',
@@ -195,16 +209,12 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - {customerType}' }, {
-          customerType: hspState.isHsp
-            ? $t({ defaultMessage: 'Brand Properties' })
-            : $t({ defaultMessage: 'MSP Customers' })
-        })}
+        title={$t({ defaultMessage: 'Apply Templates - Customers' })}
         visible={true}
         onClose={onClose}
         footer={footer}
         destroyOnClose={true}
-        width={isOverridable(selectedTemplate) ? 850 : 700}
+        width={250 + (columns.length * 150)}
       >
         {content}
       </Drawer>

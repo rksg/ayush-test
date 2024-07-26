@@ -20,6 +20,7 @@ import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
 import { networkApi }           from '../network'
+import { addNetworkVenueFn }    from '../networkVenueUtils'
 import { commonQueryFn }        from '../servicePolicy.utils'
 import { updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
@@ -31,7 +32,10 @@ import {
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getConfigTemplates),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getConfigTemplates,
+        ConfigTemplateUrlsInfo.getConfigTemplatesRbac
+      ),
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -44,7 +48,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.applyConfigTemplate,
+        ConfigTemplateUrlsInfo.applyConfigTemplateRbac
+      ),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -178,7 +185,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
     }),
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenueTemplate),
+      queryFn: addNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [

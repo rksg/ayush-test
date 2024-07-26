@@ -51,7 +51,8 @@ import {
   TableResult,
   transformDisplayNumber,
   transformDisplayText,
-  usePollingTableQuery
+  usePollingTableQuery,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
@@ -78,9 +79,10 @@ export const newDefaultApPayload = {
   searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
-    'switchName', 'meshRole', 'clientCount', 'apGroupId',
+    'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
-    'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus'
+    'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
+    'powerSavingStatus'
   ]
 }
 
@@ -237,7 +239,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { status }) => <APStatus status={status as ApDeviceStatusEnum} />
+      render: (_, { status, powerSavingStatus }) =>
+        <APStatus status={status as ApDeviceStatusEnum} powerSavingStatus={powerSavingStatus as PowerSavingStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),

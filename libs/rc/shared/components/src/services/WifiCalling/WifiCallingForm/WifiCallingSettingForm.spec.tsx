@@ -165,10 +165,10 @@ describe('WifiCallingSettingForm', () => {
     expect(desc).toBeEmptyDOMElement()
 
     await userEvent.type(serviceName, 'serviceTest')
-    expect(serviceName).toHaveValue('serviceTest')
+    await waitFor(() => expect(serviceName).toHaveValue('serviceTest'))
 
     await userEvent.type(desc, 'desc')
-    expect(desc).toHaveValue('desc')
+    await waitFor(() => expect(desc).toHaveValue('desc'))
 
     expect(screen.getByTestId('selectQosPriorityId')).toBeTruthy()
     const combobox = await screen.findByRole('combobox', { name: /qos priority/i })

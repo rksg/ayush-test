@@ -1,9 +1,9 @@
 import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { ApDeviceStatusEnum, APExtended, NewAPModelExtended } from '@acx-ui/rc/utils'
-import { TenantLink }                                         from '@acx-ui/react-router-dom'
-import { getIntl }                                            from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APExtended, NewAPModelExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { getIntl }                                                                   from '@acx-ui/utils'
 
 import { APStatus } from '.'
 
@@ -55,7 +55,10 @@ export const getGroupableConfig = (
       {
         key: 'status',
         renderer: (record: NewAPModelExtended) => (
-          <APStatus status={record.status as ApDeviceStatusEnum} />
+          <APStatus
+            status={record.status as ApDeviceStatusEnum}
+            powerSavingStatus={record.powerSavingStatus as PowerSavingStatusEnum}
+          />
         )
       },
       ...commonAttributes($t)

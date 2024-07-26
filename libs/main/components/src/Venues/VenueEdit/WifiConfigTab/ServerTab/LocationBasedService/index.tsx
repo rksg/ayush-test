@@ -171,6 +171,7 @@ export function LocationBasedService () {
 
   const discardVenuedLbsChanges = async (oldData: VenueLbsActivationType) => {
     setEnableLbs(oldData.enableLbs ?? false)
+    setStateOfLbsServerProfileId(oldData.lbsServerProfileId ?? '')
   }
 
   const handleAddLbsServerProfile = () => {
