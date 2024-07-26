@@ -98,6 +98,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [selectedAuth, setSelectedAuth] = useState('')
   const [ssoSignature, setSsoSignature] = useState(false)
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
@@ -185,7 +186,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     const extension: string = getFileExtension(file.name)
     const uploadUrl = await getUploadURL({
       params: { ...params },
-      payload: { fileExtension: extension }
+      payload: { fileExtension: extension },
+      enableRbac: isRbacEnabled
     }) as { data: UploadUrlResponse }
 
     if (uploadUrl && uploadUrl.data && uploadUrl.data.fileId) {
