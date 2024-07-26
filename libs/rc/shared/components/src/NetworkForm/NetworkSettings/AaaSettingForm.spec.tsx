@@ -89,8 +89,6 @@ describe('NetworkForm', () => {
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(CertificateUrls.getCertificateTemplates.url,
         (_, res, ctx) => res(ctx.json(certificateTemplateList))),
       rest.post(CertificateUrls.getCAs.url,

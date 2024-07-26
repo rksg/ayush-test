@@ -17,7 +17,8 @@ import {
   ServiceOperation,
   ServicePolicyCardData,
   isServicePolicyCardEnabled,
-  isServicePolicyCardSetEnabled
+  isServicePolicyCardSetEnabled,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                       from '@acx-ui/types'
@@ -62,7 +63,11 @@ export default function SelectServiceForm () {
           categories: [RadioCardCategory.EDGE],
           disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
-        { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
+        {
+          type: ServiceType.DPSK,
+          categories: [RadioCardCategory.WIFI],
+          disabled: !hasDpskAccess()
+        },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
@@ -135,29 +140,31 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              {sets.filter(set => isServicePolicyCardSetEnabled(set, 'create')).map(set => {
-                return <UI.CategoryContainer key={set.title}>
-                  <Typography.Title level={3}>
-                    { set.title }
-                  </Typography.Title>
-                  <GridRow>
-                    {
-                      // eslint-disable-next-line max-len
-                      set.items.filter(item => isServicePolicyCardEnabled(item, 'create')).map(item => {
-                        return <GridCol key={item.type} col={{ span: 6 }}>
-                          <ServiceCard
-                            key={item.type}
-                            serviceType={item.type}
-                            categories={item.categories}
-                            type={'radio'}
-                            scopeKeysMap={item.scopeKeysMap}
-                          />
-                        </GridCol>
-                      })
-                    }
-                  </GridRow>
-                </UI.CategoryContainer>
-              })}
+              { //eslint-disable-next-line max-len
+                sets.filter(set => isServicePolicyCardSetEnabled<ServiceType>(set, 'create')).map(set => {
+                  return <UI.CategoryContainer key={set.title}>
+                    <Typography.Title level={3}>
+                      { set.title }
+                    </Typography.Title>
+                    <GridRow>
+                      {
+                        // eslint-disable-next-line max-len
+                        set.items.filter(item => isServicePolicyCardEnabled<ServiceType>(item, 'create')).map(item => {
+                          return <GridCol key={item.type} col={{ span: 6 }}>
+                            <ServiceCard
+                              key={item.type}
+                              serviceType={item.type}
+                              categories={item.categories}
+                              type={'radio'}
+                              scopeKeysMap={item.scopeKeysMap}
+                            />
+                          </GridCol>
+                        })
+                      }
+                    </GridRow>
+                  </UI.CategoryContainer>
+                })
+              }
             </Radio.Group>
           </Form.Item>
         </StepsFormLegacy.StepForm>

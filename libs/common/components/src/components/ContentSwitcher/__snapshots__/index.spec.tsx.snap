@@ -2,11 +2,102 @@
 
 exports[`ContentSwitcher should render component 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -100,11 +191,102 @@ exports[`ContentSwitcher should render component 1`] = `
 
 exports[`ContentSwitcher should render component with default selection 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -198,11 +380,118 @@ exports[`ContentSwitcher should render component with default selection 1`] = `
 
 exports[`ContentSwitcher should render component with extra components 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+.c1 {
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: right;
+  -webkit-justify-content: right;
+  -ms-flex-pack: right;
+  justify-content: right;
+  margin-top: -20px;
+  margin-right: 6px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -287,7 +576,7 @@ exports[`ContentSwitcher should render component with extra components 1`] = `
         </label>
       </div>
       <div
-        class="styledComponents__Container-sc-c4vpsp-1 bYqrkz"
+        class="c1"
       >
         Some text
       </div>
@@ -301,11 +590,102 @@ exports[`ContentSwitcher should render component with extra components 1`] = `
 
 exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -399,11 +779,102 @@ exports[`ContentSwitcher should render properly with two tabs: chartContent 1`] 
 
 exports[`ContentSwitcher should render properly with two tabs: tableContent 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-radio-group {
+  border-radius: 20px;
+  background-color: var(--acx-neutrals-20);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+.c0 .ant-radio-button-wrapper {
+  color: var(--acx-primary-black);
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+}
+
+.c0 .ant-radio-button-wrapper:not(:first-child)::before {
+  display: none;
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  color: var(--acx-primary-white);
+  background-color: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper span:nth-child(2) {
+  vertical-align: middle;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c0 .ant-radio-button-wrapper:not(.ant-radio-button-wrapper-checked,.ant-radio-button-wrapper-disabled):hover {
+  background-color: var(--acx-neutrals-30);
+}
+
+.c0 svg {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.c0 path {
+  stroke: var(--acx-primary-black);
+}
+
+.c0 .ant-radio-button-wrapper-checked path {
+  stroke: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-button-wrapper-checked {
+  cursor: default;
+}
+
+.c0 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  color: var(--acx-primary-white);
+}
+
+.c0 .ant-radio-group-small svg {
+  width: var(--acx-body-4-font-size);
+  height: var(--acx-body-4-font-size);
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  height: 24px;
+}
+
+.c0 .ant-radio-group-small .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 16px;
+}
+
+.c0 .ant-radio-group-large svg {
+  width: var(--acx-body-3-font-size);
+  height: var(--acx-body-3-font-size);
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper {
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-3-line-height);
+  height: 28px;
+}
+
+.c0 .ant-radio-group-large .ant-radio-button-wrapper span:nth-child(2) {
+  margin: 4px 32px;
+}
+
+<div
     style="text-align: center;"
   >
     <div
-      class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
+      class="c0"
     >
       <div
         class="ant-radio-group ant-radio-group-outline ant-radio-group-small"

@@ -1,8 +1,8 @@
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
+  useGetAAAPolicyTemplateListQuery,
   useGetAAAPolicyViewModelListQuery,
   useLazyAaaPolicyQuery,
-  useGetAAAPolicyTemplateListQuery,
   useLazyGetAAAPolicyTemplateQuery
 } from '@acx-ui/rc/services'
 import { AAA_LIMIT_NUMBER, useConfigTemplate } from '@acx-ui/rc/utils'
@@ -20,7 +20,9 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
     ? 1024
     : AAA_LIMIT_NUMBER
 
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const requestPayload = {
     params,

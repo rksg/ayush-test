@@ -69,8 +69,6 @@ describe('CaptiveNetworkForm-WISPr', () => {
       ),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [wisprRes] }))),
       // RBAC API
       rest.get(CommonRbacUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json( externalProviders ))),

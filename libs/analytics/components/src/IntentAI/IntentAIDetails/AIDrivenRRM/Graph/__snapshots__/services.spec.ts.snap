@@ -1,0 +1,397 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useCRRMQuery should return correct data 1`] = `
+Array [
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "highlight",
+        "source": "5C:DF:89:0B:FB:40",
+        "target": "5C:DF:89:0B:FE:E0",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 128,
+            "channelList": Array [
+              128,
+            ],
+            "channelWidth": 80,
+            "group": undefined,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FB:40",
+        "apName": "W07-R760-West-FACP",
+        "band": "2.4",
+        "category": "highlight",
+        "channel": Array [
+          128,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FB:40",
+        "name": "W07-R760-West-FACP",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          128,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 120,
+            "channelList": Array [
+              120,
+            ],
+            "channelWidth": 80,
+            "group": undefined,
+            "highlighted": false,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FE:E0",
+        "apName": "W10-R760-Doberman",
+        "band": "2.4",
+        "category": "highlight",
+        "channel": Array [
+          120,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FE:E0",
+        "name": "W10-R760-Doberman",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          120,
+        ],
+      },
+    ],
+  },
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "normal",
+        "source": "5C:DF:89:0B:FB:40",
+        "target": "5C:DF:89:0B:FE:E0",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 149,
+            "channelList": Array [
+              149,
+            ],
+            "channelWidth": 80,
+            "group": undefined,
+            "highlighted": false,
+            "txPower": null,
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FB:40",
+        "apName": "W07-R760-West-FACP",
+        "band": "2.4",
+        "category": "normal",
+        "channel": Array [
+          149,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FB:40",
+        "name": "W07-R760-West-FACP",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          null,
+        ],
+        "value": Array [
+          128,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+            ],
+            "channelWidth": 80,
+            "group": undefined,
+            "highlighted": false,
+            "txPower": null,
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FE:E0",
+        "apName": "W10-R760-Doberman",
+        "band": "2.4",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FE:E0",
+        "name": "W10-R760-Doberman",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          null,
+        ],
+        "value": Array [
+          120,
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`useCRRMQuery should return correct data 2`] = `
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+W07-R760-West-FACP,5C:DF:89:0B:FB:40,2.4 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Full
+W10-R760-Doberman,5C:DF:89:0B:FE:E0,2.4 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
+"
+`;
+
+exports[`useCRRMQuery should return correct data for applied status 1`] = `
+Array [
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "highlight",
+        "source": "5C:DF:89:0B:FB:40",
+        "target": "5C:DF:89:0B:FE:E0",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 128,
+            "channelList": Array [
+              116,
+              120,
+              124,
+              128,
+            ],
+            "channelWidth": 80,
+            "group": 122,
+            "highlighted": true,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FB:40",
+        "apName": "W07-R760-West-FACP",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          128,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FB:40",
+        "name": "W07-R760-West-FACP",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          128,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 120,
+            "channelList": Array [
+              116,
+              120,
+              124,
+              128,
+            ],
+            "channelWidth": 80,
+            "group": 122,
+            "highlighted": true,
+            "txPower": "_FULL",
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FE:E0",
+        "apName": "W10-R760-Doberman",
+        "band": "5",
+        "category": "highlight",
+        "channel": Array [
+          120,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FE:E0",
+        "name": "W10-R760-Doberman",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          "_FULL",
+        ],
+        "value": Array [
+          120,
+        ],
+      },
+    ],
+  },
+  Object {
+    "categories": Array [
+      Object {
+        "name": "highlight",
+      },
+      Object {
+        "name": "normal",
+      },
+      Object {
+        "name": "txPower",
+      },
+    ],
+    "links": Array [
+      Object {
+        "category": "normal",
+        "source": "5C:DF:89:0B:FB:40",
+        "target": "5C:DF:89:0B:FE:E0",
+      },
+    ],
+    "nodes": Array [
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 149,
+            "channelList": Array [
+              149,
+              153,
+              157,
+              161,
+            ],
+            "channelWidth": 80,
+            "group": 155,
+            "highlighted": false,
+            "txPower": null,
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FB:40",
+        "apName": "W07-R760-West-FACP",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          149,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FB:40",
+        "name": "W07-R760-West-FACP",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          null,
+        ],
+        "value": Array [
+          128,
+        ],
+      },
+      Object {
+        "aggregate": Array [
+          Object {
+            "channel": 36,
+            "channelList": Array [
+              36,
+              40,
+              44,
+              48,
+            ],
+            "channelWidth": 80,
+            "group": 42,
+            "highlighted": false,
+            "txPower": null,
+          },
+        ],
+        "apMac": "5C:DF:89:0B:FE:E0",
+        "apName": "W10-R760-Doberman",
+        "band": "5",
+        "category": "normal",
+        "channel": Array [
+          36,
+        ],
+        "channelWidth": Array [
+          80,
+        ],
+        "id": "5C:DF:89:0B:FE:E0",
+        "name": "W10-R760-Doberman",
+        "showTooltip": true,
+        "symbolSize": 48,
+        "txPower": Array [
+          null,
+        ],
+        "value": Array [
+          120,
+        ],
+      },
+    ],
+  },
+]
+`;
+
+exports[`useCRRMQuery should return correct data for applied status 2`] = `
+"AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
+W07-R760-West-FACP,5C:DF:89:0B:FB:40,5 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Full
+W10-R760-Doberman,5C:DF:89:0B:FE:E0,5 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
+"
+`;
