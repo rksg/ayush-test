@@ -66,11 +66,12 @@ export const onClick = (navigate: NavigateFunction, basePath: Path) => {
       && params.value[4]
     const mac = params.componentType === 'series' && Array.isArray(params.value)
       && params.value[1]
-    navigate({
-      ...basePath,
-      // TODO: Actual path to be updated later
-      pathname: `${basePath.pathname}/${mac.toString().toLowerCase()}/${serial}/details/overview`
-    })
+    if (serial && mac) {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/${mac.toString().toLowerCase()}/${serial}/details/overview`
+      })
+    }
   }
 }
 
