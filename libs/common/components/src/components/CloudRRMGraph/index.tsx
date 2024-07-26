@@ -34,6 +34,7 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   grayBackground?: boolean
   backgroundColor?: string | undefined
   titleColor?: string
+  alignRight?: boolean
 }
 
 export function Graph (props: GraphProps) {
@@ -79,7 +80,7 @@ export function Graph (props: GraphProps) {
       } : {}),
       itemGap: 3,
       top: 15,
-      left: 15
+      left: props.alignRight ? 'right' : 15
     },
     color: props.data.categories?.map(category => categoryStyles[category.name].color),
     tooltip: {

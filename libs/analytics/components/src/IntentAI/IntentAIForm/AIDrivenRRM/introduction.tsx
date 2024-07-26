@@ -18,7 +18,7 @@ import { steps, crrmIntent, statusTrailMsgs } from '.'
 
 export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
-  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: any }) {
+  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: any }) { // what type to set?
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()
   const { pageHeaderY } = useLayoutContext()

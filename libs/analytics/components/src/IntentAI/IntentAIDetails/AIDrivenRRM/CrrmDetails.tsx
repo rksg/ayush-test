@@ -80,8 +80,13 @@ export const CrrmDetails = () => {
           details={details}
           crrmData={crrmData}
           setSummaryUrlBefore={setSummaryUrlBefore}
+          detailsPage={true}
         />
-        <SummaryGraphAfter crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
+        <SummaryGraphAfter
+          crrmData={crrmData}
+          setSummaryUrlAfter={setSummaryUrlAfter}
+          detailsPage={true}
+        />
       </div>
       <GridCol col={{ span: 20 }}>
         <CrrmBenefits details={details} crrmData={crrmData}/>

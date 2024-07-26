@@ -239,15 +239,17 @@ export const SliderGraphAfter = (
           alignItems: 'center',
           width: 300
         }}
+        alignRight={true}
       />}
     </div>
   )
 }
 
 export const SummaryGraphBefore = (
-  { details, crrmData, setSummaryUrlBefore }:
+  { details, crrmData, setSummaryUrlBefore, detailsPage = false }:
   { details: EnhancedRecommendation,
     crrmData: ProcessedCloudRRMGraph[],
+    detailsPage?: boolean,
     setSummaryUrlBefore: (url: string) => void }) => {
   const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
@@ -278,7 +280,7 @@ export const SummaryGraphBefore = (
         style={{
           display: 'flex',
           alignItems: 'center',
-          width: 300
+          width: detailsPage ? 350 : 250
         }}
         backgroundColor='transparent'
       />}
@@ -287,8 +289,9 @@ export const SummaryGraphBefore = (
 }
 
 export const SummaryGraphAfter = (
-  { crrmData, setSummaryUrlAfter }:
+  { crrmData, setSummaryUrlAfter, detailsPage = false }:
   { crrmData: ProcessedCloudRRMGraph[],
+    detailsPage?: boolean,
     setSummaryUrlAfter: (url: string) => void }) => {
   const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
@@ -316,7 +319,7 @@ export const SummaryGraphAfter = (
         style={{
           display: 'flex',
           alignItems: 'center',
-          width: 300
+          width: detailsPage ? 350 : 250
         }}
         backgroundColor='transparent'
       />}
