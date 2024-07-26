@@ -377,6 +377,23 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
     return Promise.resolve()
   }
 }
+
+export const validateGatewayInSubnet = (ip?: string, mask?: string, gateway?: string) => {
+  const { $t } = getIntl()
+
+  if (!ip || !mask || !gateway) {
+    return Promise.resolve()
+  }
+
+  if (!IpUtilsService.validateInTheSameSubnet(ip, mask, gateway)) {
+    return Promise.reject($t({
+      defaultMessage: 'Gateway must be in the same subnet as the IP address.'
+    }))
+  }
+
+  return Promise.resolve()
+}
+
 export const getEdgePortIpModeEnumValue = (type: string) => {
   switch (type) {
     case EdgeIpModeEnum.DHCP:
