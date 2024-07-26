@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { Logo }                                              from '@acx-ui/main/components'
 import { useGetMspEcProfileQuery, useGetParentLogoUrlQuery } from '@acx-ui/msp/services'
 import { MSPUtils }                                          from '@acx-ui/msp/utils'
@@ -7,9 +8,11 @@ import { MSPUtils }                                          from '@acx-ui/msp/u
 const { isMspEc } = MSPUtils()
 
 export function useLogo (tenantId: string | undefined): React.ReactNode {
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const { data: mspEcProfile } = useGetMspEcProfileQuery({ params: { tenantId } })
   const { data: mspLogo } =
-    useGetParentLogoUrlQuery({ params: { tenantId } }, { skip: !isMspEc(mspEcProfile) })
+    useGetParentLogoUrlQuery({ params: { tenantId }, enableRbac: isRbacEnabled },
+      { skip: !isMspEc(mspEcProfile) })
   return useMemo(() => {
     if (mspEcProfile) {
       if (isMspEc(mspEcProfile) && mspLogo && Boolean(mspLogo.logo_url)) {

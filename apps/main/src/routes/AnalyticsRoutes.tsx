@@ -18,8 +18,9 @@ import {
   VideoCallQoeDetails,
   CrrmDetails,
   UnknownDetails,
-  IntentAIForm
-}                                                   from '@acx-ui/analytics/components'
+  IntentAIForm,
+  IntentAIDetails
+} from '@acx-ui/analytics/components'
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-dom'
@@ -52,7 +53,7 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
       <Route path='analytics/intentAI'>
         <Route index element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
-        <Route path=':recommendationId/:code' element={<div></div>} />
+        <Route path=':recommendationId/:code' element={<IntentAIDetails />} />
         <Route path=':recommendationId/:code/edit' element={<IntentAIForm />} />
       </Route>
       <Route path='analytics/health' element={HealthComponent} />
