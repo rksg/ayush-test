@@ -9,7 +9,7 @@ import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
 import { noDataDisplay, PathFilter }                      from '@acx-ui/utils'
 
 import { codes }                                from './config'
-import { useIntentAIListQuery, IntentListItem } from './services'
+import { useInentAITableQuery, IntentListItem, useIntentFilterOptionsQuery } from './services'
 import * as UI                                  from './styledComponents'
 
 const icons = {
@@ -24,16 +24,27 @@ export function IntentAITable (
 ) {
   const { $t } = useIntl()
 
-  const queryResults = useIntentAIListQuery(
+  const { 
+    tableQuery: queryResults,
+    onFilterChange,
+    onPageChange,
+    pagination,
+    filterOptions
+  } = useInentAITableQuery(
     { ...pathFilters }
   )
-  const data = queryResults?.data
+  const {aiFeatures = [], categories =[], statuses = [], zones = []} = filterOptions.data! || {}
+  console.log(zones)
+  const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
     {
       title: $t({ defaultMessage: 'AI Feature' }),
       width: 110,
       dataIndex: 'aiFeature',
       key: 'aiFeature',
+      filterable: aiFeatures,
+      filterSearch: true,
+      filterPlaceholder: $t({ defaultMessage: 'All AI Features' }),
       render: (_: ReactNode, row: IntentListItem) => <UI.FeatureIcon>
         {icons[codes[row.code].aiFeature]}
         <span>{row.aiFeature}</span>
@@ -49,7 +60,10 @@ export function IntentAITable (
       title: $t({ defaultMessage: 'Category' }),
       width: 130,
       dataIndex: 'category',
-      key: 'category'
+      key: 'category',
+      filterable: categories,
+      filterSearch: true,
+      filterPlaceholder: $t({ defaultMessage: 'All Categories' })
     },
     {
       title: get('IS_MLISA_SA')
@@ -57,13 +71,21 @@ export function IntentAITable (
         : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       width: 200,
       dataIndex: 'sliceValue',
-      key: 'sliceValue'
+      key: 'sliceValue',
+      filterable: zones,
+      filterSearch: true,
+      filterPlaceholder: get('IS_MLISA_SA')
+        ? $t({ defaultMessage: 'All Zones' })
+        : $t({ defaultMessage: 'All <VenuePlural></VenuePlural>' })
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       width: 200,
       dataIndex: 'status',
-      key: 'status'
+      key: 'status',
+      filterable: statuses,
+      filterSearch: true,
+      filterPlaceholder: $t({ defaultMessage: 'All Status' })
     },
     {
       title: $t({ defaultMessage: 'Last update' }),
@@ -90,6 +112,10 @@ export function IntentAITable (
         indentSize={6}
         filterableWidth={155}
         searchableWidth={240}
+        onChange={onPageChange}
+        pagination={{ ...pagination, total: queryResults?.data?.total || 0 }}
+        onFilterChange={onFilterChange}
+        enableApiFilter={true}
       />
     </Loader>
   )

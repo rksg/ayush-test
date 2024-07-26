@@ -1,9 +1,17 @@
+import { useState } from 'react'
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
 import { formattedPath }                            from '@acx-ui/analytics/utils'
+import { TableProps }                               from '@acx-ui/components'
+
 import { intentAIApi }                              from '@acx-ui/store'
-import { getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
+import {
+  getIntl,
+  NetworkPath,
+  computeRangeFilter,
+  TABLE_DEFAULT_PAGE_SIZE
+}                                                   from '@acx-ui/utils'
 import type { PathFilter }                          from '@acx-ui/utils'
 
 import {
@@ -39,37 +47,67 @@ export type IntentListItem = Intent & {
   status: string
   statusEnum: StateType
 }
-
+type Payload = PathFilter & {
+  page: number
+  pageSize: number
+  filterBy: object
+}
+type FilterOption = {
+  id: string
+  label: string
+}
+type DisplayOption = {
+  key: string
+  value: string
+}
+type FilterOptions = {
+  codes: FilterOption[]
+  statuses: FilterOption[]
+  zones: FilterOption[]
+}
+type TransformedFilterOptions = {
+  aiFeatures: DisplayOption[]
+  categories: DisplayOption[]
+  statuses: DisplayOption[]
+  zones: DisplayOption[]
+}
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIList: build.query<
-      IntentListItem[],
-      PathFilter
+      { intents:IntentListItem[], total: number },
+      Payload
     >({
       query: (payload) => ({
         document: gql`
         query IntentAIList(
-          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput]
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput],
+          $filterBy: JSON, $page: Int, $pageSize: Int
         ) {
-          intents(start: $startDate, end: $endDate, path: $path) {
-            id
-            code
-            status
-            status_reason
-            displayStatus
-            createdAt
-            updatedAt
-            sliceType
-            sliceValue
-            metadata
-            path {
-              type
-              name
+          intents(
+            start: $startDate, end: $endDate, path: $path,
+            filterBy: $filterBy, page: $page, pageSize: $pageSize
+          ) {
+            data {
+              id
+              code
+              status
+              statusReason
+              displayStatus
+              createdAt
+              updatedAt
+              sliceType
+              sliceValue
+              metadata
+              path {
+                type
+                name
+              }
+              idPath {
+                type
+                name
+              }
             }
-            idPath {
-              type
-              name
-            }
+            total
           }
         }
         `,
@@ -77,12 +115,15 @@ export const api = intentAIApi.injectEndpoints({
           ...(_.pick(payload,['path'])),
           ...computeRangeFilter({
             dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          })
+          }),
+          page: payload.page,
+          pageSize: payload.pageSize,
+          filterBy: payload.filterBy || []
         }
       }),
       transformResponse: (response: Response<Intent>) => {
         const { $t } = getIntl()
-        const items = response.intents.reduce((intents, intent) => {
+        const items = response.intents.data.reduce((intents, intent) => {
           const {
             id, path, sliceValue, code, displayStatus
           } = intent
@@ -98,7 +139,69 @@ export const api = intentAIApi.injectEndpoints({
           } as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)
-        return items
+        return { intents: items, total: response.intents.total }
+      },
+      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+    }),
+    intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({
+      query: (payload) => ({
+        document: gql`
+        query IntentAI(
+          $startDate: DateTime
+          $endDate: DateTime
+          $path: [HierarchyNodeInput]
+        ) {
+          intentFilterOptions(
+            start: $startDate
+            end: $endDate
+            path: $path
+          ) {
+            codes { id label }
+            zones { id label }
+            statuses { id label }
+          }
+        }
+        `,
+        variables: {
+          ...(_.pick(payload,['path'])),
+          ...computeRangeFilter({
+            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
+          })
+        }
+      }),
+      transformResponse: (response: { intentFilterOptions: FilterOptions }) => {
+        const { $t } = getIntl()
+        const { codes: filterCodes, statuses, zones } = response.intentFilterOptions
+        const aiFeatAndCat = filterCodes.reduce((data, { id }) => {
+          const aiFeature = codes[id as keyof typeof codes].aiFeature
+          const category = $t(codes[id as keyof typeof codes].category)
+          !data.aiFeatures.includes(aiFeature) && data.aiFeatures.push(aiFeature)
+          !data.categories.includes(category) && data.categories.push(category)
+          return data
+        }, { aiFeatures: [] as string[], categories: [] as string[] })
+        const displayStatuses = statuses.map(({ label }) => ({
+          value: $t(states[label as keyof typeof states].text),
+          key: label
+        }))
+
+        const displayZones = zones.map(({ id, label }) => ({
+          value: label,
+          key: id
+        }))
+        return {
+          aiFeatures: aiFeatAndCat.aiFeatures.map(
+            aiFeature => ({
+              value: $t(aiFeaturesLabel[aiFeature as keyof typeof aiFeaturesLabel]),
+              key: aiFeature
+          })),
+          categories: aiFeatAndCat.categories.map(
+            category => ({
+              value: category,
+              key: category
+            })),
+          statuses: displayStatuses,
+          zones: displayZones
+        }
       },
       providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
     })
@@ -106,9 +209,119 @@ export const api = intentAIApi.injectEndpoints({
 })
 
 export interface Response<Intent> {
-  intents: Intent[]
+  intents: { 
+    data: Intent[]
+    total: number
+  }
 }
 
+type Pagination = {
+  page: number,
+  pageSize: number,
+  defaultPageSize: number,
+  total: number
+}
+type Filters = {
+  sliceValue: string[] | undefined
+  category: string[] | undefined
+  aiFeature: string[] | undefined
+  status: string[] | undefined
+}
+const perpareFilterBy = (filters: Filters) => {
+  const { $t } = getIntl()
+  const { sliceValue, category, aiFeature, status } = filters
+  let filterBy = []
+  if (sliceValue) {
+    filterBy.push({ col: 'sliceId', values: sliceValue })
+  }
+  let catCodes = [] as string[]
+  if(category) {
+    // derive codes from category
+    category.forEach(category => {
+      const matchedCodes = Object.keys(codes).filter(key => $t(codes[key].category) === category)
+      catCodes = catCodes.concat(matchedCodes)
+    })
+  }
+  if(catCodes.length > 0) {
+    filterBy.push({ col: 'code', values: catCodes })
+  }
+  let featCodes = [] as string[]
+  if(aiFeature) {
+    // derive codes from aiFeature
+    aiFeature.forEach(aiFeature => {
+      const matchedCodes = Object.keys(codes).filter(key => codes[key].aiFeature === aiFeature)
+      featCodes = featCodes.concat(matchedCodes)
+    })
+  }
+  if(featCodes.length > 0) {
+    filterBy.push({ col: 'code', values: featCodes })
+  }
+  if(status) {
+    // status from states
+    const statuses = [] as string[]
+    const statusReason = [] as string[]
+    status.forEach(s => {
+      if(s.startsWith('na-')) {
+        statusReason.push(s.split('na-')[1])
+      } else {
+        statuses.push(s)
+      }
+    })
+    if (statuses.length > 0) {
+      filterBy.push({ col: 'status', values: statuses })
+    }
+    if (statusReason.length > 0) {
+      filterBy.push({ col: 'statusReason', values: statusReason })
+    }
+  }
+  return filterBy
+
+}
+export function useInentAITableQuery (filter: PathFilter) {
+  const DEFAULT_PAGINATION = {
+    page: 1,
+    pageSize: TABLE_DEFAULT_PAGE_SIZE,
+    defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+    total: 0
+  }
+  const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
+  const [filters, setFilters] = useState<Filters>({
+    sliceValue: undefined,
+    category: undefined,
+    aiFeature: undefined,
+    status: undefined
+  })
+  const handlePageChange: TableProps<IntentListItem>['onChange'] = (
+    customPagination
+  ) => {
+    const paginationDetail = {
+      page: customPagination.current,
+      pageSize: customPagination.pageSize
+    } as Pagination
+
+    setPagination({ ...pagination, ...paginationDetail })
+  }
+  const handleFilterChange: TableProps<IntentListItem>['onFilterChange'] = (
+    customFilter
+  ) => {
+    setFilters(customFilter as Filters)
+  }
+  return {
+    tableQuery: useIntentAIListQuery(
+      {
+        ...filter,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        filterBy: perpareFilterBy(filters)
+      }
+    ),
+    onPageChange: handlePageChange,
+    onFilterChange: handleFilterChange,
+    pagination,
+    filterOptions: useIntentFilterOptionsQuery(filter)
+  }
+}
 export const {
-  useIntentAIListQuery
+  useIntentAIListQuery,
+  useIntentFilterOptionsQuery
 } = api
