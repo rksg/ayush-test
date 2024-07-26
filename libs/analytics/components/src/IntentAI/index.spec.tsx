@@ -13,7 +13,8 @@ import {
   render,
   screen,
   waitForElementToBeRemoved,
-  within
+  within,
+  waitFor
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { setUpIntl, DateRange }              from '@acx-ui/utils'
@@ -30,7 +31,10 @@ const mockedShowOneClickOptimize = jest.fn()
 jest.mock('./useIntentAIActions', () => ({
   ...jest.requireActual('./useIntentAIActions'),
   useIntentAIActions: () => ({
-    showOneClickOptimize: () => mockedShowOneClickOptimize()
+    showOneClickOptimize: (_, callbackFun: () => void) => {
+      mockedShowOneClickOptimize()
+      callbackFun && callbackFun()
+    }
   })
 }))
 
@@ -153,6 +157,9 @@ describe('IntentAITabContent', () => {
     expect(await screen.findByRole('button', { name: '1-Click Optimize' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: '1-Click Optimize' }))
     expect(mockedShowOneClickOptimize).toBeCalledTimes(1)
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: '1-Click Optimize' })).toBeNull()
+    )
   })
 
 })

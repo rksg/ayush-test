@@ -39,7 +39,25 @@ export type IntentListItem = Intent & {
   category: string
   status: string
   statusEnum: StateType
-  preferences: object
+}
+
+type IntentWlan = {
+  name: string
+  ssid: string
+}
+
+export type OptimizeAllItemMutationPayload = { id: string, wlans?: IntentWlan[] }
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
+
+
+
+interface OptimizeAllMutationPayload {
+  scheduledAt: string,
+  optimizeList: OptimizeAllItemMutationPayload[]
+}
+
+export interface OptimizeAllMutationResponse {
+  optimizeAll: MutationResponse[]
 }
 
 export const api = intentAIApi.injectEndpoints({
@@ -103,6 +121,32 @@ export const api = intentAIApi.injectEndpoints({
         return items
       },
       providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+    }),
+    optimizeAllIntent: build.mutation<OptimizeAllMutationResponse, OptimizeAllMutationPayload>({
+      query: ({ scheduledAt, optimizeList }) => ({
+        document: gql`
+          mutation OptimizeAll(
+            $scheduledAt: DateTime,
+            $optimizeList: [IntentOptimizeInput]
+          ) {
+            optimizeAll(
+              scheduledAt: $scheduledAt,
+              optimizeList: $optimizeList
+            ) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+        `,
+        variables: {
+          scheduledAt,
+          optimizeList
+        }
+      }),
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'INTENT_AI_LIST' }
+      ]
     })
   })
 })
@@ -112,5 +156,6 @@ export interface Response<Intent> {
 }
 
 export const {
-  useIntentAIListQuery
+  useIntentAIListQuery,
+  useOptimizeAllIntentMutation
 } = api

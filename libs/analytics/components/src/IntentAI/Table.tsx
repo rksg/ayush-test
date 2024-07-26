@@ -39,11 +39,7 @@ export function IntentAITable (
     {
       key: getShowWithoutRbacCheckKey('1-click-optimize'),
       label: $t({ defaultMessage: '1-Click Optimize' }),
-      visible: (rows) => {
-        const isVisible = rows?.filter(row =>
-          row.status !== 'New').length === 0
-        return isVisible
-      },
+      visible: rows => !rows.some(row => row.status !== 'New'),
       onClick: (rows) => {
         intentActions.showOneClickOptimize(rows, ()=> clearSelection())
       }

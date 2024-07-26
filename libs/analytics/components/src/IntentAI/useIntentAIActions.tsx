@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useCallback, useMemo, useRef, MutableRefObject } from 'react'
+import { useCallback, useMemo, useRef, MutableRefObject, ReactNode } from 'react'
 
 import { Modal as AntModal }                          from 'antd'
 import moment, { Moment }                             from 'moment-timezone'
@@ -7,7 +7,6 @@ import { FormattedMessage, RawIntlProvider, useIntl } from 'react-intl'
 
 import { DateTimePicker, showToast }     from '@acx-ui/components'
 import { get }                           from '@acx-ui/config'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
@@ -15,27 +14,15 @@ import {
 import { RadioTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }       from '@acx-ui/utils'
 
+import { useLazyRecommendationWlansQuery } from '../Recommendations/services'
+
 import {
-  useLazyRecommendationWlansQuery,
-  useScheduleRecommendationMutation } from '../Recommendations/services'
-
-import { IntentListItem } from './services'
-import * as UI            from './styledComponents'
-
-type RecommendationWlan = {
-  name: string
-  ssid: string
-}
-interface SchedulePayload {
-  id: string
-  type: string
-  scheduledAt: string
-  isRecommendationRevertEnabled?: boolean
-  wlans?: RecommendationWlan[]
-  preferences?: {
-    crrmFullOptimization: boolean
-  }
-}
+  IntentListItem,
+  useOptimizeAllIntentMutation,
+  OptimizeAllItemMutationPayload,
+  OptimizeAllMutationResponse
+} from './services'
+import * as UI from './styledComponents'
 interface ApplyDateTimePickerProps {
   id: string
   title: string
@@ -44,23 +31,40 @@ interface ApplyDateTimePickerProps {
   onApply: (value: Moment) => void
 }
 
+type OptimizeValues = {
+  feature: string
+  zone: string
+  b: (text: string) => ReactNode
+  br: ReactNode
+  date: string
+  changeTime: ReactNode
+}
+
 const OPTIMIZE_TYPES = {
-  1_1: {
-    featureSuffix: 'feature for Zone',
-    zoneSuffix: '.'
-  },
-  1_2: {
-    featureSuffix: 'feature for',
-    zoneSuffix: ' selected Zones.'
-  },
-  2_1: {
-    featureSuffix: 'features for Zone',
-    zoneSuffix: '.'
-  },
-  2_2: {
-    featureSuffix: 'features across',
-    zoneSuffix: ' selected Zones.'
-  }
+  1_1: (values:OptimizeValues) => <FormattedMessage
+    defaultMessage={`Clicking Yes, will automate 
+    <b>{feature}</b> feature for Zone <b>{zone}</b>.
+    It will apply the config at {date}.{changeTime}{br}{br}
+    And don’t worry! You can always revert the change anytime.`}
+    values={values}/>,
+  1_2: (values:OptimizeValues) => <FormattedMessage
+    defaultMessage={`Clicking Yes, will automate 
+    <b>{feature}</b> feature for <b>{zone}</b> selected Zones.
+    It will apply the config at {date}.{changeTime}{br}{br}
+    And don’t worry! You can always revert the change anytime.`}
+    values={values}/>,
+  2_1: (values:OptimizeValues) => <FormattedMessage
+    defaultMessage={`Clicking Yes, will automate 
+    <b>{feature}</b> features for Zone <b>{zone}</b>.
+    It will apply the config at {date}.{changeTime}{br}{br}
+    And don’t worry! You can always revert the change anytime.`}
+    values={values}/>,
+  2_2: (values:OptimizeValues) => <FormattedMessage
+    defaultMessage={`Clicking Yes, will automate 
+    <b>{feature}</b> features across <b>{zone}</b> selected Zones.
+    It will apply the config at {date}.{changeTime}{br}{br}
+    And don’t worry! You can always revert the change anytime.`}
+    values={values}/>
 }
 
 const codeToRadio: Record<string, RadioTypeEnum> = {
@@ -90,8 +94,8 @@ const aggregateFeaturesZones = (rows:IntentListItem[]) => {
   const feature = featureCount === 1 ? Array.from(features)[0] : `${featureCount}`
   const zone = zoneCount === 1 ? Array.from(zones)[0] : `${zoneCount}`
   const type = `${featureCount === 1 ? 1 : 2}${zoneCount === 1 ? 1 : 2}` as unknown as keyof typeof OPTIMIZE_TYPES
-  const { featureSuffix, zoneSuffix } = OPTIMIZE_TYPES[type]
-  return { feature, zone, featureSuffix, zoneSuffix }
+  const getOptimizeMessage = OPTIMIZE_TYPES[type]
+  return { feature, zone, getOptimizeMessage }
 }
 
 const getR1WlanPayload = (venueId:string, code:string) => ({
@@ -109,12 +113,11 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
-  const [scheduleRecommendation] = useScheduleRecommendationMutation()
+  const [optimizeAllIntent] = useOptimizeAllIntentMutation()
   const [recommendationWlans] = useLazyRecommendationWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
-  const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT) || isMlisa
 
   const fetchWlans = async (row:IntentListItem) => {
     if (isMlisa) {
@@ -127,31 +130,40 @@ export function useIntentAIActions () {
   }
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
-    // TODO do we need the bulk optimize api
-    const requests = rows.map(async (row) => {
+    const optimizeList = await Promise.all(rows.map(async (row) => {
       const { code } = row
-      const schedule: SchedulePayload = {
-        id: row.id,
-        type: 'Apply',
-        scheduledAt,
-        isRecommendationRevertEnabled
+      const item: OptimizeAllItemMutationPayload = {
+        id: row.id
       }
+      // airflex c-probeflex-*
       if (code.startsWith('c-probeflex-')) {
-        // airflex c-probeflex-*
-        schedule.wlans = await fetchWlans(row)
+        item.wlans = await fetchWlans(row)
       }
-      return scheduleRecommendation(schedule)
-    })
+      return item
+    }))
 
-    try {
-      await Promise.all(requests)
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
+    const response = await optimizeAllIntent({ scheduledAt, optimizeList })
+    if ('data' in response) {
+      const { optimizeAll } = response.data as OptimizeAllMutationResponse
+      if (optimizeAll && optimizeAll.length > 0) {
+        const errorContent = optimizeAll.reduce((errorText, { success, errorMsg }) => {
+          if (success) {
+            return errorText
+          }
+          return errorText + errorMsg
+        }, '')
+        if (errorContent !== '') {
+          showToast({
+            type: 'error',
+            content: errorContent
+          })
+        }
+      }
     }
   }
 
   const showOneClickOptimize = (rows:IntentListItem[], onOk?: ()=>void) => {
-    const { feature, zone, featureSuffix, zoneSuffix } = aggregateFeaturesZones(rows)
+    const { feature, zone, getOptimizeMessage } = aggregateFeaturesZones(rows)
     const modal = AntModal.confirm({})
     initialDate.current = getDefaultTime()
     const changeOptimizeDateTime = (date:Moment) => {
@@ -160,6 +172,8 @@ export function useIntentAIActions () {
         content: getContent(formatter(DateFormatEnum.DateTimeFormat)(date))
       })
     }
+
+
     const validateDate = (date:Moment) => {
       const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
       if (futureTime <= date){
@@ -167,29 +181,28 @@ export function useIntentAIActions () {
       }
       return false
     }
+
+    const getValues = (date:string) => ({
+      feature, zone,
+      b: (text: string) => <strong>{text}</strong>,
+      br: <br />,
+      date,
+      changeTime:
+      (
+        <ApplyDateTimePicker
+          id={'apply-intent-ai-change-time'}
+          title={$t({ defaultMessage: 'Change time' })}
+          disabled={false}
+          initialDate={initialDate}
+          onApply={changeOptimizeDateTime}
+        />
+      )
+    })
+
     const getContent = (date:string) => {
-      return (<RawIntlProvider value={getIntl()} ><FormattedMessage
-        defaultMessage={`
-        Clicking Yes, will automate <b>{feature}</b> {featureSuffix} <b>{zone}</b>{zoneSuffix}
-        It will apply the config at {date}.{changeTime}{br}{br}
-        And don’t worry! You can always revert the change anytime.
-        `}
-        values={{
-          feature, zone, featureSuffix, zoneSuffix,
-          b: (text: string) => <strong>{text}</strong>,
-          br: <br />,
-          date,
-          changeTime:
-          (
-            <ApplyDateTimePicker
-              id={'apply-intent-ai-change-time'}
-              title={$t({ defaultMessage: 'Change time' })}
-              disabled={false}
-              initialDate={initialDate}
-              onApply={changeOptimizeDateTime}
-            />
-          )
-        }}/></RawIntlProvider>)
+      return (<RawIntlProvider value={getIntl()} >
+        {getOptimizeMessage(getValues(date))}
+      </RawIntlProvider>)
     }
     modal.update({
       type: 'confirm',

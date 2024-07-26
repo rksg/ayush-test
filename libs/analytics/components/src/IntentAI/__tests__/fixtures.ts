@@ -35,8 +35,7 @@ export const notEnoughLicenses = {
       type: 'zone',
       name: '01-Alethea-WiCheck Test'
     }
-  ] as NetworkPath,
-  preferences: null
+  ] as NetworkPath
 }
 
 export const notEnoughData = {
@@ -71,8 +70,7 @@ export const notEnoughData = {
       type: 'zone',
       name: '22-US-CA-Z22-Aaron-Home'
     }
-  ] as NetworkPath,
-  preferences: null
+  ] as NetworkPath
 }
 
 export const verified = {
@@ -129,8 +127,7 @@ export const verified = {
       type: 'zone',
       name: '01-US-CA-D1-Ruckus-HQ-QA-interop'
     }
-  ] as NetworkPath,
-  preferences: null
+  ] as NetworkPath
 }
 
 export const conflictConfig = {
@@ -157,8 +154,7 @@ export const conflictConfig = {
       type: 'zone',
       name: '23-IND-BNG-D23-Keshav-Home'
     }
-  ] as NetworkPath,
-  preferences: null
+  ] as NetworkPath
 }
 
 export const unknownReason = {
@@ -181,8 +177,7 @@ export const unknownReason = {
       type: 'zone',
       name: '22-US-CA-Z22-Aaron-Home'
     }
-  ] as NetworkPath,
-  preferences: null
+  ] as NetworkPath
 }
 
 export const noAps = {
@@ -209,8 +204,7 @@ export const noAps = {
       type: 'zone',
       name: '25-US-CA-D25-SandeepKour-home'
     }
-  ] as NetworkPath,
-  preferences: null
+  ] as NetworkPath
 }
 
 export const mockCrrmRow = {
@@ -231,8 +225,7 @@ export const mockCrrmRow = {
   idPath: [
     { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
-  ] as NetworkPath,
-  preferences: { crrmFullOptimization: true }
+  ] as NetworkPath
 }
 
 export const intentListResult = {
@@ -262,7 +255,6 @@ export const intentListResult = {
         { status: 'applyscheduleinprogress' },
         { status: 'applied' }
       ],
-      preferences: { crrmFullOptimization: true },
       trigger: 'daily'
     },
     {
@@ -297,7 +289,6 @@ export const intentListResult = {
         { status: 'applied' },
         { status: 'revertscheduled' }
       ],
-      preferences: null,
       trigger: 'daily'
     },
     {
@@ -324,7 +315,6 @@ export const intentListResult = {
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
       ] as NetworkPath,
-      preferences: null,
       trigger: 'once'
     },
     {
@@ -355,7 +345,6 @@ export const intentListResult = {
       statusTrail: [
         { status: 'new' }
       ],
-      preferences: null,
       trigger: 'once'
     },
     mockCrrmRow,
@@ -406,7 +395,6 @@ export const intentListResult = {
         { type: 'system', name: 'vsz612' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
-      preferences: { crrmFullOptimization: true },
       trigger: 'daily'
     },
     notEnoughLicenses,

@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { defaultNetworkPath }    from '@acx-ui/analytics/utils'
-import { intentAIUrl, store }    from '@acx-ui/store'
-import { mockGraphqlQuery }      from '@acx-ui/test-utils'
-import { PathFilter, DateRange } from '@acx-ui/utils'
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
+import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
+import { PathFilter, DateRange }                                           from '@acx-ui/utils'
 
 import {
   intentListResult
 } from './__tests__/fixtures'
-import { api } from './services'
+import { api, OptimizeAllMutationResponse } from './services'
 
 describe('Recommendation services', () => {
   const props = {
@@ -169,6 +169,25 @@ describe('Recommendation services', () => {
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult)
+  })
+
+  it('should mutation OptimizeAll', async () => {
+    const resp = { optimizeAll: [{ success: true, errorMsg: '' , errorCode: '' }] } as OptimizeAllMutationResponse
+    mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+    const { result } = renderHook(() =>
+      api.endpoints.optimizeAllIntent.useMutation(),
+    { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({
+        scheduledAt: '2023-11-17T11:45:00.000Z',
+        optimizeList: [{ id: '11' }]
+      }).unwrap()
+    })
+
+    await waitFor(() => {
+      expect(result.current[1].data).toStrictEqual(resp)
+    })
   })
 
 })
