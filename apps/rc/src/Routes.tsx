@@ -114,6 +114,9 @@ import TunnelProfileTable                                               from './
 import VLANPoolTable                                                    from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import { WifiOperatorDetailView }                                       from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
 import WifiOperatorTable                                                from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                                                  from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                                                 from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                                                    from './pages/Policies/Workflow/WorkflowTable'
 import DHCPTable                                                        from './pages/Services/DHCP/DHCPTable/DHCPTable'
 import AddDHCP                                                          from './pages/Services/DHCP/Edge/AddDHCP'
 import EdgeDHCPDetail                                                   from './pages/Services/DHCP/Edge/DHCPDetail'
@@ -152,9 +155,6 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
-import WorkflowTable from './pages/Policies/Workflow/WorkflowTable'
-import WorkflowDetails from './pages/Policies/Workflow/WorkflowDetail'
-import WorkflowPageForm from './pages/Policies/Workflow/WorkflowPageForm'
 
 
 export default function RcRoutes () {

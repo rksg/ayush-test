@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
