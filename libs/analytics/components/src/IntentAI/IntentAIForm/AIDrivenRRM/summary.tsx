@@ -16,8 +16,8 @@ import { IntentPriority, Priority } from './priority'
 import { steps, crrmIntent, isOptimized } from '.'
 
 export function Summary (
-  { urlBefore, urlAfter, crrmData } :
-  { urlBefore?: string, urlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
+  { summaryUrlBefore, summaryUrlAfter, crrmData } :
+  { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
   const { form, initialValues } = useStepFormContext<EnhancedRecommendation>()
   const { pageHeaderY } = useLayoutContext()
@@ -39,11 +39,10 @@ export function Summary (
           && isDataRetained(initialValues?.dataEndTime)
           && <IntentAIRRMGraph
             details={initialValues as EnhancedRecommendation}
+            crrmData={crrmData}
+            summaryUrlBefore={summaryUrlBefore}
+            summaryUrlAfter={summaryUrlAfter}
           />}
-      <div>Before</div>
-      {<img src={urlBefore} alt='urlBefore' />}
-      <div>After</div>
-      {<img src={urlAfter} alt='urlAfter' />}
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Interfering links' })}
       </StepsForm.Subtitle>

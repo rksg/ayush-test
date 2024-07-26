@@ -1,16 +1,20 @@
+import { useState } from 'react'
+
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { useParams }                            from '@acx-ui/react-router-dom'
+import { GridCol, GridRow, Loader, PageHeader, recommendationBandMapping } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { useParams }                                                       from '@acx-ui/react-router-dom'
 
 import { FixedAutoSizer }               from '../../../DescriptionSection/styledComponents'
 import {
   useRecommendationCodeQuery,
   useConfigRecommendationDetailsQuery
 } from '../../IntentAIForm/services'
-import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../styledComponents'
+import { SummaryGraphAfter, SummaryGraphBefore } from '../../RRMGraph'
+import { useIntentAICRRMQuery }                  from '../../RRMGraph/services'
+import { AIDrivenRRMHeader, AIDrivenRRMIcon }    from '../styledComponents'
 
 import { CrrmBenefits }    from './CrrmBenefits'
 import { CrrmGraph }       from './CrrmGraph'
@@ -21,6 +25,8 @@ import { StatusTrail }     from './StatusTrail'
 export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
+  const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
   const id = get(params, 'recommendationId', undefined) as string
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
@@ -33,7 +39,12 @@ export const CrrmDetails = () => {
   )
   const details = detailsQuery.data!
 
-  return <Loader states={[codeQuery, detailsQuery]}>
+  const band = recommendationBandMapping[
+    details?.code as keyof typeof recommendationBandMapping]
+  const queryResult = useIntentAICRRMQuery(details, band)
+  const crrmData = queryResult.data!
+
+  return <Loader states={[codeQuery, detailsQuery, queryResult]}>
     {details && <PageHeader
       title={$t({ defaultMessage: 'Intent Details' })}
       breadcrumb={[
@@ -64,9 +75,22 @@ export const CrrmDetails = () => {
           </div>)}
         </FixedAutoSizer>
       </GridCol>
+      <div hidden>
+        <SummaryGraphBefore
+          details={details}
+          crrmData={crrmData}
+          setSummaryUrlBefore={setSummaryUrlBefore}
+        />
+        <SummaryGraphAfter crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
+      </div>
       <GridCol col={{ span: 20 }}>
-        <CrrmBenefits details={details}/>
-        <CrrmGraph details={details}/>
+        <CrrmBenefits details={details} crrmData={crrmData}/>
+        <CrrmGraph
+          details={details}
+          summaryUrlBefore={summaryUrlBefore}
+          summaryUrlAfter={summaryUrlAfter}
+          crrmData={crrmData}
+        />
         <CrrmValuesExtra details={details}/>
         <StatusTrail details={details}/>
       </GridCol>

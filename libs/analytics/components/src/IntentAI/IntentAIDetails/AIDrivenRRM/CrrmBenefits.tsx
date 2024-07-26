@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { TrendTypeEnum }                                             from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Loader, recommendationBandMapping } from '@acx-ui/components'
+import { TrendTypeEnum }                                  from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
 import { EnhancedRecommendation } from '../../IntentAIForm/services'
 import { getGraphKPI }            from '../../RRMGraph'
-import { useIntentAICRRMQuery }   from '../../RRMGraph/services'
 import {
   BenefitsBody,
   BenefitsHeader,
@@ -15,15 +14,12 @@ import {
   TrendPill
 } from '../styledComponents'
 
-export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) => {
+export const CrrmBenefits = ({ details, crrmData }:
+  { details: EnhancedRecommendation, crrmData: ProcessedCloudRRMGraph[] }) => {
   const { $t } = useIntl()
-  const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(details, band)
-  const crrmData = queryResult?.data
-
   const { interferingLinks, linksPerAP } = getGraphKPI(details as EnhancedRecommendation, crrmData)
 
-  return <Loader states={[queryResult]}>
+  return <>
     <DetailsHeader>{$t({ defaultMessage: 'Benefits' })}</DetailsHeader>
     <DetailsWrapper>
       <GridRow>
@@ -53,5 +49,5 @@ export const CrrmBenefits = ({ details }: { details: EnhancedRecommendation }) =
         </GridCol>
       </GridRow>
     </DetailsWrapper>
-  </Loader>
+  </>
 }

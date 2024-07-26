@@ -12,7 +12,6 @@ import {
   Card,
   Drawer,
   DrawerTypes,
-  Loader,
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
   recommendationBandMapping,
@@ -22,66 +21,46 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { EnhancedRecommendation } from '../IntentAIForm/services'
 
-import { Legend }               from './Legend'
-import { useIntentAICRRMQuery } from './services'
-import * as UI                  from './styledComponents'
+import { Legend } from './Legend'
+import * as UI    from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
   recommendation: EnhancedRecommendation,
   legend: string[],
   zoomScale: ScalePower<number, number, never>,
-  isDrawer: boolean
-  // setUrlBefore?: (url: string) => void,
-  // setUrlAfter?: (url: string) => void
+  isDrawer: boolean,
+  summaryUrlBefore?: string,
+  summaryUrlAfter?: string
 ) {
   const { $t } = useIntl()
-  const [ urlBefore, setUrlBefore ] = useState('')
-  const [ urlAfter, setUrlAfter ] = useState('')
-  const connectChart = (chart: ReactECharts | null, title: string) => {
+  const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'graphGroup'
-      const url = instance.getDataURL()
-      if (title === 'before' && setUrlBefore) {
-        setUrlBefore(url)
-      } else if (title === 'recommended' && setUrlAfter) {
-        setUrlAfter(url)
-      }
-      // if (chart.props.title === 'Before') {
-      //   urlBefore = url
-      // } else {
-      //   urlAfter = url
-      // }
-      console.log('1111111chart', chart)
-      console.log('1111111url', url)
     }
   }
   useEffect(() => { connect('graphGroup') }, [])
 
-  console.log('urlBefore', urlBefore)
-  console.log('urlAfter', urlAfter)
-
   const beforeGraph = <div key='crrm-graph-before'><AutoSizer>{({ height, width }) => <BasicGraph
     style={{ width, height }}
-    chartRef={chart => connectChart(chart, 'before')}
+    chartRef={connectChart}
     title={$t({ defaultMessage: 'Before' })}
     subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
       dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
     })}
     data={graphs[0]}
     zoomScale={zoomScale}
-    grayBackground={isDrawer}
   />}</AutoSizer></div>
-  const beforeImage = <img src={urlBefore} alt='beforeImage' />
+  const beforeImage = <img src={summaryUrlBefore} alt='beforeImage' width={'100%'} height={'100%'}/>
   const afterGraph = <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
     style={{ width, height }}
-    chartRef={chart => connectChart(chart, 'recommended')}
+    chartRef={connectChart}
     title={$t({ defaultMessage: 'Recommended' })}
     data={graphs[1]}
     zoomScale={zoomScale}
-    grayBackground={isDrawer}/>}</AutoSizer></div>
-  const afterImage = <img src={urlAfter} alt='afterImage' />
+  />}</AutoSizer></div>
+  const afterImage = <img src={summaryUrlAfter} alt='afterImage' width={'100%'} height={'100%'}/>
 
   return (graphs?.length)
     ? [ isDrawer ? beforeGraph : beforeImage,
@@ -104,10 +83,11 @@ const drawerZoomScale = scalePow()
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.07])
 
 export const IntentAIRRMGraph = ({
-  details } : {
+  details, crrmData, summaryUrlBefore, summaryUrlAfter } : {
     details: EnhancedRecommendation,
-    // setUrlBefore?: (url: string) => void,
-    // setUrlAfter?: (url: string) => void
+    crrmData: ProcessedCloudRRMGraph[],
+    summaryUrlBefore?: string,
+    summaryUrlAfter?: string
   }) => {
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
@@ -115,50 +95,45 @@ export const IntentAIRRMGraph = ({
   const [ key, setKey ] = useState(0)
 
   const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
   return <UI.Wrapper>
     <UI.ClickableWrapper onClick={showDrawer}/>
-    <Loader states={[queryResult]}>
-      <Card
-        actions={{
-          actionName: $t({ defaultMessage: 'View More' }),
-          onActionClick: showDrawer
-        }}
-        children={<UI.GraphWrapper>{
-          useGraph(
-            queryResult.data,
+    <Card
+      actions={{
+        actionName: $t({ defaultMessage: 'View More' }),
+        onActionClick: showDrawer
+      }}
+      children={<UI.GraphWrapper>{
+        useGraph(
+          crrmData,
+          details,
+          bandwidthMapping[band],
+          detailsZoomScale,
+          false,
+          summaryUrlBefore,
+          summaryUrlAfter
+        )
+      }</UI.GraphWrapper>} />
+    <Drawer
+      key={key}
+      drawerType={DrawerTypes.FullHeight}
+      width={'90vw'}
+      title={title}
+      visible={visible}
+      onClose={closeDrawer}
+      children={
+        <UI.DrawerGraphWrapper>
+          {useGraph(
+            crrmData,
             details,
             bandwidthMapping[band],
-            detailsZoomScale,
-            false
-            // setUrlBefore,
-            // setUrlAfter
-          )
-        }</UI.GraphWrapper>} />
-      <Drawer
-        key={key}
-        drawerType={DrawerTypes.FullHeight}
-        width={'90vw'}
-        title={title}
-        visible={visible}
-        onClose={closeDrawer}
-        children={
-          <UI.DrawerGraphWrapper>
-            {useGraph(
-              queryResult.data,
-              details,
-              bandwidthMapping[band],
-              drawerZoomScale,
-              true
-              // setUrlBefore,
-              // setUrlAfter
-            )}
-          </UI.DrawerGraphWrapper>
-        }/>
-    </Loader>
+            drawerZoomScale,
+            true
+          )}
+        </UI.DrawerGraphWrapper>
+      }/>
   </UI.Wrapper>
 }
 
@@ -193,4 +168,158 @@ export function getGraphKPI (
       after: averageAfter
     }
   }
+}
+
+export const SliderGraphBefore = (
+  { crrmData, setSliderUrlBefore }:
+  { crrmData: ProcessedCloudRRMGraph[], setSliderUrlBefore: (url: string) => void }) => {
+  const { $t } = useIntl()
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'graphGroup'
+      const url = instance.getDataURL()
+      setSliderUrlBefore(url)
+    }
+  }
+  return (
+    <div data-testid='crrm-slider-before'
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'start'
+      }}>
+      {crrmData[0] && <BasicGraph
+        chartRef={connectChart}
+        title={$t({ defaultMessage: 'Current' })}
+        data={crrmData[0]}
+        zoomScale={detailsZoomScale}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: 300
+        }}
+        backgroundColor='#342D2C'
+        titleColor='white'
+      />}
+    </div>
+  )
+}
+
+export const SliderGraphAfter = (
+  { crrmData, setSliderUrlAfter }:
+  { crrmData: ProcessedCloudRRMGraph[], setSliderUrlAfter: (url: string) => void }) => {
+  const { $t } = useIntl()
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'graphGroup'
+      const url = instance.getDataURL()
+      setSliderUrlAfter(url)
+    }
+  }
+  return (
+    <div data-testid='crrm-slider-after'
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'end'
+      }}>
+      {crrmData[1] && <BasicGraph
+        chartRef={connectChart}
+        title={$t({ defaultMessage: 'Forecast' })}
+        data={crrmData[1]}
+        zoomScale={detailsZoomScale}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: 300
+        }}
+      />}
+    </div>
+  )
+}
+
+export const SummaryGraphBefore = (
+  { details, crrmData, setSummaryUrlBefore }:
+  { details: EnhancedRecommendation,
+    crrmData: ProcessedCloudRRMGraph[],
+    setSummaryUrlBefore: (url: string) => void }) => {
+  const { $t } = useIntl()
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'graphGroup'
+      const url = instance.getDataURL()
+      setSummaryUrlBefore(url)
+    }
+  }
+  return (
+    <div key='crrm-graph-before'
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'start'
+      }}>
+      {crrmData[0] && <BasicGraph
+        chartRef={connectChart}
+        title={$t({ defaultMessage: 'Before' })}
+        subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
+          dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
+        })}
+        data={crrmData[0]}
+        zoomScale={detailsZoomScale}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: 300
+        }}
+        backgroundColor='transparent'
+      />}
+    </div>
+  )
+}
+
+export const SummaryGraphAfter = (
+  { crrmData, setSummaryUrlAfter }:
+  { crrmData: ProcessedCloudRRMGraph[],
+    setSummaryUrlAfter: (url: string) => void }) => {
+  const { $t } = useIntl()
+  const connectChart = (chart: ReactECharts | null) => {
+    if (chart) {
+      const instance = chart.getEchartsInstance()
+      instance.group = 'graphGroup'
+      const url = instance.getDataURL()
+      setSummaryUrlAfter(url)
+    }
+  }
+  return (
+    <div key='crrm-graph-after'
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'start'
+      }}>
+      {crrmData[0] && <BasicGraph
+        chartRef={connectChart}
+        title={$t({ defaultMessage: 'Recommended' })}
+        data={crrmData[1]}
+        zoomScale={detailsZoomScale}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: 300
+        }}
+        backgroundColor='transparent'
+      />}
+    </div>
+  )
 }

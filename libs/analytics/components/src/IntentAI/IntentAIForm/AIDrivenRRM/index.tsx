@@ -15,11 +15,12 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { useParams }              from '@acx-ui/react-router-dom'
 
-import { useIntentAICRRMQuery }                                                      from '../../RRMGraph/services'
-import { crrmText }                                                                  from '../../utils'
-import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
-import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }           from '../services'
-import * as UI                                                                       from '../styledComponents'
+import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../../RRMGraph'
+import { useIntentAICRRMQuery }                                                       from '../../RRMGraph/services'
+import { crrmText }                                                                   from '../../utils'
+import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType }  from '../config'
+import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }            from '../services'
+import * as UI                                                                        from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'
@@ -142,8 +143,10 @@ export function AIDrivenRRM () {
   const { $t } = useIntl()
   const params = useParams()
   const id = params?.recommendationId!
-  const [urlBefore, setUrlBefore] = useState<string>('')
-  const [urlAfter, setUrlAfter] = useState<string>('')
+  const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
+  const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
+  const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
+  const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
@@ -190,15 +193,22 @@ export function AIDrivenRRM () {
           }
         ]}
       />
+      {/* hide the graph, only rendering the graph image for the slider & summary */}
+      <div hidden>
+        <SliderGraphBefore crrmData={crrmData} setSliderUrlBefore={setSliderUrlBefore} />
+        <SliderGraphAfter crrmData={crrmData} setSliderUrlAfter={setSliderUrlAfter} />
+        <SummaryGraphBefore details={details} crrmData={crrmData} setSummaryUrlBefore={setSummaryUrlBefore} />
+        <SummaryGraphAfter crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
+      </div>
       <StepsForm
         buttonLabel={{
-          submit: 'Apply'
+          submit: $t({ defaultMessage: 'Apply' })
         }}
         initialValues={_.merge(defaultValue, details)}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}
-          children={<Introduction urlBefore={urlBefore} urlAfter={urlAfter} setUrlBefore={setUrlBefore} setUrlAfter={setUrlAfter} crrmData={crrmData} />}
+          children={<Introduction sliderUrlBefore={sliderUrlBefore} sliderUrlAfter={sliderUrlAfter} queryResult={queryResult} />}
         />
         <StepsForm.StepForm
           title={$t(steps.title.priority)}
@@ -210,7 +220,7 @@ export function AIDrivenRRM () {
         />
         <StepsForm.StepForm
           title={$t(steps.title.summary)}
-          children={<Summary urlBefore={urlBefore} urlAfter={urlAfter} crrmData={crrmData} />}
+          children={<Summary summaryUrlBefore={summaryUrlBefore} summaryUrlAfter={summaryUrlAfter} crrmData={crrmData} />}
         />
       </StepsForm>
     </Loader>

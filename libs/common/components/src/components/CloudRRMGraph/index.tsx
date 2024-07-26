@@ -32,6 +32,8 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   subtext?: string
   style?: EChartsReactProps['style'] & { width?: number, height?: number }
   grayBackground?: boolean
+  backgroundColor?: string | undefined
+  titleColor?: string
 }
 
 export function Graph (props: GraphProps) {
@@ -45,7 +47,7 @@ export function Graph (props: GraphProps) {
   const {
     data: { nodes = [], links = [], categories = [] },
     zoomScale,
-    grayBackground = true
+    backgroundColor
   } = props
 
   const linksNodeRatio = links.length / nodes.length || 1
@@ -53,11 +55,11 @@ export function Graph (props: GraphProps) {
   const repulsion = repulsionScale(linksNodeRatio)
 
   const option = {
-    backgroundColor: grayBackground ? cssStr('--acx-neutrals-10') : 'transparent',
+    backgroundColor: backgroundColor ?? cssStr('--acx-neutrals-10'),
     title: {
       text: props.title,
       textStyle: {
-        color: cssStr('--acx-primary-black'),
+        color: props.titleColor ?? cssStr('--acx-primary-black'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
         fontSize: cssNumber('--acx-subtitle-4-font-size'),
         lineHeight: cssNumber('--acx-subtitle-4-line-height'),
