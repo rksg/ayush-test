@@ -50,7 +50,7 @@ function Widget (props: WidgetProps) {
           setShowPicker(!showPicker)
           e.stopPropagation()
         }}
-      >{'A'}
+      >
       </UI.ButtonFontColorOutlined>
     </div>
 

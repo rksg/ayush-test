@@ -1,4 +1,9 @@
 
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                           from 'lodash'
+
 import {
   createNewTableHttpRequest,
   TableChangePayload,
@@ -131,6 +136,54 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       },
       transformResponse (result: NewAPITableResult<Workflow>) {
         return transferNewResToTableResult<Workflow>(result)
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_WORKFLOW',
+            'UPDATE_WORKFLOW',
+            'DELETE_WORKFLOW',
+            'PUBLISH_WORKFLOW'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Workflow', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Workflow', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    searchWorkflowsVersionList: build.query<Workflow[], RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const ids = payload as string[]
+        // eslint-disable-next-line max-len
+        const promises: MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>[] = []
+        const result:Workflow[] = []
+        ids.forEach(id => promises.push(
+          fetchWithBQ({ ...createNewTableHttpRequest({
+            apiInfo: WorkflowUrls.searchWorkflows,
+            params: { ...params, id: id },
+            payload: payload as TableChangePayload
+          }),
+          body: {
+            ...Object.assign({}, payload),
+            ...transferToNewTablePaginationParams (payload as TableChangePayload)
+          }
+          })))
+        const responses = await Promise.all(promises)
+        responses.forEach(res => {
+          if (res.data) {
+            const data = res.data as NewTableResult<Workflow>
+            if (data.content) {
+              data.content.forEach(workflow => result.push(_.cloneDeep(workflow)))
+            }
+          }
+        })
+
+        return { data: result }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -457,6 +510,7 @@ export const {
   useLazySearchWorkflowListQuery,
   useSearchInProgressWorkflowListQuery,
   useLazySearchInProgressWorkflowListQuery,
+  useLazySearchWorkflowsVersionListQuery,
   useGetUIConfigurationQuery,
   useLazyGetUIConfigurationQuery,
   useUpdateUIConfigurationMutation

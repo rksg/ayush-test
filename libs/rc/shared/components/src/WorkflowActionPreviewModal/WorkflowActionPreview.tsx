@@ -36,7 +36,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const configurationQuery = useGetUIConfigurationQuery({ params: { id: id } })
   const [getUIConfigImage] = useLazyGetUIConfigurationImageQuery()
   const fetchImage = async (imageType: string) => {
-    return getUIConfigImage({ params: { id: id , imageTypes: imageType } }).unwrap()
+    return getUIConfigImage({ params: { id: id , imageType: imageType } }).unwrap()
   }
 
   useEffect(()=>{
@@ -44,27 +44,27 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
     if (configurationQuery.data) {
       setUIConfig(configurationQuery.data)
       if(configurationQuery.data.uiStyleSchema.logoImageFileName) {
-        fetchImage('logoImages')
-          .then(res => {
-            if (res) {
-              setUIConfig({
-                ...UIConfig!,
-                logoImage: res
-              })
-            }
-          })
+        // fetchImage('logoImages')
+        //   .then(res => {
+        //     if (res) {
+        //       setUIConfig({
+        //         ...UIConfig!,
+        //         logoImage: res
+        //       })
+        //     }
+        //   })
       }
 
       if (configurationQuery.data.uiStyleSchema.backgroundImageName) {
-        fetchImage('backgroundImages')
-          .then(res => {
-            if (res) {
-              setUIConfig({
-                ...UIConfig!,
-                backgroundImage: res
-              })
-            }
-          })
+        // fetchImage('backgroundImages')
+        //   .then(res => {
+        //     if (res) {
+        //       setUIConfig({
+        //         ...UIConfig!,
+        //         backgroundImage: res
+        //       })
+        //     }
+        //   })
       }
     }
   }, [configurationQuery])

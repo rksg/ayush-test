@@ -16,7 +16,6 @@ export interface BodyContentProps {
 }
 
 interface WidgetProps {
-  size: number
   color: string
   onColorChange: (v:string)=>void
   onSizeChange: (v:number)=>void
@@ -74,22 +73,22 @@ export function BodyContent (props: BodyContentProps) {
   const { $t } = useIntl()
   return (
     <PopOver content={<Widget
-      color={value.uiColorSchema.bodyFontColor}
-      size={value.uiStyleSchema.bodyFontSize}
-      onColorChange={onColorChange}
-      onSizeChange={onSizeChange}/>}
+      color={value.uiColorSchema.fontColor}
+      onColorChange={onColorChange}/>}
     visible={clicked}
     onVisibleChange={(v) => setClicked(v)}
     placement='leftTop'
     overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-10)', height: 40, width: 100 }}
     >
       <TextArea
+        maxLength={100}
+        // eslint-disable-next-line max-len
         value={$t({ defaultMessage: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' })}
         placeholder='bodytext'
         rows={4}
         style={{
-          fontSize: value.uiStyleSchema.bodyFontSize,
-          color: value.uiColorSchema.bodyFontColor,
+          fontSize: 14,
+          color: value.uiColorSchema.fontColor,
           cursor: cursor,
           outline: outline,
           fontWeight: 300,

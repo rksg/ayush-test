@@ -14,7 +14,8 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   TextMinus as UITextMinus,
   TextPlus as UITextPlus,
   ConfigurationSolid as AntSettingOutlined,
-  EyeOpenSolid
+  EyeOpenSolid,
+  TextColor
 }   from '@acx-ui/icons'
 
 
@@ -246,11 +247,7 @@ export const FontColorsOutlined = styled(UIBrushSolid)<{ $showColorPicker: boole
     }`}
 `
 // eslint-disable-next-line max-len
-export const ButtonFontColorOutlined = styled.div<{ $showColorPicker: boolean | undefined }>`
-font-weight: 600;
-font-family: var(--acx-neutral-brand-font)
-font-size: 18px;
-cursor: default;
+export const ButtonFontColorOutlined = styled(TextColor)<{ $showColorPicker: boolean | undefined }>`
 ${iconsEditStyle}
 ${props=>props.$showColorPicker?css`color: var(--acx-accents-orange-50);`
     :css`color: var(--acx-primary-black)`}

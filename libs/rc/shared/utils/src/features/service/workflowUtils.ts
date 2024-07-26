@@ -1,6 +1,6 @@
-import { MessageDescriptor }      from '@formatjs/intl'
-import { defineMessage, useIntl } from 'react-intl'
-import { Node }                   from 'reactflow'
+import { MessageDescriptor }              from '@formatjs/intl'
+import { defineMessage, useIntl }         from 'react-intl'
+import { ConnectionLineType, Edge, Node } from 'reactflow'
 
 import {
   AupIcon,
@@ -13,6 +13,7 @@ import {
   AupActionContext,
   DataPromptActionContext,
   DisplayMessageActionContext,
+  StepType,
   UserSelectionSplitContext,
   WorkflowStep
 } from '../../types'
@@ -160,3 +161,79 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   // [ActionType.DPSK]: {},
 }
 /* eslint-enable max-len */
+
+
+export const composeNext = (
+  stepId: string, stepMap: Map<string, WorkflowStep>,
+  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
+  currentX: number, currentY: number,
+  isStart?: boolean
+) => {
+  const SPACE_OF_NODES = 110
+  const step = stepMap.get(stepId)
+
+  if (!step) return
+
+  const {
+    id,
+    nextStepId,
+    type,
+    actionType
+  } = step
+  const nodeType: ActionType = (actionType ?? 'START') as ActionType
+  const nextStep = stepMap.get(nextStepId ?? '')
+
+  // console.log('Step :: ', nodeType, type, enrollmentActionId)
+
+  nodes.push({
+    id,
+    type: nodeType,
+    position: { x: currentX, y: currentY },
+    data: {
+      ...step,
+      isStart,
+      isEnd: nextStep?.type === StepType.End
+    },
+
+    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
+    deletable: false
+  })
+
+  if (nextStepId) {
+    edges.push({
+      id: `${id} -- ${nextStepId}`,
+      source: id,
+      target: nextStepId,
+      type: ConnectionLineType.Step,
+      style: { stroke: 'var(--acx-primary-black)' },
+
+      deletable: false
+    })
+
+    composeNext(nextStepId, stepMap, nodes, edges,
+      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
+  }
+}
+
+
+export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
+  : { nodes: Node[], edges: Edge[] } {
+  const nodes: Node<WorkflowStep, ActionType>[] = []
+  const edges: Edge[] = []
+  const START_X = 100
+  const START_Y = 0
+
+  if (steps.length === 0) {
+    return { nodes: getInitialNodes(START_X, START_Y), edges }
+  }
+
+  const firstStep = findFirstStep(steps)
+  const stepMap = toStepMap(steps, definitionMap)
+
+  if (firstStep) {
+    composeNext(firstStep.id, stepMap, nodes, edges,
+      START_X, START_Y, firstStep.type === StepType.Start)
+  }
+
+  return { nodes, edges }
+}

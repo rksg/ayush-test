@@ -11,14 +11,14 @@ import { PopOver } from './PopOver'
 import * as UI     from './styledComponents'
 export interface LogoContentProps {
   value: UIConfiguration
-  onLogoChange: (v: string)=>void
+  onLogoChange: (v: string, f: RcFile)=>void
   onRatioChange: (v:number)=>void
   onDisabled: () => void
 }
 
 interface WidgetProps {
   value: UIConfiguration
-  onLogoChange: (v: string)=>void
+  onLogoChange: (v: string, f: RcFile)=>void
   onRatioChange: (v:number)=>void
   onDisabled: () => void
 }
@@ -39,7 +39,7 @@ function Widget (props: WidgetProps) {
       showUploadList={false}
       customRequest={async ({ file })=>{
         Utils.loadFile(file as RcFile, (url: string)=> {
-          onLogoChange(url)
+          onLogoChange(url, file as RcFile)
         })
       }}
     >

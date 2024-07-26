@@ -8,11 +8,11 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { EnrollmentPortalLink }    from '@acx-ui/rc/components'
+import { EnrollmentPortalLink }            from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowMutation,
   useSearchInProgressWorkflowListQuery,
-  useLazySearchWorkflowListQuery
+  useLazySearchWorkflowsVersionListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -60,7 +60,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       sorter: false,
-      render: (_, row) => $t({ defaultMessage: ` {
+      render: (_, row) => $t({ defaultMessage: `{
         status, select,
         PUBLISHED {Published}
         other {Draft}
@@ -84,7 +84,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       render: (_, row) => {
         if (workflowMap.get(row.id!)?.publishedDetails?.status === 'PUBLISHED') {
           const link = workflowMap.get(row.id!)?.links?.find(v => v.rel === 'enrollmentPortal')
-          if (link) return <EnrollmentPortalLink name={row.name} url={link.href}/>
+          if (link) return <EnrollmentPortalLink url={link.href}/>
         }
         return undefined
       }
@@ -103,7 +103,7 @@ export default function WorkflowTable () {
   const [deleteWorkflow,
     { isLoading: isDeleteWorkflowing }
   ] = useDeleteWorkflowMutation()
-  const [searchVersionedWorkflowById] = useLazySearchWorkflowListQuery()
+  const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const settingsId = 'workflow-table'
   const tableQuery = useTableQuery( {
     useQuery: useSearchInProgressWorkflowListQuery,
@@ -113,22 +113,35 @@ export default function WorkflowTable () {
   })
 
   const fetchVersionHistory = async (workflows: Workflow[]) => {
-    for (let i = 0; i < workflows.length; i++) {
-      if (workflowMap.has(workflows[i].id!!)) continue
-      try {
-        setWorkflowMap(map => new Map(map.set(workflows[i].id!!, workflows[i])))
-        const result = await searchVersionedWorkflowById(
-          { params: { id: workflows[i].id, excludeContent: 'false' } }
-        ).unwrap()
-        if (result) {
-          result.data.forEach(v => {
-            if (v.publishedDetails?.status === 'PUBLISHED') {
-              setWorkflowMap(map => new Map(map.set(workflows[i].id!!, v)))
-            }
-          })
-        }
-      } catch (e) {}
-    }
+    try {
+      const result = await searchVersionedWorkflows(
+        { params: { excludeContent: 'false' }, payload: workflows.map(workflow => workflow.id) }
+      ).unwrap()
+      if (result) {
+        result.forEach(v => {
+          if (v.publishedDetails?.status === 'PUBLISHED') {
+            setWorkflowMap(map => new Map(map.set(v.publishedDetails?.parentWorkflowId!!, v)))
+          }
+        })
+      }
+    } catch (e) {}
+
+
+    // for (let i = 0; i < workflows.length; i++) {
+    //   if (workflowMap.has(workflows[i].id!!)) continue
+    //   // try {
+    //   //   const result = await searchVersionedWorkflows(
+    //   //     { params: { excludeContent: 'false' }, payload:  }
+    //   //   ).unwrap()
+    //   //   if (result) {
+    //   //     result.data.forEach(v => {
+    //   //       if (v.publishedDetails?.status === 'PUBLISHED') {
+    //   //         setWorkflowMap(map => new Map(map.set(workflows[i].id!!, v)))
+    //   //       }
+    //   //     })
+    //   //   }
+    //   // } catch (e) {}
+    // }
   }
 
   useEffect(() => {
