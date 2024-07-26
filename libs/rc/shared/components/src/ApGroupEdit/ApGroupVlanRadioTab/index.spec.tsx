@@ -27,7 +27,7 @@ const venueId = oneApGroupList.data[0].venueId
 const defaultApGroupCxtdata = {
   isEditMode: true,
   isApGroupTableFlag: true,
-  isWifiRbacEnabled: false,
+  isRbacEnabled: false,
   venueId,
   setEditContextData: setEditContextDataFn
 }
@@ -59,13 +59,6 @@ describe('AP Group vlan & radio tab', () => {
       rest.post(
         CommonUrlsInfo.networkActivations.url,
         (req, res, ctx) => res(ctx.json(networkApGroup))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => {
-          mockGetNetworkDeep()
-          return res(ctx.json(networkDeepList))
-        }
       ),
       rest.get(
         WifiUrlsInfo.getNetwork.url,

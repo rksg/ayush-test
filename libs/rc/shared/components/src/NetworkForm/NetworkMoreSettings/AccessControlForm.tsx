@@ -339,23 +339,6 @@ function getAccessControlProfileTemplate <
   return transformDisplayText(name)
 }
 
-function GetLinkLimitByAccessControlPorfile (props: {
-  accessControlProfile: AccessControlProfile | undefined,
-  type: string
-}) {
-  const { $t } = useIntl()
-  const { accessControlProfile, type } = props
-
-  let limit = $t({ defaultMessage: 'Unlimited' })
-  if (accessControlProfile && accessControlProfile.rateLimiting
-    && accessControlProfile.rateLimiting[type] !== 0) {
-    limit = $t({ defaultMessage: '{rateLimiting} Mbps' }, {
-      rateLimiting: accessControlProfile.rateLimiting[type]
-    })
-  }
-  return <div>{limit}</div>
-}
-
 function GetLinkLimitByAccessControlProfileTemplate (props: {
   accessControlProfile: AccessControlProfileTemplate | undefined,
   type: string
@@ -705,59 +688,31 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
 }
 
 const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileType) => {
-  const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
   const { selectedAccessControlProfile } = props
 
-  if (isTemplate) {
-    const accessControlProfile = selectedAccessControlProfile as AccessControlProfileTemplate
-    return <>
-      <span>{(!selectedAccessControlProfile ||
+  const accessControlProfile = selectedAccessControlProfile as AccessControlProfileTemplate
+  return <>
+    <span>{(!selectedAccessControlProfile ||
         // eslint-disable-next-line max-len
         !(accessControlProfile.clientRateUpLinkLimit && accessControlProfile.clientRateDownLinkLimit)) && '--'}</span>
-      {(selectedAccessControlProfile &&
-        // eslint-disable-next-line max-len
-        (accessControlProfile.clientRateUpLinkLimit || accessControlProfile.clientRateDownLinkLimit)) ?
-        <div>
-          <UI.RateLimitBlock>
-            <label>{$t({ defaultMessage: 'Up:' })}</label>
-            <GetLinkLimitByAccessControlProfileTemplate
-              accessControlProfile={selectedAccessControlProfile}
-              type={'clientRateUpLinkLimit'} />
-          </UI.RateLimitBlock>
-          <UI.RateLimitBlock>
-            <label>{$t({ defaultMessage: 'Down:' })}</label>
-            <GetLinkLimitByAccessControlProfileTemplate
-              accessControlProfile={selectedAccessControlProfile}
-              type={'clientRateDownLinkLimit'} />
-          </UI.RateLimitBlock>
-        </div> : null
-      }
-    </>
-  }
-
-  const accessControlProfile = selectedAccessControlProfile as AccessControlProfile
-
-  return <>
-    <span>{(!selectedAccessControlProfile
-      || !accessControlProfile.rateLimiting
-      || accessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
     {(selectedAccessControlProfile &&
-        accessControlProfile.rateLimiting?.enabled) &&
+      // eslint-disable-next-line max-len
+      (accessControlProfile.clientRateUpLinkLimit || accessControlProfile.clientRateDownLinkLimit)) ?
       <div>
         <UI.RateLimitBlock>
           <label>{$t({ defaultMessage: 'Up:' })}</label>
-          <GetLinkLimitByAccessControlPorfile
+          <GetLinkLimitByAccessControlProfileTemplate
             accessControlProfile={selectedAccessControlProfile}
-            type={'uplinkLimit'} />
+            type={'clientRateUpLinkLimit'} />
         </UI.RateLimitBlock>
         <UI.RateLimitBlock>
           <label>{$t({ defaultMessage: 'Down:' })}</label>
-          <GetLinkLimitByAccessControlPorfile
+          <GetLinkLimitByAccessControlProfileTemplate
             accessControlProfile={selectedAccessControlProfile}
-            type={'downlinkLimit'} />
+            type={'clientRateDownLinkLimit'} />
         </UI.RateLimitBlock>
-      </div>
+      </div> : null
     }
   </>
 }

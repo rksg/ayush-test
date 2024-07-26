@@ -2,33 +2,261 @@
 
 exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c10 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  padding: 5px 0px 10px 0px;
+}
+
+.c11 {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  padding: 5px 0px 10px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c6 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 24px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c6 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c6 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c6 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c12 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 24px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c12 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c12 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c12 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c7 {
+  background-color: var(--acx-primary-white);
+  height: 95%;
+}
+
+.c13 {
+  background-color: var(--acx-primary-black);
+  height: 95%;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      class="ant-row "
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+            class="c3"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Utilization
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -51,11 +279,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
+                class="ant-divider ant-divider-vertical c7"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -87,25 +315,25 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+            class="c8"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Incidents
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -128,11 +356,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
+                class="ant-divider ant-divider-vertical c7"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -159,25 +387,25 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+            class="c9"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Total Traffic
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -210,11 +438,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
+                class="ant-divider ant-divider-vertical c7"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -246,25 +474,25 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+            class="c10"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
+              class="c11"
             >
               Power Utilization (PoE)
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
+                class="ant-statistic c12"
                 style="width: 50%;"
               >
                 <div
@@ -292,11 +520,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 mUsHQ"
+                class="ant-divider ant-divider-vertical c13"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
+                class="ant-statistic c12"
                 style="width: 50%;"
               >
                 <div
@@ -334,33 +562,251 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
 
 exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  padding: 5px 0px 10px 0px;
+}
+
+.c10 {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  padding: 5px 0px 10px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c6 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c6 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c6 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c6 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c11 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c11 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 0px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c11 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c11 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c11 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      class="ant-row "
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+            class="c3"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Utilization
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
+                class="ant-statistic c6"
                 style="width: 100%;"
               >
                 <div
@@ -387,25 +833,25 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+            class="c7"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Incidents
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
+                class="ant-statistic c6"
                 style="width: 100%;"
               >
                 <div
@@ -432,25 +878,25 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+            class="c8"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Total Traffic
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
+                class="ant-statistic c6"
                 style="width: 100%;"
               >
                 <div
@@ -487,25 +933,25 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+            class="c9"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
+              class="c10"
             >
               Power Utilization (PoE)
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 guBiUm"
+                class="ant-statistic c11"
                 style="width: 100%;"
               >
                 <div
@@ -543,33 +989,261 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
 
 exports[`SummaryBoxes should show - when no data 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+.c1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.c2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  min-width: 0;
+}
+
+.c3 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-green-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c8 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-red-50);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c9 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-semantics-yellow-40);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c10 {
+  border: 0;
+  padding-block: 10px;
+  background: var(--acx-neutrals-30);
+  border-radius: 3px;
+  height: 100%;
+  text-align: center;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c4 {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  padding: 5px 0px 10px 0px;
+}
+
+.c11 {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-headline-5-font-size);
+  font-weight: var(--acx-headline-5-font-weight-bold);
+  padding: 5px 0px 10px 0px;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-box-pack: space-evenly;
+  -webkit-justify-content: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.c6 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c6 .ant-statistic-title {
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 24px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c6 .ant-statistic-content {
+  color: var(--acx-primary-white);
+}
+
+.c6 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c6 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c12 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column-reverse;
+  -ms-flex-direction: column-reverse;
+  flex-direction: column-reverse;
+}
+
+.c12 .ant-statistic-title {
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  min-height: 24px;
+  margin-bottom: 0px;
+  padding: 0px 5px;
+}
+
+.c12 .ant-statistic-content {
+  color: var(--acx-primary-black);
+}
+
+.c12 .ant-statistic-content .ant-statistic-content-value {
+  font-size: 28px;
+  font-weight: var(--acx-body-font-weight-bold);
+}
+
+.c12 .ant-statistic-content .ant-statistic-content-suffix {
+  font-size: var(--acx-body-3-font-size);
+}
+
+.c7 {
+  background-color: var(--acx-primary-white);
+  height: 95%;
+}
+
+.c13 {
+  background-color: var(--acx-primary-black);
+  height: 95%;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <div
-      class="ant-row Grid__GridRow-sc-5irhjd-2"
+      class="ant-row "
       style="margin: -10px -10px -10px -10px;"
     >
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 hxTjLL"
+            class="c3"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Utilization
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -592,11 +1266,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
+                class="ant-divider ant-divider-vertical c7"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -628,25 +1302,25 @@ exports[`SummaryBoxes should show - when no data 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 daMEAj"
+            class="c8"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Incidents
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -669,11 +1343,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
+                class="ant-divider ant-divider-vertical c7"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -700,25 +1374,25 @@ exports[`SummaryBoxes should show - when no data 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 eMjbAp"
+            class="c9"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 eLUIDF"
+              class="c4"
             >
               Total Traffic
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -737,11 +1411,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
+                class="ant-divider ant-divider-vertical c7"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
+                class="ant-statistic c6"
                 style="width: 50%;"
               >
                 <div
@@ -764,25 +1438,25 @@ exports[`SummaryBoxes should show - when no data 1`] = `
         </div>
       </div>
       <div
-        class="ant-col ant-col-6 Grid__ColInner-sc-5irhjd-0 XtIJT"
+        class="ant-col ant-col-6 c1"
         style="padding: 10px 10px 10px 10px;"
       >
         <div
-          class="Grid__Container-sc-5irhjd-1 dRhDDA"
+          class="c2"
         >
           <div
-            class="styledComponents__Wrapper-sc-1jdne8l-0 jfzNig"
+            class="c10"
           >
             <div
-              class="styledComponents__Title-sc-1jdne8l-1 LSdwB"
+              class="c11"
             >
               Power Utilization (PoE)
             </div>
             <div
-              class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
+              class="c5"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
+                class="ant-statistic c12"
                 style="width: 50%;"
               >
                 <div
@@ -810,11 +1484,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 mUsHQ"
+                class="ant-divider ant-divider-vertical c13"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
+                class="ant-statistic c12"
                 style="width: 50%;"
               >
                 <div

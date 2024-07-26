@@ -6,8 +6,9 @@ import { defer, get }      from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useLocation }     from 'react-router-dom'
 
-import { Conversation, FulfillmentMessage, Content } from '@acx-ui/components'
-import { MelissaHeaderIcon, MelissaIcon }            from '@acx-ui/icons'
+import { Conversation, FulfillmentMessage, Content,
+  ContentSwitcher, ContentSwitcherProps, Mode } from '@acx-ui/components'
+import { MelissaHeaderIcon, MelissaIcon } from '@acx-ui/icons'
 
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
 import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
@@ -51,6 +52,7 @@ export function MelissaBot (){
   const [inputValue, setInputValue] = useState('')
   const [messages,setMessages] = useState<Content[]>([])
   const [fileName, setFileName] = useState('')
+  const [mode,setMode] = useState<Mode>('my-network')
 
   const showDrawer = () => {
     setState({ ...state,isOpen: true })
@@ -121,7 +123,7 @@ export function MelissaBot (){
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const betaSuperScriptText = 'ᴮᴱᵀᴬ'
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText} {betaSuperScriptText}</SubTitle></>
-  const askMelissa = (body:AskMelissaBody) => {
+  const askMelissa = (body:AskMelissaBody,isModeDisable:boolean=false) => {
     queryAskMelissa(body).then(async (json)=>{
       isSummaryLatest.current = false
       setState({ ...state,
@@ -135,7 +137,7 @@ export function MelissaBot (){
         if(createdIncidentId) {
           setState({ ...state,incidentId: createdIncidentId })
         }
-        messages.push({ type: 'bot', contentList: fulfillmentMessages })
+        messages.push({ type: 'bot', mode: !isModeDisable ? mode : undefined, contentList: fulfillmentMessages })
         setMessages(messages)
         defer(doAfterResponse)
       }else{
@@ -230,12 +232,23 @@ export function MelissaBot (){
             languageCode: 'en',
             name: 'Welcome'
           }
+        },
+        queryParams: {
+          resetContexts: true
         }
       })
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+  const tabDetails:ContentSwitcherProps['tabDetails']=[
+    { label: $t({ defaultMessage: 'My Network' }),
+      tooltip: $t({ defaultMessage: 'Provides AI assistance to retrieve network-specific information by interpreting your request, analyzing your network data, and delivering insightful responses and recommendations.' }),
+      children: <div/>, value: 'my-network' },
+    { label: $t({ defaultMessage: 'General' }),
+      tooltip: $t({ defaultMessage: 'Provides generative AI assistance by interpreting your request and retrieving product-focused technical information and usage guidelines from published RUCKUS AI resources.' }),
+      children: <div/>, value: 'general' }
+  ]
   return (<>{state.showFloatingButton && <MelissaIcon
     onClick={showDrawer}
     style={{
@@ -252,38 +265,71 @@ export function MelissaBot (){
     onClose={onClose}
     visible={state.isOpen}
     width={390}
-    footer={<Input ref={inputRef}
-      placeholder={askAnything}
-      value={inputValue}
-      disabled={state.isInputDisabled}
-      style={{ height: '52px' }}
-      onChange={(e) => {
-        setInputValue(e.target.value)
-      }}
-      onKeyDown={(e) => {
-        const trimedInputValue = inputValue.trim()
-        if (e.key === 'Enter' && trimedInputValue !== '') {
-          const userMessage: Content = {
-            type: 'user',
-            contentList: [{ text: { text: [trimedInputValue] } }]
-          }
-          messages.push(userMessage)
-          setState({ ...state, isReplying: true, isInputDisabled: true })
-          setInputValue('')
-          setMessages(messages)
-          defer(() => {
-            scrollToBottom()
-          })
-          askMelissa({
-            queryInput: {
-              text: {
-                languageCode: 'en',
-                text: inputValue
-              }
+    footer={
+      <div style={{ display: 'block', width: '100%' }}>
+        <ContentSwitcher tabDetails={tabDetails}
+          align='center'
+          size='small'
+          onChange={(key)=>{
+            setState({ ...state,isInputDisabled: true,isReplying: true })
+            setMode(key as Mode)
+            if(key === 'my-network'){
+              askMelissa({
+                queryInput: {
+                  event: {
+                    languageCode: 'en',
+                    name: 'data-mode'
+                  }
+                },
+                queryParams: {
+                  resetContexts: true
+                }
+              },true)
+            }else{
+              askMelissa({
+                queryInput: {
+                  event: {
+                    languageCode: 'en',
+                    name: 'general-mode'
+                  }
+                }
+              },true)
             }
-          })
-        }
-      }} />}
+            defer(doAfterResponse)
+          }}/>
+        <Input ref={inputRef}
+          placeholder={askAnything}
+          value={inputValue}
+          disabled={state.isInputDisabled}
+          style={{ height: '52px' }}
+          onChange={(e) => {
+            setInputValue(e.target.value)
+          }}
+          onKeyDown={(e) => {
+            const trimedInputValue = inputValue.trim()
+            if (e.key === 'Enter' && trimedInputValue !== '') {
+              const userMessage: Content = {
+                type: 'user',
+                contentList: [{ text: { text: [trimedInputValue] } }]
+              }
+              messages.push(userMessage)
+              setState({ ...state, isReplying: true, isInputDisabled: true })
+              setInputValue('')
+              setMessages(messages)
+              defer(() => {
+                scrollToBottom()
+              })
+              askMelissa({
+                queryInput: {
+                  text: {
+                    languageCode: 'en',
+                    text: inputValue
+                  }
+                }
+              })
+            }
+          }} />
+      </div>}
   >
     <Conversation
       content={messages}
