@@ -25,6 +25,11 @@ module.exports = {
     '\\.svg$': `${__dirname}/tools/tests/svgrTransformer.js`,
     '\\.(png|jpg|jpeg|webp)$': `${__dirname}/tools/tests/imagerTransformer.js`
   },
+  // globals: {
+  //   'ts-jest': {
+  //     isolatedModules: true
+  //   }
+  // },
   coverageReporters: [ 'lcov', 'text-summary' ],
   collectCoverageFrom: [
     '<rootDir>/src/**/*.{js,jsx,ts,tsx}',
