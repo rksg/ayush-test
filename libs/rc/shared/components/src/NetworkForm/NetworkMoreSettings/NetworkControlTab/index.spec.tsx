@@ -9,19 +9,26 @@ import {
   NetworkSaveData,
   TunnelProfileUrls,
   TunnelTypeEnum,
-  WifiCallingUrls
+  WifiCallingUrls,
+  NetworkSegmentationUrls,
+  EdgeNSGFixtures
 } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider }                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData, devicePolicyListResponse, policyListResponse, mockWifiCallingTableResult } from '../../__tests__/fixtures'
-import NetworkFormContext                                                                                        from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo }                                                                      from '../../utils'
+import {
+  mockedTunnelProfileViewData,
+  devicePolicyListResponse,
+  policyListResponse,
+  mockWifiCallingTableResult,
+  devicePolicyDetailResponse
+} from '../../__tests__/fixtures'
+import NetworkFormContext                   from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
 
 import { NetworkControlTab } from '.'
 
-
-
+const { mockNsgStatsList } = EdgeNSGFixtures
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
@@ -50,7 +57,29 @@ describe('Network More settings - Network Control Tab', () => {
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.get(AccessControlUrls.getDevicePolicy.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getL3AclPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getApplicationPolicyListQuery.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse))),
+      rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json(policyListResponse)))
     )
   })
 
@@ -271,6 +300,19 @@ describe('Network More settings - Network Control Tab', () => {
   })
 
   it('should display tunnel profile when it use VxLan tunnel', async () => {
+    const mockedPinReq = jest.fn()
+    mockServer.use(
+      rest.post(
+        NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
+        (_req, res, ctx) => {
+          mockedPinReq()
+          return res(ctx.json(mockNsgStatsList))
+        }
+      ))
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE
+      || ff === Features.EDGE_PIN_HA_TOGGLE)
+
     jest.mocked(useNetworkVxLanTunnelProfileInfo).mockReturnValue({
       enableTunnel: true,
       enableVxLan: true,
@@ -299,8 +341,8 @@ describe('Network More settings - Network Control Tab', () => {
 
     const clientIsolationContainer = screen.getByText(/client isolation/i)
     expect(within(clientIsolationContainer).getByRole('switch')).toBeDisabled()
-    await screen.findByText('Tunnel Profile')
-    const tunnelProfileLabel = await screen.findByText('Tunnel Profile')
+    await waitFor(() => expect(mockedPinReq).toBeCalled())
+    const tunnelProfileLabel = screen.getByText('Tunnel Profile')
     // because TunnelProfile is not binding by formItem name, we could not access it via getByRole with name
     // eslint-disable-next-line testing-library/no-node-access
     const tunnelProfileFormItem = tunnelProfileLabel.closest('.ant-form-item-row')
@@ -309,5 +351,7 @@ describe('Network More settings - Network Control Tab', () => {
     expect(tunnelProfileDropdown).toBeDisabled()
     // eslint-disable-next-line max-len
     await screen.findByText(/All networks under the same Personal Identity Network share the same tunnel profile/i)
+    const pinLink = (await screen.findByRole('link', { name: 'here' }) as HTMLAnchorElement).href
+    expect(pinLink).toContain('/services/personalIdentityNetwork/1/detail')
   })
 })

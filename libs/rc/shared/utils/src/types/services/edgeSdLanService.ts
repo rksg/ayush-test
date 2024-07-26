@@ -155,6 +155,8 @@ export interface EdgeMvSdLanViewData {
   timestamp?: number
   tunneledWlans?: EdgeSdLanTunneledWlan[]
   tunneledGuestWlans?: EdgeSdLanTunneledWlan[]
+  edgeClusterTunnelInfo?: EdgeSdLanDcTunnelInfo[]
+  guestEdgeClusterTunnelInfo?: EdgeSdLanDmzTunnelInfo[]
 }
 
 export type EdgeMvSdLanFormNetwork = {
@@ -172,4 +174,16 @@ export interface EdgeMvSdLanFormModel extends EdgeMvSdLanExtended {
   guestEdgeClusterName?: string;
   activatedNetworks: EdgeMvSdLanFormNetwork;
   activatedGuestNetworks: EdgeMvSdLanFormNetwork;
+}
+
+export interface EdgeSdLanDcTunnelInfo {
+  serialNumber: string
+  activeApCount: number
+  allocatedApCount: number
+}
+
+export interface EdgeSdLanDmzTunnelInfo {
+  serialNumber: string
+  activeNodeCount: number
+  allocatedNodeCount: number
 }

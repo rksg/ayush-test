@@ -36,7 +36,7 @@ import {
   sortProp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  TableResult, DevicePolicy
+  TableResult, DevicePolicy, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
 import { WifiScopes }                               from '@acx-ui/types'
@@ -120,6 +120,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -147,6 +148,8 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   const [drawerForm] = Form.useForm()
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -177,7 +180,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   })
 
   const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(
-    editMode.isEdit, enableRbac
+    editMode.isEdit, resolvedRbacEnabled
   )
 
   const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher({
@@ -185,7 +188,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     useTemplateQueryFn: useGetDevicePolicyTemplateQuery,
     skip: skipFetch,
     extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId },
-    enableRbac
+    enableRbac: resolvedRbacEnabled
   })
 
   const setDrawerVisible = (status: boolean) => {
@@ -465,7 +468,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         const deviceRes: CommonResult = await createDevicePolicy({
           params: params,
           payload: convertToPayload(),
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
         setRequestId(deviceRes.requestId)
         setQueryPolicyName(policyName)
@@ -473,7 +476,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         await updateDevicePolicy({
           params: { ...params, devicePolicyId: queryPolicyId },
           payload: convertToPayload(queryPolicyId),
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {
