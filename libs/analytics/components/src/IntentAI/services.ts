@@ -7,19 +7,14 @@ import { intentAIApi }                              from '@acx-ui/store'
 import { getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
 import type { PathFilter }                          from '@acx-ui/utils'
 
-import {
-  states,
-  codes,
-  StatusTrail,
-  StateType,
-  aiFeaturesLabel
-} from './config'
+import { states, codes, StatusTrail, aiFeaturesLabel } from './config'
+import { statuses, statusReasons }                     from './states'
 
 type Intent = {
   id: string
   code: string
-  status: string | StateType
-  displayStatus: string
+  status: statuses
+  displayStatus: statusReasons
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -51,11 +46,11 @@ type Metadata = {
   scheduledBy?: string
 }
 
-const getStatusTooltip = (state: StateType, sliceValue: string, metadata: Metadata) => {
+const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
   let tooltipKey = 'tooltip'
 
-  if (state === 'scheduled' && metadata.oneClickOptimize) {
+  if (state === statusReasons.scheduled && metadata.oneClickOptimize) {
     tooltipKey = 'tooltipOneClickOptimize'
   }
 
@@ -116,19 +111,15 @@ export const api = intentAIApi.injectEndpoints({
             id, path, sliceValue, code, displayStatus, metadata, updatedAt
           } = intent
           const detail = codes[code]
-          //Avoid UI showing errors when displayStatus is not defined in the UI code
-          const statusEnum = (states[displayStatus]?.text)
-            ? displayStatus as StateType
-            : 'status-not-defined-in-ui'
-          detail && intents.push({
+          detail && states[displayStatus] && intents.push({
             ...intent,
             id: id,
             aiFeature: $t(aiFeaturesLabel[detail.aiFeature]),
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: $t(states[statusEnum].text),
-            statusTooltip: getStatusTooltip(statusEnum, sliceValue, { ...metadata, updatedAt })
+            status: $t(states[displayStatus].text),
+            statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
           } as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)

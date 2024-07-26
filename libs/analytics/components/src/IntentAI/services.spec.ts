@@ -263,12 +263,6 @@ describe('Recommendation services', () => {
         ...expectedCommonResult,
         status: 'No recommendation',
         statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
-      },
-      {
-        ...intentListWithAllStatus.intents[21],
-        ...expectedCommonResult,
-        status: 'TBD',
-        statusTooltip: 'TBD'
       }
     ]
     expect(error).toBe(undefined)
