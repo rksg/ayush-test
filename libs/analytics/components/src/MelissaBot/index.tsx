@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Input, InputRef } from 'antd'
 import { defer, get }      from 'lodash'
+import moment              from 'moment-timezone'
 import { useIntl }         from 'react-intl'
 import { useLocation }     from 'react-router-dom'
 
@@ -12,6 +13,8 @@ import { MelissaHeaderIcon, MelissaIcon } from '@acx-ui/icons'
 
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
 import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
+
+let lastAccessedInterval:NodeJS.Timer
 
 export const BOT_NAME = 'Melissa'
 
@@ -53,6 +56,7 @@ export function MelissaBot (){
   const [messages,setMessages] = useState<Content[]>([])
   const [fileName, setFileName] = useState('')
   const [mode,setMode] = useState<Mode>('my-network')
+  const [lastAccessed,setLastAccessed] = useState<Date|null>(null)
 
   const showDrawer = () => {
     setState({ ...state,isOpen: true })
@@ -62,6 +66,43 @@ export function MelissaBot (){
       }
     })
   }
+
+  useEffect(()=>{
+    const RESET_AFTER_SECONDS = 20
+    clearInterval(lastAccessedInterval)
+    lastAccessedInterval=setInterval(()=>{
+      const now=moment(new Date())
+      const start = moment(lastAccessed)
+      const diffInSecs = now.diff(start,'seconds')
+      // eslint-disable-next-line no-console
+      console.log({ diffInSecs })
+      if(diffInSecs > RESET_AFTER_SECONDS){
+        setLastAccessed(new Date())
+        const timeoutMessage: Content = {
+          type: 'bot',
+          contentList: [{ text: { text: ['Session Timed out.'] } }]
+        }
+        messages.push(timeoutMessage)
+        setMessages(messages)
+        if(mode === 'general'){
+          setMode('my-network')
+          askMelissa({
+            queryInput: {
+              event: {
+                languageCode: 'en',
+                name: 'data-mode'
+              }
+            },
+            queryParams: {
+              resetContexts: true
+            }
+          },true)
+        }
+        defer(doAfterResponse)
+      }
+    },1000)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[lastAccessed])
 
   const onClose = () => {
     setState({ ...state,isOpen: false })
@@ -125,6 +166,7 @@ export function MelissaBot (){
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText} {betaSuperScriptText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody,isModeDisable:boolean=false) => {
     queryAskMelissa(body).then(async (json)=>{
+      setLastAccessed(new Date())
       isSummaryLatest.current = false
       setState({ ...state,
         responseCount: state.responseCount+1,
@@ -268,6 +310,7 @@ export function MelissaBot (){
     footer={
       <div style={{ display: 'block', width: '100%' }}>
         <ContentSwitcher tabDetails={tabDetails}
+          value={mode}
           align='center'
           size='small'
           onChange={(key)=>{
