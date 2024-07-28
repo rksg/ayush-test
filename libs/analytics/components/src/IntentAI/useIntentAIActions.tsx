@@ -78,8 +78,11 @@ const getFutureTime = (value: Moment) => {
   const remainder = 15 - (bufferedTime.minute() % 15)
   return bufferedTime.clone().add(remainder, 'minutes')
 }
-const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
-const getDefaultTime = () => moment() < datetime3AM ? moment(datetime3AM) : moment(datetime3AM).add(1, 'd')
+
+const getDefaultTime = () => {
+  const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
+  return moment().isSameOrBefore(datetime3AM) ? moment(datetime3AM) : moment(datetime3AM).add(1, 'd')
+}
 
 const aggregateFeaturesZones = (rows:IntentListItem[]) => {
   const features = new Set<string>()

@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
 
-import userEvent       from '@testing-library/user-event'
-import { MomentInput } from 'moment-timezone'
-import { act }         from 'react-dom/test-utils'
+import userEvent from '@testing-library/user-event'
+import { act }   from 'react-dom/test-utils'
 
 import { get }                   from '@acx-ui/config'
 import { useIsSplitOn }          from '@acx-ui/feature-toggle'
@@ -53,33 +52,60 @@ jest.mock('@acx-ui/rc/services', () => ({
   useLazyVenueRadioActiveNetworksQuery: () => [mockedVenueRadioActiveNetworksQuery]
 }))
 jest.mock('@acx-ui/config')
-jest.mock('moment-timezone', () => {
-  const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
-  return {
-    __esModule: true,
-    ...moment,
-    default: (date: MomentInput) => date === '2023-11-17T11:45:00.000Z'
-      ? moment(date)
-      : moment('07-15-2023', 'MM-DD-YYYY').add(3, 'h')
-  }
-})
+jest.spyOn(global.Date, 'now').mockImplementation(
+  () => new Date('2024-07-20T04:01:00.000Z').getTime()
+)
 
 describe('useIntentAIActions', () => {
+  const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
     const resp = { optimizeAll: [{ success: true, errorMsg: '' , errorCode: '' }] } as OptimizeAllMutationResponse
     mockedOptimizeAllIntent.mockReturnValue(Promise.resolve(resp))
     mockedRecommendationWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
     mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+    jest.spyOn(Date, 'now').mockReturnValue(now)
   })
   afterEach(() => {
     cleanup()
     jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
+    jest.restoreAllMocks()
   })
   describe('R1 - OneClickOptimize', () => {
     beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
     describe('r1 - AI-Driven', () => {
+      it('should handle current time is less than 3 AM - single1', async () => {
+        jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
+        const mockOK = jest.fn()
+        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
+        const { result } = renderHook(() => useIntentAIActions(), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+        const { showOneClickOptimize } = result.current
+        act(() => {
+          showOneClickOptimize(selectedRow, mockOK)
+        })
+        const dialog = await screen.findByRole('dialog')
+        expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
+        expect(await within(dialog).findByText(/zone-1/)).toBeVisible()
+        expect(await within(dialog).findByText(/Change time/)).toBeVisible()
+        userEvent.click(await within(dialog).findByText(/Change time/))
+        await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
+        const checkHour = await screen.findAllByText('00')
+        await userEvent.click(checkHour[0])
+        await userEvent.click((await screen.findAllByRole('time-picker-minutes'))[0])
+        const checkMin = await screen.findAllByText('45')
+        await userEvent.click(checkMin[0])
+        await userEvent.click((await screen.findAllByText('Apply'))[0])
+        await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
+        expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
+          scheduledAt: '2024-07-21T00:45:00.000Z',
+          optimizeList: [{ id: '15' }]
+        })
+        await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+      })
+
       it('should handle mutation correctly - single', async () => {
         const mockOK = jest.fn()
         const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
@@ -99,12 +125,12 @@ describe('useIntentAIActions', () => {
         const checkMin = await screen.findAllByText('45')
         await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
-        const checkHour = await screen.findAllByText('00')
+        const checkHour = await screen.findAllByText('04')
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2023-07-16T00:45:00.000Z',
+          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{ id: '15' }]
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
@@ -131,12 +157,12 @@ describe('useIntentAIActions', () => {
         const checkMin = await screen.findAllByText('45')
         await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
-        const checkHour = await screen.findAllByText('00')
+        const checkHour = await screen.findAllByText('04')
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findByText('Yes, Optimize!')))
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2023-07-16T00:45:00.000Z',
+          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{
             id: '16',
             wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -187,7 +213,6 @@ describe('useIntentAIActions', () => {
       expect(await within(dialog).findByText(/Change time/)).toBeVisible()
       await userEvent.click((await within(dialog).findByText('Cancel')))
       await waitFor(() => expect(screen.queryByText('dialog')).toBeNull())
-
     })
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_2)  - multiple', async () => {
@@ -213,12 +238,12 @@ describe('useIntentAIActions', () => {
       const checkMin = await screen.findAllByText('45')
       await userEvent.click(checkMin[0])
       await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
-      const checkHour = await screen.findAllByText('00')
+      const checkHour = await screen.findAllByText('04')
       await userEvent.click(checkHour[0])
       await userEvent.click((await screen.findAllByText('Apply'))[0])
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
       expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-        scheduledAt: '2023-07-16T00:45:00.000Z',
+        scheduledAt: '2024-07-21T04:45:00.000Z',
         optimizeList: [{
           id: '15'
         },{
@@ -256,12 +281,12 @@ describe('useIntentAIActions', () => {
         const checkMin = await screen.findAllByText('45')
         await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
-        const checkHour = await screen.findAllByText('00')
+        const checkHour = await screen.findAllByText('04')
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2023-07-16T00:45:00.000Z',
+          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{
             id: '15'
           }]
@@ -290,12 +315,12 @@ describe('useIntentAIActions', () => {
         const checkMin = await screen.findAllByText('45')
         await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
-        const checkHour = await screen.findAllByText('00')
+        const checkHour = await screen.findAllByText('04')
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2023-07-16T00:45:00.000Z',
+          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{
             id: '16',
             wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
@@ -317,13 +342,14 @@ describe('useIntentAIActions', () => {
         expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
         expect(await within(dialog).findByText(/zone-1/)).toBeVisible()
         expect(await within(dialog).findByText(/Change time/)).toBeVisible()
+        jest.mocked(Date.now).mockReturnValue(new Date('2024-07-22T04:01:00.000Z').getTime())
         userEvent.click(await within(dialog).findByText(/Change time/))
-        await userEvent.click((await screen.findAllByRole('time-picker-minutes'))[0])
-        const checkMin = await screen.findAllByText('15')
-        await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
         const checkHour = await screen.findAllByText('00')
         await userEvent.click(checkHour[0])
+        await userEvent.click((await screen.findAllByRole('time-picker-minutes'))[0])
+        const checkMin = await screen.findAllByText('15')
+        await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(await screen.findByText(/Scheduled time cannot be before/)).toBeVisible()
@@ -355,7 +381,7 @@ describe('useIntentAIActions', () => {
       const checkMin = await screen.findAllByText('45')
       await userEvent.click(checkMin[0])
       await userEvent.click((await screen.findAllByRole('time-picker-hours'))[0])
-      const checkHour = await screen.findAllByText('00')
+      const checkHour = await screen.findAllByText('04')
       await userEvent.click(checkHour[0])
       await userEvent.click((await screen.findAllByText('Apply'))[0])
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
