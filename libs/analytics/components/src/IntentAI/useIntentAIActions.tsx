@@ -148,19 +148,17 @@ export function useIntentAIActions () {
     const response = await optimizeAllIntent({ scheduledAt, optimizeList })
     if ('data' in response) {
       const { optimizeAll } = response.data as OptimizeAllMutationResponse
-      if (optimizeAll && optimizeAll.length > 0) {
-        const errorContent = optimizeAll.reduce((errorText, { success, errorMsg }) => {
-          if (success) {
-            return errorText
-          }
-          return errorText + errorMsg
-        }, '')
-        if (errorContent !== '') {
-          showToast({
-            type: 'error',
-            content: errorContent
-          })
+      const errorContent = optimizeAll?.reduce((errorText, { success, errorMsg }) => {
+        if (success) {
+          return errorText
         }
+        return errorText + errorMsg
+      }, '')
+      if (errorContent !== '') {
+        showToast({
+          type: 'error',
+          content: errorContent
+        })
       }
     }
   }
