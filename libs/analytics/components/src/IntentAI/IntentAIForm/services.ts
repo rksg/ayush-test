@@ -113,6 +113,17 @@ export const kpiHelper = (code: string) => {
 type BasicRecommendationWithStatus = BasicRecommendation & {
   status: string
 }
+type MutationPayload = { id: string }
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
+
+interface UpdatePreferenceScheduleMutationPayload extends MutationPayload {
+  status: string
+  scheduledAt: string
+  preferences: {
+    crrmFullOptimization: boolean
+  }
+}
+interface UpdatePreferenceScheduleMutationResponse { transition: MutationResponse }
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -153,11 +164,45 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: { recommendation: RecommendationDetails }) =>
         transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+    }),
+    updatePreferenceSchedule: build.mutation<
+      UpdatePreferenceScheduleMutationResponse,
+      UpdatePreferenceScheduleMutationPayload
+    >({
+      query: ({ ...payload }) => ({
+        document: gql`
+          mutation TransitionMutation(
+            $id: String!
+            $status: String!
+            $scheduledAt: DateTime
+            $preferences: JSON
+          ) {
+            transition(
+              id: $id
+              status: $status
+              scheduledAt: $scheduledAt
+              preferences: $preferences
+            ) {
+              success
+              errorMsg
+              errorCode
+            }
+          }
+            `,
+        variables: {
+          id: payload.id,
+          status: payload.status,
+          scheduledAt: payload.scheduledAt,
+          preferences: payload.preferences
+        },
+        invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+      })
     })
   })
 })
 
 export const {
   useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery
+  useConfigRecommendationDetailsQuery,
+  useUpdatePreferenceScheduleMutation
 } = api

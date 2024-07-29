@@ -182,8 +182,9 @@ export function AIDrivenRRM () {
         ]}
       />
       <StepsForm
+        // onFinish={async (values) => { await submit(values).unwrap() }}
         buttonLabel={{
-          submit: 'Apply'
+          submit: $t({ defaultMessage: 'Apply' })
         }}
         initialValues={_.merge(defaultValue, details)}
       >
