@@ -139,8 +139,6 @@ export const DisplayMessageActionDefaultValue: {
   displayContinueButton: true
 }
 
-// TODO: add default values for DPSK
-
 export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,

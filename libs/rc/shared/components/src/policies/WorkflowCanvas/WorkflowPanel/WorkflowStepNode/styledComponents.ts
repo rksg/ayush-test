@@ -146,6 +146,7 @@ export const PlusButton = styled.div`
 `
 // this styles the label of the popover
 export const Popover = styled(AntPopover)`
+    color: var(--acx-accents-blue-50);
     text-decoration: dotted underline;
     :after {
       content: '';

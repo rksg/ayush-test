@@ -8,12 +8,9 @@ import { useGetActionByIdQuery,
   useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 
-import BaseStepNode                             from './BaseStepNode'
-import BasicActionContent                       from './BasicActionContent'
-import { PopoverContent, PopoverTitle, Spacer } from './styledComponents'
-
-
-
+import BaseStepNode       from './BaseStepNode'
+import BasicActionContent from './BasicActionContent'
+import * as UI            from './styledComponents'
 
 export function DpskNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
@@ -32,21 +29,31 @@ export function DpskNode (props: NodeProps<WorkflowStep>) {
         icon={<DpskActionTypeIcon />}
         title={$t(ActionNodeDisplay.DPSK)}
         content={
-          <Space direction='vertical' size={6}>
-            <PopoverTitle>
-              {$t({ defaultMessage: 'Identity Group' })}
-            </PopoverTitle>
-            <PopoverContent>
-              {identityGroupData ? identityGroupData.name : $t({ defaultMessage: 'None' })}
-            </PopoverContent>
-            <Spacer />
-            <PopoverTitle>
-              {$t({ defaultMessage: 'DPSK Service' })}
-            </PopoverTitle>
-            <PopoverContent>
-              {dpskData ? dpskData.name : $t({ defaultMessage: 'None' })}
-            </PopoverContent>
-          </Space>}
+          <UI.Popover
+            content={
+              <Space direction='vertical' size={6}>
+                <UI.PopoverTitle>
+                  {$t({ defaultMessage: 'Identity Group' })}
+                </UI.PopoverTitle>
+                <UI.PopoverContent>
+                  {identityGroupData ? identityGroupData.name : $t({ defaultMessage: 'None' })}
+                </UI.PopoverContent>
+                <UI.Spacer />
+                <UI.PopoverTitle>
+                  {$t({ defaultMessage: 'DPSK Service' })}
+                </UI.PopoverTitle>
+                <UI.PopoverContent>
+                  {dpskData ? dpskData.name : $t({ defaultMessage: 'None' })}
+                </UI.PopoverContent>
+              </Space>
+            }
+            trigger='hover'
+            overlayInnerStyle={{ backgroundColor: 'var(--acx-primary-black)' }}
+            color='var(--acx-primary-black)'
+          >
+            {$t({ defaultMessage: 'Details' })}
+          </UI.Popover>
+        }
       />
     </BaseStepNode>
   )
