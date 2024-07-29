@@ -807,15 +807,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
       }
     }),
-    dashboardOverview: build.query<Dashboard, RequestPayload>({
-      query: ({ params }) => {
-        const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
-        return {
-          ...dashboardOverviewReq
-        }
-      },
-      providesTags: [{ type: 'Network', id: 'Overview' }]
-    }),
     dashboardV2Overview: build.query<Dashboard, RequestPayload>({
       query: ({ params, payload }) => {
         return {
@@ -1387,7 +1378,6 @@ export const {
   useLazyNewApGroupNetworkListQuery,
   useGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
-  useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
   useActivateCertificateTemplateMutation,
