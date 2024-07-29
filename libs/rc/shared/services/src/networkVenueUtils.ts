@@ -235,7 +235,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
         }
 
         return fetchWithBQ(createHttpRequest(
-          WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -246,7 +246,7 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -366,7 +366,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
         }
 
         return fetchWithBQ(createHttpRequest(
-          WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -377,7 +377,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       // Get "select specific AP Groups" settings
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          WifiRbacUrlsInfo.getNetworkVenue,
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -512,7 +512,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
         }
 
         return fetchWithBQ(createHttpRequest(
-          WifiRbacUrlsInfo.getNetworkVenue,
+          payload?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))
@@ -530,7 +530,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
       })
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
-          WifiRbacUrlsInfo.getNetworkVenue,
+          payload?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkVenueTemplateRbac : WifiRbacUrlsInfo.getNetworkVenue,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1)
         ))

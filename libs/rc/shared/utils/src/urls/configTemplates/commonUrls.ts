@@ -261,6 +261,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getNetworkVenueTemplateRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true
+  },
   addNetworkVenuesTemplate: {
     method: 'post',
     url: '/templates/networkActivations/mappings',
