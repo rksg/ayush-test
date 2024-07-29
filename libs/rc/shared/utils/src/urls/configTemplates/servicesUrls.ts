@@ -4,27 +4,47 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getDpsk: {
     method: 'get',
     url: '/templates/dpskServices/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   addDpsk: {
     method: 'post',
     url: '/templates/dpskServices',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateDpsk: {
     method: 'put',
     url: '/templates/dpskServices/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteDpsk: {
     method: 'delete',
     url: '/templates/dpskServices/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedDpskList: {
     method: 'post',
     url: '/templates/dpskServices/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   addDhcp: {
     method: 'post',
@@ -166,11 +186,6 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/wifiCallingServiceProfiles/:serviceId',
     newApi: true
   },
-  getWifiCallingList: {
-    method: 'get',
-    url: '/templates/wifiCallingServiceProfiles',
-    newApi: true
-  },
   getEnhancedWifiCallingList: {
     method: 'post',
     url: '/templates/wifiCallingServiceProfiles/query',
@@ -190,5 +205,86 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/wifiCallingServiceProfiles/:templateId',
     newApi: true
+  },
+  getWifiCallingRbac: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  addWifiCallingRbac: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateWifiCallingRbac: {
+    method: 'put',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  deleteWifiCallingRbac: {
+    method: 'delete',
+    url: '/templates/wifiCallingServiceProfiles/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  queryWifiCalling: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateWifiCalling: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateWifiCalling: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/wifiCallingServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateDpskService: {
+    method: 'PUT',
+    newApi: true,
+    url: '/templates/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  queryDpskService: {
+    method: 'GET',
+    newApi: true,
+    url: '/templates/wifiNetworks/:networkId/dpskServices',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

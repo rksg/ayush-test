@@ -49,7 +49,8 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasDpskAccess
+  hasDpskAccess,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -86,81 +87,74 @@ import RadiusAttributeGroupDetail
 import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
-import CertificateForm                      from './pages/Policies/CertificateTemplate/CertificateForm/CertificateForm'
-import CertificateTemplateDetail            from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
-import CertificateTemplateList              from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
-import ClientIsolationDetail                from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
-import ClientIsolationTable                 from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
-import ConnectionMeteringDetail             from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
-import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
-import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
-import IdentityProviderDetail               from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
-import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
-import LbsServerProfileDetail               from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
-import LbsServerProfileTable                from './pages/Policies/LbsServerProfile/LbsServerProfileTable/LbsServerProfileTable'
-import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
-import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
-import MyPolicies                           from './pages/Policies/MyPolicies'
-import SelectPolicyForm                     from './pages/Policies/SelectPolicyForm'
-import SnmpAgentDetail                      from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
-import SnmpAgentForm                        from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
-import SnmpAgentTable                       from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
-import SyslogTable                          from './pages/Policies/Syslog/SyslogTable/SyslogTable'
-import AddTunnelProfile                     from './pages/Policies/TunnelProfile/AddTunnelProfile'
-import EditTunnelProfile                    from './pages/Policies/TunnelProfile/EditTunnelProfile'
-import TunnelProfileDetail                  from './pages/Policies/TunnelProfile/TunnelProfileDetail'
-import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
-import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
-import { WifiOperatorDetailView }           from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
-import WifiOperatorTable                    from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
-import WorkflowDetails                      from './pages/Policies/Workflow/WorkflowDetail'
-import WorkflowPageForm                     from './pages/Policies/Workflow/WorkflowPageForm'
-import WorkflowTable                        from './pages/Policies/Workflow/WorkflowTable'
-import DHCPTable                            from './pages/Services/DHCP/DHCPTable/DHCPTable'
-import AddDHCP                              from './pages/Services/DHCP/Edge/AddDHCP'
-import EdgeDHCPDetail                       from './pages/Services/DHCP/Edge/DHCPDetail'
-import EdgeDhcpTable                        from './pages/Services/DHCP/Edge/DHCPTable'
-import EditDhcp                             from './pages/Services/DHCP/Edge/EditDHCP'
-import DpskDetails                          from './pages/Services/Dpsk/DpskDetail/DpskDetails'
-import DpskTable                            from './pages/Services/Dpsk/DpskTable/DpskTable'
-import AddFirewall                          from './pages/Services/EdgeFirewall/AddFirewall'
-import EditFirewall                         from './pages/Services/EdgeFirewall/EditFirewall'
-import FirewallDetail                       from './pages/Services/EdgeFirewall/FirewallDetail'
-import FirewallTable                        from './pages/Services/EdgeFirewall/FirewallTable'
-import AddEdgeSdLan                         from './pages/Services/EdgeSdLan/AddEdgeSdLan'
-import EdgeSdLanDetail                      from './pages/Services/EdgeSdLan/EdgeSdLanDetail'
-import EdgeSdLanTable                       from './pages/Services/EdgeSdLan/EdgeSdLanTable'
-import EditEdgeSdLan                        from './pages/Services/EdgeSdLan/EditEdgeSdLan'
-import AddEdgeSdLanP2                       from './pages/Services/EdgeSdLanP2/AddEdgeSdLan'
-import EdgeSdLanDetailP2                    from './pages/Services/EdgeSdLanP2/EdgeSdLanDetail'
-import EdgeSdLanTableP2                     from './pages/Services/EdgeSdLanP2/EdgeSdLanTable'
-import EditEdgeSdLanP2                      from './pages/Services/EdgeSdLanP2/EditEdgeSdLan'
-import MdnsProxyDetail                      from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
-import MdnsProxyForm                        from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
-import MdnsProxyTable                       from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
-import MyServices                           from './pages/Services/MyServices'
-import NetworkSegAuthDetail                 from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
-import NetworkSegAuthForm                   from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
-import NetworkSegAuthTable                  from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
-import AddPersonalIdentitNetwork            from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
-import EditPersonalIdentityNetwork          from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
-import PersonalIdentityNetworkDetail        from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
-import PersonalIdentityNetworkTable         from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
-import PortalServiceDetail                  from './pages/Services/Portal/PortalDetail'
-import PortalTable                          from './pages/Services/Portal/PortalTable'
-import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
-import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
-import SelectServiceForm                    from './pages/Services/SelectServiceForm'
-import ServiceCatalog                       from './pages/Services/ServiceCatalog'
-import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
-import Timeline                             from './pages/Timeline'
-import PersonaPortal                        from './pages/Users/Persona'
-import PersonaDetails                       from './pages/Users/Persona/PersonaDetails'
-import PersonaGroupDetails                  from './pages/Users/Persona/PersonaGroupDetails'
-import SwitchClientList                     from './pages/Users/Switch/ClientList'
-import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
-import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
-import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+import CertificateForm                                                  from './pages/Policies/CertificateTemplate/CertificateForm/CertificateForm'
+import CertificateTemplateDetail                                        from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
+import CertificateTemplateList                                          from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
+import ClientIsolationDetail                                            from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
+import ClientIsolationTable                                             from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
+import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
+import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
+import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import IdentityProviderDetail                                           from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
+import IdentityProviderTable                                            from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
+import LbsServerProfileDetail                                           from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
+import LbsServerProfileTable                                            from './pages/Policies/LbsServerProfile/LbsServerProfileTable/LbsServerProfileTable'
+import MacRegistrationListDetails                                       from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
+import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
+import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
+import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
+import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
+import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
+import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
+import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
+import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
+import TunnelProfileDetail                                              from './pages/Policies/TunnelProfile/TunnelProfileDetail'
+import TunnelProfileTable                                               from './pages/Policies/TunnelProfile/TunnelProfileTable'
+import VLANPoolTable                                                    from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
+import { WifiOperatorDetailView }                                       from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
+import WifiOperatorTable                                                from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
+import WorkflowDetails                                                  from './pages/Policies/Workflow/WorkflowDetail'
+import WorkflowPageForm                                                 from './pages/Policies/Workflow/WorkflowPageForm'
+import WorkflowTable                                                    from './pages/Policies/Workflow/WorkflowTable'
+import DHCPTable                                                        from './pages/Services/DHCP/DHCPTable/DHCPTable'
+import AddDHCP                                                          from './pages/Services/DHCP/Edge/AddDHCP'
+import EdgeDHCPDetail                                                   from './pages/Services/DHCP/Edge/DHCPDetail'
+import EdgeDhcpTable                                                    from './pages/Services/DHCP/Edge/DHCPTable'
+import EditDhcp                                                         from './pages/Services/DHCP/Edge/EditDHCP'
+import DpskDetails                                                      from './pages/Services/Dpsk/DpskDetail/DpskDetails'
+import DpskTable                                                        from './pages/Services/Dpsk/DpskTable/DpskTable'
+import AddFirewall                                                      from './pages/Services/EdgeFirewall/AddFirewall'
+import EditFirewall                                                     from './pages/Services/EdgeFirewall/EditFirewall'
+import FirewallDetail                                                   from './pages/Services/EdgeFirewall/FirewallDetail'
+import FirewallTable                                                    from './pages/Services/EdgeFirewall/FirewallTable'
+import { AddEdgeSdLan, EditEdgeSdLan, EdgeSdLanDetail, EdgeSdLanTable } from './pages/Services/EdgeSdLan/index'
+import MdnsProxyDetail                                                  from './pages/Services/MdnsProxy/MdnsProxyDetail/MdnsProxyDetail'
+import MdnsProxyForm                                                    from './pages/Services/MdnsProxy/MdnsProxyForm/MdnsProxyForm'
+import MdnsProxyTable                                                   from './pages/Services/MdnsProxy/MdnsProxyTable/MdnsProxyTable'
+import MyServices                                                       from './pages/Services/MyServices'
+import NetworkSegAuthDetail                                             from './pages/Services/NetworkSegWebAuth/NetworkSegAuthDetail'
+import NetworkSegAuthForm                                               from './pages/Services/NetworkSegWebAuth/NetworkSegAuthForm'
+import NetworkSegAuthTable                                              from './pages/Services/NetworkSegWebAuth/NetworkSegAuthTable'
+import AddPersonalIdentitNetwork                                        from './pages/Services/PersonalIdentityNetwork/AddPersonalIdentityNetwork'
+import EditPersonalIdentityNetwork                                      from './pages/Services/PersonalIdentityNetwork/EditPersonalIdentityNetwork'
+import PersonalIdentityNetworkDetail                                    from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkDetail'
+import PersonalIdentityNetworkTable                                     from './pages/Services/PersonalIdentityNetwork/PersonalIdentityNetworkTable'
+import PortalServiceDetail                                              from './pages/Services/Portal/PortalDetail'
+import PortalTable                                                      from './pages/Services/Portal/PortalTable'
+import ResidentPortalDetail                                             from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
+import ResidentPortalTable                                              from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
+import SelectServiceForm                                                from './pages/Services/SelectServiceForm'
+import ServiceCatalog                                                   from './pages/Services/ServiceCatalog'
+import WifiCallingTable                                                 from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
+import Timeline                                                         from './pages/Timeline'
+import PersonaPortal                                                    from './pages/Users/Persona'
+import PersonaDetails                                                   from './pages/Users/Persona/PersonaDetails'
+import PersonaGroupDetails                                              from './pages/Users/Persona/PersonaGroupDetails'
+import SwitchClientList                                                 from './pages/Users/Switch/ClientList'
+import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
+import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
+import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
 
 
 export default function RcRoutes () {
@@ -412,35 +406,6 @@ function NetworkRoutes () {
   )
 }
 
-const edgeSdLanRoutes = (isP2Enabled: boolean) => {
-  return <>
-    <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
-        oper: ServiceOperation.LIST })}
-      element={isP2Enabled ? <EdgeSdLanTableP2 /> : <EdgeSdLanTable />}
-    />
-    <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
-        oper: ServiceOperation.CREATE })}
-      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
-        {isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
-      </AuthRoute>}
-    />
-    <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
-        oper: ServiceOperation.EDIT })}
-      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-        {isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
-      </AuthRoute>}
-    />
-    <Route
-      path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
-        oper: ServiceOperation.DETAIL })}
-      element={isP2Enabled ? <EdgeSdLanDetailP2 /> : <EdgeSdLanDetail />}
-    />
-  </>
-}
-
 const edgeDhcpRoutes = () => {
   return <>
     <Route
@@ -545,8 +510,6 @@ const edgePinRoutes = () => {
 }
 
 function ServiceRoutes () {
-  const isEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
@@ -588,20 +551,36 @@ function ServiceRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
-        element={<WifiCallingForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <WifiCallingForm />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })}
-        element={<WifiCallingConfigureForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <WifiCallingConfigureForm />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
-        element={<WifiCallingDetailView />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <WifiCallingDetailView />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
-        element={<WifiCallingTable/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <WifiCallingTable/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
@@ -709,8 +688,30 @@ function ServiceRoutes () {
       {(isEdgeHaReady && isEdgeFirewallHaReady)
         && edgeFirewallRoutes()}
 
-      {(isEdgeSdLanHaEnabled || isEdgeSdLanEnabled)
-        && edgeSdLanRoutes(isEdgeSdLanHaEnabled)}
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+          oper: ServiceOperation.LIST })}
+        element={<EdgeSdLanTable />}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+          oper: ServiceOperation.CREATE })}
+        element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+          <AddEdgeSdLan />
+        </AuthRoute>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+          oper: ServiceOperation.EDIT })}
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdgeSdLan />
+        </AuthRoute>}
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
+          oper: ServiceOperation.DETAIL })}
+        element={<EdgeSdLanDetail />}
+      />
     </Route>
   )
 }
@@ -877,19 +878,35 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm editMode={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <AccessControlForm editMode={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
-        element={<AccessControlForm editMode={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <AccessControlForm editMode={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
-        element={<AccessControlDetail />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AccessControlDetail />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
-        element={<AccessControlTable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AccessControlTable />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
@@ -1053,39 +1070,25 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ, EdgeScopes.READ]}>
-              <ConnectionMeteringTable />
-            </AuthRoute>
-          }
+          element={<ConnectionMeteringTable />}
         />
         <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
-              <ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />
-            </AuthRoute>
-          }
-        />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
-              <ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />
-            </AuthRoute>
-          }
-        />
-        <Route
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ, EdgeScopes.READ]}>
-              <ConnectionMeteringDetail/>
-            </AuthRoute>
-          }
+          element={<ConnectionMeteringDetail/>}
         />
+        { hasCloudpathAccess() && <>
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+          />
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
+            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+          />
+        </>}
       </>}
       {isCloudpathBetaEnabled && <>
         <Route

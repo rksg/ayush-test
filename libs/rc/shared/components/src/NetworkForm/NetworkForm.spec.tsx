@@ -14,7 +14,8 @@ import {
   WifiCallingUrls,
   WifiOperatorUrls,
   WifiRbacUrlsInfo,
-  WifiUrlsInfo } from '@acx-ui/rc/utils'
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -37,7 +38,12 @@ import {
   mockHotpost20IdentityProviderList,
   mockHotspot20OperatorList,
   macRegistrationList,
-  mockWifiCallingTableResult
+  mockWifiCallingTableResult,
+  devicePolicyListResponse,
+  applicationPolicyListResponse,
+  accessControlListResponse,
+  layer2PolicyListResponse,
+  layer3PolicyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -78,8 +84,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))),
       rest.post(PortalUrlsInfo.createPortal.url,
@@ -109,6 +113,22 @@ describe('NetworkForm', () => {
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([]))
       ),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(applicationPolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => {
+          return res(ctx.json(accessControlListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(layer2PolicyListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(layer3PolicyListResponse))
+        }),
       // RBAC API
       rest.get(WifiRbacUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))

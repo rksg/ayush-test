@@ -3,7 +3,7 @@ import React from 'react'
 import {  Form, Input } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { ActionType, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
 import { CommonActionSettings } from './CommonActionSettings'
 
@@ -13,7 +13,7 @@ export function DataPromptSettings () {
 
   return (
     <>
-      <CommonActionSettings />
+      <CommonActionSettings actionType={ActionType.DATA_PROMPT} />
 
       <Form.Item
         name='title'

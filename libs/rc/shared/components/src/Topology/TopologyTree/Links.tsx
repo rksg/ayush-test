@@ -158,6 +158,7 @@ export const Links: React.FC<LinksProps> = (props) => {
         const linkInfo = linksInfo[`${link.source.data.id}_${link.target.data.id}`]
         const targetNodeStatusColor = targetNodeColor[getDeviceColor(link.target.data.status)]
         const targetNodeMarker = targetNodeMarkerColor[getDeviceColor(link.target.data.status)]
+        const linkId = `link_${link.source.data.id}_${link.target.data.id}`
         const linkClass = linkInfo?.connectionStatus ?
           linkColor[linkInfo?.connectionStatus as ConnectionStatus] :
           (Object.values(ConnectionStatus).includes(link.target.data.status as ConnectionStatus) ?
@@ -177,8 +178,9 @@ export const Links: React.FC<LinksProps> = (props) => {
             className={`edgePath ${linkClass} ${link.source.data.id} ${selectedVlanPortList && selectedVlanPortList.includes('link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
             onMouseEnter={(e) => handleMouseEnter(link, e as unknown as MouseEvent)}
             onMouseLeave={handleMouseLeave}
-            data-testid={`link_${link.source.data.id}_${link.target.data.id}`}
-            id={`link_${link.source.data.id}_${link.target.data.id}`}
+            data-testid={linkId}
+            id={linkId}
+            key={linkId}
           >
             <path
               d={linkCustom(link, linksInfo)}

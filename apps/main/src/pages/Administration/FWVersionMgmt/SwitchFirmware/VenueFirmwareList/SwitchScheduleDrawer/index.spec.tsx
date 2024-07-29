@@ -34,6 +34,16 @@ jest.mock('./SwitchUpgradeWizard', () => ({
   }
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitcDefaultVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  }),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
+
 describe('SwitchFirmware - SwitchScheduleDrawer', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -56,10 +66,6 @@ describe('SwitchFirmware - SwitchScheduleDrawer', () => {
         (req, res, ctx) => res(ctx.json({
           preDownload: false
         }))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       ),
       rest.post(
         FirmwareUrlsInfo.updateSwitchVenueSchedules.url,

@@ -97,7 +97,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/aps/query',
     url: '/venues/aps/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   getApGroupsListByGroup: {
@@ -199,13 +203,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/aps/query?mesh=true',
     newApi: true
   },
-  /*
   downloadApsCSV: {
     method: 'post',
-    url: '/aps/query/csvFiles',
-    oldUrl: '/aps/query/csvFiles',
+    url: '/venues/aps/query',
+    // url: '/aps/query/csvFiles',
     newApi: true
   },
+  /*
   getFloorplan: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorPlanId',
@@ -257,7 +261,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   UpdateSwitchPosition: {
     method: 'put',
     //url: '/switches/:serialNumber/position',
-    url: '/venues/:venueId/switches/:switchId/position',
+    url: '/venues/:venueId/switches/:serialNumber/positions',
     newApi: true
   },
   getVenueCityList: {
@@ -356,16 +360,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/networkActivations/query',
     newApi: true
-  },
-  getNetworkDeepList: {
-    // [New API] request not support list
-    // method: 'get',
-    // url: '/networks/:networkId',
-    // oldMethod: 'post',
-    // oldUrl: '/api/tenant/:tenantId/wifi/network/get/deep',
-    // newApi: false
-    method: 'post',
-    url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
   */
   getDenialOfServiceProtection: {

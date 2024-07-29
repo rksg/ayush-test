@@ -361,15 +361,21 @@ export function VideoCallQoeDetails (){
       <Loader states={[queryResults]}>
         { callQoeDetails && currentMeeting && <PageHeader
           title={callQoeDetails.name}
-          subTitle={
-            `${$t({ defaultMessage: 'Start Time' })}:
-            ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)}` +
-            ` | ${$t({ defaultMessage: 'End Time' })}:
-            ${formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)}` +
-            ` | ${$t({ defaultMessage: 'Duration' })}:
-            ${formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
-              - new Date(currentMeeting.startTime).getTime())}`
-          }
+          subTitle={[
+            {
+              label: $t({ defaultMessage: 'Start Time' }),
+              value: [formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.startTime)]
+            },
+            {
+              label: $t({ defaultMessage: 'End Time' }),
+              value: [formatter(DateFormatEnum.DateTimeFormatWithSeconds)(currentMeeting.endTime)]
+            },
+            {
+              label: $t({ defaultMessage: 'Duration' }),
+              value: [formatter('durationFormat')(new Date(currentMeeting.endTime).getTime()
+                - new Date(currentMeeting.startTime).getTime())]
+            }
+          ]}
           extra={[
             <div style={{ paddingTop: '4px' }}>{$t({ defaultMessage: 'Video Call QoE' })}</div>,
             <div style={{ paddingTop: '4px' }}>{getPill(currentMeeting.mos)}</div>

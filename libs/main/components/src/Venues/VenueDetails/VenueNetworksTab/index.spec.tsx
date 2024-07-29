@@ -11,8 +11,16 @@ import {
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, VlanPoolRbacUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                            from '@acx-ui/store'
+import {
+  ApCompatibility,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  EdgeSdLanFixtures,
+  VlanPoolRbacUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -36,7 +44,13 @@ import { VenueNetworksTab } from './index'
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 // isMapEnabled = false && SD-LAN not enabled
-const disabledFFs = [Features.G_MAP, Features.EDGES_SD_LAN_TOGGLE, Features.EDGES_SD_LAN_HA_TOGGLE, Features.WIFI_RBAC_API]
+const disabledFFs = [
+  Features.G_MAP,
+  Features.EDGES_SD_LAN_TOGGLE,
+  Features.EDGES_SD_LAN_HA_TOGGLE,
+  Features.WIFI_RBAC_API,
+  Features.RBAC_CONFIG_TEMPLATE_TOGGLE
+]
 jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
 type MockDialogProps = React.PropsWithChildren<{
@@ -126,10 +140,6 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
       ),
@@ -214,8 +224,8 @@ describe('VenueNetworksTab', () => {
     })
 
     mockServer.use(
-      rest.post(
-        WifiUrlsInfo.addNetworkVenue.url,
+      rest.put(
+        WifiRbacUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => {
           requestSpy()
           return res(ctx.json({ requestId: '123' }))

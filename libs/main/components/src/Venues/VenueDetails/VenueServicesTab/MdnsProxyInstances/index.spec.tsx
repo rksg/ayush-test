@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, MdnsProxyUrls } from '@acx-ui/rc/utils'
-import { Path, To }                      from '@acx-ui/react-router-dom'
-import { Provider }                      from '@acx-ui/store'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, MdnsProxyUrls } from '@acx-ui/rc/utils'
+import { Path, To }                                          from '@acx-ui/react-router-dom'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -92,7 +92,7 @@ describe('MdnsProxyInstances', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => {
           apQueryFn()
           return res(ctx.json(mockedApList))
@@ -107,6 +107,8 @@ describe('MdnsProxyInstances', () => {
         route: { params, path }
       }
     )
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     await waitFor(() => expect(queryFn).toBeCalled())
     await waitFor(() => expect(apQueryFn).toBeCalled())
@@ -162,7 +164,7 @@ describe('MdnsProxyInstances', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getApsList.url,
+        CommonRbacUrlsInfo.getApsList.url,
         (_, res, ctx) => {
           apQueryFn()
           return res(ctx.json(mockedApList))
@@ -359,6 +361,13 @@ describe('MdnsProxyInstances', () => {
           apQueryFn()
           return res(ctx.json(mockedApList))
         }
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => {
+          apQueryFn()
+          return res(ctx.json(mockedApList))
+        }
       )
     )
 
@@ -382,7 +391,6 @@ describe('MdnsProxyInstances', () => {
     await userEvent.click(await screen.findByText(targetAp.name))
 
     await userEvent.click(await screen.findByRole('combobox', { name: /mDNS Proxy Service/i }))
-
     await userEvent.click(await screen.findByText(targetMdnsProxyService.name))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))

@@ -40,6 +40,10 @@ export const useTunnelProfileActions = () => {
       delete result.mtuRequestTimeoutUnit
     }
 
+    if (data.mtuType === MtuTypeEnum.AUTO) {
+      delete result.mtuSize
+    }
+
     delete result.ageTimeUnit
 
     // remove UI used data

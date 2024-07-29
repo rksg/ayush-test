@@ -1,0 +1,260 @@
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
+
+import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                  from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                    from '@acx-ui/test-utils'
+
+import { mockedVenueList } from '../__tests__/fixtures'
+
+import EdgeSdLanTable from '.'
+
+const { mockEdgeClusterList } = EdgeGeneralFixtures
+
+// prepare mock data
+const mockedMvSdLanDataList = cloneDeep(EdgeSdLanFixtures.mockedMvSdLanDataList)
+const mockedSdLan1 = mockedMvSdLanDataList[0]
+const mockedSdLan2 = mockedMvSdLanDataList[1]
+const mockedVenue1 = mockedVenueList.data[0]
+const mockedVenue2 = mockedVenueList.data[1]
+const mockedVenue3 = mockedVenueList.data[2]
+
+// sdlan 1 : venue1, venu2
+mockedSdLan1.tunneledWlans?.forEach((wlan, idx) => {
+  if (idx === 0)
+    wlan.venueId = mockedVenue1.id
+  if (idx === 1) {
+    wlan.venueId = mockedVenue2.id
+    mockedSdLan1.tunneledGuestWlans![0].venueId = mockedVenue2.id
+  }
+})
+
+// sdlan 2 : venue3
+mockedSdLan2.tunneledWlans?.forEach((wlan, idx) => {
+  wlan.venueId = mockedVenue3.id
+  if (idx === 0) {
+    mockedSdLan2.tunneledGuestWlans![0].venueId = mockedVenue3.id
+  }
+})
+
+const mockedUsedNavigate = jest.fn()
+const mockedGetClusterList = jest.fn()
+const mockedDeleteReq = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
+const { click, hover } = userEvent
+
+describe('Multi-venue SD-LAN Table', () => {
+  let params: { tenantId: string }
+  beforeEach(() => {
+    params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    }
+
+    mockedUsedNavigate.mockReset()
+    mockedGetClusterList.mockReset()
+    mockedDeleteReq.mockReset()
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedMvSdLanDataList }))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueList))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => {
+          mockedGetClusterList()
+          return res(ctx.json(mockEdgeClusterList))
+        }
+      ),
+      rest.delete(
+        EdgeSdLanUrls.deleteEdgeSdLan.url,
+        (_, res, ctx) => {
+          mockedDeleteReq()
+          return res(ctx.status(202))
+        }
+      )
+    )
+  })
+
+  it('should create table successfully', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    const rows = await basicCheck()
+    await waitFor(() => expect(mockedGetClusterList).toBeCalled())
+    expect(rows.length).toBe(2)
+    screen.getByRole('row', { name: /SE_Cluster 3/i })
+    // eslint-disable-next-line max-len
+    expect(rows[0]).toHaveTextContent(new RegExp(`${mockedSdLan1.name}\\s*${mockedSdLan1.edgeClusterName}\\s*${mockedSdLan1.guestEdgeClusterName}\\s*2\\s*Mocked_tunnel-1\\s*Mocked_tunnel-3\\s*Poor`))
+    // eslint-disable-next-line max-len
+    expect(rows[1]).toHaveTextContent(new RegExp(`${mockedSdLan2.name}\\s*${mockedSdLan2.edgeClusterName}\\s*1\\s*Mocked_tunnel-2\\s*Good`))
+  })
+
+  it('should display venue names when hover', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await basicCheck()
+    screen.getByRole('row', { name: new RegExp(`${mockedSdLan1.name}`) })
+    const venueNumStr = await screen.findByTestId(`venue-names-${mockedSdLan1.id}`)
+    await hover(venueNumStr)
+    await screen.findByText(mockedVenue1.name)
+
+    screen.getByRole('row', { name: new RegExp(`${mockedSdLan2.name}`) })
+    const row2VenueNumStr = await screen.findByTestId(`venue-names-${mockedSdLan2.id}`)
+    await hover(row2VenueNumStr)
+    await screen.findByText(mockedVenue3.name)
+    expect(screen.queryAllByText(mockedVenue3.name).length).toBe(1)
+  })
+
+  it('should go edit page', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await basicCheck()
+    const row = screen.getByRole('row', { name: new RegExp(`${mockedSdLan1.name}`) })
+    await click(within(row).getByRole('checkbox'))
+    await click(screen.getByRole('button', { name: 'Edit' }))
+
+    const editPath = getServiceDetailsLink({
+      type: ServiceType.EDGE_SD_LAN,
+      oper: ServiceOperation.EDIT,
+      serviceId: mockedSdLan1.id!
+    })
+
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: `/${params.tenantId}/t/${editPath}`,
+      hash: '',
+      search: ''
+    })
+  })
+
+  it('should delete selected row', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await basicCheck()
+    const row = screen.getByRole('row', { name: new RegExp(`${mockedSdLan2.name}`) })
+    await click(within(row).getByRole('checkbox'))
+    await click(screen.getByRole('button', { name: 'Delete' }))
+    const dialogTitle = await screen.findByText(`Delete "${mockedSdLan2.name}"?`)
+    await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
+    await waitForElementToBeRemoved(dialogTitle)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(1)
+  })
+
+  it('should delete multiple selected rows', async () => {
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    const rows = await basicCheck()
+    // eslint-disable-next-line max-len
+    expect(within(rows[0]).getByRole('cell', { name: new RegExp(`${mockedSdLan1.name}`) })).toBeVisible()
+    await click(within(rows[0]).getByRole('checkbox'))
+    // eslint-disable-next-line max-len
+    expect(within(rows[1]).getByRole('cell', { name: new RegExp(`${mockedSdLan2.name}`) })).toBeVisible()
+    await click(within(rows[1]).getByRole('checkbox'))
+    await click(screen.getByRole('button', { name: 'Delete' }))
+    const dialogTitle = await screen.findByText('Delete "2 SD-LAN"?')
+    await click(screen.getByRole('button', { name: 'Delete SD-LAN' }))
+    await waitForElementToBeRemoved(dialogTitle)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(mockedDeleteReq).toBeCalledTimes(2)
+  })
+
+  it('should display 0 when tunneledWlans is not found', async () => {
+    const cfList = cloneDeep(mockedMvSdLanDataList)
+    cfList[0].tunneledWlans = undefined
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: cfList }))
+      ))
+
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await basicCheck()
+    const row = screen.getByRole('row', { name: new RegExp(`${mockedSdLan1.name}`) })
+    // eslint-disable-next-line max-len
+    expect(row).toHaveTextContent(new RegExp(`${mockedSdLan1.name}\\s*${mockedSdLan1.edgeClusterName}\\s*${mockedSdLan1.guestEdgeClusterName}\\s*0\\s*Mocked_tunnel-1\\s*Mocked_tunnel-3\\s*Poor`))
+  })
+  it('should display service health Good if alarm summary is undefined', async () => {
+    const cfListNoAlarm = cloneDeep(mockedMvSdLanDataList)
+    delete cfListNoAlarm[0].edgeAlarmSummary
+    cfListNoAlarm[0].name = 'sdLan_good_health'
+    const mockedSdLanDataListReq = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => {
+          mockedSdLanDataListReq()
+          return res(ctx.json({ data: cfListNoAlarm }))
+        }
+      ))
+
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    screen.getByRole('row', { name: /sdLan_good_health/i })
+    // eslint-disable-next-line max-len
+    screen.getByRole('row', { name: 'sdLan_good_health SE_Cluster 0 SE_Cluster 3 2 Mocked_tunnel-1 Mocked_tunnel-3 Good' })
+  })
+})
+
+const basicCheck= async () => {
+  await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+  screen.getByRole('columnheader', { name: 'Cluster' })
+  const rows = await screen.findAllByRole('row', { name: /Mocked_SDLAN_/i })
+  // eslint-disable-next-line max-len
+  expect(within(rows[0]).getByRole('cell', { name: new RegExp(`${mockedSdLan1.name}`) })).toBeVisible()
+  return rows
+}

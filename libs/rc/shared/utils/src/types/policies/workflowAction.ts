@@ -75,7 +75,9 @@ export interface DisplayMessageActionContext {
   title: string,
   messageHtml: string,
   backButtonText: string,
-  continueButtonText: string
+  continueButtonText: string,
+  displayBackButton: boolean,
+  displayContinueButton: boolean
 }
 
 export type AupAction = ActionBase & AupActionFormContext

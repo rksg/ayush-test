@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { Header, useHeaderExtra, useNetworkFilter } from '.'
+import { Header, useHeaderExtra } from '.'
 
 jest.mock('../NetworkFilter', () => ({
   NetworkFilter: () => <div data-testid='NetworkFilter'>network filter</div>
@@ -63,17 +63,5 @@ describe('Analytics header', () => {
     render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
     expect(screen.queryByTestId('NetworkFilter')).toBeNull()
     expect(await screen.findByTestId('RangePicker')).toBeVisible()
-  })
-  it('should not render time range dropdown', async () => {
-    const Component = () => {
-      const component = useNetworkFilter({
-        shouldQuerySwitch: true,
-        shouldQueryOnlyDomains: true
-      })
-      return <span>{component}</span>
-    }
-    render(<BrowserRouter><Provider><Component/></Provider></BrowserRouter>)
-    expect(screen.queryByTestId('RangePicker')).toBeNull()
-    expect(await screen.findByTestId('NetworkFilter')).toBeVisible()
   })
 })

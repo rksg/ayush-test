@@ -5,11 +5,12 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { ChartData }                                from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                           from '@acx-ui/user'
+import type { DonutChartData }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { ChartData }                                       from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath, useParams }        from '@acx-ui/react-router-dom'
+import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { filterByAccess, hasRoles }                        from '@acx-ui/user'
 
 import { useIsEdgeReady } from '../useEdgeActions'
 
@@ -29,13 +30,14 @@ export function DevicesWidget (props: {
 
   const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   let numDonut = 2
   if (isEdgeEnabled) {
     numDonut++
   }
 
-  if (showRwgUI) {
+  if (showRwgUI && rwgHasPermission) {
     numDonut++
   }
 
@@ -80,7 +82,7 @@ export function DevicesWidget (props: {
                   title={$t({ defaultMessage: 'SmartEdge' })}
                   data={props.edgeData}/>
               </UI.NavigationContainer>)}
-            { showRwgUI && (
+            { showRwgUI && rwgHasPermission && (
               <UI.NavigationContainer onClick={clickRwgHandler}>
                 <DonutChart
                   key='rwg-donutChart'
@@ -110,6 +112,7 @@ export function DevicesWidgetv2 (props: {
   const onArrowClick = useNavigateToPath('/devices/')
   const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const {
     apStackedData,
@@ -154,9 +157,13 @@ export function DevicesWidgetv2 (props: {
                     </TenantLink>
                   </Space>
                   : <UI.LinkContainer key='ap-linkContainer' style={{ height: height/2 - 30 }}>
-                    {filterByAccess([<TenantLink to={'/devices/wifi/add'}>
-                      {$t({ defaultMessage: 'Add Access Point' })}
-                    </TenantLink>])}
+                    {filterByAccess([
+                      <TenantLink
+                        scopeKey={[WifiScopes.CREATE]}
+                        to={'/devices/wifi/add'}>
+                        {$t({ defaultMessage: 'Add Access Point' })}
+                      </TenantLink>
+                    ])}
                   </UI.LinkContainer>
                 }
               </GridCol>
@@ -189,9 +196,13 @@ export function DevicesWidgetv2 (props: {
                   : <UI.LinkContainer
                     key='switch-linkContainer'
                     style={{ height: (height/2) - 30 }}>
-                    {filterByAccess([<TenantLink to={'/devices/switch/add'}>
-                      {$t({ defaultMessage: 'Add Switch' })}
-                    </TenantLink>])}
+                    {filterByAccess([
+                      <TenantLink
+                        to={'/devices/switch/add'}
+                        scopeKey={[SwitchScopes.CREATE]}>
+                        {$t({ defaultMessage: 'Add Switch' })}
+                      </TenantLink>
+                    ])}
                   </UI.LinkContainer>
                 }
               </GridCol>
@@ -226,6 +237,7 @@ export function DevicesWidgetv2 (props: {
                       key='edge-linkContainer'
                       style={{ height: (height/2) - 30 }}>
                       {filterByAccess([<TenantLink
+                        scopeKey={[EdgeScopes.CREATE]}
                         to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add SmartEdge' })}
                       </TenantLink>])}
@@ -235,7 +247,7 @@ export function DevicesWidgetv2 (props: {
               </GridRow>
             }
             {
-              showRwgUI && <GridRow align={'middle'}>
+              showRwgUI && rwgHasPermission && <GridRow align={'middle'}>
                 <GridCol col={{ span: rwgTotalCount ? 9 : 12 }}>
                   { rwgTotalCount > 0
                     ? $t({ defaultMessage: 'RWGs' })

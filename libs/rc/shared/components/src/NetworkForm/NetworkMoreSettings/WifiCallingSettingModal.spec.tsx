@@ -25,8 +25,6 @@ describe('WifiCallingSettingModal', () => {
     mockServer.use(
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
-      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList.url,
         (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult)))
     )

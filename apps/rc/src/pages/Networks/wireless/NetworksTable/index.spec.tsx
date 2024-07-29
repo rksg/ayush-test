@@ -1,10 +1,10 @@
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }                             from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                  from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -13,7 +13,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { networklist, networksApCompatibilities } from './__tests__/fixtures'
+import { networklist, networksApCompatibilities, wifiNetworklist } from './__tests__/fixtures'
 
 import useNetworksTable from '.'
 
@@ -43,6 +43,10 @@ describe('Networks Table', () => {
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networksApCompatibilities))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(wifiNetworklist))
       )
     )
     jest.mocked(useIsSplitOn).mockReturnValue(true)
