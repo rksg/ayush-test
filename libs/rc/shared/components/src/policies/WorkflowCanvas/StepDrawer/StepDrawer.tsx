@@ -63,6 +63,7 @@ export default function StepDrawer (props: StepDrawerProps) {
 
     if (!isEdit) {
       formInstance.setFieldsValue(defaultValue)
+      setTimeout(() => formInstance.setFieldsValue(defaultValue), 0)
       return
     }
 
@@ -75,6 +76,7 @@ export default function StepDrawer (props: StepDrawerProps) {
         const data = { ...result.data, actionId }
         setActionData(data)
         formInstance.setFieldsValue(data)
+        setTimeout(() => formInstance.setFieldsValue(data), 0)
       })
 
   }, [actionId, isEdit])
