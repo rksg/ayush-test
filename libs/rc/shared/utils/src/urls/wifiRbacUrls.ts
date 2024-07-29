@@ -40,42 +40,50 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId',
     newApi: true
   },
-  getNetworkVenue: {
-    method: 'get',
-    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
-    newApi: true
-  },
   getVenueApGroups: {
     method: 'get',
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
     newApi: true
   },
-  /*
-  addNetworkVenue: {
-    method: 'post',
-    url: '/networkActivations',
+  getNetworkVenue: {
+    method: 'get',
+    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
+  addNetworkVenue: {
+    //method: 'post',
+    //url: '/networkActivations',
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true
+  },
+  /*
   addNetworkVenues: {
     method: 'post',
     url: '/networkActivations/mappings',
     newApi: true
   },
+  */
   updateNetworkVenue: {
     method: 'put',
-    url: '/networkActivations/:networkVenueId?quickAck=true',
+    //url: '/networkActivations/:networkVenueId?quickAck=true',
+    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
+  /*
   updateNetworkVenues: {
     method: 'put',
     url: '/networkActivations/mappings',
     newApi: true
   },
+  */
   deleteNetworkVenue: {
     method: 'delete',
-    url: '/networkActivations/:networkVenueId',
+    //url: '/networkActivations/:networkVenueId',
+    url: '/venues/:venueId/wifiNetworks/:networkId',
     newApi: true
   },
+  /*
   deleteNetworkVenues: {
     method: 'delete',
     url: '/networkActivations',
@@ -626,7 +634,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/neighbors',
     newApi: true
   },
-  /*
   getCcdSupportVenues: {
     method: 'post',
     url: '/venues/clientConnectionDiagnosis/query',
@@ -662,6 +669,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
+  /*
   getApFeatureSets: {
     method: 'get',
     url: '/wifiFeatureSets/:featureName',

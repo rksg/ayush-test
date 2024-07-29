@@ -284,7 +284,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const USE_CASES = [
             'AddNetworkVenue',
-            'DeleteNetworkVenue'
+            'DeleteNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkOnVenue'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
             'DeleteNetworkVenueTemplate',

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState, createContext } from 'react'
 
 import { Form }                   from 'antd'
@@ -28,7 +29,12 @@ import {
   useActivateDpskServiceMutation,
   useActivateDpskServiceTemplateMutation,
   useGetDpskServiceQuery,
-  useGetDpskServiceTemplateQuery
+  useGetDpskServiceTemplateQuery,
+  useAddNetworkVenueMutation,
+  useAddNetworkVenueTemplateMutation,
+  useDeleteNetworkVenueMutation,
+  useDeleteNetworkVenueTemplateMutation,
+  useLazyGetNetworkDeepQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -150,10 +156,24 @@ export function NetworkForm (props:{
   const cloneMode = params.action === 'clone'
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
+
+  const [ addNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
+  const [ deleteNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
+
+  const [ getNetworkDeep ] = useLazyGetNetworkDeepQuery()
+
+  // The RBAC APIs not support the addNetworkVenues, updateNetworkVenues and deleteNetworkVenues.
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddNetworkVenuesMutation,
     useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
   })
+
   const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenuesMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
@@ -162,6 +182,7 @@ export function NetworkForm (props:{
     useMutationFn: useDeleteNetworkVenuesMutation,
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
+
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const activateDpskPool = useDpskServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
@@ -547,6 +568,79 @@ export function NetworkForm (props:{
     if (update.length) {
       await updateNetworkVenues({ payload: update }).unwrap()
     }
+
+  }
+
+  const handleRbacNetworkVenues = async (
+    networkId : string,
+    newNetworkVenues? : NetworkVenue[],
+    oldNetworkVenues? : NetworkVenue[]
+  )=> {
+    let added: NetworkVenue[] = []
+    let newIds: string[] = []
+    let removed: string[] = []
+    let update: NetworkVenue[] = []
+
+    if (newNetworkVenues?.length) {
+      newNetworkVenues?.forEach(networkVenue => {
+        if (_.isUndefined(networkVenue.id) || _.isNull(networkVenue.id)) {
+          networkVenue.networkId = networkId
+          added.push(networkVenue)
+        } else {
+          newIds.push(networkVenue.id as string)
+        }
+      })
+    }
+    if (oldNetworkVenues?.length) {
+      oldNetworkVenues?.forEach(networkVenue => {
+        const networkVenueId = networkVenue.id
+        if (!_.isUndefined(networkVenueId)) {
+          if (!newIds.includes(networkVenueId)) {
+            removed.push(networkVenueId)
+          } else if (newNetworkVenues?.length) {
+            const newNetworkVenue = newNetworkVenues.find(venue => venue.id === networkVenueId)
+            if (newNetworkVenue) {
+              // remove the undeifned or null field
+              const oldNVenue = _.omitBy(networkVenue, _.isNil)
+              const newNVenue = _.omitBy(newNetworkVenue, _.isNil)
+
+              if (!_.isEqual(oldNVenue, newNVenue)) {
+                update.push(newNetworkVenue) // config changed need to update
+              }
+            }
+          }
+        }
+      })
+    }
+
+
+    if (added.length) {
+      const addNetworkVenueReqs = added.map((networkVenue) => {
+        const params = {
+          venueId: networkVenue.venueId,
+          networkId: networkVenue.networkId
+        }
+        return addNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+      })
+
+      await Promise.allSettled(addNetworkVenueReqs)
+    }
+    if (removed.length) {
+      const deleteNetworkVenueReqs = removed.map((networkVenueId) => {
+        const curParams = {
+          venueId: params.venueId,
+          networkId: networkVenueId
+        }
+        return deleteNetworkVenue({ params: curParams, enableRbac: true })
+      })
+
+      await Promise.allSettled(deleteNetworkVenueReqs)
+    }
+
+    if (update.length) {
+      await updateNetworkVenues({ payload: update }).unwrap()
+    }
+
   }
 
   const processAddData = function (data: NetworkSaveData) {
@@ -593,6 +687,13 @@ export function NetworkForm (props:{
         // @ts-ignore
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
+        /*
+        if (resolvedRbacEnabled) {
+          await handleRbacNetworkVenues(network.id, payload.venues)
+        } else {
+          await handleNetworkVenues(network.id, payload.venues)
+        }
+        */
       }
       await updateClientIsolationActivations(payload, null, networkId)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -683,6 +784,14 @@ export function NetworkForm (props:{
       await updateAccessControl(formData, data)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
+        /*
+        if (resolvedRbacEnabled) {
+          await getNetworkDeep({ params: { networkId: payload.id } })
+          await handleRbacNetworkVenues(payload.id, payload.venues, data?.venues)
+        } else {
+          await handleNetworkVenues(payload.id, payload.venues, data?.venues)
+        }
+        */
       }
       await updateClientIsolationActivations(payload, data, payload.id)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -933,6 +1042,8 @@ function useGetInstance (isEdit: boolean) {
     params,
     enableRbac: isUseWifiRbacApi
   }, { skip: isTemplate })
+
+
   const networkTemplateResult = useGetNetworkTemplateQuery({
     params,
     enableRbac: isConfigTemplateRbacEnabled

@@ -121,7 +121,8 @@ const defaultRbacPayload = {
     'status',
     'isOweMaster',
     'owePairNetworkId',
-    'venueApGroups'
+    'venueApGroups',
+    'incompatible'
   ],
   searchTargetFields: ['name']
 }
@@ -184,6 +185,7 @@ export function NetworkVenuesTab () {
   const { $t } = useIntl()
   const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const settingsId = 'network-venues-table'
 
   const tableQuery = useNetworkVenueList({ settingsId, networkId })
@@ -295,8 +297,10 @@ export function NetworkVenuesTab () {
     //     manageAPGroups(row);
     //   }
     // }
+    const venueId = row.id
     const network = networkQuery.data
-    const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
+    const networkId = (network && network?.id) ? network.id : ''
+    const newNetworkVenue = generateDefaultNetworkVenue(venueId, networkId)
 
     if (IsNetworkSupport6g(network)) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
@@ -313,7 +317,15 @@ export function NetworkVenuesTab () {
 
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+        addNetworkVenue({
+          params: {
+            tenantId: params.tenantId,
+            venueId,
+            networkId
+          },
+          payload: newNetworkVenue,
+          enableRbac: isWifiRbacEnabled
+        })
       } else { // deactivate
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, [row.id], () => {
           if (!deactivateNetworkVenueId) {
@@ -325,25 +337,54 @@ export function NetworkVenuesTab () {
           }
           deleteNetworkVenue({
             params: {
-              tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
-            }
+              tenantId: params.tenantId,
+              networkVenueId: deactivateNetworkVenueId,
+              venueId: newNetworkVenue.venueId,
+              networkId
+            },
+            enableRbac: isWifiRbacEnabled
           })
         })
       }
     }
   }
 
-  const handleAddNetworkVenues = (networkVenues: NetworkVenue[], clearSelection: () => void) => {
+  const handleAddNetworkVenues = async (networkVenues: NetworkVenue[], clearSelection: () => void) => {
     if (networkVenues.length > 0) {
-      addNetworkVenues({ payload: networkVenues }).then(clearSelection)
+      if (isWifiRbacEnabled) {
+        const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
+          const params = {
+            venueId: networkVenue.venueId,
+            networkId: networkVenue.networkId
+          }
+          return addNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+        })
+
+        await Promise.allSettled(addNetworkVenueReqs).then(clearSelection)
+
+      } else {
+        await addNetworkVenues({ payload: networkVenues }).then(clearSelection)
+      }
     } else {
       clearSelection()
     }
   }
 
-  const handleDeleteNetworkVenues = (networkVenueIds: string[], clearSelection: () => void) => {
+  const handleDeleteNetworkVenues = async (networkVenueIds: string[], clearSelection: () => void) => {
     if (networkVenueIds.length > 0) {
-      deleteNetworkVenues({ payload: networkVenueIds }).then(clearSelection)
+      if (isWifiRbacEnabled) {
+        const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
+          const curParams = {
+            venueId: params.venueId,
+            networkId: networkVenueId
+          }
+          return deleteNetworkVenue({ params: curParams, enableRbac: true })
+        })
+
+        await Promise.allSettled(deleteNetworkVenueReqs).then(clearSelection)
+      } else {
+        deleteNetworkVenues({ payload: networkVenueIds }).then(clearSelection)
+      }
     } else {
       clearSelection()
     }

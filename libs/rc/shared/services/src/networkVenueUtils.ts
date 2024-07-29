@@ -5,7 +5,7 @@ import { keys, every, get, uniq, omit, findIndex } from 'lodash'
 import {
   ApiVersionEnum,
   CommonRbacUrlsInfo,
-  CommonResult,
+  //CommonResult,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
   FILTER,
@@ -16,6 +16,8 @@ import {
   NewApGroupViewModelResponseType,
   TableResult,
   Venue,
+  //VlanPoolRbacUrls,
+  //VLANPoolViewModelRbacType,
   WifiNetwork,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
@@ -33,7 +35,7 @@ const defaultNetworkVenue = {
 
 type NetworkApGroupParams = { venueId: string, networkId: string, apGroupId: string }
 
-import { QueryFn } from './servicePolicy.utils'
+
 
 export const getApGroupNetworkVenueNewFieldFromOld = (oldFieldName: string) => {
   switch(oldFieldName) {
@@ -401,8 +403,19 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
         apGroupNameMap = apGroupList.data.map((apg) => ({ key: apg.id!, value: apg.name ?? '' }))
       }
 
+      // fetch vlan pool info
+      /*
+      const vlanPoolListQuery = await fetchWithBQ({
+        ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, GetApiVersionHeader(ApiVersionEnum.v1)),
+        body: JSON.stringify({
+          //fields: ['id', 'name', 'wifiNetworkIds'],
+          filters: {}//{ wifiNetworkIds: networkIds }
+        }) })
 
-      networkDeepListRes.forEach((networkDeep) => {
+      const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+      */
+
+      networkDeepListRes?.forEach((networkDeep) => {
         const networkId = networkDeep.id
 
         const networkVenueIdx = findIndex(activatedNetworkIds, (activatedNetworkId) =>
@@ -411,37 +424,39 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
         const networkVenueResult = (networkVenueIdx < 0)
           ? undefined : networkVenueList[networkVenueIdx]
 
-        const venueApGroupIds = networkApGroupParamsList.filter(params => (
-          params.venueId === venueId && params.networkId === networkId
-        ))
-        const venueApGroups = venueApGroupIds?.map(params => {
-          const venueApGroupIdx = findIndex(networkApGroupParamsList, (item) => (
-            params.venueId === item.venueId &&
+        if (networkVenueResult) {
+          const venueApGroupIds = networkApGroupParamsList.filter(params => (
+            params.venueId === venueId && params.networkId === networkId
+          ))
+          const venueApGroups = venueApGroupIds?.map(params => {
+            const venueApGroupIdx = findIndex(networkApGroupParamsList, (item) => (
+              params.venueId === item.venueId &&
             params.networkId === item.networkId &&
             params.apGroupId === item.apGroupId
-          ))
+            ))
 
-          if (venueApGroupIdx < 0) {
-            return undefined
+            if (venueApGroupIdx < 0) {
+              return undefined
+            }
+            const networkApGroupRes = networkApGroupList[venueApGroupIdx]
+
+            return {
+              ...networkApGroupRes,
+              ...params,
+              radio: 'Both',
+              apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
+            }
+          })
+
+          const networkVenueData = {
+            ...defaultNetworkVenue,
+            ...networkVenueResult,
+            ...(venueApGroups && { apGroups: venueApGroups }),
+            networkId,
+            venueId
           }
-          const networkApGroupRes = networkApGroupList[venueApGroupIdx]
-
-          return {
-            ...networkApGroupRes,
-            ...params,
-            radio: 'Both',
-            apGroupName: apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value ?? ''
-          }
-        })
-
-        const networkVenueData = {
-          ...defaultNetworkVenue,
-          ...networkVenueResult,
-          ...(venueApGroups && { apGroups: venueApGroups }),
-          networkId,
-          venueId
+          networkDeep.venues = [networkVenueData]
         }
-        networkDeep.venues = [networkVenueData]
       })
     }
 
@@ -667,6 +682,7 @@ function resolveRbacVenuesListFetchArgs (queryArgs: RequestPayload<{ isTemplate?
 }
 
 // eslint-disable-next-line max-len
+/*
 export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonResult, RequestPayload> => {
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
@@ -706,3 +722,4 @@ export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonR
     }
   }
 }
+*/

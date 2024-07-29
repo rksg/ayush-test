@@ -184,6 +184,7 @@ export function VenueNetworksTab () {
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -238,23 +239,32 @@ export function VenueNetworksTab () {
     }
     else {
       if (row.deepNetwork) {
+        const venueId = params.venueId as string
         if (checked) { // activate
-          const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
+          const newNetworkVenue = generateDefaultNetworkVenue(venueId as string, row.id)
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({
-            params: { tenantId: params.tenantId, venueId: params.venueId, networkId: row.id },
+            params: {
+              tenantId: params.tenantId,
+              venueId,
+              networkId: newNetworkVenue.networkId
+            },
             payload: newNetworkVenue,
-            enableRbac: isPolicyRbacEnabled || isConfigTemplateRbacEnabled
+            enableRbac: resolvedRbacEnabled
           })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
-            if (networkVenue.venueId === params.venueId) {
+            if (networkVenue.venueId === venueId) {
               deleteNetworkVenue({
                 params: {
-                  tenantId: params.tenantId, networkVenueId: networkVenue.id
-                }
+                  tenantId: params.tenantId,
+                  venueId,
+                  networkId: networkVenue.networkId,
+                  networkVenueId: networkVenue.id
+                },
+                enableRbac: resolvedRbacEnabled
               })
             }
           })
