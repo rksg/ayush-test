@@ -85,7 +85,6 @@ export function LanPorts () {
   const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
@@ -132,7 +131,7 @@ export function LanPorts () {
       const setData = async () => {
         const venueLanPortsData = (await getVenueLanPorts({
           params: { tenantId, venueId },
-          enableRbac: isWifiRbacEnabled
+          enableRbac: isUseWifiRbacApi
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
 
         const isDhcpEnabled = await getDhcpEnabled(venueId!)
