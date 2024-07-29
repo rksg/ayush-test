@@ -378,3 +378,69 @@ export const intentListWithAllStatus = {
     }
   ]
 }
+
+export const intentHighlights = {
+  highlights: {
+    rrm: {
+      new: 4,
+      applied: 8
+    },
+    airflex: {
+      new: 5,
+      applied: 10
+    },
+    ops: {
+      new: 6,
+      applied: 12
+    }
+  }
+}
+
+export const intentHighlightsWithZeroApplied = {
+  highlights: {
+    rrm: {
+      new: 4,
+      applied: 0
+    },
+    airflex: {
+      new: 5,
+      applied: 0
+    },
+    ops: {
+      new: 6,
+      applied: 0
+    }
+  }
+}
+
+export const intentHighlightsWithNullFields = {
+  highlights: {
+  }
+}
+
+export const intentHighlightsWithRRM = {
+  highlights: {
+    rrm: {
+      new: 4,
+      applied: 8
+    }
+  }
+}
+
+export const intentHighlightsWithAirflex = {
+  highlights: {
+    airflex: {
+      new: 5,
+      applied: 10
+    }
+  }
+}
+
+export const intentHighlightsWithOperations = {
+  highlights: {
+    ops: {
+      new: 6,
+      applied: 12
+    }
+  }
+}

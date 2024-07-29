@@ -6,7 +6,7 @@ import type { CardProps as AntCardProps } from 'antd'
 
 export type CardTypes = 'default' | 'no-border' | 'solid-bg'
 
-export interface CardProps extends Pick<AntCardProps, 'children'> {
+export interface CardProps extends Pick<AntCardProps, 'children' | 'className'> {
   type?: CardTypes
   title?: string | { title?: string, icon: JSX.Element | null }
   subTitle?: string
@@ -35,6 +35,7 @@ function Card ({
   return (
     <UI.Wrapper {...wrapperProps}>
       <AntCard
+        className={props.className}
         bordered={false}
         title={<>
           <Space size={4}>

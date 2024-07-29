@@ -7,11 +7,12 @@ import { mockGraphqlQuery }      from '@acx-ui/test-utils'
 import { PathFilter, DateRange } from '@acx-ui/utils'
 
 import {
+  intentHighlights,
   intentListResult,
   intentListWithAllStatus } from './__tests__/fixtures'
 import { api } from './services'
 
-describe('Recommendation services', () => {
+describe('IntentAI services', () => {
   const props = {
     startDate: '2023-06-10T00:00:00+08:00',
     endDate: '2023-06-17T00:00:00+08:00',
@@ -265,6 +266,35 @@ describe('Recommendation services', () => {
         statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
       }
     ]
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+  })
+
+  it('should return intentHighlight', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
+      data: intentHighlights
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentHighlight.initiate({ ...props, n: 5 })
+    )
+
+    const expectedResult = {
+      rrm: {
+        new: 4,
+        applied: 8
+      },
+      airflex: {
+        new: 5,
+        applied: 10
+      },
+      ops: {
+        new: 6,
+        applied: 12
+      }
+    }
+
     expect(error).toBe(undefined)
     expect(status).toBe('fulfilled')
     expect(data).toStrictEqual(expectedResult)

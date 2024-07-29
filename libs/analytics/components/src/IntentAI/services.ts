@@ -46,6 +46,17 @@ type Metadata = {
   scheduledBy?: string
 }
 
+export type HighlightItem = {
+  new: number
+  applied: number
+}
+
+export type IntentHighlight = {
+  rrm?: HighlightItem
+  airflex?: HighlightItem
+  ops?: HighlightItem
+}
+
 const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
   let tooltipKey = 'tooltip'
@@ -126,6 +137,43 @@ export const api = intentAIApi.injectEndpoints({
         return items
       },
       providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+    }),
+    intentHighlight: build.query<
+      IntentHighlight,
+      // TODO: do we need n?
+      PathFilter & { n: number } & { selectedTenants?: string | null }
+    >({
+      query: (payload) => ({
+        document: gql`
+        query IntentHighlight(
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
+        ) {
+          highlights(start: $start, end: $end, path: $path) {
+            rrm {
+              new
+              applied
+            }
+            airflex {
+              new
+              applied
+            }
+            ops {
+              new
+              applied
+            }
+          }
+        }
+        `,
+        variables: {
+          ...(_.pick(payload,['path'])),
+          ...computeRangeFilter({
+            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
+          })
+        }
+      }),
+      transformResponse: (response: { highlights: IntentHighlight }) =>
+        response.highlights,
+      providesTags: [{ type: 'Monitoring', id: 'INTENT_HIGHLIGHTS' }]
     })
   })
 })
@@ -135,5 +183,6 @@ export interface Response<Intent> {
 }
 
 export const {
-  useIntentAIListQuery
+  useIntentAIListQuery,
+  useIntentHighlightQuery
 } = api

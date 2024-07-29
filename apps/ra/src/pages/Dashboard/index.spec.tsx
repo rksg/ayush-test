@@ -58,10 +58,8 @@ describe('Dashboard', () => {
   afterEach(() => jest.restoreAllMocks())
 
   it('renders correct components for admin', async () => {
-    setRaiPermissions({
-      READ_AI_DRIVEN_RRM: true,
-      READ_AI_OPERATIONS: true
-    } as RaiPermissions)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -69,15 +67,12 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('SLA')).toBeVisible()
     expect(await screen.findByTestId('ReportTile')).toBeVisible()
     expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
-    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
-    expect(await screen.findByTestId('AIOperations')).toBeVisible()
+    expect(await screen.findByTestId('IntentAIWidget')).toBeVisible()
   })
 
   it('renders correct components for network admin', async () => {
-    setRaiPermissions({
-      READ_AI_DRIVEN_RRM: false,
-      READ_AI_OPERATIONS: false
-    } as RaiPermissions)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({ READ_INTENT_AI: false } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -85,13 +80,12 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('SLA')).toBeVisible()
     expect(await screen.findByTestId('ReportTile')).toBeVisible()
     expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
-    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
-    expect(screen.queryByTestId('AIOperations')).toBeNull()
+    expect(screen.queryByTestId('IntentAIWidget')).toBeNull()
   })
 
   it('renders correct component when appInsight FF is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    setRaiPermissions({ READ_AI_OPERATIONS: true } as RaiPermissions)
+    setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -99,8 +93,7 @@ describe('Dashboard', () => {
     expect(await screen.findByTestId('SLA')).toBeVisible()
     expect(await screen.findByTestId('ReportTile')).toBeVisible()
     expect(await screen.findByTestId('SANetworkFilter')).toBeVisible()
-    expect(await screen.findByTestId('AIDrivenRRM')).toBeVisible()
-    expect(await screen.findByTestId('AIOperations')).toBeVisible()
+    expect(await screen.findByTestId('IntentAIWidget')).toBeVisible()
   })
 
   describe('useMonitorHeight', () => {
@@ -189,5 +182,20 @@ describe('Dashboard', () => {
         endDate: 'endDate'
       })
     })
+  })
+
+  it('render intentAI when intentAI FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
+    render(<Dashboard />, { route: true })
+
+    expect(await screen.findByTestId('IntentAIWidget')).toBeVisible()
+  })
+  it('not render intentAI when intentAI FF is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    setRaiPermissions({ READ_INTENT_AI: true } as RaiPermissions)
+    render(<Dashboard />, { route: true })
+
+    expect(screen.queryByTestId('IntentAIWidget')).toBeNull()
   })
 })

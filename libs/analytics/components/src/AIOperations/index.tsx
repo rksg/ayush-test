@@ -83,6 +83,7 @@ function AIOperationsWidget ({
             : <>
               {!hasNew ? <OptimalConfigurationWithData /> : null}
               <div style={{ flex: 1 }}>
+                {/* TODO: need this? */}
                 <AutoSizer style={{ flex: 1 }}>{(style) => <List<AiOpsListItem>
                   style={style}
                   dataSource={filteredRecommendations?.slice(0, style.height / 50 | 0)}

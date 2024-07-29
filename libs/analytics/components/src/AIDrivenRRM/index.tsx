@@ -33,7 +33,9 @@ function AIDrivenRRMWidget ({
   // pass selectedTenants to query to prevent error on account switch
   const [search] = useSearchParams()
   const selectedTenants = search.get('selectedTenants')
+  // TODO: check
   const switchPath = isSwitchPath(pathFilters.path)
+  // TODO: check
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
   const queryResults = useCrrmListQuery(
     { ...pathFilters, n: 12, selectedTenants },
@@ -60,6 +62,7 @@ function AIDrivenRRMWidget ({
     />
   }
 
+  // TODO: check
   const noLicense = data?.recommendations.length !== 0 ? data?.recommendations.every(
     recommendation => recommendation.status === 'insufficientLicenses'
   ) : false
@@ -83,6 +86,7 @@ function AIDrivenRRMWidget ({
     { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
   )
 
+  // TODO: check
   return <Loader states={[queryResults]}>
     <Card
       title={title}
