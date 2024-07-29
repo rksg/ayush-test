@@ -75,9 +75,9 @@ export function useSwitchFirmwareUtils () {
     if (version.inUse) {
       // eslint-disable-next-line max-len
       return `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
-    } else if (version.isNonDowngradable) {
+    } else if (version.isDowngraded10to90) {
       // eslint-disable-next-line max-len
-      return `${displayVersion} - ${intl.$t({ defaultMessage: 'The firmware version is already at version 10.0 and cannot be downgraded to version 9.0.' })}`
+      return `${displayVersion} - ${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
     }
     return displayVersion
   }
@@ -290,7 +290,8 @@ export function useSwitchFirmwareUtils () {
           inUse: (getParseVersion(v.id) === getParseVersion(inUseVersion)) ? true : v.inUse,
           isDowngradeVersion: isDowngradeVersionV1002(inUseVersion, v.id) ?
             true : v.isDowngradeVersion,
-          isNonDowngradable: isNonDowngradable(inUseVersion, v.id) ? true : v.isNonDowngradable,
+          isDowngraded10to90: getIsDowngraded10to90(inUseVersion, v.id) ?
+            true : v.isDowngraded10to90,
           category
         }
       })
@@ -346,7 +347,7 @@ export function useSwitchFirmwareUtils () {
     return compareSwitchVersion(inUseVersion, version) > 0
   }
 
-  function isNonDowngradable (inUseVersion: string, version: string) {
+  function getIsDowngraded10to90 (inUseVersion: string, version: string) {
     if(inUseVersion?.includes('100') && version?.includes('090')) {
       return true
     }

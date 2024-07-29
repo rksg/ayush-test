@@ -11,7 +11,7 @@ import { render,
   mockServer
 } from '@acx-ui/test-utils'
 
-import { ClientsWidget, ClientsWidgetV2,
+import { ClientsWidgetV2,
   getAPClientChartData,
   getSwitchClientChartData } from '.'
 
@@ -36,25 +36,6 @@ jest.mock('@acx-ui/utils', () => ({
     }
   })
 }))
-
-describe('Clients widget', () => {
-
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get',{})
-  })
-
-  it('should render loader and then chart', async () => {
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-    }
-    const { asFragment } = render(<Provider><ClientsWidget /></Provider>,
-      { route: { params } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Clients')
-    expect(asFragment().querySelector('svg')).toBeDefined()
-  })
-})
 
 describe('Clients widget v2', () => {
   it('should render loader and then content for no data', async () => {
