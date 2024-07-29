@@ -23,8 +23,7 @@ export function DataPromptSettings () {
           name={'displayTitle'}
           valuePropName={'checked'}
         >
-          <Switch defaultChecked={true}
-            onChange={setShowTitle}/>
+          <Switch onChange={setShowTitle}/>
         </Form.Item>
       </FieldLabel>
       <Form.Item key={'title'}
@@ -46,8 +45,7 @@ export function DataPromptSettings () {
           name={'displayMessageHtml'}
           valuePropName={'checked'}
         >
-          <Switch defaultChecked={true}
-            onChange={setShowIntroText}/>
+          <Switch onChange={setShowIntroText}/>
         </Form.Item>
       </FieldLabel>
       <Form.Item key='messageHtml'
