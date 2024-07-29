@@ -2,7 +2,7 @@ import userEvent              from '@testing-library/user-event'
 import { cloneDeep, groupBy } from 'lodash'
 
 import { EdgeMvSdLanFormNetwork, EdgeSdLanFixtures, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
-import {  screen }                                                          from '@acx-ui/test-utils'
+import {  screen, within }                                                  from '@acx-ui/test-utils'
 
 import { showSdLanGuestFwdConflictModal } from '.'
 
@@ -61,8 +61,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
         tunneledGuestWlans: mockData.tunneledGuestWlans
       })
 
-      await screen.findByText(/Network Mocked_network_4/)
-      screen.getByText(/affect 1 associated venue/)
+      const networkName = await screen.findByText(/Mocked_network_4/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 1 associated venue/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith([anotherVenueNetwork.venueId])
     })
@@ -84,8 +85,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
         tunneledGuestWlans: mockData.tunneledGuestWlans
       })
 
-      await screen.findByText(/Network Mocked_network_4/)
-      screen.getByText(/affect 2 associated venues/)
+      const networkName = await screen.findByText(/Mocked_network_4/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 2 associated venues/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
     })
@@ -124,8 +126,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
         tunneledGuestWlans: mockData.tunneledGuestWlans
       })
 
-      await screen.findByText(/Network Mocked_network_2/)
-      screen.getByText(/affect 1 associated venue/)
+      const networkName = await screen.findByText(/Mocked_network_2/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 1 associated venue/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith([mockData.tunneledGuestWlans![1].venueId])
     })
@@ -137,8 +140,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
         tunneledGuestWlans: mockedSdLanMultiGuestFwd.tunneledGuestWlans
       })
 
-      await screen.findByText(/Network Mocked_network_2/)
-      screen.getByText(/affect 2 associated venues/)
+      const networkName = await screen.findByText(/Mocked_network_2/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 2 associated venues/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
     })
@@ -209,8 +213,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
         tunneledGuestWlans: activatedGuestNetworks
       })
 
-      await screen.findByText(/Network Mocked_network_4/)
-      screen.getByText(/affect 1 associated venue/)
+      const networkName = await screen.findByText(/Mocked_network_4/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 1 associated venue/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith([anotherVenueNetwork.venueId])
     })
@@ -237,8 +242,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
         tunneledGuestWlans: activatedGuestNetworks
       })
 
-      await screen.findByText(/Network Mocked_network_4/)
-      screen.getByText(/affect 2 associated venues/)
+      const networkName = await screen.findByText(/Mocked_network_4/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 2 associated venues/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
     })
@@ -294,8 +300,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
         tunneledGuestWlans: mockActivatedGuestNetworks
       })
 
-      await screen.findByText(/Network Mocked_network_2/)
-      screen.getByText(/affect 1 associated venue/)
+      const networkName = await screen.findByText(/Mocked_network_2/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 1 associated venue/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith([otherNetworks[0].venueId])
     })
@@ -307,8 +314,9 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
         tunneledGuestWlans: activatedGuestNetworks
       })
 
-      await screen.findByText(/Network Mocked_network_2/)
-      screen.getByText(/affect 2 associated venues/)
+      const networkName = await screen.findByText(/Mocked_network_2/)
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(networkName.parentElement!).toHaveTextContent(/affect 2 associated venues/)
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith([otherNetworks[1].venueId, otherNetworks[0].venueId])
     })

@@ -85,13 +85,14 @@ export const showSdLanGuestFwdConflictModal = (props: showSdLanGuestFwdConflictM
         // eslint-disable-next-line max-len
         `The "Forward the guest traffic to DMZ" setting must be consistent across all <venuePlural></venuePlural> in the same network and SD-LAN profile. 
         Changing this setting for Network {networkName} 
-        will also affect {impactVenueCount} associated { impactVenueCount, plural,
+        will also affect <b>{impactVenueCount}</b> associated {impactVenueCount, plural,
         one {<venueSingular></venueSingular>}
         other {<venuePlural></venuePlural>}}. 
         Do you want to continue?` },
     {
       networkName: <b>{currentNetworkName || networkName}</b>,
-      impactVenueCount: <b>{impactVenueCount}</b>
+      impactVenueCount: impactVenueCount,
+      b: chunks => <b>{chunks}</b>
     }),
     okText: $t({ defaultMessage: 'Continue' }),
     onOk: async () => {
