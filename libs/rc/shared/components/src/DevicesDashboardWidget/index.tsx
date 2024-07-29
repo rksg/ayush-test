@@ -1,55 +1,17 @@
-import {  Loader }                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { useDashboardOverviewQuery, useDashboardV2OverviewQuery, useRwgListQuery } from '@acx-ui/rc/services'
-import { useParams }                                                               from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                               from '@acx-ui/types'
-import { hasRoles }                                                                from '@acx-ui/user'
-import { useDashboardFilter }                                                      from '@acx-ui/utils'
+import {  Loader }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { useDashboardV2OverviewQuery, useRwgListQuery } from '@acx-ui/rc/services'
+import { useParams }                                    from '@acx-ui/react-router-dom'
+import { RolesEnum }                                    from '@acx-ui/types'
+import { hasRoles }                                     from '@acx-ui/user'
+import { useDashboardFilter }                           from '@acx-ui/utils'
 
 import {
-  getApDonutChartData,
-  getEdgeDonutChartData,
-  getSwitchDonutChartData,
   getApStackedBarChartData,
   getSwitchStackedBarChartData,
   getEdgeStackedBarChartData,
-  getRwgStackedBarChartData,
-  getRwgDonutChartData
-} from '../DevicesWidget/helper'
-import { DevicesWidget, DevicesWidgetv2 } from '../DevicesWidget/index'
-
-export function DevicesDashboardWidget () {
-  const queryResults = useDashboardOverviewQuery({
-    params: useParams()
-  },{
-    selectFromResult: ({ data, ...rest }) => ({
-      data: {
-        apData: getApDonutChartData(data?.summary?.aps?.summary),
-        switchData: getSwitchDonutChartData(data),
-        edgeData: getEdgeDonutChartData(data?.summary?.edges)
-      },
-      ...rest
-    })
-  })
-
-  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-
-  const { data: rwgs } = useRwgListQuery({ params: useParams() },
-    { skip: !(showRwgUI && rwgHasPermission) })
-
-  return (
-    <Loader states={[queryResults]}>
-      <DevicesWidget
-        apData={queryResults.data.apData}
-        switchData={queryResults.data.switchData}
-        edgeData={queryResults.data.edgeData}
-        rwgData={getRwgDonutChartData(rwgs?.data || [])}
-        enableArrowClick
-      />
-    </Loader>
-  )
-}
+  getRwgStackedBarChartData } from '../DevicesWidget/helper'
+import { DevicesWidgetv2 } from '../DevicesWidget/index'
 
 export function DevicesDashboardWidgetV2 () {
   const { venueIds } = useDashboardFilter()
