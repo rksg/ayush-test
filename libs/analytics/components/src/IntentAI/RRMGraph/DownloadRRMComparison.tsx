@@ -26,7 +26,7 @@ const useDownloadUrl = (data: unknown, type: string) => {
     if (!data) return
     setUrl(URL.createObjectURL(new Blob([data as BlobPart], { type })))
     return () => URL.revokeObjectURL(url!)
-  }, [data, type, url])
+  }, [data, type])
   return url
 }
 
