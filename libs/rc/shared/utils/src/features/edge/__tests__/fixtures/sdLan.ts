@@ -295,7 +295,7 @@ export const mockedMvSdLanDataList = [{
     networkName: 'Mocked_network_2',
     wlanId: '1'
   }, {
-    venueId: 'a307d7077410456f8f1a4fc41d861560',
+    venueId: 'a307d7077410456f8f1a4fc41d861565',
     venueName: 'Mocked-Venue-3',
     networkId: 'network_1',
     networkName: 'Mocked_network_1',

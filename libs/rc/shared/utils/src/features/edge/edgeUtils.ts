@@ -22,7 +22,7 @@ import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../
 
 const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
-const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-2])\\d{10}'
+const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-3])\\d{10}'
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -377,6 +377,23 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
     return Promise.resolve()
   }
 }
+
+export const validateGatewayInSubnet = (ip?: string, mask?: string, gateway?: string) => {
+  const { $t } = getIntl()
+
+  if (!ip || !mask || !gateway) {
+    return Promise.resolve()
+  }
+
+  if (!IpUtilsService.validateInTheSameSubnet(ip, mask, gateway)) {
+    return Promise.reject($t({
+      defaultMessage: 'Gateway must be in the same subnet as the IP address.'
+    }))
+  }
+
+  return Promise.resolve()
+}
+
 export const getEdgePortIpModeEnumValue = (type: string) => {
   switch (type) {
     case EdgeIpModeEnum.DHCP:

@@ -319,7 +319,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '10010_rc3',
               inUse: true,
               isDowngradeVersion: undefined,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '10010_rc3'
             },
             {
@@ -328,7 +328,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '10010_rc2',
               inUse: undefined,
               isDowngradeVersion: true,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '10010_rc2'
             },
             {
@@ -337,7 +337,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '09010f_b19',
               inUse: undefined,
               isDowngradeVersion: true,
-              isNonDowngradable: true,
+              isDowngraded10to90: true,
               name: '09010f_b19'
             },
             {
@@ -346,7 +346,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '09010h_rc1',
               inUse: undefined,
               isDowngradeVersion: true,
-              isNonDowngradable: true,
+              isDowngraded10to90: true,
               name: '09010h_rc1'
             }
           ]
@@ -361,7 +361,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '10010_rc3',
               inUse: true,
               isDowngradeVersion: undefined,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '10010_rc3'
             },
             {
@@ -370,7 +370,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '10010_rc2',
               inUse: undefined,
               isDowngradeVersion: true,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '10010_rc2'
             },
             {
@@ -379,7 +379,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '10010a_cd1_b3',
               inUse: undefined,
               isDowngradeVersion: undefined,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '10010a_cd1_b3'
             }
           ]
@@ -394,7 +394,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '09010f_b19',
               inUse: undefined,
               isDowngradeVersion: true,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '09010f_b19'
             },
             {
@@ -403,7 +403,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '09010h_rc1',
               inUse: undefined,
               isDowngradeVersion: true,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '09010h_rc1'
             },
             {
@@ -412,7 +412,7 @@ describe('checkCurrentVersionsV1002', () => {
               id: '09010h_cd2_b4',
               inUse: true,
               isDowngradeVersion: undefined,
-              isNonDowngradable: undefined,
+              isDowngraded10to90: undefined,
               name: '09010h_cd2_b4'
             }
           ]
