@@ -41,6 +41,7 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const { data: adminList } = useGetAdminListQuery({ params })
 
@@ -165,7 +166,10 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
                 if (isDirectUrl) {
                   setXmlData(authenticationData?.samlFileURL || '')
                 } else {
-                  const url = await loadImageWithJWT(authenticationData?.samlFileURL as string)
+                  const rbacUrl = `/tenants/${authenticationData?.samlFileURL}/urls`
+                  const url = await loadImageWithJWT(authenticationData?.samlFileURL as string,
+                    isRbacEnabled ? rbacUrl : undefined
+                  )
                   await fetch(url)
                     .then((response) => response.text())
                     .then((text) => {
