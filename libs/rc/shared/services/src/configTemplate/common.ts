@@ -19,10 +19,9 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }           from '../network'
-import { addNetworkVenueFn }    from '../networkVenueUtils'
-import { commonQueryFn }        from '../servicePolicy.utils'
-import { updateNetworkVenueFn } from '../servicePolicy.utils/network'
+import { networkApi }                              from '../network'
+import { commonQueryFn }                           from '../servicePolicy.utils'
+import { addNetworkVenueFn, updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,

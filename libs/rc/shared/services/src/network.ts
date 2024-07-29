@@ -42,7 +42,6 @@ import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
-  //addNetworkVenueFn,
   aggregatedRbacNetworksVenueData,
   aggregatedRbacVenueNetworksData,
   fetchRbacApGroupNetworkVenueList,

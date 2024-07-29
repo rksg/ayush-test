@@ -58,6 +58,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // no longer supported after v1, use addNetworkVenue loop as replacement
   addNetworkVenues: {
     method: 'post',
     url: '/networkActivations/mappings',
@@ -71,6 +72,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // no longer supported after v1, use updateNetworkVenue loop as replacement
   updateNetworkVenues: {
     method: 'put',
     url: '/networkActivations/mappings',
@@ -84,30 +86,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // no longer supported after v1, use deleteNetworkVenue loop as replacement
   deleteNetworkVenues: {
     method: 'delete',
     url: '/networkActivations',
     newApi: true
   },
   */
-  addNetworkVenue: {
-    method: 'put',
-    url: '/venues/:venueId/wifiNetworks/:networkId',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
-  },
-  updateNetworkVenue: {
-    method: 'put',
-    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
-  },
   getVenueApCapabilities: {
     method: 'get',
     //url: '/venues/:venueId/aps/capabilities',

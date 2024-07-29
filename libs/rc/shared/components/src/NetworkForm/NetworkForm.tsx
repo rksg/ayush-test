@@ -34,7 +34,7 @@ import {
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useLazyGetNetworkDeepQuery
+  useGetNetworkDeepQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -165,8 +165,6 @@ export function NetworkForm (props:{
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
-
-  const [ getNetworkDeep ] = useLazyGetNetworkDeepQuery()
 
   // The RBAC APIs not support the addNetworkVenues, updateNetworkVenues and deleteNetworkVenues.
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
@@ -686,14 +684,11 @@ export function NetworkForm (props:{
       if (networkResponse?.response && payload.venues) {
         // @ts-ignore
         const network: Network = networkResponse.response
-        await handleNetworkVenues(network.id, payload.venues)
-        /*
         if (resolvedRbacEnabled) {
           await handleRbacNetworkVenues(network.id, payload.venues)
         } else {
           await handleNetworkVenues(network.id, payload.venues)
         }
-        */
       }
       await updateClientIsolationActivations(payload, null, networkId)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -783,15 +778,11 @@ export function NetworkForm (props:{
       await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
       await updateAccessControl(formData, data)
       if (payload.id && (payload.venues || data?.venues)) {
-        await handleNetworkVenues(payload.id, payload.venues, data?.venues)
-        /*
         if (resolvedRbacEnabled) {
-          await getNetworkDeep({ params: { networkId: payload.id } })
           await handleRbacNetworkVenues(payload.id, payload.venues, data?.venues)
         } else {
           await handleNetworkVenues(payload.id, payload.venues, data?.venues)
         }
-        */
       }
       await updateClientIsolationActivations(payload, data, payload.id)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
@@ -1041,15 +1032,20 @@ function useGetInstance (isEdit: boolean) {
   const networkResult = useGetNetworkQuery({
     params,
     enableRbac: isUseWifiRbacApi
-  }, { skip: isTemplate })
+  }, { skip: isTemplate || isUseWifiRbacApi })
 
+
+  const rbacNetworkResult = useGetNetworkDeepQuery({
+    params,
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isTemplate || !isUseWifiRbacApi })
 
   const networkTemplateResult = useGetNetworkTemplateQuery({
     params,
     enableRbac: isConfigTemplateRbacEnabled
   }, { skip: !isEdit || !isTemplate })
 
-  return isTemplate ? networkTemplateResult : networkResult
+  return isTemplate ? networkTemplateResult : (isUseWifiRbacApi? rbacNetworkResult : networkResult)
 }
 
 function useCertificateTemplateActivation () {

@@ -2,11 +2,60 @@ import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/q
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
 import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
 
-import { CommonResult, ConfigTemplateUrlsInfo, NetworkVenue, PoliciesConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { ApiInfo, createHttpRequest }                                                                       from '@acx-ui/utils'
+import {
+  CommonResult,
+  ConfigTemplateUrlsInfo,
+  NetworkVenue,
+  PoliciesConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { RequestPayload }             from '@acx-ui/types'
+import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 
+
+// eslint-disable-next-line max-len
+export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonResult, RequestPayload> => {
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+      const apis = isTemplate ? ConfigTemplateUrlsInfo : urlsInfo
+      const req = createHttpRequest(
+        isTemplate
+          ? (enableRbac ? apis.addNetworkVenueTemplateRbac : apis.addNetworkVenueTemplate)
+          : apis.addNetworkVenue,
+        params
+      )
+
+      const res = await fetchWithBQ({
+        ...req,
+        ...(enableRbac ? {} : { body: payload })
+      })
+
+      if (enableRbac) {
+        const updateReq = createHttpRequest(
+          isTemplate ? apis.updateNetworkVenueTemplateRbac : apis.updateNetworkVenue,
+          params
+        )
+
+        await fetchWithBQ({
+          ...updateReq,
+          body: JSON.stringify(payload)
+        })
+      }
+
+      if (res.error) {
+        return { error: res.error as FetchBaseQueryError }
+      } else {
+        return { data: res.data as CommonResult }
+      }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
+}
 
 // eslint-disable-next-line max-len
 export function updateNetworkVenueFn (isTemplate = false): QueryFn<CommonResult, { oldData?: NetworkVenue, newData: NetworkVenue }> {
