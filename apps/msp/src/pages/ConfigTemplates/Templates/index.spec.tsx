@@ -1,10 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                                                                                                                         from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext, ConfigTemplateType, ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                              from '@acx-ui/test-utils'
+import { MspUrlsInfo }          from '@acx-ui/msp/utils'
+import {
+  AdministrationUrlsInfo, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext,
+  ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo,
+  VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { ConfigTemplateTabKey }                                                                        from '..'
 import { mockVenueTemplateList, mockedConfigTemplateList, mockedMSPCustomerList, mockedVenueTemplate } from '../__tests__/fixtures'
@@ -286,7 +289,8 @@ describe('ConfigTemplateList component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === 'NETWORK')!
+    // eslint-disable-next-line max-len
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === ConfigTemplateType.NETWORK)!
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -311,7 +315,8 @@ describe('ConfigTemplateList component', () => {
 
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === 'NETWORK')!
+    // eslint-disable-next-line max-len
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === ConfigTemplateType.NETWORK)!
     const row = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
     await userEvent.click(within(row).getByRole('radio'))
 
@@ -321,5 +326,59 @@ describe('ConfigTemplateList component', () => {
       `/__TENANT_ID/v/configTemplates/networks/wireless/${targetTemplate.id}/edit`,
       expect.objectContaining({ state: { from: mockedLocation } })
     )
+  })
+
+  it('should open the Access Control Sub Policy drawer', async () => {
+    const mockedL2AclTemplate = {
+      id: 'cc39f9a5097b4004839cf9d5a4d5dd98',
+      name: 'L2-Template',
+      access: 'ALLOW',
+      macAddresses: ['AA:BB:CC:DD:EE:11']
+    }
+    mockServer.use(
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getL2AclPolicy.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedL2AclTemplate }))
+      ),
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.getEnhancedL2AclPolicies.url,
+        (req, res, ctx) => res(ctx.json({
+          fields: ['name', 'id'],
+          totalCount: 1,
+          page: 1,
+          data: [{ ...mockedL2AclTemplate }]
+        })))
+    )
+
+    render(
+      <Provider>
+        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+          <ConfigTemplateList />
+        </ConfigTemplateContext.Provider>
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    // eslint-disable-next-line max-len
+    const targetTemplate = mockedConfigTemplateList.data.find(t => t.type === ConfigTemplateType.LAYER_2_POLICY)!
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetTemplate.name) })
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
+
+    const editDrawer = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    expect(await within(editDrawer).findByDisplayValue(mockedL2AclTemplate.name)).toBeInTheDocument()
+    await userEvent.click(within(editDrawer).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+
+    await userEvent.click(within(targetRow).getByRole('button', { name: targetTemplate.name }))
+    const detailsDrawer = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    expect(await within(detailsDrawer).findByDisplayValue(mockedL2AclTemplate.name)).toBeInTheDocument()
+    await userEvent.click(within(detailsDrawer).getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 })

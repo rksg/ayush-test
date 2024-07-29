@@ -1,4 +1,3 @@
-
 export const networklist = {
   totalCount: 10,
   page: 1,
@@ -126,6 +125,154 @@ export const networklist = {
       nwSubType: 'guest',
       ssid: '10',
       venues: { count: 0, names: [] },
+      vlan: 1,
+      deepNetwork: {
+        wlan: {
+          wlanSecurity: ''
+        }
+      },
+      vlanPool: {
+        name: 'test'
+      }
+    }
+  ]
+}
+
+export const wifiNetworklist = {
+  totalCount: 10,
+  page: 1,
+  data: [
+    {
+      apSerialNumbers: ['apSerialNumber1'],
+      clientCount: 0,
+      id: 'c9d5f4c771c34ad2898f7078cebbb191',
+      name: 'network-01',
+      nwSubType: 'psk',
+      ssid: '01',
+      //venues: { count: 3, names: ['pingtung', 'My-Venue', '101'] },
+      venueApGroups: [
+        { venueId: 'venueId1' },
+        { venueId: 'venueId2' },
+        { venueId: 'venueId3' }
+      ],
+      vlan: 1,
+      deepNetwork: {
+        wlan: {
+          wlanSecurity: 'WPA3'
+        }
+      }
+    },
+    {
+      apSerialNumbers: [],
+      captiveType: 'ClickThrough',
+      clientCount: 0,
+      id: 'ad850ca8595d4f2f9e7f208664cd8798',
+      name: 'network-02',
+      nwSubType: 'guest',
+      ssid: '02',
+      venueApGroups: [],
+      vlan: 1
+    },
+    {
+      apSerialNumbers: ['apSerialNumber1'],
+      clientCount: 0,
+      id: '373377b0cb6e46ea8982b1c80aabe1fa',
+      name: 'network-03',
+      nwSubType: 'aaa',
+      ssid: '03',
+      venueApGroups: [
+        { venueId: 'venueId1' },
+        { venueId: 'venueId2' }
+      ],
+      vlan: 1,
+      deepNetwork: {
+        wlan: {
+          wlanSecurity: 'WPA3'
+        }
+      }
+    },
+    {
+      apSerialNumbers: [],
+      captiveType: 'GuestPass',
+      clientCount: 0,
+      id: 'ad850ca8595d4f2f9e7f208664cd8898',
+      name: 'network-04',
+      nwSubType: 'guest',
+      ssid: '04',
+      venueApGroups: [],
+      vlan: 1
+    },
+    {
+      apSerialNumbers: ['apSerialNumber1'],
+      clientCount: 0,
+      id: '373377b0cb6e46ea8982b1c80aabe2fa',
+      name: 'network-05',
+      nwSubType: 'dpsk',
+      ssid: '05',
+      venueApGroups: [
+        { venueId: 'venueId1' }
+      ],
+      vlan: 1,
+      deepNetwork: {
+        wlan: {
+          wlanSecurity: 'WPA3'
+        }
+      }
+    },
+    {
+      apSerialNumbers: [],
+      captiveType: 'SelfSignIn',
+      clientCount: 0,
+      id: 'ad850ca8595d4f2f9e7f208664cd8998',
+      name: 'network-06',
+      nwSubType: 'guest',
+      ssid: '06',
+      venueApGroups: [],
+      vlan: 1
+    },
+    {
+      apSerialNumbers: [],
+      captiveType: 'HostApproval',
+      clientCount: 0,
+      id: 'ad850ca8595d4f2f9e7f208664cd9098',
+      name: 'network-07',
+      nwSubType: 'guest',
+      ssid: '07',
+      venueApGroups: [],
+      vlan: 1
+    },
+    {
+      apSerialNumbers: [],
+      captiveType: 'WISPr',
+      clientCount: 0,
+      id: 'ad850ca8595d4f2f9e7f208664cd9198',
+      name: 'network-08',
+      nwSubType: 'guest',
+      ssid: '08',
+      venueApGroups: [],
+      vlan: 1
+    },
+    {
+      apSerialNumbers: [],
+      clientCount: 0,
+      description: '',
+      id: '3c62b3818d194022b8dd35852c66f646',
+      name: 'network-09',
+      nwSubType: 'open',
+      ssid: '09',
+      venueApGroups: [],
+      vlan: 2,
+      vlanPool: {}
+    },
+    {
+      apSerialNumbers: [],
+      captiveType: '',
+      clientCount: 0,
+      id: 'ad850ca8595d4f2f9e7f208664cd9398',
+      name: 'network-10',
+      nwSubType: 'guest',
+      ssid: '10',
+      venueApGroups: [],
       vlan: 1,
       deepNetwork: {
         wlan: {

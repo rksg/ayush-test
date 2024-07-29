@@ -9,9 +9,10 @@ import { useNavigate }                                                    from '
 
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 
-import { ApSnmp }      from './ApSnmp'
-import { MdnsFencing } from './MdnsFencing/MdnsFencing'
-import { Syslog }      from './Syslog'
+import { ApSnmp }               from './ApSnmp'
+import { LocationBasedService } from './LocationBasedService'
+import { MdnsFencing }          from './MdnsFencing/MdnsFencing'
+import { Syslog }               from './Syslog'
 
 export interface ServerSettingContext {
   updateSyslog: (() => void),
@@ -20,6 +21,8 @@ export interface ServerSettingContext {
   discardMdnsFencing: (() => void),
   updateVenueApSnmp: (() => void),
   discardVenueApSnmp: (() => void),
+  updateVenueLbs: (() => void),
+  discardVenueLbs: (() => void),
 }
 
 export function ServerTab () {
@@ -50,12 +53,17 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
+  if (!isTemplate) {
+    // eslint-disable-next-line max-len
+    items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService />))
+  }
+
   const handleUpdateSetting = async () => {
     try {
       await editServerContextData?.updateSyslog?.()
       await editServerContextData?.updateMdnsFencing?.()
       await editServerContextData?.updateVenueApSnmp?.()
-
+      await editServerContextData?.updateVenueLbs?.()
 
       setEditContextData({
         ...editContextData,

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   Form,
@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/components'
 import {
   useAddCustomRoleMutation,
+  useGetCustomRolesQuery,
   useUpdateCustomRoleMutation
 } from '@acx-ui/rc/services'
 import {
@@ -45,9 +46,19 @@ export function AddCustomRole () {
   const navigate = useNavigate()
   const { action, customRoleId } = useParams()
   const location = useLocation().state as CustomRole
+  const [roleNames, setRoleNames] = useState([] as RolesEnum[])
 
   const linkToCustomRoles = useTenantLink('/administration/userPrivileges/customRoles', 't')
   const [form] = Form.useForm()
+
+  const { data: roleList } = useGetCustomRolesQuery({})
+  useEffect(() => {
+    if (roleList) {
+      const nameList = roleList.filter(item =>
+        item.type === CustomGroupType.CUSTOM && item.name !== location?.name).map(item => item.name)
+      setRoleNames(nameList as RolesEnum[])
+    }
+  }, [roleList])
 
   const [addCustomRole] = useAddCustomRoleMutation()
   const [updateCustomRole] = useUpdateCustomRoleMutation()
@@ -129,6 +140,14 @@ export function AddCustomRole () {
             { required: true },
             { min: 2 },
             { max: 128 },
+            { validator: (_, value) => {
+              if(roleNames.includes(value)) {
+                return Promise.reject(
+                  `${intl.$t({ defaultMessage: 'Name already exists' })} `
+                )
+              }
+              return Promise.resolve()}
+            },
             { validator: (_, value) => systemDefinedNameValidator(value) },
             { validator: (_, value) => specialCharactersRegExp(value) }
           ]}

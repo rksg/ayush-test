@@ -8,7 +8,8 @@ import { useParams }    from 'react-router-dom'
 import { Button, Modal }                                     from '@acx-ui/components'
 import { useGetVenueSpecificUploadURLMutation }              from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, UploadUrlResponse } from '@acx-ui/rc/utils'
-import { hasAccess }                                         from '@acx-ui/user'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { hasRoles }                                          from '@acx-ui/user'
 import { getIntl, loadImageWithJWT }                         from '@acx-ui/utils'
 
 import FloorPlanForm from '../FloorPlanForm'
@@ -136,12 +137,14 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
   return (
     <ModalContext.Provider value={{ clearOldFile: !open }}>
       <Form.Provider>
-        { hasAccess() && <Button data-testid='AddEditLinks'
-          size={isEditMode ? 'middle' : 'small'}
-          type='link'
-          onClick={showUserModal}>
-          { buttonTitle }
-        </Button>}
+        { hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+          <Button data-testid='AddEditLinks'
+            size={isEditMode ? 'middle' : 'small'}
+            type='link'
+            onClick={showUserModal}>
+            { buttonTitle }
+          </Button>
+        }
         <Modal
           width={480}
           title={!isEditMode ? $t({ defaultMessage: 'Add Floor Plan' })

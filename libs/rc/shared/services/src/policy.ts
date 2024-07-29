@@ -72,6 +72,7 @@ import {
   ApplicationLibrarySettingType,
   CLIENT_ISOLATION_LIMIT_NUMBER,
   CommonUrlsInfo,
+  CommonRbacUrlsInfo,
   ClientIsolationTableChangePayload,
   VenueDetail,
   Network,
@@ -127,7 +128,9 @@ const IdentityProviderMutationUseCases = [
 const LbsServerProfileMutationUseCases = [
   'AddLbsServerProfile',
   'UpdateLbsServerProfile',
-  'DeleteLbsServerProfile'
+  'DeleteLbsServerProfile',
+  'ActivateLbsServerProfileOnVenue',
+  'DectivateLbsServerProfileOnVenue'
 ]
 
 const L2AclUseCases = [
@@ -366,15 +369,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     getAccessControlProfile: build.query<AccessControlInfoType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? AccessControlUrls.getAccessControlProfileRbac : AccessControlUrls.getAccessControlProfile,
-          params
-        )
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(AccessControlUrls.getAccessControlProfile, AccessControlUrls.getAccessControlProfileRbac),
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
     activateAccessControlProfileOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
@@ -803,7 +798,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const requests = args.payload!.map(policyId => ({ params: { policyId } }))
           return batchApi(
-            AaaUrls.deleteAAAPolicy, requests, baseQuery, GetApiVersionHeader(ApiVersionEnum.v1_1)
+            AaaUrls.deleteAAAPolicy, requests, baseQuery
           )
         } else {
           return baseQuery({
@@ -834,6 +829,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'AddRadius',
             'UpdateRadius',
+            'DeleteRadius',
             'DeleteRadiuses'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'AAA', id: 'LIST' }]))
@@ -1511,7 +1507,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(args, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-            if (args.callback && response && msg.useCase === 'AddLbsProfile' &&
+            if (args.callback && response && msg.useCase === 'AddLbsServerProfile' &&
               msg.status === TxStatus.SUCCESS) {
               (args.callback as Function)(response.data)
             }
@@ -1615,7 +1611,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const networkMap = new Map<string, VenueApGroupRbacType[]>()
           if (networkIds.length > 0) {
             const networkQuery = await fetchWithBQ({
-              ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, headers),
+              ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, headers),
               body: JSON.stringify({
                 filters: { id: networkIds },
                 fields: ['id', 'name', 'venueApGroups'],
@@ -1777,7 +1773,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
               const allApGroupVenueSet = new Set<string> ()
               if((result.data[0].wifiNetworkIds?.length ?? 0) > 0) {
                 const networkQuery = await fetchWithBQ({
-                  ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, headers),
+                  ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, headers),
                   body: JSON.stringify({
                     filters: { id: result.data[0].wifiNetworkIds },
                     fields: ['id', 'name', 'venueApGroups'],
@@ -1924,7 +1920,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             page: 1,
             pageSize: 10000
           }
-          const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          const networkReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, GetApiVersionHeader(ApiVersionEnum.v1))
           const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
           if (networkRes.error) return defaultRes
           const networkData = networkRes.data as TableResult<Network>

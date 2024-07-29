@@ -20,10 +20,16 @@ import {
   networkApi,
   useClearAlarmByVenueMutation,
   useGetVenuesQuery
-}  from '@acx-ui/rc/services'
-import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
-import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
-import { store }                                                                  from '@acx-ui/store'
+} from '@acx-ui/rc/services'
+import {
+  Alarm,
+  CommonUrlsInfo,
+  useTableQuery,
+  EventSeverityEnum,
+  EventTypeEnum
+} from '@acx-ui/rc/utils'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { store }                 from '@acx-ui/store'
 
 import * as UI from './styledComponents'
 
@@ -106,7 +112,7 @@ export function AlarmsDrawer (props: AlarmsType) {
   ] = useClearAlarmByVenueMutation()
 
   const { data: venuesList } =
-      useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
+    useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
 
 
   const tableQuery = useTableQuery({

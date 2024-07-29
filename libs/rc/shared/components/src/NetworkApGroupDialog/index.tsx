@@ -24,7 +24,6 @@ import {
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
-  useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
   useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
@@ -87,7 +86,7 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
 
@@ -117,14 +116,6 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
-  const networkApGroupsQuery = useGetNetworkApGroupsQuery({ params: { tenantId },
-    payload: [{
-      networkId: networkVenue?.networkId,
-      ssids: [wlan?.ssid],
-      venueId: networkVenue?.venueId
-    }]
-  }, { skip: isUseWifiApiV2 || !networkVenue || !wlan })
-
   const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
     payload: [{
       networkId: networkVenue?.networkId,
@@ -132,14 +123,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       isTemplate: isTemplate
     }],
     enableRbac: isWifiRbacEnabled
-  }, { skip: !isUseWifiApiV2 || !networkVenue || !wlan })
+  }, { skip: !networkVenue || !wlan })
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    const networkApGroupsData = (isUseWifiApiV2)? networkApGroupsV2Query.data : networkApGroupsQuery.data
+    const networkApGroupsData = networkApGroupsV2Query.data
 
     let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
@@ -155,7 +146,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsQuery.data, networkApGroupsV2Query.data])
+  }, [networkVenue, networkApGroupsV2Query.data])
 
   useEffect(() => {
     form.setFieldsValue(formInitData)
@@ -285,6 +276,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                   if (form.getFieldsValue().apgroups[name].selected && _.isEmpty(value)) {
                     return Promise.reject($t({ defaultMessage: 'Please enter Radio Band' }))
                   }
+                  return Promise.resolve()
+                }
+              },
+              {
+                validator: (obj, value) => {
+                  if (form.getFieldsValue().apgroups[name].selected)
+                    return validateRadioBandForDsaeNetwork(value)
+
                   return Promise.resolve()
                 }
               }

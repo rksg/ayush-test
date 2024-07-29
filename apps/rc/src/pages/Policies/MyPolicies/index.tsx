@@ -36,8 +36,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
-import { filterByAccess, hasScope } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -63,28 +62,31 @@ export default function MyPolicies () {
         ])}
       />
       <GridRow>
-        {policies.filter(p => isServicePolicyCardEnabled(p, 'read')).map((policy, index) => {
-          return (
-            <GridCol key={policy.type} col={{ span: 6 }}>
-              <RadioCard
-                type={'default'}
-                key={`${policy.type}_${index}`}
-                value={policy.type}
-                title={$t({
-                  defaultMessage: '{name} ({count})'
-                }, {
-                  name: $t(policyTypeLabelMapping[policy.type]),
-                  count: policy.totalCount ?? 0
-                })}
-                description={$t(policyTypeDescMapping[policy.type])}
-                categories={policy.categories}
-                onClick={() => {
-                  policy.listViewPath && navigate(policy.listViewPath)
-                }}
-              />
-            </GridCol>
-          )
-        })}
+        {
+          // eslint-disable-next-line max-len
+          policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+            return (
+              <GridCol key={policy.type} col={{ span: 6 }}>
+                <RadioCard
+                  type={'default'}
+                  key={`${policy.type}_${index}`}
+                  value={policy.type}
+                  title={$t({
+                    defaultMessage: '{name} ({count})'
+                  }, {
+                    name: $t(policyTypeLabelMapping[policy.type]),
+                    count: policy.totalCount ?? 0
+                  })}
+                  description={$t(policyTypeDescMapping[policy.type])}
+                  categories={policy.categories}
+                  onClick={() => {
+                    policy.listViewPath && navigate(policy.listViewPath)
+                  }}
+                />
+              </GridCol>
+            )
+          })
+        }
       </GridRow>
     </>
   )
@@ -211,8 +213,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
-      disabled: !isConnectionMeteringEnabled ||
-        !hasScope([WifiScopes.READ, EdgeScopes.READ])
+      disabled: !isConnectionMeteringEnabled
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,

@@ -24,11 +24,12 @@ import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
   useAddPrivilegeGroupMutation,
   useGetOnePrivilegeGroupQuery,
+  useGetPrivilegeGroupsQuery,
   useGetVenuesQuery,
   useUpdatePrivilegeGroupMutation
 }                          from '@acx-ui/rc/services'
 import {
-  PrivilegeGroup,
+  CustomGroupType,
   PrivilegePolicy,
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
@@ -44,6 +45,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RolesEnum }   from '@acx-ui/types'
 import { AccountType } from '@acx-ui/utils'
 
 import CustomRoleSelector from '../CustomRoles/CustomRoleSelector'
@@ -52,6 +54,8 @@ import * as UI            from '../styledComponents'
 import { ChoiceCustomerEnum, ChoiceScopeEnum } from './AddPrivilegeGroup'
 import { SelectCustomerDrawer }                from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }                  from './SelectVenuesDrawer'
+
+import { PrivilegeGroupSateProps } from '.'
 
 interface PrivilegeGroupData {
   name?: string,
@@ -125,15 +129,16 @@ export function EditPrivilegeGroup () {
   const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
   const [disableNameChange, setDisableNameChange] = useState(false)
+  const [groupNames, setGroupNames] = useState([] as RolesEnum[])
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
-  const location = useLocation().state as PrivilegeGroup
+  const location = useLocation().state as PrivilegeGroupSateProps
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
-  const isOnboardedMsp = location ?? false
+  const isOnboardedMsp = location?.isOnboardedMsp ?? false
   const isClone = action === 'clone'
 
   const { data: privilegeGroup } =
@@ -146,6 +151,16 @@ export function EditPrivilegeGroup () {
   const { data: customerList } =
       useMspCustomerListQuery({ params: useParams(), payload: customerListPayload },
         { skip: !isOnboardedMsp })
+
+  const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
+  useEffect(() => {
+    if (privilegeGroupList) {
+      const nameList = privilegeGroupList.filter(item =>
+        item.type === CustomGroupType.CUSTOM &&
+        item.name !== location?.name).map(item => item.name)
+      setGroupNames(nameList as RolesEnum[])
+    }
+  }, [privilegeGroupList])
 
   const onClickSelectVenue = () => {
     setSelectVenueDrawer(true)
@@ -482,6 +497,14 @@ export function EditPrivilegeGroup () {
                 { required: true },
                 { min: 2 },
                 { max: 128 },
+                { validator: (_, value) => {
+                  if(groupNames.includes(value)) {
+                    return Promise.reject(
+                      `${intl.$t({ defaultMessage: 'Name already exists' })} `
+                    )
+                  }
+                  return Promise.resolve()}
+                },
                 { validator: (_, value) => systemDefinedNameValidator(value) },
                 { validator: (_, value) => specialCharactersRegExp(value),
                   message: intl.$t({ defaultMessage:
