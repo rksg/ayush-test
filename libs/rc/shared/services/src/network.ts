@@ -34,13 +34,15 @@ import {
   BaseNetwork,
   VlanPoolRbacUrls,
   VLANPoolViewModelRbacType,
-  transformWifiNetwork
+  transformWifiNetwork,
+  DpskSaveData
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
+  addNetworkVenueFn,
   aggregatedRbacNetworksVenueData,
   aggregatedRbacVenueNetworksData,
   fetchRbacApGroupNetworkVenueList,
@@ -262,13 +264,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Network', id: 'LIST' }]
     }),
     addNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addNetworkVenue, params, RKS_NEW_UI)
-        return {
-          ...req,
-          body: payload
-        }
-      },
+      queryFn: addNetworkVenueFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     addNetworkVenues: build.mutation<CommonResult, RequestPayload>({
@@ -282,7 +278,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      queryFn: updateNetworkVenueFn(false),
+      queryFn: updateNetworkVenueFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenues: build.mutation<CommonResult, RequestPayload>({
@@ -664,20 +660,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           return { error: networkListQueryError }
 
         const networkIdsToIncompatible:{ [key:string]: number } = {}
-        try {
-          const apCompatibilitiesReq = {
-            ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, arg.params),
-            body: { filters: { networkIds } }
+        if (!(arg.payload as any).isTemplate) {
+          try {
+            const apCompatibilitiesReq = {
+              ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesVenue, arg.params),
+              body: { filters: { networkIds } }
+            }
+            const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
+            const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
+            const apCompatibilities = apCompatibilitiesResponse.apCompatibilities as ApCompatibility[]
+            apCompatibilities.forEach((item:ApCompatibility) => {
+              networkIdsToIncompatible[item.id] = item.incompatible
+            })
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error('venueNetworkTable getApCompatibilitiesVenue error:', e)
           }
-          const apCompatibilitiesQuery = await fetchWithBQ(apCompatibilitiesReq)
-          const apCompatibilitiesResponse = apCompatibilitiesQuery.data as ApCompatibilityResponse
-          const apCompatibilities = apCompatibilitiesResponse.apCompatibilities as ApCompatibility[]
-          apCompatibilities.forEach((item:ApCompatibility) => {
-            networkIdsToIncompatible[item.id] = item.incompatible
-          })
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error('venueNetworkTable getApCompatibilitiesVenue error:', e)
         }
 
         const aggregatedList = aggregatedRbacVenueNetworksData(
@@ -840,11 +838,37 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
         return {
-          ...req,
-          body: payload
+          ...req
+        }
+      }
+    }),
+    activateDpskService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateDpskService, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getDpskService: build.query<DpskSaveData, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryDpskService, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<DpskSaveData>) => {
+        return response?.data[0]
+      }
+    }),
+    activateMacRegistrationPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.activateMacRegistrationPool, params)
+        return {
+          ...req
         }
       }
     }),
@@ -894,7 +918,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     activateRadiusServer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params)
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
@@ -902,7 +926,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     deactivateRadiusServer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params)
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
@@ -910,7 +934,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     updateRadiusServerSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1)),
+          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params),
           body: JSON.stringify(payload)
         }
       },
@@ -919,7 +943,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     getRadiusServerSettings: build.query<NetworkRadiusSettings, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params)
         }
       },
       providesTags: [{ type: 'NetworkRadiusServer', id: 'DETAIL' }]
@@ -1122,7 +1146,7 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
     return false
   }).map(v => v.id) || []
 
-  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
+  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
   const networkDeep = Array.isArray(networkDeepList?.response) ?
     networkDeepList?.response[0] : undefined
   let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
@@ -1135,12 +1159,20 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
 
     const networkVenuesApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
-        ? VenueConfigTemplateUrlsInfo.networkActivations
+        ? (arg.payload.isTemplateRbacEnabled ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac : VenueConfigTemplateUrlsInfo.networkActivations)
         : CommonUrlsInfo.networkActivations, arg.params,
       arg.payload.isTemplate
         ? {}
         : apiV2CustomHeader),
-      body: JSON.stringify({ filters })
+      body: arg.payload.isTemplate ? (arg.payload.isTemplateRbacEnabled ? {
+        deep: true,
+        fields: [],
+        filters: { id: filters.map(filter => filter.networkId) },
+        sortField: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10_000
+      } : {}) : JSON.stringify({ filters })
     }
     const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
     networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
@@ -1201,16 +1233,24 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
 
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
-        ? VenueConfigTemplateUrlsInfo.networkActivations
+        ? (arg.payload.isTemplateRbacEnabled ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac : VenueConfigTemplateUrlsInfo.networkActivations)
         : CommonUrlsInfo.networkActivations, arg.params,
       arg.payload.isTemplate
         ? {}
         : apiV2CustomHeader),
-      body: JSON.stringify({ filters })
+      body: arg.payload.isTemplate ? (arg.payload.isTemplateRbacEnabled ? {
+        deep: true,
+        fields: [],
+        filters: { id: filters.map(filter => filter.networkId) },
+        sortField: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10_000
+      } : {}) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
   }
   return { venueNetworkListQuery,
     networkList,
@@ -1278,17 +1318,25 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
 
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
-        ? VenueConfigTemplateUrlsInfo.networkActivations
+        ? (arg.payload.isTemplateRbacEnabled ? ConfigTemplateUrlsInfo.getNetworkTemplateListRbac : VenueConfigTemplateUrlsInfo.networkActivations)
         : CommonUrlsInfo.networkActivations, arg.params,
       arg.payload.isTemplate
         ? {}
         : apiV2CustomHeader),
-      body: JSON.stringify({ filters })
+      body: arg.payload.isTemplate ? (arg.payload.isTemplateRbacEnabled ? {
+        deep: true,
+        fields: [],
+        filters: { id: filters.map(filter => filter.networkId) },
+        sortField: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10_000
+      } : {}) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
 
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
   }
 
   return { apGroupNetworkListQuery,
@@ -1343,6 +1391,9 @@ export const {
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
   useActivateCertificateTemplateMutation,
+  useActivateDpskServiceMutation,
+  useGetDpskServiceQuery,
+  useActivateMacRegistrationPoolMutation,
   useActivateVlanPoolMutation,
   useDeactivateVlanPoolMutation,
   useActivateRadiusServerMutation,

@@ -162,7 +162,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
     <Divider />
     <Form.Item
       name='region'
-      label={$t({ defaultMessage: 'Select the region for your RUCKUS One hosted cloud servicese' })}
+      label={$t({ defaultMessage: 'Select the region for your RUCKUS One hosted cloud services' })}
       rules={[
         {
           required: true,
