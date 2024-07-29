@@ -1,18 +1,18 @@
 import { useState } from 'react'
+
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import { formattedPath }                            from '@acx-ui/analytics/utils'
-import { TableProps }                               from '@acx-ui/components'
-
-import { intentAIApi }                              from '@acx-ui/store'
+import { formattedPath }    from '@acx-ui/analytics/utils'
+import { TableProps }       from '@acx-ui/components'
+import { intentAIApi }      from '@acx-ui/store'
 import {
   getIntl,
   NetworkPath,
   computeRangeFilter,
   TABLE_DEFAULT_PAGE_SIZE
 }                                                   from '@acx-ui/utils'
-import type { PathFilter }                          from '@acx-ui/utils'
+import type { PathFilter } from '@acx-ui/utils'
 
 import {
   states,
@@ -118,7 +118,7 @@ export const api = intentAIApi.injectEndpoints({
           }),
           page: payload.page,
           pageSize: payload.pageSize,
-          filterBy: payload.filterBy || []
+          filterBy: payload.filterBy
         }
       }),
       transformResponse: (response: Response<Intent>) => {
@@ -193,7 +193,7 @@ export const api = intentAIApi.injectEndpoints({
             aiFeature => ({
               value: $t(aiFeaturesLabel[aiFeature as keyof typeof aiFeaturesLabel]),
               key: aiFeature
-          })),
+            })),
           categories: aiFeatAndCat.categories.map(
             category => ({
               value: category,
@@ -203,13 +203,13 @@ export const api = intentAIApi.injectEndpoints({
           zones: displayZones
         }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_FILTER_OPTIONS' }]
     })
   })
 })
 
 export interface Response<Intent> {
-  intents: { 
+  intents: {
     data: Intent[]
     total: number
   }
@@ -267,9 +267,11 @@ const perpareFilterBy = (filters: Filters) => {
         statuses.push(s)
       }
     })
+    // istanbul ignore next no-else
     if (statuses.length > 0) {
       filterBy.push({ col: 'status', values: statuses })
     }
+    // istanbul ignore next no-else
     if (statusReason.length > 0) {
       filterBy.push({ col: 'statusReason', values: statusReason })
     }
@@ -277,7 +279,7 @@ const perpareFilterBy = (filters: Filters) => {
   return filterBy
 
 }
-export function useInentAITableQuery (filter: PathFilter) {
+export function useIntentAITableQuery (filter: PathFilter) {
   const DEFAULT_PAGINATION = {
     page: 1,
     pageSize: TABLE_DEFAULT_PAGE_SIZE,

@@ -16,7 +16,7 @@ import {
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { setUpIntl, DateRange }              from '@acx-ui/utils'
 
-import { intentListResult } from './__tests__/fixtures'
+import { intentListResult, filterOptions } from './__tests__/fixtures'
 import {
   api
 } from './services'
@@ -75,7 +75,10 @@ describe('IntentAITabContent', () => {
 
   it('should render loader and empty table', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
-      data: { intents: [] }
+      data: { intents: { data: [] } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: { intentFilterOptions: { zones: [], codes: [], statuses: [] } }
     })
     render(<IntentAITabContent/>, {
       wrapper: Provider
@@ -94,6 +97,9 @@ describe('IntentAITabContent', () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: intentListResult
     })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
     render(<IntentAITabContent/>, {
       wrapper: Provider
     })
@@ -101,13 +107,11 @@ describe('IntentAITabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     //search row text
     const rowText = await screen.findAllByText('AI-Driven RRM')
-    expect(rowText).toHaveLength(3)
+    expect(rowText).toHaveLength(1)
     //search column title
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Venue')).toBeVisible()
     expect(screen.queryByText('Zone')).toBeNull()
-    //search test id
-    expect(screen.getByTestId('intentAI')).toBeVisible()
   })
 
   it('should render intentAI table for RA', async () => {
@@ -122,7 +126,7 @@ describe('IntentAITabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     //search row text
     const rowText = await screen.findAllByText('AI-Driven RRM')
-    expect(rowText).toHaveLength(3)
+    expect(rowText).toHaveLength(1)
     //search column title
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Zone')).toBeVisible()

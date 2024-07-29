@@ -1,174 +1,195 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { defaultNetworkPath }    from '@acx-ui/analytics/utils'
-import { intentAIUrl, store }    from '@acx-ui/store'
-import { mockGraphqlQuery }      from '@acx-ui/test-utils'
-import { PathFilter, DateRange } from '@acx-ui/utils'
+import { intentAIUrl, store, Provider }               from '@acx-ui/store'
+import { act, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import {
-  intentListResult
+  intentListResult,
+  filterOptions
 } from './__tests__/fixtures'
-import { api } from './services'
+import { IntentListItem, api, useIntentAITableQuery } from './services'
 
-describe('Recommendation services', () => {
-  const props = {
-    startDate: '2023-06-10T00:00:00+08:00',
-    endDate: '2023-06-17T00:00:00+08:00',
-    range: DateRange.last24Hours,
-    path: defaultNetworkPath
-  } as PathFilter
+import type { TableCurrentDataSource } from 'antd/lib/table/interface'
+
+describe('Intent services', () => {
+  const expectedResult = [
+    {
+      ...intentListResult.intents.data[0],
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 5 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+      status: 'Applied'
+    },
+    {
+      ...intentListResult.intents.data[1],
+      aiFeature: 'AI Operations',
+      intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz34 (SZ Cluster)
+> 01-US-CA-D1-Test-Home (Domain)
+> 01-Alethea-WiCheck Test (Venue)`,
+      status: 'No recommendation, Not enough license'
+    },
+    {
+      ...intentListResult.intents.data[2],
+      aiFeature: 'AI Operations',
+      intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz34 (SZ Cluster)
+> 25-US-CA-D25-SandeepKour-home (Domain)
+> 25-US-CA-D25-SandeepKour-home (Venue)`,
+      status: 'No recommendation, No APs'
+    }
+  ]
+  const filterOptionsResult = {
+    aiFeatures: [{
+      key: 'AI-Driven RRM',
+      value: 'AI-Driven RRM'
+    }],
+    categories: [{
+      key: 'Wi-Fi Experience',
+      value: 'Wi-Fi Experience'
+    }],
+    statuses: [{
+      key: 'applied',
+      value: 'Applied'
+    }, {
+      key: 'na-no-aps',
+      value: 'No recommendation, No APs'
+    }],
+    zones: [{
+      key: '01-Alethea-WiCheck Test',
+      value: '01-Alethea-WiCheck Test'
+    }]
+  }
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
 
-  it('should return intentAI list', async () => {
-    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
-      data: intentListResult
+  describe('useIntentAITableQuery', () => {
+    it('should fetch data correctly', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, {
+        wrapper: Provider,
+        route: { params: { tenantId: '1' } }
+      })
+      await waitFor(() => expect(result.current.tableQuery.isSuccess).toBe(true))
+      expect(result.current.tableQuery.data).toEqual({
+        intents: expectedResult,
+        total: 3
+      })
+      expect(result.current.filterOptions.data).toEqual(filterOptionsResult)
     })
 
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.intentAIList.initiate({ ...props })
-    )
+    it('handlePageChange should update pagination', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
 
-    const expectedResult = [
-      {
-        ...intentListResult.intents[0],
-        aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 5 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz611 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-        status: 'Applied'
-      },
-      {
-        ...intentListResult.intents[1],
-        aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 5 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz611 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-        status: 'Revert Scheduled'
-      },
-      {
-        ...intentListResult.intents[2],
-        aiFeature: 'AI Operations',
-        intent: 'Optimize for 5 GHz Radio vs Longer range with 2.4 GHz',
-        category: 'Wi-Fi Experience',
-        scope: `vsz6 (SZ Cluster)
-> EDU (Venue)`,
-        status: 'Revert Failed'
-      },
-      {
-        ...intentListResult.intents[3],
-        aiFeature: 'AI Operations',
-        intent: 'Client Performance vs Compatibility',
-        category: 'Wi-Fi Experience',
-        scope: `vsz34 (SZ Cluster)
-> 27-US-CA-D27-Peat-home (Domain)
-> Deeps Place (Venue)`,
-        status: 'New'
-      },
-      {
-        ...intentListResult.intents[4],
-        aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz612 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-        status: 'New'
-      },
-      {
-        ...intentListResult.intents[5],
-        aiFeature: 'AirFlexAI',
-        intent: 'Time to Connect vs. Client Density for 2.4 GHz',
-        category: 'Wi-Fi Experience',
-        scope: `vsz612 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-        status: 'New'
-      },
-      {
-        ...intentListResult.intents[6],
-        aiFeature: 'AirFlexAI',
-        intent: 'Time to Connect vs. Client Density for 5 GHz',
-        category: 'Wi-Fi Experience',
-        scope: `vsz612 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-        status: 'New'
-      },
-      {
-        ...intentListResult.intents[7],
-        aiFeature: 'AirFlexAI',
-        intent: 'Time to Connect vs. Client Density for 6 GHz',
-        category: 'Wi-Fi Experience',
-        scope: `vsz612 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-        status: 'New'
-      },
-      {
-        ...intentListResult.intents[8],
-        aiFeature: 'AI Operations',
-        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz34 (SZ Cluster)
-> 01-US-CA-D1-Test-Home (Domain)
-> 01-Alethea-WiCheck Test (Venue)`,
-        status: 'No recommendation, Not enough license'
-      },
-      {
-        ...intentListResult.intents[9],
-        aiFeature: 'AI Operations',
-        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz34 (SZ Cluster)
-> 22-US-CA-D22-Aaron-Home (Domain)
-> 22-US-CA-Z22-Aaron-Home (Venue)`,
-        status: 'No recommendation, Not enough data'
-      },
-      {
-        ...intentListResult.intents[10],
-        aiFeature: 'AI Operations',
-        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz34 (SZ Cluster)
-> 01-US-CA-D1-Test-Home (Domain)
-> 01-US-CA-D1-Ruckus-HQ-QA-interop (Venue)`,
-        status: 'Verified'
-      },
-      {
-        ...intentListResult.intents[11],
-        aiFeature: 'AI Operations',
-        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz34 (SZ Cluster)
-> 23-IND-BNG-D23-Keshav-Home (Domain)
-> 23-IND-BNG-D23-Keshav-Home (Venue)`,
-        status: 'No recommendation, Conflicting Configuration'
-      },
-      {
-        ...intentListResult.intents[12],
-        aiFeature: 'AI Operations',
-        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz-h-bdc-home-network-05 (SZ Cluster)
-> 22-US-CA-Z22-Aaron-Home (Venue)`,
-        status: 'No recommendation, Unknown reason'
-      },
-      {
-        ...intentListResult.intents[13],
-        aiFeature: 'AI Operations',
-        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-        category: 'Wi-Fi Experience',
-        scope: `vsz34 (SZ Cluster)
-> 25-US-CA-D25-SandeepKour-home (Domain)
-> 25-US-CA-D25-SandeepKour-home (Venue)`,
-        status: 'No recommendation, No APs'
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const customPagination = { current: 1, pageSize: 10 }
+      act(() => {
+        result.current.onPageChange(
+          customPagination,
+          { filter: null },
+          [],
+          [] as unknown as TableCurrentDataSource<IntentListItem>
+        )
+      })
+      expect(result.current.pagination).toEqual({
+        defaultPageSize: 10,
+        page: 1,
+        pageSize: 10,
+        total: 0
+      })
+    })
+    it('handleFilterChange should update filter', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const customFilter = {
+        sliceValue: ['1'],
+        category: ['Wi-Fi Experience'],
+        aiFeature: ['AI-Driven RRM'],
+        status: ['new', 'na-no-aps']
       }
-    ]
-    expect(error).toBe(undefined)
-    expect(status).toBe('fulfilled')
-    expect(data).toStrictEqual(expectedResult)
-  })
+      act(() => {
+        result.current.onFilterChange(customFilter, {})
+      })
+      expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([
+        { col: 'sliceId', values: [ '1' ] },
+        {
+          col: 'code',
+          values: [
+            'c-bgscan24g-enable',
+            'c-bgscan5g-enable',
+            'c-bgscan24g-timer',
+            'c-bgscan5g-timer',
+            'c-bgscan6g-timer',
+            'c-dfschannels-enable',
+            'c-dfschannels-disable',
+            'c-bandbalancing-enable',
+            'c-bandbalancing-enable-below-61',
+            'c-bandbalancing-proactive',
+            'c-aclb-enable',
+            'c-txpower-same',
+            'c-crrm-channel24g-auto',
+            'c-crrm-channel5g-auto',
+            'c-crrm-channel6g-auto',
+            'c-probeflex-24g',
+            'c-probeflex-5g',
+            'c-probeflex-6g'
+          ]
+        },
+        {
+          col: 'code',
+          values: [
+            'c-crrm-channel24g-auto',
+            'c-crrm-channel5g-auto',
+            'c-crrm-channel6g-auto'
+          ]
+        },
+        { col: 'status', values: [ 'new' ] },
+        { col: 'statusReason', values: [ 'no-aps' ] }
+      ])
+    })
+    it('handleFilterChange should handle no filter case', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
 
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const customFilter = {
+        sliceValue: null,
+        category: null,
+        aiFeature: null,
+        status: null
+      }
+      act(() => {
+        result.current.onFilterChange(customFilter, {})
+      })
+      expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
+    })
+  })
 })

@@ -8,9 +8,9 @@ import { DateFormatEnum, formatter }                      from '@acx-ui/formatte
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
 import { noDataDisplay, PathFilter }                      from '@acx-ui/utils'
 
-import { codes }                                from './config'
-import { useInentAITableQuery, IntentListItem, useIntentFilterOptionsQuery } from './services'
-import * as UI                                  from './styledComponents'
+import { codes }                                 from './config'
+import { useIntentAITableQuery, IntentListItem } from './services'
+import * as UI                                   from './styledComponents'
 
 const icons = {
   'AI-Driven RRM': <AIDrivenRRM />,
@@ -24,17 +24,16 @@ export function IntentAITable (
 ) {
   const { $t } = useIntl()
 
-  const { 
+  const {
     tableQuery: queryResults,
     onFilterChange,
     onPageChange,
     pagination,
     filterOptions
-  } = useInentAITableQuery(
+  } = useIntentAITableQuery(
     { ...pathFilters }
   )
-  const {aiFeatures = [], categories =[], statuses = [], zones = []} = filterOptions.data! || {}
-  console.log(zones)
+  const { aiFeatures = [], categories =[], statuses = [], zones = [] } = filterOptions?.data || {}
   const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
     {
@@ -110,8 +109,7 @@ export function IntentAITable (
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
-        filterableWidth={155}
-        searchableWidth={240}
+        filterableWidth={200}
         onChange={onPageChange}
         pagination={{ ...pagination, total: queryResults?.data?.total || 0 }}
         onFilterChange={onFilterChange}
