@@ -61,10 +61,11 @@ export const eventAlarmApi = baseEventAlarmApi.injectEndpoints({
       invalidatesTags: [{ type: 'Alarms', id: 'LIST' }, { type: 'Alarms', id: 'OVERVIEW' }]
     }),
     getAlarmCount: build.query<Dashboard, RequestPayload>({
-      query: ({ params }) => {
-        const dashboardOverviewReq = createHttpRequest(CommonUrlsInfo.getDashboardOverview, params)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getDashboardV2Overview, params)
         return {
-          ...dashboardOverviewReq
+          ...req,
+          body: payload
         }
       },
       providesTags: [{ type: 'Alarms', id: 'OVERVIEW' }]
