@@ -1,13 +1,41 @@
-import { Col, Form, InputNumber, Radio, Row, Space, Switch, TimePicker, Typography } from 'antd'
-import { useIntl }                                                                   from 'react-intl'
+import { Col, Form, InputNumber, Radio, Row, Space, Switch, TimePicker } from 'antd'
+import { Moment }                                                        from 'moment-timezone'
+import { defineMessage, useIntl }                                        from 'react-intl'
 
-import { Select, StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { TypeForm }                                       from '@acx-ui/rc/components'
-import { ClusterHaFallbackScheduleTypeEnum }              from '@acx-ui/rc/utils'
+import { Select, StepsForm, Tooltip, useStepFormContext }                                           from '@acx-ui/components'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterNetworkSettings } from '@acx-ui/rc/utils'
 
-import { dayOfWeek, loadDistributions } from './utils'
+export type EdgeHaSettingsType =
+  Exclude<ClusterNetworkSettings['highAvailabilitySettings'], undefined>
 
-export const HaSettingForm = () => {
+export type FallbackSettingsType = EdgeHaSettingsType['fallbackSettings']
+
+export interface FallbackSettingsFormType extends Omit<FallbackSettingsType, 'schedule'> {
+  schedule: Omit<FallbackSettingsType['schedule'], 'time'> & { time?: Moment }
+}
+
+export interface EdgeHaSettingsFormType {
+  fallbackSettings: FallbackSettingsFormType
+  loadDistribution: ClusterHaLoadDistributionEnum
+}
+
+export const dayOfWeek = {
+  SUN: defineMessage({ defaultMessage: 'Sunday' }),
+  MON: defineMessage({ defaultMessage: 'Monday' }),
+  TUE: defineMessage({ defaultMessage: 'Tuesday' }),
+  WED: defineMessage({ defaultMessage: 'Wednesday' }),
+  THU: defineMessage({ defaultMessage: 'Thursday' }),
+  FRI: defineMessage({ defaultMessage: 'Friday' }),
+  SAT: defineMessage({ defaultMessage: 'Saturday' })
+}
+
+export const loadDistributions = {
+  [ClusterHaLoadDistributionEnum.RANDOM]: defineMessage({ defaultMessage: 'Random distribution' }),
+  // eslint-disable-next-line max-len
+  [ClusterHaLoadDistributionEnum.AP_GROUP]: defineMessage({ defaultMessage: 'Per AP group distribution' })
+}
+
+export const EdgeHaSettingsForm = () => {
   const { $t } = useIntl()
   const { form } = useStepFormContext()
   const isFallbackEnable = Form.useWatch(['fallbackSettings', 'enable'], form)
@@ -36,10 +64,6 @@ export const HaSettingForm = () => {
     label: $t(item[1]),
     value: item[0]
   }))
-
-  const header = <Typography.Title level={2}>
-    {$t({ defaultMessage: 'HA Settings' })}
-  </Typography.Title>
 
   const content = <Row>
     <Col span={14}>
@@ -224,10 +248,5 @@ export const HaSettingForm = () => {
     </Col>
   </Row>
 
-  return (
-    <TypeForm
-      header={header}
-      content={content}
-    />
-  )
+  return content
 }

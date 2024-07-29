@@ -39,9 +39,9 @@ jest.mock('./multiVenue/EditEdgeSdLan', () => () => {
 jest.mock('./multiVenue/EdgeSdLanTable', () => () => {
   return <div data-testid='EdgeMvSdLanTable' />
 })
-// jest.mock('../P2/EdgeSdLanDetail', () => () => {
-//   return <div data-testid='EdgeSdLanDetailP2' />
-// })
+jest.mock('./multiVenue/EdgeSdLanDetail', () => () => {
+  return <div data-testid='EdgeMvSdLanDetail' />
+})
 
 describe('All enabled', () => {
   beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -60,7 +60,7 @@ describe('All enabled', () => {
   })
   it('should navigate to Edge SD-LAN P2 detail page', async () => {
     render(<Provider><EdgeSdLanDetail /></Provider>)
-    expect(screen.getByTestId('EdgeSdLanDetailP2')).toBeVisible()
+    expect(screen.getByTestId('EdgeMvSdLanDetail')).toBeVisible()
   })
 })
 
