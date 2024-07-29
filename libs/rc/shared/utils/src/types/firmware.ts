@@ -483,5 +483,8 @@ export enum ApFirmwareBatchOperationType {
 }
 
 export interface ApFirmwareStartBatchOperationResult {
-  batchId: string
+  requestId: string
+  response: {
+    batchId: string
+  }
 }

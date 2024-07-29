@@ -700,10 +700,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<UpdateFirmwarePerApModelPayload>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
         // eslint-disable-next-line max-len
-        const batchOperationResult = await getBatchOperationResult(ApFirmwareBatchOperationType.UPDATE_NOW, fetchWithBQ)
-        // eslint-disable-next-line max-len
-        if (batchOperationResult.error) return { error: batchOperationResult.error as FetchBaseQueryError }
-        const batchId = (batchOperationResult.data as ApFirmwareStartBatchOperationResult).batchId
+        const { data, error } = await getBatchOperationResult(ApFirmwareBatchOperationType.UPDATE_NOW, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as ApFirmwareStartBatchOperationResult).response.batchId
 
         const { venueIds, ...rest } = args.payload!
         const requests = venueIds.map(venueId => ({
@@ -726,10 +725,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     updateVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<UpdateFirmwareSchedulePerApModelPayload>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
         // eslint-disable-next-line max-len
-        const batchOperationResult = await getBatchOperationResult(ApFirmwareBatchOperationType.CHANGE_SCHEDULE, fetchWithBQ)
-        // eslint-disable-next-line max-len
-        if (batchOperationResult.error) return { error: batchOperationResult.error as FetchBaseQueryError }
-        const batchId = (batchOperationResult.data as ApFirmwareStartBatchOperationResult).batchId
+        const { data, error } = await getBatchOperationResult(ApFirmwareBatchOperationType.CHANGE_SCHEDULE, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as ApFirmwareStartBatchOperationResult).response.batchId
 
         const { venueIds, ...rest } = args.payload!
         const requests = venueIds.map(venueId => ({
@@ -744,10 +742,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     skipVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<{ venueIds: string[] }>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
         // eslint-disable-next-line max-len
-        const batchOperationResult = await getBatchOperationResult(ApFirmwareBatchOperationType.SKIP_SCHEDULE, fetchWithBQ)
-        // eslint-disable-next-line max-len
-        if (batchOperationResult.error) return { error: batchOperationResult.error as FetchBaseQueryError }
-        const batchId = (batchOperationResult.data as ApFirmwareStartBatchOperationResult).batchId
+        const { data, error } = await getBatchOperationResult(ApFirmwareBatchOperationType.SKIP_SCHEDULE, fetchWithBQ)
+        if (error) return { error: error as FetchBaseQueryError }
+        const batchId = (data as ApFirmwareStartBatchOperationResult).response.batchId
 
         const requests = args.payload!.venueIds.map(venueId => ({ params: { venueId, batchId } }))
         return batchApi(FirmwareUrlsInfo.skipVenueSchedulesPerApModel, requests, fetchWithBQ)
