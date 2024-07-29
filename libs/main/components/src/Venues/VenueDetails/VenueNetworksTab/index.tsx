@@ -150,6 +150,8 @@ export function VenueNetworksTab () {
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const { venueId } = params
   const settingsId = 'venue-networks-table'
@@ -191,7 +193,7 @@ export function VenueNetworksTab () {
       page: 1,
       pageSize: 10000
     },
-    enableRbac: isPolicyRbacEnabled
+    enableRbac: resolvedRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
@@ -241,7 +243,11 @@ export function VenueNetworksTab () {
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue, enableRbac: isPolicyRbacEnabled })
+          addNetworkVenue({
+            params: { tenantId: params.tenantId, venueId: params.venueId, networkId: row.id },
+            payload: newNetworkVenue,
+            enableRbac: isPolicyRbacEnabled || isConfigTemplateRbacEnabled
+          })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
             if (networkVenue.venueId === params.venueId) {

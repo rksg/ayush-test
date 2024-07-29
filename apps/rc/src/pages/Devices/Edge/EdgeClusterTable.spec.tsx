@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                             from '@acx-ui/rc/components'
 import { edgeApi }                                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                   from '@acx-ui/store'
@@ -26,8 +26,10 @@ jest.mock('@acx-ui/rc/components', () => ({
     deleteNodeAndCluster: mockedDeleteFn,
     reboot: mockedRebootFn,
     shutdown: mockedShutdownFn
-  })
+  }),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -115,7 +117,7 @@ describe('Edge Cluster Table', () => {
   })
 
   it('should shutdown selected items successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
     render(
       <Provider>
         <EdgeClusterTable />

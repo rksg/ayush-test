@@ -82,6 +82,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  addNetworkVenue: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateNetworkVenue: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getVenueApCapabilities: {
     method: 'get',
     //url: '/venues/:venueId/aps/capabilities',
@@ -228,12 +246,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     // url: '/apGroups/query',
     url: '/venues/apGroups/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addApGroup: {
     method: 'post',
     url: '/venues/:venueId/apGroups',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   /*
   getApsByApGroup: {
@@ -246,13 +272,21 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/apGroups/:apGroupId',
     // url: '/venues/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateApGroup: {
     method: 'put',
     url: '/venues/:venueId/apGroups/:apGroupId',
     // url: '/venues/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteApGroup: {
     method: 'delete',
@@ -652,21 +686,37 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   activateRadiusServer: {
     method: 'put',
     url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateRadiusServer: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateRadiusServerSettings: {
     method: 'put',
     url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getRadiusServerSettings: {
     method: 'get',
     url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

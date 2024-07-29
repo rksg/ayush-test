@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, PageHeader }                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useGetAccessControlProfileQuery, useGetAccessControlProfileTemplateQuery } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -22,9 +23,12 @@ export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAccessControlProfileQuery,
-    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery
+    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
+    enableRbac: enableRbac
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
 

@@ -5,6 +5,7 @@ import { keys, every, get, uniq, omit, findIndex } from 'lodash'
 import {
   ApiVersionEnum,
   CommonRbacUrlsInfo,
+  CommonResult,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
   FILTER,
@@ -31,6 +32,8 @@ const defaultNetworkVenue = {
 }
 
 type NetworkApGroupParams = { venueId: string, networkId: string, apGroupId: string }
+
+import { QueryFn } from './servicePolicy.utils'
 
 export const getApGroupNetworkVenueNewFieldFromOld = (oldFieldName: string) => {
   switch(oldFieldName) {
@@ -661,4 +664,45 @@ function resolveRbacVenuesListFetchArgs (queryArgs: RequestPayload<{ isTemplate?
   }
 
   return payload?.isTemplate ? venueTemplateListInfo : networkVenuesListInfo
+}
+
+// eslint-disable-next-line max-len
+export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonResult, RequestPayload> => {
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+      const apis = isTemplate ? ConfigTemplateUrlsInfo : urlsInfo
+      const req = createHttpRequest(
+        isTemplate
+          ? (enableRbac ? apis.addNetworkVenueTemplateRbac : apis.addNetworkVenueTemplate)
+          : apis.addNetworkVenue,
+        params
+      )
+
+      const res = await fetchWithBQ({
+        ...req,
+        ...(enableRbac ? {} : { body: payload })
+      })
+
+      if (enableRbac) {
+        const updateReq = createHttpRequest(
+          isTemplate ? apis.updateNetworkVenueTemplateRbac : apis.updateNetworkVenue,
+          params
+        )
+
+        await fetchWithBQ({
+          ...updateReq,
+          body: JSON.stringify(payload)
+        })
+      }
+
+      if (res.error) {
+        return { error: res.error as FetchBaseQueryError }
+      } else {
+        return { data: res.data as CommonResult }
+      }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
 }

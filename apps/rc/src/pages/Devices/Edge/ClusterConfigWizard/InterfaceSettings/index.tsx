@@ -1,13 +1,13 @@
 import { useCallback, useContext, useMemo, useState } from 'react'
 
-import { Form }                   from 'antd'
+import { Form, Typography }       from 'antd'
 import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { CompatibilityStatusBar, CompatibilityStatusEnum }                        from '@acx-ui/rc/components'
+import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { CompatibilityStatusBar, CompatibilityStatusEnum, EdgeHaSettingsForm, TypeForm } from '@acx-ui/rc/components'
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
@@ -17,7 +17,6 @@ import { useTenantLink }                                                        
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import { HaSettingForm }      from './HaSettingForm'
 import { LagForm }            from './LagForm'
 import { PortForm }           from './PortForm'
 import { Summary }            from './Summary'
@@ -167,6 +166,10 @@ export const InterfaceSettings = () => {
       .catch(() => {/* do nothing */})
   }, 1000), [configWizardForm])
 
+  const haSettingHeader = <Typography.Title level={2}>
+    {$t({ defaultMessage: 'HA Settings' })}
+  </Typography.Title>
+
   const steps = useMemo(() => [
     {
       title: $t({ defaultMessage: 'LAG' }),
@@ -234,7 +237,10 @@ export const InterfaceSettings = () => {
         [{
           title: $t({ defaultMessage: 'HA Settings' }),
           id: InterfaceSettingsTypeEnum.HA_SETTING,
-          content: <HaSettingForm />
+          content: <TypeForm
+            header={haSettingHeader}
+            content={<EdgeHaSettingsForm />}
+          />
         }]:
         [{
           title: $t({ defaultMessage: 'Cluster Virtual IP' }),
