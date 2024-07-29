@@ -86,7 +86,7 @@ export function MspCustomers () {
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
 
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isAbacToggleEnabled })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
   const [deactivateMspEc] = useDeactivateMspEcMutation()
   const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
