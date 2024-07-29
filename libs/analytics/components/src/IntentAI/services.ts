@@ -182,23 +182,23 @@ export const api = intentAIApi.injectEndpoints({
         const displayStatuses = statuses.map(({ label }) => ({
           value: $t(states[label as keyof typeof states].text),
           key: label
-        }))
+        })).sort((a, b) => a.value.localeCompare(b.value))
 
         const displayZones = zones.map(({ id, label }) => ({
           value: label,
           key: id
-        }))
+        })).sort((a, b) => a.value.localeCompare(b.value))
         return {
           aiFeatures: aiFeatAndCat.aiFeatures.map(
             aiFeature => ({
               value: $t(aiFeaturesLabel[aiFeature as keyof typeof aiFeaturesLabel]),
               key: aiFeature
-            })),
+            })).sort((a, b) => a.value.localeCompare(b.value)),
           categories: aiFeatAndCat.categories.map(
             category => ({
               value: category,
               key: category
-            })),
+            })).sort((a, b) => a.value.localeCompare(b.value)),
           statuses: displayStatuses,
           zones: displayZones
         }
