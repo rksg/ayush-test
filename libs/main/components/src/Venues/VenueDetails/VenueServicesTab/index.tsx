@@ -24,6 +24,7 @@ export function VenueServicesTab () {
   const isEdgeEnabled = useIsEdgeReady() && !isTemplate
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
   const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
+  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE) && !isTemplate
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE) && !isTemplate
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
   // eslint-disable-next-line max-len
@@ -99,13 +100,13 @@ export function VenueServicesTab () {
         'guestEdgeClusterId',
         'guestEdgeClusterName',
         'isGuestTunnelEnabled',
-        'networkIds',
-        'guestNetworkIds',
-        'networkInfos'
+        ...(isEdgeSdLanMvEnabled
+          ? ['tunneledWlans', 'tunneledGuestWlans']
+          : ['networkIds', 'guestNetworkIds', 'networkInfos'])
       ],
-      filters: { venueId: [venueId] }
+      filters: { [isEdgeSdLanMvEnabled ? 'tunneledWlans.venueId' : 'venueId']: [venueId] }
     } }, {
-      skip: !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
+      skip: !(isEdgeSdLanReady || isEdgeSdLanHaEnabled || isEdgeSdLanMvEnabled),
       selectFromResult: ({ data }) => {
         return { edgeSdLanData: data?.data?.[0] }
       }
