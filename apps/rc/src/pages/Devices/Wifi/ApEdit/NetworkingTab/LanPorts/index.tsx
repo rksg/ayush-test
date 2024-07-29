@@ -204,7 +204,7 @@ export function LanPorts () {
         await updateApCustomization({
           params: { tenantId, serialNumber, venueId },
           payload,
-          enableRbac: isUseWifiRbacApi
+          enableRbac: true
         }).unwrap()
       } else {
         if (values?.useVenueSettings) {
