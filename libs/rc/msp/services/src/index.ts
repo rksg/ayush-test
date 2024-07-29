@@ -714,9 +714,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req = createHttpRequest(
-          MspUrlsInfo.getParentLogoUrl,
+          mspUrlsInfo.getParentLogoUrl,
           params
         )
         return {
@@ -725,9 +726,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getBrandingData: build.query<MspProfile, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req =
-          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+          createHttpRequest(mspUrlsInfo.getBrandingData, params)
         return {
           ...req
         }

@@ -1,9 +1,9 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { StepsForm }       from '@acx-ui/components'
-import {  CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }        from '@acx-ui/store'
+import { StepsForm }                             from '@acx-ui/components'
+import {  CommonUrlsInfo, EdgeMvSdLanFormModel } from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -11,8 +11,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { EdgeMvSdLanFormModel } from '..'
-import { mockedVenueList }      from '../../__tests__/fixtures'
+import { mockedVenueList } from '../../__tests__/fixtures'
 
 import { SummaryForm } from '.'
 
