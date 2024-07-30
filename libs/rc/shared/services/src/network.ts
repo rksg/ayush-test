@@ -394,6 +394,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,
         FetchBaseQueryMeta>
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Network', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const useCases = [
+            'UpdateNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'UpdateVenueWifiNetworkSettings'
+          ]
+
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
       }
     }),
     networkDetailHeader: build.query<NetworkDetailHeader, RequestPayload>({
@@ -414,7 +430,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'UpdateNetworkDeep',
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkOnVenue'
+            'DeactivateWifiNetworkOnVenue',
+            'UpdateVenueWifiNetworkSettings'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
             'DeleteNetworkVenueTemplate',
@@ -515,15 +532,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         return { data: aggregatedList }
       },
-      providesTags: [{ type: 'Venue', id: 'LIST' }],
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkOnVenue'
+            'DeactivateWifiNetworkOnVenue',
+            'UpdateVenueWifiNetworkSettings'
           ], () => {
-            api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
           })
         })
       },
@@ -688,6 +707,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         return { data: aggregatedList }
       },
+      keepUnusedDataFor: 0,
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -695,6 +715,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'UpdateVenueWifiNetworkSettings',
             'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))

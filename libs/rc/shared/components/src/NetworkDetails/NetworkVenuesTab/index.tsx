@@ -179,7 +179,7 @@ interface schedule {
 export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const params = useParams()
-  const isTemplate = useConfigTemplate()
+  const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLaneady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -206,12 +206,8 @@ export function NetworkVenuesTab () {
   } as NetworkMvTunnelModalProps)
   const [systemNetwork, setSystemNetwork] = useState(false)
 
-  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useUpdateNetworkVenueMutation,
-    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
-  })
-
   const networkQuery = useGetNetwork()
+
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
@@ -227,6 +223,12 @@ export function NetworkVenuesTab () {
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
 
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+
+  // RBAC API doesn't support
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddNetworkVenuesMutation,
     useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
@@ -235,6 +237,7 @@ export function NetworkVenuesTab () {
     useMutationFn: useDeleteNetworkVenuesMutation,
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
+
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
@@ -376,10 +379,12 @@ export function NetworkVenuesTab () {
   const handleDeleteNetworkVenues = async (networkVenueIds: string[], clearSelection: () => void) => {
     if (networkVenueIds.length > 0) {
       if (resolvedRbacEnabled) {
+        const network = networkQuery.data
+        const networkId = (network && network?.id) ? network.id : ''
         const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
           const curParams = {
-            venueId: params.venueId,
-            networkId: networkVenueId
+            venueId: networkVenueId,
+            networkId: networkId
           }
           return deleteNetworkVenue({ params: curParams, enableRbac: true })
         })
@@ -444,9 +449,11 @@ export function NetworkVenuesTab () {
     deActivatingVenues.forEach(venue => {
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
       if (alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
-        const { id } = alreadyActivatedVenue
-        if (!venue.activated.isDisabled && id && venue.activated.isActivated === true) {
-          selectedVenuesIds.push(id)
+        const { id, venueId } = alreadyActivatedVenue
+        const selectVenueId = id ?? venueId
+        const { isDisabled, isActivated } = venue.activated || {}
+        if (!isDisabled && selectVenueId && isActivated === true) {
+          selectedVenuesIds.push(selectVenueId)
         }
       }
     })
@@ -697,10 +704,16 @@ export function NetworkVenuesTab () {
       let oldData = _.cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
 
-      updateNetworkVenue({ params: {
-        tenantId: params.tenantId,
-        networkVenueId: payload.id
-      }, payload: { newData: payload } }).then(()=>{
+      updateNetworkVenue({
+        params: {
+          tenantId: params.tenantId,
+          networkVenueId: payload.id,
+          venueId: payload.venueId,
+          networkId: payload.networkId
+        },
+        payload: !isTemplate ? payload : { newData: payload },
+        enableRbac: resolvedRbacEnabled
+      }).then(()=>{
         setApGroupModalState({
           visible: false
         })
@@ -742,10 +755,16 @@ export function NetworkVenuesTab () {
 
     const payload = _.assign(data, { scheduler: tmpScheduleList })
 
-    updateNetworkVenue({ params: {
-      tenantId: params.tenantId,
-      networkVenueId: payload.id
-    }, payload: { newData: payload } }).then(()=>{
+    updateNetworkVenue({
+      params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id,
+        venueId: payload.venueId,
+        networkId: payload.networkId
+      },
+      payload: !isTemplate ? payload : { newData: payload },
+      enableRbac: resolvedRbacEnabled
+    }).then(()=>{
       setScheduleModalState({
         visible: false
       })
