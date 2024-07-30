@@ -22,10 +22,12 @@ export default function BasicActionContent (props: BasicActionContentProps) {
       <UI.ActionTypeIcon>
         {icon}
       </UI.ActionTypeIcon>
-      <div>
+      <Space direction={'vertical'}
+        align={'start'}
+        size={4}>
         <div>{title}</div>
         <div>{content}</div>
-      </div>
+      </Space>
     </Space>
   )
 }

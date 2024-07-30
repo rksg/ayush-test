@@ -22,6 +22,7 @@ import {
   AupNode,
   DataPromptNode,
   DisplayMessageNode,
+  DpskNode,
   StartNode
 } from './WorkflowStepNode'
 
@@ -32,7 +33,8 @@ const nodeTypes: NodeTypes = {
   START: StartNode, // This is a special type for the starter node displaying
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
+  [ActionType.DPSK]: DpskNode
 }
 
 interface WorkflowProps {
