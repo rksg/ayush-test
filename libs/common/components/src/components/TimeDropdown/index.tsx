@@ -8,6 +8,16 @@ import {
 
 import * as UI from './styledComponents'
 
+export enum TimeDropdownTypes {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly'
+}
+
+interface TimeDropdownProps {
+  type: TimeDropdownTypes
+  name: string
+}
 
 function timeMap () {
   const timeMap = new Map<number, string>()
@@ -62,7 +72,7 @@ const atDayHour = defineMessage({
   defaultMessage: '<day></day> <at>at</at> <hour></hour>'
 })
 
-export function getDisplayTime ( type: TimeDropdownProps['type']) {
+export function getDisplayTime (type: TimeDropdownTypes) {
   return {
     daily: (hour: number) => (timeMap().get(hour)),
     weekly: (day: number, hour: number) => (
@@ -86,12 +96,7 @@ export function getDisplayTime ( type: TimeDropdownProps['type']) {
   }[type]
 }
 
-interface TimeDropdownProps {
-  type: 'daily' | 'weekly' | 'monthly'
-  name: string
-}
-
-export function TimeDropdown ( { type, name }:TimeDropdownProps ) {
+export function TimeDropdown ({ type, name }: TimeDropdownProps) {
   const { $t } = useIntl()
 
   const renderHour = (spanLength:number) => (
@@ -108,7 +113,7 @@ export function TimeDropdown ( { type, name }:TimeDropdownProps ) {
     </Col>
   )
 
-  if (type === 'daily') {
+  if (type === TimeDropdownTypes.Daily) {
     return renderHour(24)
   }
   else {
@@ -123,7 +128,7 @@ export function TimeDropdown ( { type, name }:TimeDropdownProps ) {
                 noStyle
               >
                 <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-                  {type == 'weekly' ? dayOfWeekOptions() : dayOfMonthOptions()}
+                  {type === TimeDropdownTypes.Weekly ? dayOfWeekOptions() : dayOfMonthOptions()}
                 </Select>
               </Form.Item>
             </Col>
