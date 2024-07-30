@@ -5,7 +5,6 @@ import { useIntl }                      from 'react-intl'
 
 import { ActionType, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
-import { ActionHiddenFields }   from './ActionHiddenFields'
 import { CommonActionSettings } from './CommonActionSettings'
 import { DataPromptField }      from './DataPromptField'
 import { FieldLabel }           from './styledComponents'
@@ -68,7 +67,22 @@ export function DataPromptSettings () {
 
       <Divider dashed={true} />
       <DataPromptField />
-      <ActionHiddenFields />
+      <Form.Item
+        name={'backButtonText'}
+        hidden={true}
+      />
+      <Form.Item
+        name={'continueButtonText'}
+        hidden={true}
+      />
+      <Form.Item
+        name={'displayBackButton'}
+        hidden={true}
+      />
+      <Form.Item
+        name={'displayContinueButton'}
+        hidden={true}
+      />
     </>
   )
 }
