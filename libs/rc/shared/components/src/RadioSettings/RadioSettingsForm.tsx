@@ -297,7 +297,6 @@ export function RadioSettingsForm (props:{
                 <InputNumber
                   style={{ width: '150px' }}
                   controls={false}
-                  min={0}
                   precision={0}
                   placeholder={$t({ defaultMessage: 'Minimum Floor' })}
                   onChange={() => form.validateFields()}
@@ -315,7 +314,6 @@ export function RadioSettingsForm (props:{
                 <InputNumber
                   style={{ width: '150px' }}
                   controls={false}
-                  min={0}
                   precision={0}
                   placeholder={$t({ defaultMessage: 'Maximum Floor' })}
                   onChange={() => {form.validateFields()}}
