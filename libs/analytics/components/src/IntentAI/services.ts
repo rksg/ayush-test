@@ -48,10 +48,9 @@ type Metadata = {
 
 const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
-  let tooltipKey = 'tooltip'
 
   const stateConfig = states[state]
-  return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
+  return $t(stateConfig.tooltip, {
     errorMessage: metadata.error?.message,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
