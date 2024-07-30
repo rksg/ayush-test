@@ -1,12 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, FirmwareRbacUrlsInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, rbacApiURL }                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor }         from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                           from '@acx-ui/user'
-import { AccountVertical, getJwtTokenPayload, isDelegationMode }  from '@acx-ui/utils'
+import { Features, useIsSplitOn, useIsTierAllowed }              from '@acx-ui/feature-toggle'
+import { Provider, rbacApiURL }                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor }        from '@acx-ui/test-utils'
+import { AccountVertical, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -185,6 +183,12 @@ jest.mock('@acx-ui/main/components', () => ({
   UserButton: () => <div data-testid='user-button' />,
   FetchBot: () => <div data-testid='fetch-bot' />
 }))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  CloudMessageBanner: () => <div data-testid='cloud-message-banner' />
+}))
+
 jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
 describe('Layout', () => {
@@ -219,58 +223,6 @@ describe('Layout', () => {
     })
 
     mockServer.use(
-      rest.get(
-        FirmwareUrlsInfo.getFirmwareVersionIdList.url,
-        (req, res, ctx) => res(ctx.json(['6.2.1.103.1710']))
-      ),
-      rest.post(
-        CommonUrlsInfo.getAlarmsList.url,
-        (req, res, ctx) => res(ctx.json({
-          data: [],
-          totalCount: 0
-        }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getActivityList.url,
-        (req, res, ctx) => res(ctx.json({
-          page: 1,
-          totalCount: 0
-        }))
-      ),
-      rest.post(
-        FirmwareUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json({
-          upgradeVenueViewList: []
-        }))
-      ),
-      rest.post(
-        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
-        (req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.post(
-        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
-        (req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.get(
-        'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json',
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        CommonUrlsInfo.getDashboardOverview.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        UserUrlsInfo.getAllUserSettings.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        UserUrlsInfo.getCloudVersion.url,
-        (req, res, ctx) => res(ctx.json({}))
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
-        (req, res, ctx) => res(ctx.json({}))
-      ),
       rest.get(`${rbacApiURL}/tenantSettings`, (_req, res, ctx) => res(ctx.json(
         [{ key: 'brand-name', value: 'testBrand' }]
       )))

@@ -19,7 +19,7 @@ export function usePersonaGroupAction () {
   const [associateDpsk] = useAssociateIdentityGroupWithDpskMutation()
   const [associateMacReg] = useAssociateIdentityGroupWithMacRegistrationMutation()
 
-  const createPersonaGroupMutation = async (submittedData: PersonaGroup) => {
+  const createPersonaGroupMutation = async (submittedData: PersonaGroup, callback?: Function) => {
     const { dpskPoolId, macRegistrationPoolId, ...groupData } = submittedData
 
     const associateDpskCallback = (groupId: string) => {
@@ -41,6 +41,7 @@ export function usePersonaGroupAction () {
       payload: { ...(isAsync ? groupData : submittedData) },
       customHeaders,
       callback: (response: AsyncCommonResponse) => {
+        callback?.(response)
         if (response.id && isAsync) {
           associateDpskCallback(response.id)
           associateMacRegistrationCallback(response.id)

@@ -14,7 +14,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
-import { setUpIntl, DateRange }              from '@acx-ui/utils'
+import { DateRange }                         from '@acx-ui/utils'
 
 import { intentListResult, filterOptions } from './__tests__/fixtures'
 import {
@@ -52,10 +52,6 @@ describe('IntentAITabContent', () => {
 
   beforeEach(() => {
     setRaiPermissions({ WRITE_AI_OPERATIONS: true } as RaiPermissions)
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
     store.dispatch(api.util.resetApiState())
 
     const pathFilters = { ...filters, path: defaultNetworkPath }

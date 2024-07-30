@@ -48,6 +48,8 @@ const useApGroupsListInstance = () => {
   const { isTemplate } = useConfigTemplate()
   const { tenantId, apGroupId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
   const fields = ['id', 'name', 'venueName', 'venueId', 'members', 'networks']
 
   const apGroupsListPayload = {
@@ -74,7 +76,8 @@ const useApGroupsListInstance = () => {
     params: { tenantId },
     payload: apGroupsListPayload,
     page: 1,
-    pageSize: 10
+    pageSize: 10,
+    enableRbac: isConfigTemplateRbacEnabled
   }, {
     skip: !isTemplate,
     selectFromResult: ({ data, ...rest }) => ({

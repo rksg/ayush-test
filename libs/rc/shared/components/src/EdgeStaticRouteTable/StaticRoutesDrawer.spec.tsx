@@ -77,8 +77,10 @@ describe('EdgeStaticRouteTable - StaticRoutesDrawer', () => {
     await userEvent.type(ipField, '1.1.1.1')
     await userEvent.type(subnetField, '255.255.255.0')
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
-    // eslint-disable-next-line max-len
-    expect(await screen.findByText('Please enter a valid Network Address + Subnet Mask')).toBeVisible()
+    await waitFor(async () =>
+      // eslint-disable-next-line max-len
+      expect((await screen.findAllByText('Please enter a valid Network Address + Subnet Mask')).length).toBe(2)
+    )
   })
 
   it('should be blocked by duplicate data', async () => {

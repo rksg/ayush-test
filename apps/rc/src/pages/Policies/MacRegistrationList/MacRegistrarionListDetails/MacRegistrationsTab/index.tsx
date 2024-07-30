@@ -20,11 +20,11 @@ import {
   returnExpirationString,
   SEARCH,
   toDateTimeString,
-  useTableQuery
+  useTableQuery,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
@@ -87,8 +87,7 @@ export function MacRegistrationsTab () {
       setVisible(true)
       setIsEditMode(true)
       clearSelection()
-    },
-    scopeKey: [WifiScopes.UPDATE]
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -128,8 +127,7 @@ export function MacRegistrationsTab () {
             console.log(error) // eslint-disable-line no-console
           })
       )
-    },
-    scopeKey: [WifiScopes.DELETE]
+    }
   },
   {
     label: $t({ defaultMessage: 'Revoke' }),
@@ -150,8 +148,7 @@ export function MacRegistrationsTab () {
           payload: { revoked: true },
           customHeaders
         }).then(clearSelection)
-    },
-    scopeKey: [WifiScopes.UPDATE]
+    }
   },
   {
     label: $t({ defaultMessage: 'Unrevoke' }),
@@ -164,8 +161,7 @@ export function MacRegistrationsTab () {
           payload: { revoked: false },
           customHeaders
         }).then(clearSelection)
-    },
-    scopeKey: [WifiScopes.UPDATE]
+    }
   }]
 
   const columns: TableProps<MacRegistration>['columns'] = [
@@ -280,23 +276,19 @@ export function MacRegistrationsTab () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={
-          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-        }
-        actions={filterByAccess([{
+        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
+        actions={filterByAccess( hasCloudpathAccess() ? [{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)
             setVisible(true)
             setEditData({} as MacRegistration)
-          },
-          scopeKey: [WifiScopes.CREATE]
+          }
         },
         {
           label: $t({ defaultMessage: 'Import From File' }),
-          onClick: () => setUploadCsvDrawerVisible(true),
-          scopeKey: [WifiScopes.CREATE]
-        }])}
+          onClick: () => setUploadCsvDrawerVisible(true)
+        }] : [])}
       />
     </Loader>
   )

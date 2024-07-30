@@ -1,17 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Map should render map if feature flag is on 1`] = `
-<DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-  />
-</DocumentFragment>
-`;
-
 exports[`Map v2 should render map if feature flag is on 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
+  .c0 {
+  position: relative;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+
+@supports (-webkit-backdrop-filter:none) or (backdrop-filter:none) {
+
+}
+
+<div
+    class="c0"
   >
     <h1>
       LOADING

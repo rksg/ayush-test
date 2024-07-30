@@ -50,7 +50,7 @@ export function Priority () {
 
   const choose = get('IS_MLISA_SA')
     ? defineMessage({ defaultMessage: 'What is your primary network intent for Zone: {zone}' })
-    : defineMessage({ defaultMessage: 'What is your primary network intent for Venue: <VenueSingular></VenueSingular>' })
+    : defineMessage({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' })
 
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' }),
