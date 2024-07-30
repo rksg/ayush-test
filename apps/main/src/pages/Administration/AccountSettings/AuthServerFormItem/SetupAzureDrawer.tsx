@@ -21,9 +21,9 @@ import { useParams } from 'react-router-dom'
 import { Button, DrawerProps, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { formatter }                          from '@acx-ui/formatter'
+import { useGetMspUploadURLMutation }         from '@acx-ui/msp/services'
 import {
   useAddTenantAuthenticationsMutation,
-  useGetUploadURLMutation,
   useUpdateTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -98,11 +98,12 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const [selectedAuth, setSelectedAuth] = useState('')
   const [ssoSignature, setSsoSignature] = useState(false)
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
-  const [getUploadURL] = useGetUploadURLMutation()
+  const [getUploadURL] = useGetMspUploadURLMutation()
 
   const onClose = () => {
     setVisible(false)
@@ -185,7 +186,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     const extension: string = getFileExtension(file.name)
     const uploadUrl = await getUploadURL({
       params: { ...params },
-      payload: { fileExtension: extension }
+      payload: { fileExtension: extension },
+      enableRbac: isRbacEnabled
     }) as { data: UploadUrlResponse }
 
     if (uploadUrl && uploadUrl.data && uploadUrl.data.fileId) {

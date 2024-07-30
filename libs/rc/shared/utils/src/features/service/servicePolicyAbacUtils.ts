@@ -38,13 +38,13 @@ export interface ServicePolicyCardData<T> {
 // eslint-disable-next-line max-len
 export function isServicePolicyCardEnabled<T> (cardItem: ServicePolicyCardData<T>, oper: ServicePolicyScopeKeyOper): boolean {
   // eslint-disable-next-line max-len
-  return !cardItem.disabled && hasScope(cardItem.scopeKeysMap?.[oper] || radioCategoryToScopeKey(cardItem.categories, oper))
+  return !cardItem.disabled && (hasScope(cardItem.scopeKeysMap?.[oper] || radioCategoryToScopeKey(cardItem.categories, oper)))
 }
 
 export type ServicePolicyCardSet<T> = { title: string, items: ServicePolicyCardData<T>[] }
 // eslint-disable-next-line max-len
 export function isServicePolicyCardSetEnabled<T> (set: ServicePolicyCardSet<T>, oper: ServicePolicyScopeKeyOper): boolean {
-  return set.items.some(item => isServicePolicyCardEnabled(item, oper))
+  return set.items.some(item => isServicePolicyCardEnabled<T>(item, oper))
 }
 
 export function servicePolicyCardDataToScopeKeys (

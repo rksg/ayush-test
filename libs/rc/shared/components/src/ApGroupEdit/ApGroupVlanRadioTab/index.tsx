@@ -50,7 +50,7 @@ export function ApGroupVlanRadioTab () {
 
   const {
     isApGroupTableFlag,
-    isWifiRbacEnabled,
+    isRbacEnabled,
     setEditContextData,
     venueId
   } = useContext(ApGroupEditContext)
@@ -86,12 +86,13 @@ export function ApGroupVlanRadioTab () {
     })
 
     const getApGroupNetworkData = async (venueId: string) => {
-      if (isWifiRbacEnabled) {
+      if (isRbacEnabled) {
         const { data } = await getRbacApGroupNetworkList({
           params: { venueId },
           payload: cloneDeep({
             ...defaultNewApGroupNetworkPayload,
             isTemplate: isTemplate,
+            isTemplateRbacEnabled: isRbacEnabled,
             filters: {
               'venueApGroups.apGroupIds': [apGroupId],
               'venueApGroups.isAllApGroups': [false]
@@ -126,7 +127,10 @@ export function ApGroupVlanRadioTab () {
     const updateData = updateDataRef.current
 
     if (updateData.length > 0) {
-      await updateNetworkVenues({ payload: updateData }).unwrap()
+      await updateNetworkVenues({
+        payload: updateData,
+        enableRbac: isRbacEnabled
+      }).unwrap()
     }
 
     setEditContextData({

@@ -41,10 +41,6 @@ jest.mock('./PortForm', () => ({
   ...jest.requireActual('./PortForm'),
   PortForm: () => <div data-testid='rc-PortForm' />
 }))
-jest.mock('./HaSettingForm', () => ({
-  ...jest.requireActual('./HaSettingForm'),
-  HaSettingForm: () => <div data-testid='rc-HaSettingForm' />
-}))
 jest.mock('./Summary', () => ({
   ...jest.requireActual('./Summary'),
   Summary: () => <div data-testid='rc-Summary' />
@@ -63,7 +59,8 @@ jest.mock('@acx-ui/rc/components', () => ({
           {JSON.stringify(nodeErr)}
         </div>))
       }
-    </div>
+    </div>,
+  EdgeHaSettingsForm: () => <div data-testid='rc-HaSettingForm' />
 }))
 
 const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{

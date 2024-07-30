@@ -14,7 +14,8 @@ import {
   getEdgePortTypeOptions,
   lanPortsubnetValidator,
   serverIpAddressRegExp,
-  subnetMaskIpRegExp
+  subnetMaskIpRegExp,
+  validateGatewayInSubnet
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo, isWANPortExist } from '../EdgePortsGeneralBase/utils'
@@ -225,7 +226,13 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
                 validateFirst
                 rules={[
                   { required: true },
-                  { validator: (_, value) => serverIpAddressRegExp(value) }
+                  { validator: (_, value) => serverIpAddressRegExp(value) },
+                  {
+                    validator: (_, value) => {
+                      let subnet = getCurrentSubnetInfo()
+                      return validateGatewayInSubnet(subnet.ip, subnet.subnetMask, value)
+                    }
+                  }
                 ]}
                 {..._.get(formFieldsProps, 'gateway')}
                 children={<Input />}

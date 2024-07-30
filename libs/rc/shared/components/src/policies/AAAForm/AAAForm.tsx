@@ -24,7 +24,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
-  usePolicyPreviousPath
+  usePolicyPreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -47,7 +48,10 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
