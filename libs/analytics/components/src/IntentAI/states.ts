@@ -23,7 +23,7 @@ export enum reasons {
   notEnoughData = 'not-enough-data',
   verified = 'verified',
   waitingForEtl = 'waiting-for-etl',
-  oneClick = 'one-click',
+  oneClick = 'one-click'
 }
 
 export enum statusReasons {
