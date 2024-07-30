@@ -558,7 +558,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           return { error: networkVenuesListQueryError }
 
         const venueIdsToIncompatible:{ [key:string]: number } = {}
-        if (isPayloadHasField(arg.payload, 'incompatible')) {
+        if (isPayloadHasField(arg.payload, 'incompatible') && !arg.payload?.isTemplate) {
           try {
             const apCompatibilitiesReq = {
               ...createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, arg.params),
@@ -760,7 +760,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkOnVenue'
+            'DeactivateWifiNetworkOnVenue',
+            'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })

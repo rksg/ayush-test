@@ -7,7 +7,6 @@ import {
   ConfigTemplateUrlsInfo,
   NetworkVenue,
   PoliciesConfigTemplateUrlsInfo,
-  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { RequestPayload }             from '@acx-ui/types'
@@ -17,15 +16,12 @@ import { QueryFn } from './common'
 
 
 // eslint-disable-next-line max-len
-export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonResult, RequestPayload> => {
+export const addNetworkVenueFn = () : QueryFn<CommonResult, RequestPayload> => {
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
-      const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-      const apis = isTemplate ? ConfigTemplateUrlsInfo : urlsInfo
+      const apis = ConfigTemplateUrlsInfo
       const req = createHttpRequest(
-        isTemplate
-          ? (enableRbac ? apis.addNetworkVenueTemplateRbac : apis.addNetworkVenueTemplate)
-          : apis.addNetworkVenue,
+        enableRbac ? apis.addNetworkVenueTemplateRbac : apis.addNetworkVenueTemplate,
         params
       )
 
@@ -33,18 +29,6 @@ export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonR
         ...req,
         ...(enableRbac ? {} : { body: payload })
       })
-
-      if (enableRbac) {
-        const updateReq = createHttpRequest(
-          isTemplate ? apis.updateNetworkVenueTemplateRbac : apis.updateNetworkVenue,
-          params
-        )
-
-        await fetchWithBQ({
-          ...updateReq,
-          body: JSON.stringify(payload)
-        })
-      }
 
       if (res.error) {
         return { error: res.error as FetchBaseQueryError }

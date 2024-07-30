@@ -179,6 +179,7 @@ interface schedule {
 export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const params = useParams()
+  const isTemplate = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLaneady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -186,6 +187,8 @@ export function NetworkVenuesTab () {
   const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const settingsId = 'network-venues-table'
 
   const tableQuery = useNetworkVenueList({ settingsId, networkId })
@@ -324,7 +327,7 @@ export function NetworkVenuesTab () {
             networkId
           },
           payload: newNetworkVenue,
-          enableRbac: isWifiRbacEnabled
+          enableRbac: resolvedRbacEnabled
         })
       } else { // deactivate
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, [row.id], () => {
@@ -342,7 +345,7 @@ export function NetworkVenuesTab () {
               venueId: newNetworkVenue.venueId,
               networkId
             },
-            enableRbac: isWifiRbacEnabled
+            enableRbac: resolvedRbacEnabled
           })
         })
       }
@@ -351,7 +354,7 @@ export function NetworkVenuesTab () {
 
   const handleAddNetworkVenues = async (networkVenues: NetworkVenue[], clearSelection: () => void) => {
     if (networkVenues.length > 0) {
-      if (isWifiRbacEnabled) {
+      if (resolvedRbacEnabled) {
         const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
           const params = {
             venueId: networkVenue.venueId,
@@ -372,7 +375,7 @@ export function NetworkVenuesTab () {
 
   const handleDeleteNetworkVenues = async (networkVenueIds: string[], clearSelection: () => void) => {
     if (networkVenueIds.length > 0) {
-      if (isWifiRbacEnabled) {
+      if (resolvedRbacEnabled) {
         const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
           const curParams = {
             venueId: params.venueId,
