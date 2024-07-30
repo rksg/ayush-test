@@ -1,11 +1,12 @@
 import { forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { Form, Switch }                              from 'antd'
+import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Loader }                                                       from '@acx-ui/components'
-import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation } from '@acx-ui/rc/services'
-import { UIConfiguration }                                              from '@acx-ui/rc/utils'
+import { Loader }                                                                                            from '@acx-ui/components'
+import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationImageQuery } from '@acx-ui/rc/services'
+import { UIConfiguration }                                                                                   from '@acx-ui/rc/utils'
 
 
 import { BackgroundContent } from './BackgroundContent'
@@ -181,6 +182,13 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
         }
       }
     }
+
+    if (data.backgroundImage === original.current.backgroundImage) {
+      data.backgroundImage = undefined
+    } else if (!data.backgroundImage && original.current.backgroundImage) {
+      data.backgroundImage = undefined
+    }
+
     if (!display.get('poweredBy')) {
       data.disablePoweredBy = true
     }

@@ -12,37 +12,19 @@ import * as UI     from './styledComponents'
 export interface BodyContentProps {
   value: UIConfiguration
   onColorChange: (v:string)=>void
-  onSizeChange: (v:number)=>void
 }
 
 interface WidgetProps {
   color: string
   onColorChange: (v:string)=>void
-  onSizeChange: (v:number)=>void
 }
 
 function Widget (props: WidgetProps) {
-  const maxSize = 14
-  const minSize = 10
-  const { size, color, onColorChange, onSizeChange } = props
-  const showPlus = size < maxSize
-  const showMinus = size > minSize
+  const { color, onColorChange } = props
   const [showPicker, setShowPicker] = useState(false)
   return (
     <>
       <div style={{ display: 'flex' }}>
-        <UI.TextPlus $showPlus={showPlus}
-          title='textplus'
-          onClick={(e) => {
-            showPlus ? onSizeChange(size+1) : e.preventDefault()
-          }}
-        />
-        <UI.TextMinus $showMinus={showMinus}
-          title='textminus'
-          onClick={(e) => {
-            showMinus ? onSizeChange(size-1) : e.preventDefault()
-          }}
-        />
         <UI.FontColorsOutlined $showColorPicker={showPicker}
           onClick={(e) => {
             setShowPicker(!showPicker)
@@ -66,7 +48,7 @@ function Widget (props: WidgetProps) {
 }
 
 export function BodyContent (props: BodyContentProps) {
-  const { value, onColorChange, onSizeChange } = props
+  const { value, onColorChange } = props
   const [cursor, setCursor] = useState('none')
   const [outline, setOutline] = useState('none')
   const [clicked, setClicked] = useState(false)
@@ -78,7 +60,7 @@ export function BodyContent (props: BodyContentProps) {
     visible={clicked}
     onVisibleChange={(v) => setClicked(v)}
     placement='leftTop'
-    overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-10)', height: 40, width: 100 }}
+    overlayInnerStyle={{ backgroundColor: 'var(--acx-neutrals-10)', height: 40, width: 40 }}
     >
       <TextArea
         maxLength={100}
