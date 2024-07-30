@@ -101,7 +101,8 @@ describe('Health KPI', () => {
       },
       connection: {
         kpis: [
-          'switchAuthentication'
+          'switchAuthentication',
+          'dhcp'
         ]
       },
       performance: {
