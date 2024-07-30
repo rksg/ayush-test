@@ -113,17 +113,19 @@ export const kpiHelper = (code: string) => {
 type BasicRecommendationWithStatus = BasicRecommendation & {
   status: string
 }
-type MutationPayload = { id: string }
+
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
-interface UpdatePreferenceScheduleMutationPayload extends MutationPayload {
-  status: string
-  scheduledAt: string
-  preferences: {
-    crrmFullOptimization: boolean
+interface UpdatePreferenceScheduleMutationResponse { transition: MutationResponse }
+
+export function processDtoToPayload (dto: EnhancedRecommendation) {
+  return {
+    id: dto.id,
+    status: dto.status,
+    scheduledAt: dto.scheduledAt,
+    preferences: dto.preferences
   }
 }
-interface UpdatePreferenceScheduleMutationResponse { transition: MutationResponse }
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -167,9 +169,9 @@ export const api = recommendationApi.injectEndpoints({
     }),
     updatePreferenceSchedule: build.mutation<
       UpdatePreferenceScheduleMutationResponse,
-      UpdatePreferenceScheduleMutationPayload
+      EnhancedRecommendation
     >({
-      query: ({ ...payload }) => ({
+      query: (variables) => ({
         document: gql`
           mutation TransitionMutation(
             $id: String!
@@ -189,12 +191,7 @@ export const api = recommendationApi.injectEndpoints({
             }
           }
             `,
-        variables: {
-          id: payload.id,
-          status: payload.status,
-          scheduledAt: payload.scheduledAt,
-          preferences: payload.preferences
-        },
+        variables: processDtoToPayload(variables),
         invalidatesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
       })
     })

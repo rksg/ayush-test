@@ -14,10 +14,10 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { useParams }              from '@acx-ui/react-router-dom'
 
-import { crrmText }                                                                  from '../../utils'
-import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
-import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }           from '../services'
-import * as UI                                                                       from '../styledComponents'
+import { crrmText }                                                                                             from '../../utils'
+import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType }                            from '../config'
+import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery, useUpdatePreferenceScheduleMutation } from '../services'
+import * as UI                                                                                                  from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'
@@ -162,6 +162,8 @@ export function AIDrivenRRM () {
     }
   }
 
+  const [submit] = useUpdatePreferenceScheduleMutation()
+
   return (
     <Loader states={[codeQuery, detailsQuery]}>
       <PageHeader
@@ -182,7 +184,7 @@ export function AIDrivenRRM () {
         ]}
       />
       <StepsForm
-        // onFinish={async (values) => { await submit(values).unwrap() }}
+        onFinish={async (values) => { await submit(values).unwrap() }}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
