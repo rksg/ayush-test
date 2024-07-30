@@ -1792,6 +1792,7 @@ export const {
   useAddAclMutation,
   useAddVlanMutation,
   useGetSwitchConfigProfileQuery,
+  useLazyGetSwitchConfigProfileQuery,
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
