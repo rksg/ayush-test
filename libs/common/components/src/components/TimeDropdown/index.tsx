@@ -86,11 +86,11 @@ export const getDisplayTime =
 }
 
 interface TimeDropdownProps {
-  timeType: string,
+  type: 'daily' | 'weekly' | 'monthly'
   name: string
 }
 
-export function TimeDropdown ( { timeType, name }:TimeDropdownProps ) {
+export function TimeDropdown ( { type, name }:TimeDropdownProps ) {
   const { $t } = useIntl()
 
   const renderHour = (spanLength:number) => (
@@ -107,7 +107,7 @@ export function TimeDropdown ( { timeType, name }:TimeDropdownProps ) {
     </Col>
   )
 
-  if (timeType === 'Daily') {
+  if (type === 'daily') {
     return renderHour(24)
   }
   else {
@@ -122,7 +122,7 @@ export function TimeDropdown ( { timeType, name }:TimeDropdownProps ) {
                 noStyle
               >
                 <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-                  {timeType == 'Weekly' ? dayOfWeekOptions() : dayOfMonthOptions()}
+                  {type == 'weekly' ? dayOfWeekOptions() : dayOfMonthOptions()}
                 </Select>
               </Form.Item>
             </Col>

@@ -5,20 +5,20 @@ import { TimeDropdown } from '.'
 
 describe('TimeDropdown', () => {
   it('renders Daily dropdown correctly', async () => {
-    render(<TimeDropdown timeType='Daily' name='daily' />)
+    render(<TimeDropdown type='daily' name='daily' />)
 
     expect(screen.getByText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Weekly dropdown correctly', () => {
-    render(<TimeDropdown timeType='Weekly' name='weekly' />)
+    render(<TimeDropdown type='weekly' name='weekly' />)
 
     expect(screen.getByText('Select day')).toBeInTheDocument()
     expect(screen.getByText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Month dropdown correctly', () => {
-    render(<TimeDropdown timeType='Monthly' name='weekly' />)
+    render(<TimeDropdown type='monthly' name='weekly' />)
 
     expect(screen.getByText('Select day')).toBeInTheDocument()
     expect(screen.getByText('Select hour')).toBeInTheDocument()
