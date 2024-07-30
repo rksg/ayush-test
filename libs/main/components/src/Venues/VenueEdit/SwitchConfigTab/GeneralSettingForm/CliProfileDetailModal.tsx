@@ -20,7 +20,6 @@ export function CliProfileDetailModal (props: {
   const { formState, setFormState, formData } = props
   const profileKeys = getProfilesByKeys(formState.configProfiles, formData.profileId)
   const [getSwitchConfigProfile] = useLazyGetSwitchConfigProfileQuery()
-  useState<ConfigurationProfile>({} as ConfigurationProfile)
   const [selectedProfile, setSelectedProfile] =
     useState<ConfigurationProfile>({} as ConfigurationProfile)
 
