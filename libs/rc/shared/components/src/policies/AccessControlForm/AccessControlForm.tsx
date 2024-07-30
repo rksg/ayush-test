@@ -82,7 +82,8 @@ export const genAclPayloadObject = (accessControlProfile: AccessControlFormField
 export const convertToPayload = (
   editMode: boolean,
   accessControlProfile: AccessControlFormFields,
-  policyId: string | undefined) => {
+  policyId: string | undefined
+) => {
   let payload = {} as AccessControlInfoType
   if (editMode) {
     payload.id = policyId ?? ''

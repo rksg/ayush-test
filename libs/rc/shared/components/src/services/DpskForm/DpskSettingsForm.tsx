@@ -30,6 +30,8 @@ import {
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                  from '@acx-ui/types'
+import { hasRoles }                   from '@acx-ui/user'
 import { getIntl }                    from '@acx-ui/utils'
 
 import { ExpirationDateSelector } from '../../ExpirationDateSelector'
@@ -249,15 +251,17 @@ function CloudpathFormItems () {
                   options={policySetOptions}
                 />
               </Form.Item>
-              <Button
-                type='link'
-                style={{ marginLeft: '8px', top: '0.25rem' }}
-                onClick={async () => {
-                  navigate(adaptivePolicySetsPath)
-                }}
-              >
-                {$t({ defaultMessage: 'Add' })}
-              </Button>
+              {
+                (hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) && <Button
+                  type='link'
+                  style={{ marginLeft: '8px', top: '0.25rem' }}
+                  onClick={async () => {
+                    navigate(adaptivePolicySetsPath)
+                  }}
+                >
+                  {$t({ defaultMessage: 'Add' })}
+                </Button>
+              }
             </div>
 
             {policySetId &&

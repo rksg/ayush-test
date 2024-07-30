@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
-import { useGetSigPackQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetSigPackQuery }     from '@acx-ui/rc/services'
 import {
   ApplicationConfirmType,
   ApplicationInfo,
@@ -15,8 +16,11 @@ export type ChangedAppsInfoMap = {
 }
 
 export function useSigPackDetails () {
-  // eslint-disable-next-line max-len
-  const { data, isFetching, isLoading } = useGetSigPackQuery({ params: { changesIncluded: 'true' } })
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { data, isFetching, isLoading } = useGetSigPackQuery({
+    params: { changesIncluded: 'true' },
+    enableRbac: isWifiRbacEnabled
+  })
 
   const updatedCount = (): number => {
     const updated = changedAppsInfoMap[ApplicationUpdateType.CATEGORY_UPDATED]?.data ?? []

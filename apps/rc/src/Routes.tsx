@@ -810,36 +810,25 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <MacRegistrationListDetails />
-            </AuthRoute>}
+          element={<MacRegistrationListDetails />}
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
-          element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
-              <MacRegistrationListsTable />
-            </AuthRoute>}
+          element={<MacRegistrationListsTable />}
         />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-          element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
-              <MacRegistrationListForm />
-            </AuthRoute>
-          } />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-          element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
-              <MacRegistrationListForm editMode={true}/>
-            </AuthRoute>
-          }
-        /> </> : <></> }
+        { hasCloudpathAccess() && <>
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+            element={<MacRegistrationListForm />} />
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
+            element={<MacRegistrationListForm editMode={true}/>}
+          />
+        </> }
+      </> : <></> }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
         element={

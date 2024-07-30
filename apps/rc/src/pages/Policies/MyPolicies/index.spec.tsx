@@ -1,6 +1,10 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  connectionMeteringApi,
+  policyApi
+}                                      from '@acx-ui/rc/services'
 import {
   AaaUrls,
   AccessControlUrls,
@@ -10,7 +14,7 @@ import {
   getSelectPolicyRoutePath,
   RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { store, Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -38,6 +42,8 @@ describe('MyPolicies', () => {
 
   const path = '/:tenantId/t'
   beforeEach(() => {
+    store.dispatch(connectionMeteringApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
@@ -83,6 +89,13 @@ describe('MyPolicies', () => {
         RogueApUrls.getRoguePolicyListRbac.url,
         (req, res, ctx) => res(ctx.json({
           totalCount: 99,
+          data: []
+        }))
+      ),
+      rest.post(
+        AccessControlUrls.getAccessControlProfileQueryList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 1,
           data: []
         }))
       )
@@ -169,5 +182,8 @@ describe('MyPolicies', () => {
 
     const clientIsolationTitle = 'Client Isolation (1)'
     expect(await screen.findByText(clientIsolationTitle)).toBeVisible()
+
+    const accessControlTitle = 'Access Control (1)'
+    expect(await screen.findByText(accessControlTitle)).toBeVisible()
   })
 })
