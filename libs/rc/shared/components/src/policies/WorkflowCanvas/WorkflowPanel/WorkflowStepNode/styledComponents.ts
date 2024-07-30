@@ -72,10 +72,6 @@ export const FlagIcon = styled.div`
     width: 100%;
     height: 100%;
   }
-  path {
-    stroke: white;
-    fill: white;
-  }
 `
 
 export const EditButton = styled.div`

@@ -26,20 +26,20 @@ describe('StepNode', () => {
     } as NodeProps}/></Provider>)
 
     expect(screen.getByTestId('mockedBaseStepNode')).toBeVisible()
-    expect(screen.getByTestId('AupIcon')).toBeVisible()
+    expect(screen.getByTestId('AupActionTypeIcon')).toBeVisible()
   })
 
   it('render `DataPromptNode` correctly', () => {
     render(<Provider><DataPromptNode {...{} as NodeProps}/></Provider>)
 
     expect(screen.getByTestId('mockedBaseStepNode')).toBeVisible()
-    expect(screen.getByTestId('DataPromptIcon')).toBeVisible()
+    expect(screen.getByTestId('DataPromptActionTypeIcon')).toBeVisible()
   })
 
   it('render `DisplayMessageNode` correctly', () => {
     render(<Provider><DisplayMessageNode {...{} as NodeProps}/></Provider>)
 
     expect(screen.getByTestId('mockedBaseStepNode')).toBeVisible()
-    expect(screen.getByTestId('DisplayMessageIcon')).toBeVisible()
+    expect(screen.getByTestId('DisplayMessageActionTypeIcon')).toBeVisible()
   })
 })

@@ -28,9 +28,9 @@ describe('StartNode', () => {
       </ReactFlowProvider>
     </Provider>)
 
-    expect(screen.getByTestId('Plus')).toBeVisible()
+    expect(screen.getByTestId('StarterIcon')).toBeVisible()
 
-    await userEvent.click(screen.getByTestId('Plus'))
+    await userEvent.click(screen.getByTestId('StarterIcon'))
     expect(spyActionDrawerOnOpen).toHaveBeenCalled()
   })
 })

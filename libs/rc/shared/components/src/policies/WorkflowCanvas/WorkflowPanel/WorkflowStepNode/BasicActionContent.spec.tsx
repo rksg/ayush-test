@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { AupIcon }        from '@acx-ui/icons'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { AupActionTypeIcon } from '@acx-ui/icons'
+import { Provider }          from '@acx-ui/store'
+import { render, screen }    from '@acx-ui/test-utils'
 
 import BasicActionContent from './BasicActionContent'
 
@@ -10,7 +10,7 @@ import BasicActionContent from './BasicActionContent'
 describe('BasicActionContent', () => {
   it('should render basic information correctly', async () => {
     const expected = {
-      icon: <AupIcon data-testid={'expected-icon'}/>,
+      icon: <AupActionTypeIcon data-testid={'expected-icon'}/>,
       title: 'basic title',
       content: 'basic content'
     }
