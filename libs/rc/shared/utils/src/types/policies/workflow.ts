@@ -50,6 +50,10 @@ export interface UIConfiguration {
   welcomeName: string
 }
 
+export interface ImageUrl {
+  fileUrl: string
+}
+
 // Workflow Step Part
 export type WorkflowStep = Step & SplitStep
 

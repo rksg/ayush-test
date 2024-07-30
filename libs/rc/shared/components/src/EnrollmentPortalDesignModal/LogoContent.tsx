@@ -27,7 +27,7 @@ function Widget (props: WidgetProps) {
   const { onLogoChange, onRatioChange, onDisabled, value } = props
   const maxRatio = 2.25
   const minRatio = 1
-  const currentRatio = value.uiStyleSchema.logoRatio
+  const currentRatio = value.uiStyleSchema.logoRatio ?? 1
   const showPlus = currentRatio < maxRatio
   const showMinus = currentRatio > minRatio
   return <div style={{ marginTop: -6 }}
@@ -90,8 +90,8 @@ export function LogoContent (props: LogoContentProps) {
     <UI.Img
       src={value.logoImage ?? RuckusCloud}
       style={{
-        height: 105 * value.uiStyleSchema.logoRatio,
-        width: 156 * value.uiStyleSchema.logoRatio,
+        height: 105 * (value.uiStyleSchema.logoRatio ?? 1),
+        width: 156 * (value.uiStyleSchema.logoRatio ?? 1),
         cursor: cursor,
         outline: outline,
         maxHeight: '425',

@@ -14,6 +14,7 @@ import {
   DataPromptActionContext,
   DisplayMessageActionContext,
   StepType,
+  UIConfiguration,
   UserSelectionSplitContext,
   WorkflowStep
 } from '../../types'
@@ -236,4 +237,21 @@ export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<strin
   }
 
   return { nodes, edges }
+}
+
+export const defaultConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    titleFontColor: '#000000',
+    backgroundColor: '#FFFFFF',
+    fontColor: '#000000',
+    buttonFontColor: '#FFFFFF',
+    buttonColor: '#EC7100'
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16
+  },
+  welcomeName: '',
+  welcomeTitle: ''
 }

@@ -2,6 +2,7 @@
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { image }                                   from 'd3'
 import _                                           from 'lodash'
 
 import {
@@ -23,7 +24,10 @@ import {
   SplitOption,
   GenericActionData,
   TxStatus,
-  ActionBase
+  ActionBase,
+  GetApiVersionHeader,
+  ApiVersionEnum,
+  ImageUrl
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -269,10 +273,12 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
     }),
     updateUIConfiguration: build.mutation<UIConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WorkflowUrls.updateWorkflowUIConfig, params)
+        const header = { ...GetApiVersionHeader(ApiVersionEnum.v1), 'Content-Type': undefined }
+        const req = createHttpRequest(WorkflowUrls.updateWorkflowUIConfig, params, header)
         return {
           ...req,
-          body: payload
+          body: payload,
+          formData: true
         }
       },
       invalidatesTags: [{ type: 'WorkflowUIConfig', id: 'ID' }]
@@ -285,6 +291,39 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'WorkflowUIConfig', id: 'ID' }]
+    }),
+    getUIConfigurationLogoImage: build.query<ImageUrl, RequestPayload>({
+      query: ({ params }) => {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        const param = { ...params, imageType: 'logoImages' }
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfigImage, param, header)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0
+    }),
+    getUIConfigurationBackgroundImage: build.query<ImageUrl, RequestPayload>({
+      query: ({ params }) => {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        const param = { ...params, imageType: 'backgroundImages' }
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfigImage, param, header)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0
+    }),
+    getUIConfigurationIconImage: build.query<ImageUrl, RequestPayload>({
+      query: ({ params }) => {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        const param = { ...params, imageType: 'iconImages' }
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfigImage, param, header)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0
     }),
     /** Workflow Action Definitions */
     getWorkflowActionDefinitionList:
@@ -513,7 +552,9 @@ export const {
   useLazySearchWorkflowsVersionListQuery,
   useGetUIConfigurationQuery,
   useLazyGetUIConfigurationQuery,
-  useUpdateUIConfigurationMutation
+  useUpdateUIConfigurationMutation,
+  useLazyGetUIConfigurationLogoImageQuery,
+  useLazyGetUIConfigurationBackgroundImageQuery
 } = workflowApi
 
 export const {

@@ -4,9 +4,9 @@ import { Form, Switch }                              from 'antd'
 import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Loader }                                                                                            from '@acx-ui/components'
-import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationImageQuery } from '@acx-ui/rc/services'
-import { UIConfiguration }                                                                                   from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                                               from '@acx-ui/components'
+import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
+import { defaultConfiguration, UIConfiguration }                                                                                                                from '@acx-ui/rc/utils'
 
 
 import { BackgroundContent } from './BackgroundContent'
@@ -23,22 +23,6 @@ export interface PortalDesignProps {
   id: string
 }
 
-const defaultConfiguration : UIConfiguration = {
-  disablePoweredBy: false,
-  uiColorSchema: {
-    titleFontColor: '#000000',
-    backgroundColor: '#FFFFFF',
-    fontColor: '#000000',
-    buttonFontColor: '#FFFFFF',
-    buttonColor: '#EC7100'
-  },
-  uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16
-  },
-  welcomeName: '',
-  welcomeTitle: ''
-}
 
 enum PortalComponentEnum {
   logo = 'logo',
@@ -105,7 +89,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const original = useRef<UIConfiguration>(defaultConfiguration)
   const [value, setValue] = useState<UIConfiguration>(defaultConfiguration)
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
-    ['logo', value.logoImage !== undefined],
+    ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
     ['poweredBy', value.disablePoweredBy],
     ['wifi4eu', value.wifi4EUNetworkId !== undefined]
   ]))
@@ -113,7 +97,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const reset = () => {
     setValue(original.current!!)
     setDisplay(new Map([
-      ['logo', original.current!!.logoImage !== undefined],
+      ['logo', original.current!!.uiStyleSchema.logoImageFileName !== undefined],
       ['poweredBy', !(original.current!!.disablePoweredBy)],
       ['wifi4eu', original.current!!.wifi4EUNetworkId !== undefined]
     ]))
@@ -121,9 +105,14 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
 
   const configurationQuery = useGetUIConfigurationQuery({ params: { id: id } })
   const [updateConfiguration] = useUpdateUIConfigurationMutation()
-  const [getUIConfigImage] = useLazyGetUIConfigurationImageQuery()
+  const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
+  const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
   const fetchImage = async (imageType: string) => {
-    return getUIConfigImage({ params: { id: id , imageType: imageType } }).unwrap()
+    if (imageType === 'logoImages')
+      return getUIConfigLogoImage({ params: { id: id } } ).unwrap()
+    else if (imageType === 'backgroundImages')
+      return getUIConfigBackgroundImage({ params: { id: id } } ).unwrap()
+    return Promise.resolve()
   }
 
   useEffect(()=>{
@@ -131,27 +120,27 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     if (configurationQuery.data) {
       original.current = configurationQuery.data
       if(configurationQuery.data.uiStyleSchema.logoImageFileName) {
-        // fetchImage('logoImages')
-        //   .then(res => {
-        //     if (res) {
-        //       original.current.logoImage = res
-        //       setValue(original.current)
-        //     }
-        //   })
+        fetchImage('logoImages')
+          .then(res => {
+            if (res) {
+              original.current= { ...original.current, logoImage: res.fileUrl }
+              setValue(original.current)
+            }
+          })
       }
 
       if (configurationQuery.data.uiStyleSchema.backgroundImageName) {
-        // fetchImage('backgroundImages')
-        //   .then(res => {
-        //     if (res) {
-        //       original.current.backgroundImage = res
-        //       setValue(original.current)
-        //     }
-        //   })
+        fetchImage('backgroundImages')
+          .then(res => {
+            if (res) {
+              original.current= { ...original.current, backgroundImage: res.fileUrl }
+              setValue(original.current)
+            }
+          })
       }
       setValue(configurationQuery.data)
       setDisplay(new Map([
-        ['logo', configurationQuery.data.logoImage !== undefined],
+        ['logo', configurationQuery.data.uiStyleSchema.logoImageFileName !== undefined],
         ['poweredBy', !(configurationQuery.data.disablePoweredBy)],
         ['wifi4eu', configurationQuery.data.wifi4EUNetworkId !== undefined]
       ]))

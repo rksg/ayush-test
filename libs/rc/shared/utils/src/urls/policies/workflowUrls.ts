@@ -15,7 +15,7 @@ const excludeContent = 'excludeContent=:excludeContent'
 type WorkflowBaseUrlType = 'searchWorkflows' | 'getWorkflowDetail'
   | 'createWorkflow' | 'updateWorkflow' | 'deleteWorkflow'
   | 'searchInProgressWorkflows' | 'getWorkflowUIConfig'
-  | 'updateWorkflowUIConfig' | 'resetWorkflowUIConfig'
+  | 'updateWorkflowUIConfig' | 'resetWorkflowUIConfig' | 'getWorkflowUIConfigImage'
 
 type WorkflowActionUrlType = 'createAction' | 'patchAction'
   | 'deleteAction' | 'getActionById' | 'getAllActionsByType'
@@ -79,6 +79,10 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
     method: 'delete',
     url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
     newApi: true
+  },
+  getWorkflowUIConfigImage: {
+    method: 'get',
+    url: `${WorkflowBaseUrl}/:id/uiConfigurations/:imageType`
   },
 
   /** Workflow Action Definitions endpoints */

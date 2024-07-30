@@ -45,16 +45,16 @@ function WorkflowPageHeader () {
             <Button type='default' onClick={()=>setVisible(true)}>
               {$t({ defaultMessage: 'Preview' })}</Button>,
             <Button type='default' onClick={()=>setVisible2(true)}>
-              {$t({ defaultMessage: 'Preview2' })}</Button>
-            // <TenantLink
-            //   to={getPolicyDetailsLink({
-            //     type: PolicyType.WORKFLOW,
-            //     oper: PolicyOperation.EDIT,
-            //     policyId: policyId!
-            //   })}
-            // >
-            //   <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-            // </TenantLink>
+              {$t({ defaultMessage: 'Preview2' })}</Button>,
+            <TenantLink
+              to={getPolicyDetailsLink({
+                type: PolicyType.WORKFLOW,
+                oper: PolicyOperation.EDIT,
+                policyId: policyId!
+              })}
+            >
+              <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            </TenantLink>
           ])}
       />
       {visible &&

@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Node }    from 'reactflow'
 
-import { Loader }                                                                                                                                 from '@acx-ui/components'
-import { ListSolid }                                                                                                                              from '@acx-ui/icons'
-import { useGetUIConfigurationQuery, useGetWorkflowActionDefinitionListQuery, useGetWorkflowStepsByIdQuery, useLazyGetUIConfigurationImageQuery } from '@acx-ui/rc/services'
-import { ActionType, UIConfiguration, WorkflowStep, toReactFlowData }                                                                             from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                                                                                    from '@acx-ui/components'
+import { ListSolid }                                                                                                                                                                                 from '@acx-ui/icons'
+import { useGetUIConfigurationQuery, useGetWorkflowActionDefinitionListQuery, useGetWorkflowStepsByIdQuery, useLazyGetUIConfigurationBackgroundImageQuery, useLazyGetUIConfigurationLogoImageQuery } from '@acx-ui/rc/services'
+import { ActionType, UIConfiguration, WorkflowStep, defaultConfiguration, toReactFlowData }                                                                                                          from '@acx-ui/rc/utils'
 
 import { EnrollmentPortalDesignModal } from '../EnrollmentPortalDesignModal'
 
@@ -29,14 +29,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const { id, step } = props
   const [selectedStepId, setSelectedStepId] = useState(step?.id)
   const [stepMap, setStepMap] = useState(new Map<string, WorkflowStep>())
-  const [UIConfig, setUIConfig] = useState<UIConfiguration>()
+  const [UIConfig, setUIConfig] = useState<UIConfiguration>(defaultConfiguration)
   const [portalVisible, setPortalVisible] = useState(false)
   const [navigatorVisible, setNavigatorVisible] = useState(false)
   const [nodes, setNodes] = useState<Node<WorkflowStep, ActionType>[]>([])
   const configurationQuery = useGetUIConfigurationQuery({ params: { id: id } })
-  const [getUIConfigImage] = useLazyGetUIConfigurationImageQuery()
+  const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
+  const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
   const fetchImage = async (imageType: string) => {
-    return getUIConfigImage({ params: { id: id , imageType: imageType } }).unwrap()
+    if (imageType === 'logoImages')
+      return getUIConfigLogoImage({ params: { id: id } } ).unwrap()
+    else if (imageType === 'backgroundImages')
+      return getUIConfigBackgroundImage({ params: { id: id } } ).unwrap()
+    return Promise.resolve()
   }
 
   useEffect(()=>{
@@ -44,27 +49,27 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
     if (configurationQuery.data) {
       setUIConfig(configurationQuery.data)
       if(configurationQuery.data.uiStyleSchema.logoImageFileName) {
-        // fetchImage('logoImages')
-        //   .then(res => {
-        //     if (res) {
-        //       setUIConfig({
-        //         ...UIConfig!,
-        //         logoImage: res
-        //       })
-        //     }
-        //   })
+        fetchImage('logoImages')
+          .then(res => {
+            if (res) {
+              setUIConfig({
+                ...UIConfig!,
+                logoImage: res.fileUrl
+              })
+            }
+          })
       }
 
       if (configurationQuery.data.uiStyleSchema.backgroundImageName) {
-        // fetchImage('backgroundImages')
-        //   .then(res => {
-        //     if (res) {
-        //       setUIConfig({
-        //         ...UIConfig!,
-        //         backgroundImage: res
-        //       })
-        //     }
-        //   })
+        fetchImage('backgroundImages')
+          .then(res => {
+            if (res) {
+              setUIConfig({
+                ...UIConfig!,
+                backgroundImage: res.fileUrl
+              })
+            }
+          })
       }
     }
   }, [configurationQuery])
@@ -127,7 +132,8 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                   type: stepMap.get(selectedStepId ?? '')?.actionType
                 })}
               </div>
-              <div style={{ marginLeft: '8px' }} onClick={()=>setNavigatorVisible(true)}>
+              <div style={{ marginLeft: '8px' }}
+                onClick={()=>setNavigatorVisible(!navigatorVisible)}>
                 <ListSolid/>
               </div>
             </div>
@@ -173,16 +179,15 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
             </div>
           </div>
         </UI.LayoutHeader>
-        <UI.LayoutContent id={'actiondemocontent'} $isPreview={true}>
+        <UI.LayoutContent id={'actiondemocontent'} $isPreview={true} style={{ minHeight: '750px' }}>
           <UI.LayoutView $type={screen}
             style={{ backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
-              backgroundColor: UIConfig?.uiColorSchema.backgroundColor }}>
+              backgroundColor: UIConfig.uiColorSchema?.backgroundColor }}>
             <div>
               {selectedStepId && getStepPreview(stepMap.get(selectedStepId ?? ''))}
             </div>
           </UI.LayoutView>
         </UI.LayoutContent>
-        <div id='testcontainer'></div>
       </div>
       {<ActionNavigationDrawer
         visible={navigatorVisible}
