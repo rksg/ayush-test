@@ -135,7 +135,7 @@ describe('Intent services', () => {
         result.current.onFilterChange(customFilter, {})
       })
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([
-        { col: 'sliceId', values: [ '1' ] },
+        { col: '"sliceId"', values: [ '1' ] },
         {
           col: 'code',
           values: [
@@ -167,8 +167,7 @@ describe('Intent services', () => {
             'c-crrm-channel6g-auto'
           ]
         },
-        { col: 'status', values: [ 'new' ] },
-        { col: 'statusReason', values: [ 'no-aps' ] }
+        { col: 'concat_ws(\'-\', status, "statusReason")', values: [ 'new', 'na-no-aps' ] }
       ])
     })
     it('handleFilterChange should handle no filter case', () => {

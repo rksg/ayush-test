@@ -179,9 +179,9 @@ export const api = intentAIApi.injectEndpoints({
           !data.categories.includes(category) && data.categories.push(category)
           return data
         }, { aiFeatures: [] as string[], categories: [] as string[] })
-        const displayStatuses = statuses.map(({ label }) => ({
+        const displayStatuses = statuses.map(({ label, id }) => ({
           value: $t(states[label as keyof typeof states].text),
-          key: label
+          key: id
         })).sort((a, b) => a.value.localeCompare(b.value))
 
         const displayZones = zones.map(({ id, label }) => ({
@@ -232,7 +232,7 @@ const perpareFilterBy = (filters: Filters) => {
   const { sliceValue, category, aiFeature, status } = filters
   let filterBy = []
   if (sliceValue) {
-    filterBy.push({ col: 'sliceId', values: sliceValue })
+    filterBy.push({ col: '"sliceId"', values: sliceValue })
   }
   let catCodes = [] as string[]
   if(category) {
@@ -257,24 +257,9 @@ const perpareFilterBy = (filters: Filters) => {
     filterBy.push({ col: 'code', values: featCodes })
   }
   if(status) {
-    // status from states
-    const statuses = [] as string[]
-    const statusReason = [] as string[]
-    status.forEach(s => {
-      if(s.startsWith('na-')) {
-        statusReason.push(s.split('na-')[1])
-      } else {
-        statuses.push(s)
-      }
-    })
-    // istanbul ignore next no-else
-    if (statuses.length > 0) {
-      filterBy.push({ col: 'status', values: statuses })
-    }
-    // istanbul ignore next no-else
-    if (statusReason.length > 0) {
-      filterBy.push({ col: 'statusReason', values: statusReason })
-    }
+    // concat status and statusReason
+    const col = 'concat_ws(\'-\', status, "statusReason")'
+    filterBy.push({ col, values: status })
   }
   return filterBy
 
