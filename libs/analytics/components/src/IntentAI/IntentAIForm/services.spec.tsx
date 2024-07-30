@@ -1,13 +1,13 @@
 import { omit, pick } from 'lodash'
 
-import { recommendationUrl, store } from '@acx-ui/store'
-import { mockGraphqlQuery }         from '@acx-ui/test-utils'
+import { intentAIUrl, Provider, recommendationUrl, store }                 from '@acx-ui/store'
+import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import {
   mockedRecommendationCRRM,
   mockedRecommendationCRRMApplied
 } from './__tests__/fixtures'
-import { api, EnhancedRecommendation, kpiHelper } from './services'
+import { recApi, EnhancedRecommendation, kpiHelper, useUpdatePreferenceScheduleMutation } from './services'
 
 describe('recommendation services', () => {
   const recommendationPayload = {
@@ -21,7 +21,7 @@ describe('recommendation services', () => {
         data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.recommendationCode.initiate({
+        recApi.endpoints.recommendationCode.initiate({
           ...recommendationPayload })
       )
       expect(status).toBe('fulfilled')
@@ -42,7 +42,7 @@ describe('recommendation services', () => {
       })
 
       const { status, data, error } = await store.dispatch(
-        api.endpoints.configRecommendationDetails.initiate({
+        recApi.endpoints.configRecommendationDetails.initiate({
           ...recommendationPayload, isCrrmPartialEnabled: true })
       )
       expect(status).toBe('fulfilled')
@@ -98,7 +98,7 @@ describe('recommendation services', () => {
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.configRecommendationDetails.initiate({
+      recApi.endpoints.configRecommendationDetails.initiate({
         ...recommendationPayload, isCrrmPartialEnabled: true
       })
     )
@@ -121,5 +121,30 @@ describe('kpiHelper', () => {
     const kpi = kpiHelper(code)
     const result = kpi.includes('kpi_number_of_interfering_links')
     expect(result).toEqual(true)
+  })
+})
+
+describe('intentai services', () => {
+  it('should update preference and schedule correctly', async () => {
+    const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
+
+    const { result } = renderHook(
+      () => useUpdatePreferenceScheduleMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({
+        id: 'test',
+        status: 'new',
+        metadata: {
+          scheduledAt: '2021-11-12T13:04:55+08:00'
+        },
+        preferences: { crrmFullOptimization: false }
+      } as EnhancedRecommendation)
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
   })
 })

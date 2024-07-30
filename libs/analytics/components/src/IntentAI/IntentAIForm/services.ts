@@ -3,8 +3,8 @@ import { snakeCase, findLast } from 'lodash'
 import moment                  from 'moment-timezone'
 import { MessageDescriptor }   from 'react-intl'
 
-import { recommendationApi } from '@acx-ui/store'
-import { NetworkPath }       from '@acx-ui/utils'
+import { intentAIApi, recommendationApi } from '@acx-ui/store'
+import { NetworkPath }                    from '@acx-ui/utils'
 
 import { codes }                                                 from './AIDrivenRRM'
 import { StateType, IconValue, StatusTrail, ConfigurationValue } from './config'
@@ -122,12 +122,12 @@ export function processDtoToPayload (dto: EnhancedRecommendation) {
   return {
     id: dto.id,
     status: dto.status,
-    scheduledAt: dto.scheduledAt,
+    scheduledAt: dto.metadata.scheduledAt,
     preferences: dto.preferences
   }
 }
 
-export const api = recommendationApi.injectEndpoints({
+export const recApi = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     recommendationCode: build.query<BasicRecommendationWithStatus, BasicRecommendation>({
       query: ({ id }) => ({
@@ -166,7 +166,12 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: { recommendation: RecommendationDetails }) =>
         transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
-    }),
+    })
+  })
+})
+
+export const intentApi = intentAIApi.injectEndpoints({
+  endpoints: (build) => ({
     updatePreferenceSchedule: build.mutation<
       UpdatePreferenceScheduleMutationResponse,
       EnhancedRecommendation
@@ -200,6 +205,11 @@ export const api = recommendationApi.injectEndpoints({
 
 export const {
   useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery,
+  useConfigRecommendationDetailsQuery
+} = recApi
+
+export const {
   useUpdatePreferenceScheduleMutation
-} = api
+} = intentApi
+
+
