@@ -6,7 +6,6 @@ import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
   RolesEnum as Role,
-  RolesEnum,
   ScopeKeys
 } from '@acx-ui/types'
 
@@ -182,8 +181,8 @@ export function isCustomAdmin () {
   const { profile, abacEnabled } = getUserProfile()
   if (abacEnabled &&
     profile.customRoleType === CustomRoleType.SYSTEM &&
-    profile.customRoleName === RolesEnum.ADMINISTRATOR) {
-    return !profile?.roles?.includes(RolesEnum.ADMINISTRATOR)
+    profile.customRoleName === Role.ADMINISTRATOR) {
+    return !profile?.roles?.includes(Role.ADMINISTRATOR)
   }
   return false
 }
