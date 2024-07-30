@@ -16,7 +16,6 @@ import { formatter }  from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
-  useGetAlarmCountQuery,
   eventAlarmApi,
   networkApi,
   useClearAlarmByVenueMutation,
@@ -71,7 +70,6 @@ const defaultPayload: {
 
 export function AlarmsDrawer (props: AlarmsType) {
   const params = useParams()
-  const { data } = useGetAlarmCountQuery({ params })
   const { $t } = useIntl()
   const { visible, setVisible } = props
 
@@ -164,7 +162,7 @@ export function AlarmsDrawer (props: AlarmsType) {
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableQuery.data, severity, data, serialNumber, venueId])
+  }, [tableQuery.data, severity, serialNumber, venueId])
 
   const getIconBySeverity = (severity: EventSeverityEnum)=>{
 
