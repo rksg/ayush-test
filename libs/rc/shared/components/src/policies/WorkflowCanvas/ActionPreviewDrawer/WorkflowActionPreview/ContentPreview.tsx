@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { AupIcon, PoweredBy }     from '@acx-ui/icons'
-import { DefaultUIConfiguration } from '@acx-ui/rc/utils'
+import { AupActionTypeIcon, PoweredBy } from '@acx-ui/icons'
+import { DefaultUIConfiguration }       from '@acx-ui/rc/utils'
 
 import { StepNavigation } from './StepNavigation'
 import * as UI            from './styledComponent'
@@ -34,7 +34,7 @@ export function ContentPreview (props: ContentPreviewProps) {
         }}
       >
         {/* TODO: Change to use global Logo */}
-        <AupIcon/>
+        <AupActionTypeIcon/>
       </UI.Logo>
       <UI.Title
         style={{
