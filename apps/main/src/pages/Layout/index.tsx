@@ -160,7 +160,7 @@ function Layout () {
       }
       leftHeaderContent={<>
         { showHomeButton && (
-          <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
+          <a href={`/${getJwtTokenPayload().tenantId}/v`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {isSupportDelegation
