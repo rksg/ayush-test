@@ -16,6 +16,8 @@ import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
 
 let lastAccessedInterval:NodeJS.Timer
 
+export const DEFAULT_DF_SESSION_TIMEOUT_IN_SECS = 10 * 60 // 10 mins
+
 export const BOT_NAME = 'Melissa'
 
 const scrollToBottom=()=>{
@@ -44,9 +46,14 @@ const initialState:MelissaBotState = {
 }
 
 
-export function MelissaBot (){
+export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_IN_SECS }:{ sessionTimeoutInSecs?:number }){
   const { $t } = useIntl()
   const GENERIC_ERROR_MSG= $t({ defaultMessage: 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.' })
+  const subTitleText = $t({ defaultMessage: 'with Generative AI' })
+  const askAnything = $t({ defaultMessage: 'Ask Anything' })
+  const sessionTimeoutText = $t({ defaultMessage: 'Session Timed out.' })
+  const doneText = $t({ defaultMessage: 'done!' })
+  const betaSuperScriptText = 'ᴮᴱᵀᴬ'
   const { pathname, search } = useLocation()
   const inputRef = useRef<InputRef>(null)
   const isSummaryLatest = useRef(false)
@@ -68,19 +75,16 @@ export function MelissaBot (){
   }
 
   useEffect(()=>{
-    const RESET_AFTER_SECONDS = 20
     clearInterval(lastAccessedInterval)
     lastAccessedInterval=setInterval(()=>{
       const now=moment(new Date())
       const start = moment(lastAccessed)
       const diffInSecs = now.diff(start,'seconds')
-      // eslint-disable-next-line no-console
-      console.log({ diffInSecs })
-      if(diffInSecs > RESET_AFTER_SECONDS){
+      if(diffInSecs > sessionTimeoutInSecs){
         setLastAccessed(new Date())
         const timeoutMessage: Content = {
           type: 'bot',
-          contentList: [{ text: { text: ['Session Timed out.'] } }]
+          contentList: [{ text: { text: [sessionTimeoutText] } }]
         }
         messages.push(timeoutMessage)
         setMessages(messages)
@@ -144,7 +148,7 @@ export function MelissaBot (){
       })
       const confirmMessage: Content = {
         type: 'bot',
-        contentList: [{ text: { text: ['done!'] } }]
+        contentList: [{ text: { text: [doneText] } }]
       }
       messages.push(confirmMessage)
       setMessages(messages)
@@ -160,9 +164,7 @@ export function MelissaBot (){
       }
     })
   }
-  const subTitleText = $t({ defaultMessage: 'with Generative AI' })
-  const askAnything = $t({ defaultMessage: 'Ask Anything' })
-  const betaSuperScriptText = 'ᴮᴱᵀᴬ'
+
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText} {betaSuperScriptText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody,isModeDisable:boolean=false) => {
     queryAskMelissa(body).then(async (json)=>{
