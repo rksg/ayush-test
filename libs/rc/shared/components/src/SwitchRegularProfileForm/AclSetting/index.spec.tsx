@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { SwitchConfigurationProfile } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { render, screen, within }     from '@acx-ui/test-utils'
+import { SwitchConfigurationProfile }      from '@acx-ui/rc/utils'
+import { Provider }                        from '@acx-ui/store'
+import { render, screen, within, waitFor } from '@acx-ui/test-utils'
 
 import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../ConfigurationProfileFormContext'
 
@@ -160,6 +160,16 @@ describe('Wired - AclSetting', () => {
     const row = await screen.findByRole('row', { name: /acl-01/i })
     await userEvent.click(await within(row).findByRole('radio'))
     expect(await within(row).findByRole('radio')).toBeChecked()
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+    let dialog = await screen.findByRole('dialog')
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/i }))
+    dialog = await screen.findByRole('dialog')
+    await userEvent.click(await screen.findByRole('button', { name: /Delete ACL/i }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should handle edit ACL rule correctly', async () => {
