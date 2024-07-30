@@ -67,14 +67,15 @@ import {
   VlanPool,
   useConfigTemplateMutationFnSwitcher,
   NetworkVenue,
-  EdgeMvSdLanViewData
+  EdgeMvSdLanViewData,
+  NetworkTunnelSdLanAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType }                                              from '../configTemplates'
-import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelTypeEnum } from '../EdgeSdLan/NetworkTunnelActionModal/types'
-import { getNetworkTunnelType }                                                          from '../EdgeSdLan/NetworkTunnelActionModal/utils'
 import { useEdgeMvSdLanActions }                                                         from '../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
+import { getNetworkTunnelType }                                                          from '../NetworkTunnelActionModal/utils'
 import { useIsEdgeReady }                                                                from '../useEdgeActions'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
@@ -82,15 +83,6 @@ export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
   enableVxLan: boolean,
   vxLanTunnels: TunnelProfileViewData[] | undefined
-}
-
-export interface NetworkTunnelSdLanAction {
-  serviceId: string,
-  venueId: string,
-  guestEnabled: boolean,
-  networkId: string,
-  enabled: boolean,
-  venueSdLanInfo?: EdgeMvSdLanViewData
 }
 
 export const hasAuthRadius = (data: NetworkSaveData | null, wlanData: any) => {
@@ -752,8 +744,10 @@ export const useUpdateEdgeSdLanActivations = () => {
   const { toggleNetwork } = useEdgeMvSdLanActions()
 
   // eslint-disable-next-line max-len
-  const updateEdgeSdLanActivations = async (networkId: string, updates: NetworkTunnelSdLanAction[]) => {
-    const actions = updates.map((actInfo) => {
+  const updateEdgeSdLanActivations = async (networkId: string, updates: NetworkTunnelSdLanAction[], activatedVenues: NetworkVenue[]) => {
+    const actions = updates.filter(item => {
+      return _.find(activatedVenues, { venueId: item.venueId })
+    }).map((actInfo) => {
       // eslint-disable-next-line max-len
       return toggleNetwork(actInfo.serviceId, actInfo.venueId, actInfo.guestEnabled, networkId, actInfo.enabled)
     })

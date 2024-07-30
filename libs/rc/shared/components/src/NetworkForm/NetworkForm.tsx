@@ -46,7 +46,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   WlanSecurityEnum,
   useConfigTemplatePageHeaderTitle,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  NetworkTunnelSdLanAction
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -76,7 +77,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance        from './PortalInstance'
+import PortalInstance             from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveFieldsFromServerData,
@@ -86,8 +87,7 @@ import {
   useWifiCalling,
   useAccessControlActivation,
   getDefaultMloOptions,
-  useUpdateEdgeSdLanActivations,
-  NetworkTunnelSdLanAction
+  useUpdateEdgeSdLanActivations
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -576,7 +576,7 @@ export function NetworkForm (props:{
         ]))
     return payload
   }
-  const handleAddNetwork = async () => {
+  const handleAddNetwork = async (formData: NetworkSaveData) => {
     try {
       const payload = processAddData(saveState)
 
@@ -601,9 +601,9 @@ export function NetworkForm (props:{
       }
       await updateClientIsolationActivations(payload, null, networkId)
       // eslint-disable-next-line max-len
-      if (isEdgeSdLanMvEnabled && formRef.current?.getFieldValue('sdLanAssociationUpdate') && networkId) {
+      if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate'] && networkId && payload.venues) {
         // eslint-disable-next-line max-len
-        await updateEdgeSdLanActivations(networkId, formRef.current?.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[])
+        await updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues)
       }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
@@ -695,9 +695,11 @@ export function NetworkForm (props:{
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
       await updateClientIsolationActivations(payload, data, payload.id)
-      if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id) {
+
+      // eslint-disable-next-line max-len
+      if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id && payload.venues) {
         // eslint-disable-next-line max-len
-        await updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[])
+        await updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
       }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {

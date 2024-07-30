@@ -1,4 +1,4 @@
-import { MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -173,6 +173,7 @@ export interface NetworkSaveData {
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
   accountingInterimUpdates?: number
+  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[]
 }
 
 export enum MaxRateEnum {
@@ -243,4 +244,13 @@ export interface NetworkRadiusSettings {
   enableAccountingProxy?: boolean
   enableAuthProxy?: boolean
   macAuthMacFormat?: MacAuthMacFormatEnum
+}
+
+export interface NetworkTunnelSdLanAction {
+  serviceId: string,
+  venueId: string,
+  guestEnabled: boolean, // forward guest traffic
+  networkId: string,
+  enabled: boolean,      // is local breakout
+  venueSdLanInfo?: EdgeMvSdLanViewData
 }

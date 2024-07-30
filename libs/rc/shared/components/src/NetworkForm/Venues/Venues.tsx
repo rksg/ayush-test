@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext, useRef, ReactNode } from 'react'
 
 import { Form, Switch } from 'antd'
-import _, { cloneDeep } from 'lodash'
+import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 
 import {
@@ -24,20 +24,23 @@ import {
   RadioTypeEnum,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData
+  SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
+  NetworkTunnelSdLanAction
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../EdgeSdLan/NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                          from '../../EdgeSdLan/NetworkTunnelActionModal/types'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }             from '../../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkApGroupDialog }                                                             from '../../NetworkApGroupDialog'
-import { NetworkVenueScheduleDialog }                                                       from '../../NetworkVenueScheduleDialog'
-import { transformAps, transformRadios, transformScheduling }                               from '../../pipes/apGroupPipes'
-import { useIsEdgeFeatureReady }                                                            from '../../useEdgeActions'
-import NetworkFormContext                                                                   from '../NetworkFormContext'
-import { NetworkTunnelSdLanAction, TMP_NETWORK_ID, getNetworkTunnelSdLanUpdateData }        from '../utils'
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps }              from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                              from '../../NetworkTunnelActionModal/types'
+import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
+import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                                                from '../../useEdgeActions'
+import NetworkFormContext                                                       from '../NetworkFormContext'
+import { TMP_NETWORK_ID, getNetworkTunnelSdLanUpdateData }                      from '../utils'
+
+import { NetworkTunnelInfoButtonFormItem } from './NetworkTunnelInfoButtonFormItem'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -380,38 +383,13 @@ export function Venues (props: VenuesProps) {
         const currentNetwork = data
 
         return currentNetwork
-          ? <Form.Item noStyle dependencies={['sdLanAssociationUpdate']}>
-            {({ getFieldValue }) => {
-              // eslint-disable-next-line max-len
-              const cachedActs = getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
-              const sdLanNetworkVenues = cloneDeep(sdLanScopedNetworkVenues)
-
-              cachedActs?.forEach((actInfo) => {
-                if (actInfo.enabled) {
-                  const target = sdLanNetworkVenues.sdLansVenueMap[actInfo.venueId]
-
-                  // target is undefined when Add network mode.
-                  if (target) {
-                    target[0].isGuestTunnelEnabled = actInfo.guestEnabled
-                  } else {
-                    sdLanNetworkVenues.sdLansVenueMap[actInfo.venueId]= [{
-                      isGuestTunnelEnabled: actInfo.guestEnabled,
-                      edgeClusterName: actInfo.venueSdLanInfo?.edgeClusterName,
-                      guestEdgeClusterName: actInfo.venueSdLanInfo?.guestEdgeClusterName
-                    }]
-                  }
-                } else {
-                  delete sdLanNetworkVenues.sdLansVenueMap[actInfo.venueId]
-                }
-              })
-
-              return <NetworkTunnelInfoButton
-                network={currentNetwork}
-                currentVenue={row}
-                sdLanScopedNetworkVenues={sdLanNetworkVenues}
-                onClick={() => handleClickNetworkTunnel(row, currentNetwork)}
-              />
-            }}
+          ? <Form.Item noStyle name={['sdLanAssociationUpdate']}>
+            <NetworkTunnelInfoButtonFormItem
+              currentVenue={row}
+              currentNetwork={currentNetwork}
+              sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
+              onClick={handleClickNetworkTunnel}
+            />
           </Form.Item>
           : ''
       }

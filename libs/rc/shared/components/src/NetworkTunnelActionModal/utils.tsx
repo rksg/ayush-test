@@ -1,7 +1,7 @@
 import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
 
-import { isGuestTunnelUtilized } from '../edgeSdLanUtils'
-import { useEdgeMvSdLanActions } from '../useEdgeSdLanActions'
+import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
+import { useEdgeMvSdLanActions } from '../EdgeSdLan/useEdgeSdLanActions'
 
 import { NetworkTunnelTypeEnum, NetworkTunnelActionModalProps, NetworkTunnelActionForm } from './types'
 

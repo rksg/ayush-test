@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 import { Button }                          from '@acx-ui/components'
 import { Network, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
-import { isGuestTunnelUtilized }        from '../edgeSdLanUtils'
-import { SdLanScopedNetworkVenuesData } from '../useEdgeSdLanActions'
+import { isGuestTunnelUtilized }        from '../EdgeSdLan/edgeSdLanUtils'
+import { SdLanScopedNetworkVenuesData } from '../EdgeSdLan/useEdgeSdLanActions'
 
 interface NetworkTunnelInfoButtonProps {
   network?: Network | NetworkSaveData | null

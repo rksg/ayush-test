@@ -8,8 +8,8 @@ import { Features }                                                             
 import {  EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTypeEnum, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
 import { getIntl }                                                                                from '@acx-ui/utils'
 
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
-import { isGuestTunnelUtilized } from '../edgeSdLanUtils'
+import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeSdLanRadioOption }                                                          from './EdgeSdLanRadioOption'
 import { NetworkTunnelInfoButton }                                                       from './NetworkTunnelInfoButton'
@@ -19,12 +19,12 @@ import { useEdgeMvSdlanData }                                                   
 import { getNetworkTunnelType }                                                          from './utils'
 
 // eslint-disable-next-line max-len
-const mergeSdLanCacheAct = (venueSdLanInfo: EdgeMvSdLanViewData, cachedActs: NetworkTunnelSdLanAction[]): EdgeMvSdLanViewData => {
+export const mergeSdLanCacheAct = (venueSdLanInfo: EdgeMvSdLanViewData, cachedActs: NetworkTunnelSdLanAction[]): EdgeMvSdLanViewData => {
   const updatedSdLan = cloneDeep(venueSdLanInfo)
 
   try {
     cachedActs.forEach((actInfo) => {
-    // eslint-disable-next-line max-len
+      // eslint-disable-next-line max-len
       const idx = findIndex(updatedSdLan.tunneledWlans, { venueId: actInfo.venueId, networkId: actInfo.networkId })
       // eslint-disable-next-line max-len
       const guestIdx = findIndex(updatedSdLan.tunneledGuestWlans, { venueId: actInfo.venueId, networkId: actInfo.networkId })

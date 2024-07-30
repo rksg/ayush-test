@@ -6,7 +6,7 @@ import { Features }                           from '@acx-ui/feature-toggle'
 import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {  FILTER }                            from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 export const useEdgeMvSdlanData = (filters?: FILTER, skip = false) => {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)

@@ -50,13 +50,13 @@ import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
-import { useGetNetworkTunnelInfo }                                                          from '../../EdgeSdLan/edgeSdLanUtils'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../EdgeSdLan/NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                          from '../../EdgeSdLan/NetworkTunnelActionModal/types'
-import { useUpdateNetworkTunnelAction }                                                     from '../../EdgeSdLan/NetworkTunnelActionModal/utils'
-import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction }             from '../../EdgeSdLan/useEdgeSdLanActions'
+import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
+import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                                          from '../../NetworkTunnelActionModal/types'
+import { useUpdateNetworkTunnelAction }                                                     from '../../NetworkTunnelActionModal/utils'
 import {
   NetworkVenueScheduleDialog
 } from '../../NetworkVenueScheduleDialog'
