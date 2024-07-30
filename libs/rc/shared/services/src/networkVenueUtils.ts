@@ -3,6 +3,7 @@ import { FetchArgs, FetchBaseQueryError }          from '@reduxjs/toolkit/query'
 import { keys, every, get, uniq, omit, findIndex } from 'lodash'
 
 import {
+  ApGroupConfigTemplateUrlsInfo,
   ApiVersionEnum,
   CommonRbacUrlsInfo,
   //CommonResult,
@@ -392,7 +393,10 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       const apGroupIds = uniq(networkApGroupParamsList.map(item => item.apGroupId).filter(item => item))
       if (apGroupIds.length) {
         const apGroupsListQuery = await fetchWithBQ({
-          ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, GetApiVersionHeader(ApiVersionEnum.v1)),
+          ...createHttpRequest(
+            arg.payload.isTemplate ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : WifiRbacUrlsInfo.getApGroupsList,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          ),
           body: JSON.stringify({
             fields: ['name', 'id'],
             pageSize: 10000,
@@ -406,7 +410,10 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       // fetch vlan pool info
       /*
       const vlanPoolListQuery = await fetchWithBQ({
-        ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, GetApiVersionHeader(ApiVersionEnum.v1)),
+        ...createHttpRequest(
+          arg.payload.isTemplate ? ConfigTemplateUrlsInfo.getVLANPoolPolicyListTemplate : VlanPoolRbacUrls.getVLANPoolPolicyList,
+          GetApiVersionHeader(ApiVersionEnum.v1)
+        ),
         body: JSON.stringify({
           //fields: ['id', 'name', 'wifiNetworkIds'],
           filters: {}//{ wifiNetworkIds: networkIds }
@@ -558,7 +565,10 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
       const apGroupIds = uniq(networkApGroupParamsList.map(item => item.apGroupId).filter(item => item))
       if (apGroupIds.length) {
         const apGroupsListQuery = await fetchWithBQ({
-          ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, GetApiVersionHeader(ApiVersionEnum.v1)),
+          ...createHttpRequest(
+            payload?.isTemplate ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : WifiRbacUrlsInfo.getApGroupsList,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          ),
           body: JSON.stringify({
             fields: ['name', 'id'],
             pageSize: 10000,

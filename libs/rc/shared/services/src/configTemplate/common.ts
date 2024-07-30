@@ -184,11 +184,12 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
     }),
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      queryFn: addNetworkVenueFn(true),
+      queryFn: addNetworkVenueFn(),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddNetworkVenueTemplate'
+            'AddNetworkVenueTemplate',
+            'UpdateVenueWifiNetworkTemplateSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
@@ -204,11 +205,12 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate, ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'DeleteNetworkVenueTemplate'
+            'DeleteNetworkVenueTemplate',
+            'DeactivateWifiNetworkTemplateOnVenue'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([

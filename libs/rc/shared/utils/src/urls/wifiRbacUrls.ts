@@ -416,22 +416,27 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  getDpskPassphraseByQuery: {
+    method: 'post',
+    url: '/dpskPassphrasePools/query',
+    newApi: true
+  },
+  */
   getApLanPorts: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
   updateApLanPorts: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
   resetApLanPorts: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
-  */
   getApLed: {
     method: 'get',
     // url: '/venues/aps/:serialNumber/ledSettings',
