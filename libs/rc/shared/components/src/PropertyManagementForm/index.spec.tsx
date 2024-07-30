@@ -114,6 +114,18 @@ describe('Property Config Form', () => {
       rest.get(
         MsgTemplateUrls.getAllTemplatesByTemplateScopeId.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockAllTemplates))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        MsgTemplateUrls.getAllTemplateGroupsByCategoryId.url,
+        (_, res, ctx) => res(ctx.json({ paging: { totalCount: 0 } }))
+      ),
+      rest.get(
+        MsgTemplateUrls.getCategoryById.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

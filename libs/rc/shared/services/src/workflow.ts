@@ -276,8 +276,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Step' }]
     }),
-    // FIXME: need to check response payload
-    getWorkflowStepsById: build.query<NewTableResult<WorkflowStep>, RequestPayload>({
+    getWorkflowStepsById: build.query<NewAPITableResult<WorkflowStep>, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.getWorkflowStepsById, params)
       },

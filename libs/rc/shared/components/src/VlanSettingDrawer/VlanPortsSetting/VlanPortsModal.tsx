@@ -221,6 +221,7 @@ export function VlanPortsModal (props: {
         portsUsedBy
       }}>
         <StepsForm
+          form={form}
           editMode={editMode}
           onCancel={onCancel}
           onFinish={onFinish}

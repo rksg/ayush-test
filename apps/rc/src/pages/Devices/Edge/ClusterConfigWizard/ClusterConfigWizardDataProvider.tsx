@@ -32,7 +32,8 @@ export const ClusterConfigWizardDataProvider = (props: ClusterConfigWizardDataPr
         'haStatus',
         'edgeList',
         'venueId',
-        'venueName'
+        'venueName',
+        'highAvailabilityMode'
       ],
       filters: { clusterId: [clusterId] },
       sortField: 'name',

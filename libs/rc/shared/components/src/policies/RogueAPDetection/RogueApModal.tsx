@@ -1,17 +1,22 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType } from '@acx-ui/components'
+import { WifiScopes }               from '@acx-ui/types'
+import { hasPermission }            from '@acx-ui/user'
 
 import { RogueAPDetectionForm } from './RogueAPDetectionForm/RogueAPDetectionForm'
 
-export const RogueApModal = (props: {
-  setPolicyId: (id: string) => void
-}) => {
+
+export const RogueApModal = (props: { setPolicyId: (id: string) => void }) => {
   const { $t } = useIntl()
   const { setPolicyId } = props
   const [visible, setVisible] = useState(false)
+
+  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) {
+    return null
+  }
 
   return <>
     <Button

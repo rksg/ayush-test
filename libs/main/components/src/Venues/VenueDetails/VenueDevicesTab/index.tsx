@@ -4,6 +4,8 @@ import { Tabs }                                  from '@acx-ui/components'
 import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }                        from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                             from '@acx-ui/types'
+import { hasRoles }                              from '@acx-ui/user'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueRWG }    from './VenueRWG'
@@ -17,6 +19,7 @@ export function VenueDevicesTab () {
   const { activeSubTab, venueId } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
   const isEdgeEnabled = useIsEdgeReady()
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -42,7 +45,7 @@ export function VenueDevicesTab () {
         value: 'edge',
         children: <VenueEdge />
       }]: []),
-    ...(useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+    ...(useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW) && rwgHasPermission
       ? [{
         label: $t({ defaultMessage: 'RWG' }),
         value: 'rwg',

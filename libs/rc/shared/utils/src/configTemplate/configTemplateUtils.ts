@@ -30,23 +30,22 @@ export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountTyp
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
 
-interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
-  useQueryFn: UseQuery<ResultType, RequestPayload>
-  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
+export interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
+  useQueryFn: UseQuery<ResultType, RequestPayload<Payload>>
+  useTemplateQueryFn: UseQuery<ResultType, RequestPayload<Payload>>
   skip?: boolean
   payload?: Payload
   extraParams?: Params<string>
   templatePayload?: Payload
   enableRbac?: boolean
-  enableSeparation?: boolean
+  extraQueryArgs?: {}
 }
 export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
   props: UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload>
 ): ReturnType<typeof useQueryFn> {
-
   const {
     useQueryFn, useTemplateQueryFn, skip = false, payload, templatePayload,
-    extraParams, enableRbac, enableSeparation = false
+    extraParams, enableRbac, extraQueryArgs = {}
   } = props
 
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -54,12 +53,11 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
   const params = useParams()
   const resolvedPayload = isTemplate && templatePayload ? templatePayload : payload
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
-  const resolvedEnableSeparation = isTemplate ? enableTemplateRbac : enableSeparation
   const requestPayload = {
     params: { ...params, ...(extraParams ?? {}) },
     ...(resolvedPayload ? ({ payload: resolvedPayload }) : {}),
     ...(resolvedEnableRbac ? ({ enableRbac: resolvedEnableRbac }) : {}),
-    ...(resolvedEnableSeparation ? ({ enableSeparation: resolvedEnableSeparation }) : {})
+    ...extraQueryArgs
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
   const templateResult = useTemplateQueryFn(requestPayload, { skip: skip || !isTemplate })

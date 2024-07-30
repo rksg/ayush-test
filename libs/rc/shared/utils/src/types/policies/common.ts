@@ -64,7 +64,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Create adaptive policies for user and device connectivity on wired or wireless networks' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set' }),
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' }),
-  [PolicyType.LBS_SERVER_PROFILE]: defineMessage({ defaultMessage: 'Create your own Location Based Service profile with RUCKUS One Pre Engine - RSSI client data from your venue’s access points' }),
+  [PolicyType.LBS_SERVER_PROFILE]: defineMessage({ defaultMessage: 'Create your own Location Based Service profile with RUCKUS One Pre Engine - RSSI client data from the access points in your <venueSingular></venueSingular>' }),
   [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' }),
   [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
   [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),

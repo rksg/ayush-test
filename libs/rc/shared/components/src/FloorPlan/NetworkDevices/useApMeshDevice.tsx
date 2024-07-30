@@ -73,8 +73,8 @@ export function useApMeshDevice (device?: NetworkDevice) {
   }
 
   const getApMeshRoleIcon = () => {
-    if (!apMeshData) return null
 
+    if (!apMeshData) return null
     const RoleIcon = ApMeshRoleIconMap[apMeshData.meshRole as APMeshRoleWithoutDisabled]
     return (
       <UI.MeshApRoleIconContainer id={getDeviceContainerId()}>

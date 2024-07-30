@@ -1,6 +1,8 @@
 import styled from 'styled-components/macro'
 
+
 export const StepNode = styled.div<{ selected?: boolean }>`
+  background-color: var(--acx-primary-white);
   font-size: 12px;
   width: 220px;
   height: 64px;
@@ -70,10 +72,6 @@ export const FlagIcon = styled.div`
   svg {
     width: 100%;
     height: 100%;
-  }
-  path {
-    stroke: white;
-    fill: white;
   }
 `
 

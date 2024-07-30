@@ -1,13 +1,20 @@
+import { rest }    from 'msw'
 import { useIntl } from 'react-intl'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import { FirmwareCategory,
+  FirmwareRbacUrlsInfo,
+  FirmwareSwitchV1002,
+  FirmwareSwitchVenueV1002,
+  FirmwareUrlsInfo,
   FirmwareVersion,
   SwitchFirmwareFixtures,
+  SwitchFirmwareVersion1002,
   defaultSort } from '@acx-ui/rc/utils'
-import { Provider }   from '@acx-ui/store'
-import { renderHook } from '@acx-ui/test-utils'
+import { Provider }               from '@acx-ui/store'
+import { mockServer, renderHook } from '@acx-ui/test-utils'
 
-import { mockSwitchVenue, mockVenue } from './__tests__/fixtures'
+import { availableVersionsV1002, defaultVersionsV1002, mockSwitchVenue, mockVenue } from './__tests__/fixtures'
 
 import { useSwitchFirmwareUtils } from '.'
 
@@ -21,13 +28,23 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 describe('Test useSwitchFirmwareUtils', () => {
+
+  beforeEach(async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockServer.use(
+      rest.get(
+        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
+      )
+    )
+  })
   it('parseSwitchVersion', async () => {
     const { result } = renderHook(() => useSwitchFirmwareUtils(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
     const { parseSwitchVersion } = result.current
     expect(parseSwitchVersion('09010h')).toBe('9.0.10h')
-    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f')
+    expect(parseSwitchVersion('09010f_b19')).toBe('9.0.10f_b19')
   })
 
   it('getSwitchVersionLabel', async () => {
@@ -145,6 +162,7 @@ describe('Test useSwitchFirmwareUtils', () => {
     })
   })
 
+
   it('checkCurrentVersions - default version', async () => {
     const utils = renderHook(() => useSwitchFirmwareUtils(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -244,3 +262,163 @@ describe('isDowngradeVersion function', () => {
   })
 
 })
+
+describe('checkCurrentVersionsV1002', () => {
+  const { mockSwitchCurrentVersionsV1002 } = SwitchFirmwareFixtures
+
+  it('should checkCurrentVersionsV1002 function', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.get(
+        FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
+        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
+      )
+    )
+
+    const utils = renderHook(() => useSwitchFirmwareUtils(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+    const { checkCurrentVersionsV1002 } = utils.result.current
+
+    const selectedVersion = {
+      venueId: 'a1f2bf4f969849d5a1ecfdfdb0664fac',
+      venueName: 'ccc',
+      versions: [
+        {
+          modelGroup: 'ICX7X',
+          version: '10010_rc3'
+        },
+        {
+          modelGroup: 'ICX82',
+          version: '10010_rc3'
+        },
+        {
+          modelGroup: 'ICX71',
+          version: '09010h_cd2_b4'
+        }
+      ],
+      lastScheduleUpdateTime: '2024-07-09T03:59:38.071+00:00',
+      preDownload: true,
+      status: 'NONE',
+      scheduleCount: 0
+    } as FirmwareSwitchVenueV1002 | FirmwareSwitchV1002
+    const availableVersions = availableVersionsV1002 as SwitchFirmwareVersion1002[]
+    const defaultVersions = defaultVersionsV1002 as SwitchFirmwareVersion1002[]
+    const { result } = renderHook(() =>
+      checkCurrentVersionsV1002(selectedVersion, availableVersions, defaultVersions))
+
+    expect(result).toStrictEqual({
+      current: [
+        {
+          modelGroup: 'ICX7X',
+          switchCount: 0,
+          versions: [
+            {
+              category: 'REGULAR',
+              createdDate: '2024-05-23T03:54:07.867+00:00',
+              id: '10010_rc3',
+              inUse: true,
+              isDowngradeVersion: undefined,
+              isNonDowngradable: undefined,
+              name: '10010_rc3'
+            },
+            {
+              category: 'REGULAR',
+              createdDate: '2024-05-22T07:21:52.693+00:00',
+              id: '10010_rc2',
+              inUse: undefined,
+              isDowngradeVersion: true,
+              isNonDowngradable: undefined,
+              name: '10010_rc2'
+            },
+            {
+              category: 'REGULAR',
+              createdDate: '2024-04-09T09:13:50.553+00:00',
+              id: '09010f_b19',
+              inUse: undefined,
+              isDowngradeVersion: true,
+              isNonDowngradable: true,
+              name: '09010f_b19'
+            },
+            {
+              category: 'REGULAR',
+              createdDate: '2024-04-09T09:13:46.772+00:00',
+              id: '09010h_rc1',
+              inUse: undefined,
+              isDowngradeVersion: true,
+              isNonDowngradable: true,
+              name: '09010h_rc1'
+            }
+          ]
+        },
+        {
+          modelGroup: 'ICX82',
+          switchCount: 0,
+          versions: [
+            {
+              category: 'REGULAR',
+              createdDate: '2024-05-23T03:54:07.867+00:00',
+              id: '10010_rc3',
+              inUse: true,
+              isDowngradeVersion: undefined,
+              isNonDowngradable: undefined,
+              name: '10010_rc3'
+            },
+            {
+              category: 'REGULAR',
+              createdDate: '2024-05-22T07:21:52.693+00:00',
+              id: '10010_rc2',
+              inUse: undefined,
+              isDowngradeVersion: true,
+              isNonDowngradable: undefined,
+              name: '10010_rc2'
+            },
+            {
+              category: 'REGULAR',
+              createdDate: '2024-04-09T09:12:47.128+00:00',
+              id: '10010a_cd1_b3',
+              inUse: undefined,
+              isDowngradeVersion: undefined,
+              isNonDowngradable: undefined,
+              name: '10010a_cd1_b3'
+            }
+          ]
+        },
+        {
+          modelGroup: 'ICX71',
+          switchCount: 0,
+          versions: [
+            {
+              category: 'REGULAR',
+              createdDate: '2024-04-09T09:13:50.553+00:00',
+              id: '09010f_b19',
+              inUse: undefined,
+              isDowngradeVersion: true,
+              isNonDowngradable: undefined,
+              name: '09010f_b19'
+            },
+            {
+              category: 'REGULAR',
+              createdDate: '2024-04-09T09:13:46.772+00:00',
+              id: '09010h_rc1',
+              inUse: undefined,
+              isDowngradeVersion: true,
+              isNonDowngradable: undefined,
+              name: '09010h_rc1'
+            },
+            {
+              category: 'RECOMMENDED',
+              createdDate: '2024-04-09T09:13:06.337+00:00',
+              id: '09010h_cd2_b4',
+              inUse: true,
+              isDowngradeVersion: undefined,
+              isNonDowngradable: undefined,
+              name: '09010h_cd2_b4'
+            }
+          ]
+        }
+      ]
+    })
+  })
+})
+

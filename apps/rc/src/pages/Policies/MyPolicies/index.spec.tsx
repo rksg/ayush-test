@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
@@ -8,7 +8,8 @@ import {
   ClientIsolationUrls,
   ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SyslogUrls, WifiUrlsInfo, WorkflowUrls
+  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -18,7 +19,9 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedRogueApPoliciesList
+  mockedClientIsolationQueryData,
+  mockedRogueApPoliciesList,
+  mockedVlanPoolProfilesQueryData
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -151,7 +154,16 @@ describe('MyPolicies', () => {
       rest.post(
         SyslogUrls.querySyslog.url,
         (_req, res, ctx) => res(ctx.json(mockQueryResult))
-      ))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVlanPoolProfilesQueryData))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      )
+    )
 
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
@@ -165,5 +177,11 @@ describe('MyPolicies', () => {
 
     const rogueApTitle = 'Rogue AP Detection (99)'
     expect(await screen.findByText(rogueApTitle)).toBeVisible()
+
+    const vlanPoolTitle = 'VLAN Pools (0)'
+    expect(await screen.findByText(vlanPoolTitle)).toBeVisible()
+
+    const clientIsolationTitle = 'Client Isolation (1)'
+    expect(await screen.findByText(clientIsolationTitle)).toBeVisible()
   })
 })

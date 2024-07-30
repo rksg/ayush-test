@@ -7,13 +7,15 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
   EPDG, useServicePageHeaderTitle,
   QosPriorityEnum, ServiceOperation, ServiceType,
   useConfigTemplateMutationFnSwitcher,
-  useServiceListBreadcrumb, useServicePreviousPath
+  useServiceListBreadcrumb, useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -29,6 +31,10 @@ export const WifiCallingConfigureForm = () => {
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateWifiCallingServiceMutation,
@@ -46,6 +52,7 @@ export const WifiCallingConfigureForm = () => {
   const networkIds:string[] = []
   const networksName:string[] = []
   const epdgs:EPDG[] = []
+  const oldNetworkIds: string[] = []
 
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
@@ -56,7 +63,8 @@ export const WifiCallingConfigureForm = () => {
     description,
     networkIds,
     networksName,
-    epdgs
+    epdgs,
+    oldNetworkIds
   })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
@@ -66,7 +74,8 @@ export const WifiCallingConfigureForm = () => {
     try {
       await updateWifiCallingService({
         params,
-        payload: WifiCallingFormValidate(state)
+        payload: WifiCallingFormValidate(state),
+        enableRbac
       }).unwrap()
       navigate(previousPath, { replace: true })
     } catch (error) {

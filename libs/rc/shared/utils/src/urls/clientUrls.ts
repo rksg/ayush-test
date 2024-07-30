@@ -22,6 +22,11 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/client/:clientId'
   },
+  getClients: {
+    method: 'post',
+    url: '/venues/aps/clients/query',
+    newApi: true
+  },
   deleteGuest: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
@@ -35,6 +40,11 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
   enableGuests: {
     method: 'PATCH',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
+    newApi: true
+  },
+  validateGuestPassword: {
+    method: 'PATCH',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   disableGuests: {

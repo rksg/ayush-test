@@ -1326,7 +1326,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           let ret = await fetchWithBQ(getDhcpLeasesInfo)
           let result = ret.data as TroubleshootingResult
 
-          while (result?.response?.syncing) {
+          while (result?.response?.syncing || _.get(result, 'syncing')) { //TODO: It is necessary to remove result?.response?.syncing after RBAC launch
             await wait(2000)
             ret = await fetchWithBQ(getDhcpLeasesInfo)
             result = ret.data as TroubleshootingResult
@@ -1336,9 +1336,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
         const getDhcpLeasesQuery = await pollingDhcpLease()
         const leaseResult = getDhcpLeasesQuery.data as TroubleshootingResult
+        const dhcpServerLeaseList = leaseResult?.response?.dhcpServerLeaseList ||
+          _.get(leaseResult, 'dhcpServerLeaseList')
 
-        return leaseResult?.response?.dhcpServerLeaseList
-          ? { data: leaseResult.response.dhcpServerLeaseList }
+        return dhcpServerLeaseList ? { data: dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
     }),

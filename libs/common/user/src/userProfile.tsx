@@ -9,7 +9,12 @@ import {
   ScopeKeys
 } from '@acx-ui/types'
 
-import type { UserProfile, RaiPermission, RaiPermissions } from './types'
+import {
+  type UserProfile,
+  type RaiPermission,
+  type RaiPermissions,
+  CustomRoleType
+} from './types'
 
 type Profile = {
   profile: UserProfile
@@ -65,10 +70,10 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  * DO NOT use hasAccess. It will be private after RBAC feature release.
  */
 
-export function hasAccess (id?: string) {
+export function hasAccess (id?: string, roles?: Role[]) {
   if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
-  if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
+  if (!id) return hasRoles(roles || [Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   return hasAllowedOperations(id)
 }
 
@@ -111,22 +116,23 @@ export function hasPermission (props?: {
     permission?: RaiPermission,
     // R1
     scopes?: ScopeKeys,
-    allowedOperations?:string
+    allowedOperations?:string,
+    roles?: Role[]
 }): boolean {
-  const { scopes = [], allowedOperations, permission } = props || {}
+  const { scopes = [], allowedOperations, permission, roles } = props || {}
   if (get('IS_MLISA_SA')) {
     return !!(permission && permissions[permission])
   } else {
     const { abacEnabled, isCustomRole } = getUserProfile()
     if(!abacEnabled) {
-      return hasAccess(allowedOperations)
+      return hasAccess(allowedOperations, roles)
     }else {
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
         const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
         return !!(isScopesValid && isOperationsValid)
       } else {
-        return hasAccess(allowedOperations)
+        return hasAccess(allowedOperations, roles)
       }
     }
   }
@@ -157,9 +163,16 @@ export function hasScope (userScopes: ScopeKeys) {
 
 
 export function hasRoles (roles: string | string[]) {
-  const { profile } = getUserProfile()
+  const { profile, abacEnabled } = getUserProfile()
+
 
   if (!Array.isArray(roles)) roles = [roles]
+
+  if (abacEnabled &&
+    profile.customRoleType === CustomRoleType.SYSTEM &&
+    profile.customRoleName) {
+    return roles.includes(profile.customRoleName)
+  }
 
   return profile?.roles?.some(role => roles.includes(role))
 }

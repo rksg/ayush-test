@@ -1,4 +1,3 @@
-import { RcFile } from 'antd/lib/upload'
 
 // Mapping the enum based on enrollment-actions definitions:
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
@@ -16,7 +15,7 @@ export interface ActionBase {
   version: number
 }
 
-export interface AupActionContext {
+export interface AupAction extends ActionBase {
   title: string, // max:100
   messageHtml: string, // max = 1000
 
@@ -34,19 +33,10 @@ export interface AupActionContext {
   contentFileLocation?: string
 }
 
-export type AupActionFormContext = AupActionContext & {
-  aupFileLocation?: RcFile,
-  contentFileLocation?: RcFile
-}
-
-export interface DpskActionContext {
-  dpskPoolId: string
-}
-
-export interface DataPromptActionContext {
-  title?: string,
+export interface DataPromptAction extends ActionBase {
+  title?: string, // max:100
   displayTitle: boolean,
-  messageHtml?: string,
+  messageHtml?: string, // max = 1000
   displayMessageHtml: boolean
   fields?: DataPromptVariable[],
   bottomLabel?: string // max = 1000
@@ -56,23 +46,13 @@ export interface DataPromptActionContext {
   displayContinueButton: boolean
 }
 
-// TODO: need to confirm the nullable or not for each variables
-export interface UserSelectionSplitContext {
-  title: string,
-  messageHtml: string,
-  shortName?: string,
-  enabled?: boolean,
-
-  iconFileLocation?: string
-}
-
 export interface DataPromptVariable {
   type: string,
   label?: string,
   regex?: string,
 }
 
-export interface DisplayMessageActionContext {
+export interface DisplayMessageAction extends ActionBase {
   title: string,
   messageHtml: string,
   backButtonText: string,
@@ -81,13 +61,12 @@ export interface DisplayMessageActionContext {
   displayContinueButton: boolean
 }
 
-export type AupAction = ActionBase & AupActionFormContext
-export type DataPromptAction = ActionBase & DataPromptActionContext
-export type DisplayMessageAction = ActionBase & DisplayMessageActionContext
+export type AupActionContext = Omit<AupAction, keyof ActionBase>
+export type DataPromptActionContext = Omit<DataPromptAction, keyof ActionBase>
+export type DisplayMessageActionContext = Omit<DisplayMessageAction, keyof ActionBase>
 
 export type GenericActionData =
   ActionBase &
-  AupActionFormContext &
+  AupActionContext &
   DataPromptActionContext &
   DisplayMessageActionContext
-

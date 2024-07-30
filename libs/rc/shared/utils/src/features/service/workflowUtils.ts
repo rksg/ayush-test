@@ -3,9 +3,9 @@ import { defineMessage, useIntl } from 'react-intl'
 import { Node }                   from 'reactflow'
 
 import {
-  AupIcon,
-  DataPromptIcon,
-  DisplayMessageIcon
+  AupActionTypeIcon,
+  DataPromptActionTypeIcon,
+  DisplayMessageActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -13,10 +13,11 @@ import {
   AupActionContext,
   DataPromptActionContext, DataPromptVariable,
   DisplayMessageActionContext,
-  UserSelectionSplitContext,
+  UIConfiguration,
   WorkflowStep
 } from '../../types'
 
+export const WorkflowStepsEmptyCount = 2
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
@@ -76,9 +77,9 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
-  [ActionType.AUP]: AupIcon,
-  [ActionType.DATA_PROMPT]: DataPromptIcon,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon
+  [ActionType.AUP]: AupActionTypeIcon,
+  [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
@@ -142,13 +143,6 @@ export const DataPromptActionDefaultValue: {
   fields: [{ type: 'username', label: 'Username' }]
 }
 
-export const UserSelectionActionDefaultValue: {
-  [key in keyof UserSelectionSplitContext]: MessageDescriptor | string
-} = {
-  title: defineMessage({ defaultMessage: 'DefaultUserSplitTitle' }),
-  messageHtml: defineMessage({ defaultMessage: 'Default HTML template.' })
-}
-
 export const DisplayMessageActionDefaultValue: {
   [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
 } = {
@@ -167,3 +161,22 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   // [ActionType.DPSK]: {},
 }
 /* eslint-enable max-len */
+
+// TODO:
+// - Remove `defaultConfiguration` in PortalDesign.tsx
+export const DefaultUIConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    titleFontColor: 'var(--acx-neutrals-100)',
+    backgroundColor: 'var(--acx-primary-white)',
+    bodyFontColor: 'var(--acx-neutrals-100)',
+
+    buttonFontColor: 'var(--acx-primary-white)',
+    buttonColor: 'var(--acx-accents-orange-50)'
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16,
+    bodyFontSize: 14
+  }
+}

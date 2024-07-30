@@ -435,22 +435,6 @@ interface RadiusService {
   sharedSecret: string
 }
 
-export interface CloudpathServer {
-  id: string
-  name: string
-  deploymentType: 'Cloud' | 'OnPremise'
-  deployedInVenueId?: string
-  deployedInVenueName?: string
-  authRadius: {
-    id: string
-    primary: RadiusService
-  }
-  accountingRadius?: {
-    id: string
-    primary: RadiusService
-  }
-}
-
 export interface Service {
   id: string
   name: string
@@ -503,7 +487,8 @@ export interface WifiCallingSetting {
   tenantId?: string,
   name?: string,
   epdgs?: EPDG[],
-  networkIds?: string[]
+  networkIds?: string[],
+  wifiNetworkIds?: string[]
 }
 
 export interface WifiCallingSettingContextType {
@@ -611,7 +596,7 @@ export interface QosMapRule {
 
 export const RWGStatusMap = {
   [RWGStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Operational' }),
-  [RWGStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Disconnected' }),
+  [RWGStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Offline' }),
   [RWGStatusEnum.STAGING]: defineMessage({ defaultMessage: 'Staging' }),
   [RWGStatusEnum.DATA_INCOMPLETE]: defineMessage({ defaultMessage: 'Data Incomplete' }),
   [RWGStatusEnum.INSUFFICIENT_LICENSE]: defineMessage({ defaultMessage: 'Insufficient License' }),
