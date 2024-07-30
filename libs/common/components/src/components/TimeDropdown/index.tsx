@@ -62,27 +62,28 @@ const atDayHour = defineMessage({
   defaultMessage: '<day></day> <at>at</at> <hour></hour>'
 })
 
-export const getDisplayTime =
-{
-  Daily: (hour: number) => (timeMap().get(hour)),
-  Weekly: (day: number, hour: number) => (
-    <FormattedMessage {...atDayHour}
-      values={{
-        day: () => dayOfWeekMap().get(day),
-        at: (text) => text,
-        hour: () => timeMap().get(hour)
-      }}
-    />
-  ),
-  Monthly: (day: number, hour: number) => (
-    <FormattedMessage {...atDayHour}
-      values={{
-        day: () => dayOfMonthMap().get(day),
-        at: (text) => text,
-        hour: () => timeMap().get(hour)
-      }}
-    />
-  )
+export function getDisplayTime ( type: TimeDropdownProps['type']) {
+  return {
+    daily: (hour: number) => (timeMap().get(hour)),
+    weekly: (day: number, hour: number) => (
+      <FormattedMessage {...atDayHour}
+        values={{
+          day: () => dayOfWeekMap().get(day),
+          at: (text) => text,
+          hour: () => timeMap().get(hour)
+        }}
+      />
+    ),
+    monthly: (day: number, hour: number) => (
+      <FormattedMessage {...atDayHour}
+        values={{
+          day: () => dayOfMonthMap().get(day),
+          at: (text) => text,
+          hour: () => timeMap().get(hour)
+        }}
+      />
+    )
+  }[type]
 }
 
 interface TimeDropdownProps {

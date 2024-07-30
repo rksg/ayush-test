@@ -87,6 +87,8 @@ Schedule.fieldName = name
 Schedule.label = label
 Schedule.reset = reset
 
+export type DailyFunction = (hour: number) => React.ReactNode
+
 Schedule.FieldSummary = function ScheduleFieldSummary () {
   const { $t } = useIntl()
   const typeWithSchedule = useTypeWithSchedule()
@@ -99,11 +101,12 @@ Schedule.FieldSummary = function ScheduleFieldSummary () {
     children={<StepsForm.FieldSummary<ScheduleType> convert={(value) => {
       switch (value!.frequency) {
         case ScheduleFrequency.Daily:
-          return getDisplayTime.Daily(value?.hour!)
+          const dailyDisplayFn = getDisplayTime(ScheduleFrequency.Daily) as DailyFunction
+          return dailyDisplayFn(value?.hour!)
         case ScheduleFrequency.Weekly:
-          return getDisplayTime.Weekly(value?.day!,value?.hour!)
+          return getDisplayTime(ScheduleFrequency.Weekly)(value?.day!,value?.hour!)
         default:
-          return getDisplayTime.Monthly(value?.day!,value?.hour!)
+          return getDisplayTime(ScheduleFrequency.Monthly)(value?.day!,value?.hour!)
       }
     }}/>}
   />
