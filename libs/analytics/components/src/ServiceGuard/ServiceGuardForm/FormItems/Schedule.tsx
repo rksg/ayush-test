@@ -87,7 +87,7 @@ Schedule.fieldName = name
 Schedule.label = label
 Schedule.reset = reset
 
-export type DailyFunction = (hour: number) => React.ReactNode
+type DailyFunction = (hour: number) => React.ReactNode
 
 Schedule.FieldSummary = function ScheduleFieldSummary () {
   const { $t } = useIntl()
