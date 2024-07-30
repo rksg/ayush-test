@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState, createContext } from 'react'
 
-import { Form }                   from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { Form }                                                          from 'antd'
+import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
+import { defineMessage, useIntl }                                        from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
@@ -34,7 +34,8 @@ import {
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useGetNetworkDeepQuery
+  useGetNetworkDeepQuery,
+  useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -161,6 +162,10 @@ export function NetworkForm (props:{
     useMutationFn: useAddNetworkVenueMutation,
     useTemplateMutationFn: useAddNetworkVenueTemplateMutation
   })
+  const [ updateNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
   const [ deleteNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
@@ -171,7 +176,6 @@ export function NetworkForm (props:{
     useMutationFn: useAddNetworkVenuesMutation,
     useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
   })
-
   const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenuesMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
@@ -283,7 +287,7 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0) return
 
-    const fullNetworkSaveData = _.merge(
+    const fullNetworkSaveData = merge(
       {},
       saveState,
       {
@@ -305,7 +309,7 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!radiusServerConfigurations) return
 
-    const fullNetworkSaveData = _.merge({}, saveState, radiusServerConfigurations)
+    const fullNetworkSaveData = merge({}, saveState, radiusServerConfigurations)
     const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldsValue({
@@ -345,13 +349,13 @@ export function NetworkForm (props:{
         settingSaveData = transferMoreSettingsToSave(data, settingSaveData, networkVxLanTunnelProfileInfo)
       }
       updateSaveData(settingSaveData)
-    }else {
+    } else {
       if(!(editMode||cloneMode)){
-        if(_.get(data, 'lockoutPeriodUnit')&&data?.guestPortal?.lockoutPeriod){
+        if(get(data, 'lockoutPeriodUnit')&&data?.guestPortal?.lockoutPeriod){
           data.guestPortal={
             ...data.guestPortal,
             lockoutPeriod: data.guestPortal.lockoutPeriod*
-            minutesMapping[_.get(data, 'lockoutPeriodUnit')]
+            minutesMapping[get(data, 'lockoutPeriodUnit')]
           }
         }
         const settingCaptiveData = {
@@ -458,7 +462,7 @@ export function NetworkForm (props:{
       delete data.guestPortal?.socialIdentities?.linkedin
     }
     const tmpGuestPageState = {
-      enableDhcp: _.isUndefined(data.enableDhcp)? saveState.enableDhcp : data.enableDhcp,
+      enableDhcp: isUndefined(data.enableDhcp)? saveState.enableDhcp : data.enableDhcp,
       guestPortal: {
         //other properties value
         enableSelfService: true,
@@ -527,7 +531,7 @@ export function NetworkForm (props:{
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (_.isUndefined(networkVenue.id) || _.isNull(networkVenue.id)) {
+        if (isUndefined(networkVenue.id) || isNull(networkVenue.id)) {
           networkVenue.networkId = networkId
           added.push(networkVenue)
         } else {
@@ -538,17 +542,17 @@ export function NetworkForm (props:{
     if (oldNetworkVenues?.length) {
       oldNetworkVenues?.forEach(networkVenue => {
         const networkVenueId = networkVenue.id
-        if (!_.isUndefined(networkVenueId)) {
+        if (!isUndefined(networkVenueId)) {
           if (!newIds.includes(networkVenueId)) {
             removed.push(networkVenueId)
           } else if (newNetworkVenues?.length) {
             const newNetworkVenue = newNetworkVenues.find(venue => venue.id === networkVenueId)
             if (newNetworkVenue) {
               // remove the undeifned or null field
-              const oldNVenue = _.omitBy(networkVenue, _.isNil)
-              const newNVenue = _.omitBy(newNetworkVenue, _.isNil)
+              const oldNVenue = omitBy(networkVenue, isNil)
+              const newNVenue = omitBy(newNetworkVenue, isNil)
 
-              if (!_.isEqual(oldNVenue, newNVenue)) {
+              if (!isEqual(oldNVenue, newNVenue)) {
                 update.push(newNetworkVenue) // config changed need to update
               }
             }
@@ -574,35 +578,37 @@ export function NetworkForm (props:{
     newNetworkVenues? : NetworkVenue[],
     oldNetworkVenues? : NetworkVenue[]
   )=> {
-    let added: NetworkVenue[] = []
-    let newIds: string[] = []
-    let removed: string[] = []
-    let update: NetworkVenue[] = []
+    const added: NetworkVenue[] = []
+    const removed: string[] = []
+    const update: NetworkVenue[] = []
+    const newVenueIds: string[] = []
 
     if (newNetworkVenues?.length) {
       newNetworkVenues?.forEach(networkVenue => {
-        if (_.isUndefined(networkVenue.id) || _.isNull(networkVenue.id)) {
+        if (!networkVenue.networkId) {
           networkVenue.networkId = networkId
           added.push(networkVenue)
+          update.push(networkVenue)
         } else {
-          newIds.push(networkVenue.id as string)
+          newVenueIds.push(networkVenue.venueId!)
         }
       })
     }
+
     if (oldNetworkVenues?.length) {
       oldNetworkVenues?.forEach(networkVenue => {
-        const networkVenueId = networkVenue.id
-        if (!_.isUndefined(networkVenueId)) {
-          if (!newIds.includes(networkVenueId)) {
-            removed.push(networkVenueId)
+        const venueId = networkVenue.venueId!
+        if (networkVenue.networkId) {
+          if (!newVenueIds.includes(venueId)) {
+            removed.push(venueId)
           } else if (newNetworkVenues?.length) {
-            const newNetworkVenue = newNetworkVenues.find(venue => venue.id === networkVenueId)
+            const newNetworkVenue = newNetworkVenues.find(venue => venue.venueId === venueId)
             if (newNetworkVenue) {
               // remove the undeifned or null field
-              const oldNVenue = _.omitBy(networkVenue, _.isNil)
-              const newNVenue = _.omitBy(newNetworkVenue, _.isNil)
+              const oldNVenue = omitBy(networkVenue, isNil)
+              const newNVenue = omitBy(newNetworkVenue, isNil)
 
-              if (!_.isEqual(oldNVenue, newNVenue)) {
+              if (!isEqual(oldNVenue, newNVenue)) {
                 update.push(newNetworkVenue) // config changed need to update
               }
             }
@@ -616,18 +622,19 @@ export function NetworkForm (props:{
       const addNetworkVenueReqs = added.map((networkVenue) => {
         const params = {
           venueId: networkVenue.venueId,
-          networkId: networkVenue.networkId
+          networkId: networkId
         }
         return addNetworkVenue({ params, payload: networkVenue, enableRbac: true })
       })
 
       await Promise.allSettled(addNetworkVenueReqs)
     }
+
     if (removed.length) {
       const deleteNetworkVenueReqs = removed.map((networkVenueId) => {
         const curParams = {
-          venueId: params.venueId,
-          networkId: networkVenueId
+          venueId: networkVenueId,
+          networkId: networkId
         }
         return deleteNetworkVenue({ params: curParams, enableRbac: true })
       })
@@ -636,7 +643,15 @@ export function NetworkForm (props:{
     }
 
     if (update.length) {
-      await updateNetworkVenues({ payload: update }).unwrap()
+      const updateNetworkVenueReqs = update.map((networkVenue) => {
+        const params = {
+          venueId: networkVenue.venueId,
+          networkId: networkId
+        }
+        return updateNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+      })
+
+      await Promise.allSettled(updateNetworkVenueReqs)
     }
 
   }
@@ -647,7 +662,7 @@ export function NetworkForm (props:{
     const saveData = handleGuestMoreSetting(dataWlan)
     const payload = updateClientIsolationAllowlist(
       // omit id to handle clone
-      _.omit(saveData,
+      omit(saveData,
         ['id',
           'networkSecurity',
           'enableOwe',
@@ -715,7 +730,7 @@ export function NetworkForm (props:{
     if (dataMore.guestPortal?.wisprPage?.authType &&
       dataMore.guestPortal?.wisprPage?.authType === AuthRadiusEnum.ALWAYS_ACCEPT &&
       dataMore.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
-      saveContextRef.current = _.omit({ ...saveState, ...dataMore },
+      saveContextRef.current = omit({ ...saveState, ...dataMore },
         ['authRadius',
           'accountingRadius',
           'enableAccountingService',
@@ -727,7 +742,7 @@ export function NetworkForm (props:{
       )
     } else {
       if(!saveState.enableAccountingService){
-        saveContextRef.current = _.omit({ ...saveState, ...dataMore },
+        saveContextRef.current = omit({ ...saveState, ...dataMore },
           [
             'accountingRadius',
             'enableAccountingService',
@@ -745,7 +760,7 @@ export function NetworkForm (props:{
           ]
         )
       }else{
-        saveContextRef.current = _.omit({ ...saveState, ...dataMore },
+        saveContextRef.current = omit({ ...saveState, ...dataMore },
           [
             'enableOwe',
             'networkSecurity',
@@ -1156,7 +1171,7 @@ function useUpdateHotspot20Activation () {
         }
 
         if (hotspot20OriginalProviders && newProviderIds &&
-          !_.isEqual(hotspot20OriginalProviders, newProviderIds)) {
+          !isEqual(hotspot20OriginalProviders, newProviderIds)) {
 
           const deactivateProviderIds = hotspot20OriginalProviders.filter(providerId =>
             !(hotspot20Setting.identityProviders!.includes(providerId))
