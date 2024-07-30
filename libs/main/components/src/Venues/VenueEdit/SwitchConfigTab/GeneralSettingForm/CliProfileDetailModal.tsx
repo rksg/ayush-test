@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Col, Divider, Form, Row, Select, Typography } from 'antd'
 
 import { cssStr, Modal, Tooltip }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useLazyGetSwitchConfigProfileQuery }             from '@acx-ui/rc/services'
 import { ConfigurationProfile, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { getIntl }                                        from '@acx-ui/utils'
@@ -19,6 +20,7 @@ export function CliProfileDetailModal (props: {
   const { $t } = getIntl()
   const { formState, setFormState, formData } = props
   const profileKeys = getProfilesByKeys(formState.configProfiles, formData.profileId)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getSwitchConfigProfile] = useLazyGetSwitchConfigProfileQuery()
   const [selectedProfile, setSelectedProfile] =
     useState<ConfigurationProfile>({} as ConfigurationProfile)
@@ -26,7 +28,8 @@ export function CliProfileDetailModal (props: {
   const switchModels = selectedProfile?.venueCliTemplate?.switchModels?.split(',') ?? []
   const getSelectedProfile = async function (profileId: string) {
     let profile = await getSwitchConfigProfile({
-      params: { profileId }
+      params: { profileId },
+      enableRbac: isSwitchRbacEnabled
     }).unwrap()
 
     const pk = profileKeys.find(p => p.id === profileId)
