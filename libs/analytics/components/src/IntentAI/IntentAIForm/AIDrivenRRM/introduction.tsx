@@ -18,6 +18,7 @@ import { steps, crrmIntent, statusTrailMsgs } from '.'
 
 export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: any }) { // what type to set?
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()

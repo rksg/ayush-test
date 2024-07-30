@@ -88,10 +88,32 @@ describe('AIDrivenRRM', () => {
 
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')
-    const { asFragment } = render(<AIDrivenRRM />, {
+    render(<AIDrivenRRM />, {
       route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
       wrapper: Provider
     })
-    expect(asFragment()).toMatchSnapshot()
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    expect(await screen.findByText('Benefits')).toBeVisible()
+    expect(await screen.findByText('Zone')).toBeVisible()
+    await userEvent.click(actions.getByRole('button', { name: 'Next' }))
+
+    await screen.findAllByRole('heading', { name: 'Intent Priority' })
+    expect(await screen.findByText('Potential trade-off?')).toBeVisible()
+    const throughputRadio = screen.getByRole('radio', {
+      name: 'High client throughput in sparse network'
+    })
+    await userEvent.click(throughputRadio)
+    expect(throughputRadio).toBeChecked()
+    await userEvent.click(actions.getByRole('button', { name: 'Next' }))
+
+    await screen.findAllByRole('heading', { name: 'Settings' })
+    await userEvent.click(actions.getByRole('button', { name: 'Next' }))
+
+    await screen.findAllByRole('heading', { name: 'Summary' })
+    expect(screen.getByRole('button', {
+      name: 'Apply'
+    })).toBeVisible()
   })
 })

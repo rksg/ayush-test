@@ -52,7 +52,12 @@ function useGraph (
     data={graphs[0]}
     zoomScale={zoomScale}
   />}</AutoSizer></div>
-  const beforeImage = <img src={summaryUrlBefore} alt='beforeImage' width={'100%'} height={'100%'}/>
+  const beforeImage = <img
+    src={summaryUrlBefore}
+    alt='summary-before'
+    width={'100%'}
+    height={'100%'}
+  />
   const afterGraph = <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
     style={{ width, height }}
     chartRef={connectChart}
@@ -60,7 +65,12 @@ function useGraph (
     data={graphs[1]}
     zoomScale={zoomScale}
   />}</AutoSizer></div>
-  const afterImage = <img src={summaryUrlAfter} alt='afterImage' width={'100%'} height={'100%'}/>
+  const afterImage = <img
+    src={summaryUrlAfter}
+    alt='summary-after'
+    width={'100%'}
+    height={'100%'}
+  />
 
   return (graphs?.length)
     ? [ isDrawer ? beforeGraph : beforeImage,

@@ -3,8 +3,8 @@ import { pick } from 'lodash'
 import { recommendationUrl, Provider }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedRecommendationCRRM } from './__tests__/fixtures'
-import { CrrmDetails }              from './CrrmDetails'
+import { mockedCRRMGraphs, mockedRecommendationCRRM } from './__tests__/fixtures'
+import { CrrmDetails }                                from './CrrmDetails'
 
 jest.mock('./Overview', () => ({ Overview: () => <div data-testid='Overview' /> }))
 jest.mock('./CrrmValuesExtra', () =>
@@ -18,6 +18,9 @@ describe('CrrmDetails', () => {
     })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: { recommendation: mockedRecommendationCRRM }
+    })
+    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+      data: { recommendation: mockedCRRMGraphs }
     })
   })
   it('renders correctly', async () => {
