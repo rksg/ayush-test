@@ -326,15 +326,6 @@ exports[`ApPhoto should reset upload photo correctly 1`] = `
             </div>
           </div>
         </div>
-        <ul
-          class="ant-card-actions"
-        >
-          <li
-            style="width: 100%;"
-          >
-            <span />
-          </li>
-        </ul>
       </div>
     </div>
   </div>

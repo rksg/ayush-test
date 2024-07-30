@@ -123,15 +123,6 @@ exports[`Card component should render card with grey background 1`] = `
       >
         test
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>
@@ -258,15 +249,6 @@ exports[`Card component should render card with no border 1`] = `
       >
         test
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>

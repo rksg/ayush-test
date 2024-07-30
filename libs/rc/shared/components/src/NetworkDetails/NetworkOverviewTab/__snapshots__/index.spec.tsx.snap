@@ -253,15 +253,6 @@ exports[`NetworkOverviewTab should render network overview tab successfully 1`] 
                     </div>
                   </div>
                 </div>
-                <ul
-                  class="ant-card-actions"
-                >
-                  <li
-                    style="width: 100%;"
-                  >
-                    <span />
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
@@ -549,15 +540,6 @@ exports[`NetworkOverviewTab should render network overview tab successfully with
                     </div>
                   </div>
                 </div>
-                <ul
-                  class="ant-card-actions"
-                >
-                  <li
-                    style="width: 100%;"
-                  >
-                    <span />
-                  </li>
-                </ul>
               </div>
             </div>
           </div>
@@ -865,15 +847,6 @@ exports[`NetworkOverviewTab should render network overview tab with venue filter
                     </div>
                   </div>
                 </div>
-                <ul
-                  class="ant-card-actions"
-                >
-                  <li
-                    style="width: 100%;"
-                  >
-                    <span />
-                  </li>
-                </ul>
               </div>
             </div>
           </div>

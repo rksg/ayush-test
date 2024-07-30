@@ -273,15 +273,6 @@ h5.c7.ant-typography {
           </div>
         </div>
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>

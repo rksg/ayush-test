@@ -290,15 +290,6 @@ exports[`TopologyFloorPlanWidget should render correctly 1`] = `
           />
         </div>
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>
@@ -676,15 +667,6 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under A
           />
         </div>
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>
@@ -1062,15 +1044,6 @@ exports[`TopologyFloorPlanWidget should render floorplan topology widget under S
           />
         </div>
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>

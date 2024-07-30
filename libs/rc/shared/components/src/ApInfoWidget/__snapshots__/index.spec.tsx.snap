@@ -375,15 +375,6 @@ exports[`AP Information Widget should render "No active alarms" when no alarms e
           </div>
         </div>
       </div>
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>

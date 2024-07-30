@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Card }              from '@acx-ui/components'
+import { Card, Button }      from '@acx-ui/components'
 import { ArrowChevronRight } from '@acx-ui/icons'
 
 import { detailsHeaderFontStyles } from '../IntentAIDetails/styledComponents'
@@ -89,3 +89,10 @@ export const Square = styled.span<{ $color: string }>`
 `
 
 export const RightArrow = styled(ArrowChevronRight)``
+
+export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link' })`
+  position: absolute;
+  text-decoration: underline;
+  bottom: 12px;
+  right: 16px;
+`

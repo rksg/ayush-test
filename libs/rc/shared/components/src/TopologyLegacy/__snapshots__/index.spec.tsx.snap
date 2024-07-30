@@ -12912,15 +12912,6 @@ exports[`Topology should render correctly 1`] = `
                 </div>
               </div>
             </div>
-            <ul
-              class="ant-card-actions"
-            >
-              <li
-                style="width: 100%;"
-              >
-                <span />
-              </li>
-            </ul>
           </div>
         </div>
       </div>

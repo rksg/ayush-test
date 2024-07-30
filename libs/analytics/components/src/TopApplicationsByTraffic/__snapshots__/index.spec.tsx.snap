@@ -378,15 +378,6 @@ exports[`TopApplicationsByTrafficWidget should render for empty data: NoData 1`]
             />
           </div>
         </div>
-        <ul
-          class="ant-card-actions"
-        >
-          <li
-            style="width: 100%;"
-          >
-            <span />
-          </li>
-        </ul>
       </div>
     </div>
   </div>
