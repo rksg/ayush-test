@@ -2,7 +2,6 @@ import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { useEffect, useState } from 'react'
 
-import { Card }   from 'antd'
 import {
   ConnectionLineType,
   Edge,
@@ -24,13 +23,25 @@ import { ActionType, findFirstStep, getInitialNodes, StepType, toStepMap, Workfl
 import ActionLibraryDrawer from '../ActionLibraryDrawer/ActionLibraryDrawer'
 import StepDrawer          from '../StepDrawer/StepDrawer'
 
+import * as UI                                         from './styledComponents'
 import WorkflowCanvas                                  from './WorkflowCanvas'
 import { useWorkflowContext, WorkflowContextProvider } from './WorkflowContextProvider'
 
+export enum PanelType {
+  Default = 'default',
+  NoCard = 'noCard'
+}
+
+export enum PanelMode {
+  Default = 'default',
+  Edit = 'edit',
+  View = 'view'
+}
 
 interface WorkflowPanelProps {
   workflowId: string,
-  isEditMode?: boolean
+  mode?: PanelMode,
+  type?: PanelType
 }
 
 const composeNext = (
@@ -159,7 +170,7 @@ const useRequiredDependency = () => {
 
 
 function WorkflowPanelWrapper (props: WorkflowPanelProps) {
-  const { workflowId: policyId, isEditMode } = props
+  const { workflowId: policyId, mode } = props
   const {
     nodeState,
     stepDrawerState,
@@ -203,7 +214,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
       defQuery
     ]}>
       <WorkflowCanvas
-        isEditMode={isEditMode}
+        mode={mode}
         initialNodes={nodes}
         initialEdges={edges}
       />
@@ -238,18 +249,16 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 }
 
 export function WorkflowPanel (props: WorkflowPanelProps) {
+  const { type = PanelType.Default, ...rest } = props
+  const content = <ReactFlowProvider>
+    <WorkflowContextProvider>
+      <WorkflowPanelWrapper
+        {...rest}
+      />
+    </WorkflowContextProvider>
+  </ReactFlowProvider>
 
-  return (
-    <Card
-      style={{ flexGrow: 1, width: '100%', height: '100%', display: 'grid' }}
-    >
-      <ReactFlowProvider>
-        <WorkflowContextProvider>
-          <WorkflowPanelWrapper
-            {...props}
-          />
-        </WorkflowContextProvider>
-      </ReactFlowProvider>
-    </Card>
-  )
+  return type === PanelType.NoCard
+    ? content
+    : <UI.WorkflowCard>{content}</UI.WorkflowCard>
 }

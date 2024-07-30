@@ -1,8 +1,17 @@
+import { useState } from 'react'
+
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, DrawerTypes } from '@acx-ui/components'
+import { Button }                                    from '@acx-ui/components'
+import { BrushSolid, EyeOpenOutlined, EyeOpenSolid } from '@acx-ui/icons'
+import { useGetWorkflowStepsByIdQuery }              from '@acx-ui/rc/services'
+import { WorkflowStepsEmptyCount }                   from '@acx-ui/rc/utils'
 
-import { WorkflowPanel } from '../WorkflowPanel'
+import { EnrollmentPortalDesignModal }        from '../../../EnrollmentPortalDesignModal'
+import { PanelType,PanelMode, WorkflowPanel } from '../WorkflowPanel'
+
+import * as UI from './styledComponents'
 
 interface WorkflowDesignerProps {
   workflowId: string,
@@ -12,17 +21,71 @@ interface WorkflowDesignerProps {
 export function WorkflowDesigner (props: WorkflowDesignerProps) {
   const { $t } = useIntl()
   const { workflowId, onClose } = props
+  const { data: stepsData } = useGetWorkflowStepsByIdQuery({
+    params: {
+      policyId: workflowId, pageSize: '1', page: '0', sort: 'id,ASC', excludeContent: 'true'
+    }
+  })
+  const emptySteps = (stepsData?.paging?.totalCount ?? 0 ) <= WorkflowStepsEmptyCount
+  const [isPortalVisible, setIsPortalVisible] = useState(false)
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false)
 
-  return (
-    <Drawer
+  const title =
+    <UI.WorkflowDesignerHeader>
+      {$t({ defaultMessage: 'Workflow Designer' })}
+      <Space direction={'horizontal'}>
+        <Button
+          icon={<BrushSolid/>}
+          onClick={() => setIsPortalVisible(true)}
+        >
+          {$t({ defaultMessage: 'Portal Look & Feel' })}
+        </Button>
+        <Button
+          icon={emptySteps ? <EyeOpenOutlined/> : <EyeOpenSolid/>}
+          disabled={emptySteps}
+          onClick={() => setIsPreviewVisible(true)}
+        >
+          {$t({ defaultMessage: 'Preview' })}
+        </Button>
+        <Button
+          type={'primary'}
+          onClick={onClose}
+        >
+          {$t({ defaultMessage: 'Close' })}
+        </Button>
+      </Space>
+    </UI.WorkflowDesignerHeader>
+
+  return (<>
+    <UI.Drawer
       visible
-      title={$t({ defaultMessage: 'Workflow Designer' })}
+      title={title}
       width={'100vw'}
-      drawerType={DrawerTypes.FullHeight}
       push={false}
+      closable={false}
       onClose={(e) => e && onClose()}
     >
-      <WorkflowPanel workflowId={workflowId} isEditMode={true} />
-    </Drawer>
+      <WorkflowPanel
+        workflowId={workflowId}
+        type={PanelType.NoCard}
+        mode={PanelMode.Edit}
+      />
+    </UI.Drawer>
+
+    {(isPortalVisible && workflowId) &&
+      <EnrollmentPortalDesignModal
+        id={workflowId}
+        onFinish={() => setIsPortalVisible(false)}
+      />
+    }
+
+    {/* TODO: Change to use Leo's Preview Modal component */}
+    {(isPreviewVisible && workflowId) &&
+      <EnrollmentPortalDesignModal
+        id={workflowId}
+        onFinish={() => setIsPreviewVisible(false)}
+      />
+    }
+  </>
   )
 }

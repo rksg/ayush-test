@@ -2,8 +2,6 @@ import { MessageDescriptor }      from '@formatjs/intl'
 import { defineMessage, useIntl } from 'react-intl'
 import { Node }                   from 'reactflow'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { cssStr }      from '@acx-ui/components'
 import {
   AupIcon,
   DataPromptIcon,
@@ -19,6 +17,7 @@ import {
   WorkflowStep
 } from '../../types'
 
+export const WorkflowStepsEmptyCount = 2
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
@@ -161,12 +160,12 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 export const DefaultUIConfiguration : UIConfiguration = {
   disablePoweredBy: false,
   uiColorSchema: {
-    titleFontColor: cssStr('--acx-neutrals-100'),
-    backgroundColor: cssStr('--acx-primary-white'),
-    bodyFontColor: cssStr('--acx-neutrals-100'),
+    titleFontColor: 'var(--acx-neutrals-100)',
+    backgroundColor: 'var(--acx-primary-white)',
+    bodyFontColor: 'var(--acx-neutrals-100)',
 
-    buttonFontColor: cssStr('--acx-primary-white'),
-    buttonColor: cssStr('--acx-accents-orange-50')
+    buttonFontColor: 'var(--acx-primary-white)',
+    buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
     logoRatio: 1,
