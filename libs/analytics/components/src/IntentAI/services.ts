@@ -50,10 +50,6 @@ const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Me
   const { $t } = getIntl()
   let tooltipKey = 'tooltip'
 
-  if (state === statusReasons.scheduled && metadata.oneClickOptimize) {
-    tooltipKey = 'tooltipOneClickOptimize'
-  }
-
   const stateConfig = states[state]
   return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
     errorMessage: metadata.error?.message,

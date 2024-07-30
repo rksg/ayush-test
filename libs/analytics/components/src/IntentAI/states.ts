@@ -21,7 +21,8 @@ export enum reasons {
   notEnoughLicense = 'not-enough-license',
   notEnoughData = 'not-enough-data',
   verified = 'verified',
-  waitingForEtl = 'waiting-for-etl'
+  waitingForEtl = 'waiting-for-etl',
+  oneClick = 'one-click',
 }
 
 export enum statusReasons {
@@ -40,6 +41,7 @@ export enum statusReasons {
   pausedRevertFailed = statuses.paused + '-' + reasons.revertFailed,
   pausedReverted = statuses.paused + '-' + reasons.reverted,
   scheduled = statuses.scheduled,
+  scheduledOneClick = statuses.scheduled + '-' + reasons.oneClick,
   applyScheduled = statuses.applyScheduled,
   applyScheduleInProgress = statuses.applyScheduleInProgress,
   revertScheduled = statuses.revertScheduled,

@@ -37,8 +37,11 @@ export const states = {
   },
   [statusReasons.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
-    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via user action "Optimize".' }), //TODO: initiated by the user {userName}
-    tooltipOneClickOptimize: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "Optimize".' }) //TODO: initiated by the user {userName}
+  },
+  [statusReasons.scheduledOneClick]: {
+    text: defineMessage({ defaultMessage: 'Scheduled' }),
+    tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
   [statusReasons.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
