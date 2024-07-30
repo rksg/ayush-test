@@ -6,11 +6,10 @@ import {
   getPolicyDetailsLink, getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import MacRegistrationListTabs from './MacRegistrationListTabs'
 
@@ -35,18 +34,17 @@ function MacRegistrationListPageHeader () {
           link: tablePath
         }
       ]}
-      extra={filterByAccess([
+      extra={hasCloudpathAccess() && [
         <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.MAC_REGISTRATION_LIST,
             oper: PolicyOperation.EDIT,
             policyId: policyId!
           })}
-          scopeKey={[WifiScopes.UPDATE]}
         >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
-      ])}
+      ]}
       footer={<MacRegistrationListTabs />}
     />
   )
