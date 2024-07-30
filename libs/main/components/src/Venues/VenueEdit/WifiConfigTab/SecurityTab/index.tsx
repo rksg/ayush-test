@@ -93,10 +93,11 @@ export function SecurityTab () {
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const resolvedWifiRbacEnabled = isTemplate ? enableTemplateRbac : isUseRbacApi
+  const resolvedServicePolicyRbacEnabled = isTemplate ? enableTemplateRbac : enableServicePolicyRbac
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -127,7 +128,7 @@ export function SecurityTab () {
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVenueRogueApQuery,
     useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
-    enableRbac
+    enableRbac: enableServicePolicyRbac
   })
 
   // eslint-disable-next-line max-len
@@ -136,7 +137,7 @@ export function SecurityTab () {
       useQueryFn: useEnhancedRoguePoliciesQuery,
       useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
       payload: DEFAULT_PAYLOAD,
-      enableRbac
+      enableRbac: enableServicePolicyRbac
     })
 
     if (data?.totalCount === 0) {
@@ -230,7 +231,7 @@ export function SecurityTab () {
         await updateDenialOfServiceProtection({
           params,
           payload: dosProtectionPayload,
-          enableRbac: isUseRbacApi
+          enableRbac: resolvedWifiRbacEnabled
         })
         setTriggerDoSProtection(false)
       }
@@ -244,7 +245,7 @@ export function SecurityTab () {
           currentReportThreshold: venueRogueApData?.reportThreshold
         }
         // eslint-disable-next-line max-len
-        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: (isTemplate) ? enableTemplateRbac : enableRbac })
+        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: resolvedServicePolicyRbacEnabled })
         setTriggerRogueAPDetection(false)
       }
 

@@ -1,11 +1,13 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 
+import { action }         from '@storybook/addon-actions'
 import { ComponentStory } from '@storybook/react'
+import { Form }           from 'antd'
+import _                  from 'lodash'
 
 import { StepsForm } from '@acx-ui/components'
 
 import { TradeOff, TradeOffProps } from '.'
-
 
 const story = {
   title: 'TradeOff',
@@ -14,22 +16,20 @@ const story = {
 
 export default story
 
-const Template: ComponentStory<typeof TradeOff> = (props: TradeOffProps) => {
-  const [value, setValue] = useState('value1')
-  return (
-    <StepsForm>
-      <StepsForm.StepForm>
-        <TradeOff {...props}
-          onChange={(current) => {
-            // eslint-disable-next-line no-console
-            console.debug('onChange', current)
-            setValue(current as string)
-          }}
-          currentValue={value}/>
-      </StepsForm.StepForm>
-    </StepsForm>
-  )
-}
+const onFinish = action('onFinish')
+const Template: ComponentStory<typeof TradeOff> = (props: TradeOffProps) => (
+  <StepsForm
+    key={props.name!}
+    initialValues={{ [props.name!]: props.defaultValue! }}
+    onFieldsChange={([field]) => props.onChange?.(String(field.value))}
+    onFinish={async (data) => onFinish(data)}>
+    <StepsForm.StepForm>
+      <Form.Item name={props.name}>
+        <TradeOff {..._.pick(props, ['headers', 'radios'])} />
+      </Form.Item>
+    </StepsForm.StepForm>
+  </StepsForm>
+)
 
 const Column1:ReactNode = (<div style={{ flexDirection: 'column' }}>
   <div>
@@ -59,10 +59,8 @@ const Column2:ReactNode = (<div style={{ flexDirection: 'column' }}>
 
 export const Default = Template.bind({})
 Default.args = {
-  title: 'Choose priority',
   name: 'tradeOff',
-  currentValue: 'value1',
-  label: 'What\'s more important to you for this network?',
+  defaultValue: 'value1',
   headers: ['Intent Priority', 'IntentAI Scope'],
   radios: [
     {
@@ -83,5 +81,5 @@ Default.args = {
       children: 'Lable3',
       columns: ['Row5', 'Row6'] }
   ],
-  onChange: () => {}
+  onChange: action('onChange')
 }

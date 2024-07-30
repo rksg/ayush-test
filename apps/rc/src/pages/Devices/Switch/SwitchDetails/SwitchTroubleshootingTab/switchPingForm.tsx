@@ -49,6 +49,8 @@ export function SwitchPingForm () {
     useGetTroubleshootingQuery({
       params: troubleshootingParams,
       enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetailsContextData.switchDetailHeader?.venueId
     })
 
   const refetchResult = function () {
@@ -78,7 +80,7 @@ export function SwitchPingForm () {
       }
     }
 
-  }, [getTroubleshooting, getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)

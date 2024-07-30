@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
-import { edgeApi }                                from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                        from '@acx-ui/store'
+import { edgeApi }                                                                 from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                         from '@acx-ui/store'
 import {
   render,
   screen,
@@ -45,6 +45,29 @@ describe('SelectType', () => {
       <Provider>
         <ClusterConfigWizardContext.Provider value={{
           clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus,
+          clusterNetworkSettings: mockedHaNetworkSettings,
+          isLoading: false,
+          isFetching: false
+        }}>
+          <SelectType />
+        </ClusterConfigWizardContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure' }
+      })
+
+    await checkDataRendered()
+    expect(screen.getByText('LAG, Port, HA Settings')).toBeInTheDocument()
+    // expect(screen.getByText('Sub-interface Settings')).toBeInTheDocument()
+    expect(screen.getByText('Cluster Interface Settings')).toBeInTheDocument()
+  })
+  it('should show LAG, Port & Virtual IP Settings card for AB cluster', async () => {
+    render(
+      <Provider>
+        <ClusterConfigWizardContext.Provider value={{
+          clusterInfo: {
+            ...(mockEdgeClusterList.data[0] as EdgeClusterStatus),
+            highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+          },
           clusterNetworkSettings: mockedHaNetworkSettings,
           isLoading: false,
           isFetching: false
@@ -268,6 +291,5 @@ describe('SelectType', () => {
 })
 
 const checkDataRendered = async () => {
-  const subTitle = screen.getByText(/set up for all SmartEdges in this cluster/i)
-  await waitFor(() => expect(subTitle).toHaveTextContent('(Edge Cluster 1):'))
+  expect(screen.getByText(/Edge Cluster 1 \(Active-(Active|Standby) HA mode\)/i)).toBeVisible()
 }

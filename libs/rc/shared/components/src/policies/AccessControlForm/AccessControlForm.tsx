@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import {
   useAddAccessControlProfileMutation,
   useAddAccessControlProfileTemplateMutation,
@@ -19,7 +20,7 @@ import {
   PolicyOperation,
   PolicyType,
   useConfigTemplateMutationFnSwitcher,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate } from '@acx-ui/react-router-dom'
 
@@ -81,7 +82,8 @@ export const genAclPayloadObject = (accessControlProfile: AccessControlFormField
 export const convertToPayload = (
   editMode: boolean,
   accessControlProfile: AccessControlFormFields,
-  policyId: string | undefined) => {
+  policyId: string | undefined
+) => {
   let payload = {} as AccessControlInfoType
   if (editMode) {
     payload.id = policyId ?? ''
@@ -134,10 +136,15 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
+  const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
   const linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
   const { editMode } = props
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
@@ -159,12 +166,15 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
       if (!editMode) {
         await createAclProfile({
           params: params,
-          payload: convertToPayload(false, aclPayloadObject, params.policyId)
+          payload: convertToPayload(false, aclPayloadObject, params.policyId),
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       } else {
         await updateAclProfile({
           params: params,
-          payload: convertToPayload(true, aclPayloadObject, params.policyId)
+          payload: convertToPayload(true, aclPayloadObject, params.policyId),
+          oldPayload: formRef.current?.getFieldValue('oldPayload'),
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
 

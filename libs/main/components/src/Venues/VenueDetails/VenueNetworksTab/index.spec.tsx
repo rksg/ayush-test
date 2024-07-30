@@ -3,16 +3,24 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useSdLanScopedVenueNetworks }              from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
   aggregatedVenueNetworksData,
   aggregatedVenueNetworksDataV2,
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, VlanPoolRbacUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                            from '@acx-ui/store'
+import {
+  ApCompatibility,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  EdgeSdLanFixtures,
+  VlanPoolRbacUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -36,9 +44,14 @@ import { VenueNetworksTab } from './index'
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 
 // isMapEnabled = false && SD-LAN not enabled
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
-  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
-  && ff !== Features.EDGES_SD_LAN_TOGGLE)
+const disabledFFs = [
+  Features.G_MAP,
+  Features.EDGES_SD_LAN_TOGGLE,
+  Features.EDGES_SD_LAN_HA_TOGGLE,
+  Features.WIFI_RBAC_API,
+  Features.RBAC_CONFIG_TEMPLATE_TOGGLE
+]
+jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -127,10 +140,6 @@ describe('VenueNetworksTab', () => {
         (req, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json(networkDeepList))
-      ),
-      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
       ),
@@ -215,8 +224,8 @@ describe('VenueNetworksTab', () => {
     })
 
     mockServer.use(
-      rest.post(
-        WifiUrlsInfo.addNetworkVenue.url,
+      rest.put(
+        WifiRbacUrlsInfo.addNetworkVenue.url,
         (req, res, ctx) => {
           requestSpy()
           return res(ctx.json({ requestId: '123' }))
@@ -297,7 +306,7 @@ describe('VenueNetworksTab', () => {
   })
 
   it('should render ap compatibilies correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -311,8 +320,7 @@ describe('VenueNetworksTab', () => {
 
   describe('Edge and SD-LAN FF is on', () => {
     beforeEach(() => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.WIFI_RBAC_API)
     })
     const mockedSdLanScopeData = {
       sdLans: [{

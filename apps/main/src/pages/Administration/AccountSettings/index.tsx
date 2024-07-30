@@ -73,7 +73,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
         layout='horizontal'
         labelAlign='left'
       >
-        <StepsForm.DescriptionWrapper>
+        <StepsForm.TextContent>
           <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
           { (isPrimeAdminUser && isI18n) && (
@@ -145,7 +145,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
               />
             </>
           )}
-        </StepsForm.DescriptionWrapper>
+        </StepsForm.TextContent>
       </Form>
     </Loader>
   )

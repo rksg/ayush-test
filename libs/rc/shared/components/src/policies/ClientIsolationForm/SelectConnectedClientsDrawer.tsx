@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 import {
+  ClientInfo,
   ClientList
 } from '@acx-ui/rc/utils'
 
@@ -21,25 +22,25 @@ export interface SelectConnectedClientsDrawerProps {
 export function SelectConnectedClientsDrawer (props: SelectConnectedClientsDrawerProps) {
   const { $t } = useIntl()
   const { incomingClientsMac, addClients, visible, setVisible } = props
-  const [ selectedClients, setSelectedClients ] = useState<ClientList[]>([])
+  const [ selectedClients, setSelectedClients ] = useState<ClientInfo[]>([])
 
   const onClose = () => {
     setVisible(false)
   }
 
   const onSave = async () => {
-    addClients(selectedClients.map(c => ({ clientMac: c.clientMac, ipAddress: c.ipAddress })))
+    addClients(selectedClients.map(c => ({ clientMac: c.macAddress, ipAddress: c.ipAddress })))
 
     onClose()
   }
 
-  const onRowChange = (_: Key[], selectedRows: ClientList[]) => {
+  const onRowChange = (_: Key[], selectedRows: ClientInfo[]) => {
     setSelectedClients(selectedRows)
   }
 
-  const getCheckboxProps = (row: ClientList) => {
+  const getCheckboxProps = (row: ClientInfo) => {
     return {
-      disabled: incomingClientsMac?.some(mac => mac.toLowerCase() === row.clientMac.toLowerCase())
+      disabled: incomingClientsMac?.some(mac => mac.toLowerCase() === row.macAddress.toLowerCase())
     }
   }
 

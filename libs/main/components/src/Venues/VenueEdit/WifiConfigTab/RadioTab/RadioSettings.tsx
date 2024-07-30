@@ -56,7 +56,9 @@ import {
   useGetVenueTemplateDefaultRadioCustomizationQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateRadioCustomizationMutation,
-  useUpdateVenueTemplateTripleBandRadioSettingsMutation
+  useUpdateVenueTemplateTripleBandRadioSettingsMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -127,8 +129,10 @@ export function RadioSettings () {
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { isTemplate } = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
-  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const {
     editContextData,
@@ -158,7 +162,8 @@ export function RadioSettings () {
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
-      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery,
+      skip: resolvedRbacEnabled
     })
 
   // available channels from this venue country code
@@ -167,7 +172,9 @@ export function RadioSettings () {
       useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
       enableRbac: isUseRbacApi,
-      enableSeparation: is6gChannelSeparation
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   // default radio data
@@ -176,7 +183,9 @@ export function RadioSettings () {
       useQueryFn: useGetDefaultRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRadioCustomizationQuery,
       enableRbac: isUseRbacApi,
-      enableSeparation: is6gChannelSeparation
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   // Custom radio data
@@ -185,7 +194,9 @@ export function RadioSettings () {
       useQueryFn: useGetVenueRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateRadioCustomizationQuery,
       enableRbac: isUseRbacApi,
-      enableSeparation: is6gChannelSeparation
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
@@ -199,10 +210,17 @@ export function RadioSettings () {
   )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
-    useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })
+    useVenueConfigTemplateQueryFnSwitcher<VenueApModelBandModeSettings[], void>({
+      useQueryFn: useGetVenueApModelBandModeSettingsQuery,
+      useTemplateQueryFn: useGetVenueTemplateApModelBandModeSettingsQuery,
+      skip: !isWifiSwitchableRfEnabled
+    })
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
-    useUpdateVenueApModelBandModeSettingsMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueApModelBandModeSettingsMutation,
+      useUpdateVenueTemplateApModelBandModeSettingsMutation
+    )
 
   const [ apList ] = useLazyApListQuery()
 
@@ -303,14 +321,15 @@ export function RadioSettings () {
     }
 
     if (apList) {
-      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res || {}
-        if (data) {
-          const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
-            .map((ap: APExtended) => ap.model)
-          setVenueTriBandApModels(uniq(venueTriBandApModels))
-        }
-      })
+      apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
+        .then((res)=>{
+          const { data } = res || {}
+          if (data) {
+            const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
+              .map((ap: APExtended) => ap.model)
+            setVenueTriBandApModels(uniq(venueTriBandApModels))
+          }
+        })
     }
   }, [triBandApModels])
 
@@ -583,11 +602,17 @@ export function RadioSettings () {
     if (!validateChannels(outdoorChannel5, outdoorTitle5)) return false
 
     const channelBandwidth6 = radioParams6G?.channelBandwidth
-    const channel6 = radioParams6G?.allowedChannels
-    const title6 = $t({ defaultMessage: '6 GHz - Channel selection' })
-    if (!validateChannels(channel6, title6)) return false
+    const indoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedIndoorChannels : radioParams6G?.allowedChannels
+    const indoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Indoor AP channel selection' }) :
+      $t({ defaultMessage: '6 GHz - Channel selection' })
+    if (!validateChannels(indoorChannel6, indoorTitle6)) return false
+    const outdoorChannel6 = is6gChannelSeparation ? radioParams6G?.allowedOutdoorChannels : undefined
+    const outdoorTitle6 = is6gChannelSeparation ? $t({ defaultMessage: '6 GHz - Outdoor AP channel selection' }) :
+      ''
+    if (outdoorChannel6 && !validateChannels(outdoorChannel6, outdoorTitle6)) return false
     if (channelBandwidth6 === ChannelBandwidth6GEnum._320MHz){
-      if (!validate320MHzIsolatedGroup(channel6, title6)) return false
+      if (!validate320MHzIsolatedGroup(indoorChannel6, indoorTitle6)) return false
+      if (outdoorChannel6 && !validate320MHzIsolatedGroup(outdoorChannel6, outdoorTitle6)) return false
     }
 
     const { radioParamsLower5G, radioParamsUpper5G,
@@ -734,7 +759,7 @@ export function RadioSettings () {
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
         payload: data,
-        enableRbac: isUseRbacApi,
+        enableRbac: resolvedRbacEnabled,
         enableSeparation: is6gChannelSeparation
       }).unwrap()
     } catch (error) {

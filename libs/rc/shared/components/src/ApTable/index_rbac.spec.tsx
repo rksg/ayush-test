@@ -66,6 +66,13 @@ jest.mock('file-saver', () => (data: string, fileName: string) => {
   mockFileSaver(data, fileName)
 })
 
+jest.mock('./useFilters', () => ({
+  useFilters: () => ({
+    filters: {},
+    isNetworkLoading: false
+  })
+}))
+
 describe('Aps', () => {
   afterEach(() => {
     mockedUsedNavigate.mockClear()
@@ -205,7 +212,7 @@ describe('Aps', () => {
 
     mockServer.use(
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
@@ -312,7 +319,7 @@ describe('Aps', () => {
 
     mockServer.use(
       rest.post(
-        WifiRbacUrlsInfo.addAp.url,
+        WifiRbacUrlsInfo.addApWithDefaultGroup.url,
         (req, res, ctx) => {
           importAPSpy()
           return res(ctx.status(202))

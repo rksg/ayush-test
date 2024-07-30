@@ -6,12 +6,16 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }                     from '@acx-ui/rc/services'
 import {
+  AccessControlUrls,
   CommonUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
+  WifiCallingUrls,
   WifiOperatorUrls,
-  WifiUrlsInfo } from '@acx-ui/rc/utils'
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
@@ -29,12 +33,17 @@ import {
   venueListResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse,
   networkDeepResponse,
   portalList,
   mockHotpost20IdentityProviderList,
   mockHotspot20OperatorList,
-  macRegistrationList
+  macRegistrationList,
+  mockWifiCallingTableResult,
+  devicePolicyListResponse,
+  applicationPolicyListResponse,
+  accessControlListResponse,
+  layer2PolicyListResponse,
+  layer3PolicyListResponse
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -59,6 +68,8 @@ describe('NetworkForm', () => {
 
     networkDeepResponse.name = 'open network test'
     mockServer.use(
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -69,14 +80,10 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))),
       rest.post(PortalUrlsInfo.createPortal.url,
@@ -98,7 +105,34 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
       ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] })))
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json(successResponse))
+      ),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(AccessControlUrls.getEnhancedDevicePolicies.url,
+        (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (_, res, ctx) => res(ctx.json(applicationPolicyListResponse))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (_, res, ctx) => {
+          return res(ctx.json(accessControlListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(layer2PolicyListResponse))
+        }),
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (_, res, ctx) => {
+          return res(ctx.json(layer3PolicyListResponse))
+        }),
+      // RBAC API
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))
+      )
     )
   })
 

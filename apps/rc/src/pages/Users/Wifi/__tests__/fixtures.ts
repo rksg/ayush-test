@@ -60,22 +60,34 @@ export const GuestList = {
       devicesMac: ['AA:AA:AA:AA:AA:AA'],
       clients: [{
         osType: 'ios',
-        healthCheckStatus: 'good',
-        clientMac: 'AA:AA:AA:AA:AA:AA',
+        macAddress: 'AA:AA:AA:AA:AA:AA',
         ipAddress: '1.1.1.1',
         username: 'user',
         hostname: 'host',
-        venueId: '0004e252a9d04180855813131d007aca',
-        venueName: 'testVenue',
-        apMac: 'BB:BB:BB:BB:BB:BB',
-        apSerialNumber: '422039000038',
-        apName: 'testAp',
-        switchSerialNumber: '',
-        switchName: '',
-        networkId: 'tenant-id',
-        networkName: 'guest pass wlan',
-        networkSsid: 'guest pass wlan',
-        connectSince: '2022-11-28T14:55:15.924Z'
+        authenticationStatus: 0,
+        connectedTime: '2022-11-28T14:55:15.924Z',
+        venueInformation: {
+          id: '0004e252a9d04180855813131d007aca',
+          name: 'testVenue'
+        },
+        apInformation: {
+          serialNumber: '422039000038',
+          name: 'testAp',
+          macAddress: 'BB:BB:BB:BB:BB:BB',
+          bssid: 'mock_ap_bssid'
+        },
+        networkInformation: {
+          id: 'mock-network-id',
+          type: 'Passphrase (PSK/SAE)',
+          ssid: 'guest pass wlan',
+          encryptionMethod: 'WPA2-AES',
+          vlan: 1
+        },
+        signalStatus: {
+          snr: 54,
+          rssi: -42,
+          health: 'Good'
+        }
       }]
     },
     {
@@ -116,22 +128,42 @@ export const GuestClients = {
   data: [
     {
       osType: 'ios',
-      healthCheckStatus: 'good',
-      clientMac: 'AA:AA:AA:AA:AA:AA',
+      macAddress: 'AA:AA:AA:AA:AA:AA',
       ipAddress: '1.1.1.1',
       username: 'user',
       hostname: 'host',
-      venueId: '0004e252a9d04180855813131d007aca',
-      venueName: 'testVenue',
-      apMac: 'BB:BB:BB:BB:BB:BB',
-      apSerialNumber: '422039000038',
-      apName: 'testAp',
-      switchSerialNumber: '',
-      switchName: '',
-      networkId: 'tenant-id',
-      networkName: 'guest pass wlan',
-      networkSsid: 'guest pass wlan',
-      connectSince: '2022-11-28T14:55:15.924Z'
+      authenticationStatus: 0,
+      connectedTime: '2022-11-28T14:55:15.924Z',
+      venueInformation: {
+        id: '0004e252a9d04180855813131d007aca',
+        name: 'testVenue'
+      },
+      apInformation: {
+        serialNumber: '422039000038',
+        name: 'testAp',
+        macAddress: 'BB:BB:BB:BB:BB:BB',
+        bssid: 'mock_ap_bssid'
+      },
+      networkInformation: {
+        id: 'mock-network-id',
+        type: 'Passphrase (PSK/SAE)',
+        ssid: 'guest pass wlan',
+        encryptionMethod: 'WPA2-AES',
+        vlan: 1
+      },
+      signalStatus: {
+        snr: 54,
+        rssi: -42,
+        health: 'Good'
+      },
+      trafficStatus: {
+        trafficToClient: 361400785,
+        trafficFromClient: 141104448,
+        packetsToClient: 577273,
+        packetsFromClient: 353909,
+        framesDropped: 0,
+        totalTraffic: 502505233
+      }
     }
   ]
 }
@@ -1000,4 +1032,22 @@ export const dpskPassphraseClient = {
   ],
   createDate: '2023-04-25T16:00:00.000+0000',
   expirationDate: '2023-04-27T16:00:00.000+0000'
+}
+
+export const validationFailed = {
+  requestId: '46bf9053-ab5c-457d-8108-415a9f0fd481',
+  error: {
+    rootCauseErrors: [
+      {
+        code: 'GUEST-422027',
+        message: 'Passwords on the same network should be unique'
+      }
+    ],
+    request: {},
+    status: 422
+  },
+  request: {
+    url: '/wifiNetworks/cf5dc74b0c5948918718e4e0a800fb39/guestUsers',
+    method: 'PATCH'
+  }
 }

@@ -73,7 +73,11 @@ describe('AccessControlForm Component', () => {
         (_, res, ctx) => res(ctx.json(aclDetail))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json(aclList))),
+      rest.get(AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedAccessControlProfiles.url,
+        (req, res, ctx) => res(ctx.json(enhancedAccessControlList))),
+      rest.post(AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (req, res, ctx) => res(ctx.json(enhancedAccessControlList))),
       rest.get(AccessControlUrls.getL2AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer2PolicyListResponse))),
@@ -108,7 +112,13 @@ describe('AccessControlForm Component', () => {
       rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
-        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse)))
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
+      rest.get(
+        AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
+        }
+      )
     )
   })
 

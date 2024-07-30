@@ -41,7 +41,8 @@ import {
   MspEntitlement,
   downloadFile,
   Venue,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -392,9 +393,8 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const mspUrlsInfo = getMspUrls(enableRbac)
-        const req = createHttpRequest(mspUrlsInfo.getMspEcProfile, params)
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
         return {
           ...req
         }
@@ -714,9 +714,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req = createHttpRequest(
-          MspUrlsInfo.getParentLogoUrl,
+          mspUrlsInfo.getParentLogoUrl,
           params
         )
         return {
@@ -725,9 +726,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getBrandingData: build.query<MspProfile, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req =
-          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+          createHttpRequest(mspUrlsInfo.getBrandingData, params)
         return {
           ...req
         }
@@ -796,8 +798,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getMspAggregations: build.query<MspAggregations, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspAggregations, params)
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.getMspAggregations, params)
         return {
           ...req
         }
@@ -813,8 +816,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     updateMspAggregations: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspAggregations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.updateMspAggregations, params)
         return {
           ...req,
           body: payload
@@ -934,6 +938,16 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const request = createHttpRequest(mspUrlsInfo.getUploadURL, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1045,7 +1059,8 @@ export const {
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
   useAddBrandCustomersMutation,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useGetMspUploadURLMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

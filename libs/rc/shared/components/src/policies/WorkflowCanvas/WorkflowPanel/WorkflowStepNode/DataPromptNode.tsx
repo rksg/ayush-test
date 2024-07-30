@@ -1,7 +1,7 @@
 import { useIntl }   from 'react-intl'
 import { NodeProps } from 'reactflow'
 
-import { DataPromptIcon }                  from '@acx-ui/icons'
+import { DataPromptActionTypeIcon }        from '@acx-ui/icons'
 import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 
 import BaseStepNode       from './BaseStepNode'
@@ -14,7 +14,7 @@ export function DataPromptNode (props: NodeProps<WorkflowStep>) {
   return (
     <BaseStepNode {...props}>
       <BasicActionContent
-        icon={<DataPromptIcon/>}
+        icon={<DataPromptActionTypeIcon/>}
         title={$t(ActionNodeDisplay.DATA_PROMPT)}
       />
     </BaseStepNode>

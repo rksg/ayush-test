@@ -7,22 +7,53 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
-import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
-  useApListQuery,
-  useVenuesListQuery
+  useNewApListQuery,
+  useVenuesListQuery,
+  useApListQuery
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }            from '@acx-ui/types'
 
+const apsCountQueryPayload = {
+  fields: ['serialNumber', 'name'],
+  groupByFields: groupedFields
+}
+
+const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] => {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [ apsCount, setApsCount ] = useState(0)
+
+  const nonRbacQuery = usePollingTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: apsCountQueryPayload,
+    option: { skip: isUseWifiRbacApi }
+  })
+
+  const rbacQuery = usePollingTableQuery({
+    useQuery: useNewApListQuery,
+    defaultPayload: apsCountQueryPayload,
+    option: { skip: !isUseWifiRbacApi }
+  })
+
+  useEffect(() => {
+    setApsCount(isUseWifiRbacApi
+      ? rbacQuery.data?.totalCount!
+      : nonRbacQuery.data?.totalCount!
+    )
+  }, [isUseWifiRbacApi, nonRbacQuery.data, rbacQuery.data])
+
+  return [apsCount, setApsCount]
+}
+
 export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [ apsCount, setApsCount ] = useState(0)
   const apTableRef = useRef<ApTableRefType>(null)
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [apsCount, setApsCount] = useApsCount()
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -41,20 +72,6 @@ export default function useApsTable () {
     })
 
   const apgroupFilterOptions = useApGroupsFilterOpts()
-
-  // TODO This query needs to be updated after apViewModel changes to the RBAC api
-  const apListTableQuery = usePollingTableQuery({
-    useQuery: useApListQuery,
-    defaultPayload: {
-      ...defaultApPayload,
-      groupByFields: groupedFields
-    },
-    enableRbac: isUseWifiRbacApi
-  })
-
-  useEffect(() => {
-    setApsCount(apListTableQuery.data?.totalCount!)
-  }, [apListTableQuery.data])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {

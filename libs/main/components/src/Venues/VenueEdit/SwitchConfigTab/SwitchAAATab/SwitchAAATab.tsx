@@ -12,7 +12,7 @@ import {
   useVenueSwitchSettingQuery
 }  from '@acx-ui/rc/services'
 import {
-  redirectPreviousPage, useConfigTemplateMutationFnSwitcher,
+  redirectPreviousPage, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, VenueMessages, VenueSwitchConfiguration
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -24,7 +24,10 @@ import { AAASettings } from './AAASettings'
 
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
@@ -99,7 +102,7 @@ export function SwitchAAATab () {
     await updateAAASettingMutation({
       params: { tenantId, venueId, aaaSettingId },
       payload: _.pickBy(payload, v => v !== undefined),
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: resolvedRbacEnabled
     }).unwrap()
       .catch((error) => {
         console.log(error) // eslint-disable-line no-console

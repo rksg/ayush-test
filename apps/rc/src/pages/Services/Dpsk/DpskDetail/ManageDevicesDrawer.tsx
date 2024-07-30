@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form, Input }                   from 'antd'
 import Checkbox, { CheckboxChangeEvent } from 'antd/lib/checkbox'
@@ -6,11 +6,13 @@ import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
 import { Button, Drawer, Modal, Table, TableProps } from '@acx-ui/components'
-import { defaultClientPayload }                     from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
-  useDeleteDpskPassphraseDevicesMutation, useGetClientListQuery,
-  useGetDpskPassphraseDevicesQuery, useGetDpskQuery, useNetworkListQuery,
-  useUpdateDpskPassphraseDevicesMutation
+  useDeleteDpskPassphraseDevicesMutation,
+  useGetDpskPassphraseDevicesQuery, useGetDpskQuery,
+  useUpdateDpskPassphraseDevicesMutation,
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   DPSKDeviceInfo,
@@ -19,7 +21,6 @@ import {
   NewDpskPassphrase,
   MacRegistrationFilterRegExp,
   useTableQuery,
-  usePollingTableQuery,
   sortProp,
   defaultSort,
   dateSort
@@ -36,6 +37,8 @@ export interface ManageDeviceDrawerProps {
 const { useWatch } = Form
 
 const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
 
   const { visible, setVisible, passphraseInfo } = props
@@ -56,30 +59,6 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
 
   const { data } = useGetDpskQuery({ params: { ...params } })
 
-  const clientTableQuery = usePollingTableQuery({
-    useQuery: useGetClientListQuery,
-    defaultPayload: {
-      ...defaultClientPayload
-    },
-    pagination: {
-      pageSize: 10000
-    },
-    search: {
-      searchTargetFields: defaultClientPayload.searchTargetFields
-    }
-  })
-
-  useEffect(() => {
-    if (devicesData) {
-      const connectedDevices = devicesData.filter(d => d.deviceConnectivity === 'CONNECTED') || []
-      const connectedDeviceMacs = connectedDevices.map(device => device.mac)
-      clientTableQuery.setPayload({
-        ...defaultClientPayload,
-        filters: { clientMac: connectedDeviceMacs }
-      })
-    }
-  }, [devicesData])
-
   useEffect(() => {
     if (data?.networkIds?.length) {
       tableQuery.setPayload({
@@ -92,7 +71,7 @@ const ManageDevicesDrawer = (props: ManageDeviceDrawerProps) => {
   }, [data])
 
   const tableQuery = useTableQuery({
-    useQuery: useNetworkListQuery,
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       fields: ['name', 'id'],
       filters: { id: data?.networkIds }

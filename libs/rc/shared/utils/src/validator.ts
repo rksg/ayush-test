@@ -11,6 +11,7 @@ import {
 }                from 'lodash'
 
 import { RolesEnum }                                from '@acx-ui/types'
+import { roleStringMap }                            from '@acx-ui/user'
 import { byteCounter, getIntl, validationMessages } from '@acx-ui/utils'
 
 import { IpUtilsService }             from './ipUtilsService'
@@ -172,7 +173,15 @@ export function syslogServerRegExp (value: string) {
   }
   return Promise.resolve()
 }
-
+export function lbsVenueNameRegExp (value: string) {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  const re = new RegExp(/(^[a-zA-Z0-9\-](?:[a-zA-Z0-9\-\ ]*[a-zA-Z0-9\-])?$)/)
+  if (value && !re.test(value)) {
+    return Promise.reject($t(validationMessages.invalid))
+  }
+  return Promise.resolve()
+}
 export function trailingNorLeadingSpaces (value: string) {
   const { $t } = getIntl()
   if (value && (value.endsWith(' ') || value.startsWith(' '))) {
@@ -1155,11 +1164,23 @@ export function validateByteLength (value: string, maxLength: number) {
 export function systemDefinedNameValidator (value: string) {
   const { $t } = getIntl()
   const rolesList = Object.values(RolesEnum)
-  if(rolesList.includes(value as RolesEnum)) {
+  const list2 = rolesList.map((item) => {return $t(roleStringMap[item])})
+  if(rolesList.includes(value as RolesEnum ) || list2.includes(value)) {
     return Promise.reject(
       $t({ defaultMessage: 'Name can not be same as system defined name' })
     )
   }
   return Promise.resolve()
+}
+
+export function guestPasswordValidator (value: string) {
+  const { $t } = getIntl()
+  const regex = /^[a-zA-Z0-9!@#$%^&*()\[\]{}_\-+=~`|:;"'<>,./?]{6,16}$/
+
+  if (value && !regex.test(value)) {
+    return Promise.reject($t(validationMessages.guestPasswordInvalid))
+  }
+  return Promise.resolve()
+
 }
 

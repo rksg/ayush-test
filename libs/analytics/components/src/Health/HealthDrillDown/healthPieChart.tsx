@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import { Space }                                     from 'antd'
 import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
 import AutoSizer                                     from 'react-virtualized-auto-sizer'
-
 
 import { getSelectedNodePath, mapCodeToReason } from '@acx-ui/analytics/utils'
 import {
@@ -15,7 +15,8 @@ import {
 } from '@acx-ui/components'
 import { get }                  from '@acx-ui/config'
 import { formatter }            from '@acx-ui/formatter'
-import { NodesFilter }          from '@acx-ui/utils'
+import { InformationOutlined }  from '@acx-ui/icons'
+import { NodesFilter, getIntl } from '@acx-ui/utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
@@ -129,7 +130,15 @@ function getHealthPieChart (
   data: { key: string; value: number; name: string; color: string }[],
   dataFormatter: (value: unknown, tz?: string | undefined) => string
 ) {
-  const tops = data.slice(0, topCount)
+
+  let tops = data.slice(0, topCount)
+  if(data.slice(topCount)[0]?.key === 'Others') {
+    tops.push({
+      ...data.slice(topCount)[0],
+      key: getIntl().$t({ defaultMessage: 'Others' })
+    })
+  }
+
   const total = tops.reduce((total, { value }) => value + total, 0)
   return (
     data.length > 0
@@ -231,6 +240,12 @@ export const HealthPieChart = ({
           />
         </div>
       </UI.HealthPieChartWrapper>
+      { (tabsList.find((tab) => tab.key === chartKey)?.data.length || 0) > topCount &&
+      <Space align='start'>
+        <InformationOutlined />
+        {$t({ defaultMessage: `Detailed breakup of all items beyond
+          Top 5 can be explored using Data Studio custom charts.` })}
+      </Space> }
     </Loader>
   )
 }

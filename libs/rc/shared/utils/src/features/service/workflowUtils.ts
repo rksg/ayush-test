@@ -3,9 +3,9 @@ import { defineMessage, useIntl } from 'react-intl'
 import { Node }                   from 'reactflow'
 
 import {
-  AupIcon,
-  DataPromptIcon,
-  DisplayMessageIcon
+  AupActionTypeIcon,
+  DataPromptActionTypeIcon,
+  DisplayMessageActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -77,9 +77,9 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
-  [ActionType.AUP]: AupIcon,
-  [ActionType.DATA_PROMPT]: DataPromptIcon,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon
+  [ActionType.AUP]: AupActionTypeIcon,
+  [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {

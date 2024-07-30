@@ -12,8 +12,8 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
-import { useNetworkVenueListQuery, useNetworkVenueListV2Query, useScheduleSlotIndexMap } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useNetworkVenueListV2Query, useScheduleSlotIndexMap } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
@@ -90,14 +90,13 @@ export function Venues (props: VenuesProps) {
   const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const prevIsWPA3securityRef = useRef(false)
   const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: isUseWifiApiV2? useNetworkVenueListV2Query : useNetworkVenueListQuery,
+    useQuery: useNetworkVenueListV2Query,
     apiParams: { networkId: getNetworkId() },
     defaultPayload: {
       ...defaultPayload,

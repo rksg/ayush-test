@@ -14,27 +14,30 @@ import _, { get }              from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
-  useDevicePolicyListQuery,
-  useL2AclPolicyListQuery,
-  useL3AclPolicyListQuery,
-  useApplicationPolicyListQuery,
   useAddAccessControlProfileMutation,
-  useGetAccessControlProfileListQuery,
   useAddAccessControlProfileTemplateMutation,
   useGetL2AclPolicyTemplateListQuery,
   useGetL3AclPolicyTemplateListQuery,
   useGetDevicePolicyTemplateListQuery,
   useGetAppPolicyTemplateListQuery,
-  useGetAccessControlProfileTemplateListQuery
+  useGetAccessControlProfileTemplateListQuery,
+  useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedL2AclProfileListQuery,
+  useGetEnhancedL3AclProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlFormFields,
+  AccessControlFormFields, AccessControlInfoType,
   AccessControlProfile, AccessControlProfileTemplate,
   AclEmbeddedObject, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import { transformDisplayText } from '@acx-ui/rc/utils'
 import { useParams }            from '@acx-ui/react-router-dom'
+import { WifiScopes }           from '@acx-ui/types'
+import { hasPermission }        from '@acx-ui/user'
 
 import {
   AccessControlSettingForm,
@@ -138,6 +141,8 @@ export function AccessControlForm () {
     }
   }, [])
 
+  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE] })) return null
+
   const updateSelectedACProfile = (id: string) => {
     if (!!id) {
       setEnabledProfile(true)
@@ -154,9 +159,9 @@ export function AccessControlForm () {
         alignItems: 'baseline',
         margin: '20px 0'
       }}>
-        <UI.Subtitle level={4}>
+        <StepsFormLegacy.Subtitle>
           {$t({ defaultMessage: 'Access Control' })}
-        </UI.Subtitle>
+        </StepsFormLegacy.Subtitle>
 
         {!isTemplate && !enabledProfile && <SaveAsAcProfileButton
           modalStatus={modalStatus}
@@ -188,6 +193,8 @@ function AddAcProfileModal (props: AcProfileModalProps) {
   const { modalStatus, setModalStatus, updateSelectedACProfile } = props
   const { visible=false, embeddedObject } = modalStatus
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddAccessControlProfileMutation,
     useTemplateMutationFn: useAddAccessControlProfileTemplateMutation
@@ -217,7 +224,8 @@ function AddAcProfileModal (props: AcProfileModalProps) {
             )
             const responseData = await createAclProfile({
               params: params,
-              payload: convertToPayload(false, aclPayloadObject, params.policyId)
+              payload: convertToPayload(false, aclPayloadObject, params.policyId),
+              enableRbac
             }).unwrap()
 
             const profileId = responseData?.response?.id
@@ -297,6 +305,8 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
     uplinkLimit, downlinkLimit//, modalStatus.visible
   ])
 
+  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
+
   const handleOnClick = () => {
     setModalStatus({
       visible: true,
@@ -309,24 +319,6 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
       {$t({ defaultMessage: 'Save as AC Profile' })}
     </Button>
   )
-}
-
-function getAccessControlProfile <
-  // eslint-disable-next-line max-len
-  Key extends keyof Omit<AccessControlProfile, 'name' | 'id' | 'rateLimiting' | 'description' | 'policyName'>,
-  Policies extends Array<{ id: string, name: string }>
-> (
-  policies: Policies | undefined,
-  accessControlProfile: AccessControlProfile | undefined,
-  policyKey: Key
-) {
-  if (!accessControlProfile) return transformDisplayText()
-  let name
-  const policy = accessControlProfile[policyKey]
-  if (policy?.enabled && policies) {
-    name = policies.find(item => item.id === policy.id)?.name
-  }
-  return transformDisplayText(name)
 }
 
 function getAccessControlProfileTemplate <
@@ -347,23 +339,6 @@ function getAccessControlProfileTemplate <
   return transformDisplayText(name)
 }
 
-function GetLinkLimitByAccessControlPorfile (props: {
-  accessControlProfile: AccessControlProfile | undefined,
-  type: string
-}) {
-  const { $t } = useIntl()
-  const { accessControlProfile, type } = props
-
-  let limit = $t({ defaultMessage: 'Unlimited' })
-  if (accessControlProfile && accessControlProfile.rateLimiting
-    && accessControlProfile.rateLimiting[type] !== 0) {
-    limit = $t({ defaultMessage: '{rateLimiting} Mbps' }, {
-      rateLimiting: accessControlProfile.rateLimiting[type]
-    })
-  }
-  return <div>{limit}</div>
-}
-
 function GetLinkLimitByAccessControlProfileTemplate (props: {
   accessControlProfile: AccessControlProfileTemplate | undefined,
   type: string
@@ -381,11 +356,11 @@ function GetLinkLimitByAccessControlProfileTemplate (props: {
   return <div>{limit}</div>
 }
 
-export type SelectedAccessControlProfileType = {
+type SelectedAccessControlProfileType = {
   selectedAccessControlProfile: AccessControlProfile | AccessControlProfileTemplate | undefined
 }
 
-export function SelectAccessProfileProfile (props: {
+function SelectAccessProfileProfile (props: {
   accessControlProfileId: string,
   setModalStatus: (data: ModalStatus) => void
 }) {
@@ -497,10 +472,12 @@ export function SelectAccessProfileProfile (props: {
           children={accessControlProfileSelectOptions} />
       </Form.Item>
 
-      <Button type='link'
-        onClick={handleOnAddClick}
-        children={$t({ defaultMessage: 'Add' })}
-        style={{ paddingTop: '10px' }} />
+      {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        <Button type='link'
+          onClick={handleOnAddClick}
+          children={$t({ defaultMessage: 'Add' })}
+          style={{ paddingTop: '10px' }} />
+      }
     </Space>}
 
     <UI.FieldLabel width={labelWidth} style={{ fontWeight: 700 }}>
@@ -541,6 +518,7 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   selectedLayer2: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useL2PolicyTemplateList = useGetL2AclPolicyTemplateListQuery({
@@ -559,15 +537,17 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
     skip: !isTemplate
   })
 
-  const useL2PolicyList = useL2AclPolicyListQuery({
-    params: useParams()
+  const useL2PolicyList = useGetEnhancedL2AclProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedLayer2: getAccessControlProfile(
-          data,
+        selectedLayer2: getAccessControlProfileTemplate(
+          data?.data,
           state.selectedAccessControlProfile,
-          'l2AclPolicy'
+          'l2AclPolicyName'
         )
       }
     },
@@ -581,6 +561,7 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   selectedLayer3: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useL3PolicyTemplateList = useGetL3AclPolicyTemplateListQuery({
@@ -600,15 +581,17 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
     skip: !isTemplate
   })
 
-  const useL3PolicyList = useL3AclPolicyListQuery({
-    params: useParams()
+  const useL3PolicyList = useGetEnhancedL3AclProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedLayer3: getAccessControlProfile(
-          data,
+        selectedLayer3: getAccessControlProfileTemplate(
+          data?.data,
           state.selectedAccessControlProfile,
-          'l3AclPolicy'
+          'l3AclPolicyName'
         )
       }
     },
@@ -622,6 +605,7 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
   selectedDevicePolicy: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
@@ -640,15 +624,17 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
     skip: !isTemplate
   })
 
-  const useDevicePolicyList = useDevicePolicyListQuery({
-    params: useParams()
+  const useDevicePolicyList = useGetEnhancedDeviceProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedDevicePolicy: getAccessControlProfile(
-          data,
+        selectedDevicePolicy: getAccessControlProfileTemplate(
+          data?.data,
           state.selectedAccessControlProfile,
-          'devicePolicy'
+          'devicePolicyName'
         )
       }
     },
@@ -662,6 +648,7 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
   selectedApplicationPolicy: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
@@ -680,15 +667,17 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
     skip: !isTemplate
   })
 
-  const useAppPolicyList = useApplicationPolicyListQuery({
-    params: useParams()
+  const useAppPolicyList = useGetEnhancedApplicationProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedApplicationPolicy: getAccessControlProfile(
-          data,
+        selectedApplicationPolicy: getAccessControlProfileTemplate(
+          data?.data,
           state.selectedAccessControlProfile,
-          'applicationPolicy'
+          'applicationPolicyName'
         )
       }
     },
@@ -699,66 +688,57 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
 }
 
 const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileType) => {
-  const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
   const { selectedAccessControlProfile } = props
 
-  if (isTemplate) {
-    const accessControlProfile = selectedAccessControlProfile as AccessControlProfileTemplate
-    return <>
-      <span>{(!selectedAccessControlProfile ||
+  const accessControlProfile = selectedAccessControlProfile as AccessControlProfileTemplate
+  return <>
+    <span>{(!selectedAccessControlProfile ||
         // eslint-disable-next-line max-len
         !(accessControlProfile.clientRateUpLinkLimit && accessControlProfile.clientRateDownLinkLimit)) && '--'}</span>
-      {(selectedAccessControlProfile &&
-        // eslint-disable-next-line max-len
-        (accessControlProfile.clientRateUpLinkLimit || accessControlProfile.clientRateDownLinkLimit)) ?
-        <div>
-          <UI.RateLimitBlock>
-            <label>{$t({ defaultMessage: 'Up:' })}</label>
-            <GetLinkLimitByAccessControlProfileTemplate
-              accessControlProfile={selectedAccessControlProfile}
-              type={'clientRateUpLinkLimit'} />
-          </UI.RateLimitBlock>
-          <UI.RateLimitBlock>
-            <label>{$t({ defaultMessage: 'Down:' })}</label>
-            <GetLinkLimitByAccessControlProfileTemplate
-              accessControlProfile={selectedAccessControlProfile}
-              type={'clientRateDownLinkLimit'} />
-          </UI.RateLimitBlock>
-        </div> : null
-      }
-    </>
-  }
-
-  const accessControlProfile = selectedAccessControlProfile as AccessControlProfile
-
-  return <>
-    <span>{(!selectedAccessControlProfile
-      || !accessControlProfile.rateLimiting
-      || accessControlProfile.rateLimiting?.enabled === false) && '--'}</span>
     {(selectedAccessControlProfile &&
-        accessControlProfile.rateLimiting?.enabled) &&
+      // eslint-disable-next-line max-len
+      (accessControlProfile.clientRateUpLinkLimit || accessControlProfile.clientRateDownLinkLimit)) ?
       <div>
         <UI.RateLimitBlock>
           <label>{$t({ defaultMessage: 'Up:' })}</label>
-          <GetLinkLimitByAccessControlPorfile
+          <GetLinkLimitByAccessControlProfileTemplate
             accessControlProfile={selectedAccessControlProfile}
-            type={'uplinkLimit'} />
+            type={'clientRateUpLinkLimit'} />
         </UI.RateLimitBlock>
         <UI.RateLimitBlock>
           <label>{$t({ defaultMessage: 'Down:' })}</label>
-          <GetLinkLimitByAccessControlPorfile
+          <GetLinkLimitByAccessControlProfileTemplate
             accessControlProfile={selectedAccessControlProfile}
-            type={'downlinkLimit'} />
+            type={'clientRateDownLinkLimit'} />
         </UI.RateLimitBlock>
-      </div>
+      </div> : null
     }
   </>
 }
 
 const GetAclPolicyListFromNwInstance = () => {
   const params = useParams()
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name',
+      'l2AclPolicyName',
+      'l2AclPolicyId',
+      'l3AclPolicyName',
+      'l3AclPolicyId',
+      'devicePolicyName',
+      'devicePolicyId',
+      'applicationPolicyName',
+      'applicationPolicyId',
+      'clientRateUpLinkLimit',
+      'clientRateDownLinkLimit'
+    ]
+  }
   const { isTemplate } = useConfigTemplate()
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const useAclPolicyTemplateList = useGetAccessControlProfileTemplateListQuery({
     params, payload: QUERY_DEFAULT_PAYLOAD
@@ -773,14 +753,15 @@ const GetAclPolicyListFromNwInstance = () => {
     skip: !isTemplate
   })
 
-  const useAclPolicyList = useGetAccessControlProfileListQuery({
-    params: useParams()
+  const useAclPolicyList = useGetEnhancedAccessControlProfileListQuery({
+    payload: defaultPayload,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
-        accessControlProfileSelectOptions: data?.map(
+        accessControlProfileSelectOptions: data?.data.map(
           item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        accessControlList: data
+        accessControlList: data?.data as AccessControlInfoType[]
       }
     },
     skip: isTemplate
