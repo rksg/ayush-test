@@ -4,8 +4,8 @@ import { Space }     from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { SummaryCard }                         from '@acx-ui/components'
-import { EnrollmentPortalLink, WorkflowPanel } from '@acx-ui/rc/components'
+import { SummaryCard }                                    from '@acx-ui/components'
+import { EnrollmentPortalLink, WorkflowPanel, PanelMode } from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
@@ -76,6 +76,7 @@ export function WorkflowDetailOverview () {
       </Space>
       <WorkflowPanel
         workflowId={policyId!}
+        mode={PanelMode.View}
       />
     </>
   )

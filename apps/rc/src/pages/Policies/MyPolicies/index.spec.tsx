@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
@@ -8,7 +8,8 @@ import {
   ClientIsolationUrls,
   ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo, WorkflowUrls
+  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {

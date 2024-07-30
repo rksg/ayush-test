@@ -1,10 +1,8 @@
-
-import { AupAction } from '@acx-ui/rc/utils'
+import { DisplayMessageAction } from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
 
-
-export function AupPreview (props: { data?: AupAction }) {
+export function DisplayMessagePreview (props: { data?: DisplayMessageAction }) {
   const { data } = props
 
   return <ContentPreview

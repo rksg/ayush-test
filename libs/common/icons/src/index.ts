@@ -405,11 +405,14 @@ export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
 
 export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
 
+export { ReactComponent as StarterIcon } from './icons/StarterIcon.svg'
 export { ReactComponent as StartFlag } from './icons/StartFlag.svg'
-export { ReactComponent as EndFlag } from './icons/StartFlag.svg'
-export { ReactComponent as AupIcon } from './icons/AupActionTypeIcon.svg'
-export { ReactComponent as DisplayMessageIcon } from './icons/DisplayMessageActionTypeIcon.svg'
+export { ReactComponent as EndFlag } from './icons/EndFlag.svg'
+export { ReactComponent as PoweredBy } from './icons/PoweredBy.svg'
+export { ReactComponent as AupActionTypeIcon } from './icons/AupActionTypeIcon.svg'
+export { ReactComponent as DisplayMessageActionTypeIcon } from './icons/DisplayMessageActionTypeIcon.svg'
+export { ReactComponent as DataPromptActionTypeIcon } from './icons/DataPromptActionTypeIcon.svg'
 export { ReactComponent as DpskActionTypeIcon } from './icons/DpskActionTypeIcon.svg'
-export { ReactComponent as DataPromptIcon } from './icons/DataPromptActionTypeIcon.svg'
+export { ReactComponent as MacRegActionTypeIcon } from './icons/MacRegActionTypeIcon.svg'
 
 export * from './styledComponents'

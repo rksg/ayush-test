@@ -1,7 +1,9 @@
 
 import { useEffect } from 'react'
 
+import { useIntl } from 'react-intl'
 import ReactFlow, {
+  Panel,
   Background,
   BackgroundVariant,
   Controls,
@@ -24,6 +26,8 @@ import {
   StartNode
 } from './WorkflowStepNode'
 
+import { PanelMode } from './index'
+
 
 const nodeTypes: NodeTypes = {
   START: StartNode, // This is a special type for the starter node displaying
@@ -34,14 +38,16 @@ const nodeTypes: NodeTypes = {
 }
 
 interface WorkflowProps {
-  isEditMode?: boolean,
+  mode?: PanelMode,
   initialNodes?: Node[],
   initialEdges?: Edge[]
 }
 
 export default function WorkflowCanvas (props: WorkflowProps) {
-  const { isEditMode } = props
+  const { mode = PanelMode.Default } = props
+  const isEditMode = mode === PanelMode.Edit
   const reactFlowInstance = useReactFlow()
+  const { $t } = useIntl()
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
@@ -78,15 +84,21 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodesConnectable={false}
       minZoom={0.1}
       attributionPosition={'bottom-left'}
-      elementsSelectable={!!isEditMode}
-      // style={{ background: isEditMode ? 'var(--acx-neutrals-15)' : '' }}
+      elementsSelectable={isEditMode}
+      style={{ background: isEditMode ? 'var(--acx-neutrals-15)' : '' }}
     >
       {/*<MiniMap position={'bottom-left'} />*/}
-      {isEditMode &&
+      { isEditMode &&
         <>
           <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />
           <Background color='#ccc' variant={BackgroundVariant.Dots} />
         </>
+      }
+
+      { mode === PanelMode.View &&
+        <Panel position={'top-left'} style={{ fontWeight: 600 }}>
+          {$t({ defaultMessage: 'Active Workflow Design' })}
+        </Panel>
       }
     </ReactFlow>
   )
