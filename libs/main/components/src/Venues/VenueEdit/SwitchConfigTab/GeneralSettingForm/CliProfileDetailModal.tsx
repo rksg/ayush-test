@@ -25,9 +25,15 @@ export function CliProfileDetailModal (props: {
 
   const switchModels = selectedProfile?.venueCliTemplate?.switchModels?.split(',') ?? []
   const getSelectedProfile = async function (profileId: string) {
-    const profile = await getSwitchConfigProfile({
+    let profile = await getSwitchConfigProfile({
       params: { profileId }
     }).unwrap()
+
+    const pk = profileKeys.find(p => p.id === profileId)
+    if (pk) {
+      profile = { ...profile, venues: pk.venues }
+    }
+
     setSelectedProfile(profile)
   }
 
