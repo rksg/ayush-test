@@ -27,7 +27,6 @@ import {
   ApFeatureSet,
   ApGroup,
   ApGroupViewModel,
-  ApLanPort,
   ApLedSettings,
   ApLldpNeighborsResponse,
   ApManagementVlan,
@@ -607,14 +606,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    apLanPorts: build.query<ApLanPort, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
-        return {
-          ...req
-        }
-      }
-    }),
     rebootAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -830,8 +821,10 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApLanPorts: build.query<WifiApSetting, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApLanPorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApLanPorts, params, apiCustomHeader)
         return {
           ...req,
           body: payload
@@ -840,11 +833,13 @@ export const apApi = baseApApi.injectEndpoints({
       providesTags: [{ type: 'Ap', id: 'LanPorts' }]
     }),
     updateApLanPorts: build.mutation<WifiApSetting, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApLanPorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApLanPorts, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
@@ -1287,7 +1282,6 @@ export const {
   useApDetailHeaderQuery,
   useApViewModelQuery,
   useApDetailsQuery,
-  useApLanPortsQuery,
   useAddApMutation,
   usePingApMutation,
   useTraceRouteApMutation,
