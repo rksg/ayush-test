@@ -773,7 +773,7 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
   }
   if (is10010eKPIsEnabled) {
     kpis.performance.kpis.push('switchStormControl')
-    kpis.connection.kpis.push('dhcp')
+    kpis.connection.kpis.push('switchDhcp')
   }
   return kpis
 }
