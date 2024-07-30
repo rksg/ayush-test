@@ -36,14 +36,14 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       <Space direction={'horizontal'}>
         <Button
           icon={<BrushSolid/>}
-          onClick={() => setIsPortalVisible(true)}
+          // onClick={() => setIsPortalVisible(true)}
         >
           {$t({ defaultMessage: 'Portal Look & Feel' })}
         </Button>
         <Button
           icon={emptySteps ? <EyeOpenOutlined/> : <EyeOpenSolid/>}
           disabled={emptySteps}
-          onClick={() => setIsPreviewVisible(true)}
+          // onClick={() => setIsPreviewVisible(true)}
         >
           {$t({ defaultMessage: 'Preview' })}
         </Button>
