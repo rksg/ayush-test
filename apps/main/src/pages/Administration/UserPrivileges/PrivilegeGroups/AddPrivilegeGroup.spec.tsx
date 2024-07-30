@@ -210,7 +210,7 @@ describe('Add Privilege Group', () => {
       return { data: {} }
     })
     services.useGetCustomRolesQuery = jest.fn().mockImplementation(() => {
-      return { data: [{ name: 'PRIME_ADMIN' }] }
+      return { data: [{ name: 'ADMIN' }] }
     })
     mspServices.useGetMspEcWithVenuesListQuery = jest.fn().mockImplementation(() => {
       return { data: customerList }
@@ -278,7 +278,7 @@ describe('Add Privilege Group', () => {
     })
     expect(screen.getByText('Please enter Role')).toBeVisible()
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
-    await userEvent.click(screen.getByText('Prime Admin'))
+    await userEvent.click(screen.getByText('Administrator'))
     await waitFor(() => {
       expect(screen.queryByText('Please enter Role')).toBeNull()
     })
@@ -334,7 +334,7 @@ describe('Add Privilege Group', () => {
 
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'custom-group' } })
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
-    await userEvent.click(screen.getByText('Prime Admin'))
+    await userEvent.click(screen.getByText('Administrator'))
 
 
     // Select venues
