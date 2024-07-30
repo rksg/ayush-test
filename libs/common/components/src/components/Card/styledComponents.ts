@@ -86,12 +86,6 @@ export const Wrapper = styled.div<WrapperProps>`
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
-  .ant-card-actions {
-    border-top: 1px;
-    >li {
-      margin: 0;
-  }
-  }
 `
 
 export const Title = styled.div`

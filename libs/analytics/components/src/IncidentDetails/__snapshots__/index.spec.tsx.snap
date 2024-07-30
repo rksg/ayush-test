@@ -2084,16 +2084,16 @@ exports[`incident details should render incident details correctly when there is
                         <p>
                           Identifying the sources of external interference is the key to resolving this issue:
                         </p>
-
+                         
                         <ol>
-
+                           
                           <li>
                             Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.
                           </li>
                           <li>
                             Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.
                           </li>
-
+                           
                         </ol>
                       </div>
                     </div>

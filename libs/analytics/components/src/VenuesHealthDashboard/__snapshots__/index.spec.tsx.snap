@@ -282,7 +282,7 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
 
 exports[`HealthWidget should render widget with proper data 1`] = `
 <DocumentFragment>
-
+   
   .c6 {
   width: 20px;
   height: 20px;
