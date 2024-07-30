@@ -8,7 +8,7 @@ import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../../IntentAIDetails/__tests__/fixtures'
 
-import { AIDrivenRRM } from '.'
+import { AIDrivenRRM, isOptimized } from '.'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
@@ -93,5 +93,15 @@ describe('AIDrivenRRM', () => {
       wrapper: Provider
     })
     expect(asFragment()).toMatchSnapshot()
+  })
+})
+
+describe('isOptimized', () => {
+  it('should return full when value is true', () => {
+    expect(isOptimized(true)).toBe('full')
+  })
+
+  it('should return partial when value is false', () => {
+    expect(isOptimized(false)).toBe('partial')
   })
 })
