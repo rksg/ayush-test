@@ -51,7 +51,7 @@ const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Me
 
   const stateConfig = states[state]
   return $t(stateConfig.tooltip, {
-    errorMessage: metadata.error?.message,
+    errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?

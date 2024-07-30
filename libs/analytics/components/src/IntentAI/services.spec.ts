@@ -41,7 +41,7 @@ describe('Recommendation services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         status: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone zone-1.'
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
       },
       {
         ...intentListResult.intents[1],
@@ -166,19 +166,19 @@ describe('Recommendation services', () => {
         ...intentListWithAllStatus.intents[4],
         ...expectedCommonResult,
         status: 'Apply In Progress',
-        statusTooltip: 'IntentAI recommended changes are getting applied to the zone zone-1.'
+        statusTooltip: 'IntentAI recommended changes are getting applied to the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[5],
         ...expectedCommonResult,
         status: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone zone-1.'
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[6],
         ...expectedCommonResult,
         status: 'Paused, Applied Failed',
-        statusTooltip: 'IntentAI recommended changes failed to apply to the zone zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+        statusTooltip: 'IntentAI recommended changes failed to apply to the zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
       },
       {
         ...intentListWithAllStatus.intents[7],
@@ -190,7 +190,7 @@ describe('Recommendation services', () => {
         ...intentListWithAllStatus.intents[8],
         ...expectedCommonResult,
         status: 'Revert In Progress',
-        statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone zone-1.'
+        statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[9],
@@ -232,25 +232,25 @@ describe('Recommendation services', () => {
         ...intentListWithAllStatus.intents[15],
         ...expectedCommonResult,
         status: 'No recommendation, No APs',
-        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone zone-1.'
+        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[16],
         ...expectedCommonResult,
         status: 'No recommendation, Not enough license',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone zone-1.'
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[17],
         ...expectedCommonResult,
         status: 'No recommendation, Not enough data',
-        statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone zone-1.'
+        statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[18],
         ...expectedCommonResult,
         status: 'Verified',
-        statusTooltip: 'IntentAI has validated zone zone-1 configurations. No new changes have been recommended.'
+        statusTooltip: 'IntentAI has validated zone-1 configurations. No new changes have been recommended.'
       },
       {
         ...intentListWithAllStatus.intents[19],
