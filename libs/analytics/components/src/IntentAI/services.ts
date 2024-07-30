@@ -59,15 +59,10 @@ export type IntentHighlight = {
 
 const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
-  let tooltipKey = 'tooltip'
-
-  if (state === statusReasons.scheduled && metadata.oneClickOptimize) {
-    tooltipKey = 'tooltipOneClickOptimize'
-  }
 
   const stateConfig = states[state]
-  return $t(stateConfig[tooltipKey as keyof typeof stateConfig], {
-    errorMessage: metadata.error?.message,
+  return $t(stateConfig.tooltip, {
+    errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?

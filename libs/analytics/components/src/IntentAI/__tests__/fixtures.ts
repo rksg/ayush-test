@@ -239,20 +239,8 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'scheduled',
-      status_reason: '',
-      displayStatus: 'scheduled',
-      metadata: {
-        oneClickOptimize: false
-      }
-    },
-    {
-      ...intentStatus,
-      status: 'scheduled',
-      status_reason: '',
-      displayStatus: 'scheduled',
-      metadata: {
-        oneClickOptimize: true
-      }
+      status_reason: 'one-click',
+      displayStatus: 'scheduled-one-click'
     },
     {
       ...intentStatus,
@@ -318,8 +306,8 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: '',
-      displayStatus: 'paused'
+      status_reason: 'from-inactive',
+      displayStatus: 'paused-from-inactive'
     },
     {
       ...intentStatus,

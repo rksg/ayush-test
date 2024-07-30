@@ -15,13 +15,15 @@ export enum reasons {
   revertFailed = 'revert-failed',
   reverted = 'reverted',
   fromActive = 'from-active',
+  fromInactive = 'from-inactive',
   byDefault = 'by-default',
   conflictingConfiguration = 'conflicting-configuration',
   noAps = 'no-aps',
   notEnoughLicense = 'not-enough-license',
   notEnoughData = 'not-enough-data',
   verified = 'verified',
-  waitingForEtl = 'waiting-for-etl'
+  waitingForEtl = 'waiting-for-etl',
+  oneClick = 'one-click'
 }
 
 export enum statusReasons {
@@ -33,13 +35,14 @@ export enum statusReasons {
   naWaitingForEtl = statuses.na + '-' + reasons.waitingForEtl,
   new = statuses.new,
   active = statuses.active,
-  paused = statuses.paused, // TODO check if needed
+  pausedFromInactive = statuses.paused + '-' + reasons.fromInactive,
   pausedFromActive = statuses.paused + '-' + reasons.fromActive,
   pausedByDefault = statuses.paused + '-' + reasons.byDefault,
   pausedApplyFailed = statuses.paused + '-' + reasons.applyFailed,
   pausedRevertFailed = statuses.paused + '-' + reasons.revertFailed,
   pausedReverted = statuses.paused + '-' + reasons.reverted,
   scheduled = statuses.scheduled,
+  scheduledOneClick = statuses.scheduled + '-' + reasons.oneClick,
   applyScheduled = statuses.applyScheduled,
   applyScheduleInProgress = statuses.applyScheduleInProgress,
   revertScheduled = statuses.revertScheduled,

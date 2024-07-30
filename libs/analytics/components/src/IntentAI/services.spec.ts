@@ -42,7 +42,7 @@ describe('IntentAI services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         status: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone zone-1.'
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
       },
       {
         ...intentListResult.intents[1],
@@ -149,67 +149,67 @@ describe('IntentAI services', () => {
         ...intentListWithAllStatus.intents[1],
         ...expectedCommonResult,
         status: 'Scheduled',
-        statusTooltip: 'The change recommendation has been scheduled via user action "Optimize".'
+        statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
       },
       {
         ...intentListWithAllStatus.intents[2],
         ...expectedCommonResult,
         status: 'Scheduled',
-        statusTooltip: 'The change recommendation has been scheduled via user action "Optimize".'
+        statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
       },
       {
         ...intentListWithAllStatus.intents[3],
         ...expectedCommonResult,
         status: 'Scheduled',
-        statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
+        statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
       },
       {
         ...intentListWithAllStatus.intents[4],
         ...expectedCommonResult,
-        status: 'Scheduled',
-        statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
+        status: 'Apply In Progress',
+        statusTooltip: 'IntentAI recommended changes are getting applied to the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[5],
         ...expectedCommonResult,
-        status: 'Apply In Progress',
-        statusTooltip: 'IntentAI recommended changes are getting applied to the zone zone-1.'
+        status: 'Active',
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[6],
         ...expectedCommonResult,
-        status: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone zone-1.'
+        status: 'Paused, Applied Failed',
+        statusTooltip: 'IntentAI recommended changes failed to apply to the zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
       },
       {
         ...intentListWithAllStatus.intents[7],
-        ...expectedCommonResult,
-        status: 'Paused, Applied Failed',
-        statusTooltip: 'IntentAI recommended changes failed to apply to the zone zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
-      },
-      {
-        ...intentListWithAllStatus.intents[8],
         ...expectedCommonResult,
         status: 'Revert Scheduled',
         statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
       },
       {
-        ...intentListWithAllStatus.intents[9],
+        ...intentListWithAllStatus.intents[8],
         ...expectedCommonResult,
         status: 'Revert In Progress',
-        statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone zone-1.'
+        statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone-1.'
       },
       {
-        ...intentListWithAllStatus.intents[10],
+        ...intentListWithAllStatus.intents[9],
         ...expectedCommonResult,
         status: 'Paused, Revert Failed',
         statusTooltip: 'The Revert action on the IntentAI recommended change, failed due to the following reason: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
       },
       {
-        ...intentListWithAllStatus.intents[11],
+        ...intentListWithAllStatus.intents[10],
         ...expectedCommonResult,
         status: 'Paused, Revert Success',
         statusTooltip: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+      },
+      {
+        ...intentListWithAllStatus.intents[11],
+        ...expectedCommonResult,
+        status: 'Paused',
+        statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
       },
       {
         ...intentListWithAllStatus.intents[12],
@@ -221,46 +221,40 @@ describe('IntentAI services', () => {
         ...intentListWithAllStatus.intents[13],
         ...expectedCommonResult,
         status: 'Paused',
-        statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
-      },
-      {
-        ...intentListWithAllStatus.intents[14],
-        ...expectedCommonResult,
-        status: 'Paused',
         statusTooltip: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
       },
       {
-        ...intentListWithAllStatus.intents[15],
+        ...intentListWithAllStatus.intents[14],
         ...expectedCommonResult,
         status: 'No recommendation, Conflicting Configuration',
         statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.'
       },
       {
-        ...intentListWithAllStatus.intents[16],
+        ...intentListWithAllStatus.intents[15],
         ...expectedCommonResult,
         status: 'No recommendation, No APs',
-        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone zone-1.'
+        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
+      },
+      {
+        ...intentListWithAllStatus.intents[16],
+        ...expectedCommonResult,
+        status: 'No recommendation, Not enough license',
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[17],
         ...expectedCommonResult,
-        status: 'No recommendation, Not enough license',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone zone-1.'
+        status: 'No recommendation, Not enough data',
+        statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[18],
         ...expectedCommonResult,
-        status: 'No recommendation, Not enough data',
-        statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone zone-1.'
+        status: 'Verified',
+        statusTooltip: 'IntentAI has validated zone-1 configurations. No new changes have been recommended.'
       },
       {
         ...intentListWithAllStatus.intents[19],
-        ...expectedCommonResult,
-        status: 'Verified',
-        statusTooltip: 'IntentAI has validated zone zone-1 configurations. No new changes have been recommended.'
-      },
-      {
-        ...intentListWithAllStatus.intents[20],
         ...expectedCommonResult,
         status: 'No recommendation',
         statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
