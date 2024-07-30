@@ -121,7 +121,7 @@ export interface FirmwareVersion {
   onboardDate?: string;
   releaseDate?: string;
   inUse?: boolean;
-  isNonDowngradable?: boolean;
+  isDowngraded10to90?: boolean;
   isDowngradeVersion?: boolean;
 }
 
@@ -150,7 +150,7 @@ export interface SwitchVersion1002 {
   createdDate?: string;
   inUse?: boolean;
   isDowngradeVersion?: boolean;
-  isNonDowngradable?: boolean;
+  isDowngraded10to90?: boolean;
 }
 
 export interface FirmwareVersion1002 {
