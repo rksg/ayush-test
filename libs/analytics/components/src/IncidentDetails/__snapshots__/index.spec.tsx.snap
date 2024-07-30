@@ -122,14 +122,6 @@ exports[`incident details should render incident details correctly 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
-.c11 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c11 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c12 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -1152,14 +1144,6 @@ exports[`incident details should render incident details correctly when there is
   line-height: var(--acx-body-4-line-height);
 }
 
-.c11 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c11 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c12 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -2100,16 +2084,16 @@ exports[`incident details should render incident details correctly when there is
                         <p>
                           Identifying the sources of external interference is the key to resolving this issue:
                         </p>
-                         
+
                         <ol>
-                           
+
                           <li>
                             Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.
                           </li>
                           <li>
                             Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.
                           </li>
-                           
+
                         </ol>
                       </div>
                     </div>

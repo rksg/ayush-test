@@ -1411,14 +1411,6 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
-.c7 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c7 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -7264,14 +7256,6 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
   line-height: var(--acx-body-4-line-height);
 }
 
-.c7 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c7 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -12619,14 +12603,6 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
   padding: 0;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
-}
-
-.c7 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c7 .ant-card-actions >li {
-  margin: 0;
 }
 
 .c6 {
@@ -18450,14 +18426,6 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
   line-height: var(--acx-body-4-line-height);
 }
 
-.c7 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c7 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c6 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -20740,14 +20708,6 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
   padding: 0;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
-}
-
-.c7 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c7 .ant-card-actions >li {
-  margin: 0;
 }
 
 .c6 {

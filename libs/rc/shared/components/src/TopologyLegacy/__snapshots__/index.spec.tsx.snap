@@ -11287,14 +11287,6 @@ exports[`Topology should render correctly 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
-.c4 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c4 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c5 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);

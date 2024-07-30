@@ -151,15 +151,6 @@ exports[`HistoricalCard should render HistoricalCard 1`] = `
       <div
         class="ant-card-body"
       />
-      <ul
-        class="ant-card-actions"
-      >
-        <li
-          style="width: 100%;"
-        >
-          <span />
-        </li>
-      </ul>
     </div>
   </div>
 </DocumentFragment>
