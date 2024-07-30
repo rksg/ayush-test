@@ -29,11 +29,11 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   returnExpirationString,
-  useTableQuery
+  useTableQuery,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess }                                          from '@acx-ui/user'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
@@ -201,8 +201,7 @@ export default function MacRegistrationListsTable () {
           policyId: selectedRows[0].id!
         })
       })
-    },
-    scopeKey: [WifiScopes.UPDATE]
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -229,8 +228,7 @@ export default function MacRegistrationListsTable () {
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
           })
-      )},
-    scopeKey: [WifiScopes.DELETE]
+      )}
   }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
@@ -252,11 +250,10 @@ export default function MacRegistrationListsTable () {
             link: getPolicyListRoutePath(true) }
         ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() && ([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
@@ -276,8 +273,7 @@ export default function MacRegistrationListsTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           onFilterChange={handleFilterChange}
-          rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
+          rowSelection={hasCloudpathAccess() && { type: 'radio' }}
         />
       </Loader>
     </>

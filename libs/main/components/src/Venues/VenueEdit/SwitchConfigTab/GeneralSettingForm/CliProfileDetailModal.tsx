@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Col, Divider, Form, Row, Select, Typography } from 'antd'
 
 import { cssStr, Modal, Tooltip }                         from '@acx-ui/components'
+import { useLazyGetSwitchConfigProfileQuery }             from '@acx-ui/rc/services'
 import { ConfigurationProfile, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
 import { getIntl }                                        from '@acx-ui/utils'
 
 import { CliConfiguration } from './styledComponents'
 
-import { getProfilesByKeys, FormState } from './index'
+import { FormState, getProfilesByKeys } from './index'
 
 export function CliProfileDetailModal (props: {
   formState: FormState,
@@ -17,9 +18,30 @@ export function CliProfileDetailModal (props: {
 }) {
   const { $t } = getIntl()
   const { formState, setFormState, formData } = props
-  const profiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
-  const [selectedProfile, setSelectedProfile] = useState<ConfigurationProfile>(profiles?.[0])
+  const profileKeys = getProfilesByKeys(formState.configProfiles, formData.profileId)
+  const [getSwitchConfigProfile] = useLazyGetSwitchConfigProfileQuery()
+  const [selectedProfile, setSelectedProfile] =
+    useState<ConfigurationProfile>({} as ConfigurationProfile)
+
   const switchModels = selectedProfile?.venueCliTemplate?.switchModels?.split(',') ?? []
+  const getSelectedProfile = async function (profileId: string) {
+    let profile = await getSwitchConfigProfile({
+      params: { profileId }
+    }).unwrap()
+
+    const pk = profileKeys.find(p => p.id === profileId)
+    if (pk) {
+      profile = { ...profile, venues: pk.venues }
+    }
+
+    setSelectedProfile(profile)
+  }
+
+  useEffect(() => {
+    if (profileKeys?.[0]?.id) {
+      getSelectedProfile(profileKeys?.[0].id)
+    }
+  }, [profileKeys?.[0].id])
 
   const closeModal = () => {
     setFormState({
@@ -48,10 +70,11 @@ export function CliProfileDetailModal (props: {
           <Form.Item
             label={$t({ defaultMessage: 'Select Profile' })}
             children={<Select
+              defaultActiveFirstOption
               value={selectedProfile?.id}
-              options={profiles?.map(p => ({ label: p.name, value: p.id }))}
+              options={profileKeys?.map(p => ({ label: p.name, value: p.id }))}
               onChange={(value) => {
-                setSelectedProfile(profiles.filter(p => p.id === value)[0])
+                getSelectedProfile(value)
               }}
             />}
           />
