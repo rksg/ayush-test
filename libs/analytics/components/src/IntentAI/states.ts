@@ -15,6 +15,7 @@ export enum reasons {
   revertFailed = 'revert-failed',
   reverted = 'reverted',
   fromActive = 'from-active',
+  fromInactive = 'from-inactive',
   byDefault = 'by-default',
   conflictingConfiguration = 'conflicting-configuration',
   noAps = 'no-aps',
@@ -34,7 +35,7 @@ export enum statusReasons {
   naWaitingForEtl = statuses.na + '-' + reasons.waitingForEtl,
   new = statuses.new,
   active = statuses.active,
-  paused = statuses.paused, // TODO check if needed
+  pausedFromInactive = statuses.paused + '-' + reasons.fromInactive,
   pausedFromActive = statuses.paused + '-' + reasons.fromActive,
   pausedByDefault = statuses.paused + '-' + reasons.byDefault,
   pausedApplyFailed = statuses.paused + '-' + reasons.applyFailed,

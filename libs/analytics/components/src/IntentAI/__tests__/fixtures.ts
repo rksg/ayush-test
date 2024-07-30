@@ -306,8 +306,8 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: '',
-      displayStatus: 'paused'
+      status_reason: 'from-inactive',
+      displayStatus: 'paused-from-inactive'
     },
     {
       ...intentStatus,

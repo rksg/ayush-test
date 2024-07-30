@@ -75,7 +75,7 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [statusReasons.paused]: {
+  [statusReasons.pausedFromInactive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },

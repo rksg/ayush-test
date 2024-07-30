@@ -148,7 +148,7 @@ describe('Recommendation services', () => {
         ...intentListWithAllStatus.intents[1],
         ...expectedCommonResult,
         status: 'Scheduled',
-        statusTooltip: 'The change recommendation has been scheduled via user action "Optimize".'
+        statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
       },
       {
         ...intentListWithAllStatus.intents[2],
