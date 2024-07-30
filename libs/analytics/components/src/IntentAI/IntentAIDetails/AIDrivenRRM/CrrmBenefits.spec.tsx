@@ -12,6 +12,7 @@ describe('CrrmBenefits', () => {
     mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
+    jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => true)
   })
   it('should render correctly', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
@@ -25,5 +26,15 @@ describe('CrrmBenefits', () => {
     expect(await screen.findByText('Average interfering links per AP')).toBeVisible()
     expect(await screen.findByText('-200%')).toBeVisible()
     expect(await screen.findByText('=')).toBeVisible()
+  })
+  it('should handle when beyond data retention', async () => {
+    jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => false)
+    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    render(<CrrmBenefits
+      details={crrmDetails}
+      crrmData={mockCrrmData}
+    />, { wrapper: Provider })
+    expect(await screen.findByText('Benefits')).toBeVisible()
+    expect(await screen.findByText('Beyond data retention period')).toBeVisible()
   })
 })

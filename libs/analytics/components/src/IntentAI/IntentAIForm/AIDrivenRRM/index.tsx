@@ -17,7 +17,7 @@ import { useParams }              from '@acx-ui/react-router-dom'
 
 import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../../RRMGraph'
 import { useIntentAICRRMQuery }                                                       from '../../RRMGraph/services'
-import { crrmText }                                                                   from '../../utils'
+import { crrmText }                                                                   from '../../utils/aiDrivenRRM'
 import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType }  from '../config'
 import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }            from '../services'
 import * as UI                                                                        from '../styledComponents'

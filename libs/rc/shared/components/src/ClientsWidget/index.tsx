@@ -3,13 +3,13 @@ import { countBy, isEmpty }   from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart, GridRow, GridCol,
+import { cssStr, Loader, Card , GridRow, GridCol,
   getDeviceConnectionStatusColorsv2, StackedBarChart } from '@acx-ui/components'
-import type { DonutChartData }                                   from '@acx-ui/components'
-import { useDashboardOverviewQuery,useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
-import { ChartData, Dashboard }                                  from '@acx-ui/rc/utils'
-import { useNavigateToPath, useParams, TenantLink }              from '@acx-ui/react-router-dom'
-import { useDashboardFilter }                                    from '@acx-ui/utils'
+import type { DonutChartData }                      from '@acx-ui/components'
+import { useDashboardV2OverviewQuery }              from '@acx-ui/rc/services'
+import { ChartData, Dashboard }                     from '@acx-ui/rc/utils'
+import { useNavigateToPath, useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { useDashboardFilter }                       from '@acx-ui/utils'
 
 import * as UI from '../DevicesWidget/styledComponents'
 
@@ -105,46 +105,6 @@ export const getSwitchClientStackedBarChartData = (
     category: '',
     series
   }]
-}
-
-export function ClientsWidget () {
-  const onArrowClick = useNavigateToPath('/users/')
-  const intl = useIntl()
-  const queryResults = useDashboardOverviewQuery({
-    params: useParams()
-  }, {
-    selectFromResult: ({ data, ...rest }) => ({
-      ...rest,
-      data: {
-        apData: getAPClientChartData(data, intl),
-        switchData: getSwitchClientChartData(data, intl)
-      }
-    })
-  })
-
-  const { $t } = intl
-  return (
-    <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: 'Clients' })} onArrowClick={onArrowClick}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <div style={{ display: 'inline-flex' }}>
-              <DonutChart
-                style={{ width: width/2 , height }}
-                title={$t({ defaultMessage: 'Wi-Fi' })}
-                showLegend={false}
-                data={queryResults.data.apData}/>
-              <DonutChart
-                style={{ width: width/2, height }}
-                title={$t({ defaultMessage: 'Switch' })}
-                showLegend={false}
-                data={queryResults.data.switchData}/>
-            </div>
-          )}
-        </AutoSizer>
-      </Card>
-    </Loader>
-  )
 }
 
 export function ClientsWidgetV2 () {

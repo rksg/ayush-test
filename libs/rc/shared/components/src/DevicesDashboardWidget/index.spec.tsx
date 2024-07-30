@@ -5,7 +5,7 @@ import { render,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from '.'
+import { DevicesDashboardWidgetV2 } from '.'
 
 const params = {
   tenantId: 'tenant-id'
@@ -32,22 +32,6 @@ jest.mock('@acx-ui/utils', () => ({
     }
   })
 }))
-
-describe('Dashboard Devices Widget', () => {
-
-  beforeEach(() => {
-    mockRestApiQuery(CommonUrlsInfo.getDashboardOverview.url, 'get',{})
-  })
-
-  it('should render loader and then chart', async () => {
-    const { asFragment } = render(<Provider><DevicesDashboardWidget /></Provider>,
-      { route: { params } })
-    expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Devices')
-    expect(asFragment().querySelector('svg')).toBeDefined()
-  })
-})
 
 describe('Dashboard Devices Widget V2', () => {
 
