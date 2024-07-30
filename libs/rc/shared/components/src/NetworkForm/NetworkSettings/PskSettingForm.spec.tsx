@@ -32,7 +32,8 @@ jest.mock('../utils', () => ({
     enableTunnel: false,
     enableVxLan: false,
     vxLanTunnels: undefined
-  })
+  }),
+  useUpdateEdgeSdLanActivations: jest.fn().mockReturnValue(() => {})
 }))
 
 async function fillInBeforeSettings (networkName: string) {

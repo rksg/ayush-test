@@ -1,10 +1,11 @@
 import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
 
+import { isGuestTunnelUtilized } from '../edgeSdLanUtils'
 import { useEdgeMvSdLanActions } from '../useEdgeSdLanActions'
 
 import { NetworkTunnelTypeEnum, NetworkTunnelActionModalProps, NetworkTunnelActionForm } from './types'
 
-export const getTunnelType = (
+export const getNetworkTunnelType = (
   network: NetworkTunnelActionModalProps['network'],
   venueSdLanInfo?: EdgeMvSdLanViewData) => {
   const isSdLanTunneled = Boolean(venueSdLanInfo?.tunneledWlans?.find(wlan =>
@@ -30,12 +31,12 @@ export const useUpdateNetworkTunnelAction = () => {
     const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
     const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled
 
-    const tunnelTypeInitVal = getTunnelType(network, venueSdLanInfo)
+    const tunnelTypeInitVal = getNetworkTunnelType(network, venueSdLanInfo)
 
     // activate/deactivate SDLAN tunneling
     if (formTunnelType !== tunnelTypeInitVal) {
     // activate/deactivate network
-      await toggleNetwork(
+      return await toggleNetwork(
         venueSdLanInfo?.id!,
         networkVenueId,
         sdLanTunneled ? sdLanTunnelGuest : false,
@@ -45,13 +46,12 @@ export const useUpdateNetworkTunnelAction = () => {
     } else {
     // tunnelType still SDLAN
       if (tunnelTypeInitVal === NetworkTunnelTypeEnum.SdLan) {
-        const isGuestTunnelEnabledInitState = !!venueSdLanInfo?.isGuestTunnelEnabled
-        && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
-          wlan.networkId === networkId && wlan.venueId === networkVenueId))
+        // eslint-disable-next-line max-len
+        const isGuestTunnelUtilizedInitState = isGuestTunnelUtilized(venueSdLanInfo, networkId, networkVenueId)
 
         // check if tunnel guest changed
-        if(isGuestTunnelEnabledInitState !== sdLanTunnelGuest) {
-          await toggleNetwork(
+        if(isGuestTunnelUtilizedInitState !== sdLanTunnelGuest) {
+          return await toggleNetwork(
               venueSdLanInfo?.id!,
               networkVenueId,
               sdLanTunnelGuest,
@@ -61,6 +61,8 @@ export const useUpdateNetworkTunnelAction = () => {
         }
       }
     }
+
+    return Promise.resolve()
   }
 
   return updateNetworkTunnel

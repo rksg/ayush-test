@@ -51,6 +51,7 @@ import {
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
+import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -75,7 +76,7 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance    from './PortalInstance'
+import PortalInstance        from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
   deriveFieldsFromServerData,
@@ -84,7 +85,9 @@ import {
   useClientIsolationActivations,
   useWifiCalling,
   useAccessControlActivation,
-  getDefaultMloOptions
+  getDefaultMloOptions,
+  useUpdateEdgeSdLanActivations,
+  NetworkTunnelSdLanAction
 } from './utils'
 import { Venues } from './Venues/Venues'
 
@@ -138,6 +141,7 @@ export function NetworkForm (props:{
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
   const enableServiceRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const { modalMode, createType, modalCallBack, defaultActiveVenues } = props
   const intl = useIntl()
@@ -170,6 +174,7 @@ export function NetworkForm (props:{
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
+  const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -595,6 +600,11 @@ export function NetworkForm (props:{
         await handleNetworkVenues(network.id, payload.venues)
       }
       await updateClientIsolationActivations(payload, null, networkId)
+      // eslint-disable-next-line max-len
+      if (isEdgeSdLanMvEnabled && formRef.current?.getFieldValue('sdLanAssociationUpdate') && networkId) {
+        // eslint-disable-next-line max-len
+        await updateEdgeSdLanActivations(networkId, formRef.current?.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[])
+      }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -685,6 +695,10 @@ export function NetworkForm (props:{
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
       await updateClientIsolationActivations(payload, data, payload.id)
+      if (isEdgeSdLanMvEnabled && form.getFieldValue('sdLanAssociationUpdate') && payload.id) {
+        // eslint-disable-next-line max-len
+        await updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[])
+      }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

@@ -1,4 +1,8 @@
-import { Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeSdLanFixtures, Network, NetworkTypeEnum, EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
+
+import { SdLanScopedNetworkVenuesData } from '../useEdgeSdLanActions'
+
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 export const mockNetworkSaveData = {
   fields: ['venueId', 'networkId'],
@@ -51,3 +55,12 @@ export const mockNetworkViewmodelList = [
     }
   }
 ] as Network[]
+
+export const mockSdLanScopeVenueMap = {} as SdLanScopedNetworkVenuesData['sdLansVenueMap']
+mockedMvSdLanDataList?.forEach(sdlan => {
+  sdlan.tunneledWlans?.forEach(wlan => {
+    if (!mockSdLanScopeVenueMap[wlan.venueId]) mockSdLanScopeVenueMap[wlan.venueId] = []
+
+    mockSdLanScopeVenueMap[wlan.venueId].push(sdlan as EdgeMvSdLanViewData)
+  })
+})

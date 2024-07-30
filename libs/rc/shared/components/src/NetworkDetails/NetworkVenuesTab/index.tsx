@@ -6,7 +6,6 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Alert,
-  Button,
   Loader,
   showActionModal,
   Table,
@@ -698,8 +697,10 @@ export function NetworkVenuesTab () {
     })
   }
 
-  const handleNetworkTunnelActionFinish = async (formValues: NetworkTunnelActionForm, otherData: { venueSdLan?: EdgeMvSdLanViewData }) => {
-
+  const handleNetworkTunnelActionFinish = async (
+    formValues: NetworkTunnelActionForm,
+    otherData: { venueSdLan?: EdgeMvSdLanViewData }
+  ) => {
     await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
   }
 

@@ -5,7 +5,7 @@ import { EdgeMvSdLanViewData, NetworkTypeEnum, ServiceOperation, ServiceType, ge
 import { TenantLink }                                                                                                  from '@acx-ui/react-router-dom'
 
 import * as UI                   from './styledComponents'
-import { NetworkTunnelTypeEnum } from './utils'
+import { NetworkTunnelTypeEnum } from './types'
 
 interface SdLanRadioOptionProps {
   currentTunnelType: NetworkTunnelTypeEnum
@@ -22,8 +22,9 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
 
   const sdLanTunneled = currentTunnelType === NetworkTunnelTypeEnum.SdLan
   const isVenueSdLanExist = !!venueSdLan
+  const isGuestTunnelEnabled = venueSdLan?.isGuestTunnelEnabled
 
-  // TODO: popup confirm dialog
+  // TODO: popup confirm dialog: ACX-58399
   // const otherGuestTunnel = venueSdLan?.tunneledGuestWlans?.find(wlan =>
   //   wlan.networkId === networkId)
   // eslint-disable-next-line max-len
@@ -38,14 +39,15 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
   const sdlanName = (isVenueSdLanExist && linkToSdLanDetail)
     ? <TenantLink to={linkToSdLanDetail}>{venueSdLan?.name}</TenantLink>
     : ''
-  const showFwdGuestSwitch = networkType === NetworkTypeEnum.CAPTIVEPORTAL && sdLanTunneled
+  // eslint-disable-next-line max-len
+  const showFwdGuestSwitch = isGuestTunnelEnabled && networkType === NetworkTypeEnum.CAPTIVEPORTAL && sdLanTunneled
 
   return <Row>
     <Form.Item
       help={<UI.RadioSubTitle>
         <Form.Item dependencies={['sdLan', 'isGuestTunnelEnabled']}>
           {({ getFieldValue }) => {
-            const isGuestTunnelEnabled = getFieldValue(['sdLan', 'isGuestTunnelEnabled'])
+            const isFormGuestTunnelEnabled = getFieldValue(['sdLan', 'isGuestTunnelEnabled'])
 
             return <Typography.Text style={{ color: 'inherit' }}>
               {
@@ -53,7 +55,7 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
                   // eslint-disable-next-line max-len
                   ? $t({ defaultMessage: 'Tunnel the traffic to a central location, the destination cluster: {clusterName}' },
                     { clusterName: <b>
-                      {isGuestTunnelEnabled
+                      {isFormGuestTunnelEnabled
                         ? venueSdLan?.guestEdgeClusterName
                         : venueSdLan?.edgeClusterName}
                     </b>

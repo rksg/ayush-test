@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { Button }                          from '@acx-ui/components'
 import { Network, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
+import { isGuestTunnelUtilized }        from '../edgeSdLanUtils'
 import { SdLanScopedNetworkVenuesData } from '../useEdgeSdLanActions'
 
 interface NetworkTunnelInfoButtonProps {
@@ -14,14 +15,15 @@ interface NetworkTunnelInfoButtonProps {
 
 export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => {
   const { $t } = useIntl()
-  const { currentVenue, onClick, sdLanScopedNetworkVenues } = props
+  const { network, currentVenue, onClick, sdLanScopedNetworkVenues } = props
 
   if (Boolean(currentVenue.activated?.isActivated)) {
     const venueId = currentVenue.id
 
     const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[venueId]?.[0]
     const isTunneled = !!destinationsInfo
-    const clusterName = (isTunneled && destinationsInfo.isGuestTunnelEnabled)
+    // eslint-disable-next-line max-len
+    const clusterName = (isTunneled && isGuestTunnelUtilized(destinationsInfo, network?.id!, venueId))
       ? destinationsInfo?.guestEdgeClusterName
       : destinationsInfo?.edgeClusterName
 

@@ -328,7 +328,7 @@ export const useEdgeMvSdLanActions = () => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: !isGuest ? false : activate
+          isGuestTunnelUtilized: isGuest ? activate: false
         },
         callback: cb
       }).unwrap()
