@@ -46,10 +46,11 @@ export function DataPromptField () {
         return (
           <>
             {fields.map((field, index) => (
-              <div key={field.key}>
+              <div key={field.key} data-testid={'field'+index}>
                 <FieldLabel width='555px' key={'label_'+index}>
                   {`${$t({ defaultMessage: 'Field' })} ${index + 1}`}
                   <Button
+                    data-testid={'btn-remove_'+index}
                     disabled={index < 1}
                     type='link'
                     key={`btn-${index}`}
@@ -71,6 +72,7 @@ export function DataPromptField () {
                 </Form.Item>
                 <Form.Item {...field}
                   key={field.key + '_type'}
+                  data-testid={field.key + '_type'}
                   name={[field.name, 'type']}
                   label={$t({ defaultMessage: 'Field Type' })}
                   rules={[
@@ -79,7 +81,7 @@ export function DataPromptField () {
                     { validator: (_, value) => validateDuplicateType(value) }
                   ]}
                 >
-                  <Select options={fieldTypes} />
+                  <Select disabled={index < 1} options={fieldTypes} />
                 </Form.Item>
               </div>
             ))}

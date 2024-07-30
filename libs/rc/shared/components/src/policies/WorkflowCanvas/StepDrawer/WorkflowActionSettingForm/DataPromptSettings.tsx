@@ -20,10 +20,12 @@ export function DataPromptSettings () {
       <FieldLabel width='555px' >
         {$t({ defaultMessage: 'Title' })}
         <Form.Item key='displayTitle'
+          data-testid={'displayTitle'}
           name={'displayTitle'}
           valuePropName={'checked'}
         >
-          <Switch onChange={setShowTitle}/>
+          <Switch data-testid={'switch-title'}
+            onChange={setShowTitle}/>
         </Form.Item>
       </FieldLabel>
       <Form.Item key={'title'}
@@ -36,16 +38,18 @@ export function DataPromptSettings () {
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
       >
-        <Input />
+        <Input data-testid={'title'}/>
       </Form.Item>
 
       <FieldLabel width='555px'>
         {$t({ defaultMessage: 'Intro text' })}
         <Form.Item key='displayMessageHtml'
+          data-testid={'displayMessageHtml'}
           name={'displayMessageHtml'}
           valuePropName={'checked'}
         >
-          <Switch onChange={setShowIntroText}/>
+          <Switch data-testid={'switch-messageHtml'}
+            onChange={setShowIntroText}/>
         </Form.Item>
       </FieldLabel>
       <Form.Item key='messageHtml'
@@ -54,11 +58,12 @@ export function DataPromptSettings () {
         rules={[
           { required: true },
           { min: 1 },
-          { max: 100 },
+          { max: 1000 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
       >
-        <Input.TextArea rows={8} />
+        <Input.TextArea rows={8}
+          data-testid={'messageHtml'} />
       </Form.Item>
 
       <Divider dashed={true} />
