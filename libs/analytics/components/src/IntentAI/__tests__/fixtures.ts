@@ -108,10 +108,16 @@ export const filterOptions = {
     codes: [{
       id: 'c-crrm-channel5g-auto',
       label: 'Client Density vs. Throughput for 5 GHz radio'
+    }, {
+      id: 'i-zonefirmware-upgrade',
+      label: 'i-zonefirmware-upgrade'
     }],
     zones: [{
       id: '01-Alethea-WiCheck Test',
       label: '01-Alethea-WiCheck Test'
+    }, {
+      id: 'zone',
+      label: 'zone'
     }],
     statuses: [{
       id: 'applied',

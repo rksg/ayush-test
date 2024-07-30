@@ -45,25 +45,27 @@ describe('Intent services', () => {
     }
   ]
   const filterOptionsResult = {
-    aiFeatures: [{
-      key: 'AI-Driven RRM',
-      value: 'AI-Driven RRM'
-    }],
-    categories: [{
-      key: 'Wi-Fi Experience',
-      value: 'Wi-Fi Experience'
-    }],
-    statuses: [{
-      key: 'applied',
-      value: 'Applied'
-    }, {
-      key: 'na-no-aps',
-      value: 'No recommendation, No APs'
-    }],
-    zones: [{
-      key: '01-Alethea-WiCheck Test',
-      value: '01-Alethea-WiCheck Test'
-    }]
+    aiFeatures: [
+      { value: 'AI Operations', key: 'AI Operations' },
+      { value: 'AI-Driven RRM', key: 'AI-Driven RRM' }
+    ],
+    categories: [
+      { value: 'Infrastructure', key: 'Infrastructure' },
+      { value: 'Wi-Fi Experience', key: 'Wi-Fi Experience' }
+    ],
+    statuses: [
+      { value: 'Applied', key: 'applied' },
+      { value: 'No recommendation, No APs', key: 'na-no-aps' }
+    ],
+    zones: [
+      {
+        value: '01-Alethea-WiCheck Test',
+        key: '01-Alethea-WiCheck Test'
+      }, {
+        key: 'zone',
+        value: 'zone'
+      }
+    ]
   }
 
   beforeEach(() => {
