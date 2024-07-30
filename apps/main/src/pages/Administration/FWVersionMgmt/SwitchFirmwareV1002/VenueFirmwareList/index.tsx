@@ -163,8 +163,6 @@ export function VenueFirmwareList () {
           const recommendedVersion = getRecommendedVersion(modelGroup)
           const currentVersion = row.versions.find(v => v.modelGroup === modelGroup)?.version
           const commpareSwitchVersionRes = compareSwitchVersion(recommendedVersion, currentVersion)
-          // eslint-disable-next-line no-console
-          console.log(commpareSwitchVersionRes)
           return commpareSwitchVersionRes > 0
         })
 
