@@ -211,6 +211,7 @@ export {
   edgeSdLanFormRequestPreProcess
 } from './EdgeSdLan/edgeSdLanUtils'
 export * from './EdgeSdLan/NetworkMvTunnelModal'
+export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
