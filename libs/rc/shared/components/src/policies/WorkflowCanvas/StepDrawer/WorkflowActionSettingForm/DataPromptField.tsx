@@ -89,7 +89,7 @@ export function DataPromptField () {
               <Button type={'link'}
                 onClick={() => add()}
               >
-                Add Field
+                {$t({ defaultMessage: 'Add Field' })}
               </Button>
             </Form.Item>
           </>

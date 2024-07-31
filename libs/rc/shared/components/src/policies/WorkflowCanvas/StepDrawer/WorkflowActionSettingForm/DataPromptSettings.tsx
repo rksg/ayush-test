@@ -66,7 +66,9 @@ export function DataPromptSettings () {
       </Form.Item>
 
       <Divider dashed={true} />
+
       <DataPromptField />
+
       <Form.Item
         name={'backButtonText'}
         hidden={true}

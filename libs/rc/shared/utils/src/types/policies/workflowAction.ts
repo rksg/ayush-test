@@ -1,5 +1,8 @@
 
 // Mapping the enum based on enrollment-actions definitions:
+
+import { MessageDescriptor } from 'react-intl'
+
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
 export enum ActionType {
   AUP = 'AUP',
@@ -48,7 +51,7 @@ export interface DataPromptAction extends ActionBase {
 
 export interface DataPromptVariable {
   type: string,
-  label?: string,
+  label?: string | MessageDescriptor,
   regex?: string,
 }
 
