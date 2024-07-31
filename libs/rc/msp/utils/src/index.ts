@@ -10,7 +10,8 @@ import {
   MspEc,
   MspEcProfile,
   MspProfile,
-  MspRecCustomer
+  MspRecCustomer,
+  MspEcAccountType
 } from './types'
 
 export * from './types'
@@ -108,9 +109,17 @@ export const MSPUtils = () => {
   }
 
   const getStatus = (row: MspEc) => {
-    const isTrial = row.accountType === 'TRIAL'
-    const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
-    return value
+    if (row.status === 'Active') {
+      switch(row.accountType) {
+        case MspEcAccountType.TRIAL:
+          return 'Trial'
+        case MspEcAccountType.EXTENDED_TRIAL:
+          return 'Extended Trial'
+      }
+      return row.status
+    } else {
+      return 'Inactive'
+    }
   }
 
   const transformApEntitlement = (row: MspEc) => {

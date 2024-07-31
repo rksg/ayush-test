@@ -481,3 +481,9 @@ export interface MspEcTierPayload {
   type: string,
   serviceTierStatus: string
 }
+
+export enum MspEcAccountType {
+  PAID = 'PAID',
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}
