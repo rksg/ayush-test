@@ -9,10 +9,9 @@ import {
   StepsForm,
   Loader
 } from '@acx-ui/components'
-import { get }                    from '@acx-ui/config'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { formatter }              from '@acx-ui/formatter'
-import { useParams }              from '@acx-ui/react-router-dom'
+import { get }       from '@acx-ui/config'
+import { formatter } from '@acx-ui/formatter'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { crrmText }                                                                  from '../../utils/aiDrivenRRM'
 import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
@@ -141,13 +140,9 @@ export function AIDrivenRRM () {
   const params = useParams()
   const id = params?.recommendationId!
 
-  const isCrrmPartialEnabled = [
-    useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
-    useIsSplitOn(Features.CRRM_PARTIAL)
-  ].some(Boolean)
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useConfigRecommendationDetailsQuery(
-    { ...codeQuery.data!, isCrrmPartialEnabled },
+    codeQuery.data!,
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!

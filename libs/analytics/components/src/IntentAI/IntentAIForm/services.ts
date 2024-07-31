@@ -158,19 +158,15 @@ export const api = recommendationApi.injectEndpoints({
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    configRecommendationDetails: build.query<
-      EnhancedIntent,
-      BasicIntent & { isCrrmPartialEnabled: boolean }
-    >({
-      query: ({ id, code, isCrrmPartialEnabled }) => ({
+    configRecommendationDetails: build.query<EnhancedIntent, BasicIntent>({
+      query: ({ id, code }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
               sliceType sliceValue updatedAt dataEndTime
-              ${isCrrmPartialEnabled ? 'preferences' : ''}
-              path { type name }
+              preferences path { type name }
               statusTrail { status createdAt }
               ${kpiHelper(code!)}
               trigger
