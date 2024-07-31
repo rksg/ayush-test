@@ -66,6 +66,3 @@ data:
       - configmap: configmap-acx-ui
         key: druid.retain.period.days
         name: DRUID_RETAIN_PERIOD_DAYS
-      - configmap: configmap-acx-ui
-        key: afc.feature.enabled
-        name: AFC_FEATURE_ENABLED

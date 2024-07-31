@@ -33,7 +33,6 @@ type R1Environment = {
   NEW_API_DOMAIN_NAME: string
   API_DOCUMENTATION_URL: string
   MIB_FILES: string
-  AFC_FEATURE_ENABLED: string
 }
 
 type RAEnvironment = {

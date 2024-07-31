@@ -18,6 +18,5 @@
   "API_DOCUMENTATION_URL": "https://docs.ruckus.cloud/api/",
   "MIB_FILES": "https://docs.ruckus.cloud/mib/",
   "DRUID_ROLLUP_DAYS": "36500",
-  "DRUID_RETAIN_PERIOD_DAYS": "90",
-  "AFC_FEATURE_ENABLED": "true"
+  "DRUID_RETAIN_PERIOD_DAYS": "90"
 }
