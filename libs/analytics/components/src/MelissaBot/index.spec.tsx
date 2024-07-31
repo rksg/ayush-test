@@ -10,6 +10,7 @@ import { gptResponseBody, responseBody, uploadRes } from './__tests__/fixtures'
 
 import { MelissaBot } from '.'
 describe('MelissaBot', () => {
+  const sessionTimeoutInSecs=2
   let container:HTMLDivElement|undefined=undefined
   // eslint-disable-next-line max-len
   const ERROR_MSG = 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.'
@@ -141,7 +142,6 @@ describe('MelissaBot', () => {
       .toMatchSnapshot('switch-back-to-my-network-mode')
   })
   it('should chat with chatbot in general mode and handle DF session timeout',async ()=>{
-    const sessionTimeoutInSecs=5
     await act(async ()=>{
       render(<MelissaBot sessionTimeoutInSecs={sessionTimeoutInSecs}/>,{ route, container })
     })
@@ -174,7 +174,6 @@ describe('MelissaBot', () => {
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after-session-timeout')
   })
   it('should chat with chatbot in my network mode and handle DF session timeout',async ()=>{
-    const sessionTimeoutInSecs=5
     await act(async ()=>{
       render(<MelissaBot sessionTimeoutInSecs={sessionTimeoutInSecs}/>,{ route, container })
     })
