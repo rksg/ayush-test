@@ -142,6 +142,28 @@ export const PlusButton = styled.div`
     }
   }
 `
+
+export const EditorToolbarIcon = styled.div`
+  display: flex;
+  align-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  path {
+    stroke: var(--acx-primary-white) !important;
+  }
+
+  :hover path {
+    stroke: var(--acx-accents-orange-50) !important;
+  }
+`
+
 // this styles the label of the popover
 export const Popover = styled(AntPopover)`
     color: var(--acx-accents-blue-50);
