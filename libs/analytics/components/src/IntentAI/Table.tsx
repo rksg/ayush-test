@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table }                      from '@acx-ui/components'
+import { Loader, TableProps, Table, Tooltip }             from '@acx-ui/components'
 import { get }                                            from '@acx-ui/config'
 import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
@@ -57,20 +57,39 @@ export function IntentAITable (
         : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       width: 200,
       dataIndex: 'sliceValue',
-      key: 'sliceValue'
+      key: 'sliceValue',
+      render: (_, row: IntentListItem ) => {
+        return <Tooltip
+          placement='top'
+          title={row.scope}
+          dottedUnderline={true}
+        >
+          {row.sliceValue}
+        </Tooltip>
+      }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
       width: 200,
       dataIndex: 'status',
-      key: 'status'
+      key: 'status',
+      render: (_, row: IntentListItem ) => {
+        const { status, statusTooltip } = row
+        return <Tooltip
+          placement='top'
+          title={statusTooltip}
+          dottedUnderline={true}
+        >
+          {status}
+        </Tooltip>
+      }
     },
     {
       title: $t({ defaultMessage: 'Last update' }),
       width: 130,
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (_, record) => formatter(DateFormatEnum.DateTimeFormat)(record.updatedAt)
+      render: (_, row) => formatter(DateFormatEnum.DateTimeFormat)(row.updatedAt)
     }
   ]
 
