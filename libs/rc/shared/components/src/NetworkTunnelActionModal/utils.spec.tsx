@@ -38,9 +38,9 @@ describe('useUpdateNetworkTunnelAction', () => {
     expect(mockedToggleNetworkFn).toBeCalledWith(
       mockSdLan.id,
       mockNetwork.venueId,
-      false,
       mockNetwork.id,
-      true
+      true,
+      false
     )
   })
 
@@ -65,9 +65,9 @@ describe('useUpdateNetworkTunnelAction', () => {
     expect(mockedToggleNetworkFn).toBeCalledWith(
       mockSdLan.id,
       mockNetwork.venueId,
-      false,
       mockNetwork.id,
-      true
+      true,
+      false
     )
   })
 
@@ -92,8 +92,8 @@ describe('useUpdateNetworkTunnelAction', () => {
     expect(mockedToggleNetworkFn).toBeCalledWith(
       mockSdLan.id,
       mockNetwork.venueId,
-      false,
       mockNetwork.id,
+      false,
       false
     )
   })

@@ -311,16 +311,22 @@ export const useEdgeMvSdLanActions = () => {
     }
   }
 
+  /** use cases
+   * activate network:        activate = true, isGuest = false
+   * deactivate network:      activate = false, isGuest = false
+   * activate guestNetwork:   activate = true, isGuest = true
+   * deactivate guestNetwork: activate = true, isGuest = false
+   */
   const toggleNetwork = async (
     serviceId: string,
     venueId: string,
-    isGuest: boolean,
     networkId: string,
     activate: boolean,
+    isGuest: boolean,
     cb?: () => void) => {
-    // - activate network/guestNetwork
-    // - deactivate guestNetwork
-    if (activate || (!activate && isGuest)) {
+    // - activate network
+    // - activate/deactivate guestNetwork
+    if (activate) {
       await activateNetwork({
         params: {
           venueId,
@@ -328,7 +334,7 @@ export const useEdgeMvSdLanActions = () => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: isGuest ? activate: false
+          isGuestTunnelUtilized: isGuest
         },
         callback: cb
       }).unwrap()

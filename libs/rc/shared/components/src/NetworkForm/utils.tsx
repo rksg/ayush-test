@@ -749,7 +749,7 @@ export const useUpdateEdgeSdLanActivations = () => {
       return _.find(activatedVenues, { venueId: item.venueId })
     }).map((actInfo) => {
       // eslint-disable-next-line max-len
-      return toggleNetwork(actInfo.serviceId, actInfo.venueId, actInfo.guestEnabled, networkId, actInfo.enabled)
+      return toggleNetwork(actInfo.serviceId, actInfo.venueId, networkId, actInfo.enabled, actInfo.enabled && actInfo.guestEnabled)
     })
 
     return await Promise.all(actions)

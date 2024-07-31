@@ -46,9 +46,9 @@ export const useUpdateNetworkTunnelAction = () => {
       return await toggleNetwork(
         venueSdLanInfo?.id!,
         networkVenueId,
-        sdLanTunneled ? sdLanTunnelGuest : false,
         networkId!,
-        sdLanTunneled
+        sdLanTunneled,
+        sdLanTunneled && sdLanTunnelGuest
       )
     } else {
     // tunnelType still SDLAN
@@ -61,9 +61,9 @@ export const useUpdateNetworkTunnelAction = () => {
           return await toggleNetwork(
               venueSdLanInfo?.id!,
               networkVenueId,
-              sdLanTunnelGuest,
               networkId!,
-              sdLanTunneled
+              sdLanTunneled,
+              sdLanTunneled && sdLanTunnelGuest
           )
         }
       }
