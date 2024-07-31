@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Row, Col, Typography }   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Row, Col, Typography, Form, DatePicker } from 'antd'
+import { defineMessage, useIntl }                 from 'react-intl'
 
-import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
+import { StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
@@ -18,8 +18,8 @@ export function Settings () {
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
 
-  const calendarText = defineMessage({ defaultMessage: `This recommendation will be 
-    applied at the chosen time whenever there is a need to change the channel plan. 
+  const calendarText = defineMessage({ defaultMessage: `This recommendation will be
+    applied at the chosen time whenever there is a need to change the channel plan.
     Schedule a time during off-hours when the number of WiFi clients is at the minimum.`
   })
 
@@ -35,6 +35,24 @@ export function Settings () {
           {$t(calendarText)}
         </Typography.Paragraph>
       </StepsForm.TextContent>
+      <Form.Item name={'random'}>
+        <DatePicker
+          open={true}
+          className='hidden-date-input'
+          dropdownClassName='hidden-date-input-popover'
+          picker='date'
+          // disabled={disabled}
+          // value={date}
+          // open={open}
+          // onClick={() => setOpen(true)}
+          showTime={false}
+          showNow={false}
+          showToday={false}
+        />
+      </Form.Item>
+      <Form.Item name={'testing'}>
+        <TimeDropdown timeType='Daily' name='daily' />
+      </Form.Item>
     </Col>
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
