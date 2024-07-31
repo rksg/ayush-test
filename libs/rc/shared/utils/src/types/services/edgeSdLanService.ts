@@ -171,6 +171,7 @@ export interface EdgeMvSdLanFormModel extends EdgeMvSdLanExtended {
   guestEdgeClusterVenueId?: string;
   edgeClusterName?: string;
   tunnelProfileName?: string;
+  guestTunnelProfileName?: string;
   guestEdgeClusterName?: string;
   activatedNetworks: EdgeMvSdLanFormNetwork;
   activatedGuestNetworks: EdgeMvSdLanFormNetwork;

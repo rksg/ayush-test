@@ -1,4 +1,4 @@
-import { EdgeSdLanFixtures, Network, NetworkTypeEnum, EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
+import { EdgeSdLanFixtures, Network, NetworkTypeEnum, EdgeMvSdLanViewData, EdgeMvSdLanFormNetwork, EdgeMvSdLanFormModel } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../useEdgeSdLanActions'
 
@@ -64,3 +64,36 @@ mockedMvSdLanDataList?.forEach(sdlan => {
     mockSdLanScopeVenueMap[wlan.venueId].push(sdlan as EdgeMvSdLanViewData)
   })
 })
+
+export const mockMvSdLanFormData = {
+  id: 'mocked-sd-lan-1',
+  name: 'Mocked_SDLAN_1',
+  edgeClusterId: 'mocked_cluster0_id',
+  edgeClusterName: 'SE_Cluster 0',
+  tunnelProfileId: 'mocked_tunnel1_id',
+  tunnelProfileName: 'Mocked_tunnel-1',
+  isGuestTunnelEnabled: false,
+  guestEdgeClusterId: 'mocked_cluster3_id',
+  guestEdgeClusterName: 'SE_Cluster 3',
+  guestTunnelProfileId: 'mocked_tunnel3_id',
+  guestTunnelProfileName: 'Mocked_tunnel-3',
+  activatedNetworks: {
+    venue1: [{
+      id: 'network1',
+      name: 'Network1'
+    }, {
+      id: 'network3',
+      name: 'Network3'
+    }],
+    venue2: [{
+      id: 'network1',
+      name: 'Network1'
+    }]
+  } as EdgeMvSdLanFormNetwork,
+  activatedGuestNetworks: {
+    venue1: [{
+      id: 'network1',
+      name: 'Network1'
+    }]
+  } as EdgeMvSdLanFormNetwork
+} as unknown as EdgeMvSdLanFormModel
