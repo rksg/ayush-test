@@ -1,5 +1,7 @@
 import { ReactElement } from 'react'
 
+import { Form } from 'antd'
+
 import { render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom/extend-expect'
@@ -7,21 +9,32 @@ import { getDisplayTime, TimeDropdown } from '.'
 
 describe('TimeDropdown', () => {
   it('renders Daily dropdown correctly', async () => {
-    render(<TimeDropdown type='daily' name='daily' />)
+    render(
+      <Form>
+        <TimeDropdown type='daily' name='daily' />
+      </Form>
+    )
 
     expect(screen.getByText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Weekly dropdown correctly', () => {
-    render(<TimeDropdown type='weekly' name='weekly' />)
+    render(
+      <Form>
+        <TimeDropdown type='weekly' name='weekly' />
+      </Form>
+    )
 
     expect(screen.getByText('Select day')).toBeInTheDocument()
     expect(screen.getByText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Month dropdown correctly', () => {
-    render(<TimeDropdown type='monthly' name='weekly' />)
-
+    render(
+      <Form>
+        <TimeDropdown type='monthly' name='monthly' />
+      </Form>
+    )
     expect(screen.getByText('Select day')).toBeInTheDocument()
     expect(screen.getByText('Select hour')).toBeInTheDocument()
   })
