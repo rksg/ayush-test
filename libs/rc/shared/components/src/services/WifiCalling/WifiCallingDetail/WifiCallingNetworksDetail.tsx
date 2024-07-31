@@ -2,9 +2,10 @@ import React, { useContext, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Card, Table, TableProps }                                                  from '@acx-ui/components'
-import { useGetNetworkTemplateListQuery, useNetworkListQuery }                      from '@acx-ui/rc/services'
-import { Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
+import { Card, Table, TableProps }                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
+import { Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useTableQuery }     from '@acx-ui/rc/utils'
 
 import { WifiCallingDetailContext } from './WifiCallingDetailView'
 
@@ -15,13 +16,16 @@ const defaultPayload = {
     'name',
     'nwSubType',
     'venues',
-    'id'
+    'id',
+    'venueApGroups'
   ]
 }
 
 const WifiCallingNetworksDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
@@ -63,13 +67,15 @@ const WifiCallingNetworksDetail = () => {
   }, [networkIds])
 
   const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
+    useQuery: isTemplate ? useGetNetworkTemplateListQuery :
+      enableWifiRbac? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: {
         id: networkIds?.length ? networkIds : ['none']
       }
-    }
+    },
+    enableRbac: isTemplate ? enableTemplateRbac : enableWifiRbac
   })
 
   return (

@@ -9,15 +9,6 @@ import { NetworkFilter }   from '../NetworkFilter'
 import { SANetworkFilter } from '../NetworkFilter/SANetworkFilter'
 
 const isMLISA = get('IS_MLISA_SA')
-export type SubTitle = {
-  key: string
-  value: (number | string)[]
-}
-
-export type HeaderData = {
-  name?: string
-  subTitle: SubTitle[]
-}
 
 export type UseHeaderExtraProps = {
   shouldQueryAp?: boolean,
@@ -58,7 +49,7 @@ export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) =>
       {...props}
     />,
     datepicker === 'dropdown'
-      ? <TimeRangeDropDown/>
+      ? <TimeRangeDropDown key={getShowWithoutRbacCheckKey('time-range-dropdown')} />
       : <RangePicker
         key={getShowWithoutRbacCheckKey('range-picker')}
         selectedRange={{
@@ -70,13 +61,6 @@ export const useHeaderExtra = ({ datepicker, ...props }: UseHeaderExtraProps) =>
         selectionType={range}
       />
   ]
-}
-
-export const useNetworkFilter = ({ ...props }: UseHeaderExtraProps) => {
-  return <Filter
-    key={getShowWithoutRbacCheckKey('network-filter')}
-    {...props}
-  />
 }
 
 export const Header = ({

@@ -2,8 +2,253 @@
 
 exports[`Timeline should render 1`] = `
 <DocumentFragment>
-  <div
-    class="styledComponents__Wrapper-sc-1wfjamk-0 ceDwKd"
+  .c6 path:nth-child(1) {
+  fill: var(--acx-semantics-green-50);
+}
+
+.c6 path:nth-child(3) {
+  stroke: var(--acx-semantics-green-50);
+}
+
+.c10 path:nth-child(1) {
+  fill: var(--acx-semantics-red-50);
+}
+
+.c10 path:nth-child(2) {
+  stroke: var(--acx-semantics-red-50);
+}
+
+.c15 circle {
+  fill: var(--acx-neutrals-60);
+  stroke: var(--acx-neutrals-60);
+}
+
+.c14 {
+  -webkit-animation: rotate 1s linear infinite;
+  animation: rotate 1s linear infinite;
+}
+
+.c14 circle {
+  fill: var(--acx-neutrals-60);
+  stroke: var(--acx-neutrals-60);
+}
+
+.c0 .ant-timeline-item:nth-child(odd) {
+  padding-bottom: 7px;
+}
+
+.c0 .ant-timeline-item:nth-child(even) {
+  padding-bottom: 16px;
+}
+
+.c0 .ant-timeline-item-tail {
+  height: 100%;
+  top: 5px;
+  color: var(--acx-accents-orange-50);
+}
+
+.c0 .ant-timeline-item-content {
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+}
+
+.c0 .ant-timeline-item-head-custom {
+  background: transparent;
+  top: 3px;
+}
+
+.c0 .ant-descriptions-item-container {
+  padding-bottom: 26px;
+}
+
+.c0 .ant-descriptions-item-content {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+  color: var(--acx-primary-black);
+}
+
+.c0 .ant-descriptions-item-label {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+  color: var(--acx-neutrals-60);
+}
+
+.c2 {
+  display: grid;
+  grid-template-columns: 106px auto;
+}
+
+.c3 {
+  margin: -27px 4px 0px 30px;
+  display: grid;
+}
+
+.c5 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 6px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+  color: var(--acx-semantics-green-50);
+}
+
+.c9 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 6px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+  color: var(--acx-semantics-red-50);
+}
+
+.c13 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 6px;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  font-weight: var(--acx-body-font-weight-bold);
+  color: var(--acx-neutrals-60);
+}
+
+.c1 {
+  --size: 8px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  border: 1px solid var(--acx-accents-orange-50);
+  background-color: var(--acx-primary-white);
+  position: relative;
+}
+
+.c1:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: var(--acx-accents-orange-50);
+  border-radius: 50%;
+  --dot-size: calc(var(--size) / 2);
+  width: var(--dot-size);
+  height: var(--dot-size);
+}
+
+.c11 {
+  --size: 8px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  border: 1px solid var(--acx-accents-orange-50);
+  background-color: var(--acx-primary-white);
+  position: relative;
+}
+
+.c11:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: var(--acx-accents-orange-50);
+  border-radius: 50%;
+  --dot-size: calc(var(--size) - 1px);
+  width: var(--dot-size);
+  height: var(--dot-size);
+}
+
+.c12 {
+  --size: 8px;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  border: 1px solid var(--acx-accents-orange-50);
+  background-color: var(--acx-primary-white);
+  position: relative;
+}
+
+.c12:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: var(--acx-accents-orange-50);
+  border-radius: 50%;
+  --dot-size: 0;
+  width: var(--dot-size);
+  height: var(--dot-size);
+}
+
+.c7 {
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  margin-left: 30px;
+  color: var(--acx-primary-black);
+}
+
+.c4 {
+  display: grid;
+  grid-template-columns: auto min-content;
+}
+
+.c8 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.c8 svg {
+  width: 16.5;
+  height: 16.5;
+}
+
+.c8 svg rect {
+  fill: var(--acx-accents-blue-50);
+}
+
+.c8 svg path {
+  stroke: var(--acx-primary-white);
+}
+
+<div
+    class="c0"
   >
     <div
       class="ant-descriptions"
@@ -53,7 +298,7 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 fuPEIF"
+            class="c1"
           />
         </div>
         <div
@@ -72,43 +317,43 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 fuPEIF"
+            class="c1"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
           <div
-            class="styledComponents__ItemWrapper-sc-1wfjamk-1 dVChMj"
+            class="c2"
           >
             12/20/2022 07:55:04
             <div
-              class="styledComponents__ContentWrapper-sc-1wfjamk-2 fexmgQ"
+              class="c3"
             >
               <div
-                class="styledComponents__WithExpanderWrapper-sc-1wfjamk-6 hjEPmH"
+                class="c4"
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1wfjamk-3 fGxTcW"
+                    class="c5"
                   >
                     <svg
-                      class="styledComponents__SuccessIcon-sc-1px55aj-0 gPcOex"
+                      class="c6"
                       data-testid="CheckMarkCircleSolid"
                     />
                     Success
                     <div
-                      class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                      class="c7"
                     />
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                    class="c7"
                   >
                     AddVenue
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ExpanderWrapper-sc-1wfjamk-7 hyLjMp"
+                  class="c8"
                 />
               </div>
             </div>
@@ -125,7 +370,7 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 fuPEIF"
+            class="c1"
           />
         </div>
         <div
@@ -144,43 +389,43 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 fuPEIF"
+            class="c1"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
           <div
-            class="styledComponents__ItemWrapper-sc-1wfjamk-1 dVChMj"
+            class="c2"
           >
             12/20/2022 08:05:00
             <div
-              class="styledComponents__ContentWrapper-sc-1wfjamk-2 fexmgQ"
+              class="c3"
             >
               <div
-                class="styledComponents__WithExpanderWrapper-sc-1wfjamk-6 hjEPmH"
+                class="c4"
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1wfjamk-3 fmZXBu"
+                    class="c9"
                   >
                     <svg
-                      class="styledComponents__FailIcon-sc-1px55aj-1 cirwSw"
+                      class="c10"
                       data-testid="CancelCircleSolid"
                     />
                     Failed
                     <div
-                      class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                      class="c7"
                     />
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                    class="c7"
                   >
                     AddVenue
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ExpanderWrapper-sc-1wfjamk-7 hyLjMp"
+                  class="c8"
                 >
                   <svg
                     data-testid="PlusSquareSolid"
@@ -201,7 +446,7 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 dtznvA"
+            class="c11"
           />
         </div>
         <div
@@ -220,43 +465,43 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 jLHVfZ"
+            class="c12"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
           <div
-            class="styledComponents__ItemWrapper-sc-1wfjamk-1 dVChMj"
+            class="c2"
           >
             --
             <div
-              class="styledComponents__ContentWrapper-sc-1wfjamk-2 fexmgQ"
+              class="c3"
             >
               <div
-                class="styledComponents__WithExpanderWrapper-sc-1wfjamk-6 hjEPmH"
+                class="c4"
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1wfjamk-3 jBbCHU"
+                    class="c13"
                   >
                     <svg
-                      class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
+                      class="c14"
                       data-testid="InProgress"
                     />
                     In progress
                     <div
-                      class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                      class="c7"
                     />
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                    class="c7"
                   >
                     UpdateSwitchPosition
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ExpanderWrapper-sc-1wfjamk-7 hyLjMp"
+                  class="c8"
                 >
                   <svg
                     data-testid="PlusSquareSolid"
@@ -277,7 +522,7 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 jLHVfZ"
+            class="c12"
           />
         </div>
         <div
@@ -296,43 +541,43 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 jLHVfZ"
+            class="c12"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
           <div
-            class="styledComponents__ItemWrapper-sc-1wfjamk-1 dVChMj"
+            class="c2"
           >
             --
             <div
-              class="styledComponents__ContentWrapper-sc-1wfjamk-2 fexmgQ"
+              class="c3"
             >
               <div
-                class="styledComponents__WithExpanderWrapper-sc-1wfjamk-6 hjEPmH"
+                class="c4"
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1wfjamk-3 jBbCHU"
+                    class="c13"
                   >
                     <svg
-                      class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
+                      class="c14"
                       data-testid="InProgress"
                     />
                     In progress
                     <div
-                      class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                      class="c7"
                     />
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                    class="c7"
                   >
                     UpdateSwitchPosition
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ExpanderWrapper-sc-1wfjamk-7 hyLjMp"
+                  class="c8"
                 >
                   <svg
                     data-testid="PlusSquareSolid"
@@ -353,7 +598,7 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 jLHVfZ"
+            class="c12"
           />
         </div>
         <div
@@ -372,43 +617,43 @@ exports[`Timeline should render 1`] = `
           class="ant-timeline-item-head ant-timeline-item-head-custom ant-timeline-item-head-blue"
         >
           <div
-            class="styledComponents__Step-sc-1wfjamk-4 jLHVfZ"
+            class="c12"
           />
         </div>
         <div
           class="ant-timeline-item-content"
         >
           <div
-            class="styledComponents__ItemWrapper-sc-1wfjamk-1 dVChMj"
+            class="c2"
           >
             --
             <div
-              class="styledComponents__ContentWrapper-sc-1wfjamk-2 fexmgQ"
+              class="c3"
             >
               <div
-                class="styledComponents__WithExpanderWrapper-sc-1wfjamk-6 hjEPmH"
+                class="c4"
               >
                 <div>
                   <div
-                    class="styledComponents__StatusWrapper-sc-1wfjamk-3 jBbCHU"
+                    class="c13"
                   >
                     <svg
-                      class="styledComponents__PendingsIcon-sc-1px55aj-2 jYPowK"
+                      class="c15"
                       data-testid="Pending"
                     />
                     Pending
                     <div
-                      class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                      class="c7"
                     />
                   </div>
                   <div
-                    class="styledComponents__DescriptionWrapper-sc-1wfjamk-5 foaaAk"
+                    class="c7"
                   >
                     AddVenue
                   </div>
                 </div>
                 <div
-                  class="styledComponents__ExpanderWrapper-sc-1wfjamk-7 hyLjMp"
+                  class="c8"
                 />
               </div>
             </div>

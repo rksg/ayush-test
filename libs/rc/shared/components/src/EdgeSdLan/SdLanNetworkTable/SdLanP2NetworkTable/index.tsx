@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
 import { Space }                  from 'antd'
@@ -15,8 +16,7 @@ import {
   NetworkTypeEnum,
   useTableQuery,
   Network,
-  NetworkType
-} from '@acx-ui/rc/utils'
+  NetworkType } from '@acx-ui/rc/utils'
 import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
@@ -33,7 +33,9 @@ const dmzTunnelColumnHeaderTooltip = defineMessage({
     'When \'Forward guest traffic to DMZ\' is activated, the \'Enable tunnel\' toggle turns on automatically. {detailLink}'
 })
 
+// the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
 const getRowDisabledInfo = (
+  venueId: string,
   row: Network,
   isForGuestTraffic: boolean,
   dsaeOnboardNetworkIds?: string[]
@@ -55,7 +57,7 @@ const getRowDisabledInfo = (
   } else if (isGuestnetwork && isForGuestTraffic && isVlanPooling) {
     disabled = true
     tooltip = $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
-  } else {}
+  }
 
   return { disabled, tooltip }
 }
@@ -67,7 +69,7 @@ export interface ActivatedNetworksTableP2Props {
   activated?: string[],
   activatedGuest?: string[],
   disabled?: boolean,
-  tooltip?: string,
+  toggleButtonTooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
   isUpdating?: boolean
 }
@@ -80,7 +82,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     activated,
     activatedGuest,
     disabled,
-    tooltip,
+    toggleButtonTooltip,
     onActivateChange,
     isUpdating
   } = props
@@ -143,14 +145,14 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, false, dsaeOnboardNetworkIds)
+      const disabledInfo = getRowDisabledInfo(venueId, row, false, dsaeOnboardNetworkIds)
 
       return <ActivateNetworkSwitchButtonP2
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
         disabled={disabled || disabledInfo.disabled}
-        tooltip={tooltip || disabledInfo.tooltip}
+        tooltip={toggleButtonTooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
@@ -166,7 +168,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 120,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, true, dsaeOnboardNetworkIds)
+      // eslint-disable-next-line max-len
+      const disabledInfo = getRowDisabledInfo(venueId, row, true, dsaeOnboardNetworkIds)
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
         ? <ActivateNetworkSwitchButtonP2
@@ -174,13 +177,14 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           row={row}
           activated={activatedGuest ?? []}
           disabled={disabled || disabledInfo.disabled}
-          tooltip={tooltip || disabledInfo.tooltip}
+          tooltip={toggleButtonTooltip || disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
     }
   }] : [])
   ]), [
+    venueId,
     activated,
     activatedGuest,
     isGuestTunnelEnabled,

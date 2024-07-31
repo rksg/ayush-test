@@ -14,7 +14,8 @@ import {
   EPDG, useServicePageHeaderTitle,
   QosPriorityEnum, ServiceOperation, ServiceType,
   useConfigTemplateMutationFnSwitcher,
-  useServiceListBreadcrumb, useServicePreviousPath
+  useServiceListBreadcrumb, useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -30,7 +31,10 @@ export const WifiCallingConfigureForm = () => {
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateWifiCallingServiceMutation,

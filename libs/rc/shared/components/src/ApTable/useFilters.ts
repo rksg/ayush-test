@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { Params } from 'react-router-dom'
 
-import { useNetworkListQuery }                          from '@acx-ui/rc/services'
+import { useWifiNetworkListQuery }                      from '@acx-ui/rc/services'
 import { NewApGroupViewModelResponseType, TableResult } from '@acx-ui/rc/utils'
 
 export const useFilters = (params: Params) => {
   const [filters, setFilters] = useState<{ [key: string]: string[] }>({})
-  const { data: networkData, isLoading: isNetworkLoading } = useNetworkListQuery({
+  const { data: networkData, isLoading: isNetworkLoading } = useWifiNetworkListQuery({
     payload: {
       fields: ['id', 'apSerialNumbers'],
       filters: {

@@ -6,9 +6,9 @@ import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Tooltip, PasswordInput }               from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { AaaServerOrderEnum, AAAViewModalType } from '@acx-ui/rc/utils'
+import { Tooltip, PasswordInput }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { AaaServerOrderEnum, AAAViewModalType, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
 import * as contents                                                from '../contentsMap'
@@ -34,7 +34,10 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const radiusIdName = props.type + 'Id'
   const watchedRadius = Form.useWatch(props.type) || form.getFieldValue(props.type)
   const watchedRadiusId = Form.useWatch(radiusIdName) || form.getFieldValue(radiusIdName)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
     queryOptions: { refetchOnMountOrArgChange: 10 }

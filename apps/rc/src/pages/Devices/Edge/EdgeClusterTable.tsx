@@ -1,10 +1,10 @@
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip }                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { EdgeStatusLight, useEdgeClusterActions }                 from '@acx-ui/rc/components'
-import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { Loader, Table, TableProps, Tooltip }                            from '@acx-ui/components'
+import { Features }                                                      from '@acx-ui/feature-toggle'
+import { EdgeStatusLight, useEdgeClusterActions, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useGetEdgeClusterListForTableQuery, useVenuesListQuery }        from '@acx-ui/rc/services'
 import {
   ClusterNodeStatusEnum,
   ClusterStatusEnum,
@@ -47,7 +47,7 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const {
     deleteNodeAndCluster,
     reboot,

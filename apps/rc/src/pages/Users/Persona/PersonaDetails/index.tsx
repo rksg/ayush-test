@@ -29,10 +29,8 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
-import { WifiScopes }                       from '@acx-ui/types'
-import { filterByAccess }                   from '@acx-ui/user'
-import { noDataDisplay }                    from '@acx-ui/utils'
+import { ConnectionMetering, hasCloudpathAccess, PersonaGroup } from '@acx-ui/rc/utils'
+import { noDataDisplay }                                        from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
@@ -388,24 +386,21 @@ function PersonaDetailsPageHeader (props: {
     })
   }
 
-  const extra = filterByAccess([
-    <Button
-      type='primary'
-      onClick={showRevokedModal}
-      disabled={!allowed}
-      scopeKey={[WifiScopes.UPDATE]}
-    >
-      {$t({
-        defaultMessage: `{revokedStatus, select,
+  const extra = hasCloudpathAccess() && [<Button
+    type='primary'
+    onClick={showRevokedModal}
+    disabled={!allowed}
+  >
+    {$t({
+      defaultMessage: `{revokedStatus, select,
         true {Unblock}
         other {Block Identity}}`,
-        description: 'Translation strings - Unblock, Block Identity'
-      }, { revokedStatus })}
-    </Button>,
-    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
-      {$t({ defaultMessage: 'Configure' })}
-    </Button>
-  ])
+      description: 'Translation strings - Unblock, Block Identity'
+    }, { revokedStatus })}
+  </Button>,
+  <Button type={'primary'} onClick={onClick} >
+    {$t({ defaultMessage: 'Configure' })}
+  </Button>]
 
   return (
     <PageHeader

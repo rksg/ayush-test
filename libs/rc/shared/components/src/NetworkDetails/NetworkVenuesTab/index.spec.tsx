@@ -11,6 +11,7 @@ import {
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
   WifiNetworkFixtures,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -48,6 +49,7 @@ const disabledFFs = [
   Features.G_MAP,
   Features.EDGES_SD_LAN_TOGGLE,
   Features.EDGES_SD_LAN_HA_TOGGLE,
+  Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
   Features.SWITCH_RBAC_API
@@ -116,10 +118,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
-      ),
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
@@ -145,10 +143,6 @@ describe('NetworkVenuesTab', () => {
           mockedGetApCompatibilitiesNetwork()
           return res(ctx.json(networkVenueApCompatibilities))
         }
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
@@ -185,10 +179,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenue.url,
@@ -240,10 +230,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -279,10 +265,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
@@ -343,10 +325,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -383,10 +361,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenues.url,
@@ -451,10 +425,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
@@ -536,10 +506,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
-      ),
-      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [
           networkVenue_allAps,
@@ -610,10 +576,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -726,10 +688,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
-      ),
-      rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
@@ -774,7 +732,7 @@ describe('WIFI_RBAC_API is turned on', () => {
         (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, networkVenue_apgroup] }))
       ),
       rest.get(
-        WifiUrlsInfo.getNetwork.url,
+        WifiRbacUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
       ),
       rest.post(
@@ -803,21 +761,6 @@ describe('WIFI_RBAC_API is turned on', () => {
   })
 
   it('should trigger RBAC API when WIFI_RBAC turned on', async () => {
-    render(<Provider><NetworkVenuesTab /></Provider>, {
-      route: { params, path: '/:tenantId/t/:networkId' }
-    })
-
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled()
-    expect(mockedGetWifiNetwork).toHaveBeenCalled()
-    const row = await screen.findByRole('row', { name: /network-venue-1/i })
-    expect(row).toHaveTextContent('VLAN-1 (Default)')
-    expect(row).toHaveTextContent('All APs')
-    expect(row).toHaveTextContent('24/7')
-    const rows = await screen.findAllByRole('switch')
-    expect(rows).toHaveLength(2)
-  })
-  it('sdfshould trigger RBAC API when WIFI_RBAC turned on', async () => {
     render(<Provider><NetworkVenuesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/:networkId' }
     })

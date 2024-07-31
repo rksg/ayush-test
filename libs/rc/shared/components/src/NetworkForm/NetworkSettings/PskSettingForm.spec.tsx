@@ -141,8 +141,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(
         MacRegListUrlsInfo.createMacRegistrationPool.url,
         (req, res, ctx) => res(ctx.json({}))
@@ -157,6 +155,10 @@ describe('NetworkForm', () => {
       rest.get(
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,

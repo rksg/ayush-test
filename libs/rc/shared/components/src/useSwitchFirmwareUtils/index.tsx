@@ -1,8 +1,12 @@
-import { IntlShape } from 'react-intl'
+import { ReactElement } from 'react'
 
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Tag, Tooltip, Typography } from 'antd'
+import _                            from 'lodash'
+import { IntlShape }                from 'react-intl'
+
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
-  useGetSwitchCurrentVersionsQuery
+  useGetSwitcDefaultVersionsQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -11,14 +15,30 @@ import {
   SwitchFirmware,
   convertSwitchVersionFormat,
   firmwareTypeTrans,
-  compareSwitchVersion
+  compareSwitchVersion,
+  FirmwareSwitchVenueV1002,
+  SwitchFirmwareVersion1002,
+  FirmwareCategory,
+  FirmwareSwitchV1002,
+  SwitchFirmwareModelGroup,
+  SwitchFirmwareV1002,
+  SwitchModelGroupDisplayText,
+  SwitchModelGroupDisplayTextValue
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
+import { Statistic } from './styledComponents'
+
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const switchVersions = useGetSwitchCurrentVersionsQuery({
-    enableRbac: isSwitchRbacEnabled
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+
+  const switchVersions = useGetSwitcDefaultVersionsQuery({
+    enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
+    customHeaders: isSwitchFirmwareV1002Enabled ? {
+      'Content-Type': 'application/vnd.ruckus.v1.2+json',
+      'Accept': 'application/vnd.ruckus.v1.2+json'
+    } : {}
   }, {
     refetchOnMountOrArgChange: false
   })
@@ -46,23 +66,145 @@ export function useSwitchFirmwareUtils () {
     return displayVersion
   }
 
-  const getSwitchNextScheduleTplTooltip = (venue: FirmwareSwitchVenue): string | undefined => {
-    if (venue.nextSchedule) {
-      const versionName = venue.nextSchedule.version?.name
-      const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
-      let names = []
+  const getSwitchVersionLabelV1002 = (intl: IntlShape, version: FirmwareVersion): string => {
+    const transform = firmwareTypeTrans(intl.$t)
+    const versionName = parseSwitchVersion(version?.name)
+    const versionType = transform(version?.category)
 
-      if (versionName) {
-        names.push(parseSwitchVersion(versionName))
+    let displayVersion = `${versionName} (${versionType})`
+    if (version.inUse) {
+      // eslint-disable-next-line max-len
+      return `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
+    } else if (version.isDowngraded10to90) {
+      // eslint-disable-next-line max-len
+      return `${displayVersion} - ${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
+    }
+    return displayVersion
+  }
+
+  const getSwitchNextScheduleTplTooltip =
+   (venue: FirmwareSwitchVenue): string | undefined => {
+     if (venue.nextSchedule) {
+       const versionName = venue.nextSchedule.version?.name
+       const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
+       let names = []
+
+       if (versionName) {
+         names.push(parseSwitchVersion(versionName))
+       }
+
+       if (versionAboveTenName) {
+         names.push(parseSwitchVersion(versionAboveTenName))
+       }
+       return names.join(', ')
+     }
+     return ''
+   }
+
+  const getSwitchNextScheduleTplTooltipV1002 = (intl: IntlShape,
+    venue: FirmwareSwitchVenueV1002,
+    currentSchedule: string
+  ) => {
+    if (venue.nextSchedule?.supportModelGroupVersions) {
+      const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+      let tooltipText: ReactElement[] = []
+      const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+        [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
+        [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
+        [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
       }
 
-      if (versionAboveTenName) {
-        names.push(parseSwitchVersion(versionAboveTenName))
+      for (const key in SwitchFirmwareModelGroup) {
+        const modelGroupVersions = supportModelGroupVersions?.filter(
+          (v => v.modelGroup === key))
+        if (modelGroupVersions.length > 0) {
+          const { modelGroup, version } = modelGroupVersions[0]
+          const modelGroupText = modelGroupDisplayText[modelGroup]
+          const switchVersion = parseSwitchVersion(version)
+
+          tooltipText.push(
+            <li style={{ listStyle: 'disc', marginTop: '5px' }}
+              key={modelGroup} >
+              <div>
+                {`${modelGroupText}`}
+              </div>
+              <div style={{ color: '#c4c4c4' }}> {switchVersion} </div>
+            </li>
+          )
+        }
       }
-      return names.join(', ')
+
+      return <div>
+        <div style={{ color: '#c4c4c4', marginBottom: '5px' }}> {currentSchedule} </div>
+        <ul>{tooltipText}</ul></div>
     }
     return ''
   }
+
+  const getSwitchDrawerNextScheduleTpl =
+   (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
+     if (venue.nextSchedule?.supportModelGroupVersions) {
+       const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+       let tooltipText: ReactElement[] = []
+       const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+         [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
+         [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
+         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
+       }
+
+       for (const key in SwitchFirmwareModelGroup) {
+         const modelGroupVersions = supportModelGroupVersions?.filter(
+           (v => v.modelGroup === key))
+         if (modelGroupVersions.length > 0) {
+           const { modelGroup, version } = modelGroupVersions[0]
+           const modelGroupText = modelGroupDisplayText[modelGroup]
+           const switchVersion = parseSwitchVersion(version)
+
+           tooltipText.push(
+             <li style={{ listStyle: 'disc' }}
+               key={modelGroup}>
+               <div key={modelGroup}
+                 style={{
+                 }}>
+                 <Typography.Text>
+                   <b style={{ paddingRight: '5px' }}>
+                     {modelGroupText}:</b>
+                   {switchVersion}
+                 </Typography.Text>
+               </div>
+             </li>
+           )
+         }
+       }
+
+       return <div><ul>{tooltipText}</ul></div>
+     }
+     return ''
+   }
+
+  const getSwitchDrawerVenueScheduleArray =
+    (venue: FirmwareSwitchVenueV1002) => {
+      if (venue.nextSchedule?.supportModelGroupVersions) {
+        const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+        let tooltipText: string[] = []
+
+        for (const key in SwitchFirmwareModelGroup) {
+          const modelGroupVersions = supportModelGroupVersions?.filter(
+            (v => v.modelGroup === key))
+          if (modelGroupVersions.length > 0) {
+            const { version } = modelGroupVersions[0]
+            const switchVersion = parseSwitchVersion(version)
+
+            tooltipText.push(
+              switchVersion
+            )
+          }
+        }
+
+        return tooltipText
+      }
+      return []
+    }
 
   const getSwitchScheduleTpl = (s: SwitchFirmware): string | undefined => {
     if (s.switchNextSchedule) {
@@ -80,6 +222,9 @@ export function useSwitchFirmwareUtils () {
       return names.join(', ')
     }
     return ''
+  }
+  const getSwitchScheduleTplV1002 = (s: SwitchFirmwareV1002): string => {
+    return s.switchNextSchedule?.version || ''
   }
 
   const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
@@ -119,6 +264,51 @@ export function useSwitchFirmwareUtils () {
       return sortFn(valueA, valueB)
     }
   }
+  const checkCurrentVersionsV1002 = function (
+    selectedVersion: FirmwareSwitchVenueV1002 | FirmwareSwitchV1002,
+    availableVersions: SwitchFirmwareVersion1002[],
+    defaultVersions: SwitchFirmwareVersion1002[]) {
+    const defaultVersion = switchVersions?.data?.generalVersions
+    const getParseVersion = function (version: string) {
+      if (defaultVersion?.includes(version)) {
+        return version.replace(/_[^_]*$/, '')
+      }
+      return version
+    }
+    let filterVersions = availableVersions.map(availableVersion => {
+
+      const versions = availableVersion.versions.map(v => {
+        const inUseVersion = selectedVersion?.versions.find(
+          sc => sc.modelGroup === availableVersion.modelGroup)?.version || ''
+        const recommendedVersions = defaultVersions.find(
+          sc => sc.modelGroup === availableVersion.modelGroup)?.versions.map(v=>v.id)
+        const category = recommendedVersions?.includes(v.id) ?
+          FirmwareCategory.RECOMMENDED : FirmwareCategory.REGULAR
+
+        return {
+          ...v,
+          inUse: (getParseVersion(v.id) === getParseVersion(inUseVersion)) ? true : v.inUse,
+          isDowngradeVersion: isDowngradeVersionV1002(inUseVersion, v.id) ?
+            true : v.isDowngradeVersion,
+          isDowngraded10to90: getIsDowngraded10to90(inUseVersion, v.id) ?
+            true : v.isDowngraded10to90,
+          category
+        }
+      })
+
+      return {
+        modelGroup: availableVersion.modelGroup,
+        switchCount: (availableVersion.switchCount || 0) +
+          (selectedVersion.switchCounts?.find(
+            sc => sc.modelGroup === availableVersion.modelGroup)?.count || 0),
+        versions: versions
+      }
+    })
+
+    return filterVersions
+
+  }
+
 
   const checkCurrentVersions = function (version: string, rodanVersion: string,
     filterVersions: FirmwareVersion[]): FirmwareVersion[] {
@@ -153,15 +343,105 @@ export function useSwitchFirmwareUtils () {
     return false
   }
 
+  function isDowngradeVersionV1002 (inUseVersion: string, version: string) {
+    return compareSwitchVersion(inUseVersion, version) > 0
+  }
+
+  function getIsDowngraded10to90 (inUseVersion: string, version: string) {
+    if(inUseVersion?.includes('100') && version?.includes('090')) {
+      return true
+    }
+    return false
+  }
+
+  function checkSwitchModelGroup (switchModel: string) {
+    if (switchModel?.includes(SwitchFirmwareModelGroup.ICX71)) {
+      return SwitchFirmwareModelGroup.ICX71
+    }
+
+    if (switchModel?.includes(SwitchFirmwareModelGroup.ICX82)) {
+      return SwitchFirmwareModelGroup.ICX82
+    }
+
+    return SwitchFirmwareModelGroup.ICX7X
+  }
+
+  function getCurrentFirmwareDisplay (
+    intl: IntlShape,
+    row: FirmwareSwitchVenueV1002,
+    contentValueWidthToDeduct?: number
+  ) {
+
+    let currentVersionDisplay = []
+    let tooltipArray = []
+
+    for (const key in SwitchFirmwareModelGroup) {
+      const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
+      const modelGroupValue =
+        SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
+      const versionGroup = row?.versions?.filter(
+        (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
+
+      if (versionGroup) {
+        const modelGroupTooltipText = SwitchModelGroupDisplayText[modelGroupValue]
+        const modelGroupText = SwitchModelGroupDisplayTextValue[modelGroupValue]
+        const switchVersion = parseSwitchVersion(versionGroup.version)
+        const tooltipMargin = index === 0 ||
+          index === tooltipArray.length - 1 ? '5px 0px' : '10px 0px'
+
+        currentVersionDisplay.push(
+          <Statistic
+            key={modelGroupValue}
+            contentValueWidthToDeduct={_.isNumber(contentValueWidthToDeduct) ?
+              contentValueWidthToDeduct : 10}
+            width={modelGroupValue === SwitchFirmwareModelGroup.ICX7X ? 110 : 100}
+            title={<Tag style={{
+              fontSize: '10px',
+              borderRadius: '8px',
+              lineHeight: 'initial',
+              height: '16px'
+            }}>{modelGroupText}</Tag>}
+            value={switchVersion}
+            valueStyle={{ fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis' }} />
+        )
+
+        tooltipArray.push(
+          <div key={modelGroupValue}
+            style={{
+              margin: tooltipMargin
+            }}>
+            <div style={{ color: '#c4c4c4' }}>
+              {`${intl.$t({ defaultMessage: 'ICX Models' })} ${modelGroupTooltipText}`}
+            </div>
+            <div> {switchVersion} </div>
+          </div>
+        )
+      }
+    }
+
+    return currentVersionDisplay.length > 0 ?
+      <Tooltip title={<div>{tooltipArray}</div>} placement='bottom' >
+        <div style={{ display: 'flex' }}>{currentVersionDisplay}</div>
+      </Tooltip> : noDataDisplay
+  }
+
   return {
     parseSwitchVersion,
     getSwitchVersionLabel,
+    getSwitchVersionLabelV1002,
     getSwitchNextScheduleTplTooltip,
+    getSwitchNextScheduleTplTooltipV1002,
+    getSwitchDrawerNextScheduleTpl,
     getSwitchScheduleTpl,
+    getSwitchScheduleTplV1002,
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp,
     checkCurrentVersions,
-    isDowngradeVersion
+    checkCurrentVersionsV1002,
+    isDowngradeVersion,
+    getCurrentFirmwareDisplay,
+    checkSwitchModelGroup,
+    getSwitchDrawerVenueScheduleArray
   }
 }

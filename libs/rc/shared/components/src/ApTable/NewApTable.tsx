@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { ReactNode, Ref, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react'
+import React, { ReactNode, Ref, forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/dist/query'
 import { Badge, Divider, Form } from 'antd'
@@ -51,7 +51,8 @@ import {
   TableResult,
   transformDisplayNumber,
   transformDisplayText,
-  usePollingTableQuery
+  usePollingTableQuery,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
@@ -63,10 +64,9 @@ import { seriesMappingAP }                                                      
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
 
-import { ApsTabContext } from './context'
-// import { getGroupableConfig, groupedFields } from './newGroupByConfig'
-import { useExportCsv } from './useExportCsv'
-import { useFilters }   from './useFilters'
+import { getGroupableConfig } from './newGroupByConfig'
+import { useExportCsv }       from './useExportCsv'
+import { useFilters }         from './useFilters'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
 
@@ -79,9 +79,10 @@ export const newDefaultApPayload = {
   searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
-    'switchName', 'meshRole', 'clients', 'apGroupId',
+    'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
-    'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus'
+    'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
+    'powerSavingStatus'
   ]
 }
 
@@ -91,8 +92,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const location = useLocation()
   const params = useParams()
   const { filters, isNetworkLoading } = useFilters(params)
-  const { searchable, filterables, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
-  const { setApsCount } = useContext(ApsTabContext)
+  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
   const [ selectedApName, setSelectedApName ] = useState('')
@@ -112,7 +112,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     useQuery: useNewApListQuery,
     defaultPayload: {
       ...newDefaultApPayload,
-      // groupByFields: groupedFields,
       filters
     },
     search: {
@@ -191,9 +190,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
         setTableData(tableQuery.data.data)
       }
     }
-    const totalCount = tableQuery.data?.totalCount || 0
-    setApsCount?.(totalCount)
-
   }, [tableQuery.data, showFeatureCompatibilitiy])
 
   const apAction = useApActions()
@@ -241,19 +237,18 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       fixed: 'left',
       filterKey: 'statusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      // TODO Need more discuss wether groupBy feature is necessary
-      // groupable: enableGroups ?
-      //   filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { status }) => <APStatus status={status as ApDeviceStatusEnum} />
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
+      render: (_, { status, powerSavingStatus }) =>
+        <APStatus status={status as ApDeviceStatusEnum} powerSavingStatus={powerSavingStatus as PowerSavingStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       searchable: searchable,
-      sorter: true
-      // TODO Need more discuss wether groupBy feature is necessary
-      // groupable: enableGroups ?
-      //   filterables && getGroupableConfig()?.modelGroupableOptions : undefined
+      sorter: true,
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
     }, {
       key: 'networkStatus.ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -345,15 +340,16 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       }
     },
     ...(params.apGroupId ? [] : [{
-      key: 'apGroupName',
+      key: 'apGroupId',
       title: $t({ defaultMessage: 'AP Group' }),
-      dataIndex: 'apGroupName',
+      dataIndex: 'apGroupId',
       filterKey: 'apGroupId',
       filterable: filterables ? filterables['apGroupId'] : false,
-      sorter: true
-      // groupable: enableGroups
-      //   ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
-      //   : undefined
+      sorter: true,
+      groupable: enableGroups
+        ? filterables && getGroupableConfig(apAction)?.deviceGroupNameGroupableOptions
+        : undefined,
+      render: (_: ReactNode, row: NewAPModelExtended) => row.apGroupName
     }]),
     {
       key: 'rf-channels',

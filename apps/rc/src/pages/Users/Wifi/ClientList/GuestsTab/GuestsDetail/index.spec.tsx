@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { clientApi, networkApi, venueApi }               from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, switchApi }                                  from '@acx-ui/rc/services'
+import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -17,7 +17,6 @@ import { WifiScopes }                     from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
-  VenueList,
   GuestClients,
   RegenerateGuestPassword
 } from '../../../__tests__/fixtures'
@@ -67,7 +66,6 @@ const openGuestDetailsAndClickAction = async (guestName: string) => {
 }
 
 const mockGetClientList = jest.fn()
-const mockGetVenueList = jest.fn()
 
 describe('Guest Generate New Password Modal', () => {
   const params: { tenantId: string, networkId: string } = {
@@ -88,12 +86,11 @@ describe('Guest Generate New Password Modal', () => {
   })
 
   beforeEach(() => {
-    mockGetVenueList.mockClear()
     mockGetClientList.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
-    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
 
     setUserProfile({
       ...userProfile,
@@ -114,17 +111,10 @@ describe('Guest Generate New Password Modal', () => {
         (_, res, ctx) => res(ctx.json(GuestList))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => {
           mockGetClientList()
           return res(ctx.json(GuestClients))
-        }
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => {
-          mockGetVenueList()
-          return res(ctx.json(VenueList))
         }
       ),
       rest.post(
@@ -151,6 +141,10 @@ describe('Guest Generate New Password Modal', () => {
           mockedPatchReq()
           return res(ctx.json(RegenerateGuestPassword))
         }
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
     )
   })
@@ -177,7 +171,30 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should click "generate new password" with mail and phone number', async () => {
+  it('should generate new password correctly from the action bar (Unlimit)', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('+12015550322'))
+    expect(await screen.findByRole('button', { name: 'Generate New Password' })).toBeVisible()
+    await openGuestDetailsAndClickAction('test6')
+    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
+    const dialog = await screen.findByTestId('generate-password-modal')
+    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
+    expect(await within(dialog).findByText('Send to Email')).toBeVisible()
+    const cancelButton = within(dialog).getByRole('button', { name: 'Cancel' })
+    await userEvent.click(cancelButton)
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should click "generate new password" with mail and phone number (Offline)', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -199,7 +216,7 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should click "generate new password" validation 1', async () => {
+  it('should click "generate new password" validation 1  (Online)', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -307,9 +324,6 @@ describe('Guest Generate New Password Modal', () => {
           route: { params, path: '/:tenantId/t/users/wifi/guests' }
         })
 
-      await waitFor(() => {
-        expect(mockGetVenueList).toBeCalledTimes(2)
-      })
       expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
       const table = await screen.findByRole('table')
       expect(await within(table).findByText('test1')).toBeVisible()
