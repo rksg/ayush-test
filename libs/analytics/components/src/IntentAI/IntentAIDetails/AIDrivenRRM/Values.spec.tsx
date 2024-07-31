@@ -2,7 +2,7 @@ import { MomentInput } from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 
-import { RecommendationDetails, transformDetailsResponse } from '../../IntentAIForm/services'
+import { IntentDetails, transformDetailsResponse } from '../../IntentAIForm/services'
 
 import {
   mockedRecommendationCRRM
@@ -45,7 +45,7 @@ describe('getRecommendationsText', () => {
   })
   it('should return correct values when status is applied', () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM, status: 'applied' } as RecommendationDetails)
+      ...mockedRecommendationCRRM, status: 'applied' } as IntentDetails)
     const result = getRecommendationsText(crrmDetails)
     // eslint-disable-next-line max-len
     expect(result.actionText).toEqual('Venue: 21_US_Beta_Samsung had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of 05/17/2023 07:04. The recommendation had been applied as of 06/25/2023 00:00 and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.')
@@ -54,7 +54,7 @@ describe('getRecommendationsText', () => {
     it('should return correct values', () => {
       const crrmDetails = transformDetailsResponse({
         ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z'
-      } as RecommendationDetails)
+      } as IntentDetails)
       const result = getRecommendationsText(crrmDetails)
       // eslint-disable-next-line max-len
       expect(result.actionText).toEqual('Venue: 21_US_Beta_Samsung is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience. The initial optimization graph is no longer available below since the venue recommendation details has crossed the standard RUCKUS data retention policy.')
@@ -62,7 +62,7 @@ describe('getRecommendationsText', () => {
     it('should return correct values when status is applied', () => {
       const crrmDetails = transformDetailsResponse({
         ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z', status: 'applied'
-      } as RecommendationDetails)
+      } as IntentDetails)
       const result = getRecommendationsText(crrmDetails)
       // eslint-disable-next-line max-len
       expect(result.actionText).toEqual('Venue: 21_US_Beta_Samsung had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of 05/17/2023 07:04. The initial optimization graph is no longer available below since the venue recommendation details has crossed the standard RUCKUS data retention policy. However your venue configuration continues to be monitored and adjusted for further optimization.')
@@ -70,7 +70,7 @@ describe('getRecommendationsText', () => {
     it('should return correct values when optimized is false', () => {
       const crrmDetails = transformDetailsResponse({
         ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z'
-      } as RecommendationDetails)
+      } as IntentDetails)
       const result = getRecommendationsText(crrmDetails, false)
       // eslint-disable-next-line max-len
       expect(result.actionText).toEqual('Venue: 21_US_Beta_Samsung is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience. The initial optimization graph is no longer available below since the venue recommendation details has crossed the standard RUCKUS data retention policy.')
@@ -99,7 +99,7 @@ describe('getRecommendationsText when IS_MLISA_SA is false', () => {
   })
   it('should return correct values when status is applied', () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM, status: 'applied' } as RecommendationDetails)
+      ...mockedRecommendationCRRM, status: 'applied' } as IntentDetails)
     const result = getRecommendationsText(crrmDetails)
     // eslint-disable-next-line max-len
     expect(result.actionText).toEqual('Zone: 21_US_Beta_Samsung had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of 05/17/2023 07:04. The recommendation had been applied as of 06/25/2023 00:00 and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.')
@@ -108,7 +108,7 @@ describe('getRecommendationsText when IS_MLISA_SA is false', () => {
     it('should return correct values', () => {
       const crrmDetails = transformDetailsResponse({
         ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z'
-      } as RecommendationDetails)
+      } as IntentDetails)
       const result = getRecommendationsText(crrmDetails)
       // eslint-disable-next-line max-len
       expect(result.actionText).toEqual('Zone: 21_US_Beta_Samsung is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience. The initial optimization graph is no longer available below since the zone recommendation details has crossed the standard RUCKUS data retention policy.')
@@ -116,7 +116,7 @@ describe('getRecommendationsText when IS_MLISA_SA is false', () => {
     it('should return correct values when status is applied', () => {
       const crrmDetails = transformDetailsResponse({
         ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z', status: 'applied'
-      } as RecommendationDetails)
+      } as IntentDetails)
       const result = getRecommendationsText(crrmDetails)
       // eslint-disable-next-line max-len
       expect(result.actionText).toEqual('Zone: 21_US_Beta_Samsung had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of 05/17/2023 07:04. The initial optimization graph is no longer available below since the zone recommendation details has crossed the standard RUCKUS data retention policy. However your zone configuration continues to be monitored and adjusted for further optimization.')
@@ -124,7 +124,7 @@ describe('getRecommendationsText when IS_MLISA_SA is false', () => {
     it('should return correct values when optimized is false', () => {
       const crrmDetails = transformDetailsResponse({
         ...mockedRecommendationCRRM, dataEndTime: '2021-05-17T07:04:11.663Z'
-      } as RecommendationDetails)
+      } as IntentDetails)
       const result = getRecommendationsText(crrmDetails, false)
       // eslint-disable-next-line max-len
       expect(result.actionText).toEqual('Zone: 21_US_Beta_Samsung is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience. The initial optimization graph is no longer available below since the zone recommendation details has crossed the standard RUCKUS data retention policy.')

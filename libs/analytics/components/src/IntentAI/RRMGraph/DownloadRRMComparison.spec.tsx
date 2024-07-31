@@ -2,7 +2,7 @@ import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../IntentAIDetails/__tests__/fixtures'
-import { EnhancedRecommendation }                     from '../IntentAIForm/services'
+import { EnhancedIntent }                             from '../IntentAIForm/services'
 
 import { DownloadRRMComparison } from './DownloadRRMComparison'
 
@@ -17,13 +17,13 @@ describe('DownloadRRMComparison', () => {
   })
 
   it('renders download button', async () => {
-    const details = mockedRecommendationCRRM as EnhancedRecommendation
+    const details = mockedRecommendationCRRM as EnhancedIntent
     render(<DownloadRRMComparison details={details} />, { wrapper: Provider })
     expect(await screen.findByText('Download RRM comparison')).toBeVisible()
   })
 
   it('renders download button with custom title', async () => {
-    const details = mockedRecommendationCRRM as EnhancedRecommendation
+    const details = mockedRecommendationCRRM as EnhancedIntent
     render(<DownloadRRMComparison details={details} title='Test title' />, { wrapper: Provider })
     expect(await screen.findByText('Test title')).toBeVisible()
   })

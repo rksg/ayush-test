@@ -6,7 +6,7 @@ import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../IntentAIDetails/__tests__/fixtures'
-import { EnhancedRecommendation }                     from '../IntentAIForm/services'
+import { EnhancedIntent }                             from '../IntentAIForm/services'
 
 import { IntentAIRRMGraph } from '.'
 
@@ -35,7 +35,7 @@ describe('CloudRRM', () => {
   })
 
   it('should render correctly', async () => {
-    const details = mockedRecommendationCRRM as EnhancedRecommendation
+    const details = mockedRecommendationCRRM as EnhancedIntent
     render(<IntentAIRRMGraph details={details}/>, { wrapper: Provider })
     expect(await screen.findByText('View More')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(2)
@@ -43,7 +43,7 @@ describe('CloudRRM', () => {
   })
 
   it('should handle drawer', async () => {
-    const details = mockedRecommendationCRRM as EnhancedRecommendation
+    const details = mockedRecommendationCRRM as EnhancedIntent
     render(<IntentAIRRMGraph details={details}/>, { wrapper: Provider })
     await userEvent.click(await screen.findByText('View More'))
     expect(await screen.findByText('Key Performance Indications')).toBeVisible()

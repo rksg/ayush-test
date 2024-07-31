@@ -5,19 +5,19 @@ import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl }                     from '@acx-ui/utils'
 
-import { StateType, StatusTrail }                    from '../../config'
-import { codes }                                     from '../../IntentAIForm/AIDrivenRRM'
-import { IconValue }                                 from '../../IntentAIForm/config'
-import { EnhancedRecommendation, RecommendationKpi } from '../../IntentAIForm/services'
-import { isDataRetained }                            from '../../utils'
+import { StateType, StatusTrail }    from '../../config'
+import { codes }                     from '../../IntentAIForm/AIDrivenRRM'
+import { IconValue }                 from '../../IntentAIForm/config'
+import { EnhancedIntent, IntentKpi } from '../../IntentAIForm/services'
+import { isDataRetained }            from '../../utils'
 
-export const getKpiConfig = (recommendation: EnhancedRecommendation, key: string) => {
+export const getKpiConfig = (recommendation: EnhancedIntent, key: string) => {
   return codes[recommendation.code]
     .kpis
     .find(kpi => kpi.key === key)
 }
 
-export const kpiBeforeAfter = (recommendation: EnhancedRecommendation, key: string) => {
+export const kpiBeforeAfter = (recommendation: EnhancedIntent, key: string) => {
   const config = getKpiConfig(recommendation, key)
   const prop = `kpi_${snakeCase(key)}`
   const [before, after] = extractBeforeAfter(recommendation[prop])
@@ -35,7 +35,7 @@ type CrrmListItem = {
   summary?: string
   updatedAt: string
   metadata: {}
-} & Partial<RecommendationKpi>
+} & Partial<IntentKpi>
 
 function extractBeforeAfter (value: CrrmListItem['kpis']) {
   const { current, previous, projected } = value!
@@ -57,7 +57,7 @@ export const translateMetadataValue = (value: unknown) => {
 }
 
 export const getRecommendationsText = (
-  details: EnhancedRecommendation,
+  details: EnhancedIntent,
   isFullOptimization = true
 ) => {
   const { $t } = getIntl()

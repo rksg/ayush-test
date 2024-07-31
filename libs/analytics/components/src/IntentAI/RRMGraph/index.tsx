@@ -20,7 +20,7 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
 import { Legend }               from './Legend'
 import { useIntentAICRRMQuery } from './services'
@@ -28,7 +28,7 @@ import * as UI                  from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  recommendation: EnhancedRecommendation,
+  recommendation: EnhancedIntent,
   legend: string[],
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean
@@ -80,7 +80,7 @@ const drawerZoomScale = scalePow()
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.07])
 
-export const IntentAIRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
+export const IntentAIRRMGraph = ({ details }: { details: EnhancedIntent }) => {
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const [ visible, setVisible ] = useState<boolean>(false)
@@ -121,7 +121,7 @@ export const IntentAIRRMGraph = ({ details }: { details: EnhancedRecommendation 
 }
 
 export function getGraphKPI (
-  recommendation: EnhancedRecommendation,
+  recommendation: EnhancedIntent,
   graphData: ProcessedCloudRRMGraph[]
 ) {
   // kpi for interferingLinks

@@ -9,23 +9,24 @@ import { NetworkPath }       from '@acx-ui/utils'
 import { codes }                                                 from './AIDrivenRRM'
 import { StateType, IconValue, StatusTrail, ConfigurationValue } from './config'
 
-export type BasicRecommendation = {
+export type BasicIntent = {
   id: string;
   code?: string;
+  status: string;
 }
 
-export type RecommendationWlan = {
+export type IntentWlan = {
   name: string
   ssid: string
 }
 
-export type RecommendationKpi = Record<string, {
+export type IntentKpi = Record<string, {
   current: number | number[];
   previous: number | null;
   projected: number | null;
 }>
 
-export type RecommendationDetails = {
+export type IntentDetails = {
   id: string;
   code: keyof typeof codes;
   status: StateType;
@@ -34,7 +35,7 @@ export type RecommendationDetails = {
   originalValue: ConfigurationValue;
   currentValue: ConfigurationValue;
   recommendedValue: string;
-  metadata: object & { scheduledAt: string, wlans?: RecommendationWlan[] };
+  metadata: object & { scheduledAt: string, wlans?: IntentWlan[] };
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
@@ -46,9 +47,9 @@ export type RecommendationDetails = {
   },
   trigger: string
   idPath: NetworkPath;
-} & Partial<RecommendationKpi>
+} & Partial<IntentKpi>
 
-export type EnhancedRecommendation = RecommendationDetails & {
+export type EnhancedIntent = IntentDetails & {
   priority: IconValue;
   summary: MessageDescriptor;
   category: MessageDescriptor;
@@ -75,23 +76,23 @@ export type CrrmListItem = {
   summary?: string
   updatedAt: string
   metadata: {}
-} & Partial<RecommendationKpi>
+} & Partial<IntentKpi>
 
-export function extractBeforeAfter (value: CrrmListItem['kpis']) {
-  const { current, previous, projected } = value!
+export function extractBeforeAfter (value: IntentKpi[string]) {
+  const { current, previous, projected } = value
   const [before, after] = [previous, current, projected]
     .filter(value => value !== null)
   return [before, after]
 }
 
 export const getCrrmInterferingLinks = (
-  kpi_number_of_interfering_links: RecommendationKpi['']
+  kpi_number_of_interfering_links: IntentKpi[string]
 ) => {
   const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
   return { before, after }
 }
 
-export const transformDetailsResponse = (details: RecommendationDetails) => {
+export const transformDetailsResponse = (details: IntentDetails) => {
   const {
     code,
     statusTrail,
@@ -124,7 +125,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     appliedOnce,
     firstAppliedAt,
     crrmInterferingLinks: getCrrmInterferingLinks(kpi_number_of_interfering_links!)
-  } as EnhancedRecommendation
+  } as EnhancedIntent
 }
 
 export const kpiHelper = (code: string) => {
@@ -141,13 +142,10 @@ export const kpiHelper = (code: string) => {
     .trim()
 }
 
-type BasicRecommendationWithStatus = BasicRecommendation & {
-  status: string
-}
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationCode: build.query<BasicRecommendationWithStatus, BasicRecommendation>({
+    recommendationCode: build.query<BasicIntent, Pick<BasicIntent, 'id'>>({
       query: ({ id }) => ({
         document: gql`
           query ConfigRecommendationCode($id: String) {
@@ -156,13 +154,13 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: { id }
       }),
-      transformResponse: (response: { recommendation: BasicRecommendationWithStatus }) =>
+      transformResponse: (response: { recommendation: BasicIntent }) =>
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
     configRecommendationDetails: build.query<
-      EnhancedRecommendation,
-      BasicRecommendation & { isCrrmPartialEnabled: boolean, status: string }
+      EnhancedIntent,
+      BasicIntent & { isCrrmPartialEnabled: boolean }
     >({
       query: ({ id, code, isCrrmPartialEnabled }) => ({
         document: gql`
@@ -181,7 +179,7 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: { id }
       }),
-      transformResponse: (response: { recommendation: RecommendationDetails }) =>
+      transformResponse: (response: { recommendation: IntentDetails }) =>
         transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
     })

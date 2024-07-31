@@ -1,4 +1,4 @@
-import { RecommendationDetails } from '../../../IntentAIForm/services'
+import { IntentDetails } from '../../../IntentAIForm/services'
 
 export const mockedRecommendationCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
@@ -217,7 +217,7 @@ export const mockedRecommendationCRRM = {
     projected: 0
   },
   trigger: 'daily'
-} as unknown as RecommendationDetails
+} as unknown as IntentDetails
 
 export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
@@ -271,7 +271,7 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
     previous: null,
     projected: 0
   }
-} as unknown as RecommendationDetails
+} as unknown as IntentDetails
 
 export const mockedRecommendationCRRMApplied = { // this fixture is used to test applied crrm recommendation
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
@@ -328,7 +328,7 @@ export const mockedRecommendationCRRMApplied = { // this fixture is used to test
     previous: 2,
     projected: null
   }
-} as unknown as RecommendationDetails
+} as unknown as IntentDetails
 
 export const mockedCRRMGraphs = {
   graph: {

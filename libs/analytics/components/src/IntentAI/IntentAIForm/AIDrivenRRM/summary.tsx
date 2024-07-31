@@ -9,7 +9,7 @@ import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapp
 import { IntentAIRRMGraph, getGraphKPI }     from '../../RRMGraph'
 import { useIntentAICRRMQuery }              from '../../RRMGraph/services'
 import { dataRetentionText, isDataRetained } from '../../utils'
-import { EnhancedRecommendation }            from '../services'
+import { EnhancedIntent }                    from '../services'
 import * as UI                               from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
@@ -18,16 +18,16 @@ import { steps, crrmIntent, isOptimized } from '.'
 
 export function Summary () {
   const { $t } = useIntl()
-  const { form, initialValues } = useStepFormContext<EnhancedRecommendation>()
+  const { form, initialValues } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
 
   const band = recommendationBandMapping[
     initialValues?.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(initialValues as EnhancedRecommendation, band)
+  const queryResult = useIntentAICRRMQuery(initialValues as EnhancedIntent, band)
   const crrmData = queryResult?.data
   const { interferingLinks, linksPerAP } = getGraphKPI(
-    initialValues as EnhancedRecommendation, crrmData)
+    initialValues as EnhancedIntent, crrmData)
 
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' })
@@ -43,7 +43,7 @@ export function Summary () {
           && isDataRetained(initialValues?.dataEndTime)
         ? <>
           <IntentAIRRMGraph
-            details={initialValues as EnhancedRecommendation}
+            details={initialValues as EnhancedIntent}
           />
           <StepsForm.Subtitle>
             {$t({ defaultMessage: 'Interfering links' })}

@@ -8,7 +8,7 @@ import {
   mockedRecommendationCRRMApplied
 } from '../IntentAIDetails/__tests__/fixtures'
 
-import { api, EnhancedRecommendation, kpiHelper } from './services'
+import { api, EnhancedIntent, kpiHelper } from './services'
 
 describe('recommendation services', () => {
   const recommendationPayload = {
@@ -54,7 +54,7 @@ describe('recommendation services', () => {
         'summary',
         'tooltipContent'
       ])
-      expect(removedMsgs).toStrictEqual<EnhancedRecommendation>({
+      expect(removedMsgs).toStrictEqual<EnhancedIntent>({
         appliedOnce: true,
         firstAppliedAt: '2023-05-23T00:00:35.308Z',
         appliedTime: '2023-06-25T00:00:25.772Z',
@@ -88,7 +88,7 @@ describe('recommendation services', () => {
           after: 0,
           before: 2
         }
-      } as unknown as EnhancedRecommendation)
+      } as unknown as EnhancedIntent)
     })
   })
 
@@ -109,7 +109,7 @@ describe('recommendation services', () => {
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    expect(data).toEqual<EnhancedRecommendation>(
+    expect(data).toEqual<EnhancedIntent>(
       expect.objectContaining({
         code: 'c-crrm-channel5g-auto',
         monitoring: {

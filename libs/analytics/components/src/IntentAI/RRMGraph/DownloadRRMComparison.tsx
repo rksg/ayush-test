@@ -13,7 +13,7 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }      from './styledComponents'
@@ -31,7 +31,7 @@ const useDownloadUrl = (data: unknown, type: string) => {
 }
 
 export function DownloadRRMComparison (props: {
-  details: EnhancedRecommendation,
+  details: EnhancedIntent,
   title?: string
 }) {
   const { $t } = useIntl()

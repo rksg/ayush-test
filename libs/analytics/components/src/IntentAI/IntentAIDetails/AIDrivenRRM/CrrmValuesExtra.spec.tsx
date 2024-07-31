@@ -1,7 +1,7 @@
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { RecommendationDetails, transformDetailsResponse } from '../../IntentAIForm/services'
+import { IntentDetails, transformDetailsResponse } from '../../IntentAIForm/services'
 
 import {
   mockedRecommendationCRRM,
@@ -26,7 +26,7 @@ describe('CrrmValuesExtra', () => {
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRM,
       metadata: { algorithmData: { isCrrmFullOptimization: true } } as object
-    } as RecommendationDetails)
+    } as IntentDetails)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
     expect(await screen
       .findByText(/^AI-Driven Cloud RRM will constantly monitor the network/)).toBeVisible()
@@ -38,7 +38,7 @@ describe('CrrmValuesExtra', () => {
     const crrmDetails = transformDetailsResponse({
       ...mockedRecommendationCRRM,
       metadata: { algorithmData: { isCrrmFullOptimization: false } } as object
-    } as RecommendationDetails)
+    } as IntentDetails)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
     expect(await screen
       .findByText(/^AI-Driven Cloud RRM will constantly monitor the network/)).toBeVisible()

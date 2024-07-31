@@ -8,12 +8,12 @@ import { get }                               from '@acx-ui/config'
 import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
 import { truthy }                            from '@acx-ui/utils'
 
-import { DescriptionSection }     from '../../../DescriptionSection'
-import { statusTrailMsgs }        from '../../IntentAIForm/AIDrivenRRM'
-import { EnhancedRecommendation } from '../../IntentAIForm/services'
-import { DownloadRRMComparison }  from '../../RRMGraph/DownloadRRMComparison'
+import { DescriptionSection }    from '../../../DescriptionSection'
+import { statusTrailMsgs }       from '../../IntentAIForm/AIDrivenRRM'
+import { EnhancedIntent }        from '../../IntentAIForm/services'
+import { DownloadRRMComparison } from '../../RRMGraph/DownloadRRMComparison'
 
-export const Overview = ({ details }: { details: EnhancedRecommendation }) => {
+export const Overview = ({ details }: { details: EnhancedIntent }) => {
   const { $t } = useIntl()
   const {
     sliceValue,

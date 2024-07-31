@@ -3,7 +3,7 @@ import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedRecommendationCRRM, mockedRecommendationCRRMApplied } from '../IntentAIDetails/__tests__/fixtures'
-import { EnhancedRecommendation }                                                                               from '../IntentAIForm/services'
+import { EnhancedIntent }                                                                                       from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
 
@@ -16,7 +16,7 @@ describe('useIntentAICRRMQuery', () => {
     const band = recommendationBandMapping[
       mockedRecommendationCRRM.code as keyof typeof recommendationBandMapping]
     const { result } = renderHook(() => useIntentAICRRMQuery(
-      mockedRecommendationCRRM as EnhancedRecommendation,
+      mockedRecommendationCRRM as EnhancedIntent,
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
@@ -30,7 +30,7 @@ describe('useIntentAICRRMQuery', () => {
     const band = recommendationBandMapping[
       mockedRecommendationCRRMApplied.code as keyof typeof recommendationBandMapping]
     const { result } = renderHook(() => useIntentAICRRMQuery(
-      mockedRecommendationCRRMApplied as EnhancedRecommendation,
+      mockedRecommendationCRRMApplied as EnhancedIntent,
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
