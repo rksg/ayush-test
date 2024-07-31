@@ -15,7 +15,6 @@ import {
   Tabs,
   Tooltip,
   showActionModal } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
   CorrectRadioChannels,
@@ -298,7 +297,7 @@ export function RadioSettings () {
     apViewContextData
   } = useContext(ApEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-  const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
+  const afcFeatureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)

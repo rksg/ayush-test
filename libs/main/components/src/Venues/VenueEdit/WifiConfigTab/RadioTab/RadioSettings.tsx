@@ -26,7 +26,6 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
 import {
@@ -126,7 +125,7 @@ export function RadioSettings () {
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
   const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
-  const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
+  const afcFeatureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { isTemplate } = useConfigTemplate()

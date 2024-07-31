@@ -4,7 +4,6 @@ import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
-import { get }                                 from '@acx-ui/config'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useGetVenueQuery,
@@ -35,7 +34,7 @@ interface ApDetailsDrawerProps {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
