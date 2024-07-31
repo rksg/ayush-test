@@ -36,7 +36,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       <Space direction={'horizontal'}>
         <Button
           icon={<BrushSolid/>}
-          // onClick={() => setIsPortalVisible(true)}
+          onClick={() => setIsPortalVisible(true)}
         >
           {$t({ defaultMessage: 'Portal Look & Feel' })}
         </Button>
@@ -63,7 +63,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       width={'100vw'}
       push={false}
       closable={false}
-      onClose={onClose}
+      onClose={(e) => e && onClose()}
     >
       <WorkflowPanel
         workflowId={workflowId}
