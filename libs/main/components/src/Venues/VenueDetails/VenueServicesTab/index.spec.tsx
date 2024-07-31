@@ -265,7 +265,7 @@ describe('Venue service tab', () => {
 
       it('should not trigger query when sdlan all FF are off', async () => {
         jest.mocked(useIsSplitOn).mockImplementation(ff =>
-          !(ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+          !(ff === Features.EDGES_SD_LAN_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE || ff === Features.EDGE_SD_LAN_MV_TOGGLE)
         )
 
         render(

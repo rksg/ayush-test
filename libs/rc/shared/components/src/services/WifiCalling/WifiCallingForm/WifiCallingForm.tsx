@@ -16,7 +16,8 @@ import {
   QosPriorityEnum,
   ServiceOperation,
   ServiceType, useConfigTemplateMutationFnSwitcher,
-  useServiceListBreadcrumb, useServicePreviousPath
+  useServiceListBreadcrumb, useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -64,7 +65,10 @@ export const WifiCallingForm = () => {
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
   const pageTitle = useServicePageHeaderTitle(false, ServiceType.WIFI_CALLING)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   const handleAddWifiCallingService = async () => {
     try {

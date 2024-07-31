@@ -62,28 +62,31 @@ export default function MyPolicies () {
         ])}
       />
       <GridRow>
-        {policies.filter(p => isServicePolicyCardEnabled(p, 'read')).map((policy, index) => {
-          return (
-            <GridCol key={policy.type} col={{ span: 6 }}>
-              <RadioCard
-                type={'default'}
-                key={`${policy.type}_${index}`}
-                value={policy.type}
-                title={$t({
-                  defaultMessage: '{name} ({count})'
-                }, {
-                  name: $t(policyTypeLabelMapping[policy.type]),
-                  count: policy.totalCount ?? 0
-                })}
-                description={$t(policyTypeDescMapping[policy.type])}
-                categories={policy.categories}
-                onClick={() => {
-                  policy.listViewPath && navigate(policy.listViewPath)
-                }}
-              />
-            </GridCol>
-          )
-        })}
+        {
+          // eslint-disable-next-line max-len
+          policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+            return (
+              <GridCol key={policy.type} col={{ span: 6 }}>
+                <RadioCard
+                  type={'default'}
+                  key={`${policy.type}_${index}`}
+                  value={policy.type}
+                  title={$t({
+                    defaultMessage: '{name} ({count})'
+                  }, {
+                    name: $t(policyTypeLabelMapping[policy.type]),
+                    count: policy.totalCount ?? 0
+                  })}
+                  description={$t(policyTypeDescMapping[policy.type])}
+                  categories={policy.categories}
+                  onClick={() => {
+                    policy.listViewPath && navigate(policy.listViewPath)
+                  }}
+                />
+              </GridCol>
+            )
+          })
+        }
       </GridRow>
     </>
   )

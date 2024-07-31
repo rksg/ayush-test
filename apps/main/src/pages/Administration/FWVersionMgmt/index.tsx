@@ -41,6 +41,7 @@ const FWVersionMgmt = () => {
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsEdgeReady()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
 
 
@@ -71,21 +72,19 @@ const FWVersionMgmt = () => {
       latestEdgeReleaseVersion: data?.[0]
     })
   })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
+
+  const { isAPPLibraryAvailable } = useGetSigPackQuery({
+    params: { changesIncluded: 'false' },
+    enableRbac: isWifiRbacEnabled
+  }, {
+    selectFromResult: ({ data }) => ({
+      isAPPLibraryAvailable: data?.currentVersion !== data?.latestVersion
+    })
+  })
   const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [hasRecomendedSwitchFirmware, setHasRecomendedSwitchFirmware] = useState(false)
-
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
-  const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
-
-  useEffect(()=>{
-    if(sigPackUpdate&&sigPackUpdate.currentVersion!==sigPackUpdate.latestVersion){
-      setIsAPPLibraryAvailable(true)
-    }else{
-      setIsAPPLibraryAvailable(false)
-    }
-  }, [sigPackUpdate])
 
   useEffect(()=>{
     if (!isSwitchFirmwareV1002Enabled && latestSwitchReleaseVersions && switchVenueVersionList) {
