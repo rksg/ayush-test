@@ -17,7 +17,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
-import { setUpIntl, DateRange }              from '@acx-ui/utils'
+import { DateRange, setUpIntl }              from '@acx-ui/utils'
 
 import { intentListResult, mockCrrmRow } from './__tests__/fixtures'
 import {
