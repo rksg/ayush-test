@@ -16,7 +16,7 @@ import { useParams }              from '@acx-ui/react-router-dom'
 
 import { crrmText }                                                                  from '../../utils'
 import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
-import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }           from '../services'
+import { useIntentCodeQuery, useIntentDetailsQuery }                                 from '../services'
 import * as UI                                                                       from '../styledComponents'
 
 import { Introduction } from './introduction'
@@ -145,8 +145,8 @@ export function AIDrivenRRM () {
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
     useIsSplitOn(Features.CRRM_PARTIAL)
   ].some(Boolean)
-  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useConfigRecommendationDetailsQuery(
+  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
+  const detailsQuery = useIntentDetailsQuery(
     { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
