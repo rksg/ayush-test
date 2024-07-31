@@ -527,7 +527,8 @@ export function ManageCustomer () {
       }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer,
+      await addCustomer({ params: { tenantId: tenantId },
+        payload: isRbacEnabled ? { data: [customer] } : customer,
         enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
@@ -639,7 +640,8 @@ export function ManageCustomer () {
         customer.licenses = assignLicense
       }
       await updateCustomer({
-        params: { mspEcTenantId: mspEcTenantId }, payload: customer,
+        params: { mspEcTenantId: mspEcTenantId },
+        payload: isRbacEnabled ? { data: [customer] }: customer,
         enableRbac: isRbacEnabled }).unwrap()
 
       if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
