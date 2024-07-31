@@ -86,12 +86,6 @@ export const Wrapper = styled.div<WrapperProps>`
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
-  .ant-card-actions {
-    border-top: 1px;
-    >li {
-      margin: 0;
-  }
-  }
 `
 
 export const Title = styled.div`
@@ -113,12 +107,4 @@ export const SubTitle = styled.div`
 
 export const LinkButton = styled(Button).attrs({ size: 'small' })`
   height: unset;
-`
-
-export const LinkButtonBottom = styled(Button).attrs({ size: 'small' })`
-  height: unset;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  text-decoration: underline;
 `

@@ -95,14 +95,6 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
   line-height: var(--acx-body-4-line-height);
 }
 
-.c1 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c1 .ant-card-actions >li {
-  margin: 0;
-}
-
 .c2 {
   font-family: var(--acx-accent-brand-font);
   font-size: var(--acx-headline-4-font-size);
@@ -282,15 +274,6 @@ exports[`HealthWidget should render for empty data: NoData 1`] = `
             />
           </div>
         </div>
-        <ul
-          class="ant-card-actions"
-        >
-          <li
-            style="width: 100%;"
-          >
-            <span />
-          </li>
-        </ul>
       </div>
     </div>
   </div>
@@ -391,14 +374,6 @@ exports[`HealthWidget should render widget with proper data 1`] = `
   padding: 0;
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
-}
-
-.c1 .ant-card-actions {
-  border-top: 1px;
-}
-
-.c1 .ant-card-actions >li {
-  margin: 0;
 }
 
 .c2 {
@@ -1531,15 +1506,6 @@ exports[`HealthWidget should render widget with proper data 1`] = `
             />
           </div>
         </div>
-        <ul
-          class="ant-card-actions"
-        >
-          <li
-            style="width: 100%;"
-          >
-            <span />
-          </li>
-        </ul>
       </div>
     </div>
   </div>

@@ -6,6 +6,14 @@ export interface ApplicationPolicyMgmt {
   latestReleasedDate: string,
   changedApplications?: ApplicationInfo[]
 }
+export interface ApplicationPolicyMgmtRbac {
+  version: string,
+  updatedDate: string,
+  releasedDate: string,
+  latestVersion: string,
+  latestReleasedDate: string,
+  changedApplications?: ApplicationInfo[]
+}
 export interface ApplicationInfo {
   // eslint-disable-next-line max-len
   type: ApplicationUpdateType,

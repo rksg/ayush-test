@@ -109,23 +109,14 @@ export const IntentAIRRMGraph = ({
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
   return <UI.Wrapper>
-    <UI.ClickableWrapper onClick={showDrawer}/>
-    <Card
-      actions={{
-        actionName: $t({ defaultMessage: 'View More' }),
-        onActionClick: showDrawer
-      }}
-      children={<UI.GraphWrapper>{
+    <Card>
+      <UI.GraphWrapper children={
         useGraph(
-          crrmData,
-          details,
-          bandwidthMapping[band],
-          detailsZoomScale,
-          false,
-          summaryUrlBefore,
-          summaryUrlAfter
-        )
-      }</UI.GraphWrapper>} />
+          crrmData, details, bandwidthMapping[band],
+          detailsZoomScale, false, summaryUrlBefore, summaryUrlAfter)
+      } />
+    </Card>
+    <UI.ViewMoreButton onClick={showDrawer} children={$t({ defaultMessage: 'View More' })} />
     <Drawer
       key={key}
       drawerType={DrawerTypes.FullHeight}
