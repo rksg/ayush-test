@@ -48,7 +48,6 @@ function reset (form: FormInstance, typeWithSchedule: TestTypeWithSchedule) {
 export function Schedule () {
   const { $t } = useIntl()
   const typeWithSchedule = useTypeWithSchedule()
-  // const { Daily, Weekly, Monthly } = TimeDropdown();
 
   if (!typeWithSchedule || typeWithSchedule === TestType.OnDemand) return null
 
@@ -69,15 +68,15 @@ export function Schedule () {
       <Row align='middle' justify='center'>
         {
           typeWithSchedule === ScheduleFrequency.Daily &&
-          <TimeDropdown timeType='Daily' name={name} />
+          <TimeDropdown type={ScheduleFrequency.Daily} name={name} />
         }
         {
           typeWithSchedule === ScheduleFrequency.Weekly &&
-          <TimeDropdown timeType='Weekly' name={name} />
+          <TimeDropdown type={ScheduleFrequency.Weekly} name={name} />
         }
         {
           typeWithSchedule === ScheduleFrequency.Monthly &&
-          <TimeDropdown timeType='Monthly' name={name} />
+          <TimeDropdown type={ScheduleFrequency.Monthly} name={name} />
         }
       </Row>
     </Form.Item>
@@ -100,11 +99,13 @@ Schedule.FieldSummary = function ScheduleFieldSummary () {
     children={<StepsForm.FieldSummary<ScheduleType> convert={(value) => {
       switch (value!.frequency) {
         case ScheduleFrequency.Daily:
-          return getDisplayTime.Daily(value?.hour!)
+          const dailyDisplayFn =
+            getDisplayTime(ScheduleFrequency.Daily) as (hour: number) => string | undefined
+          return dailyDisplayFn(value?.hour!)
         case ScheduleFrequency.Weekly:
-          return getDisplayTime.Weekly(value?.day!,value?.hour!)
+          return getDisplayTime(ScheduleFrequency.Weekly)(value?.day!,value?.hour!)
         default:
-          return getDisplayTime.Monthly(value?.day!,value?.hour!)
+          return getDisplayTime(ScheduleFrequency.Monthly)(value?.day!,value?.hour!)
       }
     }}/>}
   />

@@ -8,6 +8,16 @@ import {
 
 import * as UI from './styledComponents'
 
+export enum TimeDropdownTypes {
+  Daily = 'daily',
+  Weekly = 'weekly',
+  Monthly = 'monthly'
+}
+
+interface TimeDropdownProps {
+  type: TimeDropdownTypes
+  name: string
+}
 
 function timeMap () {
   const timeMap = new Map<number, string>()
@@ -62,35 +72,31 @@ const atDayHour = defineMessage({
   defaultMessage: '<day></day> <at>at</at> <hour></hour>'
 })
 
-export const getDisplayTime =
-{
-  Daily: (hour: number) => (timeMap().get(hour)),
-  Weekly: (day: number, hour: number) => (
-    <FormattedMessage {...atDayHour}
-      values={{
-        day: () => dayOfWeekMap().get(day),
-        at: (text) => text,
-        hour: () => timeMap().get(hour)
-      }}
-    />
-  ),
-  Monthly: (day: number, hour: number) => (
-    <FormattedMessage {...atDayHour}
-      values={{
-        day: () => dayOfMonthMap().get(day),
-        at: (text) => text,
-        hour: () => timeMap().get(hour)
-      }}
-    />
-  )
+export function getDisplayTime (type: TimeDropdownTypes) {
+  return {
+    daily: (hour: number) => (timeMap().get(hour)),
+    weekly: (day: number, hour: number) => (
+      <FormattedMessage {...atDayHour}
+        values={{
+          day: () => dayOfWeekMap().get(day),
+          at: (text) => text,
+          hour: () => timeMap().get(hour)
+        }}
+      />
+    ),
+    monthly: (day: number, hour: number) => (
+      <FormattedMessage {...atDayHour}
+        values={{
+          day: () => dayOfMonthMap().get(day),
+          at: (text) => text,
+          hour: () => timeMap().get(hour)
+        }}
+      />
+    )
+  }[type]
 }
 
-interface TimeDropdownProps {
-  timeType: string,
-  name: string
-}
-
-export function TimeDropdown ( { timeType, name }:TimeDropdownProps ) {
+export function TimeDropdown ({ type, name }: TimeDropdownProps) {
   const { $t } = useIntl()
 
   const renderHour = (spanLength:number) => (
@@ -107,7 +113,7 @@ export function TimeDropdown ( { timeType, name }:TimeDropdownProps ) {
     </Col>
   )
 
-  if (timeType === 'Daily') {
+  if (type === TimeDropdownTypes.Daily) {
     return renderHour(24)
   }
   else {
@@ -122,7 +128,7 @@ export function TimeDropdown ( { timeType, name }:TimeDropdownProps ) {
                 noStyle
               >
                 <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-                  {timeType == 'Weekly' ? dayOfWeekOptions() : dayOfMonthOptions()}
+                  {type === TimeDropdownTypes.Weekly ? dayOfWeekOptions() : dayOfMonthOptions()}
                 </Select>
               </Form.Item>
             </Col>
