@@ -85,7 +85,10 @@ export function LanPorts () {
   const customGuiChagedRef = useRef(false)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
   const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
+  const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
@@ -214,7 +217,7 @@ export function LanPorts () {
         await updateVenueLanPorts({
           params: { tenantId, venueId },
           payload,
-          enableRbac: isWifiRbacEnabled
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {
