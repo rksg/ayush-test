@@ -6,73 +6,80 @@ import { act, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
 import {
   intentListResult,
+  intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
 import { IntentListItem, api, useIntentAITableQuery } from './services'
 
+
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
+import { defaultNetworkPath } from '@acx-ui/analytics/utils'
+import { DateRange, PathFilter } from '@acx-ui/utils'
 
 describe('Intent services', () => {
-  const expectedResult = [
-    {
-      ...intentListResult.intents.data[0],
-      aiFeature: 'AI-Driven RRM',
-      intent: 'Client Density vs. Throughput for 5 GHz radio',
-      category: 'Wi-Fi Experience',
-      scope: `vsz611 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`,
-      status: 'Applied'
-    },
-    {
-      ...intentListResult.intents.data[1],
-      aiFeature: 'AI Operations',
-      intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-      category: 'Wi-Fi Experience',
-      scope: `vsz34 (SZ Cluster)
-> 01-US-CA-D1-Test-Home (Domain)
-> 01-Alethea-WiCheck Test (Venue)`,
-      status: 'No recommendation, Not enough license'
-    },
-    {
-      ...intentListResult.intents.data[2],
-      aiFeature: 'AI Operations',
-      intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
-      category: 'Wi-Fi Experience',
-      scope: `vsz34 (SZ Cluster)
-> 25-US-CA-D25-SandeepKour-home (Domain)
-> 25-US-CA-D25-SandeepKour-home (Venue)`,
-      status: 'No recommendation, No APs'
-    }
-  ]
-  const filterOptionsResult = {
-    aiFeatures: [
-      { value: 'AI Operations', key: 'AI Operations' },
-      { value: 'AI-Driven RRM', key: 'AI-Driven RRM' }
-    ],
-    categories: [
-      { value: 'Infrastructure', key: 'Infrastructure' },
-      { value: 'Wi-Fi Experience', key: 'Wi-Fi Experience' }
-    ],
-    statuses: [
-      { value: 'Applied', key: 'applied' },
-      { value: 'No recommendation, No APs', key: 'na-no-aps' }
-    ],
-    zones: [
-      {
-        value: '01-Alethea-WiCheck Test',
-        key: '01-Alethea-WiCheck Test'
-      }, {
-        key: 'zone',
-        value: 'zone'
-      }
-    ]
-  }
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
 
   describe('useIntentAITableQuery', () => {
+    const expectedResult = [
+      {
+        ...intentListResult.intents.data[0],
+        aiFeature: 'AI-Driven RRM',
+        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz611 (SZ Cluster)
+  > EDU-MeshZone_S12348 (Venue)`,
+        status: 'Applied',
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+      },
+      {
+        ...intentListResult.intents.data[1],
+        aiFeature: 'AI Operations',
+        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz34 (SZ Cluster)
+  > 01-US-CA-D1-Test-Home (Domain)
+  > 01-Alethea-WiCheck Test (Venue)`,
+        status: 'No Recommendation, Not Enough License',
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
+      },
+      {
+        ...intentListResult.intents.data[2],
+        aiFeature: 'AI Operations',
+        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz34 (SZ Cluster)
+  > 25-US-CA-D25-SandeepKour-home (Domain)
+  > 25-US-CA-D25-SandeepKour-home (Venue)`,
+        status: 'No Recommendation, No APs',
+        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
+      }
+    ]
+    const filterOptionsResult = {
+      aiFeatures: [
+        { value: 'AI Operations', key: 'AI Operations' },
+        { value: 'AI-Driven RRM', key: 'AI-Driven RRM' }
+      ],
+      categories: [
+        { value: 'Infrastructure', key: 'Infrastructure' },
+        { value: 'Wi-Fi Experience', key: 'Wi-Fi Experience' }
+      ],
+      statuses: [
+        { value: 'Applied', key: 'applied' },
+        { value: 'No recommendation, No APs', key: 'na-no-aps' }
+      ],
+      zones: [
+        {
+          value: '01-Alethea-WiCheck Test',
+          key: '01-Alethea-WiCheck Test'
+        }, {
+          key: 'zone',
+          value: 'zone'
+        }
+      ]
+    }
     it('should fetch data correctly', async () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListResult
@@ -171,6 +178,7 @@ describe('Intent services', () => {
         },
         { col: 'concat_ws(\'-\', status, "statusReason")', values: [ 'new', 'na-no-aps' ] }
       ])
+    
     })
     it('handleFilterChange should handle no filter case', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
@@ -191,6 +199,164 @@ describe('Intent services', () => {
         result.current.onFilterChange(customFilter, {})
       })
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
+    })
+   
+  })
+  describe('status tooltips', () => {
+    const props = {
+      startDate: '2023-06-10T00:00:00+08:00',
+      endDate: '2023-06-17T00:00:00+08:00',
+      range: DateRange.last24Hours,
+      path: defaultNetworkPath,
+      filterBy: {},
+      page: 1,
+      pageSize: 10
+    }
+
+    it('should return corresponding tooltips according to different statuses', async () => {
+      it('should return corresponding tooltips according to different statuses', async () => {
+        mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+          data: intentListWithAllStatus
+        })
+    
+        const { status, data, error } = await store.dispatch(
+          api.endpoints.intentAIList.initiate({ ...props })
+        )
+    
+        const expectedCommonResult = {
+          aiFeature: 'AI-Driven RRM',
+          intent: 'Client Density vs. Throughput for 5 GHz radio',
+          category: 'Wi-Fi Experience',
+          scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`
+        }
+    
+        const expectedResult = [
+          {
+            ...intentListWithAllStatus.intents[0],
+            ...expectedCommonResult,
+            status: 'New',
+            statusTooltip: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.'
+          },
+          {
+            ...intentListWithAllStatus.intents[1],
+            ...expectedCommonResult,
+            status: 'Scheduled',
+            statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
+          },
+          {
+            ...intentListWithAllStatus.intents[2],
+            ...expectedCommonResult,
+            status: 'Scheduled',
+            statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
+          },
+          {
+            ...intentListWithAllStatus.intents[3],
+            ...expectedCommonResult,
+            status: 'Scheduled',
+            statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
+          },
+          {
+            ...intentListWithAllStatus.intents[4],
+            ...expectedCommonResult,
+            status: 'Apply In Progress',
+            statusTooltip: 'IntentAI recommended changes are getting applied to the zone-1.'
+          },
+          {
+            ...intentListWithAllStatus.intents[5],
+            ...expectedCommonResult,
+            status: 'Active',
+            statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+          },
+          {
+            ...intentListWithAllStatus.intents[6],
+            ...expectedCommonResult,
+            status: 'Paused, Applied Failed',
+            statusTooltip: 'IntentAI recommended changes failed to apply to the zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          },
+          {
+            ...intentListWithAllStatus.intents[7],
+            ...expectedCommonResult,
+            status: 'Revert Scheduled',
+            statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
+          },
+          {
+            ...intentListWithAllStatus.intents[8],
+            ...expectedCommonResult,
+            status: 'Revert In Progress',
+            statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone-1.'
+          },
+          {
+            ...intentListWithAllStatus.intents[9],
+            ...expectedCommonResult,
+            status: 'Paused, Revert Failed',
+            statusTooltip: 'The Revert action on the IntentAI recommended change, failed due to the following reason: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          },
+          {
+            ...intentListWithAllStatus.intents[10],
+            ...expectedCommonResult,
+            status: 'Paused, Revert Success',
+            statusTooltip: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          },
+          {
+            ...intentListWithAllStatus.intents[11],
+            ...expectedCommonResult,
+            status: 'Paused',
+            statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          },
+          {
+            ...intentListWithAllStatus.intents[12],
+            ...expectedCommonResult,
+            status: 'Paused',
+            statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          },
+          {
+            ...intentListWithAllStatus.intents[13],
+            ...expectedCommonResult,
+            status: 'Paused',
+            statusTooltip: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+          },
+          {
+            ...intentListWithAllStatus.intents[14],
+            ...expectedCommonResult,
+            status: 'No Recommendation, Conflicting Configuration',
+            statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.'
+          },
+          {
+            ...intentListWithAllStatus.intents[15],
+            ...expectedCommonResult,
+            status: 'No Recommendation, No APs',
+            statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
+          },
+          {
+            ...intentListWithAllStatus.intents[16],
+            ...expectedCommonResult,
+            status: 'No Recommendation, Not Enough License',
+            statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
+          },
+          {
+            ...intentListWithAllStatus.intents[17],
+            ...expectedCommonResult,
+            status: 'No Recommendation, Not Enough Data',
+            statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone-1.'
+          },
+          {
+            ...intentListWithAllStatus.intents[18],
+            ...expectedCommonResult,
+            status: 'Verified',
+            statusTooltip: 'IntentAI has validated zone-1 configurations. No new changes have been recommended.'
+          },
+          {
+            ...intentListWithAllStatus.intents[19],
+            ...expectedCommonResult,
+            status: 'No Recommendation',
+            statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
+          }
+        ]
+        expect(error).toBe(undefined)
+        expect(status).toBe('fulfilled')
+        expect(data).toStrictEqual(expectedResult)
+      })
     })
   })
 })

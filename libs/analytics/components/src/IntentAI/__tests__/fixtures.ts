@@ -127,4 +127,176 @@ export const filterOptions = {
     }]
   }
 }
+const intentStatus = {
+  id: '1',
+  code: 'c-crrm-channel5g-auto',
+  status: 'applied',
+  status_reason: '',
+  displayStatus: 'applied',
+  createdAt: '2023-06-13T07:05:08.638Z',
+  updatedAt: '2023-06-16T06:05:02.839Z',
+  sliceType: 'zone',
+  sliceValue: 'zone-1',
+  metadata: {},
+  path: [
+    { type: 'system', name: 'vsz611' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  idPath: [
+    { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  statusTrail: [
+    { status: 'new' },
+    { status: 'applyscheduled' },
+    { status: 'applyscheduleinprogress' },
+    { status: 'applied' }
+  ],
+  preferences: { crrmFullOptimization: true },
+  trigger: 'daily'
+}
 
+export const intentListWithAllStatus = {
+  intents: [
+    {
+      ...intentStatus,
+      status: 'new',
+      status_reason: '',
+      displayStatus: 'new'
+    },
+    {
+      ...intentStatus,
+      status: 'scheduled',
+      status_reason: '',
+      displayStatus: 'scheduled'
+    },
+    {
+      ...intentStatus,
+      status: 'scheduled',
+      status_reason: 'one-click',
+      displayStatus: 'scheduled-one-click'
+    },
+    {
+      ...intentStatus,
+      status: 'applyscheduled',
+      status_reason: '',
+      displayStatus: 'applyscheduled'
+    },
+    {
+      ...intentStatus,
+      status: 'applyscheduleinprogress',
+      status_reason: '',
+      displayStatus: 'applyscheduleinprogress'
+    },
+    {
+      ...intentStatus,
+      status: 'active',
+      status_reason: '',
+      displayStatus: 'active'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'apply-failed',
+      displayStatus: 'paused-apply-failed',
+      metadata: {
+        error: {
+          message: 'unknown error'
+        }
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'revertscheduled',
+      status_reason: '',
+      displayStatus: 'revertscheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'revertscheduleinprogress',
+      status_reason: '',
+      displayStatus: 'revertscheduleinprogress'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'revert-failed',
+      displayStatus: 'paused-revert-failed',
+      metadata: {
+        error: {
+          message: 'unknown error'
+        }
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'reverted',
+      displayStatus: 'paused-reverted'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'from-inactive',
+      displayStatus: 'paused-from-inactive'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'from-active',
+      displayStatus: 'paused-from-active'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      status_reason: 'by-default',
+      displayStatus: 'paused-by-default'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'conflicting-configuration',
+      displayStatus: 'na-conflicting-configuration'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'no-aps',
+      displayStatus: 'na-no-aps'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'not-enough-license',
+      displayStatus: 'na-not-enough-license'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'not-enough-data',
+      displayStatus: 'na-not-enough-data'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'verified',
+      displayStatus: 'na-verified'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'waiting-for-etl',
+      displayStatus: 'na-waiting-for-etl'
+    },
+    {
+      //Simulate a displayStatus not defined in UI config and should be handled by UI without errors
+      ...intentStatus,
+      status: 'na',
+      status_reason: 'not-defined',
+      displayStatus: 'na-not-defined'
+    }
+  ]
+}
