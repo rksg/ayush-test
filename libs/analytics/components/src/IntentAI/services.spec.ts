@@ -226,25 +226,25 @@ describe('IntentAI services', () => {
       {
         ...intentListWithAllStatus.intents[14],
         ...expectedCommonResult,
-        status: 'No recommendation, Conflicting Configuration',
+        status: 'No Recommendation, Conflicting Configuration',
         statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.'
       },
       {
         ...intentListWithAllStatus.intents[15],
         ...expectedCommonResult,
-        status: 'No recommendation, No APs',
+        status: 'No Recommendation, No APs',
         statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[16],
         ...expectedCommonResult,
-        status: 'No recommendation, Not enough license',
+        status: 'No Recommendation, Not Enough License',
         statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
       },
       {
         ...intentListWithAllStatus.intents[17],
         ...expectedCommonResult,
-        status: 'No recommendation, Not enough data',
+        status: 'No Recommendation, Not Enough Data',
         statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone-1.'
       },
       {
@@ -256,7 +256,7 @@ describe('IntentAI services', () => {
       {
         ...intentListWithAllStatus.intents[19],
         ...expectedCommonResult,
-        status: 'No recommendation',
+        status: 'No Recommendation',
         statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
       }
     ]
