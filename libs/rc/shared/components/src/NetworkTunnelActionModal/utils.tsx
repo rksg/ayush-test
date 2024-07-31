@@ -1,4 +1,6 @@
-import { EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
+import { cloneDeep, findIndex } from 'lodash'
+
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
 
 import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 import { useEdgeMvSdLanActions } from '../EdgeSdLan/useEdgeSdLanActions'
@@ -24,8 +26,13 @@ export const useUpdateNetworkTunnelAction = () => {
   ) => {
     const networkId = network?.id
     const networkVenueId = network?.venueId
-    if (!networkId || !networkVenueId || !venueSdLanInfo)
+    if (!networkId
+      || !networkVenueId
+      || !venueSdLanInfo
+      || !venueSdLanInfo.tunneledWlans?.some(wlan => wlan.venueId === networkVenueId)
+    ) {
       return Promise.reject()
+    }
 
     const formTunnelType = formValues.tunnelType
     const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
@@ -66,4 +73,51 @@ export const useUpdateNetworkTunnelAction = () => {
   }
 
   return updateNetworkTunnel
+}
+
+// eslint-disable-next-line max-len
+export const mergeSdLanCacheAct = (venueSdLanInfo: EdgeMvSdLanViewData, cachedActs: NetworkTunnelSdLanAction[]): EdgeMvSdLanViewData => {
+  const updatedSdLan = cloneDeep(venueSdLanInfo)
+
+  try {
+    cachedActs.forEach((actInfo) => {
+      // should skip actions which is for different venueSDLAN
+      if (actInfo.serviceId !== venueSdLanInfo.id) return
+
+      // eslint-disable-next-line max-len
+      const idx = findIndex(updatedSdLan.tunneledWlans, { venueId: actInfo.venueId, networkId: actInfo.networkId })
+      // eslint-disable-next-line max-len
+      const guestIdx = findIndex(updatedSdLan.tunneledGuestWlans, { venueId: actInfo.venueId, networkId: actInfo.networkId })
+
+      if (actInfo.enabled) {
+        if (idx === -1) {
+          updatedSdLan.tunneledWlans!.push({
+            venueId: actInfo.venueId,
+            networkId: actInfo.networkId
+          } as EdgeSdLanTunneledWlan)
+        }
+
+        if (actInfo.guestEnabled) {
+          if (guestIdx === -1) {
+            updatedSdLan.tunneledGuestWlans!.push({
+              venueId: actInfo.venueId,
+              networkId: actInfo.networkId
+            } as EdgeSdLanTunneledWlan)
+          }
+        } else {
+          if (guestIdx !== -1) {
+            updatedSdLan.tunneledGuestWlans!.splice(guestIdx, 1)
+          }
+        }
+      } else {
+        updatedSdLan.tunneledWlans!.splice(idx, 1)
+        updatedSdLan.tunneledGuestWlans!.splice(guestIdx, 1)
+      }
+    })
+
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err)
+  }
+  return updatedSdLan
 }

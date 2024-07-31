@@ -8,7 +8,11 @@ import {  FILTER }                            from '@acx-ui/rc/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-export const useEdgeMvSdlanData = (filters?: FILTER, skip = false) => {
+interface useEdgeMvSdLanDataProps {
+  filters?: FILTER
+  skip?: boolean
+}
+export const useEdgeMvSdLanData = (props?: useEdgeMvSdLanDataProps) => {
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const allSdLansQuery = useGetEdgeMvSdLanViewDataListQuery({
@@ -18,10 +22,10 @@ export const useEdgeMvSdlanData = (filters?: FILTER, skip = false) => {
         'edgeClusterId', 'guestEdgeClusterId', 'edgeClusterName', 'guestEdgeClusterName',
         'isGuestTunnelEnabled',
         'tunneledWlans', 'tunneledGuestWlans'],
-      filters,
+      filters: props?.filters,
       pageSize: 10000
     }
-  }, { skip: !isEdgeSdLanMvEnabled || skip })
+  }, { skip: !isEdgeSdLanMvEnabled || props?.skip })
 
   const allSdLans = allSdLansQuery.data?.data
 

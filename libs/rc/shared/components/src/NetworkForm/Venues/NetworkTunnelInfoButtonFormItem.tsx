@@ -3,8 +3,8 @@ import { cloneDeep } from 'lodash'
 import { NetworkSaveData, Venue, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
-import { mergeSdLanCacheAct }           from '../../NetworkTunnelActionModal'
 import { NetworkTunnelInfoButton }      from '../../NetworkTunnelActionModal/NetworkTunnelInfoButton'
+import { mergeSdLanCacheAct }           from '../../NetworkTunnelActionModal/utils'
 import { TMP_NETWORK_ID }               from '../utils'
 
 interface NetworkTunnelInfoButtonFormItemProps {

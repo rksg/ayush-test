@@ -65,7 +65,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     key: 'selectedNetworks',
     dataIndex: 'selectedNetworks',
     align: 'center' as AlignType,
-    width: 80,
+    width: 100,
     render: (_, row) => {
       const venueNetworks = get(activated, row.id) as { id:string, name: string }[]
       const networkCount = venueNetworks?.length ?? 0

@@ -9,7 +9,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockDeepNetworkList } from '../__tests__/fixtures'
+import { mockDeepNetworkList } from './__tests__/fixtures'
 
 import { NetworkTunnelActionModal, NetworkTunnelTypeEnum } from '.'
 
@@ -18,19 +18,19 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useHelpPageLink: () => ''
 }))
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
+jest.mock('../useEdgeActions', () => ({
+  ...jest.requireActual('../useEdgeActions'),
   useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
 }))
 
 const mockedActivateReq = jest.fn()
 const mockedDeactivateReq = jest.fn()
-const mockedGetVenueSdlanFn = jest.fn()
+const mockedGetVenueSdLanFn = jest.fn()
 const mockedOnFinish = jest.fn()
-jest.mock('./useEdgeMvSdlanData', () => ({
-  ...jest.requireActual('./useEdgeMvSdlanData'),
-  useEdgeMvSdlanData: () => ({
-    getVenueSdLan: mockedGetVenueSdlanFn
+jest.mock('./useEdgeMvSdLanData', () => ({
+  ...jest.requireActual('./useEdgeMvSdLanData'),
+  useEdgeMvSdLanData: () => ({
+    getVenueSdLan: mockedGetVenueSdLanFn
   })
 }))
 
@@ -44,7 +44,7 @@ describe('NetworkTunnelModal', () => {
   beforeEach(() => {
     mockedActivateReq.mockReset()
     mockedDeactivateReq.mockReset()
-    mockedGetVenueSdlanFn.mockReset()
+    mockedGetVenueSdLanFn.mockReset()
     mockedOnFinish.mockReset()
   })
 
@@ -59,7 +59,7 @@ describe('NetworkTunnelModal', () => {
       const sdlanVenueName = mockedDcSdlan.tunneledWlans![0].venueName
 
       beforeEach(() => {
-        mockedGetVenueSdlanFn.mockReturnValue(mockedDcSdlan)
+        mockedGetVenueSdLanFn.mockReturnValue(mockedDcSdlan)
       })
 
       it('should correctly render DC case', async () => {
@@ -146,7 +146,7 @@ describe('NetworkTunnelModal', () => {
       }
 
       beforeEach(() => {
-        mockedGetVenueSdlanFn.mockReturnValue(mockedSdLan)
+        mockedGetVenueSdLanFn.mockReturnValue(mockedSdLan)
       })
 
       it('should correctly render DMZ case', async () => {
@@ -221,7 +221,7 @@ describe('NetworkTunnelModal', () => {
       it('should change tunnel from DC into DMZ', async () => {
         const mockedNoGuestNetwork = cloneDeep(mockedSdLan)
         mockedNoGuestNetwork.tunneledGuestWlans = []
-        mockedGetVenueSdlanFn.mockReturnValue(mockedNoGuestNetwork)
+        mockedGetVenueSdLanFn.mockReturnValue(mockedNoGuestNetwork)
 
         render(
           <Provider>
@@ -331,7 +331,7 @@ describe('NetworkTunnelModal', () => {
 
   describe('No existing SD-LAN', () => {
     beforeEach(() => {
-      mockedGetVenueSdlanFn.mockReturnValue(undefined)
+      mockedGetVenueSdLanFn.mockReturnValue(undefined)
     })
     it('should correctly display when no SDLAN run on this venue', async () => {
       const mockedNetworkData = {
@@ -359,6 +359,25 @@ describe('NetworkTunnelModal', () => {
       expect(tunneling).toBeDisabled()
       screen.getByText('See more information')
     })
+  })
+
+  it('should do nothing when given network data is undefined', async () => {
+    render(
+      <Provider>
+        <NetworkTunnelActionModal
+          visible={true}
+          onClose={() => {}}
+          network={undefined}
+          onFinish={mockedOnFinish}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await screen.findByRole('radio', { name: 'Local Breakout' })
+    expect(mockedGetVenueSdLanFn).toBeCalledTimes(0)
+    const venueNameSentence = screen.getByText(/Define how this network traffic/)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(venueNameSentence?.textContent)
+      .toBe('Define how this network traffic will be tunnelled at venue "":')
   })
 })
 

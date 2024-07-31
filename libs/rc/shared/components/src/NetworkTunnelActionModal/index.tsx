@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 
 import { Form, Radio, Space, Typography } from 'antd'
-import { cloneDeep, findIndex }           from 'lodash'
 
-import { Modal }                                                                                  from '@acx-ui/components'
-import { Features }                                                                               from '@acx-ui/feature-toggle'
-import {  EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTypeEnum, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
-import { getIntl }                                                                                from '@acx-ui/utils'
+import { Modal }            from '@acx-ui/components'
+import { Features }         from '@acx-ui/feature-toggle'
+import {  NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }          from '@acx-ui/utils'
 
 import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
@@ -15,52 +14,8 @@ import { EdgeSdLanRadioOption }                                                 
 import { NetworkTunnelInfoButton }                                                       from './NetworkTunnelInfoButton'
 import * as UI                                                                           from './styledComponents'
 import { NetworkTunnelTypeEnum, NetworkTunnelActionModalProps, NetworkTunnelActionForm } from './types'
-import { useEdgeMvSdlanData }                                                            from './useEdgeMvSdlanData'
-import { getNetworkTunnelType }                                                          from './utils'
-
-// eslint-disable-next-line max-len
-export const mergeSdLanCacheAct = (venueSdLanInfo: EdgeMvSdLanViewData, cachedActs: NetworkTunnelSdLanAction[]): EdgeMvSdLanViewData => {
-  const updatedSdLan = cloneDeep(venueSdLanInfo)
-
-  try {
-    cachedActs.forEach((actInfo) => {
-      // eslint-disable-next-line max-len
-      const idx = findIndex(updatedSdLan.tunneledWlans, { venueId: actInfo.venueId, networkId: actInfo.networkId })
-      // eslint-disable-next-line max-len
-      const guestIdx = findIndex(updatedSdLan.tunneledGuestWlans, { venueId: actInfo.venueId, networkId: actInfo.networkId })
-
-      if (actInfo.enabled) {
-        if (idx === -1) {
-          updatedSdLan.tunneledWlans!.push({
-            venueId: actInfo.venueId,
-            networkId: actInfo.networkId
-          } as EdgeSdLanTunneledWlan)
-        }
-
-        if (actInfo.guestEnabled) {
-          if (guestIdx === -1) {
-            updatedSdLan.tunneledGuestWlans!.push({
-              venueId: actInfo.venueId,
-              networkId: actInfo.networkId
-            } as EdgeSdLanTunneledWlan)
-          }
-        } else {
-          if (guestIdx !== -1) {
-            updatedSdLan.tunneledGuestWlans!.splice(guestIdx, 1)
-          }
-        }
-      } else {
-        updatedSdLan.tunneledWlans!.splice(idx, 1)
-        updatedSdLan.tunneledGuestWlans!.splice(guestIdx, 1)
-      }
-    })
-
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err)
-  }
-  return updatedSdLan
-}
+import { useEdgeMvSdLanData }                                                            from './useEdgeMvSdLanData'
+import { getNetworkTunnelType, mergeSdLanCacheAct }                                      from './utils'
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
@@ -73,7 +28,10 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const tunnelType = Form.useWatch(['tunnelType'], form)
 
   // eslint-disable-next-line max-len
-  const { getVenueSdLan } = useEdgeMvSdlanData({ 'tunneledWlans.venueId': [network?.venueId!] }, !network)
+  const { getVenueSdLan } = useEdgeMvSdLanData({
+    filters: { 'tunneledWlans.venueId': [network?.venueId!] },
+    skip: !network
+  })
 
   const networkId = network?.id
   const networkType = network?.type
@@ -138,7 +96,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
         {
         // eslint-disable-next-line max-len
           $t({ defaultMessage: 'Define how this network traffic will be tunnelled at <venueSingular></venueSingular> "{venueName}":' }, {
-            venueName: <b> {networkVenueName} </b>
+            venueName: <b>{networkVenueName}</b>
           })
         }
       </Typography>

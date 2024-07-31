@@ -1,12 +1,15 @@
 
+import userEvent from '@testing-library/user-event'
+
 import { EdgeSdLanFixtures, Network, Venue } from '@acx-ui/rc/utils'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockSdLanScopeVenueMap }       from '../__tests__/fixtures'
-import { SdLanScopedNetworkVenuesData } from '../useEdgeSdLanActions'
+import { SdLanScopedNetworkVenuesData } from '../EdgeSdLan/useEdgeSdLanActions'
+
+import { mockSdLanScopeVenueMap } from './__tests__/fixtures'
 
 import { NetworkTunnelInfoButton } from '.'
 
@@ -20,18 +23,22 @@ describe('NetworkTunnelInfoButton', () => {
 
     const targetNetworkId = mockedDcSdlan.tunneledWlans![0].networkId
 
+    const mockOnClick = jest.fn()
     render(
       <NetworkTunnelInfoButton
         network={{ id: targetNetworkId } as Network}
         currentVenue={{ id: sdlanVenueId, ...defaultVenueData } as Venue}
-        onClick={jest.fn()}
+        onClick={mockOnClick}
         sdLanScopedNetworkVenues={{
           sdLansVenueMap: mockSdLanScopeVenueMap
         } as SdLanScopedNetworkVenuesData}
       />
     )
 
-    expect(screen.getByText(`Tunneled (${mockedDcSdlan.edgeClusterName})`)).toBeVisible()
+    const btn = screen.getByText(`Tunneled (${mockedDcSdlan.edgeClusterName})`)
+    expect(btn).toBeVisible()
+    await userEvent.click(btn)
+    expect(mockOnClick).toBeCalledTimes(1)
   })
 
   it('should correctly render DMZ case', async () => {

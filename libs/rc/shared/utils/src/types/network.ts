@@ -249,8 +249,8 @@ export interface NetworkRadiusSettings {
 export interface NetworkTunnelSdLanAction {
   serviceId: string,
   venueId: string,
-  guestEnabled: boolean, // forward guest traffic
   networkId: string,
+  guestEnabled: boolean, // forward guest traffic
   enabled: boolean,      // is local breakout
   venueSdLanInfo?: EdgeMvSdLanViewData
 }
