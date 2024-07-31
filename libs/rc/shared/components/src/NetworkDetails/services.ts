@@ -1,5 +1,7 @@
+/* eslint-disable max-len */
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
+  useGetNetworkDeepQuery,
   useGetNetworkDeepTemplateQuery,
   useGetNetworkQuery
 } from '@acx-ui/rc/services'
@@ -11,12 +13,12 @@ export function useGetNetwork () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const params = useParams()
-  // eslint-disable-next-line max-len
-  const networkResult = useGetNetworkQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate })
-  // eslint-disable-next-line max-len
+
+  const networkResult = useGetNetworkQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate || isWifiRbacEnabled })
+  const rbacNetworkResult = useGetNetworkDeepQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate || !isWifiRbacEnabled })
   const rbacNetworkResultTemplate = useGetNetworkDeepTemplateQuery({ params, enableRbac: isConfigTemplateRbacEnabled }, { skip: !isTemplate })
 
-  return isTemplate ? rbacNetworkResultTemplate : networkResult
+  return isTemplate ? rbacNetworkResultTemplate : (isWifiRbacEnabled ? rbacNetworkResult: networkResult)
 }
 
 export function extractSSIDFilter (network: ReturnType<typeof useGetNetworkQuery>) {
