@@ -48,6 +48,19 @@ interface GuestDetailsDrawerProps {
   queryPayload?: RequestPayload
 }
 
+export const isEnabledGeneratePassword = (guestDetail:Guest) => {
+  // self-sign in & host approval should to use forget password
+  const isValidType = guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+  guestDetail.guestType !== GuestTypesEnum.HOST_GUEST
+  const isOnline = guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1
+  const isOffline = guestDetail.guestStatus === GuestStatusEnum.OFFLINE &&
+  guestDetail.wifiNetworkId
+  const isUnlimit = guestDetail.maxNumberOfClients === -1 &&
+  guestDetail.guestStatus !== GuestStatusEnum.EXPIRED &&
+  (!guestDetail.emailAddress || !guestDetail.mobilePhoneNumber)
+  return Boolean(isValidType && (isOnline || isOffline || isUnlimit))
+}
+
 export const defaultGuestPayload = {
   searchString: '',
   searchTargetFields: [
@@ -264,11 +277,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         }
 
         if (item.key === 'generatePassword') {
-          return guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
-          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
-        ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
-        ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.wifiNetworkId ))
+          return isEnabledGeneratePassword(guestDetail)
         }
 
         return true

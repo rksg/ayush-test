@@ -157,6 +157,10 @@ describe('NetworkForm', () => {
         RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json({}))
+      ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json([{

@@ -10,7 +10,7 @@ import { useCRRMQuery } from './services'
 describe('useCRRMQuery', () => {
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
     const band = recommendationBandMapping[
@@ -24,7 +24,7 @@ describe('useCRRMQuery', () => {
     expect(result.current.csv).toMatchSnapshot()
   })
   it('should return correct data for applied status', async () => {
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { recommendation: mockedCRRMGraphsApplied }
     })
     const band = recommendationBandMapping[

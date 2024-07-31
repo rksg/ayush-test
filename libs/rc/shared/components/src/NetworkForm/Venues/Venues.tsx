@@ -11,8 +11,12 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { useNetworkVenueListV2Query, useScheduleSlotIndexMap } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useNetworkVenueListV2Query,
+  useNewNetworkVenueTableQuery,
+  useScheduleSlotIndexMap
+} from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
@@ -69,6 +73,34 @@ const defaultPayload = {
   ]
 }
 
+const defaultRbacPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id',
+    'description',
+    'city',
+    'country',
+    'networks',
+    'aggregatedApStatus',
+    'radios',
+    'aps',
+    'activated',
+    'vlan',
+    'scheduling',
+    'switches',
+    'switchClients',
+    'latitude',
+    'longitude',
+    'mesh',
+    'status',
+    'isOweMaster',
+    'owePairNetworkId',
+    'venueApGroups'
+  ],
+  searchTargetFields: ['name']
+}
+
 const getNetworkId = () => {
   //  Identify tenantId in browser URL
   // const parsedUrl = /\/networks\/([0-9a-f]*)/.exec(window.location.pathname)
@@ -77,6 +109,39 @@ const getNetworkId = () => {
   //   return parsedUrl[1]
   // }
   return 'UNKNOWN-NETWORK-ID'
+}
+
+const useNetworkVenueList = () => {
+  const params = useParams()
+
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+
+  const networkId = resolvedRbacEnabled? (params.networkId ?? getNetworkId()) : getNetworkId()
+
+  const nonRbacTableQuery = useTableQuery({
+    useQuery: useNetworkVenueListV2Query,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
+    option: { skip: resolvedRbacEnabled }
+  })
+
+  const rbacTableQuery = useTableQuery({
+    useQuery: useNewNetworkVenueTableQuery,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    option: { skip: !resolvedRbacEnabled || !networkId }
+  })
+
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 interface schedule {
@@ -89,7 +154,7 @@ interface VenuesProps {
 
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
-  const { isTemplate } = useConfigTemplate()
+
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
@@ -102,14 +167,8 @@ export function Venues (props: VenuesProps) {
   const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
-  const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListV2Query,
-    apiParams: { networkId: getNetworkId() },
-    defaultPayload: {
-      ...defaultPayload,
-      isTemplate: isTemplate
-    }
-  })
+
+  const tableQuery = useNetworkVenueList()
 
   const [tableData, setTableData] = useState<Venue[]>([])
 
