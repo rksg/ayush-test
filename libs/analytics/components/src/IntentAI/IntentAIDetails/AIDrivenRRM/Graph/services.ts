@@ -17,15 +17,15 @@ import { getIntl }           from '@acx-ui/utils'
 import { EnhancedRecommendation } from '../../../IntentAIForm/services'
 
 
-const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
+const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    cloudRRMGraph: build.query<{
+    intentAIRRMGraph: build.query<{
       data: ReturnType<typeof trimPairedGraphs>
       csv: ReturnType<typeof getCrrmCsvData>
     }, { id: string, band: BandEnum }>({
       query: (variables) => ({
         document: gql`
-          query CloudRRMGraph($id: String) {
+          query IntentAIRRMGraph($id: String) {
             recommendation(id: $id) {
               graph: kpi(key: "graph", timeZone: "${moment.tz.guess()}") {
                 current projected previous
@@ -59,7 +59,7 @@ const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
 })
 
 export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
-  const queryResult = useCloudRRMGraphQuery(
+  const queryResult = useIntentAIRRMGraphQuery(
     { id: String(details.id), band }, {
       skip: !Boolean(details.id),
       selectFromResult: result => {
