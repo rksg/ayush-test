@@ -25,10 +25,10 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }                              from '../network'
-import { fetchRbacNetworkVenueList }               from '../networkVenueUtils'
-import { commonQueryFn }                           from '../servicePolicy.utils'
-import { addNetworkVenueFn, updateNetworkVenueFn } from '../servicePolicy.utils/network'
+import { networkApi }                from '../network'
+import { fetchRbacNetworkVenueList } from '../networkVenueUtils'
+import { commonQueryFn }             from '../servicePolicy.utils'
+import { addNetworkVenueFn }         from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -295,7 +295,16 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      queryFn: updateNetworkVenueFn(true),
+      query: ({ params, payload, enableRbac }) => {
+        const req = createHttpRequest(
+          enableRbac ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : ConfigTemplateUrlsInfo.updateNetworkVenue,
+          params
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
