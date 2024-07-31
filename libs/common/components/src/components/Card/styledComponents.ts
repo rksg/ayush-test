@@ -108,11 +108,3 @@ export const SubTitle = styled.div`
 export const LinkButton = styled(Button).attrs({ size: 'small' })`
   height: unset;
 `
-
-export const LinkButtonBottom = styled(Button).attrs({ size: 'small' })`
-  height: unset;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  text-decoration: underline;
-`
