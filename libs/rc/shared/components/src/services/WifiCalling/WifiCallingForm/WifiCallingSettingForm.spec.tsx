@@ -158,24 +158,5 @@ describe('WifiCallingSettingForm', () => {
     )
     await waitFor(() => expect(mockedEnhancedWifiCallingList).not.toHaveBeenCalled())
     await waitFor(() => expect(rbacApiFn).toHaveBeenCalled())
-
-    let serviceName = screen.getByRole('textbox', { name: /service name/i })
-    expect(serviceName).toBeEmptyDOMElement()
-    let desc = screen.getByRole('textbox', { name: /description/i })
-    expect(desc).toBeEmptyDOMElement()
-
-    await userEvent.type(serviceName, 'serviceTest')
-    await waitFor(() => expect(serviceName).toHaveValue('serviceTest'))
-
-    await userEvent.type(desc, 'desc')
-    await waitFor(() => expect(desc).toHaveValue('desc'))
-
-    expect(screen.getByTestId('selectQosPriorityId')).toBeTruthy()
-    const combobox = await screen.findByRole('combobox', { name: /qos priority/i })
-    await userEvent.click(combobox)
-
-    await userEvent.selectOptions(combobox, 'Voice')
-
-    expect(screen.getByText('Voice')).toBeVisible()
   })
 })

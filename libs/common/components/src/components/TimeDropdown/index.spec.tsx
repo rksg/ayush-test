@@ -5,13 +5,13 @@ import { Form } from 'antd'
 import { render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom/extend-expect'
-import { getDisplayTime, TimeDropdown } from '.'
+import { getDisplayTime, TimeDropdown, TimeDropdownTypes } from '.'
 
 describe('TimeDropdown', () => {
   it('renders Daily dropdown correctly', async () => {
     render(
       <Form>
-        <TimeDropdown type='daily' name='daily' />
+        <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
       </Form>
     )
 
@@ -21,7 +21,7 @@ describe('TimeDropdown', () => {
   it('renders Weekly dropdown correctly', () => {
     render(
       <Form>
-        <TimeDropdown type='weekly' name='weekly' />
+        <TimeDropdown type={TimeDropdownTypes.Weekly} name='weekly' />
       </Form>
     )
 
@@ -32,7 +32,7 @@ describe('TimeDropdown', () => {
   it('renders Month dropdown correctly', () => {
     render(
       <Form>
-        <TimeDropdown type='monthly' name='monthly' />
+        <TimeDropdown type={TimeDropdownTypes.Monthly} name='monthly' />
       </Form>
     )
     expect(screen.getByText('Select day')).toBeInTheDocument()
@@ -43,7 +43,7 @@ describe('TimeDropdown', () => {
 describe ('getDisplayTime', () => {
   it('should return a function that formats time for "daily" type', () => {
     type DailyFunction = (hour: number) => React.ReactNode
-    const displayTime = getDisplayTime('daily') as DailyFunction
+    const displayTime = getDisplayTime(TimeDropdownTypes.Daily) as DailyFunction
     expect(displayTime).toBeInstanceOf(Function)
 
     const result = displayTime(12)
@@ -51,7 +51,7 @@ describe ('getDisplayTime', () => {
   })
 
   it('should return a function that formats time for "weekly" type', () => {
-    const displayWeeklyFunction = getDisplayTime('weekly')
+    const displayWeeklyFunction = getDisplayTime(TimeDropdownTypes.Weekly)
     expect(displayWeeklyFunction).toBeInstanceOf(Function)
 
     const { container } = render(displayWeeklyFunction(1, 12) as ReactElement)
@@ -59,7 +59,7 @@ describe ('getDisplayTime', () => {
   })
 
   it('should return a function that formats time for "monthly" type', () => {
-    const displayMonthlyFunction = getDisplayTime('monthly')
+    const displayMonthlyFunction = getDisplayTime(TimeDropdownTypes.Monthly)
     expect(displayMonthlyFunction).toBeInstanceOf(Function)
 
     const { container } = render(displayMonthlyFunction(15, 12) as ReactElement)

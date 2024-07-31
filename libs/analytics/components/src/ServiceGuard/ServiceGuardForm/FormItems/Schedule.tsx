@@ -68,15 +68,15 @@ export function Schedule () {
       <Row align='middle' justify='center'>
         {
           typeWithSchedule === ScheduleFrequency.Daily &&
-          <TimeDropdown type='daily' name={name} />
+          <TimeDropdown type={ScheduleFrequency.Daily} name={name} />
         }
         {
           typeWithSchedule === ScheduleFrequency.Weekly &&
-          <TimeDropdown type='weekly' name={name} />
+          <TimeDropdown type={ScheduleFrequency.Weekly} name={name} />
         }
         {
           typeWithSchedule === ScheduleFrequency.Monthly &&
-          <TimeDropdown type='monthly' name={name} />
+          <TimeDropdown type={ScheduleFrequency.Monthly} name={name} />
         }
       </Row>
     </Form.Item>
@@ -86,8 +86,6 @@ export function Schedule () {
 Schedule.fieldName = name
 Schedule.label = label
 Schedule.reset = reset
-
-type DailyFunction = (hour: number) => React.ReactNode
 
 Schedule.FieldSummary = function ScheduleFieldSummary () {
   const { $t } = useIntl()
@@ -101,7 +99,8 @@ Schedule.FieldSummary = function ScheduleFieldSummary () {
     children={<StepsForm.FieldSummary<ScheduleType> convert={(value) => {
       switch (value!.frequency) {
         case ScheduleFrequency.Daily:
-          const dailyDisplayFn = getDisplayTime(ScheduleFrequency.Daily) as DailyFunction
+          const dailyDisplayFn =
+            getDisplayTime(ScheduleFrequency.Daily) as (hour: number) => string | undefined
           return dailyDisplayFn(value?.hour!)
         case ScheduleFrequency.Weekly:
           return getDisplayTime(ScheduleFrequency.Weekly)(value?.day!,value?.hour!)
