@@ -106,6 +106,7 @@ export const switchConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
 export const {
   useGetSwitchConfigProfileTemplateQuery,
+  useLazyGetSwitchConfigProfileTemplateQuery,
   useAddSwitchConfigProfileTemplateMutation,
   useUpdateSwitchConfigProfileTemplateMutation,
   useDeleteSwitchConfigProfileTemplateMutation,

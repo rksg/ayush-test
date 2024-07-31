@@ -565,7 +565,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     if(form.getFieldValue('deliveryMethods').length === 0){
       showNoSendConfirm(()=>{
         addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
-        setVisible(false)
+        onClose()
       })
     } else{
       addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
@@ -578,9 +578,8 @@ export function AddGuestDrawer (props: AddGuestProps) {
             handleGuestPassResponse(res.data)
           }
         })
-      setVisible(false)
+      onClose()
     }
-    form.resetFields()
   }
 
 
@@ -588,7 +587,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     <Button
       data-testid='saveBtn'
       key='saveBtn'
-      onClick={() => form.submit()}
+      onClick={form.submit}
       type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>,
@@ -629,7 +628,7 @@ export function showNoSendConfirm (callback: ()=>void) {
       action: 'CUSTOM_BUTTONS',
       buttons: [{
         text: $t({ defaultMessage: 'Cancel' }),
-        type: 'link', // TODO: will change after DS update
+        type: 'default',
         key: 'cancel',
         closeAfterAction: true
       }, {
