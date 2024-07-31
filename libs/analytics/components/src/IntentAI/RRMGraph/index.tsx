@@ -308,7 +308,7 @@ export const SummaryGraphAfter = (
         height: '100%',
         justifyContent: 'start'
       }}>
-      {crrmData[0] && <BasicGraph
+      {crrmData[1] && <BasicGraph
         chartRef={connectChart}
         title={$t({ defaultMessage: 'Recommended' })}
         data={crrmData[1]}
