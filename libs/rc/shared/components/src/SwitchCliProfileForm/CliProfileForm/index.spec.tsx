@@ -2,10 +2,11 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 import { rest }        from 'msw'
 
-import { StepsForm }                      from '@acx-ui/components'
-import { switchApi, venueApi }            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { StepsForm }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { switchApi, venueApi }                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -58,7 +59,10 @@ const clearToast = async () => {
 
 describe('Cli Profile Form', () => {
   const onFinishSpy = jest.fn()
+  const mockedAdd = jest.fn()
   const mockedUpdate = jest.fn()
+  const mockedAssociate = jest.fn()
+  const mockedDisassociate = jest.fn()
   const params = {
     tenantId: 'tenant-id',
     action: 'add',
@@ -81,7 +85,10 @@ describe('Cli Profile Form', () => {
         (_, res, ctx) => res(ctx.json(familyModels))
       ),
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))
+        (_, res, ctx) => {
+          mockedAdd()
+          return res(ctx.json({ requestId: 'request-id' }))
+        }
       ),
       rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(cliProfile))
@@ -91,12 +98,30 @@ describe('Cli Profile Form', () => {
           mockedUpdate()
           return res(ctx.json({ requestId: 'request-id' }))
         }
+      ),
+      rest.get(SwitchRbacUrlsInfo.getCliFamilyModels.url,
+        (_, res, ctx) => res(ctx.json(familyModels))
+      ),
+      rest.put(SwitchRbacUrlsInfo.associateSwitchProfile.url,
+        (_, res, ctx) => {
+          mockedAssociate()
+          return res(ctx.json({ requestId: 'request-id' }))
+        }
+      ),
+      rest.delete(SwitchRbacUrlsInfo.disassociateSwitchProfile.url,
+        (_, res, ctx) => {
+          mockedDisassociate()
+          return res(ctx.json({ requestId: 'request-id' }))
+        }
       )
     )
   })
   afterEach(() => {
     onFinishSpy.mockClear()
+    mockedAdd.mockClear()
     mockedUpdate.mockClear()
+    mockedAssociate.mockClear()
+    mockedDisassociate.mockClear()
     Modal.destroyAll()
   })
 
@@ -426,6 +451,106 @@ describe('Cli Profile Form', () => {
       })
       expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    })
+  })
+
+  describe('RBAC', () => {
+    describe('Edit mode', () => {
+      const params = {
+        tenantId: 'tenant-id',
+        action: 'edit',
+        configType: 'profiles',
+        profileId: '4515bc6524544cc79303cc6a6443f6c4'
+      }
+
+      it('should update correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+      })
+      it('should update and associate with venues correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
+        await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+
+        await screen.findByRole('heading', { level: 3, name: 'Venues' })
+        expect(await screen.findAllByRole('row')).toHaveLength(5)
+
+        const row = await screen.findByRole('row', { name: /test1/i })
+        await userEvent.click(await within(row).findByRole('checkbox'))
+        await waitFor(async () => {
+          expect(await within(row).findByRole('checkbox')).toBeChecked()
+        })
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        await waitFor(() => expect(mockedAssociate).toBeCalled())
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(1)
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+      })
+
+      it('Should update and disassociate with venues correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(<Provider><CliProfileForm /></Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/cli/:profileId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/Once the CLI Configuration profile/)).toBeVisible()
+        await userEvent.click(await screen.findByRole('button', { name: 'Venues' }))
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+
+        await screen.findByRole('heading', { level: 3, name: 'Venues' })
+        expect(await screen.findAllByRole('row')).toHaveLength(5)
+
+        const row = await screen.findByRole('row', { name: /My-Venue/i })
+        await userEvent.click(await within(row).findByRole('checkbox'))
+        await waitFor(async () => {
+          expect(await within(row).findByRole('checkbox')).not.toBeChecked()
+        })
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedDisassociate).toBeCalled())
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedDisassociate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+      })
     })
   })
 })
