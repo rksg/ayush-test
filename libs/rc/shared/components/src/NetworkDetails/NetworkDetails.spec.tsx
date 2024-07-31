@@ -76,7 +76,12 @@ describe('NetworkDetails', () => {
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
-      rest.get(ConfigTemplateUrlsInfo.getNetworkTemplate.url,
+      rest.get(
+        ConfigTemplateUrlsInfo.getNetworkTemplate.url,
+        (_, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getNetworkTemplateRbac.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -98,9 +103,14 @@ describe('NetworkDetails', () => {
       rest.post(
         CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateListRbac.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(
         ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
@@ -113,6 +123,16 @@ describe('NetworkDetails', () => {
       rest.post(
         VenueConfigTemplateUrlsInfo.getVenueCityList.url,
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json({ data: [], page: 1, totalCount: 0 }))
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ data: [] }))
+        }
       )
     )
   })
@@ -129,22 +149,6 @@ describe('NetworkDetails', () => {
 
     expect(await screen.findByText('overview')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
-  })
-
-  it('renders a tab with MSP account', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-      activeTab: 'venues'
-    }
-    render(<Provider><NetworkDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId/:activeTab' }
-    })
-
-    expect(await screen.findByText('Configuration Templates')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 
   it('renders another tab', async () => {
@@ -189,5 +193,20 @@ describe('NetworkDetails', () => {
 
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Clients (1)')
+  })
+
+  it('renders a tab with MSP account', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'venues'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(await screen.findByText('Configuration Templates')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 })
