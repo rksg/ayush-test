@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { Form }    from 'antd'
+import { rest }    from 'msw'
 
 import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
@@ -206,12 +207,16 @@ const subnetSetting = async () => {
 const layer3Data = enhancedLayer3PolicyListResponse.data
 
 describe('Layer3Drawer Component', () => {
+  const mockAddL3AclPolicy = jest.fn()
   beforeEach(() => {
     mockServer.use(
       rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.post(AccessControlUrls.addL3AclPolicy.url,
-        (_, res, ctx) => res(ctx.json(layer3Response))),
+        (_, res, ctx) => {
+          mockAddL3AclPolicy()
+          return res(ctx.json(layer3Response))
+        }),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.get(AccessControlUrls.getL3AclPolicyList.url,
@@ -345,6 +350,10 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(await screen.findByText('layer3-test-desc-subnet-ruleDescription'))
     await userEvent.click(screen.getAllByText('Save')[0])
 
+    await waitFor(() => {
+      expect(mockAddL3AclPolicy).toHaveBeenCalled()
+    })
+
     mockServer.use(
       rest.get(
         AccessControlUrls.getL3AclPolicyList.url,
@@ -368,8 +377,7 @@ describe('Layer3Drawer Component', () => {
       )
     )
 
-    await screen.findByRole('option', { name: 'layer3-test' })
-
+    expect(await screen.findByRole('option', { name: 'layer3-test' })).toBeInTheDocument()
   })
 
   it('Render Layer3Drawer component in viewMode successfully', async () => {
