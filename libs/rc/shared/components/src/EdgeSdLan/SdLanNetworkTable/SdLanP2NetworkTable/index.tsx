@@ -263,7 +263,7 @@ export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: 
           }
           alt={$t({ defaultMessage: 'SD-LAN forward guest traffic' })}
         />
-        <UI.FrameOverDiagram />
+        {!isEdgeSdLanMvEnabled && <UI.FrameOverDiagram />}
       </UI.DiagramContainer>
       <UI.StyledParagraph>
         {
