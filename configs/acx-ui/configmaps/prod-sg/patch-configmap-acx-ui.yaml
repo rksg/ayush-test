@@ -12,4 +12,3 @@ data:
   new.api.domain.name: "api.asia.ruckus.cloud"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"
   druid.retain.period.days: "380"
-  afc.feature.enabled: "false"
