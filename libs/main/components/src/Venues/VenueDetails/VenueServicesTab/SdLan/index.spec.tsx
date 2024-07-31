@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, EdgeSdLanUrls, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
 import { Provider }                                         from '@acx-ui/store'
 import {
@@ -25,6 +25,10 @@ const services = require('@acx-ui/rc/services')
 jest.mock('../SdLanP2', () => ({
   __esModule: true,
   default: () => <div data-testid='rc-EdgeSdLanP2'/>
+}))
+jest.mock('../MvSdLan', () => ({
+  __esModule: true,
+  default: () => <div data-testid='rc-MvSdLan'/>
 }))
 describe('Venue Edge SD-LAN Service', () => {
   let params: { tenantId: string, venueId: string }
@@ -137,8 +141,9 @@ describe('Venue Edge SD-LAN Service', () => {
   })
   describe('P2 FF enabled', () => {
     beforeEach(() => {
-    // mock SDLAN HA(i,e p2) enabled
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      // mock SDLAN HA(i,e p2) enabled
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
     it('should display P2 data', async () => {
