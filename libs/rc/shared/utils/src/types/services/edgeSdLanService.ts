@@ -113,7 +113,7 @@ export interface EdgeMvSdLanExtended extends PartiallyOptional<EdgeMvSdLanRespon
   networks: EdgeMvSdLanNetworks;
   isGuestTunnelEnabled: boolean;
   guestEdgeClusterId: string;
-  guestEdgeClusterVenueId?: string;
+  guestEdgeClusterVenueId?: string;     // for RBAC API
   guestTunnelProfileId: string;
   guestNetworks: EdgeMvSdLanNetworks;
 }
@@ -167,8 +167,8 @@ export type EdgeMvSdLanFormNetwork = {
 }
 
 export interface EdgeMvSdLanFormModel extends EdgeMvSdLanExtended {
-  edgeClusterVenueId?: string;
-  guestEdgeClusterVenueId?: string;
+  edgeClusterVenueId?: string;       // for RBAC API
+  guestEdgeClusterVenueId?: string;  // for RBAC API
   edgeClusterName?: string;
   tunnelProfileName?: string;
   guestTunnelProfileName?: string;

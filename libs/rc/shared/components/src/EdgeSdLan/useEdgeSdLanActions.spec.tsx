@@ -1351,8 +1351,6 @@ describe('SD-LAN feature functions', () => {
 
       expect(mockedSdLanGet).not.toBeCalled()
     })
-
-    it.todo('should correctly return when mv sdlan FF is ON')
   })
 
   describe('checkSdLanScopedNetworkDeactivateAction', () => {
