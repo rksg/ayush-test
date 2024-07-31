@@ -1,4 +1,8 @@
 /* eslint-disable max-len */
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
+import { cloneDeep }                               from 'lodash'
+
 import {
   AAAPolicyType,
   AAAViewModalType,
@@ -13,13 +17,16 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  NetworkRadiusSettings
+  NetworkRadiusSettings,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
 import { networkApi }                              from '../network'
+import { fetchRbacNetworkVenueList }               from '../networkVenueUtils'
 import { commonQueryFn }                           from '../servicePolicy.utils'
 import { addNetworkVenueFn, updateNetworkVenueFn } from '../servicePolicy.utils/network'
 
@@ -75,6 +82,47 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         ConfigTemplateUrlsInfo.getNetworkTemplateRbac
       ),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
+    }),
+    getNetworkDeepTemplate: build.query<NetworkSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(
+            ConfigTemplateUrlsInfo.getNetworkTemplateRbac,
+            params,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          )
+        )
+        const networkDeepData = networkQuery.data as NetworkSaveData
+
+        if (networkDeepData) {
+          const arg = {
+            params,
+            payload: { isTemplate: true }
+          }
+
+          const {
+            error: networkVenuesListQueryError,
+            networkDeep
+          } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
+
+          if (networkVenuesListQueryError)
+            return { error: networkVenuesListQueryError }
+
+          if (networkDeep?.venues) {
+            networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+        }
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta>
+      }
     }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
@@ -293,6 +341,7 @@ export const {
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
+  useGetNetworkDeepTemplateQuery,
   useDeleteNetworkTemplateMutation,
   useGetNetworkTemplateListQuery,
   useLazyGetNetworkTemplateListQuery,

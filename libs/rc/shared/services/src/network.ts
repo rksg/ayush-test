@@ -368,7 +368,11 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         >)
 
         const networkQuery = await fetchWithBQ(
-          createHttpRequest(WifiRbacUrlsInfo.getNetwork, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          createHttpRequest(
+            params?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : WifiRbacUrlsInfo.getNetwork,
+            params,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          )
         )
         const networkDeepData = networkQuery.data as NetworkSaveData
 

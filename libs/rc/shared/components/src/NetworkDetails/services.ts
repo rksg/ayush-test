@@ -1,7 +1,10 @@
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { useGetNetworkQuery, useGetNetworkTemplateQuery } from '@acx-ui/rc/services'
-import { useConfigTemplate }                              from '@acx-ui/rc/utils'
-import { useParams }                                      from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useGetNetworkDeepTemplateQuery,
+  useGetNetworkQuery
+} from '@acx-ui/rc/services'
+import { useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }         from '@acx-ui/react-router-dom'
 
 export function useGetNetwork () {
   const { isTemplate } = useConfigTemplate()
@@ -11,8 +14,9 @@ export function useGetNetwork () {
   // eslint-disable-next-line max-len
   const networkResult = useGetNetworkQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate })
   // eslint-disable-next-line max-len
-  const networkTemplateResult = useGetNetworkTemplateQuery({ params, enableRbac: isConfigTemplateRbacEnabled }, { skip: !isTemplate })
-  return isTemplate ? networkTemplateResult : networkResult
+  const rbacNetworkResultTemplate = useGetNetworkDeepTemplateQuery({ params, enableRbac: isConfigTemplateRbacEnabled }, { skip: !isTemplate })
+
+  return isTemplate ? rbacNetworkResultTemplate : networkResult
 }
 
 export function extractSSIDFilter (network: ReturnType<typeof useGetNetworkQuery>) {
