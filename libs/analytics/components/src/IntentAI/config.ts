@@ -31,83 +31,83 @@ const categories = {
 }
 
 export const states = {
-  [statusReasons.new]: {
+  [statusReasons.New]: {
     text: defineMessage({ defaultMessage: 'New' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.' })
   },
-  [statusReasons.scheduled]: {
+  [statusReasons.Scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "Optimize".' }) //TODO: initiated by the user {userName}
   },
-  [statusReasons.scheduledOneClick]: {
+  [statusReasons.ScheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
-  [statusReasons.applyScheduled]: {
+  [statusReasons.ApplyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled by IntentAI.' })
   },
-  [statusReasons.applyScheduleInProgress]: {
+  [statusReasons.ApplyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the {zoneName}.' })
   },
-  [statusReasons.active]: {
+  [statusReasons.Active]: {
     text: defineMessage({ defaultMessage: 'Active' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
-  [statusReasons.pausedApplyFailed]: {
+  [statusReasons.PausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [statusReasons.revertScheduled]: {
+  [statusReasons.RevertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert".' }) //TODO: initiated by the user {userName}
   },
-  [statusReasons.revertScheduleInProgress]: {
+  [statusReasons.RevertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the {zoneName}.' })
   },
-  [statusReasons.pausedRevertFailed]: {
+  [statusReasons.PausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
     tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [statusReasons.pausedReverted]: {
+  [statusReasons.PausedReverted]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [statusReasons.pausedFromInactive]: {
+  [statusReasons.PausedFromInactive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },
-  [statusReasons.pausedFromActive]: {
+  [statusReasons.PausedFromActive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },
-  [statusReasons.pausedByDefault]: {
+  [statusReasons.PausedByDefault]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
-  [statusReasons.naConflictingConfiguration]: {
+  [statusReasons.NAConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.' })
   },
-  [statusReasons.naNoAps]: {
+  [statusReasons.NANoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the {zoneName}.' })
   },
-  [statusReasons.naNotEnoughLicense]: {
+  [statusReasons.NANotEnoughLicense]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the {zoneName}.' })
   },
-  [statusReasons.naNotEnoughData]: {
+  [statusReasons.NANotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than 4 days of data in the {zoneName}.' })
   },
-  [statusReasons.naVerified]: {
+  [statusReasons.NAVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI has validated {zoneName} configurations. No new changes have been recommended.' })
   },
-  [statusReasons.naWaitingForEtl]: {
+  [statusReasons.NAWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.' })
   }
