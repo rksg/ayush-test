@@ -88,19 +88,19 @@ export const states = {
     tooltip: defineMessage({ defaultMessage: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
   [statusReasons.naConflictingConfiguration]: {
-    text: defineMessage({ defaultMessage: 'No recommendation, Conflicting Configuration' }),
+    text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.' })
   },
   [statusReasons.naNoAps]: {
-    text: defineMessage({ defaultMessage: 'No recommendation, No APs' }),
+    text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the {zoneName}.' })
   },
   [statusReasons.naNotEnoughLicense]: {
-    text: defineMessage({ defaultMessage: 'No recommendation, Not enough license' }),
+    text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the {zoneName}.' })
   },
   [statusReasons.naNotEnoughData]: {
-    text: defineMessage({ defaultMessage: 'No recommendation, Not enough data' }),
+    text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than 4 days of data in the {zoneName}.' })
   },
   [statusReasons.naVerified]: {
@@ -108,7 +108,7 @@ export const states = {
     tooltip: defineMessage({ defaultMessage: 'IntentAI has validated {zoneName} configurations. No new changes have been recommended.' })
   },
   [statusReasons.naWaitingForEtl]: {
-    text: defineMessage({ defaultMessage: 'No recommendation' }),
+    text: defineMessage({ defaultMessage: 'No Recommendation' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.' })
   }
 } as Record<statusReasons, StateInfo>
