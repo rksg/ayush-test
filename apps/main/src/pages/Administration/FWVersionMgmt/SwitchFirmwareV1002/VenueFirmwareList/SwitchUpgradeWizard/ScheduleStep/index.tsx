@@ -13,7 +13,8 @@ import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
   SwitchFirmware,
-  SwitchFirmwareModelGroup
+  SwitchFirmwareModelGroup,
+  getSwitchModelGroup
 } from '@acx-ui/rc/utils'
 
 import { DowngradeTag } from '../../../styledComponents'
@@ -43,10 +44,37 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const { form, current } = useStepFormContext()
   const { getSwitchVersionLabelV1002 } = useSwitchFirmwareUtils()
 
+  const getCurrentSchedule = function () {
+    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
+      if (upgradeVenueList.length === 1) {
+        const nextScheduleModelGroup =
+          upgradeVenueList[0].nextSchedule?.supportModelGroupVersions || []
+        return {
+          [SwitchFirmwareModelGroup.ICX71]: nextScheduleModelGroup.filter(
+            v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.version || '',
+          [SwitchFirmwareModelGroup.ICX7X]: nextScheduleModelGroup.filter(
+            v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.version || '',
+          [SwitchFirmwareModelGroup.ICX82]: nextScheduleModelGroup.filter(
+            v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.version || ''
+        }
+      } else {
+        const modelGroup = getSwitchModelGroup(upgradeSwitchList[0].model)
+        return {
+          [modelGroup]: upgradeSwitchList[0].switchNextSchedule?.version || ''
+        }
+      }
+    }
+    return {}
+  }
+  const currentSchedule = getCurrentSchedule()
+
   //Switch model group
-  const [selectedICX71Version, setSelecteedICX71Version] = useState('')
-  const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
-  const [selectedICX82Version, setSelecteedICX82Version] = useState('')
+  const [selectedICX71Version, setSelecteedICX71Version] = useState(
+    currentSchedule[SwitchFirmwareModelGroup.ICX71] || '')
+  const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState(
+    currentSchedule[SwitchFirmwareModelGroup.ICX7X] || '')
+  const [selectedICX82Version, setSelecteedICX82Version] = useState(
+    currentSchedule[SwitchFirmwareModelGroup.ICX82] || '')
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
@@ -85,7 +113,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   useEffect(()=>{
     setShowSubTitle(false)
   }, [current])
-
 
   const startDate = dayjs().endOf('day')
   const endDate = startDate.add(21, 'day')
