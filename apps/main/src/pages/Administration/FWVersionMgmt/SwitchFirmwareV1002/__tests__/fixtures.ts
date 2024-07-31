@@ -64,7 +64,7 @@ export const availableVersionsV1002 = [
         createdDate: '2024-04-09T09:13:50.553+00:00',
         inUse: true,
         isDowngradeVersion: true,
-        isNonDowngradable: true
+        isDowngraded10to90: true
       },
       {
         id: '09010h_rc1',
@@ -72,7 +72,7 @@ export const availableVersionsV1002 = [
         category: 'REGULAR',
         createdDate: '2024-04-09T09:13:46.772+00:00',
         isDowngradeVersion: true,
-        isNonDowngradable: true
+        isDowngraded10to90: true
       }
     ]
   },
