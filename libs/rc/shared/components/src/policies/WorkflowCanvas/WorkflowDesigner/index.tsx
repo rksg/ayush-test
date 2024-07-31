@@ -8,8 +8,8 @@ import { BrushSolid, EyeOpenOutlined, EyeOpenSolid } from '@acx-ui/icons'
 import { useGetWorkflowStepsByIdQuery }              from '@acx-ui/rc/services'
 import { WorkflowStepsEmptyCount }                   from '@acx-ui/rc/utils'
 
-import { EnrollmentPortalDesignModal }        from '../../../EnrollmentPortalDesignModal'
-import { PanelType,PanelMode, WorkflowPanel } from '../WorkflowPanel'
+import { EnrollmentPortalDesignModal }         from '../../../EnrollmentPortalDesignModal'
+import { PanelType, PanelMode, WorkflowPanel } from '../WorkflowPanel'
 
 import * as UI from './styledComponents'
 
@@ -63,7 +63,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       width={'100vw'}
       push={false}
       closable={false}
-      onClose={(e) => e && onClose()}
+      onClose={onClose}
     >
       <WorkflowPanel
         workflowId={workflowId}
