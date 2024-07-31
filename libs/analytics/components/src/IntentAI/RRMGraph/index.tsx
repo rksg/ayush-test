@@ -174,7 +174,6 @@ export function getGraphKPI (
 export const SliderGraphBefore = (
   { crrmData, setSliderUrlBefore }:
   { crrmData: ProcessedCloudRRMGraph[], setSliderUrlBefore: (url: string) => void }) => {
-  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -194,7 +193,7 @@ export const SliderGraphBefore = (
       }}>
       {crrmData[0] && <BasicGraph
         chartRef={connectChart}
-        title={$t({ defaultMessage: 'Current' })}
+        title={''}
         data={crrmData[0]}
         zoomScale={detailsZoomScale}
         style={{
@@ -203,7 +202,6 @@ export const SliderGraphBefore = (
           width: 300
         }}
         backgroundColor='#333333'
-        titleColor='white'
       />}
     </div>
   )
@@ -212,7 +210,6 @@ export const SliderGraphBefore = (
 export const SliderGraphAfter = (
   { crrmData, setSliderUrlAfter }:
   { crrmData: ProcessedCloudRRMGraph[], setSliderUrlAfter: (url: string) => void }) => {
-  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -232,7 +229,7 @@ export const SliderGraphAfter = (
       }}>
       {crrmData[1] && <BasicGraph
         chartRef={connectChart}
-        title={$t({ defaultMessage: 'Forecast' })}
+        title={''}
         data={crrmData[1]}
         zoomScale={detailsZoomScale}
         style={{
@@ -240,7 +237,6 @@ export const SliderGraphAfter = (
           alignItems: 'center',
           width: 300
         }}
-        alignRight={true}
       />}
     </div>
   )

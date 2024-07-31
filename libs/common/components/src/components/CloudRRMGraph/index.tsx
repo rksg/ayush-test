@@ -33,8 +33,6 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   style?: EChartsReactProps['style'] & { width?: number, height?: number }
   grayBackground?: boolean
   backgroundColor?: string | undefined
-  titleColor?: string
-  alignRight?: boolean
 }
 
 export function Graph (props: GraphProps) {
@@ -60,7 +58,7 @@ export function Graph (props: GraphProps) {
     title: {
       text: props.title,
       textStyle: {
-        color: props.titleColor ?? cssStr('--acx-primary-black'),
+        color: cssStr('--acx-primary-black'),
         fontFamily: cssStr('--acx-neutral-brand-font'),
         fontSize: cssNumber('--acx-subtitle-4-font-size'),
         lineHeight: cssNumber('--acx-subtitle-4-line-height'),
@@ -80,7 +78,7 @@ export function Graph (props: GraphProps) {
       } : {}),
       itemGap: 3,
       top: 15,
-      left: props.alignRight ? 'right' : 15
+      left: 15
     },
     color: props.data.categories?.map(category => categoryStyles[category.name].color),
     tooltip: {

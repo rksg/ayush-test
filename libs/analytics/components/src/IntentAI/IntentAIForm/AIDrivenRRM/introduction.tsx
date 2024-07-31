@@ -16,10 +16,54 @@ import * as UI                    from '../styledComponents'
 
 import { steps, crrmIntent, statusTrailMsgs } from '.'
 
+export const SliderBefore = (image: string) => {
+  const { $t } = useIntl()
+  return (
+    <UI.SliderBefore>
+      <UI.LabelStyleBefore>{($t({ defaultMessage: 'Current' }))}</UI.LabelStyleBefore>
+      <img
+        src={image}
+        alt='imageBefore'
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%'
+        }}
+      />
+    </UI.SliderBefore>
+  )
+}
+
+export const SliderAfter = (image: string) => {
+  const { $t } = useIntl()
+  return (
+    <UI.SliderAfter>
+      <UI.LabelStyleAfter>
+        {($t({ defaultMessage: 'Forecast' }))}
+        <UI.SliderText>
+          {($t({ defaultMessage: 'with' }))}&nbsp;
+          <UI.AIDrivenRRMSliderIcon />
+        </UI.SliderText>
+      </UI.LabelStyleAfter>
+      <img
+        src={image}
+        alt='imageAfter'
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%'
+        }}
+      />
+    </UI.SliderAfter>
+  )
+}
+
 export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: any }) { // what type to set?
+  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: any }) { // what type to set? //
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()
   const { pageHeaderY } = useLayoutContext()
@@ -57,34 +101,13 @@ export function Introduction (
       to higher data rates, higher SNR, consistent performance, and balanced network load.` })
   }
 
-  const imageBefore = <img
-    src={sliderUrlBefore}
-    alt='before'
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%'
-    }}
-  />
-  const imageAfter = <img
-    src={sliderUrlAfter}
-    alt='after'
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%'
-    }}
-  />
-
   const sliderProps = {
     style: {
       width: '40%',
       height: '100%'
     },
-    itemOne: imageBefore,
-    itemTwo: imageAfter,
+    itemOne: SliderBefore(sliderUrlBefore),
+    itemTwo: SliderAfter(sliderUrlAfter),
     disabled: false,
     portrait: false,
     boundsPadding: 0,
