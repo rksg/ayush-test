@@ -424,6 +424,36 @@ describe('util', () => {
         },
         {
           event: {
+            event: 'CCD_REASON_AUTH_FILTERED_BY_SMART_ROAM',
+            mac: '94:B3:4F:3C:EE:21',
+            apName: 'AP5',
+            code: null,
+            state: 'normal',
+            failedMsgId: '3',
+            radio: '5',
+            start: 1668407707441,
+            end: 1668407707441,
+            category: 'connectionEvents'
+          },
+          desc: 'Dropped auth frame which filtered by SmartRoam @ AP5 (94:B3:4F:3C:EE:21) 5 GHz'
+        },
+        {
+          event: {
+            event: 'CCD_REASON_AUTH_WITHHELD_RSSI_THRESHOLD',
+            mac: '94:B3:4F:3C:EE:22',
+            apName: 'AP6',
+            code: null,
+            state: 'normal',
+            failedMsgId: '3',
+            radio: '5',
+            start: 1668407707441,
+            end: 1668407707441,
+            category: 'connectionEvents'
+          },
+          desc: 'Auth withheld due to RSSI threshold @ AP6 (94:B3:4F:3C:EE:22) 5 GHz'
+        },
+        {
+          event: {
             event: 'CCD_NEW_UNKNOWN_FAILURE',
             mac: '94:B3:4F:3C:EE:21',
             apName: 'AP5',

@@ -7,11 +7,17 @@ import { Provider, store }                                                      
 import {
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 
-import { mockDetailResult, mockedNetworks, mockedNetworkTemplates } from './__tests__/fixtures'
-import { PortalInstancesTable }                                     from './PortalInstancesTable'
+import { mockDetailResult,
+  mockedNetworks,
+  mockedNetworkTemplates,
+  mockedWifiNetworks,
+  mockedWifiNetworkTemplates
+} from './__tests__/fixtures'
+import { PortalInstancesTable } from './PortalInstancesTable'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -26,22 +32,25 @@ describe('Portal Instances Table', () => {
     serviceId: '373377b0cb6e46ea8982b1c80aabe1fa' }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     store.dispatch(servicesConfigTemplateApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
     mockServer.use(
       rest.post(
         ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkTemplates))
+        (_, res, ctx) => res(ctx.json(mockedNetworkTemplates))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworks))
+        (_, res, ctx) => res(ctx.json(mockedNetworks))
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworks))
+        (_, res, ctx) => res(ctx.json(mockedWifiNetworks))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getNetworkTemplateListRbac.url,
+        (_, res, ctx) => res(ctx.json(mockedWifiNetworkTemplates))
       ),
       rest.get(
         PortalUrlsInfo.getPortal.url,
@@ -89,8 +98,30 @@ describe('Portal Instances Table', () => {
     expect(targetRow).toHaveAttribute('href', networkLink)
   })
 
+  it('should render detail page - is Template', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const targetNetwork = mockedNetworkTemplates.data[0]
+    const tenantId = params.tenantId
+    const networkLink =
+      `/${tenantId}/v/configTemplates/networks/wireless/${targetNetwork.id}/network-details/venues`
+    render(<Provider>
+      <PortalInstancesTable />
+    </Provider>, {
+      route: { params, path: '/:tenantId/v/services/portal/:serviceId/detail' }
+    })
+    expect(await screen.findByText('NetT')).toBeVisible()
+    expect(await screen.findByText(
+      (`Instances (${mockedNetworkTemplates.totalCount})`)
+    )).toBeVisible()
+    const targetRow = await screen.findByRole('link', { name: targetNetwork.name })
+    expect(targetRow).toHaveAttribute('href', networkLink)
+  })
+
+
   //RBAC
-  it('should render RBAC detail page - not Template', async () => {
+  it('should render RBAC detail table - not Template - serviceRBAC FF on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const targetNetwork = mockedNetworks.data[3]
     const networkLink =
@@ -101,15 +132,38 @@ describe('Portal Instances Table', () => {
     </Provider>, {
       route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
     })
-    expect(await screen.findByText('NetD')).toBeVisible()
     expect(await screen.findByText((`Instances (${mockedNetworks.totalCount})`))).toBeVisible()
     const targetRow = await screen.findByRole('link', { name: targetNetwork.name })
     expect(targetRow).toHaveAttribute('href', networkLink)
   })
 
-  it('should render detail page - is Template', async () => {
+  it('should render RBAC detail table - not Template - wifiRBAC & serviceRBAC FF on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.RBAC_SERVICE_POLICY_TOGGLE || ff === Features.WIFI_RBAC_API
+    )
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    const targetNetwork = mockedWifiNetworks.data[0]
+    const networkLink =
+      `/${params.tenantId}/t/networks/wireless/${targetNetwork.id}/network-details/overview`
+
+    render(<Provider>
+      <PortalInstancesTable />
+    </Provider>, {
+      route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
+    })
+    expect(await screen.findByText((`Instances (${mockedNetworks.totalCount})`))).toBeVisible()
+    const targetRow = await screen.findByRole('link', { name: targetNetwork.name })
+    expect(targetRow).toHaveAttribute('href', networkLink)
+    const row = await screen.findByRole('row', { name: /NetU/i })
+    expect(await within(row).findByText('1')).toBeVisible()
+    expect(await within(row).findByText('30')).toBeVisible()
+  })
+
+  it('should render detail table - is Template - templateRBAC FF on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.RBAC_SERVICE_POLICY_TOGGLE || ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    const targetNetwork = mockedNetworkTemplates.data[0]
+    const targetNetwork = mockedWifiNetworkTemplates.data[0]
     const tenantId = params.tenantId
     const networkId = targetNetwork.id
     const networkLink =
@@ -118,13 +172,14 @@ describe('Portal Instances Table', () => {
     render(<Provider>
       <PortalInstancesTable />
     </Provider>, {
-      route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
+      route: { params, path: '/:tenantId/v/services/portal/:serviceId/detail' }
     })
-    expect(await screen.findByText('NetT')).toBeVisible()
+    expect(await screen.findByText('NetQ')).toBeVisible()
     expect(await screen.findByText((
-      `Instances (${mockedNetworkTemplates.totalCount})`
+      `Instances (${mockedWifiNetworkTemplates.totalCount})`
     ))).toBeVisible()
     const targetRow = await screen.findByRole('link', { name: targetNetwork.name })
     expect(targetRow).toHaveAttribute('href', networkLink)
   })
+
 })

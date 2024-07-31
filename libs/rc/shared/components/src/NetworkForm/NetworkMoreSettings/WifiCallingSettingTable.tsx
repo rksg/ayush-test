@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
   QosPriorityEnum,
@@ -53,10 +54,12 @@ export default WifiCallingSettingTable
 
 const WifiCallingNameContent = (props: { id: string }) => {
   const { id } = props
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
-    extraParams: { serviceId: id }
+    extraParams: { serviceId: id },
+    enableRbac
   })
 
   return <div>

@@ -32,8 +32,8 @@ import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
 import { exportMessageMapping }                   from '@acx-ui/utils'
 
-import { seriesMappingAP } from '../DevicesWidget'
-import { useEdgeActions }  from '../useEdgeActions'
+import { seriesMappingAP }                       from '../DevicesWidget'
+import { useEdgeActions, useIsEdgeFeatureReady } from '../useEdgeActions'
 
 import { EdgeStatusLight } from './EdgeStatusLight'
 import { useExportCsv }    from './useExportCsv'
@@ -86,7 +86,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+  const isGracefulShutdownReady = useIsEdgeFeatureReady(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,

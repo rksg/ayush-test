@@ -15,8 +15,9 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useAddAppPolicyMutation,
+  useAddAppPolicyMutation, useApplicationLibrarySettingsQuery,
   useAvcAppListQuery,
   useAvcCategoryListQuery,
   useGetAppPolicyQuery,
@@ -34,11 +35,12 @@ import {
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp, TableResult,
+  sortProp, TableResult, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
 
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
@@ -162,6 +164,7 @@ export const GenDetailsContent = (props: { editRow: ApplicationsRule }) => {
 export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -189,6 +192,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const [
@@ -201,6 +208,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
+  const { data: librarySettings } = useApplicationLibrarySettingsQuery({
+    enableRbac
+  })
+
   const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddAppPolicyMutation,
     useTemplateMutationFn: useAddAppPolicyTemplateMutation
@@ -211,15 +222,19 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useTemplateMutationFn: useUpdateAppPolicyTemplateMutation
   })
 
-  const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(editMode.isEdit)
+  const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(
+    editMode.isEdit, resolvedRbacEnabled
+  )
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAppPolicyQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateQuery,
     // eslint-disable-next-line max-len
     skip: skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
-    payload: {},
-    extraParams: { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId }
+    extraParams: {
+      applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
+    },
+    enableRbac: resolvedRbacEnabled
   })
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
@@ -227,11 +242,21 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   })
 
   const { data: avcCategoryList } = useAvcCategoryListQuery({
-    params: params
+    params: {
+      ...params,
+      applicationLibraryId: librarySettings?.version
+    },
+    enableRbac: resolvedRbacEnabled
+  }, {
+    skip: !librarySettings?.version
   })
 
   const { data: avcAppList } = useAvcAppListQuery({
-    params: params
+    params: {
+      ...params,
+      applicationLibraryId: librarySettings?.version
+    },
+    enableRbac: resolvedRbacEnabled
   }, {
     skip: !avcCategoryList
   })
@@ -483,13 +508,14 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             rules: transformedRules,
             description: description,
             tenantId: params.tenantId
-          }
+          },
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
-        // let responseData = appRes.response as {
-        //   [key: string]: string
-        // }
-        // form.setFieldValue([...inputName, 'applicationPolicyId'], responseData.id)
-        // setQueryPolicyId(responseData.id)
+        let responseData = appRes.response as {
+          [key: string]: string
+        }
+        form.setFieldValue([...inputName, 'applicationPolicyId'], responseData.id)
+        setQueryPolicyId(responseData.id)
         setRequestId(appRes.requestId)
         setQueryPolicyName(policyName)
       } else {
@@ -501,7 +527,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             rules: transformedRules,
             description: description,
             tenantId: params.tenantId
-          }
+          },
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {
@@ -677,31 +704,38 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || !applicationPolicyId}
-          onClick={() => {
-            if (applicationPolicyId) {
-              setDrawerVisible(true)
-              setQueryPolicyId(applicationPolicyId)
-              setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
+        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          <Button type='link'
+            disabled={visible || !applicationPolicyId}
+            onClick={() => {
+              if (applicationPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(applicationPolicyId)
+                setLocalEdiMode({ id: applicationPolicyId, isEdit: true })
+              }
             }
-          }
-          }>
-          {$t({ defaultMessage: 'Edit Details' })}
-        </Button>
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
       </AclGridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
-          onClick={() => {
-            setDrawerVisible(true)
-            setQueryPolicyId('')
-          }}>
-          {$t({ defaultMessage: 'Add New' })}
-        </Button>
+        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+          <Button type='link'
+            disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
       </AclGridCol>
     </GridRow>
   }
+
+  // eslint-disable-next-line max-len
+  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>
@@ -737,14 +771,15 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   )
 }
 
-const useGetAppAclPolicyListInstance = (isEdit: boolean): {
+const useGetAppAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>({
     useQueryFn: useGetEnhancedApplicationProfileListQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {

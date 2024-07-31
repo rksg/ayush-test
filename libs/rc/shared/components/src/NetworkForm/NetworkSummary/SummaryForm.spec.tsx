@@ -19,7 +19,6 @@ import {
   venuesResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse,
   networkDeepResponse,
   venueListResponse
 } from '../__tests__/fixtures'
@@ -84,14 +83,10 @@ describe('SummaryForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.put(WifiUrlsInfo.updateNetworkDeep.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(DpskUrls.getDpskList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(dpskListResponse)))
     )

@@ -1,5 +1,7 @@
-import { TableResult, Transaction, onSocketActivityChanged } from '@acx-ui/rc/utils'
-import { ApiInfo, DateRangeFilter, computeRangeFilter }      from '@acx-ui/utils'
+import { CommonResult, TableResult, Transaction, TxStatus, onSocketActivityChanged } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                            from '@acx-ui/types'
+import { ApiInfo, DateRangeFilter, computeRangeFilter }                              from '@acx-ui/utils'
+
 
 type MetaBase = { id: string }
 
@@ -50,4 +52,49 @@ export async function handleCallbackWhenActivitySuccess (
     // eslint-disable-next-line no-console
     console.error(error)
   }
+}
+
+export async function handleCallbackWhenActivityDone (
+  api: SocketActivityChangedParams[1],
+  activityData: Transaction,
+  targetUseCase: string,
+  callback?: unknown,
+  failedCallback?: unknown
+) {
+  try {
+    if (!callback || typeof callback !== 'function') return
+
+    const response = await api.cacheDataLoaded
+
+    if (!response) return
+
+    // eslint-disable-next-line max-len
+    if ((response?.data as CommonResult)?.requestId === activityData.requestId && activityData.useCase === targetUseCase) {
+      const status = activityData.steps?.find((step) => (step.id === targetUseCase))?.status
+
+      if (status === TxStatus.FAIL) {
+        ((failedCallback || callback) as Function)?.(response.data)
+      } else if (status === TxStatus.SUCCESS) {
+        (callback as Function)?.(response.data)
+      }
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+  }
+}
+
+// eslint-disable-next-line max-len
+export const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] | string): boolean => {
+  const typedPayload = payload as Record<string, unknown>
+  const hasGroupBy = typedPayload?.groupBy
+  // eslint-disable-next-line max-len
+  const payloadFields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
+  return (Array.isArray(fields)
+    ? fields.some(a => payloadFields?.includes(a))
+    : payloadFields?.includes(fields)) ?? false
+}
+
+export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfilledResult<T> {
+  return p.status === 'fulfilled'
 }

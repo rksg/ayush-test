@@ -9,7 +9,8 @@ import {
   DpskDetailsTabKey,
   getServiceDetailsLink,
   ServiceOperation,
-  useServiceListBreadcrumb
+  useServiceListBreadcrumb,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -67,7 +68,7 @@ export default function DpskDetails () {
       <PageHeader
         title={dpskDetail?.name}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={hasDpskAccess() && filterByAccess([
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.DPSK,

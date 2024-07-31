@@ -1,21 +1,30 @@
-import _ from 'lodash'
+import { useMemo } from 'react'
+
+import { difference, flatMap, uniq, groupBy, intersection, isNil, isEqual, pick } from 'lodash'
 
 import { showActionModal }              from '@acx-ui/components'
 import { Features }                     from '@acx-ui/feature-toggle'
 import {
+  useActivateEdgeMvSdLanNetworkMutation,
   useActivateEdgeSdLanDmzClusterMutation,
   useActivateEdgeSdLanDmzTunnelProfileMutation,
   useActivateEdgeSdLanNetworkMutation,
+  useAddEdgeMvSdLanMutation,
   useAddEdgeSdLanP2Mutation,
+  useDeactivateEdgeMvSdLanNetworkMutation,
   useDeactivateEdgeSdLanNetworkMutation,
   useGetEdgeSdLanP2ViewDataListQuery,
   useToggleEdgeSdLanDmzMutation,
+  useUpdateEdgeMvSdLanPartialMutation,
   useUpdateEdgeSdLanPartialP2Mutation
 } from '@acx-ui/rc/services'
 import {
   CatchErrorDetails,
   CommonErrorsResult,
   CommonResult,
+  EdgeMvSdLanExtended,
+  EdgeMvSdLanNetworks,
+  EdgeMvSdLanViewData,
   EdgeSdLanSettingP2,
   EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
@@ -23,18 +32,34 @@ import { getIntl } from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-export const useEdgeSdLanActions = () => {
-  const [addEdgeSdLan] = useAddEdgeSdLanP2Mutation()
-  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialP2Mutation()
+// return the networks NOT included in `b`
+const differenceVenueNetworks = (first: EdgeMvSdLanNetworks, second: EdgeMvSdLanNetworks) => {
+  const diffResult: EdgeMvSdLanNetworks = {}
 
+  Object.entries(first).forEach(([venueId, networkIds]) => {
+    if (second[venueId]) {
+      const diffNetworks = difference(networkIds, second[venueId])
+      diffResult[venueId] = diffNetworks
+    } else {
+      diffResult[venueId] = first[venueId]
+    }
+  })
+
+  return diffResult
+}
+
+enum ActivationType {
+  activate = 'activate',
+  deactivate = 'deactivate'
+}
+
+const useEdgeSdLanCommonActions = () => {
   const [toggleDmz] = useToggleEdgeSdLanDmzMutation()
   const [activateDmzEdgeCluster] = useActivateEdgeSdLanDmzClusterMutation()
   const [activateDmzTunnel] = useActivateEdgeSdLanDmzTunnelProfileMutation()
-  const [activateNetwork] = useActivateEdgeSdLanNetworkMutation()
-  const [deactivateNetwork] = useDeactivateEdgeSdLanNetworkMutation()
 
   const activateGuestEdgeCluster =
-  (serviceId: string, payload: EdgeSdLanSettingP2): Promise<CommonResult> => {
+  (serviceId: string, payload: EdgeSdLanSettingP2 | EdgeMvSdLanExtended): Promise<CommonResult> => {
     return activateDmzEdgeCluster({ params: {
       serviceId,
       venueId: payload.venueId,
@@ -43,7 +68,7 @@ export const useEdgeSdLanActions = () => {
   }
 
   const activateGuestTunnel =
-  (serviceId: string, payload: EdgeSdLanSettingP2): Promise<CommonResult> => {
+  (serviceId: string, payload: EdgeSdLanSettingP2 | EdgeMvSdLanExtended): Promise<CommonResult> => {
     return activateDmzTunnel({ params: {
       serviceId,
       tunnelProfileId: payload.guestTunnelProfileId
@@ -58,6 +83,282 @@ export const useEdgeSdLanActions = () => {
       isGuestTunnelEnabled: enabled
     } }).unwrap()
   }
+
+  return {
+    activateGuestEdgeCluster,
+    activateGuestTunnel,
+    toggleGuestTunnelEnable
+  }
+}
+
+export const useEdgeMvSdLanActions = () => {
+  const {
+    activateGuestEdgeCluster,
+    activateGuestTunnel,
+    toggleGuestTunnelEnable
+  } = useEdgeSdLanCommonActions()
+  const [addEdgeSdLan] = useAddEdgeMvSdLanMutation()
+  const [updateEdgeSdLan] = useUpdateEdgeMvSdLanPartialMutation()
+
+  const [activateNetwork] = useActivateEdgeMvSdLanNetworkMutation()
+  const [deactivateNetwork] = useDeactivateEdgeMvSdLanNetworkMutation()
+
+  const toggleGuestNetwork =
+  // eslint-disable-next-line max-len
+  (venueId: string, serviceId: string, networkId: string, activated: boolean): Promise<CommonResult> => {
+    return activateNetwork({
+      params: {
+        venueId,
+        serviceId,
+        wifiNetworkId: networkId
+      },
+      payload: {
+        isGuestTunnelUtilized: activated
+      }
+    }).unwrap()
+  }
+
+  const activateDcNetwork =
+  (venueId: string, serviceId: string, networkId: string): Promise<CommonResult> => {
+    return toggleGuestNetwork(venueId, serviceId, networkId, false)
+  }
+
+  const deactivateDcNetwork =
+  (venueId: string, serviceId: string, networkId: string): Promise<CommonResult> => {
+    return deactivateNetwork({ params: {
+      venueId,
+      serviceId,
+      wifiNetworkId: networkId
+    } }).unwrap()
+  }
+
+  const activateGuestNetwork =
+  (venueId: string, serviceId: string, networkId: string): Promise<CommonResult> => {
+    return toggleGuestNetwork(venueId, serviceId, networkId, true)
+  }
+
+  const deactivateGuestNetwork =
+    (venueId: string, serviceId: string, networkId: string): Promise<CommonResult> => {
+      return toggleGuestNetwork(venueId, serviceId, networkId, false)
+    }
+
+  const getActivateActionsFromType = (
+    serviceId: string, networks: EdgeMvSdLanNetworks, type: ActivationType, isGuestEnabled: boolean
+  ) => {
+    const actionFn = type === ActivationType.activate
+      ? (isGuestEnabled ? activateGuestNetwork : activateDcNetwork)
+      : (isGuestEnabled ? deactivateGuestNetwork : deactivateDcNetwork)
+
+    return Object.entries(networks)
+      .flatMap(([venueId, networkIds]) =>
+        networkIds.map((id) => actionFn(venueId, serviceId!, id)))
+  }
+
+  const handleAssociationDiff = async (
+    serviceId: string,
+    originData: EdgeMvSdLanExtended | undefined,
+    payload: EdgeMvSdLanExtended
+  ): Promise<CommonResult[] | CommonErrorsResult<CatchErrorDetails>> => {
+    const isAddMode: boolean = isNil(originData)
+
+    if (isAddMode) {
+      originData = { networks: {}, guestNetworks: {} } as EdgeMvSdLanExtended
+    }
+
+    const actions = []
+    const allResults = []
+
+    // addMode
+    // or editMode guestTunnelEnabled changed
+    const isGuestTunnelChanged = originData?.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled
+    if (isGuestTunnelChanged) {
+      // doesn't need to handle deactivateDmzCluster when isGuestTunnelEnabled changed into false
+
+      const requiredActions = []
+      // DC scenario into DMZ scenario
+      // or addMode DMZ scenario
+      if (payload.isGuestTunnelEnabled && !originData?.guestEdgeClusterId) {
+        requiredActions.push(activateGuestEdgeCluster(serviceId,
+          { ...payload, venueId: payload.guestEdgeClusterVenueId }))
+        requiredActions.push(activateGuestTunnel(serviceId, payload))
+
+        try {
+          const reqResult = await Promise.all(requiredActions)
+          allResults.push(...reqResult)
+        } catch(error) {
+          // if the required field: DmzEdgeCluster/ DMZTunnelProfile failed
+          // non need to trigger furthur actions
+          return error as CommonErrorsResult<CatchErrorDetails>
+        }
+      }
+
+      // skip if in `addMode` and isGuestTunnelEnabled === false
+      if (!(isAddMode && !payload.isGuestTunnelEnabled))
+        actions.push(toggleGuestTunnelEnable(serviceId, payload.isGuestTunnelEnabled))
+    } else {
+      // for change guest tunnel: only need to do PUT
+      // eslint-disable-next-line max-len
+      if (!isAddMode && originData?.guestTunnelProfileId !== payload.guestTunnelProfileId) {
+        actions.push(activateGuestTunnel(serviceId, payload))
+      }
+    }
+
+    // process networks diff
+    const rmNetworks = differenceVenueNetworks(originData!.networks, payload.networks)
+    const addNetworks = differenceVenueNetworks(payload.networks, originData!.networks)
+
+    let addGuestNetworks: EdgeMvSdLanNetworks = {}
+    if (payload.isGuestTunnelEnabled) {
+      // eslint-disable-next-line max-len
+      addGuestNetworks = differenceVenueNetworks(payload.guestNetworks, originData!.guestNetworks)
+
+      // eslint-disable-next-line max-len
+      const rmGuestNetworks = differenceVenueNetworks(originData!.guestNetworks, payload.guestNetworks)
+      const deactivateDmzNetworks = differenceVenueNetworks(rmGuestNetworks, rmNetworks)
+
+      // handle guestNetworkIds changes
+      // eslint-disable-next-line max-len
+      actions.push(...getActivateActionsFromType(serviceId, addGuestNetworks, ActivationType.activate, true))
+      // eslint-disable-next-line max-len
+      actions.push(...getActivateActionsFromType(serviceId, deactivateDmzNetworks, ActivationType.deactivate, true))
+    } else {
+      addGuestNetworks = isAddMode
+        ? {} as EdgeMvSdLanNetworks
+        : differenceVenueNetworks(payload.guestNetworks, originData!.guestNetworks)
+    }
+
+    const activateDcNetworks = differenceVenueNetworks(addNetworks, addGuestNetworks)
+
+    // eslint-disable-next-line max-len
+    actions.push(...getActivateActionsFromType(serviceId, activateDcNetworks, ActivationType.activate, false))
+    // eslint-disable-next-line max-len
+    actions.push(...getActivateActionsFromType(serviceId, rmNetworks, ActivationType.deactivate, false))
+
+    try {
+      const relationActs = await Promise.all(actions)
+      return Promise.resolve(allResults.concat(relationActs))
+    } catch(error) {
+      return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
+    }
+  }
+
+  const addSdLan = async (req: {
+    payload: EdgeMvSdLanExtended,
+    callback?: (res: (CommonResult[]
+      | CommonErrorsResult<CatchErrorDetails>)) => void
+  }) => {
+    const { payload, callback } = req
+
+    return await addEdgeSdLan({
+      payload,
+      callback: async (response: CommonResult) => {
+        const serviceId = response.response?.id
+
+        if (!serviceId) {
+          // eslint-disable-next-line no-console
+          console.error('empty service id')
+          callback?.([])
+          return
+        }
+
+        try {
+          const reqResult = await handleAssociationDiff(serviceId!,
+            undefined,
+            payload)
+          callback?.(reqResult)
+        } catch(error) {
+          callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+        }
+      }
+    }).unwrap()
+  }
+
+  const editSdLan = async (originData: EdgeMvSdLanExtended, req: {
+    payload: EdgeMvSdLanExtended,
+    callback?: (res: (CommonResult[]
+      | CommonErrorsResult<CatchErrorDetails>)) => void
+  }) => {
+    const { payload, callback } = req
+    const serviceId = payload.id
+
+    if (isEqual(
+      pick(originData, ['id', 'name', 'tunnelProfileId']),
+      pick(payload, ['id', 'name', 'tunnelProfileId']))
+    ) {
+      try {
+        const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
+        callback?.(reqResult)
+        return Promise.resolve()
+      } catch(error) {
+        return Promise.reject(error as CommonErrorsResult<CatchErrorDetails>)
+      }
+    } else {
+      return await updateEdgeSdLan({
+        payload: {
+          name: payload.name,
+          tunnelProfileId: payload.tunnelProfileId
+        },
+        params: { serviceId },
+        callback: async () => {
+          try {
+            const reqResult = await handleAssociationDiff(serviceId!, originData, payload)
+            callback?.(reqResult)
+          } catch(error) {
+            callback?.(error as CommonErrorsResult<CatchErrorDetails>)
+          }
+        }
+      }).unwrap()
+    }
+  }
+
+  const toggleNetwork = async (
+    serviceId: string,
+    venueId: string,
+    isGuest: boolean,
+    networkId: string,
+    activate: boolean,
+    cb?: () => void) => {
+    // - activate network/guestNetwork
+    // - deactivate guestNetwork
+    if (activate || (!activate && isGuest)) {
+      await activateNetwork({
+        params: {
+          venueId,
+          serviceId,
+          wifiNetworkId: networkId
+        },
+        payload: {
+          isGuestTunnelUtilized: !isGuest ? false : activate
+        },
+        callback: cb
+      }).unwrap()
+    } else {
+      await deactivateNetwork({ params: {
+        venueId,
+        serviceId,
+        wifiNetworkId: networkId
+      }, callback: cb }).unwrap()
+    }
+  }
+
+  return {
+    addEdgeSdLan: addSdLan,
+    editEdgeSdLan: editSdLan,
+    toggleNetwork
+  }
+}
+
+export const useEdgeSdLanActions = () => {
+  const {
+    activateGuestEdgeCluster,
+    activateGuestTunnel,
+    toggleGuestTunnelEnable
+  } = useEdgeSdLanCommonActions()
+  const [addEdgeSdLan] = useAddEdgeSdLanP2Mutation()
+  const [updateEdgeSdLan] = useUpdateEdgeSdLanPartialP2Mutation()
+
+  const [activateNetwork] = useActivateEdgeSdLanNetworkMutation()
+  const [deactivateNetwork] = useDeactivateEdgeSdLanNetworkMutation()
 
   const toggleGuestNetwork =
   (serviceId: string, networkId: string, activated: boolean): Promise<CommonResult> => {
@@ -108,7 +409,7 @@ export const useEdgeSdLanActions = () => {
       callback: async (response: CommonResult) => {
         const serviceId = response.response?.id
         const dcNetworkIds = payload.isGuestTunnelEnabled
-          ? _.difference(payload.networkIds, payload.guestNetworkIds)
+          ? difference(payload.networkIds, payload.guestNetworkIds)
           : []
 
         const optActions = []
@@ -197,13 +498,13 @@ export const useEdgeSdLanActions = () => {
           }
         }
 
-        const rmNetworks = _.difference(originData.networkIds, payload.networkIds)
-        const addNetworks = _.difference(payload.networkIds, originData.networkIds)
-        const rmGuestNetworks = _.difference(originData.guestNetworkIds, payload.guestNetworkIds)
-        const addGuestNetworks = _.difference(payload.guestNetworkIds, originData.guestNetworkIds)
+        const rmNetworks = difference(originData.networkIds, payload.networkIds)
+        const addNetworks = difference(payload.networkIds, originData.networkIds)
+        const rmGuestNetworks = difference(originData.guestNetworkIds, payload.guestNetworkIds)
+        const addGuestNetworks = difference(payload.guestNetworkIds, originData.guestNetworkIds)
 
-        const activateDcNetworks = _.difference(addNetworks, addGuestNetworks)
-        const deactivateDmzNetworks = _.difference(rmGuestNetworks, rmNetworks)
+        const activateDcNetworks = difference(addNetworks, addGuestNetworks)
+        const deactivateDmzNetworks = difference(rmGuestNetworks, rmNetworks)
         actions.push(...activateDcNetworks.map((item) => activateDcNetwork(serviceId!, item)))
         actions.push(...rmNetworks.map((item) => deactivateDcNetwork(serviceId!, item)))
 
@@ -259,8 +560,8 @@ export const useSdLanScopedVenueNetworks = (
 
   return {
     sdLans: data?.data,
-    scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds)),
-    scopedGuestNetworkIds: _.uniq(_.flatMap(data?.data, (item) =>
+    scopedNetworkIds: uniq(flatMap(data?.data, (item) => item.networkIds)),
+    scopedGuestNetworkIds: uniq(flatMap(data?.data, (item) =>
       item.isGuestTunnelEnabled ? item.guestNetworkIds : undefined)).filter(i => !!i)
   } as {
     sdLans: EdgeSdLanViewDataP2[] | undefined,
@@ -272,12 +573,14 @@ export const useSdLanScopedVenueNetworks = (
 export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const { data } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
       filters: { networkIds: [networkId] },
       fields: [
         'id',
+        'name',
         'venueId',
         'isGuestTunnelEnabled',
         'tunnelProfileId',
@@ -285,27 +588,67 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         'guestNetworkIds',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
-          : ['edgeId', 'edgeName'])
+          : ['edgeId', 'edgeName']),
+        ...(isEdgeMvSdLanReady
+          ? ['tunneledWlans', 'tunneledGuestWlans']
+          : [])
       ],
       pageSize: 10000
     }
   }, {
-    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+    skip: !networkId || !(isEdgeSdLanReady || isEdgeSdLanHaReady || isEdgeMvSdLanReady)
   })
 
-  return {
-    sdLansVenueMap: _.groupBy(data?.data, 'venueId'),
-    networkVenueIds: data?.data?.map(item => item.venueId),
-    guestNetworkVenueIds: data?.data
-      ?.map(item =>
-        // eslint-disable-next-line max-len
-        item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
-      .filter(i => !!i)
-  } as {
-    sdLansVenueMap: { [key in string]: EdgeSdLanViewDataP2[] },
-    networkVenueIds: string[] | undefined,
-    guestNetworkVenueIds: string[] | undefined
-  }
+  const result = useMemo(() => {
+    if (isEdgeMvSdLanReady) {
+      const mvSdlans = data?.data as EdgeMvSdLanViewData[]
+      // eslint-disable-next-line max-len
+      const sdLansVenueMap: { [venueId in string]: (EdgeSdLanViewDataP2 | EdgeMvSdLanViewData)[] } = {}
+      const guestNetworkVenueIds: string[] = []
+
+      mvSdlans?.forEach(sdlan => {
+        const wlans = sdlan.tunneledWlans?.filter(wlan => wlan.networkId === networkId)
+        wlans?.forEach(wlan => {
+          if (!sdLansVenueMap[wlan.venueId]) sdLansVenueMap[wlan.venueId] = []
+
+          sdLansVenueMap[wlan.venueId].push(sdlan)
+        })
+
+        guestNetworkVenueIds.push(...(uniq(sdlan.isGuestTunnelEnabled
+          ? (sdlan.tunneledGuestWlans
+            ?.filter(wlan => wlan.networkId === networkId)?.map(i => i.venueId))
+          : [])
+        ))
+      })
+
+      return {
+        sdLansVenueMap,
+        networkVenueIds: Object.keys(sdLansVenueMap),
+        guestNetworkVenueIds
+      } as {
+        sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
+        networkVenueIds: string[] | undefined,
+        guestNetworkVenueIds: string[] | undefined
+      }
+    } else {
+      return {
+        sdLansVenueMap: groupBy(data?.data, 'venueId'),
+        networkVenueIds: data?.data?.map(item => item.venueId),
+        guestNetworkVenueIds: data?.data
+          ?.map(item =>
+            // eslint-disable-next-line max-len
+            item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
+          .filter(i => !!i)
+      } as {
+        sdLansVenueMap: { [venueId in string]: EdgeSdLanViewDataP2[] },
+        networkVenueIds: string[] | undefined,
+        guestNetworkVenueIds: string[] | undefined
+      }
+    }
+
+  }, [data?.data, networkId])
+
+  return result
 }
 
 export const checkSdLanScopedNetworkDeactivateAction =
@@ -321,7 +664,7 @@ export const checkSdLanScopedNetworkDeactivateAction =
 
     const { $t } = getIntl()
 
-    if (_.intersection(scopedIds, selectedIds).length > 0) {
+    if (intersection(scopedIds, selectedIds).length > 0) {
       showActionModal({
         type: 'confirm',
         title: $t({ defaultMessage: 'Deactivate network' }),

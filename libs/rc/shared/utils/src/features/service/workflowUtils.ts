@@ -3,9 +3,10 @@ import { defineMessage, useIntl }         from 'react-intl'
 import { ConnectionLineType, Edge, Node } from 'reactflow'
 
 import {
-  AupIcon,
-  DataPromptIcon,
-  DisplayMessageIcon
+  DpskActionTypeIcon,
+  AupActionTypeIcon,
+  DataPromptActionTypeIcon,
+  DisplayMessageActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -13,12 +14,14 @@ import {
   AupActionContext,
   DataPromptActionContext,
   DisplayMessageActionContext,
+  UIConfiguration,
   StepType,
   UIConfiguration,
   UserSelectionSplitContext,
   WorkflowStep
 } from '../../types'
 
+export const WorkflowStepsEmptyCount = 2
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
@@ -73,44 +76,29 @@ export const getInitialNodes = (x: number, y: number): Node[] => {
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK Node' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
-  [ActionType.AUP]: AupIcon,
-  [ActionType.DATA_PROMPT]: DataPromptIcon,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon
+  [ActionType.AUP]: AupActionTypeIcon,
+  [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
+  [ActionType.DPSK]: DpskActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a Ruckus DPSK' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a RUCKUS DPSK' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in Ruckus WLAN controllers as "External DPSK") or via a Ruckus WLAN controller.' }),
-}
-
-// FIXME: Deprecated => due to we don't support action template selector anymore.
-export const ActionTypeSelectionTerms: Record<ActionType, MessageDescriptor | undefined> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'Select the existing AUP to use:' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Select the existing data prompt template to use:' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined
-  // [ActionType.DPSK]: undefined,
-}
-
-// FIXME: Deprecated => due to we don't support action template selector anymore.
-export const ActionTypeNewTemplateTerms: Record<ActionType, MessageDescriptor | undefined> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'A new AUP created from a standard template.' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'A new prompt created from a standard template.' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined
-  // [ActionType.DPSK]: undefined,
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in RUCKUS WLAN controllers as "External DPSK") or via a RUCKUS WLAN controller.' })
 }
 
 export const AupActionDefaultValue: {
@@ -137,13 +125,6 @@ export const DataPromptActionDefaultValue: {
   continueButtonText: defineMessage({ defaultMessage: 'Continue >' })
 }
 
-export const UserSelectionActionDefaultValue: {
-  [key in keyof UserSelectionSplitContext]: MessageDescriptor | string
-} = {
-  title: defineMessage({ defaultMessage: 'DefaultUserSplitTitle' }),
-  messageHtml: defineMessage({ defaultMessage: 'Default HTML template.' })
-}
-
 export const DisplayMessageActionDefaultValue: {
   [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
 } = {
@@ -158,10 +139,29 @@ export const DisplayMessageActionDefaultValue: {
 export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue
-  // [ActionType.DPSK]: {},
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
+  [ActionType.DPSK]: {}
 }
 /* eslint-enable max-len */
+
+// TODO:
+// - Remove `defaultConfiguration` in PortalDesign.tsx
+export const DefaultUIConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    titleFontColor: 'var(--acx-neutrals-100)',
+    backgroundColor: 'var(--acx-primary-white)',
+    bodyFontColor: 'var(--acx-neutrals-100)',
+
+    buttonFontColor: 'var(--acx-primary-white)',
+    buttonColor: 'var(--acx-accents-orange-50)'
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16,
+    bodyFontSize: 14
+  }
+}
 
 
 export const composeNext = (

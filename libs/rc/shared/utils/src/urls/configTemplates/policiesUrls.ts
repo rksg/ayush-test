@@ -6,15 +6,42 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l2AclPolicies',
     newApi: true
   },
+  addL2AclPolicyRbac: {
+    method: 'post',
+    url: '/templates/l2AclPolicies',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getL2AclPolicy: {
     method: 'get',
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
     newApi: true
   },
+  getL2AclPolicyRbac: {
+    method: 'get',
+    url: '/templates/l2AclPolicies/:l2AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getEnhancedL2AclPolicies: {
     method: 'post',
     url: '/templates/l2AclPolicies/query',
     newApi: true
+  },
+  getL2AclPolicyListQuery: {
+    method: 'post',
+    url: '/templates/l2AclPolicies/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   delL2AclPolicy: {
     method: 'delete',
@@ -26,20 +53,56 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
     newApi: true
   },
+  updateL2AclPolicyRbac: {
+    method: 'put',
+    url: '/templates/l2AclPolicies/:l2AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   addL3AclPolicy: {
     method: 'post',
     url: '/templates/l3AclPolicies',
     newApi: true
+  },
+  addL3AclPolicyRbac: {
+    method: 'post',
+    url: '/templates/l3AclPolicies',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getL3AclPolicy: {
     method: 'get',
     url: '/templates/l3AclPolicies/:l3AclPolicyId',
     newApi: true
   },
+  getL3AclPolicyRbac: {
+    method: 'get',
+    url: '/templates/l3AclPolicies/:l3AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getEnhancedL3AclPolicies: {
     method: 'post',
     url: '/templates/l3AclPolicies/query',
     newApi: true
+  },
+  getL3AclPolicyListQuery: {
+    method: 'post',
+    url: '/templates/l3AclPolicies/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   delL3AclPolicy: {
     method: 'delete',
@@ -51,20 +114,56 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l3AclPolicies/:l3AclPolicyId',
     newApi: true
   },
+  updateL3AclPolicyRbac: {
+    method: 'put',
+    url: '/templates/l3AclPolicies/:l3AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   addAppPolicy: {
     method: 'post',
     url: '/templates/applicationPolicies',
     newApi: true
+  },
+  addAppPolicyRbac: {
+    method: 'post',
+    url: '/templates/applicationPolicies',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getAppPolicy: {
     method: 'get',
     url: '/templates/applicationPolicies/:applicationPolicyId',
     newApi: true
   },
+  getAppPolicyRbac: {
+    method: 'get',
+    url: '/templates/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getEnhancedApplicationPolicies: {
     method: 'post',
     url: '/templates/applicationPolicies/query',
     newApi: true
+  },
+  getApplicationPolicyListQuery: {
+    method: 'post',
+    url: '/templates/applicationPolicies/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   delAppAclPolicy: {
     method: 'delete',
@@ -75,6 +174,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/applicationPolicies/:applicationPolicyId',
     newApi: true
+  },
+  updateAppAclPolicyRbac: {
+    method: 'put',
+    url: '/templates/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getL2AclPolicyList: {
     method: 'get',
@@ -107,7 +215,20 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAccessControlProfile: {
     method: 'get',
     url: '/templates/accessControlProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getAccessControlProfileRbac: {
+    method: 'get',
+    url: '/templates/accessControlProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getAccessControlProfileList: {
     method: 'get',
@@ -119,20 +240,46 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/accessControlProfiles/query',
     newApi: true
   },
+  getAccessControlProfileQueryList: {
+    method: 'post',
+    url: '/templates/accessControlProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   addAccessControlProfile: {
     method: 'post',
     url: '/templates/accessControlProfiles',
     newApi: true
+  },
+  addAccessControlProfileRbac: {
+    method: 'post',
+    url: '/templates/accessControlProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   updateAccessControlProfile: {
     method: 'put',
     url: '/templates/accessControlProfiles/:policyId',
     newApi: true
   },
+  updateAccessControlProfileRbac: {
+    method: 'put',
+    url: '/templates/accessControlProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   deleteAccessControlProfile: {
     method: 'delete',
     url: '/templates/accessControlProfiles/:templateId',
-    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
     newApi: true
   },
   addDevicePolicy: {
@@ -140,10 +287,28 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/devicePolicies',
     newApi: true
   },
+  addDevicePolicyRbac: {
+    method: 'post',
+    url: '/templates/devicePolicies',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getDevicePolicy: {
     method: 'get',
     url: '/templates/devicePolicies/:devicePolicyId',
     newApi: true
+  },
+  getDevicePolicyRbac: {
+    method: 'get',
+    url: '/templates/devicePolicies/:devicePolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   delDevicePolicy: {
     method: 'delete',
@@ -155,6 +320,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/devicePolicies/:devicePolicyId',
     newApi: true
   },
+  updateDevicePolicyRbac: {
+    method: 'put',
+    url: '/templates/devicePolicies/:devicePolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getDevicePolicyList: {
     method: 'get',
     url: '/templates/devicePolicies',
@@ -164,6 +338,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/devicePolicies/query',
     newApi: true
+  },
+  getDevicePolicyListQuery: {
+    method: 'post',
+    url: '/templates/devicePolicies/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteVlanPoolPolicy: {
     method: 'delete',
@@ -200,20 +383,55 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/syslogServerProfiles/:templateId',
     newApi: true
   },
+  deleteSyslogPolicyRbac: {
+    method: 'delete',
+    url: '/templates/syslogServerProfiles/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   addSyslogPolicy: {
     method: 'post',
     url: '/templates/syslogServerProfiles',
     newApi: true
+  },
+  addSyslogPolicyRbac: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getSyslogPolicy: {
     method: 'get',
     url: '/templates/syslogServerProfiles/:policyId',
     newApi: true
   },
+  getSyslogPolicyRbac: {
+    method: 'get',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateSyslogPolicy: {
     method: 'put',
     url: '/templates/syslogServerProfiles/:policyId',
     newApi: true
+  },
+  updateSyslogPolicyRbac: {
+    method: 'put',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getSyslogPolicyList: {
     method: 'post',
@@ -229,6 +447,33 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/venues/:venueId/syslogServerProfileSettings',
     newApi: true
+  },
+  querySyslog: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindVenueSyslog: {
+    method: 'PUT',
+    url: '/templates/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  unbindVenueSyslog: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addRoguePolicy: {
     method: 'post',
@@ -268,46 +513,300 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getRoguePolicyListRbac: {
     method: 'post',
     url: '/templates/roguePolicies/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addRoguePolicyRbac: {
     method: 'post',
     url: '/templates/roguePolicies',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getRoguePolicyRbac: {
     method: 'get',
     url: '/templates/roguePolicies/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateRoguePolicyRbac: {
     method: 'put',
     url: '/templates/roguePolicies/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteRoguePolicyRbac: {
     method: 'delete',
     url: '/templates/roguePolicies/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateRoguePolicy: {
     method: 'put',
     url: '/templates/venues/:venueId/roguePolicies/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateRoguePolicy: {
     method: 'delete',
     url: '/templates/venues/:venueId/roguePolicies/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueRogueApRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/roguePolicySettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueRogueApRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/roguePolicySettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  addVlanPoolPolicyRbac: {
+    method: 'post',
+    url: '/templates/vlanPoolProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVlanPoolPolicyRbac: {
+    method: 'get',
+    url: '/templates/vlanPoolProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateVlanPoolPolicyRbac: {
+    method: 'put',
+    url: '/templates/vlanPoolProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deleteVlanPoolPolicyRbac: {
+    method: 'delete',
+    url: '/templates/vlanPoolProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateVlanPool: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    // eslint-disable-next-line max-len
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    // eslint-disable-next-line max-len
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateL2AclOnAccessControlProfile: {
+    method: 'put',
+    url: '/templates/accessControlProfiles/:policyId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateL2AclOnAccessControlProfile: {
+    method: 'delete',
+    url: '/templates/accessControlProfiles/:policyId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateL2AclOnWifiNetwork: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateL2AclOnWifiNetwork: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateL3AclOnAccessControlProfile: {
+    method: 'put',
+    url: '/templates/accessControlProfiles/:policyId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateL3AclOnAccessControlProfile: {
+    method: 'delete',
+    url: '/templates/accessControlProfiles/:policyId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateL3AclOnWifiNetwork: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateL3AclOnWifiNetwork: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateDevicePolicyOnAccessControlProfile: {
+    method: 'put',
+    url: '/templates/accessControlProfiles/:policyId/devicePolicies/:devicePolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateDevicePolicyOnAccessControlProfile: {
+    method: 'delete',
+    url: '/templates/accessControlProfiles/:policyId/devicePolicies/:devicePolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateDevicePolicyOnWifiNetwork: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/devicePolicies/:devicePolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateDevicePolicyOnWifiNetwork: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/devicePolicies/:devicePolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateApplicationPolicyOnAccessControlProfile: {
+    method: 'put',
+    url: '/templates/accessControlProfiles/:policyId/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateApplicationPolicyOnAccessControlProfile: {
+    method: 'delete',
+    url: '/templates/accessControlProfiles/:policyId/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateApplicationPolicyOnWifiNetwork: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateApplicationPolicyOnWifiNetwork: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

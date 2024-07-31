@@ -64,16 +64,11 @@ describe('CaptiveNetworkForm-WISPr', () => {
         (_, res, ctx) => res(ctx.json( externalProviders ))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
-        res(ctx.json([]))
-      ),
       rest.get(MspUrlsInfo.getMspEcProfile.url, (_req, res, ctx) =>
         res(ctx.json(mspEcProfileData))
       ),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [wisprRes] }))),
       // RBAC API
       rest.get(CommonRbacUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json( externalProviders ))),

@@ -5,6 +5,7 @@ import { useParams }              from 'react-router-dom'
 import { DonutChartData, Loader, NoActiveContent, qualitativeColorSet } from '@acx-ui/components'
 import { useGetGatewayTopProcessQuery }                                 from '@acx-ui/rc/services'
 import { GatewayTopProcess }                                            from '@acx-ui/rc/utils'
+import { TABLE_QUERY_POLLING_INTERVAL }                                 from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -14,7 +15,7 @@ export default function TopSystemProcess () {
 
   const { data: topProcessData, isLoading: isTopprocessLoading, isFetching: isTopprocessFetching } =
     useGetGatewayTopProcessQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
-      { skip: !gatewayId })
+      { skip: !gatewayId, pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   function getTopProcessDonutChartData (data: GatewayTopProcess[]): DonutChartData[] {
     const chartData: DonutChartData[] = []

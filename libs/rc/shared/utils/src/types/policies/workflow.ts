@@ -71,7 +71,7 @@ interface StepState {
 
 }
 
-interface BaseStep extends StepState{
+interface BaseStep extends StepState {
   id: string,
   type?: StepType,
   actionType?: ActionType,

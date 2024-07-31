@@ -23,7 +23,7 @@ interface StepDrawerState {
   onClose: () => void
 }
 
-interface WorkflowContextProps {
+export interface WorkflowContextProps {
   actionDefMap: Map<string, ActionType>,
   setActionDefMap: (defMap: Map<string, ActionType>) => void,
 
@@ -37,7 +37,7 @@ interface WorkflowContextProps {
   }
 }
 
-const WorkflowContext = createContext<WorkflowContextProps>({} as WorkflowContextProps)
+export const WorkflowContext = createContext<WorkflowContextProps>({} as WorkflowContextProps)
 export const useWorkflowContext = () => useContext(WorkflowContext)
 
 export const WorkflowContextProvider = (props: { children: ReactNode }) => {

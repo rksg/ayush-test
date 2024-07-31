@@ -274,7 +274,7 @@ describe('Pill without kpi threshold', () => {
         />
       </HealthPageContext.Provider></Provider>
     )
-    await screen.findByText('Temperature')
+    await screen.findByText('Temperature Compliance')
     expect(await screen
       .findByText('2 of 7 switches are under safe thresholds of temperature.')).toBeVisible()
   })

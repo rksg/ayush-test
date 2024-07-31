@@ -1,13 +1,17 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  WifiNetworkFixtures,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -38,13 +42,18 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
-// isMapEnabled = false && SD-LAN not enabled
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
-  && ff !== Features.EDGES_SD_LAN_TOGGLE
-  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
-  && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
-)
+const { mockedRbacWifiNetworkList } = WifiNetworkFixtures
 
+// isMapEnabled = false && SD-LAN not enabled
+const disabledFFs = [
+  Features.G_MAP,
+  Features.EDGES_SD_LAN_TOGGLE,
+  Features.EDGES_SD_LAN_HA_TOGGLE,
+  Features.EDGE_SD_LAN_MV_TOGGLE,
+  Features.RBAC_SERVICE_POLICY_TOGGLE,
+  Features.WIFI_RBAC_API,
+  Features.SWITCH_RBAC_API
+]
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
   onOk?: () => void
@@ -80,6 +89,8 @@ const mockedGetApCompatibilitiesNetwork = jest.fn()
 
 describe('NetworkVenuesTab', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
+
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
@@ -107,10 +118,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
-      ),
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
         (req, res, ctx) => res(ctx.json(user))
@@ -136,10 +143,6 @@ describe('NetworkVenuesTab', () => {
           mockedGetApCompatibilitiesNetwork()
           return res(ctx.json(networkVenueApCompatibilities))
         }
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
@@ -176,10 +179,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         WifiUrlsInfo.addNetworkVenue.url,
@@ -231,10 +230,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -270,10 +265,6 @@ describe('NetworkVenuesTab', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
       ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
@@ -334,10 +325,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenue.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
@@ -375,10 +362,6 @@ describe('NetworkVenuesTab', () => {
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: [] }))
       ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: [] }] }))
-      ),
       rest.delete(
         WifiUrlsInfo.deleteNetworkVenues.url,
         (req, res, ctx) => {
@@ -412,11 +395,14 @@ describe('NetworkVenuesTab', () => {
     const rows = await screen.findAllByRole('switch')
     expect(rows).toHaveLength(2)
   })
-})
 
+
+})
 
 describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
+
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
@@ -439,10 +425,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json(network))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
       ),
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
@@ -524,10 +506,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
-      ),
-      rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [
           networkVenue_allAps,
@@ -598,10 +576,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.get(
         WifiUrlsInfo.getNetwork.url,
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
@@ -714,10 +688,6 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
         (req, res, ctx) => res(ctx.json({ ...network, venues: newVenues }))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [{ ...network, venues: newVenues }] }))
-      ),
-      rest.post(
         WifiUrlsInfo.getApCompatibilitiesNetwork.url,
         (req, res, ctx) => res(ctx.json(networkVenueApCompatibilities))
       )
@@ -734,5 +704,75 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
 
     const dialog = await screen.findByTestId('NetworkVenueScheduleDialog')
     await waitFor(() => expect(dialog).toBeVisible())
+  })
+})
+
+describe('WIFI_RBAC_API is turned on', () => {
+  const mockedNetworks = cloneDeep(mockedRbacWifiNetworkList)
+  mockedNetworks[0].venueApGroups[1].venueId = list.data[0].id
+  const mockedGetWifiNetwork = jest.fn()
+
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
+
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+    })
+
+    mockedGetWifiNetwork.mockClear()
+
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (req, res, ctx) => res(ctx.json(list))
+      ),
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_allAps, networkVenue_apgroup] }))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getNetwork.url,
+        (req, res, ctx) => res(ctx.json(network))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (req, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => {
+          mockedGetWifiNetwork()
+          return res(ctx.json({ data: mockedNetworks }))
+        }
+      )
+    )
+  })
+
+  it('should trigger RBAC API when WIFI_RBAC turned on', async () => {
+    render(<Provider><NetworkVenuesTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/:networkId' }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    expect(mockedGetApCompatibilitiesNetwork).toHaveBeenCalled()
+    expect(mockedGetWifiNetwork).toHaveBeenCalled()
+    const row = await screen.findByRole('row', { name: /network-venue-1/i })
+    expect(row).toHaveTextContent('VLAN-1 (Default)')
+    expect(row).toHaveTextContent('All APs')
+    expect(row).toHaveTextContent('24/7')
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
   })
 })

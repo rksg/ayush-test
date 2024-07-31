@@ -1,11 +1,11 @@
 import { ReactNode, useState } from 'react'
 
-import { Popover }                                from 'antd'
+import { Popover, Space }                         from 'antd'
 import { useIntl }                                from 'react-intl'
 import { useParams }                              from 'react-router-dom'
 import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
 
-import { Button, Loader, showActionModal }                                                       from '@acx-ui/components'
+import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
 import { useDeleteWorkflowStepByIdMutation }                                                     from '@acx-ui/rc/services'
 import { ActionType }                                                                            from '@acx-ui/rc/utils'
@@ -14,7 +14,8 @@ import { ActionType }                                                           
 import { ActionPreviewDrawer } from '../../ActionPreviewDrawer'
 import { useWorkflowContext }  from '../WorkflowContextProvider'
 
-import * as UI from './styledComponents'
+import * as UI               from './styledComponents'
+import { EditorToolbarIcon } from './styledComponents'
 
 export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string })
@@ -72,23 +73,33 @@ export default function BaseStepNode (props: NodeProps
     setIsPreviewOpen(false)
   }
 
-  const stepToolBar = (<>
-    <Button
-      type={'link'}
-      icon={<EditOutlined/>}
-      onClick={onEditClick}
-    />
-    <Button
-      type={'link'}
-      icon={<EyeOpenOutlined/>}
-      onClick={onPreviewClick}
-    />
-    <Button
-      type={'link'}
-      icon={<DeleteOutlined/>}
-      onClick={onDeleteClick}
-    />
-  </>)
+  const stepToolBar = (
+    <Space size={12} direction={'horizontal'}>
+      <Tooltip title={$t({ defaultMessage: 'Edit this action' })}>
+        <Button
+          size={'small'}
+          type={'link'}
+          icon={<EditorToolbarIcon><EditOutlined/></EditorToolbarIcon>}
+          onClick={onEditClick}
+        />
+      </Tooltip>
+      <Tooltip title={$t({ defaultMessage: 'Preview this action' })}>
+        <Button
+          size={'small'}
+          type={'link'}
+          icon={<EditorToolbarIcon><EyeOpenOutlined/></EditorToolbarIcon>}
+          onClick={onPreviewClick}
+        />
+      </Tooltip>
+      <Tooltip title={$t({ defaultMessage: 'Delete this action' })}>
+        <Button
+          size={'small'}
+          type={'link'}
+          icon={<EditorToolbarIcon><DeleteOutlined/></EditorToolbarIcon>}
+          onClick={onDeleteClick}
+        />
+      </Tooltip>
+    </Space>)
 
 
   return (
@@ -109,8 +120,11 @@ export default function BaseStepNode (props: NodeProps
 
       {props.selected &&
         <Popover
+          zIndex={1000}
           content={stepToolBar}
           trigger={'hover'}
+          color={'var(--acx-primary-black)'}
+          overlayInnerStyle={{ backgroundColor: 'var(--acx-primary-black)' }}
         >
           <UI.EditButton>
             <MoreVertical />

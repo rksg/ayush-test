@@ -17,7 +17,8 @@ import {
   IpUtilsService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -50,6 +51,7 @@ export default function DHCPTable () {
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
@@ -72,6 +74,7 @@ export default function DHCPTable () {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
         return selectedRows.some((row)=>{
@@ -107,7 +110,7 @@ export default function DHCPTable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })} scopeKey={[WifiScopes.CREATE]}>
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= DHCP_LIMIT_NUMBER
@@ -124,7 +127,8 @@ export default function DHCPTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          // eslint-disable-next-line max-len
+          rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

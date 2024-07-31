@@ -5,6 +5,7 @@ import { Form, Input, Switch } from 'antd'
 import _                       from 'lodash'
 import { rest }                from 'msw'
 
+import { Features, useIsSplitOn }                                                                                                                                 from '@acx-ui/feature-toggle'
 import { CompatibilityNodeError, CompatibilityStatusEnum }                                                                                                        from '@acx-ui/rc/components'
 import { edgeApi }                                                                                                                                                from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeIpModeEnum, EdgePortConfigFixtures, EdgePortTypeEnum, EdgeSdLanFixtures, EdgeSdLanViewDataP2, EdgeUrlsInfo } from '@acx-ui/rc/utils'
@@ -58,7 +59,8 @@ jest.mock('@acx-ui/rc/components', () => ({
           {JSON.stringify(nodeErr)}
         </div>))
       }
-    </div>
+    </div>,
+  EdgeHaSettingsForm: () => <div data-testid='rc-HaSettingForm' />
 }))
 
 const MockedPortForm = ({ children, ...others }: React.PropsWithChildren<{
@@ -98,6 +100,7 @@ const defaultCxtData = {
 describe('InterfaceSettings', () => {
   let params: { tenantId: string, clusterId:string, settingType:string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     params = {
       tenantId: 'mocked_t_id',
       clusterId: 'mocked_cluster_id',
@@ -131,6 +134,29 @@ describe('InterfaceSettings', () => {
     const form = await screen.findByTestId('steps-form')
     within(form).getByRole('button', { name: 'LAG' })
     expect(await screen.findByTestId('rc-LagForm')).toBeVisible()
+  })
+
+  it('should show HA setting step when the HA/AA FF is on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_AA_TOGGLE)
+    render(<Provider>
+      <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+        <InterfaceSettings />
+      </ClusterConfigWizardContext.Provider>
+    </Provider>,
+    {
+      route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/configure/:settingType' }
+    })
+
+    const stepsForm = await screen.findByTestId('steps-form')
+    const nextBtn = screen.getByRole('button', { name: 'Next' })
+    within(stepsForm).getByTestId('rc-LagForm')
+    await userEvent.click(nextBtn)
+    within(stepsForm).getByTestId('rc-PortForm')
+    await userEvent.click(nextBtn)
+    await within(stepsForm).findByTestId('rc-HaSettingForm')
+    await userEvent.click(nextBtn)
+
+    await within(stepsForm).findByTestId('rc-Summary')
   })
 
   it('should redirect to cluster list page', async () => {

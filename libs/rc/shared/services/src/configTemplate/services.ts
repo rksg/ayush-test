@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
@@ -5,14 +6,22 @@ import {
   CommonResult, DHCPSaveData, DpskMutationResult, DpskSaveData,
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
   onSocketActivityChanged, Portal, PortalSaveData,
-  WifiCallingFormContextType, WifiCallingSetting, GetApiVersionHeader, ApiVersionEnum
+  WifiCallingFormContextType, WifiCallingSetting, GetApiVersionHeader, ApiVersionEnum,
+  DHCP_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { createDpskHttpRequest, transformDhcpResponse } from '../service'
-import { commonQueryFn }                                from '../servicePolicy.utils'
+import {
+  createWifiCallingFn,
+  commonQueryFn,
+  getDhcpProfileFn,
+  updateWifiCallingFn,
+  getWifiCallingFn,
+  queryWifiCallingFn
+} from '../servicePolicy.utils'
+import { addDpskFn, updateDpskFn } from '../servicePolicy.utils'
 
 import {
   useCasesToRefreshDhcpTemplateList,
@@ -26,7 +35,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     getDpskTemplate: build.query<DpskSaveData, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const getDpskReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getDpsk, params)
+        const getDpskReq = createHttpRequest(ServicesConfigTemplateUrlsInfo.getDpsk, params)
         return {
           ...getDpskReq,
           body: JSON.stringify(payload)
@@ -35,33 +44,19 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'DpskTemplate', id: 'DETAIL' }]
     }),
     createDpskTemplate: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const createDpskReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.addDpsk, params)
-        return {
-          ...createDpskReq,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: addDpskFn(true),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
     updateDpskTemplate: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const updateDpskReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updateDpsk, params)
-        return {
-          ...updateDpskReq,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: updateDpskFn(true),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
     deleteDpskTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.deleteDpsk, params)
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.deleteDpsk, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -70,10 +65,24 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DpskTemplate', id: 'LIST' }]
     }),
+    activateDpskServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.activateDpskService)
+    }),
+    getDpskServiceTemplate: build.query<DpskSaveData, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.queryDpskService, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<DpskSaveData>) => {
+        return response?.data[0]
+      }
+    }),
     getEnhancedDpskTemplateList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const getDpskListReq = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedDpskList, params)
+        const getDpskListReq = createHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedDpskList, params)
         const defaultPayload = {
           page: 1,
           pageSize: 10000,
@@ -97,32 +106,45 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getDhcpTemplate: build.query<DHCPSaveData | null, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getDhcp),
-      transformResponse: transformDhcpResponse,
+      queryFn: getDhcpProfileFn(true),
       providesTags: [{ type: 'DhcpTemplate', id: 'DETAIL' }]
     }),
     createOrUpdateDhcpTemplate: build.mutation<DHCPSaveData, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(params?.serviceId
-          ? ServicesConfigTemplateUrlsInfo.updateDhcp
-          : ServicesConfigTemplateUrlsInfo.addDhcp
-        , params)
+      query: ({ params, payload, enableRbac }) => {
+        const addDhcpUrl = enableRbac ? ServicesConfigTemplateUrlsInfo.addDhcpRbac : ServicesConfigTemplateUrlsInfo.addDhcp
+        const updatedDhcpUrl = enableRbac ? ServicesConfigTemplateUrlsInfo.updateDhcpRbac : ServicesConfigTemplateUrlsInfo.updateDhcp
+        const url = _.isEmpty(params?.serviceId) ? addDhcpUrl : updatedDhcpUrl
+        const req = createHttpRequest(url, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
     }),
     deleteDhcpTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteDhcp),
-      // eslint-disable-next-line max-len
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteDhcp, ServicesConfigTemplateUrlsInfo.deleteDhcpRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
     }),
     getDhcpTemplateList: build.query<DHCPSaveData[], RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getDhcpList),
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ? ServicesConfigTemplateUrlsInfo.queryDhcpProfiles : ServicesConfigTemplateUrlsInfo.getDhcpList
+        const req = createHttpRequest(url, params)
+        const resolvedPayload = enableRbac
+          ? { body: JSON.stringify({ ...(payload as {} ?? {}), pageSize: DHCP_LIMIT_NUMBER }) }
+          : {}
+        return {
+          ...req,
+          ...resolvedPayload
+        }
+      },
       providesTags: [{ type: 'DhcpTemplate', id: 'LIST' }],
+      transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
+        if(arg.enableRbac) {
+          return (response as TableResult<DHCPSaveData>).data.map((item) => ({ ...item, serviceName: item.name || '' }))
+        }
+        return response as DHCPSaveData[]
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshDhcpTemplateList, () => {
@@ -249,29 +271,24 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
       }
     }),
-    createWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.addWifiCalling),
+    // eslint-disable-next-line max-len
+    createWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: createWifiCallingFn(true),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
     }),
     getWifiCallingServiceTemplate: build.query<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCalling),
+      queryFn: getWifiCallingFn(true),
       providesTags: [
         { type: 'ConfigTemplate', id: 'DETAIL' }, { type: 'WifiCallingTemplate', id: 'DETAIL' }
-      ]
-    }),
-    getWifiCallingServiceTemplateList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCallingList),
-      providesTags: [
-        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, useCasesToRefreshWifiCallingTemplateList, () => {
             api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
-              { type: 'ConfigTemplate', id: 'LIST' },
-              { type: 'WifiCallingTemplate', id: 'LIST' }
+              { type: 'ConfigTemplate' },
+              { type: 'WifiCallingTemplate' }
             ]))
           })
         })
@@ -279,7 +296,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceTemplateList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList),
+      queryFn: queryWifiCallingFn(true),
       providesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ],
@@ -295,17 +312,33 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    updateWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.updateWifiCalling),
+    // eslint-disable-next-line max-len
+    updateWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: updateWifiCallingFn(true),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
     }),
     deleteWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteWifiCalling),
+      query: commonQueryFn(
+        ServicesConfigTemplateUrlsInfo.deleteWifiCalling,
+        ServicesConfigTemplateUrlsInfo.deleteWifiCallingRbac
+      ),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
+    }),
+    activateWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(ServicesConfigTemplateUrlsInfo.activateWifiCalling, params)
+      },
+      invalidatesTags: [{ type: 'WifiCallingTemplate', id: 'DETAIL' }]
+    }),
+    deactivateWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(ServicesConfigTemplateUrlsInfo.deactivateWifiCalling, params)
+      },
+      invalidatesTags: [{ type: 'WifiCallingTemplate', id: 'DETAIL' }]
     })
   })
 })
@@ -314,10 +347,13 @@ export const {
   useGetDpskTemplateQuery,
   useCreateDpskTemplateMutation,
   useUpdateDpskTemplateMutation,
+  useActivateDpskServiceTemplateMutation,
+  useGetDpskServiceTemplateQuery,
   useGetEnhancedDpskTemplateListQuery,
   useLazyGetEnhancedDpskTemplateListQuery,
   useDeleteDpskTemplateMutation,
   useGetDhcpTemplateQuery,
+  useLazyGetDhcpTemplateQuery,
   useCreateOrUpdateDhcpTemplateMutation,
   useDeleteDhcpTemplateMutation,
   useGetDhcpTemplateListQuery,
@@ -335,19 +371,17 @@ export const {
   useUploadPoweredImgTemplateMutation,
   useCreateWifiCallingServiceTemplateMutation,
   useGetWifiCallingServiceTemplateQuery,
-  useGetWifiCallingServiceTemplateListQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery,
   useUpdateWifiCallingServiceTemplateMutation,
-  useDeleteWifiCallingServiceTemplateMutation
+  useDeleteWifiCallingServiceTemplateMutation,
+  useActivateWifiCallingServiceTemplateMutation,
+  useDeactivateWifiCallingServiceTemplateMutation
 } = servicesConfigTemplateApi
 
 
 const v1TemplateHeaders = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
   'Accept': 'application/vnd.ruckus.v1+json'
-}
-function createDpskTemplateHttpRequest (apiInfo: ApiInfo, params?: Params<string>) {
-  return createDpskHttpRequest(apiInfo, params, v1TemplateHeaders)
 }
 
 const createPortalTemplateHttpRequest = (

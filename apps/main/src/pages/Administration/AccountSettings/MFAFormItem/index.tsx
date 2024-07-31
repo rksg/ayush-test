@@ -6,7 +6,7 @@ import styled                                         from 'styled-components/ma
 import { Card, showActionModal }                            from '@acx-ui/components'
 import { SpaceWrapper }                                     from '@acx-ui/rc/components'
 import { administrationApi, useGetTenantDetailsQuery }      from '@acx-ui/rc/services'
-import { useParams }                                        from '@acx-ui/react-router-dom'
+import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
 import { store }                                            from '@acx-ui/store'
 import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
 
@@ -29,6 +29,8 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
   const params = useParams()
   const [toggleMFA, { isLoading: isUpdating }] = useToggleMFAMutation()
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const navigate = useNavigate()
+  const linkToUserProfile = useTenantLink('/userprofile/security')
 
   const handleEnableMFAChange = (e: CheckboxChangeEvent) => {
     const isChecked = e.target.checked
@@ -61,6 +63,8 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
                 { type: 'Administration', id: 'DETAIL' }
               ]))
           }
+          if (isChecked)
+            navigate(linkToUserProfile)
         } catch (error) {
           console.log(error) // eslint-disable-line no-console
         }
@@ -93,7 +97,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
           </Checkbox>
         </Form.Item>
 
-        <SpaceWrapper full className='descriptionsWrapper'>
+        <SpaceWrapper full className='indent'>
           <List
             split={false}
             size='small'
@@ -105,7 +109,7 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             ]}
             renderItem={(item) => (
               <List.Item>
-                <Typography.Text className='description greyText'>
+                <Typography.Text className='greyText'>
                   {item}
                 </Typography.Text>
               </List.Item>
@@ -115,10 +119,10 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
             title={$t({ defaultMessage: 'Recovery Codes' })}
             type='no-border'
           >
-            <Typography.Text className='description darkGreyText'>
+            <Typography.Text className='darkGreyText'>
               {$t(MessageMapping.enable_mfa_copy_codes_help_1)}
             </Typography.Text>
-            <Typography.Text className='description darkGreyText'>
+            <Typography.Text className='darkGreyText'>
               {$t(MessageMapping.enable_mfa_copy_codes_help_2)}
             </Typography.Text>
             <TextArea

@@ -3,7 +3,7 @@ import { useIntl }   from 'react-intl'
 import { NodeProps } from 'reactflow'
 
 
-import { Plus } from '@acx-ui/icons'
+import { StarterIcon } from '@acx-ui/icons'
 
 import { useWorkflowContext } from '../WorkflowContextProvider'
 
@@ -27,7 +27,7 @@ export function StartNode (props: NodeProps) {
         size={12}
       >
         <UI.ActionTypeIcon>
-          <Plus />
+          <StarterIcon />
         </UI.ActionTypeIcon>
         {$t({ defaultMessage: 'Start building your Onboarding Workflow' })}
       </Space>

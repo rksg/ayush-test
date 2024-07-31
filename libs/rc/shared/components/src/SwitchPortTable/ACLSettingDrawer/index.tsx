@@ -18,7 +18,7 @@ import { Features, useIsSplitOn }                                               
 import { useAddAclMutation }                                                               from '@acx-ui/rc/services'
 import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclOption } from '@acx-ui/rc/utils'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                       from '@acx-ui/user'
+import { filterByAccess, hasPermission }                                                   from '@acx-ui/user'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
@@ -316,7 +316,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         rowKey='sequence'
         rowActions={filterByAccess(rowActions)}
         columns={columns}
-        rowSelection={hasAccess() && {
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selected ? [selected.sequence] : [],
           onChange: (keys: React.Key[]) => {

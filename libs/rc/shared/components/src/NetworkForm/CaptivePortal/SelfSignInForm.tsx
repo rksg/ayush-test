@@ -37,6 +37,7 @@ import GoogleSetting                             from './GoogleSetting'
 import LinkedInSetting                           from './LinkedInSetting'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { SMSTokenCheckbox, isSMSTokenAvailable } from './SharedComponent/SMSToken/SMSTokenCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import TwitterSetting                            from './TwitterSetting'
 
@@ -96,12 +97,14 @@ export function SelfSignInForm () {
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
-  const isSMSTokenAvailable = (!editMode && isSmsProviderEnabled) ?
-    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
-     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
-    : true
+  const provider = smsUsage?.data?.provider ?? SmsProviderType.RUCKUS_ONE
+  const usedSMS = smsUsage?.data?.ruckusOneUsed ?? 0
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable(usedSMS, provider, {
+    isSmsProviderEnabled, isGracePeriodEnabled
+  })
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -128,6 +131,7 @@ export function SelfSignInForm () {
     form.setFieldValue('allowSign', allowedSignValueTemp)
     setAllowedSignValue(allowedSignValueTemp)
   }
+
   const checkSocial = (value: string | string[]) => {
     if (!value || value.length < 1) {
       return Promise.reject($t({ defaultMessage: 'Please configure sign-in option' }))
@@ -160,7 +164,7 @@ export function SelfSignInForm () {
         form.setFieldValue('redirectCheckbox', true)
       }
       const allowedSignValueTemp = []
-      if (data.guestPortal?.enableSmsLogin) {
+      if (data.guestPortal?.enableSmsLogin && !isRestEnableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')
       }
       if (data.guestPortal?.enableEmailLogin) {
@@ -184,6 +188,8 @@ export function SelfSignInForm () {
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      if (isRestEnableSmsLogin)
+        form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
   }, [data])
   const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
@@ -207,27 +213,7 @@ export function SelfSignInForm () {
             {$t({ defaultMessage: 'Allow Sign-In Using: (At least one option must be selected)' })}
           </>}
         ><>
-            <Form.Item name={['guestPortal', 'enableSmsLogin']}
-              initialValue={false}
-              style={SelfSignInAppStyle}>
-              <>
-                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
-                  ['guestPortal', 'enableSmsLogin'])}
-                checked={enableSmsLogin}
-                disabled={!isSMSTokenAvailable}
-                >
-                  <UI.SMSToken />
-                  {$t({ defaultMessage: 'SMS Token' })}
-                </UI.Checkbox>
-                <Tooltip title={$t({
-                  defaultMessage: 'Self-service signup using one ' +
-                    'time token sent to a mobile number'
-                })}
-                placement='bottom'>
-                  <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-                </Tooltip>
-              </>
-            </Form.Item>
+            <SMSTokenCheckbox SMSUsage={smsUsage.data} onChange={updateAllowSign} />
             { isEnabledEmailOTP && <Form.Item name={['guestPortal', 'enableEmailLogin']}
               initialValue={false}
               style={SelfSignInAppStyle}>

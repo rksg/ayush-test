@@ -148,12 +148,13 @@ function useColumns () {
       sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        const schedules = getApSchedules(row)
+        const schedules = getApSchedules(row.nextSchedules)
 
         return schedules.length === 0
           ? getApNextScheduleTpl(row)
           : <Tooltip
-            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row)}</UI.ScheduleTooltipText>}
+            // eslint-disable-next-line max-len
+            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row.nextSchedules)}</UI.ScheduleTooltipText>}
             overlayStyle={{ minWidth: '280px' }}
           ><UI.WithTooltip>{getApNextScheduleTpl(row)}</UI.WithTooltip></Tooltip>
       }
