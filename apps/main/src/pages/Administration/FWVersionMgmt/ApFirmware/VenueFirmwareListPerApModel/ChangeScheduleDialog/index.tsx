@@ -52,9 +52,11 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
   const createRequestPayload = (): UpdateFirmwareSchedulePerApModelPayload => {
     return {
       venueIds: selectedVenuesFirmwares.map(v => v.id),
-      date: selectedDate!,
-      time: selectedTime!,
-      targetFirmwares: payload!.filter(fw => fw.firmware)
+      targetFirmwares: payload!.filter(fw => fw.firmware),
+      schedule: {
+        date: selectedDate!,
+        time: selectedTime!
+      }
     }
   }
 
