@@ -120,6 +120,16 @@ type MutationResponse = { success: boolean, errorMsg: string, errorCode: string 
 
 interface UpdatePreferenceScheduleMutationResponse { transition: MutationResponse }
 
+function roundTimeToNearest15Minutes (timeStr: string) {
+  const [hours, minutes] = timeStr.split(':').map(Number)
+  const totalMinutes = hours * 60 + minutes
+  const roundedMinutes = Math.round(totalMinutes / 15) * 15
+  const roundedHours = Math.floor(roundedMinutes / 60)
+  const roundedMinutesInHour = roundedMinutes % 60
+  const decimalHour = roundedHours + roundedMinutesInHour / 60
+  return String(decimalHour)
+}
+
 export function specToDto (
   rec: EnhancedRecommendation
 ): IntentAIFormDto | undefined {
@@ -134,15 +144,24 @@ export function specToDto (
     const scheduledAt = rec.metadata.scheduledAt
     const dateTime = moment(scheduledAt)
     const date = dateTime.format('YYYY-MM-DD')
-    const time = dateTime.format('HH:mm:ss')
-    dto = { ...dto, scheduledDate: date, scheduledTime: time }
+    const time = roundTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
+    dto = {
+      ...dto,
+      settings: {
+        date: date,
+        hour: time
+      }
+    } as IntentAIFormDto
   }
+  console.log('this is specToDtoo')
   console.log(dto)
   return dto
 }
 
 export function processDtoToPayload (dto: IntentAIFormDto) {
   const newScheduledAt = `${dto.scheduledDate}T${dto.scheduledTime}`
+  console.log('this is dto to payload')
+  console.log(dto)
   return {
     id: dto.id,
     status: dto.status,

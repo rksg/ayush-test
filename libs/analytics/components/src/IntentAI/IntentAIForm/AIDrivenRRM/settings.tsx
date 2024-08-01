@@ -32,7 +32,7 @@ function DateTimeSetting ({
 const scheduleActions = {
   datetime: (props: DateTimeSettingProps) =>
     <Form.Item name={['scheduled', 'date']}><DateTimeSetting {...props}/></Form.Item>,
-  time: () => <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
+  time: () => <TimeDropdown type={TimeDropdownTypes.Daily} name={name as string} />
 }
 
 export function getAvailableActions (scheduledTime: string) {
