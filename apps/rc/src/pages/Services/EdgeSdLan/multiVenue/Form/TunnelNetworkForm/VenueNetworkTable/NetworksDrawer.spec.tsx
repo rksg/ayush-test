@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import {
-  findByRole,
   renderHook,
   waitFor,
   within

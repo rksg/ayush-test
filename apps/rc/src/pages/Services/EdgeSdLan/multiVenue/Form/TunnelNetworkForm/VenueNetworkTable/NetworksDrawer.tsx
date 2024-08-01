@@ -180,7 +180,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           // eslint-disable-next-line max-len
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
-          // mvActivatedGuestNetworks={mvActivatedGuestNetworks}
           onActivateChange={handleActivateChange}
         />
       </Space>

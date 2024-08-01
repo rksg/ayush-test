@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
 
-import { Space }             from 'antd'
-import { get, remove, uniq } from 'lodash'
-import { AlignType }         from 'rc-table/lib/interface'
-import { useIntl }           from 'react-intl'
+import { Space }     from 'antd'
+import { get }       from 'lodash'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { tansformSdLanScopedVenueMap }                            from '@acx-ui/rc/components'
@@ -66,7 +66,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     key: 'selectedNetworks',
     dataIndex: 'selectedNetworks',
     align: 'center' as AlignType,
-    width: 80,
+    width: 100,
     render: (_, row) => {
       const venueNetworks = get(activated, row.id) as { id:string, name: string }[]
       const networkCount = venueNetworks?.length ?? 0

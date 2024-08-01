@@ -116,49 +116,45 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     setIsActivateUpdating(true)
 
     try {
-      if (isGuestTunnelEnabled
-      && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
-        // network with vlan pooling enabled cannot be a SD-LAN guest network
-        const isVlanPooling = !isNil(rowData.vlanPool)
-        const isGuestNetwork = fieldName === 'activatedGuestNetworks'
-                              || (fieldName === 'activatedNetworks' && checked && !isVlanPooling)
+      // network with vlan pooling enabled cannot be a SD-LAN guest network
+      const isVlanPooling = !isNil(rowData.vlanPool)
+      // eslint-disable-next-line max-len
+      const isGuestNetworkAction = fieldName === 'activatedGuestNetworks' || (fieldName === 'activatedNetworks' && checked && !isVlanPooling)
 
-        // eslint-disable-next-line max-len
-        if (isGuestNetwork) {
-          showSdLanGuestFwdConflictModal({
-            currentNetworkVenueId: sdLanVenueId!,
-            currentNetworkId: networkId,
-            currentNetworkName: rowData.name!,
-            activatedGuest: checked,
-            tunneledWlans,
-            tunneledGuestWlans,
-            onOk: async (impactVenueIds: string[]) => {
+      if ( isGuestTunnelEnabled && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
+        && isGuestNetworkAction
+      ) {
 
-              if (impactVenueIds.length !== 0) {
-                // eslint-disable-next-line max-len
-                const actions = [toggleNetwork(serviceId!, sdLanVenueId!, isGuestNetwork, networkId, checked)]
-                actions.push(...impactVenueIds.map(impactVenueId =>
-                  toggleNetwork(serviceId!, impactVenueId, isGuestNetwork, networkId, checked)))
-                await Promise.all(actions)
+        const isFwdGuest = !(fieldName === 'activatedGuestNetworks' && !checked)
 
+        showSdLanGuestFwdConflictModal({
+          currentNetworkVenueId: sdLanVenueId!,
+          currentNetworkId: networkId,
+          currentNetworkName: rowData.name!,
+          activatedGuest: checked,
+          tunneledWlans,
+          tunneledGuestWlans,
+          onOk: async (impactVenueIds: string[]) => {
+
+            if (impactVenueIds.length !== 0) {
+              // eslint-disable-next-line max-len
+              const actions = [toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest)]
+              actions.push(...impactVenueIds.map(impactVenueId =>
+                toggleNetwork(serviceId!, impactVenueId, networkId, true, isFwdGuest)))
+              await Promise.all(actions)
+
+              setIsActivateUpdating(false)
+            } else {
+              // eslint-disable-next-line max-len
+              await toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest, () => {
                 setIsActivateUpdating(false)
-              } else {
-                // eslint-disable-next-line max-len
-                await toggleNetwork(serviceId!, sdLanVenueId!, isGuestNetwork, networkId, checked, () => {
-                  setIsActivateUpdating(false)
-                })
-              }
-            },
-            onCancel: () => setIsActivateUpdating(false)
-          })
-        } else {
-          // eslint-disable-next-line max-len
-          await toggleNetwork(serviceId!, sdLanVenueId!, isGuestNetwork, networkId, checked, () => {
-            setIsActivateUpdating(false)
-          })
-        }
+              })
+            }
+          },
+          onCancel: () => setIsActivateUpdating(false)
+        })
       } else {
-        await toggleNetwork(serviceId!, sdLanVenueId!, false, networkId, checked, () => {
+        await toggleNetwork(serviceId!, sdLanVenueId!, networkId, checked, false, () => {
           setIsActivateUpdating(false)
         })
       }

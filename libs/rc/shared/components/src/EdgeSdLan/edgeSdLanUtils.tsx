@@ -1,4 +1,4 @@
-import { isNil, result, transform } from 'lodash'
+import { isNil, transform } from 'lodash'
 
 import { Features }                                                                                                 from '@acx-ui/feature-toggle'
 import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
@@ -62,6 +62,17 @@ export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) =
   }
 
   return payload
+}
+
+export const isGuestTunnelUtilized = (
+  venueSdLanInfo?: EdgeMvSdLanViewData,
+  networkId?: string,
+  networkVenueId?: string
+) => {
+  return !!venueSdLanInfo?.isGuestTunnelEnabled
+        && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+          wlan.networkId === networkId && wlan.venueId === networkVenueId))
+        && !!networkId && !!networkVenueId
 }
 
 // eslint-disable-next-line max-len
