@@ -6,7 +6,6 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import {
   Alert,
-  Button,
   Loader,
   showActionModal,
   Table,
@@ -44,7 +43,7 @@ import {
   IsNetworkSupport6g,
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
-  KeyValue, VLANPoolViewModelType, EdgeSdLanViewDataP2
+  KeyValue, VLANPoolViewModelType, EdgeSdLanViewDataP2, EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
@@ -52,11 +51,12 @@ import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
 import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
-import { NetworkMvTunnelModal, NetworkMvTunnelModalProps }                      from '../../EdgeSdLan/NetworkMvTunnelModal'
-import { EdgeMvSdLanContextProvider }                                           from '../../EdgeSdLan/NetworkMvTunnelModal/EdgeMvSdLanContextProvider'
 import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                                          from '../../NetworkTunnelActionModal/types'
+import { useUpdateNetworkTunnelAction }                                                     from '../../NetworkTunnelActionModal/utils'
 import {
   NetworkVenueScheduleDialog
 } from '../../NetworkVenueScheduleDialog'
@@ -201,9 +201,9 @@ export function NetworkVenuesTab () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
-  const [tunnelModalState, setTunnelModalState] = useState<NetworkMvTunnelModalProps>({
+  const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
     visible: false
-  } as NetworkMvTunnelModalProps)
+  } as NetworkTunnelActionModalProps)
   const [systemNetwork, setSystemNetwork] = useState(false)
 
   const networkQuery = useGetNetwork()
@@ -240,6 +240,7 @@ export function NetworkVenuesTab () {
 
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
+  const updateNetworkTunnel = useUpdateNetworkTunnelAction()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
@@ -633,38 +634,25 @@ export function NetworkVenuesTab () {
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
       render: function (_: ReactNode, row: Venue) {
-        if (Boolean(row.activated?.isActivated)) {
-          const network = networkQuery.data
-          const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]?.[0]
-          const isTunneled = !!destinationsInfo
-          const clusterName = (isTunneled && destinationsInfo.isGuestTunnelEnabled)
-            ? destinationsInfo?.guestEdgeClusterName
-            : destinationsInfo?.edgeClusterName
+        const currentNetwork = networkQuery.data
 
-          return <Button type='link'
-            onClick={(e) => {
-              e.stopPropagation()
-
-              // show modal
-              setTunnelModalState({
-                visible: true,
-                network: {
-                  id: networkId,
-                  type: network?.type,
-                  venueId: row.id,
-                  venueName: row.name
-                }
-              } as NetworkMvTunnelModalProps)
-            }}>
-            {!!destinationsInfo
-              ? $t({ defaultMessage: 'Tunneled ({clusterName})' },
-                { clusterName })
-              : $t({ defaultMessage: 'Local Breakout' })
-            }
-          </Button>
-        } else {
-          return ''
-        }
+        return <NetworkTunnelInfoButton
+          network={currentNetwork}
+          currentVenue={row}
+          sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
+          onClick={() => {
+            // show modal
+            setTunnelModalState({
+              visible: true,
+              network: {
+                id: networkId,
+                type: currentNetwork?.type,
+                venueId: row.id,
+                venueName: row.name
+              }
+            } as NetworkTunnelActionModalProps)
+          }}
+        />
       }
     }]: [])
   ]
@@ -697,7 +685,8 @@ export function NetworkVenuesTab () {
     })
   }
 
-  const handleCloseTunnelModal = () => setTunnelModalState({ visible: false } as NetworkMvTunnelModalProps)
+  const handleCloseTunnelModal = () =>
+    setTunnelModalState({ visible: false } as NetworkTunnelActionModalProps)
 
   const handleFormFinish = (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
@@ -771,6 +760,13 @@ export function NetworkVenuesTab () {
     })
   }
 
+  const handleNetworkTunnelActionFinish = async (
+    formValues: NetworkTunnelActionForm,
+    otherData: { venueSdLan?: EdgeMvSdLanViewData }
+  ) => {
+    await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -818,9 +814,11 @@ export function NetworkVenuesTab () {
         />
       </Form.Provider>
       {isEdgeMvSdLaneady &&
-      <EdgeMvSdLanContextProvider>
-        <NetworkMvTunnelModal {...tunnelModalState} onClose={handleCloseTunnelModal}/>
-      </EdgeMvSdLanContextProvider>
+        <NetworkTunnelActionModal
+          {...tunnelModalState}
+          onFinish={handleNetworkTunnelActionFinish}
+          onClose={handleCloseTunnelModal}
+        />
       }
     </Loader>
   )
