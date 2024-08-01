@@ -28,7 +28,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                              from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum } from '@acx-ui/types'
-import { filterByAccess, hasPermission, hasRoles }                         from '@acx-ui/user'
+import { filterByAccess, hasPermission, hasRoles, isCustomAdmin }          from '@acx-ui/user'
 import { transformToCityListOptions }                                      from '@acx-ui/utils'
 
 function useColumns (
@@ -259,7 +259,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]),
+    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && !isCustomAdmin(),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -328,7 +328,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && [
+        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && !isCustomAdmin() && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>

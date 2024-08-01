@@ -10,7 +10,7 @@ export enum statuses {
   revertScheduleInProgress = 'revertscheduleinprogress'
 }
 
-export enum reasons {
+export enum statusReasons {
   applyFailed = 'apply-failed',
   revertFailed = 'revert-failed',
   reverted = 'reverted',
@@ -26,23 +26,23 @@ export enum reasons {
   oneClick = 'one-click'
 }
 
-export enum statusReasons {
-  naConflictingConfiguration = statuses.na + '-' + reasons.conflictingConfiguration,
-  naNoAps = statuses.na + '-' + reasons.noAps,
-  naNotEnoughLicense = statuses.na + '-' + reasons.notEnoughLicense,
-  naNotEnoughData = statuses.na + '-' + reasons.notEnoughData,
-  naVerified = statuses.na + '-' + reasons.verified,
-  naWaitingForEtl = statuses.na + '-' + reasons.waitingForEtl,
+export enum displayStates {
+  naConflictingConfiguration = statuses.na + '-' + statusReasons.conflictingConfiguration,
+  naNoAps = statuses.na + '-' + statusReasons.noAps,
+  naNotEnoughLicense = statuses.na + '-' + statusReasons.notEnoughLicense,
+  naNotEnoughData = statuses.na + '-' + statusReasons.notEnoughData,
+  naVerified = statuses.na + '-' + statusReasons.verified,
+  naWaitingForEtl = statuses.na + '-' + statusReasons.waitingForEtl,
   new = statuses.new,
   active = statuses.active,
-  pausedFromInactive = statuses.paused + '-' + reasons.fromInactive,
-  pausedFromActive = statuses.paused + '-' + reasons.fromActive,
-  pausedByDefault = statuses.paused + '-' + reasons.byDefault,
-  pausedApplyFailed = statuses.paused + '-' + reasons.applyFailed,
-  pausedRevertFailed = statuses.paused + '-' + reasons.revertFailed,
-  pausedReverted = statuses.paused + '-' + reasons.reverted,
+  pausedFromInactive = statuses.paused + '-' + statusReasons.fromInactive,
+  pausedFromActive = statuses.paused + '-' + statusReasons.fromActive,
+  pausedByDefault = statuses.paused + '-' + statusReasons.byDefault,
+  pausedApplyFailed = statuses.paused + '-' + statusReasons.applyFailed,
+  pausedRevertFailed = statuses.paused + '-' + statusReasons.revertFailed,
+  pausedReverted = statuses.paused + '-' + statusReasons.reverted,
   scheduled = statuses.scheduled,
-  scheduledOneClick = statuses.scheduled + '-' + reasons.oneClick,
+  scheduledOneClick = statuses.scheduled + '-' + statusReasons.oneClick,
   applyScheduled = statuses.applyScheduled,
   applyScheduleInProgress = statuses.applyScheduleInProgress,
   revertScheduled = statuses.revertScheduled,
