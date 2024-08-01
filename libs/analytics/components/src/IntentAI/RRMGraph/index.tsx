@@ -183,7 +183,7 @@ export const SliderGraphBefore = (
     }
   }
   return (
-    <div data-testid='crrm-slider-before'
+    <div key='crrm-slider-before'
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -219,7 +219,7 @@ export const SliderGraphAfter = (
     }
   }
   return (
-    <div data-testid='crrm-slider-after'
+    <div key='crrm-slider-after'
       style={{
         display: 'flex',
         alignItems: 'center',

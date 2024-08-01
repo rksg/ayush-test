@@ -10,6 +10,7 @@ import { DateFormatEnum, formatter }                                            
 import { LinkDocumentIcon, LinkVideoIcon }                                       from '@acx-ui/icons'
 
 import { CompareSlider }          from '../../../CompareSlider'
+import { useIntentAICRRMQuery }   from '../../RRMGraph/services'
 import { states }                 from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
@@ -62,8 +63,7 @@ export const SliderAfter = (image: string) => {
 
 export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: any }) { // what type to set? //
+  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: ReturnType<typeof useIntentAICRRMQuery> }) {
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()
   const { pageHeaderY } = useLayoutContext()

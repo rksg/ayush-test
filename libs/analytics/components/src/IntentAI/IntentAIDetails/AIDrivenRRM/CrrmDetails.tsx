@@ -25,9 +25,11 @@ import { StatusTrail }     from './StatusTrail'
 export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const id = get(params, 'recommendationId', undefined) as string
+
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
-  const id = get(params, 'recommendationId', undefined) as string
+
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
     useIsSplitOn(Features.CRRM_PARTIAL)
@@ -41,7 +43,7 @@ export const CrrmDetails = () => {
 
   const band = recommendationBandMapping[
     details?.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(details, band)
+  const queryResult = useIntentAICRRMQuery(details?.id, band)
   const crrmData = queryResult.data!
 
   return <Loader states={[codeQuery, detailsQuery, queryResult]}>

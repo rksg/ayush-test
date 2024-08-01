@@ -10,10 +10,16 @@ import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../../IntentAIDetail
 
 import { AIDrivenRRM, isOptimized } from '.'
 
+class ResizeObserver {
+  observe () {}
+  unobserve () {}
+  disconnect () {}
+}
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
   useParams: () => ({
-    id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+    recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
   })
 }))
 
@@ -56,15 +62,20 @@ describe('AIDrivenRRM', () => {
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
   })
+  window.ResizeObserver = ResizeObserver
 
   it('should render correctly', async () => {
     render(<AIDrivenRRM />, {
-      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
+      route: {
+        path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit'
+      },
       wrapper: Provider
     })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
+    const hiddenGraph = await screen.findByTestId('hidden-graph')
+    expect(hiddenGraph).toBeInTheDocument()
     expect(await screen.findByText('Benefits')).toBeVisible()
     await userEvent.click(actions.getByRole('button', { name: 'Next' }))
 

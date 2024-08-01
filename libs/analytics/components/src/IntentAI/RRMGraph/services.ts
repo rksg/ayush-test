@@ -14,8 +14,6 @@ import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
-
 const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     intentCloudRRMGraph: build.query<{
@@ -72,10 +70,10 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   })
 })
 
-export function useIntentAICRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
+export function useIntentAICRRMQuery (id: string, band: BandEnum) {
   const queryResult = useIntentCloudRRMGraphQuery(
-    { id: String(details?.id), band }, {
-      skip: !Boolean(details?.id),
+    { id: String(id), band }, {
+      skip: !id,
       selectFromResult: result => {
         const { data = [], csv = '' } = result.data ?? {}
         return { ...result, data, csv }

@@ -143,6 +143,7 @@ export function AIDrivenRRM () {
   const { $t } = useIntl()
   const params = useParams()
   const id = params?.recommendationId!
+
   const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
   const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -161,8 +162,9 @@ export function AIDrivenRRM () {
 
   const band = recommendationBandMapping[
     details?.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(details, band)
+  const queryResult = useIntentAICRRMQuery(details?.id, band)
   const crrmData = queryResult.data!
+
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
     { text: $t({ defaultMessage: 'AI Analytics' }) },
@@ -194,12 +196,12 @@ export function AIDrivenRRM () {
         ]}
       />
       {/* hide the graph, only rendering the graph image for the slider & summary */}
-      <div hidden>
-        <SliderGraphBefore key='slider-image-before' crrmData={crrmData} setSliderUrlBefore={setSliderUrlBefore} />
-        <SliderGraphAfter key='slider-image-after' crrmData={crrmData} setSliderUrlAfter={setSliderUrlAfter} />
-        <SummaryGraphBefore key='summary-image-before' details={details} crrmData={crrmData} setSummaryUrlBefore={setSummaryUrlBefore} />
-        <SummaryGraphAfter key='summary-image-after' crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
-      </div>
+      {crrmData && <div hidden data-testid='hidden-graph'>
+        <SliderGraphBefore crrmData={crrmData} setSliderUrlBefore={setSliderUrlBefore} />
+        <SliderGraphAfter crrmData={crrmData} setSliderUrlAfter={setSliderUrlAfter} />
+        <SummaryGraphBefore details={details} crrmData={crrmData} setSummaryUrlBefore={setSummaryUrlBefore} />
+        <SummaryGraphAfter crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
+      </div>}
       <StepsForm
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })

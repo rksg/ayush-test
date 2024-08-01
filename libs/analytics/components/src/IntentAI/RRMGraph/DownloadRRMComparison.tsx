@@ -37,7 +37,7 @@ export function DownloadRRMComparison (props: {
   const { $t } = useIntl()
   const band = recommendationBandMapping[
     props.details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(props.details, band)
+  const queryResult = useIntentAICRRMQuery(props.details?.id, band)
   const url = useDownloadUrl(queryResult.csv, 'text/csv')
 
   const filename = sanitize([
