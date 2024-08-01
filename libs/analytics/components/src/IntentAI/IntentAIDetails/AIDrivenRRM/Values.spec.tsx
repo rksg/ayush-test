@@ -3,9 +3,9 @@ import { MomentInput } from 'moment-timezone'
 import { get } from '@acx-ui/config'
 
 import { transformDetailsResponse } from '../../IntentAIForm/services'
+import { mockedIntentCRRM }         from '../__tests__/fixtures'
 
-import { mockedIntentCRRM } from './__tests__/fixtures'
-import { getValuesText }    from './Values'
+import { getValuesText } from './Values'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()

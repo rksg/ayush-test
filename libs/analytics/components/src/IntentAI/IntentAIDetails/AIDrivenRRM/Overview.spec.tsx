@@ -4,10 +4,10 @@ import {  Provider }       from '@acx-ui/store'
 import { render, screen  } from '@acx-ui/test-utils'
 
 import { transformDetailsResponse } from '../../IntentAIForm/services'
-
 import {
   mockedIntentCRRM
-} from './__tests__/fixtures'
+} from '../__tests__/fixtures'
+
 import { Overview } from './Overview'
 
 const mockGet = get as jest.Mock

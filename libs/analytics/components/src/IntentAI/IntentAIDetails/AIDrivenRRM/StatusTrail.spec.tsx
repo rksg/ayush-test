@@ -1,9 +1,9 @@
 import { render, screen } from '@acx-ui/test-utils'
 
 import { IntentDetails, transformDetailsResponse } from '../../IntentAIForm/services'
+import { mockedIntentCRRM }                        from '../__tests__/fixtures'
 
-import { mockedIntentCRRM } from './__tests__/fixtures'
-import { StatusTrail }      from './StatusTrail'
+import { StatusTrail } from './StatusTrail'
 
 describe('StatusTrail', () => {
   it('should render correctly with valid data', async () => {
