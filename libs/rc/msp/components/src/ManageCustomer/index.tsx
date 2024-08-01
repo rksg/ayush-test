@@ -640,8 +640,7 @@ export function ManageCustomer () {
         customer.licenses = assignLicense
       }
       await updateCustomer({
-        params: { mspEcTenantId: mspEcTenantId },
-        payload: isRbacEnabled ? { data: [customer] }: customer,
+        params: { mspEcTenantId: mspEcTenantId }, payload: customer,
         enableRbac: isRbacEnabled }).unwrap()
 
       if (isPatchTierEnabled && originalTier !== ecFormData.tier) {

@@ -500,8 +500,7 @@ export function ManageIntegrator () {
       }
       await updateIntegrator({
         params: { mspEcTenantId: mspEcTenantId },
-        payload: isRbacEnabled ? { data: [customer] }: customer,
-        enableRbac: isRbacEnabled }).unwrap()
+        payload: customer, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
