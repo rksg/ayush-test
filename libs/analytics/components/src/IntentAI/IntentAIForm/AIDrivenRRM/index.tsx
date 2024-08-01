@@ -15,7 +15,7 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 import { crrmText }                                                                  from '../../utils/aiDrivenRRM'
 import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
-import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery }           from '../services'
+import { useIntentCodeQuery, useIntentDetailsQuery }                                 from '../services'
 import * as UI                                                                       from '../styledComponents'
 
 import { Introduction } from './introduction'
@@ -140,8 +140,8 @@ export function AIDrivenRRM () {
   const params = useParams()
   const id = params?.recommendationId!
 
-  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useConfigRecommendationDetailsQuery(
+  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
+  const detailsQuery = useIntentDetailsQuery(
     codeQuery.data!,
     { skip: !Boolean(codeQuery.data?.code) }
   )

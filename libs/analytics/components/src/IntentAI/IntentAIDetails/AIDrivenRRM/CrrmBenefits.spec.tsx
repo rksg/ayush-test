@@ -8,7 +8,7 @@ import { CrrmBenefits }                               from './CrrmBenefits'
 
 describe('CrrmBenefits', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => true)

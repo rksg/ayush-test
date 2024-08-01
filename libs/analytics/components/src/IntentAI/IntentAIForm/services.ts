@@ -145,10 +145,10 @@ export const kpiHelper = (code: string) => {
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationCode: build.query<BasicIntent, Pick<BasicIntent, 'id'>>({
+    intentCode: build.query<BasicIntent, BasicIntent>({
       query: ({ id }) => ({
         document: gql`
-          query ConfigRecommendationCode($id: String) {
+          query IntentCode($id: String) {
             recommendation(id: $id) { id code status }
           }
         `,
@@ -158,10 +158,10 @@ export const api = recommendationApi.injectEndpoints({
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    configRecommendationDetails: build.query<EnhancedIntent, BasicIntent>({
+    intentDetails: build.query<EnhancedIntent, BasicIntent>({
       query: ({ id, code }) => ({
         document: gql`
-          query ConfigRecommendationDetails($id: String) {
+          query IntentDetails($id: String) {
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
@@ -183,6 +183,6 @@ export const api = recommendationApi.injectEndpoints({
 })
 
 export const {
-  useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery
+  useIntentCodeQuery,
+  useIntentDetailsQuery
 } = api

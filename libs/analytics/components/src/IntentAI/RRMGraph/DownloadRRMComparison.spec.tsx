@@ -11,7 +11,7 @@ describe('DownloadRRMComparison', () => {
     global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
     global.URL.revokeObjectURL = jest.fn()
 
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
   })

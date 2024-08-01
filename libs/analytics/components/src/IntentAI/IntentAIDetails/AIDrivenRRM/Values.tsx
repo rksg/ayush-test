@@ -5,10 +5,11 @@ import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { NodeType, getIntl }                     from '@acx-ui/utils'
 
-import { StateType, StatusTrail }    from '../../config'
+import { StatusTrail }               from '../../config'
 import { codes }                     from '../../IntentAIForm/AIDrivenRRM'
 import { IconValue }                 from '../../IntentAIForm/config'
 import { EnhancedIntent, IntentKpi } from '../../IntentAIForm/services'
+import { statuses as StateType }     from '../../states'
 import { isDataRetained }            from '../../utils'
 
 export const getKpiConfig = (recommendation: EnhancedIntent, key: string) => {

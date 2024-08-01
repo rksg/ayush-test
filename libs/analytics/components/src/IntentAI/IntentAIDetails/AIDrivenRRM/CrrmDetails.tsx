@@ -4,10 +4,10 @@ import { useIntl } from 'react-intl'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer }               from '../../../DescriptionSection/styledComponents'
+import { FixedAutoSizer } from '../../../DescriptionSection/styledComponents'
 import {
-  useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery
+  useIntentCodeQuery,
+  useIntentDetailsQuery
 } from '../../IntentAIForm/services'
 import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../styledComponents'
 
@@ -21,8 +21,8 @@ export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'recommendationId', undefined) as string
-  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useConfigRecommendationDetailsQuery(
+  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
+  const detailsQuery = useIntentDetailsQuery(
     codeQuery.data!,
     { skip: !Boolean(codeQuery.data?.code) }
   )
