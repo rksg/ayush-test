@@ -1,6 +1,6 @@
 import { IntentDetails } from '../../../IntentAIForm/services'
 
-export const mockedRecommendationCRRM = {
+export const mockedIntentCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
@@ -219,7 +219,7 @@ export const mockedRecommendationCRRM = {
   trigger: 'daily'
 } as unknown as IntentDetails
 
-export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
+export const mockedIntentCRRMnew = { // this fixture is used to test new crrm recommendation
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
   code: 'c-crrm-channel5g-auto',
   status: 'new',
@@ -273,7 +273,7 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
   }
 } as unknown as IntentDetails
 
-export const mockedRecommendationCRRMApplied = { // this fixture is used to test applied crrm recommendation
+export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm recommendation
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
@@ -420,26 +420,4 @@ export const mockedCRRMGraphsApplied = {
     },
     projected: null
   }
-}
-
-export const mockWifiNetworkList = {
-  fields: [
-    'name',
-    'id',
-    'ssid'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      name: 'GKSS',
-      id: '985a2e7fca3f43db8deb9eaf7a9c25d8',
-      ssid: 'GKSS'
-    },
-    {
-      name: 'Shine',
-      id: 'e1304efc68ed48fa9e7477fe1bffe7b2',
-      ssid: 'Shine'
-    }
-  ]
 }

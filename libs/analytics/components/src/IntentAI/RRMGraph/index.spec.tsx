@@ -5,8 +5,8 @@ import { GraphProps }                       from '@acx-ui/components'
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../IntentAIDetails/__tests__/fixtures'
-import { EnhancedIntent }                             from '../IntentAIForm/services'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../IntentAIDetails/__tests__/fixtures'
+import { EnhancedIntent }                     from '../IntentAIForm/services'
 
 import { IntentAIRRMGraph } from '.'
 
@@ -30,12 +30,12 @@ jest.mock('./DownloadRRMComparison', () => ({
 describe('CloudRRM', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
+      data: { intent: mockedCRRMGraphs }
     })
   })
 
   it('should render correctly', async () => {
-    const details = mockedRecommendationCRRM as EnhancedIntent
+    const details = mockedIntentCRRM as EnhancedIntent
     render(<IntentAIRRMGraph details={details}/>, { wrapper: Provider })
     expect(await screen.findByText('View More')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(2)
@@ -43,7 +43,7 @@ describe('CloudRRM', () => {
   })
 
   it('should handle drawer', async () => {
-    const details = mockedRecommendationCRRM as EnhancedIntent
+    const details = mockedIntentCRRM as EnhancedIntent
     render(<IntentAIRRMGraph details={details}/>, { wrapper: Provider })
     await userEvent.click(await screen.findByText('View More'))
     expect(await screen.findByText('Key Performance Indications')).toBeVisible()

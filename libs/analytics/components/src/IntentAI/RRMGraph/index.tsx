@@ -28,7 +28,7 @@ import * as UI                  from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  recommendation: EnhancedIntent,
+  intent: EnhancedIntent,
   legend: string[],
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean
@@ -50,7 +50,7 @@ function useGraph (
         chartRef={connectChart}
         title={$t({ defaultMessage: 'Before' })}
         subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
-          dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
+          dateTime: formatter(DateFormatEnum.DateTimeFormat)(intent.dataEndTime)
         })}
         data={graphs[0]}
         zoomScale={zoomScale}

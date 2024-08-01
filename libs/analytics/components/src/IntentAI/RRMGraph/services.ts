@@ -26,7 +26,7 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
       query: (variables) => ({
         document: gql`
           query IntentAIRRMGraph($id: String) {
-            recommendation(id: $id) {
+            intent: recommendation(id: $id) {
               graph: kpi(key: "graph", timeZone: "${moment.tz.guess()}") {
                 current projected previous
               }
@@ -36,11 +36,11 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
         variables
       }),
       transformResponse: (
-        response: { recommendation: { graph: Record<string, CloudRRMGraph | null> } },
+        response: { intent: { graph: Record<string, CloudRRMGraph | null> } },
         _,
         { band }
       ) => {
-        const data = response.recommendation.graph
+        const data = response.intent.graph
         const sortedData = {
           previous: data.previous,
           current: data.current,

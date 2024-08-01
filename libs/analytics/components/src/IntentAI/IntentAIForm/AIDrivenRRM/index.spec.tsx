@@ -6,7 +6,7 @@ import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedRecommendationCRRM } from '../../IntentAIDetails/__tests__/fixtures'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../../IntentAIDetails/__tests__/fixtures'
 
 import { AIDrivenRRM, isOptimized } from '.'
 
@@ -45,13 +45,13 @@ jest.mock('@acx-ui/config', () => ({
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'IntentCode', {
-      data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
+      data: { intent: pick(mockedIntentCRRM, ['id', 'code']) }
     })
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-      data: { recommendation: mockedRecommendationCRRM }
+      data: { intent: mockedIntentCRRM }
     })
     mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
+      data: { intent: mockedCRRMGraphs }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)

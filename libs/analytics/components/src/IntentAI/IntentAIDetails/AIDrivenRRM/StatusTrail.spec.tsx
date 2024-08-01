@@ -2,12 +2,12 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { IntentDetails, transformDetailsResponse } from '../../IntentAIForm/services'
 
-import { mockedRecommendationCRRM } from './__tests__/fixtures'
-import { StatusTrail }              from './StatusTrail'
+import { mockedIntentCRRM } from './__tests__/fixtures'
+import { StatusTrail }      from './StatusTrail'
 
-describe('RecommendationDetails Status Trail', () => {
+describe('StatusTrail', () => {
   it('should render correctly with valid data', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     render(<StatusTrail details={crrmDetails} />)
     expect(await screen.findAllByText('New')).toHaveLength(1)
     expect(await screen.findAllByText('Applied')).toHaveLength(14)
@@ -17,7 +17,7 @@ describe('RecommendationDetails Status Trail', () => {
 
   it('should render correctly with apply cancel', async () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM,
+      ...mockedIntentCRRM,
       statusTrail: [
         {
           status: 'applied',
@@ -35,7 +35,7 @@ describe('RecommendationDetails Status Trail', () => {
 
   it('should render correctly with new apply cancel', async () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM,
+      ...mockedIntentCRRM,
       statusTrail: [
         {
           status: 'new',
@@ -54,7 +54,7 @@ describe('RecommendationDetails Status Trail', () => {
 
   it('should render correctly with unknown status', async () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM,
+      ...mockedIntentCRRM,
       statusTrail: [
         {
           status: 'unknown',

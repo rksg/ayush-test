@@ -4,27 +4,27 @@ import { render, screen } from '@acx-ui/test-utils'
 import { IntentDetails, transformDetailsResponse } from '../../IntentAIForm/services'
 
 import {
-  mockedRecommendationCRRM,
-  mockedRecommendationCRRMnew
+  mockedIntentCRRM,
+  mockedIntentCRRMnew
 } from './__tests__/fixtures'
 import { CrrmValuesExtra } from './CrrmValuesExtra'
 
 describe('CrrmValuesExtra', () => {
   it('should render correctly for new crrm', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRMnew)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
     expect(await screen
       .findByText(/^Based on our AI Analytics, enabling AI-Driven Cloud RRM will/)).toBeVisible()
   })
   it('should render correctly for applied crrm', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
     expect(await screen
       .findByText(/^AI-Driven Cloud RRM will constantly monitor the network/)).toBeVisible()
   })
   it('should render correctly for full crrm', async () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM,
+      ...mockedIntentCRRM,
       metadata: { algorithmData: { isCrrmFullOptimization: true } } as object
     } as IntentDetails)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })
@@ -36,7 +36,7 @@ describe('CrrmValuesExtra', () => {
   })
   it('should render correctly for partial optimized crrm', async () => {
     const crrmDetails = transformDetailsResponse({
-      ...mockedRecommendationCRRM,
+      ...mockedIntentCRRM,
       metadata: { algorithmData: { isCrrmFullOptimization: false } } as object
     } as IntentDetails)
     render(<CrrmValuesExtra details={crrmDetails} />, { wrapper: Provider })

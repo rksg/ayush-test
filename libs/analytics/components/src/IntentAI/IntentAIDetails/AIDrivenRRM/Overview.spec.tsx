@@ -6,7 +6,7 @@ import { render, screen  } from '@acx-ui/test-utils'
 import { transformDetailsResponse } from '../../IntentAIForm/services'
 
 import {
-  mockedRecommendationCRRM
+  mockedIntentCRRM
 } from './__tests__/fixtures'
 import { Overview } from './Overview'
 
@@ -27,7 +27,7 @@ describe('Recommendation Overview', () => {
   afterAll(() => mockGet.mockReset())
 
   it('should render correctly for crrm in R1', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     mockGet.mockReturnValue(false)
     render(<Overview details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Venue')).toBeVisible()
@@ -38,7 +38,7 @@ describe('Recommendation Overview', () => {
   })
 
   it('should render correctly for crrm in RA', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     mockGet.mockReturnValue(true)
     render(<Overview details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Zone')).toBeVisible()

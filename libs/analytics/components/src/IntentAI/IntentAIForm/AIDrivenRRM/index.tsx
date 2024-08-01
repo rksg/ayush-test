@@ -13,10 +13,10 @@ import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { crrmText }                                                                  from '../../utils/aiDrivenRRM'
-import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType } from '../config'
-import { useIntentCodeQuery, useIntentDetailsQuery }                                 from '../services'
-import * as UI                                                                       from '../styledComponents'
+import { crrmText }                                                          from '../../utils/aiDrivenRRM'
+import { categories, CodeInfo, priorities, IntentConfig, states, StateType } from '../config'
+import { useIntentCodeQuery, useIntentDetailsQuery }                         from '../services'
+import * as UI                                                               from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'
@@ -30,9 +30,6 @@ export const codes = {
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    appliedActionText: defineMessage({ defaultMessage: '{scope} had experienced high co-channel interference in 2.4 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 2.4 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
     partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
@@ -47,8 +44,7 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }],
-    continuous: true
+    }]
   },
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
@@ -56,9 +52,6 @@ export const codes = {
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    appliedActionText: defineMessage({ defaultMessage: '{scope} had experienced high co-channel interference in 5 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 5 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
     partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
@@ -73,8 +66,7 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }],
-    continuous: true
+    }]
   },
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
@@ -82,9 +74,6 @@ export const codes = {
     priority: priorities.high,
     valueFormatter: crrmText,
     valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    actionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan, and potentially channel bandwidth and AP transmit power can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    appliedActionText: defineMessage({ defaultMessage: '{scope} had experienced high co-channel interference in 6 GHz band due to suboptimal channel planning as of {initialTime}.{isDataRetained, select, true { The recommendation had been applied as of {appliedTime} and interfering links have reduced. AI-Driven RRM will continue to monitor and adjust further everyday to continue to minimize co-channel interference.} other {}}{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
-    partialOptimizedActionText: defineMessage({ defaultMessage: '{scope} is experiencing high co-channel interference in 6 GHz band due to suboptimal channel planning. The channel plan can be optimized by enabling AI-Driven Cloud RRM. This will help to improve the Wi-Fi end user experience.{isDataRetained, select, true {} other { {dataNotRetainedMsg}}}' }),
     reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
     appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
     partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
@@ -99,10 +88,9 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }],
-    continuous: true
+    }]
   }
-} as Record<string, RecommendationConfig & CodeInfo>
+} as Record<string, IntentConfig & CodeInfo>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
   acc[key as StateType] = val.text

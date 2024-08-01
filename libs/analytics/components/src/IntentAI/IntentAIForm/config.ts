@@ -39,10 +39,9 @@ export type CodeInfo = {
   priority: IconValue
 }
 
-type RecommendationKPIConfig = {
+type IntentKPIConfig = {
   key: string;
   label: MessageDescriptor;
-  tooltipContent?: MessageDescriptor;
   format: ReturnType<typeof formatter>;
   deltaSign: '+' | '-' | 'none';
   valueAccessor?: (value: number[]) => number;
@@ -51,23 +50,15 @@ type RecommendationKPIConfig = {
   filter?: CallableFunction
 }
 
-export type RecommendationConfig = {
+export type IntentConfig = {
   valueFormatter: ReturnType<typeof formatter>
   valueText: MessageDescriptor
-  actionText: MessageDescriptor
   reasonText: MessageDescriptor
   tradeoffText: MessageDescriptor
   appliedReasonText?: MessageDescriptor
-  kpis: RecommendationKPIConfig[]
-  recommendedValueTooltipContent?:
-    string |
-    ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
-      MessageDescriptor)
-  partialOptimizedActionText?: MessageDescriptor
+  kpis: IntentKPIConfig[]
   partialOptimizationAppliedReasonText?: MessageDescriptor
   partialOptimizedTradeoffText?: MessageDescriptor
-  appliedActionText?: MessageDescriptor
-  continuous: boolean
 }
 
 export const categories = {
