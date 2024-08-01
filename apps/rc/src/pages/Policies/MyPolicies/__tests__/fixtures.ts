@@ -1,3 +1,6 @@
+
+import { Priority, TrafficClass } from '@acx-ui/rc/utils'
+
 export const mockedRogueApPoliciesList = {
   fields: [
     'id',
@@ -45,6 +48,29 @@ export const mockedClientIsolationQueryData = {
         {
           venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
           wifiNetworkId: 'bd789b85931b40fe94d15028dffc6214'
+        },
+        {
+          venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
+          wifiNetworkId: '936ad54680ba4e5bae59ae1eb817ca24'
+        }
+      ]
+    }
+  ]
+}
+
+export const mockedEdgeQosBandwidthQueryData = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'ebb2a23e3e9c4f1c9d4672828cc0e4bc',
+      name: 'edegQos1',
+      description: '',
+      trafficClassSettings: [
+        {
+          trafficClass: TrafficClass.VOICE,
+          priority: Priority.HIGH
         },
         {
           venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
