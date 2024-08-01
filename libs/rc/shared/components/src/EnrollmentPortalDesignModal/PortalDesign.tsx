@@ -6,7 +6,7 @@ import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { Loader }                                                                                                                                               from '@acx-ui/components'
 import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
-import { defaultConfiguration, UIConfiguration }                                                                                                                from '@acx-ui/rc/utils'
+import { DefaultUIConfiguration, UIConfiguration }                                                                                                              from '@acx-ui/rc/utils'
 
 
 import { BackgroundContent } from './BackgroundContent'
@@ -86,8 +86,8 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   })
   const [screen, setScreen] = useState('desk')
   const [showComponent, setShowComponent] = useState(false)
-  const original = useRef<UIConfiguration>(defaultConfiguration)
-  const [value, setValue] = useState<UIConfiguration>(defaultConfiguration)
+  const original = useRef<UIConfiguration>(DefaultUIConfiguration)
+  const [value, setValue] = useState<UIConfiguration>(DefaultUIConfiguration)
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
     ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
     ['poweredBy', value.disablePoweredBy],
@@ -184,9 +184,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
     data.welcomeName = 'name'
     data.welcomeTitle ='welcome'
     data.uiColorSchema = {
-      ...data.uiColorSchema,
-      backgroundColor: '#FFFFFF',
-      fontColor: '#FFFFFF'
+      ...data.uiColorSchema
     }
     const formData = new FormData()
     // eslint-disable-next-line max-len
@@ -318,7 +316,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 <div style={{ marginTop: 10 }}>
                   <TitleContent value={value}
                     onColorChange={(v)=> setValue({ ...value,
-                      uiColorSchema: { ...value.uiColorSchema, titleFontColor: v } })}
+                      uiColorSchema: { ...value.uiColorSchema, fontHeaderColor: v } })}
                     onSizeChange={(v)=> setValue({ ...value,
                       uiStyleSchema: { ...value.uiStyleSchema, titleFontSize: v } })}
                   />

@@ -58,7 +58,7 @@ function WorkflowPageHeader () {
           ])}
       />
       {visible &&
-      <WorkflowActionPreviewModal id={policyId!} onClose={()=>setVisible(false)}/>}
+      <WorkflowActionPreviewModal workflowId={policyId!} onClose={()=>setVisible(false)}/>}
       {visible2 && <EnrollmentPortalDesignModal id={policyId!} onFinish={()=>setVisible2(false)}/>}
     </>
   )

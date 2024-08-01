@@ -3,20 +3,42 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Node }    from 'reactflow'
 
-import { Loader }                                                                                                                                                                                    from '@acx-ui/components'
-import { ListSolid }                                                                                                                                                                                 from '@acx-ui/icons'
-import { useGetUIConfigurationQuery, useGetWorkflowActionDefinitionListQuery, useGetWorkflowStepsByIdQuery, useLazyGetUIConfigurationBackgroundImageQuery, useLazyGetUIConfigurationLogoImageQuery } from '@acx-ui/rc/services'
-import { ActionType, UIConfiguration, WorkflowStep, defaultConfiguration, toReactFlowData }                                                                                                          from '@acx-ui/rc/utils'
+import { Loader }                           from '@acx-ui/components'
+import { ListSolid }                        from '@acx-ui/icons'
+import {
+  useGetActionByIdQuery,
+  useGetUIConfigurationQuery,
+  useGetWorkflowActionDefinitionListQuery,
+  useGetWorkflowStepsByIdQuery,
+  useLazyGetUIConfigurationBackgroundImageQuery,
+  useLazyGetUIConfigurationLogoImageQuery
+} from '@acx-ui/rc/services'
+import {
+  ActionType,
+  UIConfiguration,
+  WorkflowStep,
+  DefaultUIConfiguration,
+  toReactFlowData,
+  GenericActionData
+} from '@acx-ui/rc/utils'
 
-import { EnrollmentPortalDesignModal } from '../EnrollmentPortalDesignModal'
+import { EnrollmentPortalDesignModal }       from '../EnrollmentPortalDesignModal'
+import { AupPreview, DisplayMessagePreview } from '../policies/WorkflowCanvas/ActionPreviewDrawer/WorkflowActionPreview'
 
 import { ActionNavigationDrawer } from './ActionNavigationDrawer'
 import * as UI                    from './styledComponents'
 
+const previewMap = {
+  [ActionType.AUP]: AupPreview,
+  [ActionType.DATA_PROMPT]: AupPreview,     // FIXME: Implement Data_Prompt preview component
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,  // FIXME: Implement Display_Message preview component
+  [ActionType.DPSK]: AupPreview  // FIXME: Implement DPSK preview component
+}
 
 export interface WorkflowActionPreviewProps {
-  id: string
-  step?: WorkflowStep
+  workflowId: string
+  step?: WorkflowStep,
+  actionData?: GenericActionData
 }
 export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   const [marked, setMarked] = useState({
@@ -26,21 +48,21 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   })
   const [screen, setScreen] = useState('desk')
   const { $t } = useIntl()
-  const { id, step } = props
+  const { workflowId, step, actionData } = props
   const [selectedStepId, setSelectedStepId] = useState(step?.id)
   const [stepMap, setStepMap] = useState(new Map<string, WorkflowStep>())
-  const [UIConfig, setUIConfig] = useState<UIConfiguration>(defaultConfiguration)
+  const [UIConfig, setUIConfig] = useState<UIConfiguration>(DefaultUIConfiguration)
   const [portalVisible, setPortalVisible] = useState(false)
   const [navigatorVisible, setNavigatorVisible] = useState(false)
   const [nodes, setNodes] = useState<Node<WorkflowStep, ActionType>[]>([])
-  const configurationQuery = useGetUIConfigurationQuery({ params: { id: id } })
+  const configurationQuery = useGetUIConfigurationQuery({ params: { id: workflowId } })
   const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
   const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
   const fetchImage = async (imageType: string) => {
     if (imageType === 'logoImages')
-      return getUIConfigLogoImage({ params: { id: id } } ).unwrap()
+      return getUIConfigLogoImage({ params: { id: workflowId } } ).unwrap()
     else if (imageType === 'backgroundImages')
-      return getUIConfigBackgroundImage({ params: { id: id } } ).unwrap()
+      return getUIConfigBackgroundImage({ params: { id: workflowId } } ).unwrap()
     return Promise.resolve()
   }
 
@@ -52,10 +74,10 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
         fetchImage('logoImages')
           .then(res => {
             if (res) {
-              setUIConfig({
-                ...UIConfig!,
+              setUIConfig((prevState) => ({
+                ...prevState,
                 logoImage: res.fileUrl
-              })
+              }))
             }
           })
       }
@@ -64,10 +86,10 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
         fetchImage('backgroundImages')
           .then(res => {
             if (res) {
-              setUIConfig({
-                ...UIConfig!,
+              setUIConfig((prevState) => ({
+                ...prevState,
                 backgroundImage: res.fileUrl
-              })
+              }))
             }
           })
       }
@@ -76,12 +98,12 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
 
   const { data: actionDefsData, ...defQuery } = useGetWorkflowActionDefinitionListQuery({
     params: { pageSize: '1000', page: '0', sort: 'name,asc' }
-  }, { skip: props.step !== undefined })
+  }, { skip: props.step !== undefined || props.actionData !== undefined })
 
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
-    params: { policyId: id, pageSize: '1000', page: '0', sort: 'id,ASC' }
-  }, { skip: props.step !== undefined })
+    params: { policyId: workflowId, pageSize: '1000', page: '0', sort: 'id,ASC' }
+  }, { skip: props.step !== undefined || props.actionData !== undefined })
 
   useEffect(() => {
     if (!actionDefsData || !stepsData ) return
@@ -94,7 +116,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
     setSelectedStepId(nodes.find(node => node.type !== 'START' as ActionType)?.data.id)
   }, [stepsData, actionDefsData])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (step) {
       setNodes([{
         id: step.id,
@@ -129,7 +151,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
                     DISPLAY_MESSAGE {Custom Message}
                     other {}
                   }` }, {
-                  type: stepMap.get(selectedStepId ?? '')?.actionType
+                  type: stepMap.get(selectedStepId ?? '')?.actionType ?? actionData?.actionType
                 })}
               </div>
               <div style={{ marginLeft: '8px' }}
@@ -179,27 +201,34 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
             </div>
           </div>
         </UI.LayoutHeader>
-        <UI.LayoutContent id={'actiondemocontent'} $isPreview={true} style={{ minHeight: '750px' }}>
+        <UI.LayoutContent id={'actiondemocontent'} $isPreview={true} style={{ height: '750px' }}>
           <UI.LayoutView $type={screen}
-            style={{ backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
-              backgroundColor: UIConfig.uiColorSchema?.backgroundColor }}>
-            <div>
-              {selectedStepId && getStepPreview(stepMap.get(selectedStepId ?? ''))}
-            </div>
+            style={{
+              backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',
+              backgroundColor: UIConfig.uiColorSchema?.backgroundColor,
+              backgroundSize: 'contain'
+            }}>
+            <CommonPreviewContainer
+              ui={UIConfig}
+              step={selectedStepId
+                ? (stepMap.get(selectedStepId) ?? step)
+                : step}
+              actionData={props.actionData}
+            />
           </UI.LayoutView>
         </UI.LayoutContent>
       </div>
-      {<ActionNavigationDrawer
+      <ActionNavigationDrawer
         visible={navigatorVisible}
         onClose={()=>setNavigatorVisible(false)}
         selectedStepId={selectedStepId}
         nodes={nodes}
         onSelect={(v:string)=>setSelectedStepId(v)}
-      />}
+      />
       {
         portalVisible &&
         <EnrollmentPortalDesignModal
-          id={id}
+          id={workflowId}
           onFinish={()=>setPortalVisible(false)}
         />
       }
@@ -207,7 +236,19 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   )
 }
 
-function getStepPreview (step?: WorkflowStep) {
-  if (!step) return undefined
-  return<></>
+function CommonPreviewContainer (props: {
+  ui?: UIConfiguration, step?: WorkflowStep, actionData?: GenericActionData
+}) {
+  const { ui, step, actionData } = props
+  const ActionPreview = previewMap[step?.actionType ?? actionData?.actionType ?? ActionType.AUP]
+
+  const { data, isLoading, isFetching } = useGetActionByIdQuery({
+    params: { actionId: step?.enrollmentActionId }
+  }, { skip: !step?.enrollmentActionId })
+
+  return (
+    <Loader states={[{ isLoading, isFetching }]}>
+      <ActionPreview data={actionData ?? data} uiConfiguration={ui}/>
+    </Loader>
+  )
 }

@@ -24,6 +24,8 @@ interface StepDrawerState {
 }
 
 export interface WorkflowContextProps {
+  workflowId: string,
+
   actionDefMap: Map<string, ActionType>,
   setActionDefMap: (defMap: Map<string, ActionType>) => void,
 
@@ -40,7 +42,7 @@ export interface WorkflowContextProps {
 export const WorkflowContext = createContext<WorkflowContextProps>({} as WorkflowContextProps)
 export const useWorkflowContext = () => useContext(WorkflowContext)
 
-export const WorkflowContextProvider = (props: { children: ReactNode }) => {
+export const WorkflowContextProvider = (props: { workflowId: string, children: ReactNode }) => {
   // Which Step Node is selecting for now
   const [interactedNode, setInteractedNode] = useState<NodeProps | undefined>()
 
@@ -82,6 +84,7 @@ export const WorkflowContextProvider = (props: { children: ReactNode }) => {
 
   return <WorkflowContext.Provider
     value={{
+      workflowId: props.workflowId,
       nodeState: {
         interactedNode: interactedNode,
         setInteractedNode: setInteractedNode,

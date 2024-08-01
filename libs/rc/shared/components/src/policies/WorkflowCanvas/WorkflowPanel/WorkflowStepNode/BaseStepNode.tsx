@@ -2,7 +2,6 @@ import { ReactNode, useState } from 'react'
 
 import { Popover, Space }                         from 'antd'
 import { useIntl }                                from 'react-intl'
-import { useParams }                              from 'react-router-dom'
 import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
 
 import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
@@ -11,8 +10,8 @@ import { useDeleteWorkflowStepByIdMutation }                                    
 import { ActionType }                                                                            from '@acx-ui/rc/utils'
 
 
-import { ActionPreviewDrawer } from '../../ActionPreviewDrawer'
-import { useWorkflowContext }  from '../WorkflowContextProvider'
+import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
+import { useWorkflowContext }         from '../WorkflowContextProvider'
 
 import * as UI               from './styledComponents'
 import { EditorToolbarIcon } from './styledComponents'
@@ -22,11 +21,10 @@ export default function BaseStepNode (props: NodeProps
 {
   const { $t } = useIntl()
   const nodeId = useNodeId()
-  const { policyId } = useParams()
   const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const {
     nodeState, actionDrawerState,
-    stepDrawerState
+    stepDrawerState, workflowId
   } = useWorkflowContext()
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
 
@@ -60,7 +58,7 @@ export default function BaseStepNode (props: NodeProps
       content:
         $t({ defaultMessage: 'Do you want to delete this step?' }),
       onOk: () => {
-        deleteStep({ params: { policyId, stepId: nodeId } }).unwrap()
+        deleteStep({ params: { policyId: workflowId, stepId: nodeId } }).unwrap()
       }
     })
   }
@@ -110,10 +108,10 @@ export default function BaseStepNode (props: NodeProps
         {props.children}
       </Loader>
 
-      {(isPreviewOpen && props?.data?.enrollmentActionId) &&
-        <ActionPreviewDrawer
-          actionType={props.type as ActionType}
-          actionId={props?.data?.enrollmentActionId}
+      {(isPreviewOpen && props?.data?.enrollmentActionId && workflowId) &&
+        <WorkflowActionPreviewModal
+          workflowId={workflowId}
+          step={props?.data}
           onClose={onPreviewClose}
         />
       }

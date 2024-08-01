@@ -16,8 +16,6 @@ import {
   DisplayMessageActionContext,
   UIConfiguration,
   StepType,
-  UIConfiguration,
-  UserSelectionSplitContext,
   WorkflowStep
 } from '../../types'
 
@@ -144,26 +142,6 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
 }
 /* eslint-enable max-len */
 
-// TODO:
-// - Remove `defaultConfiguration` in PortalDesign.tsx
-export const DefaultUIConfiguration : UIConfiguration = {
-  disablePoweredBy: false,
-  uiColorSchema: {
-    titleFontColor: 'var(--acx-neutrals-100)',
-    backgroundColor: 'var(--acx-primary-white)',
-    bodyFontColor: 'var(--acx-neutrals-100)',
-
-    buttonFontColor: 'var(--acx-primary-white)',
-    buttonColor: 'var(--acx-accents-orange-50)'
-  },
-  uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16,
-    bodyFontSize: 14
-  }
-}
-
-
 export const composeNext = (
   stepId: string, stepMap: Map<string, WorkflowStep>,
   nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
@@ -239,14 +217,15 @@ export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<strin
   return { nodes, edges }
 }
 
-export const defaultConfiguration : UIConfiguration = {
+export const DefaultUIConfiguration : UIConfiguration = {
   disablePoweredBy: false,
   uiColorSchema: {
-    titleFontColor: '#000000',
-    backgroundColor: '#FFFFFF',
-    fontColor: '#000000',
-    buttonFontColor: '#FFFFFF',
-    buttonColor: '#EC7100'
+    fontHeaderColor: 'var(--acx-neutrals-100)',
+    backgroundColor: 'var(--acx-primary-white)',
+    fontColor: 'var(--acx-neutrals-100)',
+
+    buttonFontColor: 'var(--acx-primary-white)',
+    buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
     logoRatio: 1,

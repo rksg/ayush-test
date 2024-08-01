@@ -1,12 +1,38 @@
 import styled from 'styled-components'
 
 
-export const PreviewContainer = styled.div`
+export const PreviewContainer = styled.div<({ hasBackgroundImage: boolean })>`
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 0 auto;
-  max-width: 360px;
+  padding: 8px;
+
+  width: 425px;
+  max-width: 600px;
+  min-height: 100%;
+
+  background-color: ${props => props.hasBackgroundImage
+    ? undefined
+    : 'var(--acx-primary-white)'};
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--acx-primary-white);
+    opacity: 0.75;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 2;
+  }
 `
 
 export const Logo = styled.div`

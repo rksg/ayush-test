@@ -1,14 +1,14 @@
-
-import { AupAction } from '@acx-ui/rc/utils'
+import { AupAction, GenericActionPreviewProps } from '@acx-ui/rc/utils'
 
 import { ContentPreview } from './ContentPreview'
 
 
-export function AupPreview (props: { data?: AupAction }) {
-  const { data } = props
+export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
+  const { data, ...rest } = props
 
   return <ContentPreview
     title={data?.title}
-    body={data?.messageHtml}
+    body={<div>AUP Preview Component</div>}
+    {...rest}
   />
 }

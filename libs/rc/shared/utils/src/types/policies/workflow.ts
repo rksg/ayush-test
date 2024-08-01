@@ -23,7 +23,7 @@ export interface PublishDetail {
 }
 
 export interface UIColorSchema {
-  titleFontColor: string
+  fontHeaderColor: string
   fontColor: string
   backgroundColor: string
   buttonColor: string

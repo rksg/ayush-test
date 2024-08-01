@@ -37,7 +37,7 @@ export function ActionPreviewDrawer (props: {
       onClose={onClose}
     >
       <Loader states={[{ isLoading, isFetching }]}>
-        <ActionPreview data={data}/>
+        {/*<ActionPreview data={data}/>*/}
       </Loader>
     </Drawer>
   )

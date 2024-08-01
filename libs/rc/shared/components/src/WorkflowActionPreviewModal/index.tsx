@@ -1,18 +1,19 @@
 import { Modal } from 'antd'
 
-import { WorkflowStep } from '@acx-ui/rc/utils'
+import { GenericActionData, WorkflowStep } from '@acx-ui/rc/utils'
 
 import * as UI                   from './styledComponents'
 import { WorkflowActionPreview } from './WorkflowActionPreview'
 
 export interface WorkflowActionPreviewModalProps {
-  id: string
-  step?: WorkflowStep
+  workflowId: string
+  step?: WorkflowStep,
+  actionData?: GenericActionData,
   onClose?: ()=>void
 }
 
 export function WorkflowActionPreviewModal (props: WorkflowActionPreviewModalProps) {
-  const { id, onClose, step } = props
+  const { workflowId, onClose, step, actionData } = props
   return (
     <Modal
       destroyOnClose={true}
@@ -30,7 +31,7 @@ export function WorkflowActionPreviewModal (props: WorkflowActionPreviewModalPro
         onClose?.()
       }}
     >
-      <WorkflowActionPreview id={id} step={step}/>
+      <WorkflowActionPreview workflowId={workflowId} step={step} actionData={actionData}/>
     </Modal>
   )
 }

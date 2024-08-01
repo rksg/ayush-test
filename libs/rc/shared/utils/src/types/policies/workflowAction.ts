@@ -1,6 +1,8 @@
 
 // Mapping the enum based on enrollment-actions definitions:
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
+import { UIConfiguration } from './workflow'
+
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
@@ -77,3 +79,8 @@ export type GenericActionData =
   DataPromptActionContext &
   DisplayMessageActionContext &
   DpskAction
+
+export interface GenericActionPreviewProps<T> {
+  data?: T,
+  uiConfiguration?: UIConfiguration
+}

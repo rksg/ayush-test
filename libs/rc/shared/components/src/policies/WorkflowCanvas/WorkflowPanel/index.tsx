@@ -176,7 +176,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 export function WorkflowPanel (props: WorkflowPanelProps) {
   const { type = PanelType.Default, ...rest } = props
   const content = <ReactFlowProvider>
-    <WorkflowContextProvider>
+    <WorkflowContextProvider workflowId={props.workflowId}>
       <WorkflowPanelWrapper
         {...rest}
       />
