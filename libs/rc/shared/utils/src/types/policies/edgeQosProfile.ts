@@ -1,7 +1,7 @@
-import { EdgeAlarmSummary } from '../..'
+import { EdgeAlarmSummary }     from '../..'
 import {
-  Priority,
-  TrafficClass
+  EdgeQosTrafficClass,
+  EdgeQosTrafficClassPriority
 } from '../../models/EdgeQosEnum'
 
 export interface EdgeQosConfig {
@@ -21,8 +21,8 @@ export interface EdgeQosViewData {
 }
 
 export interface TrafficClassSetting {
-    trafficClass: TrafficClass
-    priority: Priority
+    trafficClass: EdgeQosTrafficClass
+    priority: EdgeQosTrafficClassPriority
     priorityScheduling: boolean
     minBandwidth: number
     maxBandwidth: number

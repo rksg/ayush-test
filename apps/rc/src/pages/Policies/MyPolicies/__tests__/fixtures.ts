@@ -1,5 +1,5 @@
 
-import { Priority, TrafficClass } from '@acx-ui/rc/utils'
+import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority } from '@acx-ui/rc/utils'
 
 export const mockedRogueApPoliciesList = {
   fields: [
@@ -69,8 +69,8 @@ export const mockedEdgeQosBandwidthQueryData = {
       description: '',
       trafficClassSettings: [
         {
-          trafficClass: TrafficClass.VOICE,
-          priority: Priority.HIGH
+          trafficClass: EdgeQosTrafficClass.VOICE,
+          priority: EdgeQosTrafficClassPriority.HIGH
         },
         {
           venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
