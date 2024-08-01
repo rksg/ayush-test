@@ -156,7 +156,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: { recommendation: BasicIntent }) =>
         response.recommendation,
-      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_CODE' }]
     }),
     intentDetails: build.query<EnhancedIntent, BasicIntent>({
       query: ({ id, code }) => ({
@@ -177,7 +177,7 @@ export const api = recommendationApi.injectEndpoints({
       }),
       transformResponse: (response: { recommendation: IntentDetails }) =>
         transformDetailsResponse(response.recommendation),
-      providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     })
   })
 })

@@ -120,7 +120,7 @@ export const api = intentAIApi.injectEndpoints({
         }, [] as Array<IntentListItem>)
         return items
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_LIST' }]
     })
   })
 })
