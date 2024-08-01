@@ -110,7 +110,7 @@ export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['cur
     .join('\n')
 
   return (
-    <Tooltip placement='topLeft' title={firmwareGroupsTooltipContent}>
+    <Tooltip placement='topLeft' dottedUnderline={true} title={firmwareGroupsTooltipContent}>
       <UI.WithTooltip>{firmwareGroupsText}</UI.WithTooltip>
     </Tooltip>
   )
