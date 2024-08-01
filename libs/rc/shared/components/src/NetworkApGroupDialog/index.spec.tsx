@@ -79,6 +79,13 @@ describe('NetworkApGroupDialog', () => {
   })
 
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
+      )
+    )
+
     const props = {
       formName: 'networkApGroupForm',
       venueName: venueName,
