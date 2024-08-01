@@ -197,6 +197,8 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
   const networkList = networkListResult.data
   const venueId = arg.params.venueId
   const apGroupId = arg.params.apGroupId
+  const apGroupIdsList = arg.payload.apGroupIds
+  const apGroupCheckList = apGroupId ? [apGroupId] : [...apGroupIdsList]
 
   let networkDeepListList = {} as { response: NetworkDetail[] }
 
@@ -215,8 +217,8 @@ export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any)
         const { apGroupIds } = venueApGroup
 
         apGroupIds?.forEach(venueApGroupId => {
-          if (apGroupId === venueApGroupId) {
-            networkApGroupParamsList.push({ venueId, networkId, apGroupId })
+          if (apGroupCheckList.includes(venueApGroupId)) {
+            networkApGroupParamsList.push({ venueId, networkId, apGroupId: venueApGroupId })
           }
         })
       })
