@@ -48,7 +48,7 @@ type Metadata = {
 
 export type HighlightItem = {
   new: number
-  applied: number
+  active: number
 }
 
 export type IntentHighlight = {
@@ -146,15 +146,15 @@ export const api = intentAIApi.injectEndpoints({
           highlights(start: $start, end: $end, path: $path) {
             rrm {
               new
-              applied
+              active
             }
             airflex {
               new
-              applied
+              active
             }
             ops {
               new
-              applied
+              active
             }
           }
         }

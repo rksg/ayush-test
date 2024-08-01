@@ -51,7 +51,6 @@ export function IncidentsCountBySeverities ({ filters }: IncidentsCountBySeverit
     <Card title={title} onArrowClick={onArrowClick}>
       <AutoSizer>
         {({ width, height }) => (
-          // TODO: follow this sample when no data is available
           noData
             ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
             : <UI.Wrapper

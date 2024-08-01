@@ -9,9 +9,9 @@ import {
 } from '@acx-ui/test-utils'
 import { NetworkPath, PathFilter, DateRange } from '@acx-ui/utils'
 
-import { intentHighlights, intentHighlightsWithAirflex, intentHighlightsWithNullFields, intentHighlightsWithOperations, intentHighlightsWithRRM, intentHighlightsWithZeroApplied } from '../__tests__/fixtures'
-import { crrmListResult, crrmNoLicenseListResult, crrmUnknownListResult }                                                                                                          from '../Recommendations/__tests__/fixtures'
-import { api }                                                                                                                                                                     from '../Recommendations/services'
+import { intentHighlights, intentHighlightsWithAirflex, intentHighlightsWithNullFields, intentHighlightsWithOperations, intentHighlightsWithRRM, intentHighlightsWithZeroActive } from '../__tests__/fixtures'
+import { crrmListResult, crrmNoLicenseListResult, crrmUnknownListResult }                                                                                                         from '../Recommendations/__tests__/fixtures'
+import { api }                                                                                                                                                                    from '../Recommendations/services'
 
 import { AIDrivenRRM, IntentAIWidget } from '.'
 
@@ -45,18 +45,19 @@ describe('IntentAI dashboard', () => {
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
-    expect(await screen.findByText('8 Automated recommendations applied.')).toBeVisible()
+    // TODO: applied > active
+    expect(await screen.findByText('8 Intents are Active.')).toBeVisible()
 
     expect(await screen.findByText('AirFlexAI')).toBeVisible()
-    expect(await screen.findByText('10 Automated recommendations applied.')).toBeVisible()
+    expect(await screen.findByText('10 Intents are Active.')).toBeVisible()
 
     expect(await screen.findByText('AI Operations')).toBeVisible()
-    expect(await screen.findByText('12 Automated recommendations applied.')).toBeVisible()
+    expect(await screen.findByText('12 Intents are Active.')).toBeVisible()
   })
 
   it('render texts when intentHighlights have zero applied data', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
-      data: intentHighlightsWithZeroApplied
+      data: intentHighlightsWithZeroActive
     })
 
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })

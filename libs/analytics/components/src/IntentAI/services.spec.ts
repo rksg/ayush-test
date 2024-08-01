@@ -277,15 +277,15 @@ describe('IntentAI services', () => {
     const expectedResult = {
       rrm: {
         new: 4,
-        applied: 8
+        active: 8
       },
       airflex: {
         new: 5,
-        applied: 10
+        active: 10
       },
       ops: {
         new: 6,
-        applied: 12
+        active: 12
       }
     }
 

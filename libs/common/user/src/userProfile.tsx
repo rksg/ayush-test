@@ -121,20 +121,12 @@ export function hasPermission (props?: {
 }): boolean {
   const { scopes = [], allowedOperations, permission, roles } = props || {}
   if (get('IS_MLISA_SA')) {
-    // eslint-disable-next-line no-console
-    // console.log('IS_MLISA_SA')
     return !!(permission && permissions[permission])
   } else {
-    // eslint-disable-next-line no-console
-    // console.log('NOTTTTTTTT IS_MLISA_SA')
     const { abacEnabled, isCustomRole } = getUserProfile()
     if(!abacEnabled) {
-      // eslint-disable-next-line no-console
-      // console.log('!!!!!!!!!!!!!!!abacEnabled')
       return hasAccess(allowedOperations, roles)
     }else {
-      // eslint-disable-next-line no-console
-      // console.log('abacEnabled')
       if(isCustomRole){
         const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
         const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true

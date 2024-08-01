@@ -10,8 +10,6 @@ import {
   SLA,
   ReportTile,
   SANetworkFilter,
-  AIDrivenRRM,
-  AIOperations,
   ChatWithMelissa,
   AppInsights,
   IntentAIWidget
@@ -88,9 +86,6 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
     isIntentAIEnabled && hasPermission({ permission: 'READ_INTENT_AI' })
   )
 
-  // eslint-disable-next-line no-console, max-len
-  // console.log('hasIntentAI', hasIntentAI, 'hasPermission', hasPermission({ permission: 'READ_INTENT_AI' }))
-
   if (!hasIntentAI) {
     return (
       <UI.NetworkAdminGrid style={{ height }}>
@@ -140,16 +135,10 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
-      <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end' }}>
+      <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end', minHeight: '450px' }}>
         <IntentAIWidget
           pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
         />
-        {/* <AIDrivenRRM
-          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-        />
-        <AIOperations
-          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-        /> */}
       </div>
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow
