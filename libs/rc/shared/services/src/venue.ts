@@ -487,7 +487,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
-              ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
+              ? (enableRbac ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : ApGroupConfigTemplateUrlsInfo.getApGroupsList)
               : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
             body: enableRbac ? JSON.stringify(apGroupPayload) : apGroupPayload
           }
@@ -537,7 +537,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         //   })
         // })
 
-        const venueString = payloadData[0].venueId
+        const paramsVenueId = payloadData[0].venueId
+        const paramsNetworkId = payloadData[0].networkId
+        const paramsIsTemplate = payloadData[0].isTemplate
 
         const {
           error: apGroupNetworkListQueryError,
@@ -546,17 +548,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         } = await fetchRbacApGroupNetworkVenueList({
           params: {
             ...params,
-            venueId: venueString
+            venueId: paramsVenueId
           },
           payload: {
-            apGroupIds: venueApgroupMap.get(venueString)?.map(item => item.apGroupId)
+            isTemplate: paramsIsTemplate,
+            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
           }
         }, fetchWithBQ)
 
         // const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
         networkVenuesApGroupList = networkDeepListList.response
           .flatMap(networkInfo => networkInfo.venues)
-          .filter(networkVenue => networkVenue.networkId === payloadData[0].networkId) as NetworkVenue[]
+          .filter(networkVenue => networkVenue.networkId === paramsNetworkId) as NetworkVenue[]
 
         let aggregatedList: NetworkVenue[] | undefined
 
