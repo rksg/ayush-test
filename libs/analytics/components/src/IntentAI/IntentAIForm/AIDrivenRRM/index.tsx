@@ -13,84 +13,61 @@ import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { crrmText }                                                          from '../../utils/aiDrivenRRM'
-import { categories, CodeInfo, priorities, IntentConfig, states, StateType } from '../config'
-import { useIntentCodeQuery, useIntentDetailsQuery }                         from '../services'
-import * as UI                                                               from '../styledComponents'
+import { IntentConfig, states, StateType, IntentKPIConfig } from '../config'
+import { useIntentCodeQuery, useIntentDetailsQuery }        from '../services'
+import * as UI                                              from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'
 import { Settings }     from './settings'
 import { Summary }      from './summary'
 
+export const kpis: IntentKPIConfig[] = [{
+  key: 'number-of-interfering-links',
+  label: defineMessage({ defaultMessage: 'Interfering links' }),
+  format: formatter('countFormat'),
+  deltaSign: '-'
+}]
+
+const reasonText = defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' })
+const appliedReasonText = defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' })
+const partialOptimizationAppliedReasonText = defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' })
+
 export const codes = {
   'c-crrm-channel24g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
-    appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
+    reasonText,
+    appliedReasonText,
+    partialOptimizationAppliedReasonText,
     tradeoffText: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
       : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
     partialOptimizedTradeoffText: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }]
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' })
   },
   'c-crrm-channel5g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
-    appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
+    reasonText,
+    appliedReasonText,
+    partialOptimizationAppliedReasonText,
     tradeoffText: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
       : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
     partialOptimizedTradeoffText: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }]
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. DFS channels with excessive radar events will also be automatically restricted from usage.' })
   },
   'c-crrm-channel6g-auto': {
-    category: categories['AI-Driven Cloud RRM'],
-    summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
-    priority: priorities.high,
-    valueFormatter: crrmText,
-    valueText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM' }),
-    reasonText: defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' }),
-    appliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
-    partialOptimizationAppliedReasonText: defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' }),
+    reasonText,
+    appliedReasonText,
+    partialOptimizationAppliedReasonText,
     tradeoffText: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
       : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten.' }),
     partialOptimizedTradeoffText: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the zone level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten. Do note that any unlicensed APs added to the zone after AI-Driven Cloud RRM is applied will not be considered and this may result in suboptimal channel planning in the zone.' })
-      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' }),
-    kpis: [{
-      key: 'number-of-interfering-links',
-      label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
-      format: formatter('countFormat'),
-      deltaSign: '-'
-    }]
+      : defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will be applied at the <venueSingular></venueSingular> level, and all configurations (including static configurations) for channel and Auto Channel Selection will potentially be overwritten.' })
   }
-} as Record<string, IntentConfig & CodeInfo>
+} as Record<string, IntentConfig>
 
 export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
   acc[key as StateType] = val.text
@@ -130,8 +107,8 @@ export function AIDrivenRRM () {
 
   const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useIntentDetailsQuery(
-    codeQuery.data!,
-    { skip: !Boolean(codeQuery.data?.code) }
+    { id: codeQuery.data?.id!, kpis },
+    { skip: !Boolean(codeQuery.data?.id) }
   )
   const details = detailsQuery.data!
   const breadcrumb = [

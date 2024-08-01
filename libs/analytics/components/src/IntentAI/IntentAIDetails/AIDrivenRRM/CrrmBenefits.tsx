@@ -1,11 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { TrendTypeEnum }                                             from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Loader, recommendationBandMapping } from '@acx-ui/components'
+import { TrendTypeEnum }          from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { EnhancedIntent }                    from '../../IntentAIForm/services'
-import { getGraphKPI }                       from '../../RRMGraph'
-import { useIntentAICRRMQuery }              from '../../RRMGraph/services'
+import { kpis }                              from '../../IntentAIForm/AIDrivenRRM'
+import { EnhancedIntent, getGraphKPIs }      from '../../IntentAIForm/services'
 import { dataRetentionText, isDataRetained } from '../../utils'
 import {
   BenefitsBody,
@@ -18,44 +17,29 @@ import {
 
 export const CrrmBenefits = ({ details }: { details: EnhancedIntent }) => {
   const { $t } = useIntl()
-  const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(details, band)
-  const crrmData = queryResult?.data
 
-  const { interferingLinks, linksPerAP } = getGraphKPI(details as EnhancedIntent, crrmData)
 
-  return <Loader states={[queryResult]}>
+  return <>
     <DetailsHeader>{$t({ defaultMessage: 'Benefits' })}</DetailsHeader>
     {isDataRetained(details.dataEndTime)
       ? <DetailsWrapper>
         <GridRow>
-          <GridCol col={{ span: 12 }}>
-            <Card type='default'>
-              <BenefitsHeader>{$t({ defaultMessage: 'Interfering links' })}</BenefitsHeader>
-              <BenefitsBody>
-                <BenefitsValue>{interferingLinks.after}</BenefitsValue>
-                <TrendPill
-                  value={interferingLinks.links.value as string}
-                  trend={interferingLinks.links.trend as TrendTypeEnum} />
-              </BenefitsBody>
-            </Card>
-          </GridCol>
-          <GridCol col={{ span: 12 }}>
-            <Card type='default'>
-              <BenefitsHeader>
-                {$t({ defaultMessage: 'Average interfering links per AP' })}
-              </BenefitsHeader>
-              <BenefitsBody>
-                <BenefitsValue>{Math.ceil(linksPerAP.after)}</BenefitsValue>
-                <TrendPill
-                  value={linksPerAP.average.value as string}
-                  trend={linksPerAP.average.trend as TrendTypeEnum} />
-              </BenefitsBody>
-            </Card>
-          </GridCol>
+          {getGraphKPIs(details, kpis).map(kpi => (
+            <GridCol key={kpi.key} col={{ span: 12 }}>
+              <Card type='default'>
+                <BenefitsHeader>{$t(kpi.label)}</BenefitsHeader>
+                <BenefitsBody>
+                  <BenefitsValue>{kpi.after}</BenefitsValue>
+                  <TrendPill
+                    value={kpi.delta.value}
+                    trend={kpi.delta.trend as TrendTypeEnum} />
+                </BenefitsBody>
+              </Card>
+            </GridCol>
+          ))}
         </GridRow>
       </DetailsWrapper>
       : $t(dataRetentionText)
     }
-  </Loader>
+  </>
 }

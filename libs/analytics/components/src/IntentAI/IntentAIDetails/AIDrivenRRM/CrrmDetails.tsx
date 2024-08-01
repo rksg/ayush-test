@@ -1,10 +1,11 @@
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer } from '../../../DescriptionSection/styledComponents'
+import { kpis }           from '../../IntentAIForm/AIDrivenRRM'
 import {
   useIntentCodeQuery,
   useIntentDetailsQuery
@@ -23,8 +24,8 @@ export const CrrmDetails = () => {
   const id = get(params, 'recommendationId', undefined) as string
   const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
   const detailsQuery = useIntentDetailsQuery(
-    codeQuery.data!,
-    { skip: !Boolean(codeQuery.data?.code) }
+    { id: codeQuery.data?.id!, kpis },
+    { skip: !Boolean(codeQuery.data?.id) }
   )
   const details = detailsQuery.data!
 
@@ -42,8 +43,8 @@ export const CrrmDetails = () => {
       // }
     />}
     <GridRow>
-      <GridCol col={{ span: 4 }}>
-        <FixedAutoSizer>
+      <GridCol col={{ span: 6, xxl: 4 }}>
+        <AutoSizer>
           {({ width }) => (<div style={{ width }}>
             <GridRow>
               <AIDrivenRRMHeader>
@@ -57,9 +58,9 @@ export const CrrmDetails = () => {
               </GridCol>
             </GridRow>
           </div>)}
-        </FixedAutoSizer>
+        </AutoSizer>
       </GridCol>
-      <GridCol col={{ span: 20 }}>
+      <GridCol col={{ span: 18, xxl: 20 }}>
         <CrrmBenefits details={details}/>
         <CrrmGraph details={details}/>
         <CrrmValuesExtra details={details}/>

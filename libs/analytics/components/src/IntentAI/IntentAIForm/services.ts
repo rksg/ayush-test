@@ -1,13 +1,14 @@
-import { gql }               from 'graphql-request'
-import { snakeCase }         from 'lodash'
-import moment                from 'moment-timezone'
-import { MessageDescriptor } from 'react-intl'
+import { gql }                  from 'graphql-request'
+import { get, snakeCase, pick } from 'lodash'
+import moment                   from 'moment-timezone'
 
+import { kpiDelta }          from '@acx-ui/analytics/utils'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { codes }                             from './AIDrivenRRM'
-import { StateType, IconValue, StatusTrail } from './config'
+import { codes } from '../config'
+
+import { StateType, StatusTrail, IntentKPIConfig } from './config'
 
 export type BasicIntent = {
   id: string;
@@ -43,15 +44,7 @@ export type IntentDetails = {
 } & Partial<IntentKpi>
 
 export type EnhancedIntent = IntentDetails & {
-  priority: IconValue;
-  summary: MessageDescriptor;
-  category: MessageDescriptor;
   appliedOnce: boolean;
-  crrmInterferingLinks?: {
-    before: number;
-    after: number;
-  }
-  intentType?: string;
 }
 
 export function extractBeforeAfter (value: IntentKpi[string]) {
@@ -61,44 +54,38 @@ export function extractBeforeAfter (value: IntentKpi[string]) {
   return [before, after]
 }
 
-export const getCrrmInterferingLinks = (
-  kpi_number_of_interfering_links: IntentKpi[string]
-) => {
-  const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
-  return { before, after }
-}
-
 export const transformDetailsResponse = (details: IntentDetails) => {
-  const {
-    code,
-    statusTrail,
-    kpi_number_of_interfering_links
-  } = details
-  const { priority, category, summary } = codes[code]
-
   return {
     ...details,
-    priority,
-    category,
-    summary,
-    appliedOnce: Boolean(statusTrail.find(t => t.status === 'applied')),
-    crrmInterferingLinks: getCrrmInterferingLinks(kpi_number_of_interfering_links!),
+    appliedOnce: Boolean(details.statusTrail.find(t => t.status === 'applied')),
     preferences: details.preferences || undefined // prevent _.merge({ x: {} }, { x: null })
   } as EnhancedIntent
 }
 
-export const kpiHelper = (code: string) => {
-  if (!code) return ''
-  return codes[code].kpis!
-    .map(kpi => {
-      const name = `kpi_${snakeCase(kpi.key)}`
-      return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
-              current${kpi.deltaSign === 'none' ? '' : ' previous'}
-              projected
-            }`
-    })
+export const kpiHelper = (kpis: IntentKPIConfig[]) => {
+  return kpis.map(kpi => {
+    const name = `kpi_${snakeCase(kpi.key)}`
+    return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
+            current${kpi.deltaSign === 'none' ? '' : ' previous'}
+            projected
+          }`
+  })
     .join('\n')
     .trim()
+}
+
+// simplified handling of getKpis from libs/analytics/components/src/Recommendations/RecommendationDetails/Kpis.tsx
+export function getGraphKPIs (
+  intent: EnhancedIntent,
+  kpis: IntentKPIConfig[]
+) {
+  return kpis.map((kpi) => {
+    const [before, after] = extractBeforeAfter(
+      get(intent, `kpi_${snakeCase(kpi.key)}`) as IntentKpi[string]
+    ) as [number, number]
+    const delta = kpiDelta(before, after, kpi.deltaSign, kpi.format)
+    return { ...pick(kpi, ['key', 'label']), before, after, delta }
+  })
 }
 
 
@@ -114,8 +101,8 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: { intent: BasicIntent }) => response.intent,
       providesTags: [{ type: 'Intent', id: 'INTENT_CODE' }]
     }),
-    intentDetails: build.query<EnhancedIntent, Pick<BasicIntent, 'id' | 'code'>>({
-      query: ({ id, code }) => ({
+    intentDetails: build.query<EnhancedIntent, { id: string; kpis: IntentKPIConfig[] }>({
+      query: ({ id, kpis }) => ({
         document: gql`
           query IntentDetails($id: String) {
             intent: recommendation(id: $id) {
@@ -123,7 +110,7 @@ export const api = recommendationApi.injectEndpoints({
               sliceType sliceValue updatedAt dataEndTime
               preferences path { type name }
               statusTrail { status createdAt }
-              ${kpiHelper(code)}
+              ${kpiHelper(kpis)}
             }
           }
         `,

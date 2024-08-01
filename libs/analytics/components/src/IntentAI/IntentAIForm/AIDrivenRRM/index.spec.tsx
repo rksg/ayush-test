@@ -10,32 +10,6 @@ import { mockedCRRMGraphs, mockedIntentCRRM } from '../../IntentAIDetails/__test
 
 import { AIDrivenRRM, isOptimized } from '.'
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
-  useParams: () => ({
-    id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
-  })
-}))
-
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  useStepFormContext: () => {
-    return {
-      initialValues: {
-        status: 'applyscheduled',
-        sliceValue: '21_US_Beta_Samsung',
-        updatedAt: '2023-06-26T00:00:25.772Z',
-        crrmInterferingLinks: {
-          before: 1,
-          after: 0
-        }
-      },
-      form: {
-        getFieldValue: () => 'partial'
-      }
-    }
-  }
-}))
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -50,16 +24,16 @@ describe('AIDrivenRRM', () => {
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
       data: { intent: mockedIntentCRRM }
     })
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
   })
 
-  it('should render correctly', async () => {
+  async function renderAndStepsThruForm () {
     render(<AIDrivenRRM />, {
-      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
+      route: { params: { recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6' } },
       wrapper: Provider
     })
     const form = within(await screen.findByTestId('steps-form'))
@@ -84,15 +58,13 @@ describe('AIDrivenRRM', () => {
     expect(screen.getByRole('button', {
       name: 'Apply'
     })).toBeVisible()
-  })
+  }
+
+  it('should render correctly', renderAndStepsThruForm)
 
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')
-    const { asFragment } = render(<AIDrivenRRM />, {
-      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
-      wrapper: Provider
-    })
-    expect(asFragment()).toMatchSnapshot()
+    await renderAndStepsThruForm()
   })
 })
 

@@ -4,19 +4,15 @@ import { productNames } from '@acx-ui/analytics/utils'
 import { get }          from '@acx-ui/config'
 import { getIntl }      from '@acx-ui/utils'
 
-import { codes }                                         from '../../IntentAIForm/AIDrivenRRM'
+import { codes, kpis }                                   from '../../IntentAIForm/AIDrivenRRM'
 import { EnhancedIntent, extractBeforeAfter, IntentKpi } from '../../IntentAIForm/services'
 import { isDataRetained }                                from '../../utils'
 
-export const getKpiConfig = (intent: EnhancedIntent, key: string) => {
-  return codes[intent.code].kpis.find(kpi => kpi.key === key)
-}
-
 export const kpiBeforeAfter = (intent: EnhancedIntent, key: string) => {
-  const config = getKpiConfig(intent, key)
+  const config = kpis.find(kpi => kpi.key === key)!
   const prop = `kpi_${snakeCase(key)}`
   const [before, after] = extractBeforeAfter(intent[prop] as IntentKpi[string])
-    .map(value => config!.format(value))
+    .map(value => config.format(value))
   return { before, after }
 }
 
@@ -33,24 +29,22 @@ export const getValuesText = (
     metadata
   } = details
 
-  const recommendationInfo = codes[code]
   const {
     appliedReasonText,
     reasonText,
     tradeoffText,
     partialOptimizationAppliedReasonText,
     partialOptimizedTradeoffText
-  } = recommendationInfo
+  } = codes[code]
 
   let parameters: Record<string, string | JSX.Element | boolean> = {
     ...productNames,
     ...metadata as Record<string, string>,
     br: <br />
   }
-  const link = kpiBeforeAfter(details, 'number-of-interfering-links')
   parameters = {
     ...parameters,
-    ...link,
+    ...kpiBeforeAfter(details, 'number-of-interfering-links'),
     isDataRetained: isDataRetained(dataEndTime),
     dataNotRetainedMsg: $t({
       defaultMessage: `The initial optimization graph is no longer available below

@@ -3,31 +3,24 @@ import React from 'react'
 import { Row, Col, Typography }   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { TrendTypeEnum }                                                                         from '@acx-ui/analytics/utils'
-import { StepsForm, useLayoutContext, useStepFormContext, recommendationBandMapping, TrendPill } from '@acx-ui/components'
+import { TrendTypeEnum }                                              from '@acx-ui/analytics/utils'
+import { StepsForm, useLayoutContext, useStepFormContext, TrendPill } from '@acx-ui/components'
 
-import { IntentAIRRMGraph, getGraphKPI }     from '../../RRMGraph'
-import { useIntentAICRRMQuery }              from '../../RRMGraph/services'
+import { IntentAIRRMGraph }                  from '../../RRMGraph'
 import { dataRetentionText, isDataRetained } from '../../utils'
-import { EnhancedIntent }                    from '../services'
+import { EnhancedIntent, getGraphKPIs }      from '../services'
 import * as UI                               from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
-import { steps, crrmIntent, isOptimized } from '.'
+import { steps, crrmIntent, isOptimized, kpis } from '.'
 
 export function Summary () {
   const { $t } = useIntl()
   const { form, initialValues } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
-
-  const band = recommendationBandMapping[
-    initialValues?.code as keyof typeof recommendationBandMapping]
-  const queryResult = useIntentAICRRMQuery(initialValues as EnhancedIntent, band)
-  const crrmData = queryResult?.data
-  const { interferingLinks, linksPerAP } = getGraphKPI(
-    initialValues as EnhancedIntent, crrmData)
+  const details = initialValues as EnhancedIntent
 
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' })
@@ -45,29 +38,20 @@ export function Summary () {
           <IntentAIRRMGraph
             details={initialValues as EnhancedIntent}
           />
-          <StepsForm.Subtitle>
-            {$t({ defaultMessage: 'Interfering links' })}
-          </StepsForm.Subtitle>
-          <StepsForm.Subtitle>
-            <UI.Kpi>
-              <UI.KpiText>{interferingLinks.after}</UI.KpiText>
-              <TrendPill
-                value={interferingLinks.links.value as string}
-                trend={interferingLinks.links.trend as TrendTypeEnum}
-              />
-            </UI.Kpi>
-          </StepsForm.Subtitle>
-          <StepsForm.Subtitle>
-            {$t({ defaultMessage: 'Average interfering links per AP' })}
-          </StepsForm.Subtitle>
-          <StepsForm.Subtitle>
-            <UI.Kpi>
-              <UI.KpiText>{Math.ceil(linksPerAP.after)}</UI.KpiText>
-              <TrendPill
-                value={linksPerAP.average.value as string}
-                trend={linksPerAP.average.trend as TrendTypeEnum} />
-            </UI.Kpi>
-          </StepsForm.Subtitle>
+          {getGraphKPIs(details, kpis).map(kpi => (
+            <React.Fragment key={kpi.key}>
+              <StepsForm.Subtitle children={$t(kpi.label)} />
+              <StepsForm.Subtitle>
+                <UI.Kpi>
+                  <UI.KpiText>{kpi.after}</UI.KpiText>
+                  <TrendPill
+                    value={kpi.delta.value}
+                    trend={kpi.delta.trend as TrendTypeEnum}
+                  />
+                </UI.Kpi>
+              </StepsForm.Subtitle>
+            </React.Fragment>
+          ))}
           <StepsForm.Subtitle>
             {$t({ defaultMessage: 'Schedule' })}
           </StepsForm.Subtitle>

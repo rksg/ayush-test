@@ -26,20 +26,7 @@ export const crrmStates: Record<CRRMStates, IconValue> = {
   [CRRMStates.unknown]: { order: 2, label: defineMessage({ defaultMessage: 'Unknown' }) }
 }
 
-export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
-  low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
-  medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
-  high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
-}
-
-export type CodeInfo = {
-  category: MessageDescriptor,
-  summary: MessageDescriptor,
-  partialOptimizedSummary?: MessageDescriptor,
-  priority: IconValue
-}
-
-type IntentKPIConfig = {
+export type IntentKPIConfig = {
   key: string;
   label: MessageDescriptor;
   format: ReturnType<typeof formatter>;
@@ -51,12 +38,9 @@ type IntentKPIConfig = {
 }
 
 export type IntentConfig = {
-  valueFormatter: ReturnType<typeof formatter>
-  valueText: MessageDescriptor
   reasonText: MessageDescriptor
   tradeoffText: MessageDescriptor
   appliedReasonText?: MessageDescriptor
-  kpis: IntentKPIConfig[]
   partialOptimizationAppliedReasonText?: MessageDescriptor
   partialOptimizedTradeoffText?: MessageDescriptor
 }

@@ -7,20 +7,17 @@ import {
   mockedIntentCRRM
 } from '../IntentAIDetails/__tests__/fixtures'
 
+import { kpis }                           from './AIDrivenRRM'
 import { api, EnhancedIntent, kpiHelper } from './services'
 
 describe('intentAI services', () => {
-  const recommendationPayload = {
-    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf'
-  }
-
   describe('intent code', () => {
     it('should return correct value', async () => {
       mockGraphqlQuery(recommendationUrl, 'IntentCode', {
         data: { intent: pick(mockedIntentCRRM, ['id', 'code', 'status']) }
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.intentCode.initiate(recommendationPayload)
+        api.endpoints.intentCode.initiate({ id: mockedIntentCRRM.id })
       )
       expect(status).toBe('fulfilled')
       expect(error).toBeUndefined()
@@ -35,7 +32,7 @@ describe('intentAI services', () => {
       })
 
       const { status, data, error } = await store.dispatch(
-        api.endpoints.intentDetails.initiate(pick(mockedIntentCRRM, ['id', 'code']))
+        api.endpoints.intentDetails.initiate({ id: mockedIntentCRRM.id, kpis })
       )
       expect(status).toBe('fulfilled')
       expect(error).toBeUndefined()
@@ -65,10 +62,6 @@ describe('intentAI services', () => {
           projected: 0
         },
         statusTrail: mockedIntentCRRM.statusTrail,
-        crrmInterferingLinks: {
-          after: 0,
-          before: 2
-        },
         preferences: undefined
       } as unknown as EnhancedIntent)
     })
@@ -77,8 +70,7 @@ describe('intentAI services', () => {
 
 describe('kpiHelper', () => {
   it('should return correct kpi', () => {
-    const code = 'c-crrm-channel24g-auto'
-    const kpi = kpiHelper(code)
+    const kpi = kpiHelper(kpis)
     const result = kpi.includes('kpi_number_of_interfering_links')
     expect(result).toEqual(true)
   })

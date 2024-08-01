@@ -7,7 +7,6 @@ import ReactECharts   from 'echarts-for-react'
 import { useIntl }    from 'react-intl'
 import AutoSizer      from 'react-virtualized-auto-sizer'
 
-import { kpiDelta }  from '@acx-ui/analytics/utils'
 import {
   Card,
   Drawer,
@@ -118,37 +117,4 @@ export const IntentAIRRMGraph = ({ details }: { details: EnhancedIntent }) => {
         }/>
     </Loader>
   </UI.Wrapper>
-}
-
-export function getGraphKPI (
-  recommendation: EnhancedIntent,
-  graphData: ProcessedCloudRRMGraph[]
-) {
-  // kpi for interferingLinks
-  const { before, after } = recommendation?.crrmInterferingLinks!
-  const deltaSign = '-'
-  const format = formatter('percentFormat')
-  const links = kpiDelta(before, after, deltaSign, format)
-
-  // kpi for linksPerAP
-  const kpiBefore = graphData[0]
-  const kpiAfter = graphData[1]
-  const beforeLinks = kpiBefore?.interferingLinks || 0
-  const afterLinks = kpiAfter?.interferingLinks || 0
-  const beforeAPs = kpiBefore?.affectedAPs || 0
-  const afterAPs = kpiAfter?.affectedAPs || 0
-  const averageBefore = beforeAPs ? beforeLinks / beforeAPs : 0
-  const averageAfter = afterAPs ? afterLinks / afterAPs : 0
-  const averageLinks = kpiDelta(averageBefore, averageAfter, deltaSign, format)
-
-  return {
-    interferingLinks: {
-      links: links,
-      after: after
-    },
-    linksPerAP: {
-      average: averageLinks,
-      after: averageAfter
-    }
-  }
 }
