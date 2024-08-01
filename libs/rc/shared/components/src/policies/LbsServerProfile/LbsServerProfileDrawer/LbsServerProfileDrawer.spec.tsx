@@ -1,12 +1,24 @@
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
 
-import { mockedTenantId } from '../__tests__/fixtures'
+import { LbsServerProfileUrls }       from '@acx-ui/rc/utils'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
+
+import { dummyTableResult, mockedTenantId } from '../__tests__/fixtures'
 
 import { LbsServerProfileDrawer } from './LbsServerProfileDrawer'
 
 describe('Add Lbs Server Profile Drawer', () => {
   const params = { tenantId: mockedTenantId }
+
+  beforeEach(async () => {
+    mockServer.use(
+      rest.post(
+        LbsServerProfileUrls.getLbsServerProfileList.url,
+        (_, res, ctx) => res(ctx.json(dummyTableResult))
+      )
+    )
+  })
 
   it('should render add Lbs Server Profile drawer correctly', async () => {
     render(
