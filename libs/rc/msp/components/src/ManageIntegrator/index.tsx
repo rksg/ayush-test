@@ -422,7 +422,8 @@ export function ManageIntegrator () {
       }
 
       const result =
-      await addIntegrator({ params: { tenantId: tenantId }, payload: customer,
+      await addIntegrator({ params: { tenantId: tenantId },
+        payload: isRbacEnabled ? { data: [customer] }: customer,
         enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
