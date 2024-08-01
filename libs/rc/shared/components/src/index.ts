@@ -208,7 +208,8 @@ export {
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
 export {
   useGetNetworkTunnelInfo,
-  edgeSdLanFormRequestPreProcess
+  edgeSdLanFormRequestPreProcess,
+  tansformSdLanScopedVenueMap
 } from './EdgeSdLan/edgeSdLanUtils'
 export * from './EdgeSdLan/NetworkMvTunnelModal'
 export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'

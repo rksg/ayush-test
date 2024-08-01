@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react'
 
-import { Space }     from 'antd'
-import { get, uniq } from 'lodash'
-import { AlignType } from 'rc-table/lib/interface'
-import { useIntl }   from 'react-intl'
+import { Space }             from 'antd'
+import { get, remove, uniq } from 'lodash'
+import { AlignType }         from 'rc-table/lib/interface'
+import { useIntl }           from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { tansformSdLanScopedVenueMap }                            from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                     from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -94,13 +95,14 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   }
 
   // venue list should filter out the venues that already tied to other SDLAN services.
-  const usedVenueIds = uniq(allSdLans.flatMap((sdlan) => {
-    // exclude edit sdlan itself in edit mode
-    return sdlan.id === serviceId
-      ? []
-      // need to BC some old data
-      : sdlan.tunneledWlans?.map(wlan => wlan.venueId) ?? []
-  }))
+  const usedVenueIds = useMemo(() => {
+    return Object.entries(tansformSdLanScopedVenueMap(allSdLans))
+      .map(([venueId, sdlan]) => {
+        return sdlan.id === serviceId ? undefined : venueId
+      })
+      .filter(i => !!i)
+  }, [allSdLans, serviceId])
+
   const availableVenues = (tableQuery.data?.data.filter(venue => {
     return !usedVenueIds.includes(venue.id)
   })) || []

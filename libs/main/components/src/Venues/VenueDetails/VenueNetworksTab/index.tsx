@@ -23,7 +23,11 @@ import {
   checkSdLanScopedNetworkDeactivateAction,
   renderConfigTemplateDetailsComponent,
   useGetNetworkTunnelInfo,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  NetworkTunnelInfoButton,
+  NetworkTunnelActionModalProps,
+  NetworkTunnelActionModal,
+  tansformSdLanScopedVenueMap
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -52,7 +56,7 @@ import {
   SchedulerTypeEnum,
   SchedulingModalState, ConfigTemplateType, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
-  KeyValue, VLANPoolViewModelType
+  KeyValue, VLANPoolViewModelType, Venue, EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                        from '@acx-ui/types'
@@ -164,6 +168,9 @@ export function VenueNetworksTab () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
+    visible: false
+  } as NetworkTunnelActionModalProps)
 
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
@@ -180,7 +187,10 @@ export function VenueNetworksTab () {
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
+
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeMvSdLaneady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -443,7 +453,38 @@ export function VenueNetworksTab () {
           (e) => handleClickScheduling(row, e),
           isReadOnly)
       }
-    }
+    },
+    ...(isEdgeMvSdLaneady ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneledInfo',
+      render: function (_: ReactNode, row: Network) {
+        const currentVenue = { id: venueId } as Venue
+        const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans)
+
+        return <NetworkTunnelInfoButton
+          network={row}
+          currentVenue={currentVenue}
+          sdLanScopedNetworkVenues={{
+            sdLansVenueMap: sdLanVenueMap,
+            networkVenueIds: Object.keys(sdLanVenueMap),
+            guestNetworkVenueIds: Object.keys(sdLanVenueMap)
+          }}
+          onClick={() => {
+            // show modal
+            setTunnelModalState({
+              visible: true,
+              network: {
+                id: row.id,
+                type: row.nwSubType,
+                venueId: currentVenue.id,
+                venueName: currentVenue.name
+              }
+            } as NetworkTunnelActionModalProps)
+          }}
+        />
+      }
+    }]: [])
   ]
 
   const handleClickScheduling = (row: Network, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -535,6 +576,16 @@ export function VenueNetworksTab () {
     }
   }
 
+  const handleCloseTunnelModal = () =>
+    setTunnelModalState({ visible: false } as NetworkTunnelActionModalProps)
+
+  const handleNetworkTunnelActionFinish = async (
+    formValues: NetworkTunnelActionForm,
+    otherData: { venueSdLan?: EdgeMvSdLanViewData }
+  ) => {
+    await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+  }
+
   return (
     <Loader states={[
       tableQuery,
@@ -578,6 +629,13 @@ export function VenueNetworksTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
+      {isEdgeMvSdLaneady &&
+        <NetworkTunnelActionModal
+          {...tunnelModalState}
+          onFinish={handleNetworkTunnelActionFinish}
+          onClose={handleCloseTunnelModal}
+        />
+      }
     </Loader>
   )
 }

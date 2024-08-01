@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import {
+  findByRole,
   renderHook,
   waitFor,
   within
@@ -306,7 +307,6 @@ describe('Network Drawer', () => {
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
-      // when turn on DC captive portal network DMZ network should be ON by default
       expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
       const switchBtns = within(rows[3]).getAllByRole('switch')
       // should all activated
@@ -323,6 +323,66 @@ describe('Network Drawer', () => {
       await click(screen.getByRole('button', { name: 'OK' }))
       expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', {})
       expect(mockedSetFieldValue).toBeCalledWith('activatedGuestNetworks', {})
+    })
+
+    it('should not check conflict when deactivate dc tunnel on guest forwarded network', async () => {
+      const mockedNetwork4 = { name: 'MockedNetwork 4', id: 'network_4' }
+
+      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
+        isGuestTunnelEnabled: true,
+        activatedNetworks: {
+          [mockedVenueId]: [mockedNetwork4],
+          other_venue_id: [mockedNetwork4]
+        },
+        activatedGuestNetworks: {
+          [mockedVenueId]: [mockedNetwork4],
+          other_venue_id: [mockedNetwork4]
+        }
+      }))
+      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+
+      render(<MockedTargetComponent
+        form={stepFormRef.current}
+      />, { route: { params: { tenantId: 't-id' } } })
+
+      const rows = await basicCheck(true)
+      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
+      const switchBtns = within(rows[3]).getAllByRole('switch')
+      // should all activated
+      switchBtns.forEach((switchBtn) => expect(switchBtn).toBeChecked())
+
+      // deactivate dc tunnel
+      await click(switchBtns[0])
+      expect(screen.queryByText(/setting must be consistent across all venues/)).toBeNull()
+      switchBtns.forEach((switchBtn) => expect(switchBtn).not.toBeChecked())
+    })
+
+    it('should popup conflict when activate guest forward network', async () => {
+      const mockedNetwork4 = { name: 'MockedNetwork 4', id: 'network_4' }
+
+      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
+        isGuestTunnelEnabled: true,
+        activatedNetworks: {
+          [mockedVenueId]: [mockedNetwork4],
+          other_venue_id: [mockedNetwork4]
+        }
+      }))
+      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+
+      render(<MockedTargetComponent
+        form={stepFormRef.current}
+      />, { route: { params: { tenantId: 't-id' } } })
+
+      const rows = await basicCheck(true)
+      expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
+      const switchBtns = within(rows[3]).getAllByRole('switch')
+      // dc tunneling activated
+      expect(switchBtns[0]).toBeChecked()
+      expect(switchBtns[1]).not.toBeChecked()
+
+      // activate dmz tunnel
+      await click(switchBtns[1])
+      await screen.findByText(/setting must be consistent across all venues/)
     })
   })
 })

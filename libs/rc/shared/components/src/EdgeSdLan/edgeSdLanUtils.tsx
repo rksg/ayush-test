@@ -1,9 +1,9 @@
-import { transform } from 'lodash'
+import { isNil, result, transform } from 'lodash'
 
-import { Features }                                                                            from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                          from '@acx-ui/react-router-dom'
-import { getIntl }                                                                             from '@acx-ui/utils'
+import { Features }                                                                                                 from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                               from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                  from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -62,4 +62,19 @@ export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) =
   }
 
   return payload
+}
+
+// eslint-disable-next-line max-len
+export const tansformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
+  const resultMap:Record<string, EdgeMvSdLanViewData> = {}
+
+  sdLans?.forEach(sdlan => {
+    sdlan.tunneledWlans?.forEach(wlan => {
+      if (isNil(resultMap[wlan.venueId])) {
+        resultMap[wlan.venueId] = sdlan
+      }
+    })
+  })
+
+  return resultMap
 }
