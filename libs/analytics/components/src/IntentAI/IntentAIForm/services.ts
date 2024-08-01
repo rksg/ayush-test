@@ -6,6 +6,8 @@ import { MessageDescriptor }   from 'react-intl'
 import { intentAIApi, recommendationApi } from '@acx-ui/store'
 import { NetworkPath }                    from '@acx-ui/utils'
 
+import { IntentAIFormDto } from '../types'
+
 import { codes }                                                 from './AIDrivenRRM'
 import { StateType, IconValue, StatusTrail, ConfigurationValue } from './config'
 
@@ -118,11 +120,33 @@ type MutationResponse = { success: boolean, errorMsg: string, errorCode: string 
 
 interface UpdatePreferenceScheduleMutationResponse { transition: MutationResponse }
 
-export function processDtoToPayload (dto: EnhancedRecommendation) {
+export function specToDto (
+  rec: EnhancedRecommendation
+): IntentAIFormDto | undefined {
+  let dto = {
+    id: rec.id,
+    status: rec.status,
+    preferences: rec.preferences,
+    sliceValue: rec.sliceValue,
+    updatedAt: rec.updatedAt
+  } as IntentAIFormDto
+  if (rec.metadata) {
+    const scheduledAt = rec.metadata.scheduledAt
+    const dateTime = moment(scheduledAt)
+    const date = dateTime.format('YYYY-MM-DD')
+    const time = dateTime.format('HH:mm:ss')
+    dto = { ...dto, scheduledDate: date, scheduledTime: time }
+  }
+  console.log(dto)
+  return dto
+}
+
+export function processDtoToPayload (dto: IntentAIFormDto) {
+  const newScheduledAt = `${dto.scheduledDate}T${dto.scheduledTime}`
   return {
     id: dto.id,
     status: dto.status,
-    scheduledAt: dto.metadata.scheduledAt,
+    scheduledAt: newScheduledAt,
     preferences: dto.preferences
   }
 }
@@ -174,7 +198,7 @@ export const intentApi = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     updatePreferenceSchedule: build.mutation<
       UpdatePreferenceScheduleMutationResponse,
-      EnhancedRecommendation
+      IntentAIFormDto
     >({
       query: (variables) => ({
         document: gql`

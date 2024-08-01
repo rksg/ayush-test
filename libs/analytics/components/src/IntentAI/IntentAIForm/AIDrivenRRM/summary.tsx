@@ -5,8 +5,8 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { IntentAIFormDto } from '../../types'
+import * as UI             from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
@@ -14,7 +14,7 @@ import { steps, crrmIntent, isOptimized } from '.'
 
 export function Summary () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EnhancedRecommendation>()
+  const { form } = useStepFormContext<IntentAIFormDto>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
 

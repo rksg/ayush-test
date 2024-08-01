@@ -8,9 +8,9 @@ import { useIntl, defineMessage }     from 'react-intl'
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
 
-import { TradeOff }               from '../../../TradeOff'
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { TradeOff }        from '../../../TradeOff'
+import { IntentAIFormDto } from '../../types'
+import * as UI             from '../styledComponents'
 
 import { steps } from '.'
 
@@ -24,7 +24,7 @@ export enum IntentPriority {
 
 export function Priority () {
   const { $t } = useIntl()
-  const { initialValues } = useStepFormContext<EnhancedRecommendation>()
+  const { initialValues } = useStepFormContext<IntentAIFormDto>()
   const { pageHeaderY } = useLayoutContext()
   const { sliceValue } = initialValues!
   const priority = [
@@ -55,10 +55,10 @@ export function Priority () {
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' }),
     subTitle: defineMessage({ defaultMessage: 'Potential trade-off?' }),
-    text: defineMessage({ defaultMessage: `In the quest for minimizing interference between access 
-      points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral 
-      efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially 
-      reducing throughput. Narrow channels limit data capacity, which could lower overall 
+    text: defineMessage({ defaultMessage: `In the quest for minimizing interference between access
+      points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral
+      efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially
+      reducing throughput. Narrow channels limit data capacity, which could lower overall
       throughput.` })
   }
 

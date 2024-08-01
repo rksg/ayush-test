@@ -7,8 +7,8 @@ import { defineMessage, useIntl }     from 'react-intl'
 
 import { DateTimeDropdown, StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { IntentAIFormDto } from '../../types'
+import * as UI             from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
@@ -35,16 +35,17 @@ const scheduleActions = {
   time: () => <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
 }
 
-export function getAvailableActions () {
+export function getAvailableActions (scheduledTime: string) {
+  console.log(scheduledTime)
   return scheduleActions.time()
 }
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EnhancedRecommendation>()
+  const { form } = useStepFormContext<IntentAIFormDto>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
-  // const scheduledAt = form.getFieldValue(['metadata', 'scheduledAt'])
+  const scheduledTime = form.getFieldValue('scheduledTime')
 
   const calendarText = defineMessage({ defaultMessage: `This recommendation will be
     applied at the chosen time whenever there is a need to change the channel plan.
@@ -64,7 +65,7 @@ export function Settings () {
         </Typography.Paragraph>
       </StepsForm.TextContent>
       <Form.Item name={['scheduled', 'date']}>
-        {getAvailableActions()}
+        {getAvailableActions(scheduledTime)}
       </Form.Item>
 
     </Col>

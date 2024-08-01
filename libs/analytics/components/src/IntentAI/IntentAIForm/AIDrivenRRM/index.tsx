@@ -14,10 +14,10 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { formatter }              from '@acx-ui/formatter'
 import { useParams }              from '@acx-ui/react-router-dom'
 
-import { crrmText }                                                                                             from '../../utils'
-import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType }                            from '../config'
-import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery, useUpdatePreferenceScheduleMutation } from '../services'
-import * as UI                                                                                                  from '../styledComponents'
+import { crrmText }                                                                                                        from '../../utils'
+import { categories, CodeInfo, priorities, RecommendationConfig, states, StateType }                                       from '../config'
+import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery, useUpdatePreferenceScheduleMutation, specToDto } from '../services'
+import * as UI                                                                                                             from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'
@@ -146,11 +146,13 @@ export function AIDrivenRRM () {
     useIsSplitOn(Features.CRRM_PARTIAL)
   ].some(Boolean)
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
+  console.log(codeQuery)
   const detailsQuery = useConfigRecommendationDetailsQuery(
     { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!
+  console.log(details)
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
     { text: $t({ defaultMessage: 'AI Analytics' }) },
@@ -188,7 +190,7 @@ export function AIDrivenRRM () {
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
-        initialValues={_.merge(defaultValue, details)}
+        initialValues={specToDto(_.merge(defaultValue, details))}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}

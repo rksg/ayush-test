@@ -9,15 +9,15 @@ import { get }                                                           from '@
 import { DateFormatEnum, formatter }                                     from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon }                               from '@acx-ui/icons'
 
-import { states }                 from '../config'
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { IntentAIFormDto } from '../../types'
+import { states }          from '../config'
+import * as UI             from '../styledComponents'
 
 import { steps, crrmIntent, statusTrailMsgs } from '.'
 
 export function Introduction () {
   const { $t } = useIntl()
-  const { initialValues } = useStepFormContext<EnhancedRecommendation>()
+  const { initialValues } = useStepFormContext<IntentAIFormDto>()
   const { pageHeaderY } = useLayoutContext()
   const { status, sliceValue, updatedAt } = initialValues!
 
@@ -47,9 +47,9 @@ export function Introduction () {
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' }),
     subtitle: defineMessage({ defaultMessage: 'Benefits' }),
-    text: defineMessage({ defaultMessage: `Low interference fosters improved throughput, lower 
-      latency, better signal quality, stable connections, enhanced user experience, longer battery 
-      life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading 
+    text: defineMessage({ defaultMessage: `Low interference fosters improved throughput, lower
+      latency, better signal quality, stable connections, enhanced user experience, longer battery
+      life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading
       to higher data rates, higher SNR, consistent performance, and balanced network load.` })
   }
 
