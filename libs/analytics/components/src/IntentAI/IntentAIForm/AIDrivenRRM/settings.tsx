@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
-import { Row, Col, Typography, Form, DatePicker } from 'antd'
-import { defineMessage, useIntl }                 from 'react-intl'
+import { Row, Col, Typography, Form } from 'antd'
+import { NamePath }                   from 'antd/lib/form/interface'
+import moment                         from 'moment-timezone'
+import { defineMessage, useIntl }     from 'react-intl'
 
-import { StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
+import { DateTimeDropdown, StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
@@ -12,11 +14,37 @@ import { IntentPriority, Priority } from './priority'
 
 import { steps, crrmIntent, isOptimized } from '.'
 
+const name = 'settings' as NamePath
+const label = defineMessage({ defaultMessage: 'Settings' })
+
+
+type DateTimeSettingProps = {
+  scheduleAt:string
+}
+
+function DateTimeSetting ({
+  scheduleAt
+}: DateTimeSettingProps) {
+  const initialScheduledAt = useRef(moment(scheduleAt))
+  return (<DateTimeDropdown initialDate={initialScheduledAt} />)
+}
+
+const scheduleActions = {
+  datetime: (props: DateTimeSettingProps) =>
+    <Form.Item name={['scheduled', 'date']}><DateTimeSetting {...props}/></Form.Item>,
+  time: () => <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
+}
+
+export function getAvailableActions () {
+  return scheduleActions.time()
+}
+
 export function Settings () {
   const { $t } = useIntl()
   const { form } = useStepFormContext<EnhancedRecommendation>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
+  // const scheduledAt = form.getFieldValue(['metadata', 'scheduledAt'])
 
   const calendarText = defineMessage({ defaultMessage: `This recommendation will be
     applied at the chosen time whenever there is a need to change the channel plan.
@@ -35,24 +63,10 @@ export function Settings () {
           {$t(calendarText)}
         </Typography.Paragraph>
       </StepsForm.TextContent>
-      <Form.Item name={'random'}>
-        <DatePicker
-          open={true}
-          className='hidden-date-input'
-          dropdownClassName='hidden-date-input-popover'
-          picker='date'
-          // disabled={disabled}
-          // value={date}
-          // open={open}
-          // onClick={() => setOpen(true)}
-          showTime={false}
-          showNow={false}
-          showToday={false}
-        />
+      <Form.Item name={['scheduled', 'date']}>
+        {getAvailableActions()}
       </Form.Item>
-      <Form.Item name={'testing'}>
-        <TimeDropdown timeType='Daily' name='daily' />
-      </Form.Item>
+
     </Col>
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
@@ -71,3 +85,6 @@ export function Settings () {
     </Col>
   </Row>
 }
+
+Settings.fieldName = name
+Settings.label = label

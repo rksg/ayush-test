@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { MutableRefObject, useState } from 'react'
 
+import {
+  DatePicker,
+  DropdownProps as AntDropdownProps,
+  MenuProps as AntMenuProps
+} from 'antd'
+import { Moment }       from 'moment-timezone'
 import { MenuItemType } from 'rc-menu/lib/interface'
 
 import { ScopeKeys } from '@acx-ui/types'
 
 import * as UI from './styledComponents'
 
-import type {
-  DropdownProps as AntDropdownProps,
-  MenuProps as AntMenuProps
-} from 'antd'
+// import { DatePicker, TimeDropdown, TimeDropdownTypes } from '@acx-ui/components'
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>
@@ -52,3 +55,44 @@ export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownPro
 Dropdown.MenuItemWithIcon = UI.MenuItemWithIcon
 Dropdown.OverlayContainer = UI.OverlayContainer
 Dropdown.OverlayTitle = UI.OverlayTitle
+
+interface DateTimeDropdownProps {
+  // extraFooter?: ReactNode;
+  // disabled?: boolean;
+  // icon?: ReactNode;
+  initialDate: MutableRefObject<Moment>
+  // onApply: (value: Moment) => void;
+  // title?: string;
+  disabledDateTime?: {
+    disabledDate?: (value: Moment) => boolean,
+    disabledHours?: (value: Moment) => number[],
+    disabledMinutes?: (value: Moment) => number[],
+  }
+}
+
+export function DateTimeDropdown (
+  {
+    initialDate,
+    disabledDateTime
+  } : DateTimeDropdownProps) {
+  const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
+  const [date, setDate] = useState(() => initialDate.current)
+  return (
+    <DatePicker
+      // open={true}
+      // // className='hidden-date-input'
+      // // dropdownClassName='hidden-date-input-popover'
+      // picker='date'
+      // value={date}
+      // // disabled={disabled}
+      // // value={date}
+      // // open={open}
+      // // onClick={() => setOpen(true)}
+      // showTime={false}
+      // showNow={false}
+      // showToday={false}
+      // disabledDate={disabledDate}
+      renderExtraFooter={
+        () => 'yo'}
+    />
+  )}

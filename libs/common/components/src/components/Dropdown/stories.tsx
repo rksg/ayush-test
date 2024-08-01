@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 
 import { storiesOf }   from '@storybook/react'
 import { Menu, Space } from 'antd'
+import moment          from 'moment-timezone'
 import styled          from 'styled-components/macro'
 
 import { WorldSolid, QuestionMarkCircleSolid, ConfigurationOutlined, CaretDownSolid } from '@acx-ui/icons'
@@ -11,7 +12,8 @@ import { LayoutUI } from '../Layout/styledComponents'
 
 import { CaretDownSolidIcon } from './styledComponents'
 
-import { Dropdown } from '.'
+import { DateTimeDropdown, Dropdown } from '.'
+
 
 const FakeLink = (props: React.PropsWithChildren) =>
   // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -92,3 +94,11 @@ storiesOf('Dropdown', module)
       }
     >{() => <Button>Open Overlay</Button>}</Dropdown>
   })
+  .add('DateTimeDropdown', () => {
+    return <DateTimeDropdown initialDate={useRef(moment('2024-07-03T07:15:00.000Z'))}/>
+  })
+  // .add('ant dDateTimeDropdown', () => {
+  //   return <AntDatePicker renderExtraFooter={
+  //     () => <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />}
+  //   picker='month' />
+  // })
