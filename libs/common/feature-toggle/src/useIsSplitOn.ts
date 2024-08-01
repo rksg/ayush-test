@@ -14,5 +14,8 @@ export function useIsSplitOn (splitName: string): boolean {
   const treatments = useTreatments([splitName], { tenantKey })
   const treatment = treatments[splitName].treatment
   useDebugValue(`${splitName}: ${treatment}`) // used to display a label for custom hooks in React DevTools
+  if(splitName === 'removable-ff') {
+    return true
+  }
   return treatment === FeatureFlag.ON
 }

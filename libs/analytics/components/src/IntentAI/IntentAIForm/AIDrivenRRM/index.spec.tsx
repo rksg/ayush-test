@@ -40,10 +40,10 @@ jest.mock('@acx-ui/config', () => ({
 
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
+    mockGraphqlQuery(recommendationUrl, 'IntentCode', {
       data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
     })
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
       data: { recommendation: mockedRecommendationCRRM }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained')

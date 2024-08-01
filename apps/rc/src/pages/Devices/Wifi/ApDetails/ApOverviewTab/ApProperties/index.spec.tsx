@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { apApi }                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
-import { Provider, store  }                      from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { apApi }                                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }          from '@acx-ui/test-utils'
 
 import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities } from '../../__tests__/fixtures'
 
@@ -37,6 +37,10 @@ describe('ApProperties', () => {
       ),
       rest.get(
         WifiUrlsInfo.getApLanPorts.url,
+        (req, res, ctx) => res(ctx.json(apLanPorts))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPorts))
       ),
       rest.get(

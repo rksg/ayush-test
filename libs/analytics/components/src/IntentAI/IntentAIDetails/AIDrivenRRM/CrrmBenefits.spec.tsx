@@ -8,7 +8,7 @@ import { CrrmBenefits }                                                         
 
 describe('CrrmBenefits', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
   })

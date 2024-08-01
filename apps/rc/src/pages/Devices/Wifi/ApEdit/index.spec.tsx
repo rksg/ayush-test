@@ -3,10 +3,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                                                    from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                    from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                                                                        from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                        from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -381,6 +381,8 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
         rest.get(WifiUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json(apLanPorts[0]))),
+        rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json(apLanPorts[0]))),
         rest.get(WifiUrlsInfo.getApCapabilities.url,
           (_, res, ctx) => res(ctx.json(r650Cap))),
         rest.get(CommonUrlsInfo.getVenue.url,
@@ -388,6 +390,8 @@ describe('ApEdit', () => {
         rest.get(CommonUrlsInfo.getVenueSettings.url,
           (_, res, ctx) => res(ctx.json(venueSetting))),
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
+          (_, res, ctx) => res(ctx.json(venueLanPorts))),
+        rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))),
         rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
           (_, res, ctx) => res(ctx.json([]))),
@@ -448,6 +452,11 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json({
             ...apLanPorts[0],
             useVenueSettings: false
+          }))),
+        rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
           })))
       )
 
@@ -480,6 +489,11 @@ describe('ApEdit', () => {
         rest.post(CommonUrlsInfo.getApsList.url,
           (_, res, ctx) => res(ctx.json(deviceAps))),
         rest.get(WifiUrlsInfo.getApLanPorts.url,
+          (_, res, ctx) => res(ctx.json({
+            ...apLanPorts[0],
+            useVenueSettings: false
+          }))),
+        rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json({
             ...apLanPorts[0],
             useVenueSettings: false

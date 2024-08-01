@@ -317,7 +317,8 @@ export const useEdgeMvSdLanActions = () => {
     isGuest: boolean,
     networkId: string,
     activate: boolean,
-    cb?: () => void) => {
+    cb?: () => void
+  ) => {
     // - activate network/guestNetwork
     // - deactivate guestNetwork
     if (activate || (!activate && isGuest)) {

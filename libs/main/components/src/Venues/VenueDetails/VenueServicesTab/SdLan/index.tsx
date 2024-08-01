@@ -12,10 +12,12 @@ import {
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  EdgeSdLanViewDataP2
+  EdgeSdLanViewDataP2,
+  EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import EdgeMvSdLan from '../MvSdLan'
 import EdgeSdLanP2 from '../SdLanP2'
 
 import { NetworkTable } from './NetworksTable'
@@ -83,10 +85,13 @@ const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
 
 const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
   const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
-  return isEdgeSdLanHaEnabled
-    ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
-    : <EdgeSdLan data={props.data as EdgeSdLanViewData}/>
+  return isEdgeSdLanMvEnabled
+    ? <EdgeMvSdLan data={props.data as EdgeMvSdLanViewData}/>
+    : (isEdgeSdLanHaEnabled
+      ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
+      : <EdgeSdLan data={props.data as EdgeSdLanViewData}/>)
 }
 
 export default EdgeSdLanContainer

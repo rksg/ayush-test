@@ -162,7 +162,8 @@ export function VenueFirmwareList () {
         const hasOutdatedVersion = modelGroups.some(modelGroup => {
           const recommendedVersion = getRecommendedVersion(modelGroup)
           const currentVersion = row.versions.find(v => v.modelGroup === modelGroup)?.version
-          return compareSwitchVersion(recommendedVersion, currentVersion)
+          const commpareSwitchVersionRes = compareSwitchVersion(recommendedVersion, currentVersion)
+          return commpareSwitchVersionRes > 0
         })
 
         const outdatedVersionSign = hasOutdatedVersion ?
