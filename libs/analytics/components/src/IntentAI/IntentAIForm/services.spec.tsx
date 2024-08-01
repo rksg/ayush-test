@@ -42,8 +42,7 @@ describe('intentAI services', () => {
       const removedMsgs = omit(data, [
         'category',
         'priority',
-        'summary',
-        'tooltipContent'
+        'summary'
       ])
       expect(removedMsgs).toStrictEqual<EnhancedIntent>({
         appliedOnce: true,

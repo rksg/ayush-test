@@ -30,7 +30,6 @@ export type IntentDetails = {
   id: string;
   code: keyof typeof codes;
   status: StateType;
-  recommendedValue: string;
   metadata: object & { scheduledAt: string, wlans?: IntentWlan[] };
   sliceType: string;
   sliceValue: string;
@@ -48,24 +47,12 @@ export type EnhancedIntent = IntentDetails & {
   summary: MessageDescriptor;
   category: MessageDescriptor;
   appliedOnce: boolean;
-  tooltipContent: string | MessageDescriptor;
   crrmInterferingLinks?: {
     before: number;
     after: number;
   }
   intentType?: string;
 }
-
-export type CrrmListItem = {
-  id: string
-  code: string
-  status: StateType
-  sliceValue: string
-  statusTrail: StatusTrail
-  summary?: string
-  updatedAt: string
-  metadata: {}
-} & Partial<IntentKpi>
 
 export function extractBeforeAfter (value: IntentKpi[string]) {
   const { current, previous, projected } = value
