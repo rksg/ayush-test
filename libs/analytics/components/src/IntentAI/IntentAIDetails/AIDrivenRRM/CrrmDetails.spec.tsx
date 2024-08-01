@@ -13,10 +13,10 @@ jest.mock('./StatusTrail', () => ({ StatusTrail: () => <div data-testid='StatusT
 
 describe('CrrmDetails', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
+    mockGraphqlQuery(recommendationUrl, 'IntentCode', {
       data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
     })
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
       data: { recommendation: mockedRecommendationCRRM }
     })
   })
