@@ -36,9 +36,6 @@ describe('IntentAI dashboard', () => {
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
-    // TODO: remove?
-    jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
-      .mockImplementation(() => true)
   })
 
   it('render intentHighlights with full data', async () => {
