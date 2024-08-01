@@ -15,7 +15,7 @@ import { NetworkTunnelInfoButton }                                              
 import * as UI                                                                           from './styledComponents'
 import { NetworkTunnelTypeEnum, NetworkTunnelActionModalProps, NetworkTunnelActionForm } from './types'
 import { useEdgeMvSdLanData }                                                            from './useEdgeMvSdLanData'
-import { getNetworkTunnelType, mergeSdLanCacheAct }                                      from './utils'
+import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction }        from './utils'
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
@@ -26,6 +26,8 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
 
   const [form] = Form.useForm()
   const tunnelType = Form.useWatch(['tunnelType'], form)
+
+  // TODO: get venueName if not provided
 
   // eslint-disable-next-line max-len
   const { getVenueSdLan } = useEdgeMvSdLanData({
@@ -136,6 +138,8 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
 export {
   NetworkTunnelTypeEnum,
   type NetworkTunnelActionModalProps,
+  type NetworkTunnelActionForm,
   NetworkTunnelInfoButton,
-  NetworkTunnelActionModal
+  NetworkTunnelActionModal,
+  useUpdateNetworkTunnelAction
 }

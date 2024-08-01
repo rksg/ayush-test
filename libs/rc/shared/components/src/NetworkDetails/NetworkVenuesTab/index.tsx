@@ -182,7 +182,7 @@ export function NetworkVenuesTab () {
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLaneady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const { $t } = useIntl()
   const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -533,7 +533,7 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
-    ...((isEdgeSdLanHaReady && !isEdgeMvSdLaneady) ? [{
+    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady) ? [{
       key: 'tunneled',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',
@@ -629,7 +629,7 @@ export function NetworkVenuesTab () {
           (!hasUpdatePermission || systemNetwork))
       }
     },
-    ...(isEdgeMvSdLaneady ? [{
+    ...(isEdgeMvSdLanReady ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
@@ -813,7 +813,7 @@ export function NetworkVenuesTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
-      {isEdgeMvSdLaneady &&
+      {isEdgeMvSdLanReady &&
         <NetworkTunnelActionModal
           {...tunnelModalState}
           onFinish={handleNetworkTunnelActionFinish}

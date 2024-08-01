@@ -20,7 +20,9 @@ export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => 
   if (Boolean(currentVenue.activated?.isActivated)) {
     const venueId = currentVenue.id
 
-    const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[venueId]?.[0]
+    const venueSdLans = sdLanScopedNetworkVenues?.sdLansVenueMap[venueId]
+    const destinationsInfo = Array.isArray(venueSdLans) ? venueSdLans?.[0] : venueSdLans
+
     const isTunneled = !!destinationsInfo
     // eslint-disable-next-line max-len
     const clusterName = (isTunneled && isGuestTunnelUtilized(destinationsInfo, network?.id!, venueId))
