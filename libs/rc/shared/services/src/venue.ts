@@ -582,8 +582,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
             currentApGroupsDefaultValue?.forEach(apGroup => {
               const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroup.apGroupId)
               if (!customApGroup) {
                 newApgroups.push(cloneDeep(apGroup))
+              } else {
+                newApgroups[customApGroupIndex] = { ...customApGroup, ...apGroup }
               }
             })
 
