@@ -3,17 +3,17 @@ import { useState } from 'react'
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import { TableProps }                               from '@acx-ui/components'
+import { formattedPath }             from '@acx-ui/analytics/utils'
+import { TableProps }                from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
   NetworkPath,
   computeRangeFilter,
   TABLE_DEFAULT_PAGE_SIZE
 }                                                   from '@acx-ui/utils'
-import { formattedPath }                            from '@acx-ui/analytics/utils'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
-import { intentAIApi }                              from '@acx-ui/store'
-import type { PathFilter }                          from '@acx-ui/utils'
+import type { PathFilter } from '@acx-ui/utils'
 
 import { states, codes, StatusTrail, aiFeaturesLabel } from './config'
 import { statuses, statusReasons }                     from './states'

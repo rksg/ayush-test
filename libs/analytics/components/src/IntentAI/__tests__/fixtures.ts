@@ -71,9 +71,9 @@ export const intentListResult = {
     {
       id: '11',
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: 'new',
       statusReason: '',
-      displayStatus: 'applied',
+      displayStatus: 'new',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -81,11 +81,11 @@ export const intentListResult = {
       metadata: {},
       path: [
         { type: 'system', name: 'vsz611' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+        { type: 'zone', name: 'zone-1' }
       ] as NetworkPath,
       idPath: [
         { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
-        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+        { type: 'zone', name: 'zone-1' }
       ] as NetworkPath,
       statusTrail: [
         { status: 'new' },
@@ -120,8 +120,8 @@ export const filterOptions = {
       label: 'zone'
     }],
     statuses: [{
-      id: 'applied',
-      label: 'applied'
+      id: 'new',
+      label: 'new'
     }, {
       id: 'na-no-aps', label: 'na-no-aps'
     }]
@@ -157,7 +157,7 @@ const intentStatus = {
 }
 
 export const intentListWithAllStatus = {
-  intents: [
+  intents: { data: [
     {
       ...intentStatus,
       status: 'new',
@@ -298,5 +298,6 @@ export const intentListWithAllStatus = {
       status_reason: 'not-defined',
       displayStatus: 'na-not-defined'
     }
-  ]
+  ], total: 20
+  }
 }
