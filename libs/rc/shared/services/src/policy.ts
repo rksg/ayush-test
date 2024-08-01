@@ -721,14 +721,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const policyIds = payload as string[]
           const requests = policyIds.map(policyId => ({ params: { policyId }, payload: {} }))
-          // eslint-disable-next-line max-len
-          return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+          const rbacResult = await batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ)
+
+          if (rbacResult.error) return { error: rbacResult.error as FetchBaseQueryError }
+
+          return { data: {} as CommonResult }
         } else {
           const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
-          return fetchWithBQ({
-            ...req,
-            body: payload
-          })
+          const result = await fetchWithBQ({ ...req, body: payload })
+
+          if (result.error) return { error: result.error as FetchBaseQueryError }
+
+          return { data: result.data as CommonResult }
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
@@ -797,14 +801,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
         if (enableRbac) {
           const requests = args.payload!.map(policyId => ({ params: { policyId } }))
-          return batchApi(
-            AaaUrls.deleteAAAPolicy, requests, baseQuery
-          )
+          const rbacResult = await batchApi(AaaUrls.deleteAAAPolicy, requests, baseQuery)
+
+          if (rbacResult.error) return { error: rbacResult.error as FetchBaseQueryError }
+
+          return { data: { requestId: '' } }
         } else {
-          return baseQuery({
+          const result = await baseQuery({
             ...createHttpRequest(AaaUrls.deleteAAAPolicyList, params),
             body: payload
           })
+          if (result.error) return { error: result.error as FetchBaseQueryError }
+
+          return { data: result.data as CommonResult }
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
