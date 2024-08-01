@@ -406,7 +406,7 @@ describe('IncidentTable', () => {
     expect(afterReset).toHaveLength(2)
   })
 
-  it('should hide muted when role = READ_ONLY', async () => {
+  it('should show muted when role = READ_ONLY', async () => {
     const profile = getUserProfile()
     setUserProfile({ ...profile, profile: {
       ...profile.profile, roles: [RolesEnum.READ_ONLY]
@@ -424,8 +424,12 @@ describe('IncidentTable', () => {
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-
-    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    )
+    expect(await screen.findByText('Mute')).toBeVisible()
   })
 
   it('should render drawer when click on description', async () => {
