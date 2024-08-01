@@ -202,7 +202,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/lanPortSettings',
     newApi: true
   },
-  getVenueLanPortsRbac: { // TODO
+  getVenueLanPortsRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
     newApi: true
@@ -212,7 +212,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/lanPortSettings',
     newApi: true
   },
-  updateVenueLanPortsRbac: { // TODO
+  updateVenueLanPortsRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
     newApi: true
