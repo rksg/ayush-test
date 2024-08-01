@@ -8,13 +8,13 @@ import { getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
 import type { PathFilter }                          from '@acx-ui/utils'
 
 import { states, codes, StatusTrail, aiFeaturesLabel } from './config'
-import { statuses, statusReasons }                     from './states'
+import { statuses, displayStates }                     from './states'
 
 type Intent = {
   id: string
   code: string
   status: statuses
-  displayStatus: statusReasons
+  displayStatus: displayStates
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -57,7 +57,7 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
-const getStatusTooltip = (state: statusReasons, sliceValue: string, metadata: Metadata) => {
+const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]

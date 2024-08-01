@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { Col, Divider, Form, Row, Select, Typography } from 'antd'
 
-import { cssStr, Modal, Tooltip }                         from '@acx-ui/components'
-import { useLazyGetSwitchConfigProfileQuery }             from '@acx-ui/rc/services'
-import { ConfigurationProfile, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { getIntl }                                        from '@acx-ui/utils'
+import { cssStr, Modal, Tooltip }                                                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
+import { useLazyGetSwitchConfigProfileQuery, useLazyGetSwitchConfigProfileTemplateQuery }                          from '@acx-ui/rc/services'
+import { ConfigurationProfile, useConfigTemplate, useConfigTemplateLazyQueryFnSwitcher, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                 from '@acx-ui/utils'
 
 import { CliConfiguration } from './styledComponents'
 
@@ -18,15 +19,24 @@ export function CliProfileDetailModal (props: {
 }) {
   const { $t } = getIntl()
   const { formState, setFormState, formData } = props
+  const { isTemplate } = useConfigTemplate()
   const profileKeys = getProfilesByKeys(formState.configProfiles, formData.profileId)
-  const [getSwitchConfigProfile] = useLazyGetSwitchConfigProfileQuery()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : isSwitchRbacEnabled
+  const [ getSwitchConfigProfile ] = useConfigTemplateLazyQueryFnSwitcher<ConfigurationProfile>({
+    useLazyQueryFn: useLazyGetSwitchConfigProfileQuery,
+    useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateQuery
+  })
+
   const [selectedProfile, setSelectedProfile] =
     useState<ConfigurationProfile>({} as ConfigurationProfile)
 
   const switchModels = selectedProfile?.venueCliTemplate?.switchModels?.split(',') ?? []
   const getSelectedProfile = async function (profileId: string) {
     let profile = await getSwitchConfigProfile({
-      params: { profileId }
+      params: { profileId },
+      enableRbac: resolvedEnableRbac
     }).unwrap()
 
     const pk = profileKeys.find(p => p.id === profileId)
