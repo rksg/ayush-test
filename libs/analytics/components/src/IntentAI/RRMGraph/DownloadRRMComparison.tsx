@@ -24,7 +24,8 @@ const useDownloadUrl = (data: unknown, type: string) => {
   const [url, setUrl] = useState<string>()
   useEffect(() => {
     if (!data) return
-    setUrl(URL.createObjectURL(new Blob([data as BlobPart], { type })))
+    const url = URL.createObjectURL(new Blob([data as BlobPart], { type }))
+    setUrl(url)
     return () => URL.revokeObjectURL(url!)
   }, [data, type])
   return url
