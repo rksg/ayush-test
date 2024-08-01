@@ -54,41 +54,6 @@ export function IntentAIWidget ({
       performance with IntentAI's advanced AI and ML technologies.
       ` })
 
-  const nullData : IntentHighlight = {
-  }
-  const partialData1: IntentHighlight = {
-    rrm: { new: 12, active: 24 }
-  }
-  const partialData2: IntentHighlight = {
-    airflex: { new: 6, active: 12 }
-  }
-  const partialData3: IntentHighlight = {
-    ops: { new: 18, active: 36 }
-  }
-  const partialData12: IntentHighlight = {
-    rrm: { new: 12, active: 24 },
-    airflex: { new: 6, active: 12 }
-  }
-  const partialData13: IntentHighlight = {
-    rrm: { new: 12, active: 24 },
-    ops: { new: 18, active: 13 }
-  }
-  const partialData23: IntentHighlight = {
-    airflex: { new: 6, active: 12 },
-    ops: { new: 18, active: 13 }
-  }
-  const zeroData : IntentHighlight = {
-    rrm: { new: 12, active: 0 },
-    airflex: { new: 6, active: 0 },
-    ops: { new: 18, active: 0 }
-  }
-  const fullData : IntentHighlight = {
-    rrm: { new: 12, active: 24 },
-    airflex: { new: 6, active: 12 },
-    ops: { new: 18, active: 13 }
-  }
-
-  //TODO: use nullData for IT screenshot, remove mockData
   const responseData = data
   const highlightList: HighlightCardProps[] = getHighlightList(responseData)
   const hasData = highlightList.length > 0
