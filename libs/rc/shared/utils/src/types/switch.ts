@@ -332,6 +332,7 @@ export interface SwitchRow {
   syncedAdminPassword?: boolean
   adminPassword?: string
   extIp?: string
+  ipAddress?: string
 }
 
 export interface StackMember {

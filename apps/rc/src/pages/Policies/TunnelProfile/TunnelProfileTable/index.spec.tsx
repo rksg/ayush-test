@@ -231,6 +231,7 @@ describe('TunnelProfileList', () => {
     const row = await screen.findAllByRole('row', { name: /Default/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
   })
 
   describe('when Keep Alive is ready', () => {

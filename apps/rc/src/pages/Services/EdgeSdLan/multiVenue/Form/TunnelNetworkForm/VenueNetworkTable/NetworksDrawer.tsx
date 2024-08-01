@@ -125,8 +125,13 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           updateData['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
-        // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
-        checkGuestFwdConflict(data, checked, updateData)
+        // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same.
+        // but deactivate network no need to check conflict.
+        if (checked) {
+          checkGuestFwdConflict(data, checked, updateData)
+        } else {
+          setUpdateContent(updateData)
+        }
       } else {
         // eslint-disable-next-line max-len
         const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
