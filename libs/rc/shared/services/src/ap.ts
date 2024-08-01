@@ -182,7 +182,10 @@ export const apApi = baseApApi.injectEndpoints({
             pageSize: 10000,
             filters: { id: groupIds }
           }
-          const apGroupListRes = await fetchWithBQ({ ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList), body: apGroupPayload })
+          const apGroupListRes = await fetchWithBQ({
+            ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList),
+            body: JSON.stringify(apGroupPayload)
+          })
           apGroupList = apGroupListRes.data as TableResult<NewApGroupViewModelResponseType>
           aggregateApGroupInfo(apList, apGroupList)
         }
@@ -1104,15 +1107,62 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'MESH_SETTINGS' }]
     }),
     getMeshUplinkAps: build.query<MeshUplinkAp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getMeshUplinkAPs, params)
-        return {
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const apiInfo = enableRbac? CommonRbacUrlsInfo.getApsList : WifiUrlsInfo.getMeshUplinkAPs
+        const req = createHttpRequest(apiInfo, params)
+        const meshUplinkQuery = await fetchWithBQ({
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
+        })
+
+        let meshUplinkApData: MeshUplinkAp
+
+        if (enableRbac) {
+          const meshUplinkApList = meshUplinkQuery.data as TableResult<NewAPModel>
+          const rbacMeshUpLink = meshUplinkApList?.data[0]
+
+          const { name, venueId, meshStatus } = rbacMeshUpLink || {}
+
+          // add AP name into the neighbors
+          const apListReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, params)
+          const apListPayload = {
+            fields: ['name', 'macAddress'],
+            page: 1,
+            pageSize: 10000,
+            filters: {
+              venueId: [venueId]
+            }
+          }
+          const apListQuery = await fetchWithBQ({
+            ...apListReq,
+            body: JSON.stringify(apListPayload)
+          })
+          const apListData = (apListQuery.data as TableResult<NewAPModel>)?.data
+          const neighbors = meshStatus?.neighbors?.map(neighbor => {
+            const { macAddress, rssi } = neighbor
+            const apMac = macAddress.toUpperCase()
+            const apName = apListData?.find(ap => ap.macAddress?.toUpperCase() === apMac)?.name ?? ''
+
+            return {
+              rssi: rssi,
+              mac: apMac,
+              apName: apName
+            }
+          })
+
+          meshUplinkApData = {
+            name: name ?? '',
+            neighbors: neighbors ?? []
+          }
+        } else {
+          const MeshUplinkApList = meshUplinkQuery.data as TableResult<MeshUplinkAp>
+          meshUplinkApData = MeshUplinkApList?.data[0]
         }
-      },
-      transformResponse (result: TableResult<MeshUplinkAp>) {
-        return result?.data[0]
+
+        return {
+          data: meshUplinkApData
+        }
       }
     }),
     downloadApsCSV: build.mutation<Blob, RequestPayload>({
