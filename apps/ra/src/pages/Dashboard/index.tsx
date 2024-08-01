@@ -10,6 +10,8 @@ import {
   SLA,
   ReportTile,
   SANetworkFilter,
+  AIDrivenRRM,
+  AIOperations,
   ChatWithMelissa,
   AppInsights,
   IntentAIWidget
@@ -78,15 +80,19 @@ type DashboardViewProps = {
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
   const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
+  const hasRecommendation = (
+    hasPermission({ permission: 'READ_AI_OPERATIONS' }) ||
+    hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })
+  )
   const isIntentAIEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
     useIsSplitOn(Features.INTENT_AI_TOGGLE)
   ].some(Boolean)
   const hasIntentAI = (
-    isIntentAIEnabled && hasPermission({ permission: 'READ_INTENT_AI' })
+    hasPermission({ permission: 'READ_INTENT_AI' })
   )
 
-  if (!hasIntentAI) {
+  if ((isIntentAIEnabled && !hasIntentAI) || (!isIntentAIEnabled && !hasRecommendation)) {
     return (
       <UI.NetworkAdminGrid style={{ height }}>
         <div style={{ gridArea: 'a1' }}>
@@ -135,11 +141,26 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
       <div style={{ gridArea: 'b1' }}>
         <IncidentsCountBySeverities filters={filters} />
       </div>
-      <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end', minHeight: '450px' }}>
-        <IntentAIWidget
-          pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
-        />
-      </div>
+      {
+        isIntentAIEnabled && hasIntentAI
+          ? <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end', minHeight: '450px' }}>
+            <IntentAIWidget
+              pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+            />
+          </div>
+          : <>
+            <div style={{ gridArea: 'b2' }}>
+              <AIDrivenRRM
+                pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+              />
+            </div>
+            <div style={{ gridArea: 'c2' }}>
+              <AIOperations
+                pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
+              />
+            </div>
+          </>
+      }
       <div style={{ gridArea: 'd1' }}>
         <DidYouKnow
           filters={pathFilters}
