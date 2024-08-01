@@ -90,7 +90,7 @@ export const store = configureStore({
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
-    [edgeQosApi.reducerPath]: edgeQosApi.reducer,
+    [edgeQosApi.reducerPath]: edgeQosApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
