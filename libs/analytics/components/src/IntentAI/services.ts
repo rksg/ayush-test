@@ -200,7 +200,7 @@ export const api = intentAIApi.injectEndpoints({
           return data
         }, { aiFeatures: [] as string[], categories: [] as string[] })
         const displayStatuses = statuses.map(({ label, id }) => ({
-          value: $t(states[label as keyof typeof states].text),
+          value: $t(states[label as unknown as keyof typeof states].text),
           key: id
         })).sort((a, b) => a.value.localeCompare(b.value))
 
