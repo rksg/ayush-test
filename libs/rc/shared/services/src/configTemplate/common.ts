@@ -19,7 +19,8 @@ import {
   transformNetwork,
   NetworkRadiusSettings,
   GetApiVersionHeader,
-  ApiVersionEnum
+  ApiVersionEnum,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -295,15 +296,33 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : ConfigTemplateUrlsInfo.updateNetworkVenue,
-          params
-        )
-        return {
-          ...req,
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        const updateNetworkVenueInfo = {
+          ...createHttpRequest(
+            enableRbac ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : ConfigTemplateUrlsInfo.updateNetworkVenue,
+            params),
           body: JSON.stringify(payload)
         }
+        const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
+
+        if ((payload as { apGroups: [], isTemplate: boolean }).apGroups.length > 0) {
+          const isTemplate = (payload as { apGroups: [], isTemplate: boolean }).isTemplate
+          await Promise.all((payload as { apGroups: { venueId: string, networkId: string, apGroupId: string }[] }).apGroups.map(apGroup => {
+            const apGroupSettingReq = {
+              ...createHttpRequest(
+                isTemplate ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
+                  venueId: apGroup.venueId,
+                  networkId: apGroup.networkId,
+                  apGroupId: apGroup.apGroupId
+                })
+            }
+            return fetchWithBQ(apGroupSettingReq)
+          }))
+        }
+
+        return updateNetworkVenueQuery.data
+          ? { data: updateNetworkVenueQuery.data as CommonResult }
+          : { error: updateNetworkVenueQuery.error as FetchBaseQueryError }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

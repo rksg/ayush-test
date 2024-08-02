@@ -288,16 +288,35 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
 
         const apiCustomHeader = enableRbac? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
 
-        const req = createHttpRequest(urlsInfo.updateNetworkVenue, params, apiCustomHeader)
-        return {
-          ...req,
+        const updateNetworkVenueInfo = {
+          ...createHttpRequest(urlsInfo.updateNetworkVenue, params, apiCustomHeader),
           body: JSON.stringify(payload)
         }
+        const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
+
+        if ((payload as { apGroups: [], isTemplate: boolean }).apGroups.length > 0) {
+          const isTemplate = (payload as { apGroups: [], isTemplate: boolean }).isTemplate
+          await Promise.all((payload as { apGroups: { venueId: string, networkId: string, apGroupId: string }[] }).apGroups.map(apGroup => {
+            const apGroupSettingReq = {
+              ...createHttpRequest(
+                isTemplate ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
+                  venueId: apGroup.venueId,
+                  networkId: apGroup.networkId,
+                  apGroupId: apGroup.apGroupId
+                })
+            }
+            return fetchWithBQ(apGroupSettingReq)
+          }))
+        }
+
+        return updateNetworkVenueQuery.data
+          ? { data: updateNetworkVenueQuery.data as CommonResult }
+          : { error: updateNetworkVenueQuery.error as FetchBaseQueryError }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),

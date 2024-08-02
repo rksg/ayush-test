@@ -693,6 +693,8 @@ export function NetworkVenuesTab () {
       let oldData = _.cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
 
+      console.log(payload)
+
       updateNetworkVenue({
         params: {
           tenantId: params.tenantId,
@@ -700,7 +702,10 @@ export function NetworkVenuesTab () {
           venueId: payload.venueId,
           networkId: payload.networkId
         },
-        payload: payload,
+        payload: {
+          ...payload,
+          isTemplate: isTemplate
+        },
         enableRbac: resolvedRbacEnabled
       }).then(()=>{
         setApGroupModalState({
@@ -744,6 +749,8 @@ export function NetworkVenuesTab () {
 
     const payload = _.assign(data, { scheduler: tmpScheduleList })
 
+    console.log(payload, '752')
+
     updateNetworkVenue({
       params: {
         tenantId: params.tenantId,
@@ -751,7 +758,10 @@ export function NetworkVenuesTab () {
         venueId: payload.venueId,
         networkId: payload.networkId
       },
-      payload: payload,
+      payload: {
+        ...payload,
+        isTemplate: isTemplate
+      },
       enableRbac: resolvedRbacEnabled
     }).then(()=>{
       setScheduleModalState({

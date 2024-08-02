@@ -104,7 +104,7 @@ import { RequestPayload }                                from '@acx-ui/types'
 import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacApList }                               from './apUtils'
-import { fetchRbacApGroupNetworkVenueList }                                                                           from './networkVenueUtils'
+import { fetchRbacAllApGroupNetworkVenueList }                                                                        from './networkVenueUtils'
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess, isPayloadHasField }                                                       from './utils'
 import {
@@ -545,7 +545,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           error: apGroupNetworkListQueryError,
           networkList,
           networkDeepListList
-        } = await fetchRbacApGroupNetworkVenueList({
+        } = await fetchRbacAllApGroupNetworkVenueList({
           params: {
             ...params,
             venueId: paramsVenueId
