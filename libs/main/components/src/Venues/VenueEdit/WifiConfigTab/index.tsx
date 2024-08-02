@@ -92,11 +92,7 @@ export function WifiConfigTab () {
         <Tabs.TabPane tab={tabTitleMap('security')} key='security'>
           <SecurityTab />
         </Tabs.TabPane>
-        <Tabs.TabPane
-          disabled={!useIsSplitOn(Features.POLICIES)}
-          tab={tabTitleMap('servers')}
-          key='servers'
-        >
+        <Tabs.TabPane tab={tabTitleMap('servers')} key='servers'>
           <ServerTab />
         </Tabs.TabPane>
         <Tabs.TabPane tab={tabTitleMap('settings')} key='settings'>

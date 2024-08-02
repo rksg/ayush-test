@@ -233,7 +233,6 @@ function SettingsForm () {
   }, [cloneMode, editMode, form, wlanSecurity])
 
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
@@ -342,9 +341,7 @@ function SettingsForm () {
           <Form.Item
             name={['wlan', 'macAddressAuthentication']}
             valuePropName='checked'>
-            <Switch disabled={
-              editMode || disablePolicies
-            }
+            <Switch disabled={editMode}
             onChange={onMacAuthChange}
             />
           </Form.Item>

@@ -59,7 +59,7 @@ function TypesForm () {
       form.setFieldValue(['guestPortal', 'guestNetworkType'], GuestNetworkTypeEnum.GuestPass)
     }
   },[createType])
-  const disableAAA = !useIsSplitOn(Features.POLICIES)
+
   return (
     <>
       <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Portal Type' })}</StepsFormLegacy.Title>
@@ -86,7 +86,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.Cloudpath} disabled={disableAAA}>
+            <Radio value={GuestNetworkTypeEnum.Cloudpath}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.Cloudpath]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.Cloudpath]}
@@ -107,7 +107,7 @@ function TypesForm () {
               </RadioDescription>
             </Radio>
 
-            <Radio value={GuestNetworkTypeEnum.WISPr} disabled={disableAAA}>
+            <Radio value={GuestNetworkTypeEnum.WISPr}>
               {GuestNetworkTypeLabel[GuestNetworkTypeEnum.WISPr]}
               <RadioDescription>
                 {GuestNetworkTypeDescription[GuestNetworkTypeEnum.WISPr]}

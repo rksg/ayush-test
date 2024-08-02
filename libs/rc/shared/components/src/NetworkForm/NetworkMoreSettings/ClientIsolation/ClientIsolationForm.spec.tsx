@@ -69,7 +69,6 @@ describe('ClientIsolationForm', () => {
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: mockedTenantId }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.POLICIES)
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(mockedVenues))),

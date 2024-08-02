@@ -45,7 +45,6 @@ export function useMenuConfig () {
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
-  const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -279,7 +278,7 @@ export function useMenuConfig () {
       inactiveIcon: SmartEdgeOutlined,
       activeIcon: SmartEdgeSolid
     }] : []),
-    ...(isServiceEnabled || isPolicyEnabled ? [{
+    {
       label: $t({ defaultMessage: 'Network Control' }),
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
@@ -295,11 +294,9 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Service Catalog' })
           }
         ] : []),
-        ...(isPolicyEnabled
-          ? [{ uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }]
-          : [])
+        { uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }
       ]
-    }] : []),
+    },
     {
       label: $t({ defaultMessage: 'Business Insights' }),
       inactiveIcon: BulbOutlined,

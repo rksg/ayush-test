@@ -154,7 +154,6 @@ function SettingsForm () {
     }
   },[data])
 
-  const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
 
   const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
@@ -214,7 +213,7 @@ function SettingsForm () {
               children={<Switch
                 data-testid='mac-auth-switch'
                 onChange={onMacAuthChange}
-                disabled={editMode || disablePolicies}
+                disabled={editMode}
               />}
             />
           </UI.FieldLabel>
