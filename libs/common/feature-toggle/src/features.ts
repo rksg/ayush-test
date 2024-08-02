@@ -4,7 +4,7 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
-  ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
+  ANY_3RDPARTY_INVITE_TOGGLE = 'removable-ff',
   AP_AFC_TOGGLE = 'ap-afc-toggle',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
