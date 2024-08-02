@@ -9,7 +9,6 @@ import {
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { GuestNetworkTypeDescription, GuestNetworkTypeLabel } from '../contentsMap'

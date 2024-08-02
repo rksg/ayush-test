@@ -3,7 +3,6 @@ import { Form }         from 'antd'
 import { FormInstance } from 'antd/es/form/Form'
 import { rest }         from 'msw'
 
-import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import { ClientIsolationUrls, CommonUrlsInfo, DpskWlanAdvancedCustomization, TunnelTypeEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import {

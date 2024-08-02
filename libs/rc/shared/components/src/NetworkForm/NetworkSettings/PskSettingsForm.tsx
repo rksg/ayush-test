@@ -17,8 +17,8 @@ import {
   Tooltip,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }                         from '@acx-ui/icons'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { InformationSolid }           from '@acx-ui/icons'
 import {
   ManagementFrameProtectionEnum,
   PskWlanSecurityEnum,
@@ -341,9 +341,7 @@ function SettingsForm () {
           <Form.Item
             name={['wlan', 'macAddressAuthentication']}
             valuePropName='checked'>
-            <Switch disabled={editMode}
-              onChange={onMacAuthChange}
-            />
+            <Switch disabled={editMode} onChange={onMacAuthChange} />
           </Form.Item>
         </UI.FieldLabel>
         {macAddressAuthentication && <>

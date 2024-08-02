@@ -9,7 +9,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { StepsFormLegacy, Tooltip }                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                             from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
 import { MacAuthMacFormatEnum, macAuthMacFormatOptions, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
