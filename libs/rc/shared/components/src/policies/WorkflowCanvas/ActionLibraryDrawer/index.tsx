@@ -34,9 +34,15 @@ const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT
 ]
 
-export default function ActionLibraryDrawer (props: ActionLibraryProps) {
+export default function Index (props: ActionLibraryProps) {
   const { $t } = useIntl()
-  const { visible, relationshipMap, existingActionTypes, onClose, onClickAction } = props
+  const {
+    visible,
+    relationshipMap,
+    existingActionTypes = new Set(),
+    onClose,
+    onClickAction
+  } = props
 
   const { defMap, isDefLoading } = useGetWorkflowActionDefinitionListQuery({
     params: {
