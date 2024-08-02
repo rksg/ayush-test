@@ -87,6 +87,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 
 describe('useEdgeMvSdLanActions', () => {
   beforeEach(() => {
+    store.dispatch(edgeSdLanApi.util.resetApiState())
     mockedCallback.mockClear()
     mockedActivateEdgeSdLanDmzClusterReq.mockClear()
     mockedDeactivateEdgeSdLanDmzClusterReq.mockClear()
@@ -596,6 +597,7 @@ describe('useEdgeMvSdLanActions', () => {
 
 describe('useEdgeSdLanActions', () => {
   beforeEach(() => {
+    store.dispatch(edgeSdLanApi.util.resetApiState())
     mockedCallback.mockClear()
     mockedActivateEdgeSdLanDmzClusterReq.mockClear()
     mockedDeactivateEdgeSdLanDmzClusterReq.mockClear()
@@ -1217,7 +1219,8 @@ describe('SD-LAN feature functions', () => {
 
   describe('useSdLanScopedNetworkVenues', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
     })
 
     it('should return venueId used for DC case', async () => {

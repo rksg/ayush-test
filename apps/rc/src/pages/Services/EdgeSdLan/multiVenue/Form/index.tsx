@@ -60,7 +60,7 @@ interface EdgeSdLanFormStep {
   content: React.FC
 }
 
-interface EdgeMvSdLanFormProps {
+export interface EdgeMvSdLanFormProps {
   form: FormInstance,
   steps: EdgeSdLanFormStep[]
   editData?: EdgeMvSdLanExtended

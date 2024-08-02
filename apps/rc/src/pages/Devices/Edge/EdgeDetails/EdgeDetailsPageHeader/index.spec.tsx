@@ -2,7 +2,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
 import {
@@ -24,12 +23,14 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../HaStatusBadge', () => ({
   HaStatusBadge: () => <div data-testid='ha-status-badge' />
 }))
-
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+}))
 const mockedDeleteApi = jest.fn()
 const mockedRebootApi = jest.fn()
 const mockedShutdownApi = jest.fn()
 const mockedResetApi = jest.fn()
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
 
 describe('Edge Detail Page Header', () => {
   const currentEdge = mockEdgeList.data[0]

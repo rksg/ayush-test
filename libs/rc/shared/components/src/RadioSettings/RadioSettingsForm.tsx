@@ -5,6 +5,7 @@ import { useEffect, useContext } from 'react'
 
 import { Form, Slider, InputNumber, Space, Switch, Checkbox, Input } from 'antd'
 import { CheckboxChangeEvent }                                       from 'antd/lib/checkbox'
+import { isNumber }                                                  from 'lodash'
 import { useIntl }                                                   from 'react-intl'
 
 import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
@@ -290,13 +291,12 @@ export function RadioSettingsForm (props:{
                 dependencies={maxFloorFieldName}
                 style={{ width: '150px' }}
                 rules={[
-                  { required: enableAfc, message: $t({ defaultMessage: 'Minimum floor can not be empty' }) },
-                  { validator: (_, value) => (value && value > maxFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
+                  { validator: (_, value) => (isNumber(value) && value > maxFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() },
+                  { validator: (_, value) => (isNumber(maxFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Minimum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
                   style={{ width: '150px' }}
                   controls={false}
-                  min={0}
                   precision={0}
                   placeholder={$t({ defaultMessage: 'Minimum Floor' })}
                   onChange={() => form.validateFields()}
@@ -308,13 +308,12 @@ export function RadioSettingsForm (props:{
                 dependencies={minFloorFieldName}
                 style={{ width: '150px' }}
                 rules={[
-                  { required: enableAfc , message: $t({ defaultMessage: 'Maximum floor can not be empty' }) },
-                  { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMaxFloorLessThanMinFloor)) : Promise.resolve() }
+                  { validator: (_, value) => (isNumber(value) && value < minFloor) ? Promise.reject($t(validationMessages.VenueMaxFloorLessThanMinFloor)) : Promise.resolve() },
+                  { validator: (_, value) => (isNumber(minFloor) && !isNumber(value)) ? Promise.reject($t({ defaultMessage: 'Maximum floor can not be empty' })) : Promise.resolve() }
                 ]}>
                 <InputNumber
                   style={{ width: '150px' }}
                   controls={false}
-                  min={0}
                   precision={0}
                   placeholder={$t({ defaultMessage: 'Maximum Floor' })}
                   onChange={() => {form.validateFields()}}

@@ -260,14 +260,14 @@ export function StackForm () {
           switchDetail.deviceStatus as SwitchStatusEnum, switchDetail.syncedSwitchConfig)
       )
 
-      const switchFw = switchData.firmwareVersion
+      const switchFw = switchData?.firmwareVersion || switchDetail?.firmwareVersion
+      const venueId = switchData?.venueId || switchDetail?.venueId || ''
       if (isSwitchFirmwareV1002Enabled && venuesListV1002) {
         const venueVersions = venuesListV1002.data?.find(
-          venue => venue['venueId'] === switchData.venueId)?.versions
+          venue => venue['venueId'] === venueId)?.versions
         setCurrentFirmwareV1002(venueVersions || [])
 
       } else if (!isSwitchFirmwareV1002Enabled && venuesList) {
-        const venueId = switchData?.venueId || switchDetail?.venueId || ''
         const venueFw = venuesList.data.find(
           venue => venue.id === venueId)?.switchFirmwareVersion?.id
         const venueAboveTenFw = venuesList.data.find(

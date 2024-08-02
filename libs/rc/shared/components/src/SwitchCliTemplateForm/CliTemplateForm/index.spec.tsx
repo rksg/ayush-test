@@ -2,10 +2,11 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Modal } from 'antd'
 import { rest }        from 'msw'
 
-import { StepsForm }                      from '@acx-ui/components'
-import { switchApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { StepsForm }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { switchApi }                                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -86,6 +87,9 @@ async function addVariable (variableName: string, type: string) {
 
 describe('Cli Template Form', () => {
   const onFinishSpy = jest.fn()
+  const mockedUpdate = jest.fn()
+  const mockedAssociate = jest.fn()
+  const mockedDisassociate = jest.fn()
   const params = {
     tenantId: 'tenant-id', action: 'add', configType: 'onDemandCli'
   }
@@ -123,6 +127,9 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
   })
   afterEach(() => {
     onFinishSpy.mockClear()
+    mockedUpdate.mockClear()
+    mockedAssociate.mockClear()
+    mockedDisassociate.mockClear()
     Modal.destroyAll()
   })
 
@@ -688,4 +695,165 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
     })
   })
 
+  describe('RBAC', () => {
+    describe('Edit mode', () => {
+      const params = {
+        tenantId: 'tenant-id', action: 'edit', configType: 'onDemandCli',
+        templateId: 'f14c4116e30743bfa3180ba4b68cd069'
+      }
+      const templatesData = {
+        ...templates,
+        variables: [{
+          name: 'testaaa', type: 'STRING', value: 'aaaa'
+        }, {
+          name: 'test', type: 'RANGE', rangeStart: 3, rangeEnd: 44
+        }]
+      }
+      beforeEach(() => {
+        store.dispatch(switchApi.util.resetApiState())
+        mockServer.use(
+          rest.get(SwitchUrlsInfo.getCliConfigExamples.url,
+            (_, res, ctx) => res(ctx.json(configExamples))
+          ),
+          rest.get(SwitchUrlsInfo.getCliTemplate.url,
+            (_, res, ctx) => res(ctx.json(cliTemplate))
+          ),
+          rest.post(SwitchUrlsInfo.getCliTemplates.url,
+            (_, res, ctx) => res(ctx.json({ data: templatesData }))
+          ),
+          rest.put(SwitchUrlsInfo.updateCliTemplate.url,
+            (_, res, ctx) => {
+              mockedUpdate()
+              return res(ctx.json({ requestId: 'request-id' }))
+            }
+          ),
+          rest.post(SwitchRbacUrlsInfo.getSwitchList.url,
+            (_, res, ctx) => res(ctx.json({ data: switchlist }))
+          ),
+          rest.put(SwitchRbacUrlsInfo.associateCliTemplate.url,
+            (_, res, ctx) => {
+              mockedAssociate()
+              return res(ctx.json({ requestId: 'request-id' }))
+            }
+          ),
+          rest.delete(SwitchRbacUrlsInfo.disassociateCliTemplate.url,
+            (_, res, ctx) => {
+              mockedDisassociate()
+              return res(ctx.json({ requestId: 'request-id' }))
+            }
+          )
+        )
+      })
+
+      it('should update correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(<Provider>
+          <CliTemplateForm />
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Template')).toBeVisible()
+        expect(await screen.findByText(/Read this before you start/)).toBeVisible()
+
+        await userEvent.click(await screen.findByText('CLI Configuration'))
+        await userEvent.click(await screen.findByText('Switches'))
+        await userEvent.click(await screen.findByText('My-Venue'))
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findAllByRole('row')).toHaveLength(3)
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+      })
+
+      it('should update and associate with switch correctly', async () => {
+        mockServer.use(
+          rest.get(SwitchUrlsInfo.getCliTemplate.url,
+            (_, res, ctx) => res(ctx.json({
+              ...cliTemplate,
+              venueSwitches: [{
+                ...cliTemplate.venueSwitches[0],
+                switches: ['c0:c5:20:aa:32:79']
+              }, {
+                id: '721755be58084157a10a55e0a15007fe',
+                switches: ['58:fb:96:0e:bc:f8'],
+                venueId: '9417693931ab409ca41ecf9b36f516be'
+              }]
+            }))
+          )
+        )
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(<Provider>
+          <CliTemplateForm />
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Template')).toBeVisible()
+        expect(await screen.findByText(/Read this before you start/)).toBeVisible()
+
+        await userEvent.click(await screen.findByText('Switches'))
+        await userEvent.click(await screen.findByText('My-Venue'))
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findAllByRole('row')).toHaveLength(3)
+        const row = await screen.findByRole('row', { name: /7150stack/i })
+        await userEvent.click(await within(row).findByRole('checkbox'))
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        await waitFor(() => expect(mockedAssociate).toBeCalled())
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(1)
+      })
+
+      it('should update and disassociate with switch correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(<Provider>
+          <CliTemplateForm />
+        </Provider>, {
+          route: { params, path: '/:tenantId/networks/wired/:configType/:templateId/:action' }
+        })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit CLI Template')).toBeVisible()
+        expect(await screen.findByText(/Read this before you start/)).toBeVisible()
+
+        await userEvent.click(await screen.findByText('Switches'))
+        await userEvent.click(await screen.findByText('My-Venue'))
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findAllByRole('row')).toHaveLength(3)
+        const row = await screen.findByRole('row', { name: /7150stack/i })
+        await userEvent.click(await within(row).findByRole('checkbox'))
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedDisassociate).toBeCalled())
+        await waitFor(() => expect(mockedUpdate).toBeCalled())
+        expect(mockedDisassociate).toHaveBeenCalledTimes(1)
+        expect(mockedUpdate).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+      })
+    })
+  })
 })

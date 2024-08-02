@@ -94,7 +94,8 @@ describe('NetworkForm', () => {
       rest.post(CertificateUrls.getCAs.url,
         (_, res, ctx) => res(ctx.json(certificateAuthorityList))),
       rest.post(AaaUrls.queryAAAPolicyList.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
   })
 

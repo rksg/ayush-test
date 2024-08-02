@@ -103,7 +103,7 @@ export default function ServiceCatalog () {
             { set.title }
           </Typography.Title>
           <GridRow>
-            {set.items.filter(i => isServicePolicyCardEnabled(i, 'read')).map(item => {
+            {set.items.filter(i => isServicePolicyCardEnabled<ServiceType>(i, 'read')).map(item => {
               return <GridCol key={item.type} col={{ span: 6 }}>
                 <ServiceCard
                   key={item.type}

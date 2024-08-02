@@ -24,7 +24,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import EdgeMvSdLanForm from '.'
+import EdgeMvSdLanForm, { EdgeMvSdLanFormProps } from '.'
 
 const { mockedMvSdLanService, mockedMvSdLanDataList } = EdgeSdLanFixtures
 

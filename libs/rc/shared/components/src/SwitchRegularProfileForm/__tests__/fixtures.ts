@@ -36,7 +36,7 @@ export const venues = {
     },
     {
       id: 'f8da55210928402fa5a470642d80de53',
-      name: 'test',
+      name: 'testVenue',
       city: 'Sunnyvale, California',
       country: 'United States',
       switches: 1,
