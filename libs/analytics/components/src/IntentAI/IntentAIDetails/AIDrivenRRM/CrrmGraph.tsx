@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { EnhancedRecommendation }            from '../../IntentAIForm/services'
+import { EnhancedIntent }                    from '../../IntentAIForm/services'
 import { IntentAIRRMGraph }                  from '../../RRMGraph'
 import { dataRetentionText, isDataRetained } from '../../utils'
 import {
@@ -13,7 +13,7 @@ import {
 
 export const CrrmGraph = ({ details, summaryUrlBefore, summaryUrlAfter, crrmData }:
   {
-    details: EnhancedRecommendation,
+    details: EnhancedIntent,
     summaryUrlBefore: string,
     summaryUrlAfter: string,
     crrmData: ProcessedCloudRRMGraph[]
@@ -24,7 +24,7 @@ export const CrrmGraph = ({ details, summaryUrlBefore, summaryUrlAfter, crrmData
     <DetailsWrapper>
       { details && isDataRetained(details.dataEndTime)
         ? <IntentAIRRMGraph
-          details={details as EnhancedRecommendation}
+          details={details as EnhancedIntent}
           crrmData={crrmData}
           summaryUrlBefore={summaryUrlBefore}
           summaryUrlAfter={summaryUrlAfter}

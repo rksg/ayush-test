@@ -7,7 +7,6 @@ import ReactECharts   from 'echarts-for-react'
 import { useIntl }    from 'react-intl'
 import AutoSizer      from 'react-virtualized-auto-sizer'
 
-import { kpiDelta }  from '@acx-ui/analytics/utils'
 import {
   Card,
   Drawer,
@@ -19,14 +18,14 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
 import { Legend } from './Legend'
 import * as UI    from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  recommendation: EnhancedRecommendation,
+  intent: EnhancedIntent,
   legend: string[],
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean,
@@ -47,7 +46,7 @@ function useGraph (
     chartRef={connectChart}
     title={$t({ defaultMessage: 'Before' })}
     subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
-      dateTime: formatter(DateFormatEnum.DateTimeFormat)(recommendation.dataEndTime)
+      dateTime: formatter(DateFormatEnum.DateTimeFormat)(intent.dataEndTime)
     })}
     data={graphs[0]}
     zoomScale={zoomScale}
@@ -94,7 +93,7 @@ const drawerZoomScale = scalePow()
 
 export const IntentAIRRMGraph = ({
   details, crrmData, summaryUrlBefore, summaryUrlAfter } : {
-    details: EnhancedRecommendation,
+    details: EnhancedIntent,
     crrmData: ProcessedCloudRRMGraph[],
     summaryUrlBefore?: string,
     summaryUrlAfter?: string
@@ -136,39 +135,6 @@ export const IntentAIRRMGraph = ({
         </UI.DrawerGraphWrapper>
       }/>
   </UI.Wrapper>
-}
-
-export function getGraphKPI (
-  recommendation: EnhancedRecommendation,
-  graphData: ProcessedCloudRRMGraph[]
-) {
-  // kpi for interferingLinks
-  const { before, after } = recommendation?.crrmInterferingLinks!
-  const deltaSign = '-'
-  const format = formatter('percentFormat')
-  const links = kpiDelta(before, after, deltaSign, format)
-
-  // kpi for linksPerAP
-  const kpiBefore = graphData[0]
-  const kpiAfter = graphData[1]
-  const beforeLinks = kpiBefore?.interferingLinks || 0
-  const afterLinks = kpiAfter?.interferingLinks || 0
-  const beforeAPs = kpiBefore?.affectedAPs || 0
-  const afterAPs = kpiAfter?.affectedAPs || 0
-  const averageBefore = beforeAPs ? beforeLinks / beforeAPs : 0
-  const averageAfter = afterAPs ? afterLinks / afterAPs : 0
-  const averageLinks = kpiDelta(averageBefore, averageAfter, deltaSign, format)
-
-  return {
-    interferingLinks: {
-      links: links,
-      after: after
-    },
-    linksPerAP: {
-      average: averageLinks,
-      after: averageAfter
-    }
-  }
 }
 
 export const SliderGraphBefore = (
@@ -244,7 +210,7 @@ export const SliderGraphAfter = (
 
 export const SummaryGraphBefore = (
   { details, crrmData, setSummaryUrlBefore, detailsPage = false }:
-  { details: EnhancedRecommendation,
+  { details: EnhancedIntent,
     crrmData: ProcessedCloudRRMGraph[],
     detailsPage?: boolean,
     setSummaryUrlBefore: (url: string) => void }) => {

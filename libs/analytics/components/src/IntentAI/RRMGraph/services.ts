@@ -14,16 +14,18 @@ import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
 
-const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
+import { EnhancedIntent } from '../IntentAIForm/services'
+
+const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    intentCloudRRMGraph: build.query<{
+    intentAIRRMGraph: build.query<{
       data: ReturnType<typeof trimPairedGraphs>
       csv: ReturnType<typeof getCrrmCsvData>
     }, { id: string, band: BandEnum }>({
       query: (variables) => ({
         document: gql`
-          query CloudRRMGraph($id: String) {
-            recommendation(id: $id) {
+          query IntentAIRRMGraph($id: String) {
+            intent: recommendation(id: $id) {
               graph: kpi(key: "graph", timeZone: "${moment.tz.guess()}") {
                 current projected previous
               }
@@ -33,11 +35,11 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
         variables
       }),
       transformResponse: (
-        response: { recommendation: { graph: Record<string, CloudRRMGraph | null> } },
+        response: { intent: { graph: Record<string, CloudRRMGraph | null> } },
         _,
         { band }
       ) => {
-        const data = response.recommendation.graph
+        const data = response.intent.graph
         const sortedData = {
           previous: data.previous,
           current: data.current,
@@ -71,7 +73,7 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
 })
 
 export function useIntentAICRRMQuery (id: string, band: BandEnum) {
-  const queryResult = useIntentCloudRRMGraphQuery(
+  const queryResult = useIntentAIRRMGraphQuery(
     { id: String(id), band }, {
       skip: !id,
       selectFromResult: result => {

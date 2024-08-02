@@ -1,21 +1,21 @@
 import { Provider, recommendationUrl }     from '@acx-ui/store'
 import { mockGraphqlQuery, render,screen } from '@acx-ui/test-utils'
 
-import { transformDetailsResponse } from '../../IntentAIForm/services'
-import { mockCrrmData }             from '../../RRMGraph/__tests__/fixtures'
+import { transformDetailsResponse }           from '../../IntentAIForm/services'
+import { mockCrrmData }                       from '../../RRMGraph/__tests__/fixtures'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
-import { mockedCRRMGraphs, mockedRecommendationCRRM } from './__tests__/fixtures'
-import { CrrmBenefits }                               from './CrrmBenefits'
+import { CrrmBenefits } from './CrrmBenefits'
 
 describe('CrrmBenefits', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+      data: { intent: mockedCRRMGraphs }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => true)
   })
   it('should render correctly', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     render(<CrrmBenefits
       details={crrmDetails}
       crrmData={mockCrrmData}
@@ -29,7 +29,7 @@ describe('CrrmBenefits', () => {
   })
   it('should handle when beyond data retention', async () => {
     jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => false)
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     render(<CrrmBenefits
       details={crrmDetails}
       crrmData={mockCrrmData}

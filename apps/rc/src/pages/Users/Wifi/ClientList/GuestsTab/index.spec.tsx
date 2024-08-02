@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
-import { DateRange }      from '@acx-ui/utils'
 
 import { GuestTabContext } from './GuestsTable/context'
 
@@ -13,14 +12,6 @@ jest.mock('./GuestsTable', () => ({
 }))
 
 describe('AP Guest Tab', () => {
-  const mockDateFilter = {
-    range: DateRange.allTime,
-    setRange: () => { },
-    startDate: '',
-    setStartDate: () => { },
-    endDate: '',
-    setEndDate: () => { }
-  }
 
   it('should render correctly', async () => {
     const setGuestCount = jest.fn()
@@ -29,7 +20,7 @@ describe('AP Guest Tab', () => {
     }
     render(<Provider>
       <GuestTabContext.Provider value={{ setGuestCount }}>
-        <GuestsTab dateFilter={mockDateFilter} />
+        <GuestsTab />
       </GuestTabContext.Provider>
     </Provider>, { route: { params } })
     expect(screen.queryByTestId('rc-GuestsTable')).toBeVisible()

@@ -1,21 +1,11 @@
-import { RecommendationDetails } from '../../IntentAIForm/services'
+import { IntentDetails } from '../../IntentAIForm/services'
 
-export const mockedRecommendationCRRM = {
+export const mockedIntentCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
-  appliedTime: '2023-06-25T00:00:25.772Z',
   dataEndTime: '2023-06-26T00:00:25.772Z',
   updatedAt: '06/26/2023 06:04',
-  originalValue: [
-    {
-      channelMode: 'CHANNEL_FLY',
-      channelWidth: '_80MHZ',
-      radio: '2.4'
-    }
-  ],
-  currentValue: 'crrm',
-  recommendedValue: 'crrm',
   metadata: {},
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
@@ -216,33 +206,14 @@ export const mockedRecommendationCRRM = {
     previous: null,
     projected: 0
   },
-  trigger: 'daily'
-} as unknown as RecommendationDetails
+  preferences: null
+} as unknown as IntentDetails
 
-export const mockedRecommendationCRRMnew = { // this fixture is used to test new crrm recommendation
+export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
   code: 'c-crrm-channel5g-auto',
   status: 'new',
-  appliedTime: '2023-06-25T00:00:25.772Z',
   dataEndTime: '2023-06-26T00:00:25.772Z',
-  originalValue: [
-    {
-      channelMode: 'CHANNEL_FLY',
-      channelWidth: '_80MHZ',
-      radio: '5',
-      autoCellSizing: null
-    }
-  ],
-  currentValue: [{
-    channelMode: 'CHANNEL_FLY',
-    channelWidth: '_AUTO',
-    radio: '5',
-    autoCellSizing: 'true'
-  }],
-  recommendedValue: {
-    recommended: 'crrm',
-    txPowerAPCount: 0
-  },
   metadata: {},
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
@@ -270,24 +241,15 @@ export const mockedRecommendationCRRMnew = { // this fixture is used to test new
     current: 0,
     previous: null,
     projected: 0
-  }
-} as unknown as RecommendationDetails
+  },
+  preferences: null
+} as unknown as IntentDetails
 
-export const mockedRecommendationCRRMApplied = { // this fixture is used to test applied crrm recommendation
+export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
-  appliedTime: '2023-06-25T00:00:25.772Z',
   dataEndTime: '2023-06-26T00:00:25.772Z',
-  originalValue: [
-    {
-      channelMode: 'CHANNEL_FLY',
-      channelWidth: '_80MHZ',
-      radio: '5'
-    }
-  ],
-  currentValue: 'crrm',
-  recommendedValue: 'crrm',
   metadata: {},
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
@@ -327,8 +289,9 @@ export const mockedRecommendationCRRMApplied = { // this fixture is used to test
     current: 0,
     previous: 2,
     projected: null
-  }
-} as unknown as RecommendationDetails
+  },
+  preferences: null
+} as unknown as IntentDetails
 
 export const mockedCRRMGraphs = {
   graph: {
@@ -420,26 +383,4 @@ export const mockedCRRMGraphsApplied = {
     },
     projected: null
   }
-}
-
-export const mockWifiNetworkList = {
-  fields: [
-    'name',
-    'id',
-    'ssid'
-  ],
-  totalCount: 2,
-  page: 1,
-  data: [
-    {
-      name: 'GKSS',
-      id: '985a2e7fca3f43db8deb9eaf7a9c25d8',
-      ssid: 'GKSS'
-    },
-    {
-      name: 'Shine',
-      id: 'e1304efc68ed48fa9e7477fe1bffe7b2',
-      ssid: 'Shine'
-    }
-  ]
 }

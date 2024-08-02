@@ -13,7 +13,7 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { EnhancedRecommendation } from '../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }      from './styledComponents'
@@ -24,14 +24,15 @@ const useDownloadUrl = (data: unknown, type: string) => {
   const [url, setUrl] = useState<string>()
   useEffect(() => {
     if (!data) return
-    setUrl(URL.createObjectURL(new Blob([data as BlobPart], { type })))
+    const url = URL.createObjectURL(new Blob([data as BlobPart], { type }))
+    setUrl(url)
     return () => URL.revokeObjectURL(url!)
   }, [data, type])
   return url
 }
 
 export function DownloadRRMComparison (props: {
-  details: EnhancedRecommendation,
+  details: EnhancedIntent,
   title?: string
 }) {
   const { $t } = useIntl()

@@ -171,7 +171,30 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should click "generate new password" with mail and phone number', async () => {
+  it('should generate new password correctly from the action bar (Unlimit)', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('+12015550322'))
+    expect(await screen.findByRole('button', { name: 'Generate New Password' })).toBeVisible()
+    await openGuestDetailsAndClickAction('test6')
+    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
+    const dialog = await screen.findByTestId('generate-password-modal')
+    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
+    expect(await within(dialog).findByText('Send to Email')).toBeVisible()
+    const cancelButton = within(dialog).getByRole('button', { name: 'Cancel' })
+    await userEvent.click(cancelButton)
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should click "generate new password" with mail and phone number (Offline)', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -193,7 +216,7 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should click "generate new password" validation 1', async () => {
+  it('should click "generate new password" validation 1  (Online)', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>

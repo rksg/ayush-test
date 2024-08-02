@@ -40,56 +40,59 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId',
     newApi: true
   },
-  /*
-  addNetworkVenue: {
-    method: 'post',
-    url: '/networkActivations',
+  getVenueApGroups: {
+    method: 'get',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
     newApi: true
   },
+  getNetworkVenue: {
+    method: 'get',
+    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true
+  },
+  addNetworkVenue: {
+    //method: 'post',
+    //url: '/networkActivations',
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true
+  },
+  /*
+  // no longer supported after v1, use addNetworkVenue loop as replacement
   addNetworkVenues: {
     method: 'post',
     url: '/networkActivations/mappings',
     newApi: true
   },
+  */
   updateNetworkVenue: {
     method: 'put',
-    url: '/networkActivations/:networkVenueId?quickAck=true',
+    //url: '/networkActivations/:networkVenueId?quickAck=true',
+    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
+  /*
+  // no longer supported after v1, use updateNetworkVenue loop as replacement
   updateNetworkVenues: {
     method: 'put',
     url: '/networkActivations/mappings',
     newApi: true
   },
+  */
   deleteNetworkVenue: {
     method: 'delete',
-    url: '/networkActivations/:networkVenueId',
+    //url: '/networkActivations/:networkVenueId',
+    url: '/venues/:venueId/wifiNetworks/:networkId',
     newApi: true
   },
+  /*
+  // no longer supported after v1, use deleteNetworkVenue loop as replacement
   deleteNetworkVenues: {
     method: 'delete',
     url: '/networkActivations',
     newApi: true
   },
   */
-  addNetworkVenue: {
-    method: 'put',
-    url: '/venues/:venueId/wifiNetworks/:networkId',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
-  },
-  updateNetworkVenue: {
-    method: 'put',
-    url: '/venues/:venueId/wifiNetworks/:networkId/settings',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
-  },
   getVenueApCapabilities: {
     method: 'get',
     //url: '/venues/:venueId/aps/capabilities',
@@ -413,22 +416,27 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  getDpskPassphraseByQuery: {
+    method: 'post',
+    url: '/dpskPassphrasePools/query',
+    newApi: true
+  },
+  */
   getApLanPorts: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
   updateApLanPorts: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
   resetApLanPorts: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber/lanPortSettings',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
-  */
   getApLed: {
     method: 'get',
     // url: '/venues/aps/:serialNumber/ledSettings',
@@ -616,7 +624,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/neighbors',
     newApi: true
   },
-  /*
   getCcdSupportVenues: {
     method: 'post',
     url: '/venues/clientConnectionDiagnosis/query',
@@ -652,6 +659,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
+  /*
   getApFeatureSets: {
     method: 'get',
     url: '/wifiFeatureSets/:featureName',

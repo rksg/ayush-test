@@ -9,11 +9,11 @@ import { get }                                                                  
 import { DateFormatEnum, formatter }                                             from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon }                                       from '@acx-ui/icons'
 
-import { CompareSlider }          from '../../../CompareSlider'
-import { useIntentAICRRMQuery }   from '../../RRMGraph/services'
-import { states }                 from '../config'
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { CompareSlider }        from '../../../CompareSlider'
+import { useIntentAICRRMQuery } from '../../RRMGraph/services'
+import { states }               from '../config'
+import { EnhancedIntent }       from '../services'
+import * as UI                  from '../styledComponents'
 
 import { steps, crrmIntent, statusTrailMsgs } from '.'
 
@@ -65,7 +65,7 @@ export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
   { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: ReturnType<typeof useIntentAICRRMQuery> }) {
   const { $t } = useIntl()
-  const { initialValues } = useStepFormContext<EnhancedRecommendation>()
+  const { initialValues } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const { status, sliceValue, updatedAt } = initialValues!
 
@@ -95,9 +95,9 @@ export function Introduction (
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' }),
     subtitle: defineMessage({ defaultMessage: 'Benefits' }),
-    text: defineMessage({ defaultMessage: `Low interference fosters improved throughput, lower 
-      latency, better signal quality, stable connections, enhanced user experience, longer battery 
-      life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading 
+    text: defineMessage({ defaultMessage: `Low interference fosters improved throughput, lower
+      latency, better signal quality, stable connections, enhanced user experience, longer battery
+      life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading
       to higher data rates, higher SNR, consistent performance, and balanced network load.` })
   }
 

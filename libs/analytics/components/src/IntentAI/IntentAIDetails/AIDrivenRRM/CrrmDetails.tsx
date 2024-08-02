@@ -2,15 +2,15 @@ import { useState } from 'react'
 
 import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, Loader, PageHeader, recommendationBandMapping } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { useParams }                                                       from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer }               from '../../../DescriptionSection/styledComponents'
+import { kpis }           from '../../IntentAIForm/AIDrivenRRM'
 import {
-  useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery
+  useIntentCodeQuery,
+  useIntentDetailsQuery
 } from '../../IntentAIForm/services'
 import { SummaryGraphAfter, SummaryGraphBefore } from '../../RRMGraph'
 import { useIntentAICRRMQuery }                  from '../../RRMGraph/services'
@@ -30,14 +30,10 @@ export const CrrmDetails = () => {
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-  const isCrrmPartialEnabled = [
-    useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
-    useIsSplitOn(Features.CRRM_PARTIAL)
-  ].some(Boolean)
-  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useConfigRecommendationDetailsQuery(
-    { ...codeQuery.data!, isCrrmPartialEnabled },
-    { skip: !Boolean(codeQuery.data?.code) }
+  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
+  const detailsQuery = useIntentDetailsQuery(
+    { id: codeQuery.data?.id!, kpis },
+    { skip: !Boolean(codeQuery.data?.id) }
   )
   const details = detailsQuery.data!
 
@@ -60,8 +56,8 @@ export const CrrmDetails = () => {
       // }
     />}
     <GridRow>
-      <GridCol col={{ span: 4 }}>
-        <FixedAutoSizer>
+      <GridCol col={{ span: 6, xxl: 4 }}>
+        <AutoSizer>
           {({ width }) => (<div style={{ width }}>
             <GridRow>
               <AIDrivenRRMHeader>
@@ -75,7 +71,7 @@ export const CrrmDetails = () => {
               </GridCol>
             </GridRow>
           </div>)}
-        </FixedAutoSizer>
+        </AutoSizer>
       </GridCol>
       <div hidden>
         <SummaryGraphBefore
@@ -90,8 +86,8 @@ export const CrrmDetails = () => {
           detailsPage={true}
         />
       </div>
-      <GridCol col={{ span: 20 }}>
-        <CrrmBenefits details={details} crrmData={crrmData}/>
+      <GridCol col={{ span: 18, xxl: 20 }}>
+        <CrrmBenefits details={details}/>
         <CrrmGraph
           details={details}
           summaryUrlBefore={summaryUrlBefore}

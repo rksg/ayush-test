@@ -6,24 +6,23 @@ import { defineMessage, useIntl } from 'react-intl'
 import { TrendTypeEnum }                                                                      from '@acx-ui/analytics/utils'
 import { StepsForm, useLayoutContext, useStepFormContext, TrendPill, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { IntentAIRRMGraph, getGraphKPI }     from '../../RRMGraph'
+import { IntentAIRRMGraph }                  from '../../RRMGraph'
 import { dataRetentionText, isDataRetained } from '../../utils'
-import { EnhancedRecommendation }            from '../services'
+import { EnhancedIntent, getGraphKPIs }      from '../services'
 import * as UI                               from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
-import { steps, crrmIntent, isOptimized } from '.'
+import { steps, crrmIntent, isOptimized, kpis } from '.'
 
 export function Summary (
   { summaryUrlBefore, summaryUrlAfter, crrmData } :
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
-  const { form, initialValues } = useStepFormContext<EnhancedRecommendation>()
+  const { form, initialValues } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
-  const { interferingLinks, linksPerAP } = getGraphKPI(
-    initialValues as EnhancedRecommendation, crrmData)
+  const details = initialValues as EnhancedIntent
 
   const sideNotes = {
     title: defineMessage({ defaultMessage: 'Side Notes' })
@@ -39,34 +38,25 @@ export function Summary (
           && isDataRetained(initialValues?.dataEndTime)
         ? <>
           <IntentAIRRMGraph
-            details={initialValues as EnhancedRecommendation}
+            details={initialValues as EnhancedIntent}
             crrmData={crrmData}
             summaryUrlBefore={summaryUrlBefore}
             summaryUrlAfter={summaryUrlAfter}
           />
-          <StepsForm.Subtitle>
-            {$t({ defaultMessage: 'Interfering links' })}
-          </StepsForm.Subtitle>
-          <StepsForm.Subtitle>
-            <UI.Kpi>
-              <UI.KpiText>{interferingLinks.after}</UI.KpiText>
-              <TrendPill
-                value={interferingLinks.links.value as string}
-                trend={interferingLinks.links.trend as TrendTypeEnum}
-              />
-            </UI.Kpi>
-          </StepsForm.Subtitle>
-          <StepsForm.Subtitle>
-            {$t({ defaultMessage: 'Average interfering links per AP' })}
-          </StepsForm.Subtitle>
-          <StepsForm.Subtitle>
-            <UI.Kpi>
-              <UI.KpiText>{Math.ceil(linksPerAP.after)}</UI.KpiText>
-              <TrendPill
-                value={linksPerAP.average.value as string}
-                trend={linksPerAP.average.trend as TrendTypeEnum} />
-            </UI.Kpi>
-          </StepsForm.Subtitle>
+          {getGraphKPIs(details, kpis).map(kpi => (
+            <React.Fragment key={kpi.key}>
+              <StepsForm.Subtitle children={$t(kpi.label)} />
+              <StepsForm.Subtitle>
+                <UI.Kpi>
+                  <UI.KpiText>{kpi.after}</UI.KpiText>
+                  <TrendPill
+                    value={kpi.delta.value}
+                    trend={kpi.delta.trend as TrendTypeEnum}
+                  />
+                </UI.Kpi>
+              </StepsForm.Subtitle>
+            </React.Fragment>
+          ))}
           <StepsForm.Subtitle>
             {$t({ defaultMessage: 'Schedule' })}
           </StepsForm.Subtitle>
