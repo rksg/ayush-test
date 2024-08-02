@@ -57,7 +57,10 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const accessAp = Form.useWatch('accessAp')
 
-  const { data: venueLanPorts } = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
+  const { data: venueLanPorts } = useGetVenueLanPortsQuery({
+    params: { tenantId, venueId },
+    enableRbac: isWifiRbacEnabled
+  })
 
   const apListQueryDefaultPayload = {
     fields: ['name', 'serialNumber', 'model', 'apMac'],

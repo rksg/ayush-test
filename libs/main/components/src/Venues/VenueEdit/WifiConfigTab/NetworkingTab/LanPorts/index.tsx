@@ -62,7 +62,8 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
     skip: !resolvedRbacEnabled,
     payload: queryPayload,
-    templatePayload: queryPayload
+    templatePayload: queryPayload,
+    enableRbac: resolvedRbacEnabled
   })
 
   return resolvedRbacEnabled
@@ -85,10 +86,15 @@ export function LanPorts () {
   const customGuiChagedRef = useRef(false)
   const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
   const isDhcpEnabled = useIsVenueDhcpEnabled(venueId)
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
-    useTemplateQueryFn: useGetVenueTemplateLanPortsQuery
+    useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
+    enableRbac: isWifiRbacEnabled
   })
 
   // eslint-disable-next-line max-len
@@ -211,7 +217,8 @@ export function LanPorts () {
         setLanPortOrinData(payload)
         await updateVenueLanPorts({
           params: { tenantId, venueId },
-          payload
+          payload,
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {

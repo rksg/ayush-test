@@ -5,10 +5,10 @@ import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { FixedAutoSizer }               from '../../../DescriptionSection/styledComponents'
+import { FixedAutoSizer } from '../../../DescriptionSection/styledComponents'
 import {
-  useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery
+  useIntentCodeQuery,
+  useIntentDetailsQuery
 } from '../../IntentAIForm/services'
 import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../styledComponents'
 
@@ -25,8 +25,8 @@ export const CrrmDetails = () => {
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
     useIsSplitOn(Features.CRRM_PARTIAL)
   ].some(Boolean)
-  const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useConfigRecommendationDetailsQuery(
+  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
+  const detailsQuery = useIntentDetailsQuery(
     { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
