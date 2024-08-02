@@ -300,9 +300,7 @@ describe('Network utils test', () => {
     })
 
     it('should return false if neither policy nor service config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -314,9 +312,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if policy config template and policy enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -328,9 +324,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if service config template and service enabled', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
@@ -342,9 +336,7 @@ describe('Network utils test', () => {
     })
 
     it('should return true if it is not a config template', () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff =>
-        ff === Features.SERVICES || ff === Features.CONFIG_TEMPLATE
-      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CONFIG_TEMPLATE)
       // eslint-disable-next-line max-len
       jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })

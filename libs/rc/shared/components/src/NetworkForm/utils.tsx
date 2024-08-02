@@ -195,7 +195,6 @@ export const useNetworkVxLanTunnelProfileInfo =
 
 // eslint-disable-next-line max-len
 export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: ConfigTemplateType): boolean {
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyConfigTemplate = configTemplatePolicyTypeMap[configTemplateType]
   const isServiceConfigTemplate = configTemplateServiceTypeMap[configTemplateType]
   const { isTemplate } = useConfigTemplate()
@@ -204,12 +203,8 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 
   if (!isPolicyConfigTemplate && !isServiceConfigTemplate) return false
 
-  if (isPolicyConfigTemplate) {
+  if (isPolicyConfigTemplate || isServiceConfigTemplate) {
     return result
-  }
-
-  if (isServiceConfigTemplate) {
-    return isServiceEnabled && result
   }
 
   return false

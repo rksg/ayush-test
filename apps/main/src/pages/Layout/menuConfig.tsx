@@ -29,6 +29,7 @@ import {
 } from '@acx-ui/icons'
 import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
+  getPolicyListRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   hasAdministratorTab
@@ -44,7 +45,6 @@ export function useMenuConfig () {
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsEdgeReady()
-  const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
@@ -283,18 +283,18 @@ export function useMenuConfig () {
       inactiveIcon: ServicesOutlined,
       activeIcon: ServicesSolid,
       children: [
-        ...(isServiceEnabled ? [
-          {
-            uri: getServiceListRoutePath(true),
-            isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
-            label: $t({ defaultMessage: 'My Services' })
-          },
-          {
-            uri: getServiceCatalogRoutePath(true),
-            label: $t({ defaultMessage: 'Service Catalog' })
-          }
-        ] : []),
-        { uri: '/policies', label: $t({ defaultMessage: 'Policies & Profiles' }) }
+        {
+          uri: getServiceListRoutePath(true),
+          isActiveCheck: new RegExp('^(?=/services/)((?!catalog).)*$'),
+          label: $t({ defaultMessage: 'My Services' })
+        },
+        {
+          uri: getServiceCatalogRoutePath(true),
+          label: $t({ defaultMessage: 'Service Catalog' })
+        },
+        { uri: getPolicyListRoutePath(true),
+          label: $t({ defaultMessage: 'Policies & Profiles' })
+        }
       ]
     },
     {

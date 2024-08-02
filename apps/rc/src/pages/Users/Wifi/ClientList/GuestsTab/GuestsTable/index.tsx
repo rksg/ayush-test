@@ -68,7 +68,6 @@ const defaultGuestNetworkPayload = {
 export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
   const filters = {
@@ -111,7 +110,6 @@ export const GuestsTable = () => {
         }) &&
         <Button type='link'
           onClick={() => setNetworkModalVisible(true)}
-          disabled={!isServicesEnabled}
           size='small'>
           {$t({ defaultMessage: 'Add Guest Pass Network' })}
         </Button>
@@ -437,8 +435,7 @@ export const GuestsTable = () => {
           scopeKey: [WifiScopes.CREATE],
           allowedOperationUrl: 'POST:/wifiNetworks',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
-          onClick: () => {setNetworkModalVisible(true) },
-          disabled: !isServicesEnabled
+          onClick: () => {setNetworkModalVisible(true) }
         },
         {
           key: 'importGuests',

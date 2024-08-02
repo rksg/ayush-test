@@ -37,15 +37,12 @@ export function NetworkControlTab () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
 
-  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
-
-
   const mPorxyTitle = $t({ defaultMessage: 'mDNS Proxy' })
   const apSnmpTitle = $t({ defaultMessage: 'AP SNMP' })
 
 
   const anchorItems = [
-    ...(isServicesEnabled? [{
+    {
       title: mPorxyTitle,
       content: (
         <>
@@ -55,7 +52,7 @@ export function NetworkControlTab () {
           <MdnsProxy />
         </>
       )
-    }] : []),
+    },
     {
       title: apSnmpTitle,
       content: (
