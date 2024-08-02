@@ -7,13 +7,13 @@ import sanitize      from 'sanitize-filename'
 import {
   Button,
   Loader,
-  SuspenseBoundary,
-  recommendationBandMapping
+  SuspenseBoundary
 } from '@acx-ui/components'
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { EnhancedIntent } from '../IntentAIForm/services'
+import { intentBandMapping } from '../config'
+import { EnhancedIntent }    from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }      from './styledComponents'
@@ -36,8 +36,7 @@ export function DownloadRRMComparison (props: {
   title?: string
 }) {
   const { $t } = useIntl()
-  const band = recommendationBandMapping[
-    props.details.code as keyof typeof recommendationBandMapping]
+  const band = intentBandMapping[props.details.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAICRRMQuery(props.details?.id, band)
   const url = useDownloadUrl(queryResult.csv, 'text/csv')
 

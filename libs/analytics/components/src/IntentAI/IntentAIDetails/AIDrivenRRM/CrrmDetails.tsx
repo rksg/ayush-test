@@ -4,10 +4,11 @@ import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { GridCol, GridRow, Loader, PageHeader, recommendationBandMapping } from '@acx-ui/components'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
+import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
+import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { kpis }           from '../../IntentAIForm/AIDrivenRRM'
+import { intentBandMapping } from '../../config'
+import { kpis }              from '../../IntentAIForm/AIDrivenRRM'
 import {
   useIntentCodeQuery,
   useIntentDetailsQuery
@@ -37,8 +38,7 @@ export const CrrmDetails = () => {
   )
   const details = detailsQuery.data!
 
-  const band = recommendationBandMapping[
-    details?.code as keyof typeof recommendationBandMapping]
+  const band = intentBandMapping[details?.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAICRRMQuery(details?.id, band)
   const crrmData = queryResult.data!
 

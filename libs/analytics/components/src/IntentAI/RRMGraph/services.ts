@@ -14,8 +14,6 @@ import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
 
-import { EnhancedIntent } from '../IntentAIForm/services'
-
 const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIRRMGraph: build.query<{

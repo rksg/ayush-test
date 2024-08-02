@@ -1,9 +1,8 @@
-import { recommendationBandMapping }             from '@acx-ui/components'
 import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
+import { intentBandMapping }                                                                    from '../config'
 import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedIntentCRRM, mockedIntentCRRMApplied } from '../IntentAIDetails/__tests__/fixtures'
-import { EnhancedIntent }                                                                       from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
 
@@ -13,10 +12,9 @@ describe('useIntentAICRRMQuery', () => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
-    const band = recommendationBandMapping[
-      mockedIntentCRRM.code as keyof typeof recommendationBandMapping]
+    const band = intentBandMapping[mockedIntentCRRM.code as keyof typeof intentBandMapping]
     const { result } = renderHook(() => useIntentAICRRMQuery(
-      mockedIntentCRRM as EnhancedIntent,
+      mockedIntentCRRM.id,
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
@@ -27,10 +25,9 @@ describe('useIntentAICRRMQuery', () => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphsApplied }
     })
-    const band = recommendationBandMapping[
-      mockedIntentCRRMApplied.code as keyof typeof recommendationBandMapping]
+    const band = intentBandMapping[mockedIntentCRRMApplied.code as keyof typeof intentBandMapping]
     const { result } = renderHook(() => useIntentAICRRMQuery(
-      mockedIntentCRRMApplied as EnhancedIntent,
+      mockedIntentCRRMApplied.id,
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))

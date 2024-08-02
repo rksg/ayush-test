@@ -13,12 +13,12 @@ import {
   DrawerTypes,
   Graph as BasicGraph,
   ProcessedCloudRRMGraph,
-  recommendationBandMapping,
   bandwidthMapping
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { EnhancedIntent } from '../IntentAIForm/services'
+import { intentBandMapping } from '../config'
+import { EnhancedIntent }    from '../IntentAIForm/services'
 
 import { Legend } from './Legend'
 import * as UI    from './styledComponents'
@@ -103,7 +103,7 @@ export const IntentAIRRMGraph = ({
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
 
-  const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
+  const band = intentBandMapping[details.code as keyof typeof intentBandMapping]
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom

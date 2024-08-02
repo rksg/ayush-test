@@ -7,13 +7,13 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import {
   PageHeader,
   StepsForm,
-  Loader,
-  recommendationBandMapping
+  Loader
 } from '@acx-ui/components'
 import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { intentBandMapping }                                                          from '../../config'
 import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../../RRMGraph'
 import { useIntentAICRRMQuery }                                                       from '../../RRMGraph/services'
 import { IntentConfig, states, StateType, IntentKPIConfig }                           from '../config'
@@ -120,8 +120,7 @@ export function AIDrivenRRM () {
   )
   const details = detailsQuery.data!
 
-  const band = recommendationBandMapping[
-    details?.code as keyof typeof recommendationBandMapping]
+  const band = intentBandMapping[details?.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAICRRMQuery(details?.id, band)
   const crrmData = queryResult.data!
 
