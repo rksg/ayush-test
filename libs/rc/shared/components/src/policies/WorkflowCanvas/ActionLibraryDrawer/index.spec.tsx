@@ -10,7 +10,7 @@ import { RequiredDependency } from '../WorkflowPanel'
 
 import { ActionCardProps } from './ActionCard'
 
-import Index from './index'
+import ActionLibraryDrawer from './index'
 
 const mockedDefinitionList = {
   content: [
@@ -65,7 +65,7 @@ describe('ActionLibraryDrawer', () => {
     }
 
     render(<Provider>
-      <Index
+      <ActionLibraryDrawer
         visible={true}
         onClose={jest.fn()}
         onClickAction={jest.fn()}
@@ -90,7 +90,7 @@ describe('ActionLibraryDrawer', () => {
     }
 
     render(<Provider>
-      <Index
+      <ActionLibraryDrawer
         visible={true}
         onClose={jest.fn()}
         onClickAction={jest.fn()}
@@ -110,7 +110,7 @@ describe('ActionLibraryDrawer', () => {
   it('should allow all of ActionType due to no restrict', async () => {
     const spyOnClickAction = jest.fn()
     render(<Provider>
-      <Index
+      <ActionLibraryDrawer
         visible={true}
         onClose={jest.fn()}
         onClickAction={spyOnClickAction}
@@ -142,7 +142,7 @@ describe('ActionLibraryDrawer', () => {
     }
 
     render(<Provider>
-      <Index
+      <ActionLibraryDrawer
         visible={true}
         onClose={jest.fn()}
         onClickAction={jest.fn()}

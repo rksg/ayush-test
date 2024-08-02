@@ -34,7 +34,7 @@ const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT
 ]
 
-export default function Index (props: ActionLibraryProps) {
+export default function ActionLibraryDrawer (props: ActionLibraryProps) {
   const { $t } = useIntl()
   const {
     visible,
@@ -58,12 +58,6 @@ export default function Index (props: ActionLibraryProps) {
       }
     )
   })
-
-  // useEffect(() => {
-  //   console.log('existingActionTypes = ', existingActionTypes)
-  //   console.log('Definitions :: ', defMap)
-  //   console.log('RelationshipMap :: ', relationshipMap)
-  // }, [existingActionTypes])
 
   const onClick = (type: ActionType) => {
     if(defMap?.get(type)) {
@@ -97,7 +91,6 @@ export default function Index (props: ActionLibraryProps) {
             { isLoading: false, isFetching: isDefLoading }
           ]}
         >
-          {/* TODO: if defMap not found, do not display the ActionCard */}
           <UI.Collapse defaultActiveKey={[1, 2, 3]} ghost={true}>
             <Panel header={$t({ defaultMessage: 'User Interaction' })} key={1}>
               <GridRow>

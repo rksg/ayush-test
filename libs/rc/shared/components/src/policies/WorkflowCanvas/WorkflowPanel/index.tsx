@@ -20,7 +20,7 @@ import {
 } from '@acx-ui/rc/services'
 import { ActionType, findFirstStep, getInitialNodes, StepType, toStepMap, WorkflowStep } from '@acx-ui/rc/utils'
 
-import ActionLibraryDrawer from '../ActionLibraryDrawer/ActionLibraryDrawer'
+import ActionLibraryDrawer from '../ActionLibraryDrawer'
 import StepDrawer          from '../StepDrawer/StepDrawer'
 
 import * as UI                                         from './styledComponents'
