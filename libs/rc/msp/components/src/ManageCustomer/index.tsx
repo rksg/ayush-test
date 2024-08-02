@@ -527,7 +527,8 @@ export function ManageCustomer () {
       }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer,
+      await addCustomer({ params: { tenantId: tenantId },
+        payload: isRbacEnabled ? { data: [customer] } : customer,
         enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
