@@ -382,7 +382,7 @@ describe('IncidentNotificationDrawer', () => {
         params: {},
         payload: {
           id: 'test-tenant',
-          subscribe: {
+          subscribes: {
             DEVICE_API_CHANGES: true,
             DEVICE_AP_FIRMWARE: false,
             DEVICE_EDGE_FIRMWARE: true,
@@ -455,7 +455,7 @@ describe('IncidentNotificationDrawer', () => {
         params: {},
         payload: {
           id: 'test-tenant',
-          subscribe: {
+          subscribes: {
             DEVICE_API_CHANGES: true,
             DEVICE_AP_FIRMWARE: true,
             DEVICE_EDGE_FIRMWARE: true,
