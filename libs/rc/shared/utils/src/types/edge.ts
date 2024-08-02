@@ -367,6 +367,13 @@ export interface EdgeCluster {
   }
 }
 
+export interface EdgeFeatureSets {
+  featureSets: {
+    featureName: string
+    requiredFw: string
+  }[]
+}
+
 export interface VirtualIpSetting {
   virtualIp: string
   ports: {
