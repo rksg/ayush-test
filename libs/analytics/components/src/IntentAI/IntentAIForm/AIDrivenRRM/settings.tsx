@@ -18,61 +18,84 @@ const name = 'settings' as NamePath
 const label = defineMessage({ defaultMessage: 'Settings' })
 
 
-interface DateTimeDropdownProps {
-  // extraFooter?: ReactNode;
-  // disabled?: boolean;
-  // icon?: ReactNode;
-  initialDate: MutableRefObject<Moment>
-  // onApply: (value: Moment) => void;
-  // title?: string;
-  disabledDateTime?: {
-    disabledDate?: (value: Moment) => boolean,
-    disabledHours?: (value: Moment) => number[],
-    disabledMinutes?: (value: Moment) => number[],
-  }
-}
+// interface DateTimeDropdownProps {
+//   // extraFooter?: ReactNode;
+//   // disabled?: boolean;
+//   // icon?: ReactNode;
+//   initialDate: MutableRefObject<Moment>
+//   // onApply: (value: Moment) => void;
+//   // title?: string;
+//   disabledDateTime?: {
+//     disabledDate?: (value: Moment) => boolean,
+//     disabledHours?: (value: Moment) => number[],
+//     disabledMinutes?: (value: Moment) => number[],
+//   }
+// }
 
-export function DateTimeDropdown (
-  {
-    initialDate,
-    disabledDateTime
-  } : DateTimeDropdownProps) {
-  const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
-  const [date, setDate] = useState(() => initialDate.current)
-  return (
-    <DatePicker
-      // open={true}
-      // // className='hidden-date-input'
-      // // dropdownClassName='hidden-date-input-popover'
-      // picker='date'
-      // value={date}
-      // // disabled={disabled}
-      // // value={date}
-      // // open={open}
-      // // onClick={() => setOpen(true)}
-      // showTime={false}
-      // showNow={false}
-      // showToday={false}
-      // disabledDate={disabledDate}
-      renderExtraFooter={
-        () => 'yo'}
-    />
-  )}
+// export function DateTimeDropdown (
+//   {
+//     initialDate,
+//     disabledDateTime
+//   } : DateTimeDropdownProps) {
+//   const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
+//   const [date, setDate] = useState(() => initialDate.current)
+//   return (
+//     <DatePicker
+//       open={true}
+//       // // className='hidden-date-input'
+//       // // dropdownClassName='hidden-date-input-popover'
+//       picker='date'
+//       value={date}
+//       // // disabled={disabled}
+//       // // onClick={() => setOpen(true)}
+//       showTime={false}
+//       showToday={false}
+//       // disabledDate={disabledDate}
+//       renderExtraFooter={
+//         () => 'yo'}
+//     />
+//   )}
 
 type DateTimeSettingProps = {
-  scheduleAt:string
+  scheduledDate: string,
+  // disabledDateTime?: {
+  //       disabledDate?: (value: Moment) => boolean,
+  //       disabledHours?: (value: Moment) => number[],
+  //       disabledMinutes?: (value: Moment) => number[],
+  //     }
 }
 
 function DateTimeSetting ({
-  scheduleAt
+  scheduledDate
+  // disabledDateTime
 }: DateTimeSettingProps) {
-  const initialScheduledAt = useRef(moment(scheduleAt))
-  return (<DateTimeDropdown initialDate={initialScheduledAt} />)
-}
+  const initialDate = useRef(moment(scheduledDate))
+  // const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
+  const [date, setDate] = useState(() => initialDate.current)
+  console.log(date)
+  return (
+    <Form.Item name={['settings', 'date']} valuePropName={'date'}>
+      <DatePicker
+        open={true}
+        // // className='hidden-date-input'
+        // // dropdownClassName='hidden-date-input-popover'
+        picker='date'
+        value={date}
+        // // disabled={disabled}
+        // // onClick={() => setOpen(true)}
+        showTime={false}
+        showToday={false}
+        // disabledDate={disabledDate}
+        onChange={value => setDate(value!)}
+        renderExtraFooter={
+          () => <TimeDropdown type={TimeDropdownTypes.Daily} name={name as string} />}
+      />
+    </Form.Item>
+  )}
+// return (<DateTimeDropdown initialDate={date} />)
 
 const scheduleActions = {
-  datetime: (props: DateTimeSettingProps) =>
-    <Form.Item name={['scheduled', 'date']}><DateTimeSetting {...props}/></Form.Item>,
+  datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
   time: () => <TimeDropdown type={TimeDropdownTypes.Daily} name={name as string} />
 }
 
@@ -85,8 +108,9 @@ export function getAvailableActions (status: string,
   }
   console.log(settings)
 
-  return scheduleActions.time()
-  // return scheduleActions.datetime
+  // return scheduleActions.time()2024-08-02
+  // return scheduleActions.datetime({ scheduledDate: settings.date })
+  return scheduleActions.datetime({ scheduledDate: '2024-08-15' })
 }
 
 export function Settings () {

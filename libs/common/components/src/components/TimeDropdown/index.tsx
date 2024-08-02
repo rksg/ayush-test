@@ -26,6 +26,7 @@ function timeMap () {
     return moment().hour(0).minute(0).add(i * 15, 'minute').format(`HH:mm (${designator})`)
   })]
   times.forEach((time, i) => timeMap.set(i / 4, time))
+  console.log(timeMap)
   return timeMap
 }
 

@@ -159,7 +159,7 @@ export function specToDto (
 }
 
 export function processDtoToPayload (dto: IntentAIFormDto) {
-  const newScheduledAt = `${dto.scheduledDate}T${dto.scheduledTime}`
+  const newScheduledAt = `${dto.settings!.date}T${dto.settings!.hour}`
   console.log('this is dto to payload')
   console.log(dto)
   return {
