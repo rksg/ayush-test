@@ -9,7 +9,8 @@ import { AupPreview } from './WorkflowActionPreview'
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: AupPreview,     // FIXME: Implement Data_Prompt preview component
-  [ActionType.DISPLAY_MESSAGE]: AupPreview  // FIXME: Implement Display_Message preview component
+  [ActionType.DISPLAY_MESSAGE]: AupPreview,  // FIXME: Implement Display_Message preview component
+  [ActionType.DPSK]: AupPreview // FIXME: Implement Display_Message preview component
 }
 
 export function ActionPreviewDrawer (props: {

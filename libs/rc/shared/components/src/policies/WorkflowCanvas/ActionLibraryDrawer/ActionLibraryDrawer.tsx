@@ -27,8 +27,8 @@ const starterActions: ActionType[] = [
   ActionType.AUP,
   ActionType.DISPLAY_MESSAGE
 ]
-const authorizationActions: ActionType[] = [
-
+const deviceOnboardingActions: ActionType[] = [
+  ActionType.DPSK
 ]
 const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT
@@ -106,9 +106,9 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
                 )}
               </GridRow>
             </Panel>
-            <Panel header={$t({ defaultMessage: 'Authentication' })} key={2}>
+            <Panel header={$t({ defaultMessage: 'Device Onboarding' })} key={2}>
               <GridRow>
-                {authorizationActions.map(actionType =>
+                {deviceOnboardingActions.map(actionType =>
                   <GridCol key={actionType.toString()} col={{ span: 12 }}>
                     <ActionCard
                       actionType={actionType}

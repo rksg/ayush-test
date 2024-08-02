@@ -5,7 +5,8 @@ import { Node }                   from 'reactflow'
 import {
   AupIcon,
   DataPromptIcon,
-  DisplayMessageIcon
+  DisplayMessageIcon,
+  DpskActionIcon
 } from '@acx-ui/icons'
 
 import {
@@ -71,44 +72,45 @@ export const getInitialNodes = (x: number, y: number): Node[] => {
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK Node' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.AUP]: AupIcon,
   [ActionType.DATA_PROMPT]: DataPromptIcon,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon,
+  [ActionType.DPSK]: DpskActionIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a Ruckus DPSK' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in Ruckus WLAN controllers as "External DPSK") or via a Ruckus WLAN controller.' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' })
 }
 
 // FIXME: Deprecated => due to we don't support action template selector anymore.
 export const ActionTypeSelectionTerms: Record<ActionType, MessageDescriptor | undefined> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Select the existing AUP to use:' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Select the existing data prompt template to use:' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined
-  // [ActionType.DPSK]: undefined,
+  [ActionType.DISPLAY_MESSAGE]: undefined,
+  [ActionType.DPSK]: undefined
 }
 
 // FIXME: Deprecated => due to we don't support action template selector anymore.
 export const ActionTypeNewTemplateTerms: Record<ActionType, MessageDescriptor | undefined> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'A new AUP created from a standard template.' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'A new prompt created from a standard template.' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined
-  // [ActionType.DPSK]: undefined,
+  [ActionType.DISPLAY_MESSAGE]: undefined,
+  [ActionType.DPSK]: undefined
 }
 
 export const AupActionDefaultValue: {
@@ -156,7 +158,7 @@ export const DisplayMessageActionDefaultValue: {
 export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue
-  // [ActionType.DPSK]: {},
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
+  [ActionType.DPSK]: {}
 }
 /* eslint-enable max-len */

@@ -13,7 +13,8 @@ import { useWorkflowStepActions } from './useWorkflowStepAction'
 import {
   AupSettings,
   DataPromptSettings,
-  DisplayMessageSetting
+  DisplayMessageSetting,
+  DpskSettings
 } from './WorkflowActionSettingForm'
 
 
@@ -34,7 +35,8 @@ export interface StepDrawerProps {
 const actionFormMap = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
+  [ActionType.DPSK]: DpskSettings
 }
 
 export default function StepDrawer (props: StepDrawerProps) {
@@ -75,6 +77,9 @@ export default function StepDrawer (props: StepDrawerProps) {
         const data = { ...result.data, actionId }
         setActionData(data)
         formInstance.setFieldsValue(data)
+        setTimeout(() => {
+          formInstance.setFieldsValue(data)
+        }, 0)
       })
 
   }, [actionId, isEdit])

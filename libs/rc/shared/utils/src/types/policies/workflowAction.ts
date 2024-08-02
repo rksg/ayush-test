@@ -6,7 +6,8 @@ import { RcFile } from 'antd/lib/upload'
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
-  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE'
+  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
+  DPSK = 'DPSK'
 }
 
 export interface ActionBase {
@@ -41,7 +42,11 @@ export type AupActionFormContext = AupActionContext & {
 }
 
 export interface DpskActionContext {
-  dpskPoolId: string
+  identityGroupId?: String
+  identityId?: string,
+  emailNotification?: boolean,
+  smsNotification?: boolean,
+  qrCodeDisplay?: boolean
 }
 
 export interface DataPromptActionContext {
@@ -83,10 +88,12 @@ export interface DisplayMessageActionContext {
 export type AupAction = ActionBase & AupActionFormContext
 export type DataPromptAction = ActionBase & DataPromptActionContext
 export type DisplayMessageAction = ActionBase & DisplayMessageActionContext
+export type DpskAction = ActionBase & DpskActionContext
 
 export type GenericActionData =
   ActionBase &
   AupActionFormContext &
   DataPromptActionContext &
-  DisplayMessageActionContext
+  DisplayMessageActionContext &
+  DpskAction
 
