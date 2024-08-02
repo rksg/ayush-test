@@ -190,7 +190,9 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
             extra={
               <div>
                 <FwDescription>
-                  {$t({ defaultMessage: 'Venue firmware version for SmartEdge:' })}
+                  {$t({ defaultMessage:
+                    '<VenueSingular></VenueSingular> firmware version for SmartEdge:'
+                  })}
                 </FwDescription> <FwVersion>{getVenueFirmware(venueId)}</FwVersion>
               </div>
             }
@@ -198,7 +200,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
             <Select
               options={venueOptions}
               disabled={editMode}
-              loading={isVenuesListLoading && isVenueFirmwareListLoading}
+              loading={isVenuesListLoading || isVenueFirmwareListLoading}
             />
           </Form.Item>
           <Form.Item
