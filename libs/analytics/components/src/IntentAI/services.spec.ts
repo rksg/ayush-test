@@ -11,7 +11,7 @@ import {
   intentListWithAllStatus } from './__tests__/fixtures'
 import { api, OptimizeAllMutationResponse } from './services'
 
-describe('Recommendation services', () => {
+describe('IntentAI services', () => {
   const props = {
     startDate: '2023-06-10T00:00:00+08:00',
     endDate: '2023-06-17T00:00:00+08:00',
@@ -273,8 +273,13 @@ describe('Recommendation services', () => {
     )
     act(() => {
       result.current[0]({
-        scheduledAt: '2023-11-17T11:45:00.000Z',
-        optimizeList: [{ id: '11' }]
+        optimizeList: [{ id: '11', metadata: {
+          scheduledAt: '2023-11-17T11:45:00.000Z',
+          wlans: [{ name: 'n1', ssid: 's1' }],
+          preferences: {
+            crrmFullOptimization: true
+          }
+        } }]
       }).unwrap()
     })
 

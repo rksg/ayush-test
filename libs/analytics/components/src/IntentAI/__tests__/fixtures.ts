@@ -21,7 +21,14 @@ export const mockCrrmRow = {
     { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
     { type: 'zone', name: 'EDU-MeshZone_S12348' }
   ] as NetworkPath,
-  preferences: { crrmFullOptimization: true }
+  preferences: { crrmFullOptimization: true },
+  statusTrail: [
+    { status: 'new' },
+    { status: 'applyscheduled' },
+    { status: 'applyscheduleinprogress' },
+    { status: 'applied' }
+  ],
+  trigger: 'daily'
 }
 
 export const intentListResult = {
@@ -79,6 +86,10 @@ export const intentListResult = {
         { type: 'system', name: 'vsz611' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
       statusTrail: [
         { status: 'new' },
         { status: 'applyscheduled' },
@@ -86,7 +97,6 @@ export const intentListResult = {
         { status: 'applied' },
         { status: 'revertscheduled' }
       ],
-      preferences: null,
       trigger: 'daily'
     },
     {
@@ -108,8 +118,17 @@ export const intentListResult = {
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
       ] as NetworkPath,
-      preferences: null,
-      trigger: 'once'
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      trigger: 'once',
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' }
+      ]
     },
     {
       id: '14',
@@ -136,10 +155,13 @@ export const intentListResult = {
           name: 'Deeps Place'
         }
       ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
       statusTrail: [
         { status: 'new' }
       ],
-      preferences: null,
       trigger: 'once'
     },
     mockCrrmRow,
@@ -157,7 +179,18 @@ export const intentListResult = {
       path: [
         { type: 'system', name: 'vsz612' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
-      ] as NetworkPath
+      ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' }
+      ],
+      trigger: 'daily'
     },
     {
       id: '17',
@@ -173,7 +206,18 @@ export const intentListResult = {
       path: [
         { type: 'system', name: 'vsz612' },
         { type: 'zone', name: 'EDU-MeshZone_S12349' }
-      ] as NetworkPath
+      ] as NetworkPath,
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' }
+      ],
+      trigger: 'daily'
     },
     {
       id: '18',
@@ -190,7 +234,16 @@ export const intentListResult = {
         { type: 'system', name: 'vsz612' },
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
-      preferences: { crrmFullOptimization: true },
+      idPath: [
+        { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      statusTrail: [
+        { status: 'new' },
+        { status: 'applyscheduled' },
+        { status: 'applyscheduleinprogress' },
+        { status: 'applied' }
+      ],
       trigger: 'daily'
     }
   ]

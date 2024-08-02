@@ -8,7 +8,7 @@ import { getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
 import type { PathFilter }                          from '@acx-ui/utils'
 
 import { states, codes, StatusTrail, aiFeaturesLabel } from './config'
-import { statuses, displayStates }                     from './states'
+import { statuses, displayStates, statusReasons }      from './states'
 
 type Intent = {
   id: string
@@ -30,10 +30,13 @@ export type IntentListItem = Intent & {
   aiFeature: string
   intent: string
   scope: string
-  type: string
+  type?: string
   category: string
   status: string
-  statusTooltip: string
+  statusTooltip: string,
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
 }
 
 type Metadata = {
@@ -64,16 +67,60 @@ type IntentWlan = {
   ssid: string
 }
 
-export type OptimizeAllItemMutationPayload = { id: string, wlans?: IntentWlan[] }
+type OptimizeAllMetadata = {
+  scheduledAt: string
+  wlans?: IntentWlan[]
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
+}
+
+export type OptimizeAllItemMutationPayload = {
+  id: string
+  metadata: OptimizeAllMetadata
+}
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
 interface OptimizeAllMutationPayload {
-  scheduledAt: string,
   optimizeList: OptimizeAllItemMutationPayload[]
 }
 
 export interface OptimizeAllMutationResponse {
   optimizeAll: MutationResponse[]
+}
+
+
+const buildTransitionGQL = (index:number) => `t${index}: transition(
+  id: $id${index}, status: $status${index}, 
+  statusReason: $statusReason${index}, metadata: $metadata${index}) {
+    success
+    errorMsg
+    errorCode
+  }`
+
+export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
+  const status = 'new'
+  const statusReason = statusReasons.oneClick
+  const paramsGQL:string[] = []
+  const transitionsGQLs:string[] = []
+  const variables:Record<string, string|OptimizeAllMetadata> = {}
+  optimizeList.forEach((item, index) => {
+    const currentIndex = index + 1
+    const { id, metadata } = item
+    paramsGQL.push(
+      `$id${currentIndex}:String, $status${currentIndex}:String, \n
+      $statusReason${currentIndex}:String, $metadata${currentIndex}:JSON`
+    )
+    transitionsGQLs.push(buildTransitionGQL(currentIndex))
+    variables[`id${currentIndex}`] = id
+    variables[`status${currentIndex}`] = status
+    variables[`statusReason${currentIndex}`] = statusReason
+    variables[`metadata${currentIndex}`] = metadata
+  })
+  return { paramsGQL,transitionsGQLs, variables } as {
+    paramsGQL:string[],
+    transitionsGQLs:string[],
+    variables: Record<string, string|OptimizeAllMetadata> }
 }
 
 export const api = intentAIApi.injectEndpoints({
@@ -98,6 +145,7 @@ export const api = intentAIApi.injectEndpoints({
             sliceType
             sliceValue
             metadata
+            preferences
             path {
               type
               name
@@ -140,27 +188,19 @@ export const api = intentAIApi.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
     }),
     optimizeAllIntent: build.mutation<OptimizeAllMutationResponse, OptimizeAllMutationPayload>({
-      query: ({ scheduledAt, optimizeList }) => ({
-        document: gql`
+      query: ({ optimizeList }) => {
+        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQL( optimizeList )
+        return {
+          document: gql`
           mutation OptimizeAll(
-            $scheduledAt: DateTime,
-            $optimizeList: [IntentOptimizeInput]
+            ${paramsGQL.join(',')}
           ) {
-            optimizeAll(
-              scheduledAt: $scheduledAt,
-              optimizeList: $optimizeList
-            ) {
-              success
-              errorMsg
-              errorCode
-            }
+            ${transitionsGQLs.join('\n')}
           }
         `,
-        variables: {
-          scheduledAt,
-          optimizeList
+          variables
         }
-      }),
+      },
       invalidatesTags: [
         { type: 'Monitoring', id: 'INTENT_AI_LIST' }
       ]

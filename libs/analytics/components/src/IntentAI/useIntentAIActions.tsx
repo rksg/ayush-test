@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useCallback, useMemo, useRef, MutableRefObject, ReactNode } from 'react'
 
 import { Modal as AntModal }                          from 'antd'
@@ -11,8 +10,8 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }       from '@acx-ui/utils'
+import { RadioTypeEnum }        from '@acx-ui/rc/utils'
+import { getIntl, NetworkPath } from '@acx-ui/utils'
 
 import { useLazyRecommendationWlansQuery } from '../Recommendations/services'
 
@@ -23,7 +22,7 @@ import {
   OptimizeAllMutationResponse
 } from './services'
 import * as UI from './styledComponents'
-interface ApplyDateTimePickerProps {
+interface OptimizeAllDateTimePickerProps {
   id: string
   title: string
   disabled?: boolean
@@ -81,7 +80,8 @@ const getFutureTime = (value: Moment) => {
 
 const getDefaultTime = () => {
   const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
-  return moment().isSameOrBefore(datetime3AM) ? moment(datetime3AM) : moment(datetime3AM).add(1, 'd')
+  return moment().isSameOrBefore(datetime3AM) ?
+    moment(datetime3AM) : moment(datetime3AM).add(1, 'd')
 }
 
 const aggregateFeaturesZones = (rows:IntentListItem[]) => {
@@ -96,7 +96,8 @@ const aggregateFeaturesZones = (rows:IntentListItem[]) => {
   const zoneCount = zones.size
   const feature = featureCount === 1 ? Array.from(features)[0] : `${featureCount}`
   const zone = zoneCount === 1 ? Array.from(zones)[0] : `${zoneCount}`
-  const type = `${featureCount === 1 ? 1 : 2}${zoneCount === 1 ? 1 : 2}` as unknown as keyof typeof OPTIMIZE_TYPES
+  const type = `${featureCount === 1 ? 1 : 2}${zoneCount === 1 ? 1 : 2}` as unknown as
+  keyof typeof OPTIMIZE_TYPES
   const getOptimizeMessage = OPTIMIZE_TYPES[type]
   return { feature, zone, getOptimizeMessage }
 }
@@ -121,31 +122,34 @@ export function useIntentAIActions () {
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
-
-  const fetchWlans = async (row:IntentListItem) => {
+  const fetchWlans = async (id:string, code:string, path:NetworkPath) => {
     if (isMlisa) {
-      const wlans = await recommendationWlans({ id: row.id } ).unwrap()
+      const wlans = await recommendationWlans({ id } ).unwrap()
       return wlans.map(wlan => ({ ...wlan, id: wlan.name }))
     }
-    const venueId = row.path?.filter(({ type }) => type === 'zone')?.[0].name
-    const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()
+    const venueId = path?.filter(({ type }) => type === 'zone')?.[0].name
+    const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, code)).unwrap()
     return wlans.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
   }
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
     const optimizeList = await Promise.all(rows.map(async (row) => {
-      const { code } = row
+      const { code, preferences } = row
       const item: OptimizeAllItemMutationPayload = {
-        id: row.id
+        id: row.id,
+        metadata: { scheduledAt }
       }
-      // airflex c-probeflex-*
-      if (code.startsWith('c-probeflex-')) {
-        item.wlans = await fetchWlans(row)
+
+      if (code.startsWith('c-probeflex-')) { // AirflexAI c-probeflex-*
+        item.metadata.wlans = await fetchWlans(row.id, row.code, row.path)
+
+      } else if (code.startsWith('c-crrm-')) { // AI-Driven
+        item.metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
       return item
     }))
 
-    const response = await optimizeAllIntent({ scheduledAt, optimizeList })
+    const response = await optimizeAllIntent({ optimizeList })
     if ('data' in response) {
       const { optimizeAll } = response.data as OptimizeAllMutationResponse
       const errorContent = optimizeAll?.reduce((errorText, { success, errorMsg }) => {
@@ -190,7 +194,7 @@ export function useIntentAIActions () {
       date,
       changeTime:
       (
-        <ApplyDateTimePicker
+        <OptimizeAllDateTimePicker
           id={'apply-intent-ai-change-time'}
           title={$t({ defaultMessage: 'Change time' })}
           disabled={false}
@@ -232,17 +236,18 @@ export function useIntentAIActions () {
   }
 
   return {
-    showOneClickOptimize
+    showOneClickOptimize,
+    fetchWlans
   }
 }
 
-function ApplyDateTimePicker ({
+function OptimizeAllDateTimePicker ({
   id,
   title,
   initialDate,
   onApply,
   disabled
-}: ApplyDateTimePickerProps) {
+}: OptimizeAllDateTimePickerProps) {
   const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
   const disabledDate = useCallback((value: Moment) =>
     value.isBefore(futureDate.current, 'date')

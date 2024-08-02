@@ -56,6 +56,15 @@ jest.spyOn(global.Date, 'now').mockImplementation(
   () => new Date('2024-07-20T04:01:00.000Z').getTime()
 )
 
+const extractItem = {
+  intent: 'Client Density vs. Throughput for 5 GHz radio',
+  category: 'Wi-Fi Experience',
+  scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+  status: 'Active',
+  statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+}
+
 describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
@@ -72,13 +81,13 @@ describe('useIntentAIActions', () => {
     jest.clearAllMocks()
     jest.restoreAllMocks()
   })
-  describe('R1 - OneClickOptimize', () => {
+  describe('r1 - OneClickOptimize', () => {
     beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
     describe('r1 - AI-Driven', () => {
       it('should handle current time is less than 3 AM - single1', async () => {
         jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
         const mockOK = jest.fn()
-        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
+        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -100,15 +109,22 @@ describe('useIntentAIActions', () => {
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2024-07-21T00:45:00.000Z',
-          optimizeList: [{ id: '15' }]
+          optimizeList: [{
+            id: '15',
+            metadata: {
+              scheduledAt: '2024-07-21T00:45:00.000Z' ,
+              preferences: {
+                crrmFullOptimization: true
+              }
+            }
+          }]
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
       })
 
       it('should handle mutation correctly - single', async () => {
         const mockOK = jest.fn()
-        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
+        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -130,8 +146,15 @@ describe('useIntentAIActions', () => {
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2024-07-21T04:45:00.000Z',
-          optimizeList: [{ id: '15' }]
+          optimizeList: [{
+            id: '15',
+            metadata: {
+              scheduledAt: '2024-07-21T04:45:00.000Z',
+              preferences: {
+                crrmFullOptimization: true
+              }
+            }
+          }]
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
       })
@@ -139,7 +162,7 @@ describe('useIntentAIActions', () => {
 
     describe('r1 - AirFlexAI', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
@@ -162,20 +185,34 @@ describe('useIntentAIActions', () => {
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findByText('Yes, Optimize!')))
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{
             id: '16',
-            wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+            metadata: {
+              scheduledAt: '2024-07-21T04:45:00.000Z',
+              wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+            }
           }]
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+      })
+
+      it('should handle fetchWlans correctly', async () => {
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const { result } = renderHook(() => useIntentAIActions(), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+        const { fetchWlans } = result.current
+        act(() => {
+          fetchWlans(selectedRow[0].id, selectedRow[0].code, selectedRow[0].path)
+        })
+        await waitFor(() => expect(mockedVenueRadioActiveNetworksQuery).toBeCalledTimes(1))
       })
     })
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.1_2) - multiple', async () => {
       const selectedRows = [
-        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI' },
-        { ...intentListResult.intents[7], aiFeature: 'AirFlexAI' }
+        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', ...extractItem },
+        { ...intentListResult.intents[7], aiFeature: 'AirFlexAI', ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -196,8 +233,8 @@ describe('useIntentAIActions', () => {
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_1) - multiple', async () => {
       const { sliceValue } = intentListResult.intents[4]
       const selectedRows = [
-        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' },
-        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', sliceValue }
+        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem },
+        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', sliceValue, ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -217,8 +254,8 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_2)  - multiple', async () => {
       const selectedRows = [
-        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' },
-        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI' }
+        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem },
+        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -243,12 +280,20 @@ describe('useIntentAIActions', () => {
       await userEvent.click((await screen.findAllByText('Apply'))[0])
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
       expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-        scheduledAt: '2024-07-21T04:45:00.000Z',
         optimizeList: [{
-          id: '15'
+          id: '15',
+          metadata: {
+            scheduledAt: '2024-07-21T04:45:00.000Z',
+            preferences: {
+              crrmFullOptimization: true
+            }
+          }
         },{
           id: '17',
-          wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+          metadata: {
+            scheduledAt: '2024-07-21T04:45:00.000Z',
+            wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+          }
         }]
 
       })
@@ -256,7 +301,7 @@ describe('useIntentAIActions', () => {
     })
   })
 
-  describe('RAI - OneClickOptimize', () => {
+  describe('rai - OneClickOptimize', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
@@ -264,7 +309,7 @@ describe('useIntentAIActions', () => {
     describe('rai - AI-Driven', () => {
       it('should handle mutation correctly - single', async () => {
         const mockOK = jest.fn()
-        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM' }] as IntentListItem[]
+        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -286,9 +331,14 @@ describe('useIntentAIActions', () => {
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{
-            id: '15'
+            id: '15',
+            metadata: {
+              scheduledAt: '2024-07-21T04:45:00.000Z',
+              preferences: {
+                crrmFullOptimization: true
+              }
+            }
           }]
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
@@ -297,7 +347,7 @@ describe('useIntentAIActions', () => {
 
     describe('rai - AirFlexAI', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
@@ -320,17 +370,19 @@ describe('useIntentAIActions', () => {
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          scheduledAt: '2024-07-21T04:45:00.000Z',
           optimizeList: [{
             id: '16',
-            wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
+            metadata: {
+              scheduledAt: '2024-07-21T04:45:00.000Z',
+              wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
+            }
           }]
         })
         await waitFor(() => expect(mockOK).toBeCalledTimes(1))
       })
 
       it('should show error when date time before  - single', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -354,6 +406,18 @@ describe('useIntentAIActions', () => {
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
         expect(await screen.findByText(/Scheduled time cannot be before/)).toBeVisible()
       })
+
+      it('should handle fetchWlans correctly', async () => {
+        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const { result } = renderHook(() => useIntentAIActions(), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+        const { fetchWlans } = result.current
+        act(() => {
+          fetchWlans(selectedRow[0].id, selectedRow[0].code, selectedRow[0].path)
+        })
+        await waitFor(() => expect(mockedRecommendationWlansQuery).toBeCalledTimes(1))
+      })
     })
 
     it('should show error toast when mutation fail - single', async () => {
@@ -364,7 +428,7 @@ describe('useIntentAIActions', () => {
       } as OptimizeAllMutationResponse
       mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
-      const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI' }] as IntentListItem[]
+      const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
       })
