@@ -1,11 +1,11 @@
-import React, { useRef } from 'react'
+import React, { MutableRefObject, useRef, useState } from 'react'
 
-import { Row, Col, Typography, Form } from 'antd'
-import { NamePath }                   from 'antd/lib/form/interface'
-import moment                         from 'moment-timezone'
-import { defineMessage, useIntl }     from 'react-intl'
+import { Row, Col, Typography, Form, DatePicker } from 'antd'
+import { NamePath }                               from 'antd/lib/form/interface'
+import moment, { Moment }                         from 'moment-timezone'
+import { defineMessage, useIntl }                 from 'react-intl'
 
-import { DateTimeDropdown, StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
+import { StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
 import { IntentAIFormDto } from '../../types'
 import * as UI             from '../styledComponents'
@@ -17,6 +17,47 @@ import { steps, crrmIntent, isOptimized } from '.'
 const name = 'settings' as NamePath
 const label = defineMessage({ defaultMessage: 'Settings' })
 
+
+interface DateTimeDropdownProps {
+  // extraFooter?: ReactNode;
+  // disabled?: boolean;
+  // icon?: ReactNode;
+  initialDate: MutableRefObject<Moment>
+  // onApply: (value: Moment) => void;
+  // title?: string;
+  disabledDateTime?: {
+    disabledDate?: (value: Moment) => boolean,
+    disabledHours?: (value: Moment) => number[],
+    disabledMinutes?: (value: Moment) => number[],
+  }
+}
+
+export function DateTimeDropdown (
+  {
+    initialDate,
+    disabledDateTime
+  } : DateTimeDropdownProps) {
+  const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
+  const [date, setDate] = useState(() => initialDate.current)
+  return (
+    <DatePicker
+      // open={true}
+      // // className='hidden-date-input'
+      // // dropdownClassName='hidden-date-input-popover'
+      // picker='date'
+      // value={date}
+      // // disabled={disabled}
+      // // value={date}
+      // // open={open}
+      // // onClick={() => setOpen(true)}
+      // showTime={false}
+      // showNow={false}
+      // showToday={false}
+      // disabledDate={disabledDate}
+      renderExtraFooter={
+        () => 'yo'}
+    />
+  )}
 
 type DateTimeSettingProps = {
   scheduleAt:string
@@ -35,9 +76,17 @@ const scheduleActions = {
   time: () => <TimeDropdown type={TimeDropdownTypes.Daily} name={name as string} />
 }
 
-export function getAvailableActions (scheduledTime: string) {
-  console.log(scheduledTime)
+export function getAvailableActions (status: string,
+  settings: { date: string, hour: string }) {
+  if  (status === 'new' || status === 'applyscheduled') {
+    // do datetimedropdown
+  } else {
+    // do timedropdown
+  }
+  console.log(settings)
+
   return scheduleActions.time()
+  // return scheduleActions.datetime
 }
 
 export function Settings () {
@@ -45,7 +94,8 @@ export function Settings () {
   const { form } = useStepFormContext<IntentAIFormDto>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
-  const scheduledTime = form.getFieldValue('scheduledTime')
+  const scheduleSettings = form.getFieldValue('settings')
+  const status = form.getFieldValue('status')
 
   const calendarText = defineMessage({ defaultMessage: `This recommendation will be
     applied at the chosen time whenever there is a need to change the channel plan.
@@ -65,7 +115,7 @@ export function Settings () {
         </Typography.Paragraph>
       </StepsForm.TextContent>
       <Form.Item name={['scheduled', 'date']}>
-        {getAvailableActions(scheduledTime)}
+        {getAvailableActions(status,scheduleSettings)}
       </Form.Item>
 
     </Col>
