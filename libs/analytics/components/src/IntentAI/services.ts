@@ -312,6 +312,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
     customFilter
   ) => {
     setFilters(customFilter as Filters)
+    setPagination(DEFAULT_PAGINATION)
   }
   return {
     tableQuery: useIntentAIListQuery(
