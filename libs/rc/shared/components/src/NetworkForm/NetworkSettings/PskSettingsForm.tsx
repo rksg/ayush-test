@@ -342,7 +342,7 @@ function SettingsForm () {
             name={['wlan', 'macAddressAuthentication']}
             valuePropName='checked'>
             <Switch disabled={editMode}
-            onChange={onMacAuthChange}
+              onChange={onMacAuthChange}
             />
           </Form.Item>
         </UI.FieldLabel>
