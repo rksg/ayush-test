@@ -402,9 +402,6 @@ export { ReactComponent as WorldSolid } from './icons/WorldSolid.svg'
 export { ReactComponent as Xbox } from './icons/Xbox.svg'
 export { ReactComponent as Xerox } from './icons/Xerox.svg'
 export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
-
-export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
-
 export { ReactComponent as StarterIcon } from './icons/StarterIcon.svg'
 export { ReactComponent as StartFlag } from './icons/StartFlag.svg'
 export { ReactComponent as EndFlag } from './icons/EndFlag.svg'
