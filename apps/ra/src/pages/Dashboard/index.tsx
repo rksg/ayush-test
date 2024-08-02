@@ -84,10 +84,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
     hasPermission({ permission: 'READ_AI_OPERATIONS' }) ||
     hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })
   )
-  const isIntentAIEnabled = [
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
-    useIsSplitOn(Features.INTENT_AI_TOGGLE)
-  ].some(Boolean)
+  const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
   const hasIntentAI = (
     hasPermission({ permission: 'READ_INTENT_AI' })
   )

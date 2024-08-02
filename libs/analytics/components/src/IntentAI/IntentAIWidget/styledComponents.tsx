@@ -4,9 +4,9 @@ export const ContentWrapper = styled.div`
   flex: 1;
   p {
     font-family: var(--acx-neutral-brand-font);
-    font-weight: var(--acx-body-3-font-weight);
-    font-size: var(--acx-body-3-font-size);
-    line-height: var(--acx-body-3-line-height);
+    font-weight: var(--acx-body-4-font-weight);
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
     color: var(--acx-primary-black);
   }
   svg {

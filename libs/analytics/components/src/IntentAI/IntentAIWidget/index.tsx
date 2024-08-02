@@ -5,7 +5,7 @@ import AutoSizer                  from 'react-virtualized-auto-sizer'
 import { Loader, Card, ColorPill, NoDataIconOnly } from '@acx-ui/components'
 import { intlFormats }                             from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, AirFlexAI }     from '@acx-ui/icons'
-import { useSearchParams }                         from '@acx-ui/react-router-dom'
+import { TenantLink, useSearchParams }             from '@acx-ui/react-router-dom'
 import type { PathFilter }                         from '@acx-ui/utils'
 
 import { HighlightItem, IntentHighlight, useIntentHighlightQuery } from '../services'
@@ -64,9 +64,13 @@ function HighlightCard (props: HighlightCardProps) {
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
 
-  return (<Card cardIcon={getCardIcon(type)} title={title}>
-    {content}
-  </Card>)
+  return (
+    <TenantLink to='/analytics/intentAI'>
+      <Card cardIcon={getCardIcon(type)} title={title}>
+        {content}
+      </Card>
+    </TenantLink>
+  )
 }
 
 function getHighlightList (data: IntentHighlight | undefined) {
