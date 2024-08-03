@@ -75,6 +75,21 @@ export const isGuestTunnelUtilized = (
         && !!networkId && !!networkVenueId
 }
 
+export const isSdLanGuestUtilizedOnDiffVenue = (
+  networkId: string,
+  networkVenueId: string,
+  venueSdLanInfo: EdgeMvSdLanViewData
+): boolean => {
+  if (venueSdLanInfo?.isGuestTunnelEnabled) {
+
+    const otherGuestTunnel = venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+      wlan.venueId !== networkVenueId && wlan.networkId === networkId)
+
+    return Boolean(otherGuestTunnel)
+  }
+  return false
+}
+
 // eslint-disable-next-line max-len
 export const tansformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
   const resultMap:Record<string, EdgeMvSdLanViewData> = {}

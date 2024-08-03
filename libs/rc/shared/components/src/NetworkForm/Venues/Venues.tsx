@@ -34,10 +34,12 @@ import {
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { isSdLanGuestUtilizedOnDiffVenue }                                      from '../../EdgeSdLan/edgeSdLanUtils'
+import { showSdLanGuestFwdConflictModal }                                       from '../../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
 import { NetworkTunnelActionModal, NetworkTunnelActionModalProps }              from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                              from '../../NetworkTunnelActionModal/types'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                       from '../../NetworkTunnelActionModal/types'
 import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
 import { useIsEdgeFeatureReady }                                                from '../../useEdgeActions'
@@ -581,20 +583,75 @@ export function Venues (props: VenuesProps) {
 
   const handleNetworkTunnelActionFinish = async (
     modalFormValues: NetworkTunnelActionForm,
-    otherData: { venueSdLan?: EdgeMvSdLanViewData }
+    otherData: {
+      network: NetworkTunnelActionModalProps['network'],
+      venueSdLan?: EdgeMvSdLanViewData
+    }
   ) => {
-    // networkId will be undefined in Add Network
     const networkVenueId = tunnelModalState.network?.venueId
-    const venueSdLanInfo = otherData.venueSdLan
+    const { network, venueSdLan } = otherData
 
-    if (!networkVenueId || !venueSdLanInfo)
+
+    if (!networkVenueId || !venueSdLan)
       return
 
     // eslint-disable-next-line max-len
-    const updateContent = getNetworkTunnelSdLanUpdateData(modalFormValues, form, tunnelModalState, venueSdLanInfo)
+    const updateContent = getNetworkTunnelSdLanUpdateData(
+      modalFormValues,
+      form.getFieldValue('sdLanAssociationUpdate'),
+      tunnelModalState,
+      venueSdLan
+    )
+    if (!updateContent) return
 
-    if (updateContent)
+    const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
+                    && isSdLanGuestUtilizedOnDiffVenue(network!.id, network!.venueId, venueSdLan!)
+
+    if (needSdLanConfigConflictCheck) {
+      await new Promise<void>((resolve) => {
+        showSdLanGuestFwdConflictModal({
+          currentNetworkVenueId: network?.venueId!,
+          currentNetworkId: network?.id!,
+          currentNetworkName: '',
+          activatedGuest: modalFormValues.sdLan.isGuestTunnelEnabled,
+          tunneledWlans: venueSdLan!.tunneledWlans,
+          tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+          onOk: async (impactVenueIds: string[]) => {
+            if (impactVenueIds.length) {
+              // has conflict and confirmed
+              // setSdLanConflictChecked(true)
+
+              // eslint-disable-next-line max-len
+              let updates: NetworkTunnelSdLanAction[] = updateContent
+              impactVenueIds.forEach(impactVenueId => {
+                updates = getNetworkTunnelSdLanUpdateData(
+                  modalFormValues,
+                  updates,
+                  {
+                    ...tunnelModalState,
+                    network: {
+                      ...tunnelModalState.network!,
+                      venueId: impactVenueId
+                    }
+                  },
+                  venueSdLan) ?? []
+              })
+
+              form.setFieldValue('sdLanAssociationUpdate', updates)
+            } else {
+              form.setFieldValue('sdLanAssociationUpdate', updateContent)
+            }
+
+            resolve()
+            handleCloseTunnelModal()
+          },
+          onCancel: () => resolve()
+        })
+      })
+    } else {
       form.setFieldValue('sdLanAssociationUpdate', updateContent)
+      handleCloseTunnelModal()
+    }
   }
 
   return (
@@ -638,7 +695,7 @@ export function Venues (props: VenuesProps) {
               onCancel={handleCancel}
             />
           </Form.Provider>
-          {isEdgeSdLanMvEnabled &&
+          {isEdgeSdLanMvEnabled && tunnelModalState.visible &&
             <NetworkTunnelActionModal
               {...tunnelModalState}
               onFinish={handleNetworkTunnelActionFinish}

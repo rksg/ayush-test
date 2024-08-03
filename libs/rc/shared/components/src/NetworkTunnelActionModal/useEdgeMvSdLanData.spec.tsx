@@ -1,12 +1,14 @@
 import { rest } from 'msw'
 
-import { EdgeSdLanUrls, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
-import { Provider }                         from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }  from '@acx-ui/test-utils'
+import { EdgeSdLanUrls, EdgeSdLanFixtures, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider }                                           from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                    from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
+import { mockVlanPoolList }   from './__tests__/fixtures'
 import { useEdgeMvSdLanData } from './useEdgeMvSdLanData'
+
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
@@ -27,6 +29,10 @@ describe('NetworkTunnelActionModal - useEdgeSdLanData', () => {
           mockedReqFn()
           return res(ctx.json({ data: mockedMvSdLanDataList }))
         }
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockVlanPoolList }))
       )
     )
   })

@@ -35,7 +35,8 @@ import {
   networkDeepList,
   venueData,
   venueNetworkApCompatibilitiesData,
-  venueNetworkApGroupData
+  venueNetworkApGroupData,
+  venuelist
 } from '../../__tests__/fixtures'
 
 import { VenueNetworksTab } from './index'
@@ -128,7 +129,7 @@ describe('VenueNetworksTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueNetworkList))
+        (_, res, ctx) => res(ctx.json(venuelist))
       ),
       rest.post(
         ConfigTemplateUrlsInfo.getVenueNetworkTemplateList.url,
@@ -393,9 +394,11 @@ describe('VenueNetworksTab', () => {
     //await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
-  describe('Edge and SD-LAN FF is on', () => {
+  describe('Edge and SD-LAN P2 FF is on', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP && ff !== Features.WIFI_RBAC_API)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
+        && ff !== Features.WIFI_RBAC_API
+        && ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{

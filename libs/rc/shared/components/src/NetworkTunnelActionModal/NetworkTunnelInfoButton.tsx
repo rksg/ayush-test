@@ -1,27 +1,25 @@
 import { useIntl } from 'react-intl'
 
-import { Button }                          from '@acx-ui/components'
-import { Network, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
+import { Button }                                               from '@acx-ui/components'
+import { EdgeMvSdLanViewData, Network, NetworkSaveData, Venue } from '@acx-ui/rc/utils'
 
-import { isGuestTunnelUtilized }        from '../EdgeSdLan/edgeSdLanUtils'
-import { SdLanScopedNetworkVenuesData } from '../EdgeSdLan/useEdgeSdLanActions'
+import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 
 interface NetworkTunnelInfoButtonProps {
   network?: Network | NetworkSaveData | null
   currentVenue: Venue
   onClick: () => void
-  sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
+  venueSdLan?: EdgeMvSdLanViewData
 }
 
 export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => {
   const { $t } = useIntl()
-  const { network, currentVenue, onClick, sdLanScopedNetworkVenues } = props
+  const { network, currentVenue, onClick, venueSdLan } = props
 
   if (Boolean(currentVenue.activated?.isActivated)) {
     const venueId = currentVenue.id
 
-    const venueSdLans = sdLanScopedNetworkVenues?.sdLansVenueMap[venueId]
-    const destinationsInfo = Array.isArray(venueSdLans) ? venueSdLans?.[0] : venueSdLans
+    const destinationsInfo = venueSdLan
 
     const isTunneled = !!destinationsInfo
     // eslint-disable-next-line max-len
