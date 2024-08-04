@@ -42,7 +42,8 @@ export const ItemModel = styled.div`
 `
 
 export const Ul = styled.ul`
-  padding-left: 35px;
+  list-style-type: none;
+  padding-left: 0px;
   li {
     margin-bottom: 8px;
   }
@@ -162,4 +163,22 @@ export const ExpanderTableWrapper = styled.div`
       background-color: var(--acx-primary-white);
     }
   }
+`
+
+export const Description = styled.div`
+  background: var(--acx-neutrals-10);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  ol, ul {
+    padding-left: 15px;
+    padding-top: 15px;
+    line-height: 20px;
+    ul {
+      list-style-type: disc;
+    }
+}
 `

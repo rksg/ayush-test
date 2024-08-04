@@ -331,6 +331,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   setShowSubTitle={setShowSubTitle}
                   visible={true}
                   hasVenue={hasVenue}
+                  upgradeVenueList={upgradeVenueList as FirmwareSwitchVenueV1002[]}
+                  upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
                   availableVersions={upgradeVersions}
                 /> : <ScheduleStep
                   setShowSubTitle={setShowSubTitle}

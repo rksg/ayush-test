@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
 import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
-import dayjs                                                from 'dayjs'
-import _                                                    from 'lodash'
-import { useIntl }                                          from 'react-intl'
+import dayjs from 'dayjs'
+import _ from 'lodash'
+import { useIntl } from 'react-intl'
 
 import { Subtitle, useStepFormContext } from '@acx-ui/components'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   compareSwitchVersion,
@@ -18,12 +18,13 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { DowngradeTag } from '../../../styledComponents'
-import * as UI          from '../../styledComponents'
+import * as UI from '../../styledComponents'
 
 import { PreDownload } from './PreDownload'
 
-import type { DatePickerProps }  from 'antd'
+import type { DatePickerProps } from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
+import { Switch7150C08Note } from '../Switch7150C08Note'
 
 export interface ScheduleStepProps {
   visible: boolean,
@@ -35,7 +36,7 @@ export interface ScheduleStepProps {
   setShowSubTitle: (visible: boolean) => void
 }
 
-export function ScheduleStep (props: ScheduleStepProps) {
+export function ScheduleStep(props: ScheduleStepProps) {
   const { availableVersions,
     hasVenue, upgradeVenueList, upgradeSwitchList,
     setShowSubTitle } = props
@@ -110,7 +111,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const [checked, setChecked] = useState(getCurrentChecked())
 
-  useEffect(()=>{
+  useEffect(() => {
     setShowSubTitle(false)
   }, [current])
 
@@ -138,17 +139,17 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }
 
   const getAvailableVersions =
-  (modelGroup: SwitchFirmwareModelGroup) => {
-    let firmwareAvailableVersions = availableVersions?.filter(
-      (v: SwitchFirmwareVersion1002) => v.modelGroup === modelGroup
-    )
+    (modelGroup: SwitchFirmwareModelGroup) => {
+      let firmwareAvailableVersions = availableVersions?.filter(
+        (v: SwitchFirmwareVersion1002) => v.modelGroup === modelGroup
+      )
 
-    if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
-      return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+      if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
+        return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+      }
+
+      return []
     }
-
-    return []
-  }
 
   return (
     <div
@@ -182,21 +183,19 @@ export function ScheduleStep (props: ScheduleStepProps) {
             validateFirst
             children={<> </>}
           />
-
-
-          {(hasVenue || ICX71Count > 0) && <>
+          {(hasVenue || ICX82Count > 0) && <>
             <Subtitle level={4}>
-              {intl.$t({ defaultMessage: 'Firmware available for ICX 7150 Series' })}
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
               &nbsp;
-              ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
+              ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
-              onChange={handleICX71Change}
-              value={selectedICX71Version}>
+              onChange={handleICX82Change}
+              value={selectedICX82Version}>
               <Space direction={'vertical'}>
                 { // eslint-disable-next-line max-len
-                  getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
+                  getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
                         {getSwitchVersionLabelV1002(intl, v)}
@@ -240,23 +239,23 @@ export function ScheduleStep (props: ScheduleStepProps) {
             </Radio.Group>
           </>}
 
-          {(hasVenue || ICX82Count > 0) && <>
+          {(hasVenue || ICX71Count > 0) && <>
             <Subtitle level={4}>
-              {intl.$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 7150 Series' })}
               &nbsp;
-              ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
+              ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
-              onChange={handleICX82Change}
-              value={selectedICX82Version}>
+              onChange={handleICX71Change}
+              value={selectedICX71Version}>
               <Space direction={'vertical'}>
                 { // eslint-disable-next-line max-len
-                  getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
+                  getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
                         {getSwitchVersionLabelV1002(intl, v)}
-                        {(v.isDowngradeVersion|| v.isDowngraded10to90) && !v.inUse &&
+                        {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                       </span>
                     </Radio>)}
@@ -266,8 +265,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
+            <Switch7150C08Note
+              upgradeVenueList={upgradeVenueList}
+              upgradeSwitchList={upgradeSwitchList}
+            />
           </>}
-
         </div>
 
       </Form.Item>
