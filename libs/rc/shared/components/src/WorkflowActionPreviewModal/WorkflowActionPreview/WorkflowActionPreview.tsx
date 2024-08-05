@@ -22,11 +22,11 @@ import {
   GenericActionData
 } from '@acx-ui/rc/utils'
 
-import { EnrollmentPortalDesignModal }       from '../EnrollmentPortalDesignModal'
-import { AupPreview, DisplayMessagePreview } from '../policies/WorkflowCanvas/ActionPreviewDrawer/WorkflowActionPreview'
+import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
+import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
+import * as UI                         from '../styledComponents'
 
-import { ActionNavigationDrawer } from './ActionNavigationDrawer'
-import * as UI                    from './styledComponents'
+import { AupPreview, DisplayMessagePreview } from './index'
 
 const previewMap = {
   [ActionType.AUP]: AupPreview,

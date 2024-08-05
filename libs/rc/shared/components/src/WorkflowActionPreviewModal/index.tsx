@@ -3,7 +3,7 @@ import { Modal } from 'antd'
 import { GenericActionData, WorkflowStep } from '@acx-ui/rc/utils'
 
 import * as UI                   from './styledComponents'
-import { WorkflowActionPreview } from './WorkflowActionPreview'
+import { WorkflowActionPreview } from './WorkflowActionPreview/WorkflowActionPreview'
 
 export interface WorkflowActionPreviewModalProps {
   workflowId: string

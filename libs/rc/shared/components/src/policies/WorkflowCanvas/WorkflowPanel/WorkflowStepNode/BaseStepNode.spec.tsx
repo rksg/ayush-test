@@ -112,7 +112,7 @@ describe('BaseStepNode', () => {
     render(
       <Provider>
         <ReactFlowProvider>
-          <WorkflowContextProvider>
+          <WorkflowContextProvider workflowId={'mock-workflow-id'}>
             <BaseStepNode
               {...mockNodeProps}
               children={child}
