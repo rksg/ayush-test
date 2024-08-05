@@ -34,8 +34,8 @@ describe('Intent services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > zone-1 (Venue)`,
-        status: 'New',
-        statusTooltip: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click \"Optimize.\" Alternatively, use \"1-Click Optimize\" to instantly apply the changes with default priority.'
+        status: 'Active',
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
       },
       {
         ...intentListResult.intents.data[1],
