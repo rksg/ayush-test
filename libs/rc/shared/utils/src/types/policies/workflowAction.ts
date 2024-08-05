@@ -34,7 +34,7 @@ export interface AupAction extends ActionBase {
   contentFileLocation?: string
 }
 
-export interface DpskActionContext {
+export interface DpskAction extends ActionBase {
   identityGroupId?: String
   identityId?: string,
   emailNotification?: boolean,
