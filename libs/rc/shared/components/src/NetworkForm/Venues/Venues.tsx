@@ -605,7 +605,7 @@ export function Venues (props: VenuesProps) {
     if (!updateContent) return
 
     const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-                    && isSdLanGuestUtilizedOnDiffVenue(network!.id, network!.venueId, venueSdLan!)
+                    && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
 
     if (needSdLanConfigConflictCheck) {
       await new Promise<void>((resolve) => {
@@ -619,9 +619,7 @@ export function Venues (props: VenuesProps) {
           onOk: async (impactVenueIds: string[]) => {
             if (impactVenueIds.length) {
               // has conflict and confirmed
-              // setSdLanConflictChecked(true)
 
-              // eslint-disable-next-line max-len
               let updates: NetworkTunnelSdLanAction[] = updateContent
               impactVenueIds.forEach(impactVenueId => {
                 updates = getNetworkTunnelSdLanUpdateData(

@@ -175,7 +175,7 @@ describe('Edge SD-LAN form: settings', () => {
         pageSize: 10000
       })
     })
-    expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
+    expect(screen.queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
   })
   it('should be able to configure guest cluster when it is empty in edit mode', async () => {
     const expectedClusterId = 'clusterId_5'
@@ -211,15 +211,28 @@ describe('Edge SD-LAN form: settings', () => {
       .getByRole('option', { name: 'Edge Cluster 3' })).toBeValid()
   })
 
-  it('should validate cluster doesnot configure core port ready', async () => {
+  it('should filter cluster used as DC/DMZ cluster', async () => {
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent form={stepFormRef.current} />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await checkBasicSettings()
 
-    const alert = await within(formBody).findByRole('alert')
-    expect(alert).toHaveTextContent('selected cluster must set up a Core port or LAG')
+    // turn on DMZ
+    await userEvent.click(await within(formBody).findByRole('switch'))
+    // select DMZ edge
+    await userEvent.selectOptions(
+      await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
+      'clusterId_5')
+
+    // DMZ cluster won;t be an option for DC cluster
+    const dcSelector = await within(formBody).findByRole('combobox', { name: 'Cluster' })
+    expect(dcSelector).not.toBeDisabled()
+    expect(dcSelector).toBeVisible()
+    expect(within(dcSelector)
+      .queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
+
+    expect(mockedSetFieldsValue).toBeCalledTimes(2)
   })
 })
 

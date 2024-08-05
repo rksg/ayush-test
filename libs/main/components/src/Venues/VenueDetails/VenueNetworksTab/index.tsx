@@ -630,7 +630,7 @@ export function VenueNetworksTab () {
     const { network, venueSdLan } = otherData
 
     const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-    && isSdLanGuestUtilizedOnDiffVenue(network!.id, network!.venueId, venueSdLan!)
+    && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
 
     if (needSdLanConfigConflictCheck) {
       await new Promise<void>((resolve) => {

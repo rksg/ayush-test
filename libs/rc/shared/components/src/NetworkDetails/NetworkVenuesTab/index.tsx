@@ -772,7 +772,7 @@ export function NetworkVenuesTab () {
     const { network, venueSdLan } = otherData
     // eslint-disable-next-line max-len
     const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-     && isSdLanGuestUtilizedOnDiffVenue(network!.id, network!.venueId, venueSdLan!)
+     && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
 
     if (needSdLanConfigConflictCheck) {
       await new Promise<void>((resolve) => {

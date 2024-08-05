@@ -68,7 +68,7 @@ export const isGuestTunnelUtilized = (
   venueSdLanInfo?: EdgeMvSdLanViewData,
   networkId?: string,
   networkVenueId?: string
-) => {
+): boolean => {
   return !!venueSdLanInfo?.isGuestTunnelEnabled
         && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
           wlan.networkId === networkId && wlan.venueId === networkVenueId))
@@ -76,9 +76,9 @@ export const isGuestTunnelUtilized = (
 }
 
 export const isSdLanGuestUtilizedOnDiffVenue = (
+  venueSdLanInfo: EdgeMvSdLanViewData,
   networkId: string,
-  networkVenueId: string,
-  venueSdLanInfo: EdgeMvSdLanViewData
+  networkVenueId: string
 ): boolean => {
   if (venueSdLanInfo?.isGuestTunnelEnabled) {
 

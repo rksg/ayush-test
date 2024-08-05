@@ -116,7 +116,6 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
           dataSource={availableVenues}
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
         />
       </Loader>

@@ -1,6 +1,6 @@
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
-import { rest }  from 'msw'
+import userEvent              from '@testing-library/user-event'
+import { groupBy, cloneDeep } from 'lodash'
+import { rest }               from 'msw'
 
 import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { edgeSdLanApi, useUpdateEdgeMvSdLanPartialMutation } from '@acx-ui/rc/services'
@@ -25,7 +25,7 @@ import {
   useEdgeMvSdLanActions
 } from './useEdgeSdLanActions'
 
-const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const mockedCallback = jest.fn()
 const mockedActivateEdgeSdLanDmzClusterReq = jest.fn()
 const mockedDeactivateEdgeSdLanDmzClusterReq = jest.fn()
@@ -207,7 +207,7 @@ describe('useEdgeMvSdLanActions', () => {
     })
 
     it('should not trigger guest settings when it not enabled', async () => {
-      const mockData = _.cloneDeep(mockedAddData)
+      const mockData = cloneDeep(mockedAddData)
       mockData.isGuestTunnelEnabled = false
       const { result } = renderHook(() => useEdgeMvSdLanActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -291,7 +291,7 @@ describe('useEdgeMvSdLanActions', () => {
     } as EdgeMvSdLanExtended
 
     it('should edit guest settings successfully', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       const mockedPayload = {
         ...mockedData,
         networks: { mocked_venue_id: ['network_4', 'network_5'] },
@@ -329,7 +329,7 @@ describe('useEdgeMvSdLanActions', () => {
     })
 
     it('change DC to DMZ scenario', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
       mockedData.guestEdgeClusterId = ''
       mockedData.guestTunnelProfileId = ''
@@ -388,7 +388,7 @@ describe('useEdgeMvSdLanActions', () => {
     })
 
     it('should only deactivate dmz network and activate dc network', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       const mockedPayload = {
         ...mockedData,
         networks: { mocked_venue_id: ['network_4','network_3'] },
@@ -425,7 +425,7 @@ describe('useEdgeMvSdLanActions', () => {
     })
 
     it('should only activate dmz cluster when change from DC again', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
       const mockedPayload = {
         ...mockedData,
@@ -453,7 +453,7 @@ describe('useEdgeMvSdLanActions', () => {
     })
 
     it('should skip update porfile when no change', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
       const mockedPayload = {
         ...mockedData,
@@ -488,7 +488,7 @@ describe('useEdgeMvSdLanActions', () => {
     })
 
     it('should update porfile name', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       mockedData.name = 'newTestName'
       const { result } = renderHook(() => useEdgeMvSdLanActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -714,7 +714,7 @@ describe('useEdgeSdLanActions', () => {
     })
 
     it('should not trigger guest settings when it not enabled', async () => {
-      const mockData = _.cloneDeep(mockedAddData)
+      const mockData = cloneDeep(mockedAddData)
       mockData.isGuestTunnelEnabled = false
       const { result } = renderHook(() => useEdgeSdLanActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -796,7 +796,7 @@ describe('useEdgeSdLanActions', () => {
     } as EdgeSdLanSettingP2
 
     it('should edit guest settings successfully', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       const mockedPayload = {
         ...mockedData,
         networkIds: ['network_4', 'network_5'],
@@ -833,7 +833,7 @@ describe('useEdgeSdLanActions', () => {
     })
 
     it('change DC to DMZ scenario', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
       mockedData.guestEdgeClusterId = ''
       mockedData.guestTunnelProfileId = ''
@@ -888,7 +888,7 @@ describe('useEdgeSdLanActions', () => {
     })
 
     it('should only deactivate dmz network and activate dc network', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       const mockedPayload = {
         ...mockedData,
         networkIds: ['network_4', 'network_3'],
@@ -921,7 +921,7 @@ describe('useEdgeSdLanActions', () => {
     })
 
     it('should only activate dmz cluster when change from DC again', async () => {
-      const mockedData = _.cloneDeep(mockedEditData)
+      const mockedData = cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
       const mockedPayload = {
         ...mockedData,
@@ -1218,120 +1218,185 @@ describe('SD-LAN feature functions', () => {
   })
 
   describe('useSdLanScopedNetworkVenues', () => {
-    beforeEach(() => {
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
-    })
+    describe('SDLAN P2 enabled, multi-venue is not enabled', () => {
 
-    it('should return venueId used for DC case', async () => {
-      const mockData = mockedSdLanDataListP2
-        .filter(item => item.id === 'mocked-sd-lan-2')
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockData }))
-        )
-      )
-
-      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
-        wrapper: ({ children }) => <Provider children={children} />
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
       })
 
-      await waitFor(() =>
-        expect(result.current)
-          .toStrictEqual({
-            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
-            networkVenueIds: [
-              'a307d7077410456f8f1a4fc41d861560'
-            ],
-            guestNetworkVenueIds: []
-          })
-      )
-    })
-
-    it('should return venueId used for DC case with previous guest network', async () => {
-      let mockData = _.cloneDeep(mockedSdLanDataListP2
-        .filter(item => item.id === 'mocked-sd-lan-1'))
-      mockData[0].isGuestTunnelEnabled = false
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockData }))
+      it('should return venueId used for DC case', async () => {
+        const mockData = mockedSdLanDataListP2
+          .filter(item => item.id === 'mocked-sd-lan-2')
+        mockServer.use(
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => res(ctx.json({ data: mockData }))
+          )
         )
-      )
 
-      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-        wrapper: ({ children }) => <Provider children={children} />
+        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+
+        await waitFor(() =>
+          expect(result.current)
+            .toStrictEqual({
+              sdLansVenueMap: groupBy(mockData, 'venueId'),
+              networkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861560'
+              ],
+              guestNetworkVenueIds: []
+            })
+        )
       })
 
-      await waitFor(() =>
-        expect(result.current)
-          .toStrictEqual({
-            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
-            networkVenueIds: [
-              'a307d7077410456f8f1a4fc41d861567'
-            ],
-            guestNetworkVenueIds: []
-          })
-      )
-    })
-
-    it('should return venueId used for DMZ case', async () => {
-      const mockData = mockedSdLanDataListP2
-        .filter(item => item.id === 'mocked-sd-lan-1')
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => res(ctx.json({ data: mockData }))
+      it('should return venueId used for DC case with previous guest network', async () => {
+        let mockData = cloneDeep(mockedSdLanDataListP2
+          .filter(item => item.id === 'mocked-sd-lan-1'))
+        mockData[0].isGuestTunnelEnabled = false
+        mockServer.use(
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => res(ctx.json({ data: mockData }))
+          )
         )
-      )
 
-      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-        wrapper: ({ children }) => <Provider children={children} />
+        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+
+        await waitFor(() =>
+          expect(result.current)
+            .toStrictEqual({
+              sdLansVenueMap: groupBy(mockData, 'venueId'),
+              networkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861567'
+              ],
+              guestNetworkVenueIds: []
+            })
+        )
       })
 
-      await waitFor(() =>
-        expect(result.current)
-          .toStrictEqual({
-            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
-            networkVenueIds: [
-              'a307d7077410456f8f1a4fc41d861567'
-            ],
-            guestNetworkVenueIds: [
-              'a307d7077410456f8f1a4fc41d861567'
-            ]
-          })
-      )
-    })
-
-    it('should return venueId used for DMZ case with no guest network', async () => {
-      const mockData = _.cloneDeep(mockedSdLanDataListP2
-        .filter(item => item.id === 'mocked-sd-lan-1'))
-      mockData[0].guestNetworkIds = []
-      mockData[0].guestNetworkInfos = []
-      mockServer.use(
-        rest.post(
-          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-          (_, res, ctx) => {
-            return res(ctx.json({ data: mockData }))
-          }
+      it('should return venueId used for DMZ case', async () => {
+        const mockData = mockedSdLanDataListP2
+          .filter(item => item.id === 'mocked-sd-lan-1')
+        mockServer.use(
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => res(ctx.json({ data: mockData }))
+          )
         )
-      )
 
-      const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
-        wrapper: ({ children }) => <Provider children={children} />
+        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+
+        await waitFor(() =>
+          expect(result.current)
+            .toStrictEqual({
+              sdLansVenueMap: groupBy(mockData, 'venueId'),
+              networkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861567'
+              ],
+              guestNetworkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861567'
+              ]
+            })
+        )
       })
 
-      await waitFor(() =>
-        expect(result.current)
-          .toStrictEqual({
-            sdLansVenueMap: _.groupBy(mockData, 'venueId'),
-            networkVenueIds: [
-              'a307d7077410456f8f1a4fc41d861567'
-            ],
-            guestNetworkVenueIds: []
-          })
-      )
+      it('should return venueId used for DMZ case with no guest network', async () => {
+        const mockData = cloneDeep(mockedSdLanDataListP2
+          .filter(item => item.id === 'mocked-sd-lan-1'))
+        mockData[0].guestNetworkIds = []
+        mockData[0].guestNetworkInfos = []
+        mockServer.use(
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => {
+              return res(ctx.json({ data: mockData }))
+            }
+          )
+        )
+
+        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+
+        await waitFor(() =>
+          expect(result.current)
+            .toStrictEqual({
+              sdLansVenueMap: groupBy(mockData, 'venueId'),
+              networkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861567'
+              ],
+              guestNetworkVenueIds: []
+            })
+        )
+      })
+    })
+
+    describe('multi-venue SDLAN enabled', () => {
+      beforeEach(() => {
+        // eslint-disable-next-line max-len
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_TOGGLE)
+      })
+
+      it('should return venueId used for DC case', async () => {
+        const mockData = mockedMvSdLanDataList
+          .filter(item => item.id === 'mocked-sd-lan-2')
+        mockServer.use(
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => res(ctx.json({ data: mockData }))
+          )
+        )
+
+        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_2'), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+
+        await waitFor(() =>
+          expect(result.current)
+            .toStrictEqual({
+              sdLansVenueMap: {
+                a307d7077410456f8f1a4fc41d861560: mockData
+              },
+              networkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861560'
+              ],
+              guestNetworkVenueIds: []
+            })
+        )
+      })
+
+      it('should return venueId used for DMZ case', async () => {
+        const mockData = mockedMvSdLanDataList
+          .filter(item => item.id === 'mocked-sd-lan-1')
+        mockServer.use(
+          rest.post(
+            EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+            (_, res, ctx) => res(ctx.json({ data: mockData }))
+          )
+        )
+
+        const { result } = renderHook(() => useSdLanScopedNetworkVenues('network_4'), {
+          wrapper: ({ children }) => <Provider children={children} />
+        })
+
+        await waitFor(() =>
+          expect(result.current)
+            .toStrictEqual({
+              sdLansVenueMap: {
+                a307d7077410456f8f1a4fc41d861567: mockData
+              },
+              networkVenueIds: [
+                'a307d7077410456f8f1a4fc41d861567'
+              ],
+              guestNetworkVenueIds: ['a307d7077410456f8f1a4fc41d861567']
+            })
+        )
+      })
     })
 
     it('should do nothing when FF is OFF', async () => {
