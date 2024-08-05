@@ -96,8 +96,8 @@ import {
   RWG,
   NetworkDevice,
   NetworkDeviceType,
-  NewAPModel,
-  NetworkDevicePosition
+  NetworkDevicePosition,
+  RbacAPMesh
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                  from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
@@ -107,6 +107,7 @@ import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacA
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess, isPayloadHasField }                                                       from './utils'
 import {
+  convertToApMeshDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
 }   from './venue.utils'
@@ -384,30 +385,43 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     meshAps: build.query<TableResult<APMesh>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
-
-        const newPayload = enableRbac
-          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
-          : payload
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
 
         return {
           ...req,
-          body: newPayload
+          body: payload
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }],
-      extraOptions: { maxRetries: 5 },
-      transformResponse: (
-        result: TableResult<APMesh>,
-        _: unknown,
-        args: RequestPayload) => {
-        return args.enableRbac
-          ? transformRbacApList(result as TableResult<NewAPModel>) as TableResult<APMesh>
-          : result
-      }
+      extraOptions: { maxRetries: 5 }
+    }),
+    rbacMeshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const rbacApMeshReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const rbacApMeshListRes = await fetchWithBQ({
+          ...rbacApMeshReq,
+          body: JSON.stringify(payload)
+        })
+
+        const rbacApMeshData = rbacApMeshListRes.data as TableResult<RbacAPMesh>
+        const apMeshData = [] as APMesh[]
+
+
+        rbacApMeshData.data?.forEach((rbacApMesh) => {
+          const { root, members=[] } = rbacApMesh
+          const newApMesh = convertToApMeshDataList([root], members) as APMesh[]
+
+          apMeshData.push(newApMesh[0])
+        })
+
+        const meshAps = { data: apMeshData, totalCount: rbacApMeshData.totalCount } as TableResult<APMesh>
+        return {
+          data: meshAps
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -1831,6 +1845,7 @@ export const {
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
+  useRbacMeshApsQuery,
   useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
