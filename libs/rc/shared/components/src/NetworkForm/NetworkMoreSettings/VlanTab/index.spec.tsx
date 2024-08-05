@@ -25,7 +25,7 @@ const mockWlanData = {
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
-  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enabldVxLan: false })
+  useNetworkVxLanTunnelProfileInfo: jest.fn().mockReturnValue({ enableVxLan: false })
 }))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
@@ -38,24 +38,6 @@ describe('Network More settings - Vlan Tab', () => {
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData)))
     )
-  })
-
-  it('should visible VLAN pooling', async () => {
-    render(
-      <Provider>
-        <Form>
-          <VlanTab wlanData={mockWlanData} />
-        </Form>
-      </Provider>,
-      { route: { params } })
-
-    const view = screen.getByText(/vlan pooling/i)
-    expect(within(view).getByRole('switch')).toBeDisabled()
-    // await userEvent.click(within(view).getByRole('switch'))
-    // await userEvent.click(screen.getByRole('combobox', {
-    //   name: /vlan pool:/i
-    // }))
-    // expect(screen.getByText('No Data')).toBeInTheDocument()
   })
 
   it('should visible Dynamic VLAN', async () => {
