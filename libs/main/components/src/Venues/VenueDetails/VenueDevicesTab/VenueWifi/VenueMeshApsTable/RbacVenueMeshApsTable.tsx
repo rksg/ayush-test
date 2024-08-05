@@ -105,25 +105,6 @@ function getCols (intl: ReturnType<typeof useIntl>) {
   return columns
 }
 
-/*
-function transformData (data: APMesh[]) {
-  return data.map((item: APMesh) => {
-    const newItem = { ...item }
-    if (item && item.uplink && item.uplink.length > 0) {
-      newItem.apUpRssi = item.uplink[0].rssi
-    }
-
-    if (item.rssi) {
-      newItem.apDownRssi = item.rssi
-    }
-    if(Array.isArray(item.downlink) && item.downlink.length > 0){
-      newItem.children = transformData(item.downlink)
-      transformData(item.downlink)
-    }
-    return newItem
-  })
-}
-*/
 
 export function RbacVenueMeshApsTable () {
   const params = useParams()
