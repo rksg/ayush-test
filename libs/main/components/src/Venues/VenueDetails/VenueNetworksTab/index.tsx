@@ -101,7 +101,7 @@ const defaultRbacPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'dsaeOnboardNetwork',
-    'venueApGroups.venueId'
+    'venueApGroups'
   ]
 }
 
@@ -150,6 +150,8 @@ export function VenueNetworksTab () {
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const { venueId } = params
   const settingsId = 'venue-networks-table'
@@ -181,7 +183,7 @@ export function VenueNetworksTab () {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
-  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -191,7 +193,7 @@ export function VenueNetworksTab () {
       page: 1,
       pageSize: 10000
     },
-    enableRbac: isPolicyRbacEnabled
+    enableRbac: resolvedRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
@@ -236,19 +238,32 @@ export function VenueNetworksTab () {
     }
     else {
       if (row.deepNetwork) {
+        const venueId = params.venueId as string
         if (checked) { // activate
-          const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
+          const newNetworkVenue = generateDefaultNetworkVenue(venueId as string, row.id)
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue, enableRbac: isPolicyRbacEnabled })
+          addNetworkVenue({
+            params: {
+              tenantId: params.tenantId,
+              venueId,
+              networkId: newNetworkVenue.networkId
+            },
+            payload: newNetworkVenue,
+            enableRbac: resolvedRbacEnabled
+          })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
-            if (networkVenue.venueId === params.venueId) {
+            if (networkVenue.venueId === venueId) {
               deleteNetworkVenue({
                 params: {
-                  tenantId: params.tenantId, networkVenueId: networkVenue.id
-                }
+                  tenantId: params.tenantId,
+                  venueId,
+                  networkId: networkVenue.networkId,
+                  networkVenueId: networkVenue.id
+                },
+                enableRbac: resolvedRbacEnabled
               })
             }
           })
@@ -504,10 +519,16 @@ export function VenueNetworksTab () {
 
     const payload = assign(data, { scheduler: tmpScheduleList })
 
-    updateNetworkVenue({ params: {
-      tenantId: params.tenantId,
-      networkVenueId: payload.id
-    }, payload: { newData: payload }, enableRbac: isPolicyRbacEnabled }).then(()=>{
+    updateNetworkVenue({
+      params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id,
+        venueId: payload.venueId,
+        networkId: payload.networkId
+      },
+      payload: !isTemplate? payload : { newData: payload },
+      enableRbac: resolvedRbacEnabled
+    }).then(()=>{
       setScheduleModalState({
         visible: false
       })
@@ -518,10 +539,16 @@ export function VenueNetworksTab () {
     if (name === 'networkApGroupForm') {
       let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
-      updateNetworkVenue({ params: {
-        tenantId: params.tenantId,
-        networkVenueId: payload.id
-      }, payload: { newData: payload, oldData: oldData }, enableRbac: isPolicyRbacEnabled }).then(()=>{
+      updateNetworkVenue({
+        params: {
+          tenantId: params.tenantId,
+          networkVenueId: payload.id,
+          venueId: payload.venueId,
+          networkId: payload.networkId
+        },
+        payload: !isTemplate? payload : { newData: payload, oldData: oldData },
+        enableRbac: resolvedRbacEnabled
+      }).then(()=>{
         setApGroupModalState({
           visible: false
         })

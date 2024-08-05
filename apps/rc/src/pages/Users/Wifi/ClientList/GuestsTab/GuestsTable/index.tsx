@@ -42,9 +42,9 @@ import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types
 import { GuestErrorRes, hasRoles, hasPermission }            from '@acx-ui/user'
 import { getIntl  }                                          from '@acx-ui/utils'
 
-import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
-import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
-import { useGuestActions }                   from '../GuestsDetail/guestActions'
+import { defaultGuestPayload, GuestsDetail, isEnabledGeneratePassword } from '../GuestsDetail'
+import { GenerateNewPasswordModal }                                     from '../GuestsDetail/generateNewPasswordModal'
+import { useGuestActions }                                              from '../GuestsDetail/guestActions'
 
 import {
   AddGuestDrawer,
@@ -54,7 +54,6 @@ import {
   showNoSendConfirm,
   useHandleGuestPassResponse
 } from './addGuestDrawer'
-//import { GuestTabContext } from './context'
 
 const defaultGuestNetworkPayload = {
   fields: ['name', 'defaultGuestCountry', 'id', 'captiveType'],
@@ -75,7 +74,6 @@ export const GuestsTable = () => {
   const filters = {
     includeExpired: ['true']
   }
-  //const { setGuestCount } = useContext(GuestTabContext)
 
   const queryOptions = {
     defaultPayload: {
@@ -353,13 +351,7 @@ export const GuestsTable = () => {
       visible: (selectedRows:Guest[]) => {
         if (selectedRows.length !== 1) { return false }
         const guestDetail = selectedRows[0]
-        const flag =
-        guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
-          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
-        ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
-        ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.wifiNetworkId ))
-        return Boolean(flag)
+        return isEnabledGeneratePassword(guestDetail)
       },
       onClick: (selectedRows:Guest[]) => {
         setGuestDetail(selectedRows[0])

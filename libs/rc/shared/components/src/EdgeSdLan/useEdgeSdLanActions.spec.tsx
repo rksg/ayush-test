@@ -87,6 +87,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 
 describe('useEdgeMvSdLanActions', () => {
   beforeEach(() => {
+    store.dispatch(edgeSdLanApi.util.resetApiState())
     mockedCallback.mockClear()
     mockedActivateEdgeSdLanDmzClusterReq.mockClear()
     mockedDeactivateEdgeSdLanDmzClusterReq.mockClear()
@@ -596,6 +597,7 @@ describe('useEdgeMvSdLanActions', () => {
 
 describe('useEdgeSdLanActions', () => {
   beforeEach(() => {
+    store.dispatch(edgeSdLanApi.util.resetApiState())
     mockedCallback.mockClear()
     mockedActivateEdgeSdLanDmzClusterReq.mockClear()
     mockedDeactivateEdgeSdLanDmzClusterReq.mockClear()
@@ -1351,8 +1353,6 @@ describe('SD-LAN feature functions', () => {
 
       expect(mockedSdLanGet).not.toBeCalled()
     })
-
-    it.todo('should correctly return when mv sdlan FF is ON')
   })
 
   describe('checkSdLanScopedNetworkDeactivateAction', () => {

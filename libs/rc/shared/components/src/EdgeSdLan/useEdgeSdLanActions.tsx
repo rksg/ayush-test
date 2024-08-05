@@ -311,16 +311,22 @@ export const useEdgeMvSdLanActions = () => {
     }
   }
 
+  /** use cases
+   * activate network:        activate = true, isGuest = false
+   * deactivate network:      activate = false, isGuest = false
+   * activate guestNetwork:   activate = true, isGuest = true
+   * deactivate guestNetwork: activate = true, isGuest = false
+   */
   const toggleNetwork = async (
     serviceId: string,
     venueId: string,
-    isGuest: boolean,
     networkId: string,
     activate: boolean,
+    isGuest: boolean,
     cb?: () => void) => {
-    // - activate network/guestNetwork
-    // - deactivate guestNetwork
-    if (activate || (!activate && isGuest)) {
+    // - activate network
+    // - activate/deactivate guestNetwork
+    if (activate) {
       await activateNetwork({
         params: {
           venueId,
@@ -328,7 +334,7 @@ export const useEdgeMvSdLanActions = () => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: !isGuest ? false : activate
+          isGuestTunnelUtilized: isGuest
         },
         callback: cb
       }).unwrap()
@@ -570,6 +576,11 @@ export const useSdLanScopedVenueNetworks = (
   }
 }
 
+export interface SdLanScopedNetworkVenuesData {
+    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] },
+    networkVenueIds: string[] | undefined,
+    guestNetworkVenueIds: string[] | undefined
+}
 export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -625,11 +636,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         sdLansVenueMap,
         networkVenueIds: Object.keys(sdLansVenueMap),
         guestNetworkVenueIds
-      } as {
-        sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
-        networkVenueIds: string[] | undefined,
-        guestNetworkVenueIds: string[] | undefined
-      }
+      } as SdLanScopedNetworkVenuesData
     } else {
       return {
         sdLansVenueMap: groupBy(data?.data, 'venueId'),
@@ -639,11 +646,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
             // eslint-disable-next-line max-len
             item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
           .filter(i => !!i)
-      } as {
-        sdLansVenueMap: { [venueId in string]: EdgeSdLanViewDataP2[] },
-        networkVenueIds: string[] | undefined,
-        guestNetworkVenueIds: string[] | undefined
-      }
+      } as SdLanScopedNetworkVenuesData
     }
 
   }, [data?.data, networkId])
