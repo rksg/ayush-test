@@ -136,7 +136,7 @@ export const api = intentAIApi.injectEndpoints({
             id
             code
             status
-            status_reason
+            statusReason
             displayStatus
             createdAt
             updatedAt
@@ -176,7 +176,7 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: $t(states[displayStatus].text),
+            status: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
             statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
           } as (IntentListItem))
           return intents

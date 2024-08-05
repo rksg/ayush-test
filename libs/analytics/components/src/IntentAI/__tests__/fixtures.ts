@@ -6,7 +6,7 @@ export const mockCrrmRow = {
   id: '15',
   code: 'c-crrm-channel24g-auto',
   status: 'new',
-  status_reason: '',
+  statusReason: '',
   displayStatus: 'new',
   createdAt: '2023-06-13T07:05:08.638Z',
   updatedAt: '2023-06-16T06:05:02.839Z',
@@ -37,7 +37,7 @@ export const intentListResult = {
       id: '11',
       code: 'c-crrm-channel5g-auto',
       status: 'active',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'active',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
@@ -65,7 +65,7 @@ export const intentListResult = {
       id: '12',
       code: 'c-crrm-channel5g-auto',
       status: 'revertscheduled',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'revertscheduled',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
@@ -103,7 +103,7 @@ export const intentListResult = {
       id: '13',
       code: 'c-txpower-same',
       status: 'paused',
-      status_reason: 'revert-failed',
+      statusReason: 'revert-failed',
       displayStatus: 'paused-revert-failed',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:06:02.839Z',
@@ -134,7 +134,7 @@ export const intentListResult = {
       id: '14',
       code: 'c-bandbalancing-enable',
       status: 'new',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'new',
       createdAt: '2023-06-12T07:05:14.900Z',
       updatedAt: '2023-07-06T06:05:21.004Z',
@@ -169,7 +169,7 @@ export const intentListResult = {
       id: '16',
       code: 'c-probeflex-24g',
       status: 'new',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'new',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
@@ -196,7 +196,7 @@ export const intentListResult = {
       id: '17',
       code: 'c-probeflex-5g',
       status: 'new',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'new',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
@@ -223,7 +223,7 @@ export const intentListResult = {
       id: '18',
       code: 'c-probeflex-6g',
       status: 'new',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'new',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
@@ -253,7 +253,7 @@ const intentStatus = {
   id: '1',
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
-  status_reason: '',
+  statusReason: '',
   displayStatus: 'applied',
   createdAt: '2023-06-13T07:05:08.638Z',
   updatedAt: '2023-06-16T06:05:02.839Z',
@@ -283,43 +283,43 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'new',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'new'
     },
     {
       ...intentStatus,
       status: 'scheduled',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'scheduled'
     },
     {
       ...intentStatus,
       status: 'scheduled',
-      status_reason: 'one-click',
+      statusReason: 'one-click',
       displayStatus: 'scheduled-one-click'
     },
     {
       ...intentStatus,
       status: 'applyscheduled',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'applyscheduled'
     },
     {
       ...intentStatus,
       status: 'applyscheduleinprogress',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'applyscheduleinprogress'
     },
     {
       ...intentStatus,
       status: 'active',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'active'
     },
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'apply-failed',
+      statusReason: 'apply-failed',
       displayStatus: 'paused-apply-failed',
       metadata: {
         error: {
@@ -330,7 +330,7 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'revertscheduled',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'revertscheduled',
       metadata: {
         scheduledAt: '2023-06-17T00:00:00.000Z'
@@ -339,13 +339,13 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'revertscheduleinprogress',
-      status_reason: '',
+      statusReason: '',
       displayStatus: 'revertscheduleinprogress'
     },
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'revert-failed',
+      statusReason: 'revert-failed',
       displayStatus: 'paused-revert-failed',
       metadata: {
         error: {
@@ -356,68 +356,68 @@ export const intentListWithAllStatus = {
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'reverted',
+      statusReason: 'reverted',
       displayStatus: 'paused-reverted'
     },
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'from-inactive',
+      statusReason: 'from-inactive',
       displayStatus: 'paused-from-inactive'
     },
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'from-active',
+      statusReason: 'from-active',
       displayStatus: 'paused-from-active'
     },
     {
       ...intentStatus,
       status: 'paused',
-      status_reason: 'by-default',
+      statusReason: 'by-default',
       displayStatus: 'paused-by-default'
     },
     {
       ...intentStatus,
       status: 'na',
-      status_reason: 'conflicting-configuration',
+      statusReason: 'conflicting-configuration',
       displayStatus: 'na-conflicting-configuration'
     },
     {
       ...intentStatus,
       status: 'na',
-      status_reason: 'no-aps',
+      statusReason: 'no-aps',
       displayStatus: 'na-no-aps'
     },
     {
       ...intentStatus,
       status: 'na',
-      status_reason: 'not-enough-license',
+      statusReason: 'not-enough-license',
       displayStatus: 'na-not-enough-license'
     },
     {
       ...intentStatus,
       status: 'na',
-      status_reason: 'not-enough-data',
+      statusReason: 'not-enough-data',
       displayStatus: 'na-not-enough-data'
     },
     {
       ...intentStatus,
       status: 'na',
-      status_reason: 'verified',
+      statusReason: 'verified',
       displayStatus: 'na-verified'
     },
     {
       ...intentStatus,
       status: 'na',
-      status_reason: 'waiting-for-etl',
+      statusReason: 'waiting-for-etl',
       displayStatus: 'na-waiting-for-etl'
     },
     {
       //Simulate a displayStatus not defined in UI config and should be handled by UI without errors
       ...intentStatus,
       status: 'na',
-      status_reason: 'not-defined',
+      statusReason: 'not-defined',
       displayStatus: 'na-not-defined'
     }
   ]
