@@ -5,19 +5,23 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelL3AclPoliciesMutation,
   useGetEnhancedL3AclProfileListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
   AclOptionType,
   L3AclPolicy,
   Network,
-  useTableQuery
+  useTableQuery,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
 import { AddModeProps }                    from '../../AccessControlForm'
@@ -38,6 +42,8 @@ const defaultPayload = {
 }
 
 const Layer3Component = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const params = useParams()
   const [addModeStatus, setAddModeStatus] = useState(
@@ -51,8 +57,10 @@ const Layer3Component = () => {
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
-  const networkTableQuery = useTableQuery<Network>({
-    useQuery: useNetworkListQuery,
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+  const networkTableQuery = useTableQuery<Network|WifiNetwork>({
+    useQuery: isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery,
     defaultPayload: {
       ...defaultNetworkPayload,
       filters: {
@@ -69,7 +77,8 @@ const Layer3Component = () => {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedL3AclProfileListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   useEffect(() => {
@@ -103,6 +112,7 @@ const Layer3Component = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
+    scopeKey: [WifiScopes.CREATE],
     label: $t({ defaultMessage: 'Add Layer 3 Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_LAYER3_POLICY,
     onClick: () => {
@@ -116,12 +126,17 @@ const Layer3Component = () => {
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params,
+        payload: selectedRows.map(row => row.id),
+        enableRbac
+      }).then(callback)
     )
   }
 
   const rowActions: TableProps<L3AclPolicy>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -129,6 +144,7 @@ const Layer3Component = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -153,7 +169,10 @@ const Layer3Component = () => {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={
+          // eslint-disable-next-line max-len
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+        }
       />
     </Form>
   </Loader>

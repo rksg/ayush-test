@@ -63,8 +63,7 @@ export const ClusterInterfaceSettings = () => {
     <Typography.Text>
       {$t({ defaultMessage: `Cluster interface will be used as a communication channel 
       between SmartEdges. Please select the cluster interfaces for all SmartEdges in 
-      this cluster ({clusterName}):` },
-      { clusterName: clusterInfo?.name })}
+      this cluster:` })}
     </Typography.Text>
   </Space>
 

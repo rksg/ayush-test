@@ -1,9 +1,12 @@
-import { Features }            from '@acx-ui/feature-toggle'
-import { EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { TenantLink }          from '@acx-ui/react-router-dom'
-import { getIntl }             from '@acx-ui/utils'
+import { transform } from 'lodash'
+
+import { Features }                                                                            from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                          from '@acx-ui/react-router-dom'
+import { getIntl }                                                                             from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 
 export const useGetNetworkTunnelInfo = () => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -35,4 +38,28 @@ export const useGetNetworkTunnelInfo = () => {
     return $t({ defaultMessage: 'Tunneled ({clusterName})' },
       { clusterName })
   }
+}
+
+export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) => {
+  const payload = {
+    name: formData.name,
+    venueId: formData.venueId,
+    edgeClusterId: formData.edgeClusterId,
+    networks: transform(formData.activatedNetworks, (result, value, key) => {
+      result[key] = value.map(v => v.id)
+    }, {} as EdgeMvSdLanNetworks),
+    tunnelProfileId: formData.tunnelProfileId,
+    isGuestTunnelEnabled: formData.isGuestTunnelEnabled
+  } as EdgeMvSdLanExtended
+
+  if (formData.isGuestTunnelEnabled) {
+    payload.guestEdgeClusterId = formData.guestEdgeClusterId
+    payload.guestEdgeClusterVenueId = formData.guestEdgeClusterVenueId
+    payload.guestTunnelProfileId = formData.guestTunnelProfileId
+    payload.guestNetworks = transform(formData.activatedGuestNetworks, (result, value, key) => {
+      result[key] = value.map(v => v.id)
+    }, {} as EdgeMvSdLanNetworks)
+  }
+
+  return payload
 }

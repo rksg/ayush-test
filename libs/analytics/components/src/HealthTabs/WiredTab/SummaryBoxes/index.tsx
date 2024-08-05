@@ -43,7 +43,7 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
     {
       type: 'green',
       values: [{
-        title: defineMessage({ defaultMessage: 'DHCP' }),
+        title: defineMessage({ defaultMessage: 'DHCP Success' }),
         value: formatValue(
           summaryData?.switchDHCP.successCount,
           summaryData?.switchDHCP.attemptCount,
@@ -54,10 +54,10 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
     {
       type: 'red',
       values: [{
-        title: defineMessage({ defaultMessage: 'Uplink Usage' }),
+        title: defineMessage({ defaultMessage: 'Congested Uplink Ports' }),
         value: formatValue(
           summaryData?.congestedPortCount,
-          summaryData?.portCount,
+          summaryData?.uplinkPortCount,
           noSwitches)
       }],
       onClick: () => { moreDetails('congestion') }

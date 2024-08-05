@@ -6,7 +6,7 @@ import {
   AupIcon,
   DataPromptIcon,
   DisplayMessageIcon,
-  DpskActionIcon
+  DpskActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -14,10 +14,11 @@ import {
   AupActionContext,
   DataPromptActionContext,
   DisplayMessageActionContext,
-  UserSelectionSplitContext,
+  UIConfiguration,
   WorkflowStep
 } from '../../types'
 
+export const WorkflowStepsEmptyCount = 2
 
 export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
@@ -80,7 +81,7 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.AUP]: AupIcon,
   [ActionType.DATA_PROMPT]: DataPromptIcon,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon,
-  [ActionType.DPSK]: DpskActionIcon
+  [ActionType.DPSK]: DpskActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
@@ -137,13 +138,6 @@ export const DataPromptActionDefaultValue: {
   continueButtonText: defineMessage({ defaultMessage: 'Continue >' })
 }
 
-export const UserSelectionActionDefaultValue: {
-  [key in keyof UserSelectionSplitContext]: MessageDescriptor | string
-} = {
-  title: defineMessage({ defaultMessage: 'DefaultUserSplitTitle' }),
-  messageHtml: defineMessage({ defaultMessage: 'Default HTML template.' })
-}
-
 export const DisplayMessageActionDefaultValue: {
   [key in keyof DisplayMessageActionContext]: MessageDescriptor | string | boolean
 } = {
@@ -162,3 +156,22 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.DPSK]: {}
 }
 /* eslint-enable max-len */
+
+// TODO:
+// - Remove `defaultConfiguration` in PortalDesign.tsx
+export const DefaultUIConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    titleFontColor: 'var(--acx-neutrals-100)',
+    backgroundColor: 'var(--acx-primary-white)',
+    bodyFontColor: 'var(--acx-neutrals-100)',
+
+    buttonFontColor: 'var(--acx-primary-white)',
+    buttonColor: 'var(--acx-accents-orange-50)'
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16,
+    bodyFontSize: 14
+  }
+}

@@ -220,7 +220,7 @@ describe('Test useSwitchActions', () => {
     const { doRetryFirmwareUpdate } = result.current
     const callback = jest.fn()
     act(() => {
-      doRetryFirmwareUpdate('switch-id', tenantId, callback)
+      doRetryFirmwareUpdate({ switchId: 'switch-id', tenantId: tenantId }, callback)
     })
 
     await waitFor(async () => expect(callback).toBeCalled())
@@ -296,7 +296,7 @@ describe('Handle error occurred', () => {
     const { doRetryFirmwareUpdate } = result.current
     const callback = jest.fn()
     act(() => {
-      doRetryFirmwareUpdate('switch-id', tenantId, callback)
+      doRetryFirmwareUpdate({ switchId: 'switch-id', tenantId: tenantId }, callback)
     })
 
     expect(callback).not.toBeCalled()

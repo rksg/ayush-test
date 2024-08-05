@@ -5,6 +5,7 @@ import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy, Tooltip }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
 import { usePathBasedOnConfigTemplate }               from '@acx-ui/rc/components'
 import { useLazyApListQuery }                         from '@acx-ui/rc/services'
@@ -38,6 +39,8 @@ export function NetworkingTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { tenantId, venueId } = useParams()
 
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
   const { venueApCaps } = useContext(VenueUtilityContext)
@@ -62,7 +65,11 @@ export function NetworkingTab () {
       }
 
       if (getApList) {
-        getApList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
+        getApList({
+          params: { tenantId },
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }, true).unwrap().then((res) => {
           const { data } = res || {}
           setHasCellularAps(!!(data?.length > 0))
         })

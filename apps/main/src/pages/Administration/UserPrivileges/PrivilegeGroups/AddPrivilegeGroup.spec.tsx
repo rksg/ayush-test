@@ -13,6 +13,8 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
+import { fakedPrivilegeGroupList } from '../__tests__/fixtures'
+
 import { AddPrivilegeGroup } from './AddPrivilegeGroup'
 
 const mockedUsedNavigate = jest.fn()
@@ -212,6 +214,9 @@ describe('Add Privilege Group', () => {
     })
     mspServices.useGetMspEcWithVenuesListQuery = jest.fn().mockImplementation(() => {
       return { data: customerList }
+    })
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
     })
     mockServer.use(
       rest.post(

@@ -2,7 +2,17 @@
 
 exports[`ProgressBar should match snapshot 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -12,7 +22,7 @@ exports[`ProgressBar should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-steps-outer"
@@ -41,7 +51,17 @@ exports[`ProgressBar should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -51,7 +71,7 @@ exports[`ProgressBar should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-steps-outer"
@@ -80,7 +100,17 @@ exports[`ProgressBar should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -90,7 +120,7 @@ exports[`ProgressBar should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-steps-outer"
@@ -119,7 +149,17 @@ exports[`ProgressBar should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -129,7 +169,7 @@ exports[`ProgressBar should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-steps ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-steps-outer"
@@ -158,7 +198,17 @@ exports[`ProgressBar should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -168,7 +218,7 @@ exports[`ProgressBar should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-steps ant-progress-status-success ant-progress-default c0"
       >
         <div
           class="ant-progress-steps-outer"
@@ -202,7 +252,17 @@ exports[`ProgressBar should match snapshot 1`] = `
 
 exports[`ProgressBarV2 should match snapshot 1`] = `
 <DocumentFragment>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -212,7 +272,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-outer"
@@ -230,7 +290,17 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -240,7 +310,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-outer"
@@ -258,7 +328,17 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -268,7 +348,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-outer"
@@ -286,7 +366,17 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -296,7 +386,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default c0"
       >
         <div
           class="ant-progress-outer"
@@ -314,7 +404,17 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       </div>
     </div>
   </div>
-  <div
+  .c0 .ant-progress-steps-outer .ant-progress-steps-item {
+  width: 6px !important;
+  border-radius: 2px;
+}
+
+.c0 .ant-progress-inner,
+.c0 .ant-progress-bg {
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+<div
     style="width: 100px;"
   >
     <div>
@@ -324,7 +424,7 @@ exports[`ProgressBarV2 should match snapshot 1`] = `
       class="ant-progress-wrapper"
     >
       <div
-        class="ant-progress ant-progress-line ant-progress-status-success ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
+        class="ant-progress ant-progress-line ant-progress-status-success ant-progress-default c0"
       >
         <div
           class="ant-progress-outer"

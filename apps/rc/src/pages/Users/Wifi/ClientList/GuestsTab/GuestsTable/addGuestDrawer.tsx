@@ -10,7 +10,8 @@ import {
   InputNumber,
   Radio,
   Row,
-  Select
+  Select,
+  RadioChangeEvent
 } from 'antd'
 import { HumanizeDuration, HumanizeDurationLanguage } from 'humanize-duration-ts'
 import _                                              from 'lodash'
@@ -18,12 +19,14 @@ import moment, { LocaleSpecifier }                    from 'moment-timezone'
 import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
-import { Button, Drawer, cssStr, showActionModal } from '@acx-ui/components'
-import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
-import { PhoneInput }                              from '@acx-ui/rc/components'
+import { Button, Drawer, cssStr, showActionModal, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
+import { PhoneInput }                                             from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
-  useAddGuestPassMutation
+  useAddGuestPassMutation,
+  useValidateGuestPasswordMutation
 } from '@acx-ui/rc/services'
 import {
   phoneRegExp,
@@ -36,7 +39,8 @@ import {
   PdfGeneratorService,
   Guest,
   LangCode,
-  trailingNorLeadingSpaces
+  trailingNorLeadingSpaces,
+  guestPasswordValidator
 } from '@acx-ui/rc/utils'
 import { GuestErrorRes } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
@@ -46,7 +50,8 @@ import {
   EnvelopClosedSolidIcon,
   PrintIcon,
   CheckboxLabel,
-  FooterDiv
+  FooterDiv,
+  FullWidthSpace
 } from '../styledComponents'
 
 interface AddGuestProps {
@@ -245,20 +250,22 @@ export type GuestResponse = {
   requestId: string,
   response: Guest | { data: Guest[], downloadUrl: string } }
 
-export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
+export function GuestFields ({ withBasicFields = true, from }: { withBasicFields?: boolean, from?: string }) {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
   // Don't disable phone and email if withBasicFields == false
   const [phoneNumberError, setPhoneNumberError] = useState(withBasicFields)
+  const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
   const [emailError, setEmailError] = useState(withBasicFields)
 
   const timeTypeValidPassOptions = [
     { label: $t({ defaultMessage: 'Hours' }), value: 'Hour' },
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
-
+  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
+  const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
   const getAllowedNetworkList = async () => {
     const list = await (getNetworkList({ params, payload }, true).unwrap())
@@ -321,6 +328,10 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
 
   const onUnitChange = (value: string) => {
     form.setFields([{ name: ['expiration', 'duration'], value: value === 'Day' ? 7 : 24, errors: [] }])
+  }
+
+  const guestPasswordOptionChange = (event: RadioChangeEvent) => {
+    setGuestPasswordOption(event.target.value)
   }
 
   const durationValidator = (value: number) => {
@@ -444,6 +455,60 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         options={numberOfDevicesOptions}
       />}
     />
+    {/* Only display Guest Pass when render from AddGuestDrawer*/}
+    {isGuestManualPasswordEnabled && (from === 'add') &&
+    <Form.Item
+      label={$t({ defaultMessage: 'Guest Pass' })}
+      valuePropName={'checked'}
+      initialValue={'auto'}
+    >
+      <Radio.Group
+        style={{ width: '100%' }}
+        onChange={guestPasswordOptionChange}
+        value={guestPasswordOption}>
+        <FullWidthSpace
+          direction='vertical'
+          style={{ width: '100%' }}>
+          <Radio value='auto' data-testid='auto-radio'>Auto generated</Radio>
+          <Radio value='manual' style={{ width: '100%' }} data-testid='manual-radio'>
+            <Row>
+              <Col span={3}>
+                Manual
+              </Col>
+              <Col span={21}>
+                { (guestPasswordOption === 'manual') ? (
+                  <Form.Item
+                    name={'password'}
+                    style={{ width: '100%' }}
+                    rules={[
+                      { required: true },
+                      { min: 6 },
+                      { max: 16 },
+                      { validator: (_, value) => guestPasswordValidator(value) },
+                      { validator: async (_, value: string) => {
+                        // Add length limit otherwise it will still trigger validation and get 400 from backend.
+                        if(value && value.length >= 6 && value.length <= 16) {
+                          const formValues = form.getFieldsValue()
+                          const payload = { action: 'passwordValidation', password: value }
+                          try{
+                            await validateGuestPassword({ params: { ...params, networkId: formValues.wifiNetworkId }, payload }).unwrap()
+                          } catch(e) {
+                            return Promise.reject($t({ defaultMessage: 'Passwords on the same network should be unique.' }))
+                          }
+                          return Promise.resolve()
+                        }
+                      } }
+                    ]}
+                    children={<PasswordInput data-testid='manual-password-input' />}
+                  />
+                ) : <></> }
+              </Col>
+            </Row>
+          </Radio>
+        </FullWidthSpace>
+      </Radio.Group>
+    </Form.Item>
+    }
     <Form.Item
       name={'deliveryMethods'}
       initialValue={['PRINT']}
@@ -543,7 +608,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-          <GuestFields />
+          <GuestFields from={'add'} />
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}

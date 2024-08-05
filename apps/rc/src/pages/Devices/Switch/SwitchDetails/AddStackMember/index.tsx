@@ -127,7 +127,12 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: switchData } =
-    useGetSwitchQuery({ params: { tenantId, switchId }, enableRbac: isSwitchRbacEnabled })
+    useGetSwitchQuery({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetail?.venueId
+    })
 
   const columns: TableProps<SwitchTable>['columns'] = [
     {

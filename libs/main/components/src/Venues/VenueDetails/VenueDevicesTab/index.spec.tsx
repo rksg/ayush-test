@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }                                 from '@acx-ui/rc/components'
 import { venueApi, apApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
@@ -117,7 +117,8 @@ const meshData = {
       uplink: [],
       downlink: []
     }
-  ] }
+  ]
+}
 
 describe('VenueWifi', () => {
   beforeEach(() => {
@@ -163,7 +164,7 @@ describe('VenueWifi', () => {
   })
 
   it('should render Ap Compatibilities Note correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
     render(<Provider><VenueDevicesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })

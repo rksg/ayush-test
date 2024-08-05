@@ -41,7 +41,7 @@ interface ReportProps {
 
 type CommonUserProfile = Pick<UserProfileRA,
   'firstName' | 'lastName' | 'email' | 'userId' | 'selectedTenant'>
-  & Pick<UserProfileR1, 'externalId' | 'tenantId' | 'roles'>
+  & Pick<UserProfileR1, 'externalId' | 'tenantId' | 'roles' | 'scopes'>
 
 export function convertDateTimeToSqlFormat (dateTime: string): string {
   return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
@@ -227,6 +227,12 @@ export const getRLSClauseForSA = (
   }
 }
 
+const scopeRegexMapping = {
+  both: /^((switch|wifi)-(c|d|u))$/,
+  ap: /^((wifi)-(c|d|u))$/,
+  switch: /^((switch)-(c|d|u))$/
+}
+
 export function EmbeddedReport (props: ReportProps) {
   const { reportName, rlsClause, hideHeader } = props
 
@@ -243,12 +249,12 @@ export function EmbeddedReport (props: ReportProps) {
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
 
   const {
-    firstName, lastName, email,  // Common
-    externalId, tenantId, roles, // R1
-    userId, selectedTenant       // RA
+    firstName, lastName, email,           // Common
+    externalId, tenantId, roles, scopes,  // R1
+    userId, selectedTenant                // RA
   } = isRA
     ? getUserProfileRA() as unknown as CommonUserProfile
-    : getUserProfileR1().profile as unknown as CommonUserProfile
+    : getUserProfileR1()?.profile as unknown as CommonUserProfile || {}
 
   const defaultLocale = 'en'
   const localeContext = useLocaleContext()
@@ -273,7 +279,7 @@ export function EmbeddedReport (props: ReportProps) {
       : window.location.origin // Production
 
   /**
-   * Show expired session modal if session is expired, triggered from sueprset
+   * Show expired session modal if session is expired, triggered from Superset
    */
   useEffect(() => {
     const eventHandler = (event: MessageEvent) => {
@@ -371,6 +377,20 @@ export function EmbeddedReport (props: ReportProps) {
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
+  const isR1RoleReadOnly = () => {
+    const { isApReport, isSwitchReport } = getReportType(reportName)
+    const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
+
+    if (scopes) {
+      const hasWriteScope = scopes.some(scope => regex.test(scope))
+      return !hasWriteScope
+    }
+
+    const isAdmin = roles.includes(RolesEnumR1.PRIME_ADMIN) ||
+      roles.includes(RolesEnumR1.ADMINISTRATOR)
+    return !isAdmin
+  }
+
   useEffect(() => {
     if (!dashboardEmbeddedId || (isRA && systems.status === 'pending')) return
 
@@ -391,11 +411,11 @@ export function EmbeddedReport (props: ReportProps) {
       },
       // debug: true, // Enable this for debugging
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
-      // username: isRA ? userId : externalId,
-      // isReadOnly: isRA
-      //   ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
-      //       || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
-      //   : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
+      username: isRA ? userId : externalId,
+      isReadOnly: isRA
+        ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
+            || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
+        : isR1RoleReadOnly(),
       locale // i18n locale from R1
     })
     embeddedObj.then(async (embObj) => {

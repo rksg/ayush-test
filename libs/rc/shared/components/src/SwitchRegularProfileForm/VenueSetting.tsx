@@ -24,7 +24,7 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 import * as UI                             from './styledComponents'
@@ -214,7 +214,7 @@ export function VenueSetting () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'checkbox',
               ...rowSelection
             }}

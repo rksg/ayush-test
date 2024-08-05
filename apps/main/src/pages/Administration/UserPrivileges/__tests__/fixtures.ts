@@ -400,3 +400,33 @@ export const fakedPrivilegeGroupList =
     }
   ]
 
+export const fakedCustomRoleLsit = [
+  {
+    description: 'Admin Role',
+    id: '1765e98c7b9446e2a5bdd4720e0e8911',
+    name: 'ADMIN',
+    type: 'System'
+  },
+  {
+    description: 'Prime Admin Role',
+    id: '1765e98c7b9446e2a5bdd4720e0e8912',
+    name: 'PRIME_ADMIN',
+    type: 'System'
+  },
+  {
+    description: 'Read only Role',
+    id: '1765e98c7b9446e2a5bdd4720e0e8913',
+    name: 'READ_ONLY',
+    type: 'System'
+  },
+  {
+    description: 'this is new custom role for wi-fi',
+    id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
+    name: 'new wi-fi custom role',
+    type: 'Custom',
+    scope: [
+      'wifi-r',
+      'wifi-u'
+    ]
+  }
+]

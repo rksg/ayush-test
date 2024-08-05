@@ -21,7 +21,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Drag }                  from '@acx-ui/icons'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Drag }                   from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
   useGetEnhancedL3AclProfileListQuery,
@@ -43,9 +44,10 @@ import {
   subnetMaskIpRegExp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  layer3ProtocolLabelMapping, TableResult, L3AclPolicy
+  layer3ProtocolLabelMapping, TableResult, L3AclPolicy, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
 
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
@@ -55,7 +57,7 @@ import { useScrollLock }                                                        
 const { useWatch } = Form
 const { Option } = Select
 
-export interface Layer3DrawerProps {
+interface Layer3DrawerProps {
   inputName?: string[],
   onlyViewMode?: {
     id: string,
@@ -127,6 +129,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -155,6 +158,10 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [contentForm] = Form.useForm()
   const [drawerForm] = Form.useForm()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const AnyText = $t({ defaultMessage: 'Any' })
@@ -182,14 +189,16 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useTemplateMutationFn: useUpdateL3AclPolicyTemplateMutation
   })
 
-  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(editMode.isEdit)
+  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(
+    editMode.isEdit, resolvedRbacEnabled
+  )
 
   const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetL3AclPolicyQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
-    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
+    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId },
+    enableRbac: resolvedRbacEnabled
   })
 
   const isViewMode = () => {
@@ -511,7 +520,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       if (!edit) {
         const l3AclRes: CommonResult = await createL3AclPolicy({
           params: params,
-          payload: convertToPayload()
+          payload: convertToPayload(),
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
         // let responseData = l3AclRes.response as {
         //   [key: string]: string
@@ -523,7 +533,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       } else {
         await updateL3AclPolicy({
           params: { ...params, l3AclPolicyId: queryPolicyId },
-          payload: convertToPayload(queryPolicyId)
+          payload: convertToPayload(queryPolicyId),
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {
@@ -1063,31 +1074,38 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || !l3AclPolicyId}
-          onClick={() => {
-            if (l3AclPolicyId) {
-              setDrawerVisible(true)
-              setQueryPolicyId(l3AclPolicyId)
-              setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
+        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          <Button type='link'
+            disabled={visible || !l3AclPolicyId}
+            onClick={() => {
+              if (l3AclPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(l3AclPolicyId)
+                setLocalEdiMode({ id: l3AclPolicyId, isEdit: true })
+              }
             }
-          }
-          }>
-          {$t({ defaultMessage: 'Edit Details' })}
-        </Button>
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
       </AclGridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
-          onClick={() => {
-            setDrawerVisible(true)
-            setQueryPolicyId('')
-          }}>
-          {$t({ defaultMessage: 'Add New' })}
-        </Button>
+        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+          <Button type='link'
+            disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
       </AclGridCol>
     </GridRow>
   }
+
+  // eslint-disable-next-line max-len
+  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>
@@ -1123,14 +1141,15 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   )
 }
 
-const useGetL3AclPolicyListInstance = (isEdit: boolean): {
+const useGetL3AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   layer3SelectOptions: JSX.Element[], layer3List: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>({
     useQueryFn: useGetEnhancedL3AclProfileListQuery,
     useTemplateQueryFn: useGetL3AclPolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {

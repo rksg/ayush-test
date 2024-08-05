@@ -441,6 +441,7 @@ export function Subscriptions () {
           columns={columns}
           actions={filterByAccess(actions)}
           dataSource={subscriptionData}
+          stickyHeaders={false}
           rowKey='id'
         />
         {showDialog && <SubscriptionUsageReportDialog

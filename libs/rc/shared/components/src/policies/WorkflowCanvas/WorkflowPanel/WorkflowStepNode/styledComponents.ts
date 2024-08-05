@@ -1,6 +1,10 @@
-import styled from 'styled-components/macro'
+import { Typography }            from 'antd'
+import { Popover as AntPopover } from 'antd'
+import styled                    from 'styled-components/macro'
+
 
 export const StepNode = styled.div<{ selected?: boolean }>`
+  background-color: var(--acx-primary-white);
   font-size: 12px;
   width: 220px;
   height: 64px;
@@ -71,10 +75,6 @@ export const FlagIcon = styled.div`
     width: 100%;
     height: 100%;
   }
-  path {
-    stroke: white;
-    fill: white;
-  }
 `
 
 export const EditButton = styled.div`
@@ -141,4 +141,49 @@ export const PlusButton = styled.div`
       background-color: var(--acx-accents-orange-50);
     }
   }
+`
+
+export const EditorToolbarIcon = styled.div`
+  display: flex;
+  align-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  path {
+    stroke: var(--acx-primary-white) !important;
+  }
+
+  :hover path {
+    stroke: var(--acx-accents-orange-50) !important;
+  }
+`
+
+// this styles the label of the popover
+export const Popover = styled(AntPopover)`
+    color: var(--acx-accents-blue-50);
+    text-decoration: dotted underline;
+    :after {
+      content: '';
+      display: block;
+    }
+  `
+export const Spacer = styled.div`
+  height: var(--acx-content-vertical-space);
+`
+
+export const PopoverTitle = styled(Typography.Text)`
+  color: var(--acx-neutrals-40);
+  font-size: var(--acx-body-4-font-size);
+`
+
+export const PopoverContent = styled(Typography.Text)`
+  color: var(--acx-primary-white);
+  font-size: var(--acx-body-3-font-size);
+  padding-bottom: 20px;
 `

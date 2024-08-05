@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+import { SwitchFirmwareModelGroup } from '../../types'
 const MAJOR = 'major'
 const MINOR = 'minor'
 const BUILD = 'build'
@@ -44,6 +45,23 @@ export const getStackUnitsMinLimitation = (
       return 12
     }
     return (checkVersionAtLeast09010h(firmwareVersion) ? 8 : 4)
+  }
+}
+
+export const getStackUnitsMinLimitationV1002 = (
+  switchModel: string,
+  currentFirmware: string): number => {
+
+  if (switchModel?.includes('ICX8200')) {
+    return checkVersionAtLeast10010b(currentFirmware) ? 12 : 4
+  } else if (switchModel?.includes('ICX7150')) {
+    return (checkVersionAtLeast09010h(currentFirmware) ? 4 : 2)
+  } else { // 7550, 7650, 7850
+    if (checkVersionAtLeast10010c(currentFirmware)) {
+      // For the switch's own firmware, this field contains the value '10010'.
+      return 12
+    }
+    return (checkVersionAtLeast09010h(currentFirmware) ? 8 : 4)
   }
 }
 
@@ -101,6 +119,20 @@ export const convertSwitchVersionFormat = (version: string) => {
     return newVersionGroup.join('')
   }
   return version
+}
+
+export const getSwitchModelGroup = (model: string): SwitchFirmwareModelGroup => {
+  const modelLowerCase = model.toLowerCase()
+  const prefixICX7X = ['ICX75', 'ICX76', 'ICX78']
+  if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX71.toLowerCase())) {
+    return SwitchFirmwareModelGroup.ICX71
+  } else if (prefixICX7X.some(prefix => modelLowerCase.startsWith(prefix.toLowerCase()))) {
+    return SwitchFirmwareModelGroup.ICX7X
+  } else if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX82.toLowerCase())) {
+    return SwitchFirmwareModelGroup.ICX82
+  } else {
+    return SwitchFirmwareModelGroup.ICX7X // Others
+  }
 }
 
 type VersionMap = { [key: string]: string }

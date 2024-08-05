@@ -9,7 +9,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { SpaceWrapper }               from '@acx-ui/rc/components'
@@ -57,16 +56,7 @@ const PendingActivationsTable = () => {
       width: 220,
       key: 'orderAcxRegistrationCode',
       render: function (_, row) {
-        return row.isChild ? '' : <Button
-          type='link'
-          onClick={() => {
-            const licenseUrl = get('MANAGE_LICENSES')
-            const support = new URL(licenseUrl).hostname
-            const urlSupportActivation =
-                  `http://${support}/register_code/${row.orderAcxRegistrationCode}`
-            window.open(urlSupportActivation, '_blank')
-          }}
-        >{row.orderAcxRegistrationCode}</Button>
+        return row.isChild ? '' : row.orderAcxRegistrationCode
       }
     },
     {
@@ -145,6 +135,7 @@ const PendingActivationsTable = () => {
         settingsId='pending-activation-table'
         columns={columns}
         dataSource={subscriptionData}
+        stickyHeaders={false}
         rowKey='orderId'
       />
       {drawerActivateVisible && <ActivatePurchaseDrawer

@@ -5,22 +5,14 @@ import { useIntl }         from 'react-intl'
 
 import { Button } from '@acx-ui/components'
 import {
-  CloudpathDeploymentTypeEnum,
-  CloudpathServer,
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
   networkTypes
 } from '@acx-ui/rc/utils'
 
-import AaaCloudpathCloudDiagram       from '../assets/images/network-wizard-diagrams/aaa-cloudpath-cloud-deployment.png'
-import AaaCloudpathOnPremDiagram      from '../assets/images/network-wizard-diagrams/aaa-cloudpath-on-prem-deployment.png'
 import AaaProxyDiagram                from '../assets/images/network-wizard-diagrams/aaa-proxy.png'
 import AaaDiagram                     from '../assets/images/network-wizard-diagrams/aaa.png'
-import CaptiveCloudpathCloudDiagram   from '../assets/images/network-wizard-diagrams/captive-portal-cloudpath-cloud-deployment.png'
-import CaptiveCloudpathOnPremDiagram  from '../assets/images/network-wizard-diagrams/captive-portal-cloudpath-on-prem-deployment.png'
 import ClickThroughDiagram            from '../assets/images/network-wizard-diagrams/click-through.png'
-import DpskCloudpathCloudDiagram      from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-cloud-deployment.png'
-import DpskCloudpathOnPremDiagram     from '../assets/images/network-wizard-diagrams/dpsk-cloudpath-on-prem-deployment.png'
 import DpskUsingRadiusNonProxyDiagram from '../assets/images/network-wizard-diagrams/dpsk-using-radius-non-proxy.png'
 import DpskUsingRadiusDiagram         from '../assets/images/network-wizard-diagrams/dpsk-using-radius.png'
 import DpskDiagram                    from '../assets/images/network-wizard-diagrams/dpsk.png'
@@ -28,8 +20,6 @@ import GuestPassDiagram               from '../assets/images/network-wizard-diag
 import HostApprovalDiagram            from '../assets/images/network-wizard-diagrams/host-approval.png'
 import Hotspot20Diagram               from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
 import DefaultDiagram                 from '../assets/images/network-wizard-diagrams/none.png'
-import OpenCloudpathCloudDiagram      from '../assets/images/network-wizard-diagrams/open-cloudpath-cloud-deployment.png'
-import OpenCloudpathOnPremDiagram     from '../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
 import OpenDiagram                    from '../assets/images/network-wizard-diagrams/open.png'
 import PskDiagram                     from '../assets/images/network-wizard-diagrams/psk.png'
 import SelfSignInDiagram              from '../assets/images/network-wizard-diagrams/self-sign-in.png'
@@ -42,7 +32,6 @@ import { Diagram }                    from '../styledComponents'
 
 interface DiagramProps {
   type?: NetworkTypeEnum;
-  cloudpathType?: CloudpathServer['deploymentType'];
 }
 
 interface DefaultDiagramProps extends DiagramProps {
@@ -77,52 +66,23 @@ type NetworkDiagramProps = DefaultDiagramProps
   | AaaDiagramProps
   | CaptivePortalDiagramProps
 
-const CloudpathCloudDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
-  [NetworkTypeEnum.DPSK]: DpskCloudpathCloudDiagram,
-  [NetworkTypeEnum.OPEN]: OpenCloudpathCloudDiagram,
-  [NetworkTypeEnum.AAA]: AaaCloudpathCloudDiagram,
-  [NetworkTypeEnum.CAPTIVEPORTAL]: CaptiveCloudpathCloudDiagram
-}
-
-const CloudpathOnPremDiagramMap: Partial<Record<NetworkTypeEnum, string>> = {
-  [NetworkTypeEnum.DPSK]: DpskCloudpathOnPremDiagram,
-  [NetworkTypeEnum.OPEN]: OpenCloudpathOnPremDiagram,
-  [NetworkTypeEnum.AAA]: AaaCloudpathOnPremDiagram,
-  [NetworkTypeEnum.CAPTIVEPORTAL]: CaptiveCloudpathOnPremDiagram
-}
-
 function getDiagram (props: NetworkDiagramProps) {
-  let diagram = null
   switch (props.type) {
     case NetworkTypeEnum.DPSK:
-      diagram = getDPSKDiagram(props)
-      break
+      return getDPSKDiagram(props)
     case NetworkTypeEnum.PSK:
-      diagram = getPSKDiagram(props)
-      break
+      return getPSKDiagram(props)
     case NetworkTypeEnum.OPEN:
-      diagram = getOpenDiagram(props)
-      break
+      return getOpenDiagram(props)
     case NetworkTypeEnum.AAA:
-      diagram = getAAADiagram(props)
-      break
+      return getAAADiagram(props)
     case NetworkTypeEnum.HOTSPOT20:
-      diagram = Hotspot20Diagram
-      break
+      return Hotspot20Diagram
     case NetworkTypeEnum.CAPTIVEPORTAL:
-      diagram = getCaptivePortalDiagram(props)
-      break
+      return getCaptivePortalDiagram(props)
     default:
-      diagram = DefaultDiagram
+      return DefaultDiagram
   }
-
-  if (props.type && props?.cloudpathType) {
-    const isCloudDeployment = props.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
-    const cloudpathMap = isCloudDeployment ? CloudpathCloudDiagramMap : CloudpathOnPremDiagramMap
-    return cloudpathMap[props.type]
-  }
-
-  return diagram
 }
 
 function getDPSKDiagram (props:DpskDiagramProps) {
@@ -146,7 +106,6 @@ function getAAADiagram (props: AaaDiagramProps) {
 
 function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
   const type = props.networkPortalType as GuestNetworkTypeEnum
-  const isCloudDeployment = props.cloudpathType === CloudpathDeploymentTypeEnum.Cloud
 
   const CaptivePortalDiagramMap: Partial<Record<GuestNetworkTypeEnum, string>> = {
     [GuestNetworkTypeEnum.ClickThrough]: ClickThroughDiagram,
@@ -154,9 +113,7 @@ function getCaptivePortalDiagram (props: CaptivePortalDiagramProps) {
     [GuestNetworkTypeEnum.HostApproval]: HostApprovalDiagram,
     [GuestNetworkTypeEnum.GuestPass]: GuestPassDiagram,
     [GuestNetworkTypeEnum.WISPr]: props.wisprWithAlwaysAccept?
-      WISPrWithAlwaysAcceptDiagram : (props.wisprWithPsk ? WISPrWithPskDiagram : WISPrDiagram),
-    [GuestNetworkTypeEnum.Cloudpath]: isCloudDeployment ?
-      CaptiveCloudpathCloudDiagram : CaptiveCloudpathOnPremDiagram
+      WISPrWithAlwaysAcceptDiagram : (props.wisprWithPsk ? WISPrWithPskDiagram : WISPrDiagram)
   }
   if(type === GuestNetworkTypeEnum.Cloudpath){
     return getAAADiagram(props)
@@ -176,7 +133,7 @@ export function NetworkDiagram (props: NetworkDiagramProps) {
 
   const diagram = getDiagram({
     ...data,
-    ...{ showButtons, enableAaaAuthBtn, cloudpathType: undefined, enableMACAuth },
+    ...{ showButtons, enableAaaAuthBtn, enableMACAuth },
     ...props
   })
 
