@@ -948,6 +948,15 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEntitlementsCompliances: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsCompliances, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1060,7 +1069,8 @@ export const {
   useGetMspEcWithVenuesListQuery,
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
-  useGetMspUploadURLMutation
+  useGetMspUploadURLMutation,
+  useGetEntitlementsCompliancesMutation
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'
