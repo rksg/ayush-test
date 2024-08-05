@@ -16,33 +16,6 @@ class ResizeObserver {
   disconnect () {}
 }
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
-  useParams: () => ({
-    recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
-  })
-}))
-
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  useStepFormContext: () => {
-    return {
-      initialValues: {
-        status: 'applyscheduled',
-        sliceValue: '21_US_Beta_Samsung',
-        updatedAt: '2023-06-26T00:00:25.772Z',
-        crrmInterferingLinks: {
-          before: 1,
-          after: 0
-        }
-      },
-      form: {
-        getFieldValue: () => 'partial'
-      }
-    }
-  }
-}))
-
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -95,7 +68,7 @@ describe('AIDrivenRRM', () => {
     })).toBeVisible()
   }
 
-  it('should render correctly', renderAndStepsThruForm)
+  it('should render correctly', () => renderAndStepsThruForm())
 
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')

@@ -52,6 +52,7 @@ function useGraph (
     zoomScale={zoomScale}
   />}</AutoSizer></div>
   const beforeImage = <img
+    key={'crrm-graph-before-image'}
     src={summaryUrlBefore}
     alt='summary-before'
     width={'100%'}
@@ -65,6 +66,7 @@ function useGraph (
     zoomScale={zoomScale}
   />}</AutoSizer></div>
   const afterImage = <img
+    key={'crrm-graph-after-image'}
     src={summaryUrlAfter}
     alt='summary-after'
     width={'100%'}
