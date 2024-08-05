@@ -11,14 +11,14 @@ import { PopOver } from './PopOver'
 import * as UI     from './styledComponents'
 export interface LogoContentProps {
   value: UIConfiguration
-  onLogoChange: (v: string)=>void
+  onLogoChange: (v: string, f: RcFile)=>void
   onRatioChange: (v:number)=>void
   onDisabled: () => void
 }
 
 interface WidgetProps {
   value: UIConfiguration
-  onLogoChange: (v: string)=>void
+  onLogoChange: (v: string, f: RcFile)=>void
   onRatioChange: (v:number)=>void
   onDisabled: () => void
 }
@@ -27,7 +27,7 @@ function Widget (props: WidgetProps) {
   const { onLogoChange, onRatioChange, onDisabled, value } = props
   const maxRatio = 2.25
   const minRatio = 1
-  const currentRatio = value.uiStyleSchema.logoRatio
+  const currentRatio = value.uiStyleSchema.logoRatio ?? 1
   const showPlus = currentRatio < maxRatio
   const showMinus = currentRatio > minRatio
   return <div style={{ marginTop: -6 }}
@@ -39,7 +39,7 @@ function Widget (props: WidgetProps) {
       showUploadList={false}
       customRequest={async ({ file })=>{
         Utils.loadFile(file as RcFile, (url: string)=> {
-          onLogoChange(url)
+          onLogoChange(url, file as RcFile)
         })
       }}
     >
@@ -90,8 +90,8 @@ export function LogoContent (props: LogoContentProps) {
     <UI.Img
       src={value.logoImage ?? RuckusCloud}
       style={{
-        height: 105 * value.uiStyleSchema.logoRatio,
-        width: 156 * value.uiStyleSchema.logoRatio,
+        height: 105 * (value.uiStyleSchema.logoRatio ?? 1),
+        width: 156 * (value.uiStyleSchema.logoRatio ?? 1),
         cursor: cursor,
         outline: outline,
         maxHeight: '425',

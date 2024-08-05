@@ -15,7 +15,7 @@ import { EyeSlashSolid as UIEyeSlashSolid,
   TextPlus as UITextPlus,
   ConfigurationSolid as AntSettingOutlined,
   EyeOpenSolid,
-  TextColor
+  ListSolid
 }   from '@acx-ui/icons'
 
 
@@ -63,6 +63,7 @@ export const ModalStyle = createGlobalStyle`
 
   }
 `
+export const ListViewToggle = styled(ListSolid)
 
 export const CommonLabel = styled.div`
   padding: 10px 10px;
@@ -247,7 +248,11 @@ export const FontColorsOutlined = styled(UIBrushSolid)<{ $showColorPicker: boole
     }`}
 `
 // eslint-disable-next-line max-len
-export const ButtonFontColorOutlined = styled(TextColor)<{ $showColorPicker: boolean | undefined }>`
+export const ButtonFontColorOutlined = styled.div<{ $showColorPicker: boolean | undefined }>`
+font-weight: 600;
+font-family: var(--acx-neutral-brand-font)
+font-size: 18px;
+cursor: default;
 ${iconsEditStyle}
 ${props=>props.$showColorPicker?css`color: var(--acx-accents-orange-50);`
     :css`color: var(--acx-primary-black)`}

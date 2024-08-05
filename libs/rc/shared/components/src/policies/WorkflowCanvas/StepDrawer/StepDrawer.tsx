@@ -9,6 +9,8 @@ import { EyeOpenSolid }                                                         
 import {  useLazyGetActionByIdQuery }                                                                        from '@acx-ui/rc/services'
 import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
+import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
+
 import { useWorkflowStepActions } from './useWorkflowStepAction'
 import {
   AupSettings,
@@ -52,6 +54,7 @@ export default function StepDrawer (props: StepDrawerProps) {
   const [ formInstance ] = Form.useForm()
 
   const { createStepWithActionMutation: createStep, patchActionMutation } = useWorkflowStepActions()
+  const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const [actionData, setActionData] = useState<GenericActionData | undefined>()
   const [ getActionById, {
     isLoading: isActionLoading,
@@ -109,7 +112,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     }
   }
 
-  return (
+  return (<>
     <Drawer
       title={$t(ActionTypeTitle[actionType])}
       destroyOnClose
@@ -150,6 +153,7 @@ export default function StepDrawer (props: StepDrawerProps) {
             <Button
               type={'link'}
               icon={<EyeOpenSolid/>}
+              onClick={() => setIsPreviewOpen(true)}
             >
               {$t({ defaultMessage: 'Preview' })}
             </Button>
@@ -162,5 +166,16 @@ export default function StepDrawer (props: StepDrawerProps) {
         padding: '20px'
       }}
     />
-  )
+
+    {isPreviewOpen &&
+      <WorkflowActionPreviewModal
+        workflowId={policyId}
+        actionData={{
+          ...formInstance.getFieldsValue(),
+          actionType
+        }}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    }
+  </>)
 }

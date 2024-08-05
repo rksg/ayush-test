@@ -268,3 +268,4 @@ export {
   useRwgActions
 } from './useRwgActions'
 export * from './EnrollmentPortalLink'
+export * from './WorkflowActionPreviewModal'

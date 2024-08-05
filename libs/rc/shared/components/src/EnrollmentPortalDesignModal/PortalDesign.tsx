@@ -1,11 +1,12 @@
 import { forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { Form, Switch }                              from 'antd'
+import _                                             from 'lodash'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Loader }                                                       from '@acx-ui/components'
-import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation } from '@acx-ui/rc/services'
-import { UIConfiguration }                                              from '@acx-ui/rc/utils'
+import { Loader }                                                                                                                                               from '@acx-ui/components'
+import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation, useLazyGetUIConfigurationLogoImageQuery, useLazyGetUIConfigurationBackgroundImageQuery } from '@acx-ui/rc/services'
+import { DefaultUIConfiguration, UIConfiguration }                                                                                                              from '@acx-ui/rc/utils'
 
 
 import { BackgroundContent } from './BackgroundContent'
@@ -22,21 +23,6 @@ export interface PortalDesignProps {
   id: string
 }
 
-const defaultConfiguration : UIConfiguration = {
-  disablePoweredBy: false,
-  uiColorSchema: {
-    titleFontColor: '#000000',
-    backgroundColor: '#FFFFFF',
-    bodyFontColor: '#000000',
-    buttonFontColor: '#FFFFFF',
-    buttonColor: '#EC7100'
-  },
-  uiStyleSchema: {
-    logoRatio: 1,
-    titleFontSize: 16,
-    bodyFontSize: 14
-  }
-}
 
 enum PortalComponentEnum {
   logo = 'logo',
@@ -100,10 +86,10 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   })
   const [screen, setScreen] = useState('desk')
   const [showComponent, setShowComponent] = useState(false)
-  const original = useRef<UIConfiguration>(defaultConfiguration)
-  const [value, setValue] = useState<UIConfiguration>(defaultConfiguration)
+  const original = useRef<UIConfiguration>(DefaultUIConfiguration)
+  const [value, setValue] = useState<UIConfiguration>(DefaultUIConfiguration)
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
-    ['logo', value.logoImage !== undefined],
+    ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
     ['poweredBy', value.disablePoweredBy],
     ['wifi4eu', value.wifi4EUNetworkId !== undefined]
   ]))
@@ -111,7 +97,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const reset = () => {
     setValue(original.current!!)
     setDisplay(new Map([
-      ['logo', original.current!!.logoImage !== undefined],
+      ['logo', original.current!!.uiStyleSchema.logoImageFileName !== undefined],
       ['poweredBy', !(original.current!!.disablePoweredBy)],
       ['wifi4eu', original.current!!.wifi4EUNetworkId !== undefined]
     ]))
@@ -119,13 +105,42 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
 
   const configurationQuery = useGetUIConfigurationQuery({ params: { id: id } })
   const [updateConfiguration] = useUpdateUIConfigurationMutation()
+  const [getUIConfigLogoImage] = useLazyGetUIConfigurationLogoImageQuery()
+  const [getUIConfigBackgroundImage] = useLazyGetUIConfigurationBackgroundImageQuery()
+  const fetchImage = async (imageType: string) => {
+    if (imageType === 'logoImages')
+      return getUIConfigLogoImage({ params: { id: id } } ).unwrap()
+    else if (imageType === 'backgroundImages')
+      return getUIConfigBackgroundImage({ params: { id: id } } ).unwrap()
+    return Promise.resolve()
+  }
+
   useEffect(()=>{
     if (configurationQuery.isLoading) return
     if (configurationQuery.data) {
       original.current = configurationQuery.data
+      if(configurationQuery.data.uiStyleSchema.logoImageFileName) {
+        fetchImage('logoImages')
+          .then(res => {
+            if (res) {
+              original.current= { ...original.current, logoImage: res.fileUrl }
+              setValue(original.current)
+            }
+          })
+      }
+
+      if (configurationQuery.data.uiStyleSchema.backgroundImageName) {
+        fetchImage('backgroundImages')
+          .then(res => {
+            if (res) {
+              original.current= { ...original.current, backgroundImage: res.fileUrl }
+              setValue(original.current)
+            }
+          })
+      }
       setValue(configurationQuery.data)
       setDisplay(new Map([
-        ['logo', configurationQuery.data.logoImage !== undefined],
+        ['logo', configurationQuery.data.uiStyleSchema.logoImageFileName !== undefined],
         ['poweredBy', !(configurationQuery.data.disablePoweredBy)],
         ['wifi4eu', configurationQuery.data.wifi4EUNetworkId !== undefined]
       ]))
@@ -134,7 +149,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
 
   const handleSubmit = async () => {
     if (!value) return
-    const data: UIConfiguration = { ...value }
+    let data: UIConfiguration = { ...value }
     if (!display.get('wifi4eu')) {
       data.wifi4EUNetworkId = undefined
     }
@@ -142,15 +157,48 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
       data.logoImage = undefined
       data.uiStyleSchema = {
         ...data.uiStyleSchema,
-        logoRatio: 1
+        logoRatio: 1,
+        logoImageFileName: undefined
+      }
+    } else {
+      if (data.logoImage === original.current.logoImage) {
+        data.logoImage = undefined
+      } else if (!data.logoImage && original.current.uiStyleSchema.logoImageFileName) {
+        data.uiStyleSchema = {
+          ...data.uiStyleSchema,
+          logoRatio: 1,
+          logoImageFileName: undefined
+        }
       }
     }
+
+    if (data.backgroundImage === original.current.backgroundImage) {
+      data.backgroundImage = undefined
+    } else if (!data.backgroundImage && original.current.backgroundImage) {
+      data.backgroundImage = undefined
+    }
+
     if (!display.get('poweredBy')) {
       data.disablePoweredBy = true
     }
+    data.welcomeName = 'name'
+    data.welcomeTitle ='welcome'
+    data.uiColorSchema = {
+      ...data.uiColorSchema
+    }
+    const formData = new FormData()
+    // eslint-disable-next-line max-len
+    const blob = new Blob([JSON.stringify(_.omit(data, ['backgroundImage', 'logoImage']))], { type: 'application/json' })
+    formData.append('uiConfiguration', blob )
+    if (data.backgroundImage && data.backgroundImageFile) {
+      formData.append('backgroundImage', data.backgroundImageFile)
+    }
 
-    // console.log(data)
-    await updateConfiguration({ params: { id: id }, payload: data })
+    if (data.logoImage && data.logoFile) {
+      formData.append('logoImage', data.logoFile)
+    }
+
+    await updateConfiguration({ params: { id: id }, payload: formData })
       .unwrap()
       .catch((e)=> {
         // eslint-disable-next-line no-console
@@ -172,7 +220,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
         <UI.LayoutHeader>
           <div style={{ display: 'flex' }}>
             <div
-              style={{ flex: '0 0 345px' }}>
+              style={{ flex: '0 0 345px', paddingTop: 4 }}>
               <div style={{ fontSize: 16, color: 'var(--acx-primary-black)', fontWeight: 600 }}>
                 {$t({ defaultMessage: 'Portal Design' })}
               </div>
@@ -199,7 +247,12 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
             </div>
             <div
               style={{
-                flex: '0 0 513px', textAlign: 'right', verticalAlign: 'middle' ,paddingRight: 50 }}>
+                flex: '0 0 513px',
+                textAlign: 'right',
+                verticalAlign: 'middle',
+                paddingRight: 50,
+                paddingTop: 4
+              }}>
               {<div>
                 <UI.Button type='default' size='small'>
                   <PopOver overlayInnerStyle={{ minWidth: 260 }}
@@ -233,9 +286,10 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 backgroundColor: color
               } })
             }}
-            onImageChange={(url)=> {
+            onImageChange={(url, file)=> {
               setValue({ ...value,
-                backgroundImage: url
+                backgroundImage: url,
+                backgroundImageFile: file
               })
             }}
           />}
@@ -254,14 +308,15 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                     setDisplay(new Map(display).set('logo', false))
                     setValue({ ...value, logoImage: undefined })
                   }}
-                  onLogoChange={(v)=> setValue({ ...value, logoImage: v })}
+                  onLogoChange={(url, file)=>
+                    setValue({ ...value, logoImage: url, logoFile: file })}
                   onRatioChange={(v)=> setValue({ ...value,
                     uiStyleSchema: { ...value.uiStyleSchema, logoRatio: v } })}
                 />}
                 <div style={{ marginTop: 10 }}>
                   <TitleContent value={value}
                     onColorChange={(v)=> setValue({ ...value,
-                      uiColorSchema: { ...value.uiColorSchema, titleFontColor: v } })}
+                      uiColorSchema: { ...value.uiColorSchema, fontHeaderColor: v } })}
                     onSizeChange={(v)=> setValue({ ...value,
                       uiStyleSchema: { ...value.uiStyleSchema, titleFontSize: v } })}
                   />
@@ -269,9 +324,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
                 <div style={{ marginTop: 10 }}>
                   <BodyContent value={value}
                     onColorChange={(v)=> setValue({ ...value,
-                      uiColorSchema: { ...value.uiColorSchema, bodyFontColor: v } })}
-                    onSizeChange={(v)=> setValue({ ...value,
-                      uiStyleSchema: { ...value.uiStyleSchema, bodyFontSize: v } })}
+                      uiColorSchema: { ...value.uiColorSchema, fontColor: v } })}
                   />
                 </div>
                 <div style={{ marginTop: 10 }}>

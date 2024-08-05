@@ -3,9 +3,6 @@ import 'reactflow/dist/style.css' // Very important css must be imported!
 import { useEffect, useState } from 'react'
 
 import {
-  ConnectionLineType,
-  Edge,
-  Node,
   ReactFlowProvider,
   useEdgesState,
   useNodesState
@@ -18,9 +15,9 @@ import {
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowActionRequiredDefinitionsQuery
 } from '@acx-ui/rc/services'
-import { ActionType, findFirstStep, getInitialNodes, StepType, toStepMap, WorkflowStep } from '@acx-ui/rc/utils'
+import { ActionType, toReactFlowData } from '@acx-ui/rc/utils'
 
-import ActionLibraryDrawer from '../ActionLibraryDrawer/ActionLibraryDrawer'
+import ActionLibraryDrawer from '../ActionLibraryDrawer'
 import StepDrawer          from '../StepDrawer/StepDrawer'
 
 import * as UI                                         from './styledComponents'
@@ -44,79 +41,7 @@ interface WorkflowPanelProps {
   type?: PanelType
 }
 
-const composeNext = (
-  stepId: string, stepMap: Map<string, WorkflowStep>,
-  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
-  currentX: number, currentY: number,
-  isStart?: boolean
-) => {
-  const SPACE_OF_NODES = 110
-  const step = stepMap.get(stepId)
 
-  if (!step) return
-
-  const {
-    id,
-    nextStepId,
-    type,
-    actionType
-  } = step
-  const nodeType: ActionType = (actionType ?? 'START') as ActionType
-  const nextStep = stepMap.get(nextStepId ?? '')
-
-  // console.log('Step :: ', nodeType, type, enrollmentActionId)
-
-  nodes.push({
-    id,
-    type: nodeType,
-    position: { x: currentX, y: currentY },
-    data: {
-      ...step,
-      isStart,
-      isEnd: nextStep?.type === StepType.End
-    },
-
-    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
-    deletable: false
-  })
-
-  if (nextStepId) {
-    edges.push({
-      id: `${id} -- ${nextStepId}`,
-      source: id,
-      target: nextStepId,
-      type: ConnectionLineType.Step,
-      style: { stroke: 'var(--acx-primary-black)' },
-
-      deletable: false
-    })
-
-    composeNext(nextStepId, stepMap, nodes, edges,
-      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
-  }
-}
-
-function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
-  : { nodes: Node[], edges: Edge[] } {
-  const nodes: Node<WorkflowStep, ActionType>[] = []
-  const edges: Edge[] = []
-  const START_X = 100
-  const START_Y = 0
-
-  if (steps.length === 0) {
-    return { nodes: getInitialNodes(START_X, START_Y), edges }
-  }
-
-  const firstStep = findFirstStep(steps)
-  const stepMap = toStepMap(steps, definitionMap)
-
-  if (firstStep) {
-    composeNext(firstStep.id, stepMap, nodes, edges,
-      START_X, START_Y, firstStep.type === StepType.Start)
-  }
-
-  return { nodes, edges }
-}
 
 export interface RequiredDependency {
   type: 'NONE' | 'ONE_OF' | 'ALL',
@@ -251,7 +176,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 export function WorkflowPanel (props: WorkflowPanelProps) {
   const { type = PanelType.Default, ...rest } = props
   const content = <ReactFlowProvider>
-    <WorkflowContextProvider>
+    <WorkflowContextProvider workflowId={props.workflowId}>
       <WorkflowPanelWrapper
         {...rest}
       />

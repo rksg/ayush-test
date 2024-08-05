@@ -73,7 +73,7 @@ export function TitleContent (props: TitleProps) {
   const { $t } = useIntl()
   return (
     <PopOver content={<Widget
-      color={value.uiColorSchema.titleFontColor}
+      color={value.uiColorSchema.fontHeaderColor}
       size={value.uiStyleSchema.titleFontSize}
       onColorChange={onColorChange}
       onSizeChange={onSizeChange}/>}
@@ -87,7 +87,7 @@ export function TitleContent (props: TitleProps) {
         value={$t({ defaultMessage: 'Title text style' })}
         style={{
           fontSize: value.uiStyleSchema.titleFontSize,
-          color: value.uiColorSchema.titleFontColor,
+          color: value.uiColorSchema.fontHeaderColor,
           cursor: cursor,
           outline: outline,
           fontWeight: 600,
