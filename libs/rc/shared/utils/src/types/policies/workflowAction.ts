@@ -37,8 +37,9 @@ export interface AupAction extends ActionBase {
 }
 
 export interface DpskAction extends ActionBase {
-  identityGroupId?: String
+  identityGroupId: string
   identityId?: string,
+  dpskPoolId?: string,
   emailNotification?: boolean,
   smsNotification?: boolean,
   qrCodeDisplay?: boolean
@@ -80,7 +81,7 @@ export type GenericActionData =
   AupActionContext &
   DataPromptActionContext &
   DisplayMessageActionContext &
-  DpskAction
+  DpskActionContext
 
 export interface GenericActionPreviewProps<T> {
   data?: T,
