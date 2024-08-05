@@ -151,17 +151,20 @@ export function useIntentAIActions () {
 
     const response = await optimizeAllIntent({ optimizeList })
     if ('data' in response) {
-      const { optimizeAll } = response.data as OptimizeAllMutationResponse
-      const errorContent = optimizeAll?.reduce((errorText, { success, errorMsg }) => {
-        if (success) {
-          return errorText
+      const result = response.data as OptimizeAllMutationResponse
+      const errorMsgs:string[] = []
+      Object.entries(result).forEach(([, { success, errorMsg }]) => {
+        if (!success) {
+          errorMsgs.push(errorMsg)
         }
-        return errorText + errorMsg
-      }, '')
-      if (errorContent !== '') {
+      })
+
+      // TBD error message
+      if (errorMsgs.length > 0) {
         showToast({
           type: 'error',
-          content: errorContent
+          content: errorMsgs.map((errorMsg, index) =>
+            (<span key={`optimizeAllIntentErrorToast_${index}`}>{errorMsg}<br></br></span>))
         })
       }
     }

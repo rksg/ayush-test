@@ -85,9 +85,7 @@ interface OptimizeAllMutationPayload {
   optimizeList: OptimizeAllItemMutationPayload[]
 }
 
-export interface OptimizeAllMutationResponse {
-  optimizeAll: MutationResponse[]
-}
+export type OptimizeAllMutationResponse = Record<string, MutationResponse>
 
 
 const buildTransitionGQL = (index:number) => `t${index}: transition(
@@ -99,7 +97,7 @@ const buildTransitionGQL = (index:number) => `t${index}: transition(
   }`
 
 export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
-  const status = 'new'
+  const status = 'applyscheduled'
   const statusReason = statusReasons.oneClick
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
@@ -108,7 +106,7 @@ export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]
     const currentIndex = index + 1
     const { id, metadata } = item
     paramsGQL.push(
-      `$id${currentIndex}:String, $status${currentIndex}:String, \n
+      `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, $metadata${currentIndex}:JSON`
     )
     transitionsGQLs.push(buildTransitionGQL(currentIndex))

@@ -68,7 +68,7 @@ const extractItem = {
 describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
-    const resp = { optimizeAll: [{ success: true, errorMsg: '' , errorCode: '' }] } as OptimizeAllMutationResponse
+    const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
     mockedOptimizeAllIntent.mockReturnValue(Promise.resolve(resp))
     mockedRecommendationWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
@@ -87,7 +87,11 @@ describe('useIntentAIActions', () => {
       it('should handle current time is less than 3 AM - single1', async () => {
         jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
         const mockOK = jest.fn()
-        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{
+          ...intentListResult.intents[4],
+          aiFeature: 'AI-Driven RRM',
+          preferences: undefined ,
+          ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -421,10 +425,9 @@ describe('useIntentAIActions', () => {
     })
 
     it('should show error toast when mutation fail - single', async () => {
-      const resp = { optimizeAll: [
-        { success: false, errorMsg: 'mutation fail' , errorCode: '' },
-        { success: true, errorMsg: '' , errorCode: '' }
-      ]
+      const resp = {
+        t1: { success: false, errorMsg: 'mutation fail' , errorCode: '' },
+        t2: { success: true, errorMsg: '' , errorCode: '' }
       } as OptimizeAllMutationResponse
       mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
