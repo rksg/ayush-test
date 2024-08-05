@@ -91,7 +91,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
 
 
   const getVenueFirmware = (venueId: string) => {
-    return venueFirmwareList?.find(item => item.id === venueId)?.versions[0]?.id
+    return venueFirmwareList?.find(item => item.id === venueId)?.versions?.[0]?.id
   }
 
   const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
