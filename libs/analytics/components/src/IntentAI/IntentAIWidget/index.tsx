@@ -66,7 +66,7 @@ function HighlightCard (props: HighlightCardProps) {
 
   return (
     <TenantLink to='/analytics/intentAI'>
-      <Card cardIcon={getCardIcon(type)} title={title}>
+      <Card cardIcon={getCardIcon(type)} title={title} className='highlight-card-title'>
         {content}
       </Card>
     </TenantLink>
@@ -114,6 +114,7 @@ export function IntentAIWidget ({
 
   return <Loader states={[queryResults]}>
     <Card title={title}>
+      <UI.HighlightCardTitle />
       <UI.ContentWrapper>
         <AutoSizer>
           {({ width, height }) => (
