@@ -7,6 +7,7 @@ import { useParams }                                                   from 'rea
 
 import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { SupportRadioChannelsContext, ApRadioTypeEnum }                     from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -115,6 +116,8 @@ export function MeshNetwork () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
+  const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
+
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
@@ -147,6 +150,7 @@ export function MeshNetwork () {
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
   const wifiSettingsData = useVenueWifiSettings(params.venueId)
+  const isSupport6GRadio = bandwidthRadioOptions ? bandwidthRadioOptions[ApRadioTypeEnum.Radio6G]?.length > 0 : false
 
   useEffect(() => {
     if (wifiSettingsData) {
@@ -498,9 +502,23 @@ export function MeshNetwork () {
                 <Radio value='5-GHz' data-testid='radio5'>
                   {$t({ defaultMessage: '5 GHz' })}
                 </Radio>
-                <Radio value='6-GHz' data-testid='radio6'>
-                  {$t({ defaultMessage: '6 GHz' })}<Mesh6GhzInfoIcon/>
-                </Radio>
+                {
+                  isSupport6GRadio ? (
+                    <Radio value='6-GHz' data-testid='radio6'>
+                      {$t({ defaultMessage: '6 GHz' })}<Mesh6GhzInfoIcon/>
+                    </Radio>
+                  ) : (
+                    <Tooltip
+                      title={$t({
+                        defaultMessage: 'Mesh radio with 6GHz is not supported in the current country.'
+                      })}
+                    >
+                      <Radio disabled={true} value='6-GHz' data-testid='radio6'>
+                        {$t({ defaultMessage: '6 GHz' })}
+                      </Radio>
+                    </Tooltip>
+                  )
+                }
                 <Radio value='2.4-GHz' data-testid='radio24'>
                   {$t({ defaultMessage: '2.4 GHz' })}
                 </Radio>
