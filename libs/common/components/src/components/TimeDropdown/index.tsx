@@ -6,8 +6,6 @@ import {
   useIntl
 } from 'react-intl'
 
-import { IntegratorsOutlined } from '@acx-ui/icons'
-
 import * as UI from './styledComponents'
 
 export enum TimeDropdownTypes {
@@ -15,13 +13,6 @@ export enum TimeDropdownTypes {
   Weekly = 'weekly',
   Monthly = 'monthly'
 }
-
-// export type DisabledDateTime = {
-//   disabledStrictlyBefore: string,
-//   disabledStrictlyAfter: string
-// }
-
-
 
 function timeMap () {
   const timeMap = new Map<number, string>()
@@ -33,19 +24,11 @@ function timeMap () {
   return timeMap
 }
 
-// function timeOptions () {
-//   const timeOptions = []
-//   for (const [value, hour] of timeMap().entries()) {
-//     timeOptions.push(<Select.Option value={+value} key={hour} children={hour} />)
-//   }
-//   return timeOptions
-// }
-
-function timeOptions (disabledStrictlyBefore: string, disabledStrictlyAfter: string) {
+function timeOptions (disabledStrictlyBefore: number, disabledStrictlyAfter: number) {
   const timeOptions = []
   for (const [value, hour] of timeMap().entries()) {
-    if (value >= parseInt(disabledStrictlyBefore, 10) &&
-    value <= parseInt(disabledStrictlyAfter, 10)) {
+    if (value >= disabledStrictlyBefore &&
+    value <= disabledStrictlyAfter) {
       timeOptions.push(<Select.Option value={+value} key={hour} children={hour} />)
     }
   }
@@ -112,28 +95,28 @@ export function getDisplayTime (type: TimeDropdownTypes) {
 }
 
 const defaultDisabledTime =
-{ disabledStrictlyBefore: '0', disabledStrictlyAfter: '24' }
+{ disabledStrictlyBefore: 0, disabledStrictlyAfter: 24 }
 
 
 interface TimeDropdownProps {
   type: TimeDropdownTypes
   name: string
   disabledDateTime?: {
-    disabledStrictlyBefore?: string,
-    disabledStrictlyAfter?: string
+    disabledStrictlyBefore?: number,
+    disabledStrictlyAfter?: number
   }
 }
 
-
 export function TimeDropdown ({ type, name, disabledDateTime }: TimeDropdownProps) {
   const { $t } = useIntl()
-  console.log(name)
-  console.log(disabledDateTime)
+  // const value: number | null = typeof initialValue === 'string' ? parseInt(initialValue, 10) : null
+  // const [selectedTime, setSelectedTime] = useState(null)
+  // console.log(selectedTime)
 
   const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
-  || defaultDisabledTime.disabledStrictlyBefore
+  ?? defaultDisabledTime.disabledStrictlyBefore
   const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
-  || defaultDisabledTime.disabledStrictlyAfter
+  ?? defaultDisabledTime.disabledStrictlyAfter
 
   const renderHour = (spanLength:number) => (
     <Col span={spanLength}>
@@ -142,7 +125,8 @@ export function TimeDropdown ({ type, name, disabledDateTime }: TimeDropdownProp
         rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
         noStyle
       >
-        <Select placeholder={$t({ defaultMessage: 'Select hour' })}>
+        <Select
+          placeholder={$t({ defaultMessage: 'Select hour' })}>
           {timeOptions(disabledStrictlyBefore, disabledStrictlyAfter)}
         </Select>
       </Form.Item>

@@ -5,6 +5,6 @@ export type IntentAIFormDto = Pick<EnhancedRecommendation,
     id?: EnhancedRecommendation['id'],
     settings?: {
         date: string,
-        hour: string
+        hour: number
     }
 }

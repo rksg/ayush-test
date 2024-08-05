@@ -1,7 +1,9 @@
 import React, { MutableRefObject, useRef, useState } from 'react'
 
 import { Row, Col, Typography, Form, DatePicker } from 'antd'
+import { RangePickerProps }                       from 'antd/lib/date-picker'
 import { NamePath }                               from 'antd/lib/form/interface'
+import dayjs                                      from 'dayjs'
 import moment, { Moment }                         from 'moment-timezone'
 import { defineMessage, useIntl }                 from 'react-intl'
 
@@ -56,66 +58,57 @@ const label = defineMessage({ defaultMessage: 'Settings' })
 //     />
 //   )}
 
-type DateTimeSettingProps = {
-  scheduledDate: string,
-  // disabledDateTime?: {
-  //       disabledDate?: (value: Moment) => boolean,
-  //       disabledHours?: (value: Moment) => number[],
-  //       disabledMinutes?: (value: Moment) => number[],
-  //     }
-}
+
 
 function DateTimeSetting ({
-  scheduledDate
-  // disabledDateTime
+  scheduledDate,
+  scheduledTime
 }: DateTimeSettingProps) {
   const initialDate = useRef(moment(scheduledDate))
-  // const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
   const [date, setDate] = useState(() => initialDate.current)
   console.log(date)
+
+  const disabledDate : RangePickerProps['disabledDate']= (current) => {
+    // Disable dates before today
+    return current && current < dayjs().startOf('day')
+  }
+
   return (
     <Form.Item name={['settings', 'date']} valuePropName={'date'}>
       <DatePicker
         open={true}
-        // // className='hidden-date-input'
-        // // dropdownClassName='hidden-date-input-popover'
+        className='hidden-date-input'
+        dropdownClassName='hidden-date-input-popover'
         picker='date'
         value={date}
-        // // disabled={disabled}
-        // // onClick={() => setOpen(true)}
         showTime={false}
         showToday={false}
-        // disabledDate={disabledDate}
+        disabledDate={disabledDate}
         onChange={value => setDate(value!)}
         renderExtraFooter={
           () => <TimeDropdown type={TimeDropdownTypes.Daily}
             name={name as string}
             disabledDateTime={
-              { disabledStrictlyBefore: '0',
-                disabledStrictlyAfter: '10' }
+              { disabledStrictlyBefore: scheduledTime }
             }
           />}
       />
     </Form.Item>
   )}
 
-// disabledDateTime={
-//   { disabledStrictlyBefore: '0',
-//     disabledStrictlyAfter: '10' }
-// }
+type DateTimeSettingProps = {
+  scheduledDate: string
+  scheduledTime: number
+}
 
 const scheduleActions = {
   datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
   time: () => <TimeDropdown type={TimeDropdownTypes.Daily}
-    name={name as string}
-    disabledDateTime={
-      { disabledStrictlyBefore: '0',
-        disabledStrictlyAfter: '10' }
-    }/>
+    name={name as string}/>
 }
 
 export function getAvailableActions (status: string,
-  settings: { date: string, hour: string }) {
+  settings: { date: string, hour: number }) {
   if  (status === 'new' || status === 'applyscheduled') {
     // do datetimedropdown
   } else {
@@ -123,9 +116,8 @@ export function getAvailableActions (status: string,
   }
   console.log(settings)
 
-  return scheduleActions.time()
-  // return scheduleActions.datetime({ scheduledDate: settings.date })
-  // return scheduleActions.datetime({ scheduledDate: '2024-08-15' })
+  // return scheduleActions.time()
+  return scheduleActions.datetime({ scheduledDate: settings.date, scheduledTime: settings.hour })
 }
 
 export function Settings () {

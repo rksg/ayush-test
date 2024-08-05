@@ -141,10 +141,12 @@ export function specToDto (
     updatedAt: rec.updatedAt
   } as IntentAIFormDto
   if (rec.metadata) {
-    const scheduledAt = rec.metadata.scheduledAt
+    const scheduledAt = rec.metadata.scheduledAt ?? new Date().toISOString()
     const dateTime = moment(scheduledAt)
-    const date = dateTime.format('YYYY-MM-DD')
-    const time = roundUpTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
+    // const date = dateTime.format('YYYY-MM-DD')
+    const date = '2024-08-19' // to be removed
+    // const time = roundUpTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
+    const time = 5.5 // to be removed
     dto = {
       ...dto,
       settings: {
@@ -153,6 +155,7 @@ export function specToDto (
       }
     } as IntentAIFormDto
   }
+
   console.log('this is specToDtoo')
   console.log(dto)
   return dto

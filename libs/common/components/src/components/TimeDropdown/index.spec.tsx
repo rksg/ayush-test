@@ -18,16 +18,6 @@ describe('TimeDropdown', () => {
     expect(screen.getByText('Select hour')).toBeInTheDocument()
   })
 
-  it('renders Daily dropdown with disabled time correctly', async () => {
-    render(
-      <Form>
-        <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
-      </Form>
-    )
-
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
-  })
-
   it('renders Weekly dropdown correctly', () => {
     render(
       <Form>
