@@ -111,9 +111,10 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         }))
       })
     } else {
-      form.setFieldsValue({ highAvailabilityMode: isAaNotSuportedByFirmware() ?
-        ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY :
-        ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE })
+      form.setFieldsValue({ highAvailabilityMode:
+        (!isEdgeHaAaReady || isAaNotSuportedByFirmware()) ?
+          ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY :
+          ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE })
     }
   }, [editData, venueId])
 
