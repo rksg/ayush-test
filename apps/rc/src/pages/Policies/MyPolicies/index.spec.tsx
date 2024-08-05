@@ -1,20 +1,22 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }  from '@acx-ui/rc/components'
 import {
   connectionMeteringApi,
   policyApi
-}                                      from '@acx-ui/rc/services'
+} from '@acx-ui/rc/services'
 import {
   AaaUrls,
   AccessControlUrls,
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  getSelectPolicyRoutePath,
-  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
+  EdgeQosUrls,
+  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  getSelectPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { store, Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -34,6 +36,11 @@ const mockTableResult = {
   totalCount: 0,
   data: []
 }
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
+}))
 
 describe('MyPolicies', () => {
   const params = {
@@ -185,5 +192,25 @@ describe('MyPolicies', () => {
 
     const accessControlTitle = 'Access Control (1)'
     expect(await screen.findByText(accessControlTitle)).toBeVisible()
+  })
+
+  it('should render edge qos bandwidth correctly', async () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    mockServer.use(
+      rest.post(
+        EdgeQosUrls.getEdgeQosViewDataList.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      )
+    )
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const edgeQosBandwidthTitle = 'QoS Bandwidth (1)'
+    expect(await screen.findByText(edgeQosBandwidthTitle)).toBeVisible()
   })
 })
