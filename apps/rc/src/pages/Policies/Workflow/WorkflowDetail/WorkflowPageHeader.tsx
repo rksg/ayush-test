@@ -3,9 +3,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }                                      from '@acx-ui/components'
-import { EnrollmentPortalDesignModal, WorkflowActionPreviewModal } from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery }                                 from '@acx-ui/rc/services'
+import { Button, PageHeader }          from '@acx-ui/components'
+import { EnrollmentPortalDesignModal } from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery }     from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   getPolicyDetailsLink,
@@ -25,7 +25,6 @@ function WorkflowPageHeader () {
   const { policyId } = useParams()
   const { data } = useGetWorkflowByIdQuery({ params: { id: policyId } })
   const [visible, setVisible] = useState(false)
-  const [visible2, setVisible2] = useState(false)
   return (
     <>
       <PageHeader
@@ -44,8 +43,6 @@ function WorkflowPageHeader () {
           filterByAccess([
             <Button type='default' onClick={()=>setVisible(true)}>
               {$t({ defaultMessage: 'Preview' })}</Button>,
-            <Button type='default' onClick={()=>setVisible2(true)}>
-              {$t({ defaultMessage: 'Preview2' })}</Button>,
             <TenantLink
               to={getPolicyDetailsLink({
                 type: PolicyType.WORKFLOW,
@@ -58,8 +55,10 @@ function WorkflowPageHeader () {
           ])}
       />
       {visible &&
-      <WorkflowActionPreviewModal workflowId={policyId!} onClose={()=>setVisible(false)}/>}
-      {visible2 && <EnrollmentPortalDesignModal id={policyId!} onFinish={()=>setVisible2(false)}/>}
+       <EnrollmentPortalDesignModal
+         id={policyId!}
+         onFinish={()=>setVisible(false)}/>
+      }
     </>
   )
 }
