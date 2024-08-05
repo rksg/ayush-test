@@ -1,8 +1,12 @@
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
 import _                          from 'lodash'
 
+import { TimeDropdownTypes }           from '@acx-ui/components'
 import { ServiceGuardBaseQuery }       from '@acx-ui/store'
 import { FilterListNode, NetworkPath } from '@acx-ui/utils'
+
+export { TimeDropdownTypes as ScheduleFrequency }
+type ScheduleFrequency = TimeDropdownTypes
 
 type UUID = string
 
@@ -51,12 +55,6 @@ export enum ClientType {
 export enum TestType {
   OnDemand = 'on-demand',
   Scheduled = 'scheduled'
-}
-
-export enum ScheduleFrequency {
-  Daily = 'daily',
-  Weekly = 'weekly',
-  Monthly = 'monthly'
 }
 
 export type TestTypeWithSchedule = TestType.OnDemand | ScheduleFrequency
