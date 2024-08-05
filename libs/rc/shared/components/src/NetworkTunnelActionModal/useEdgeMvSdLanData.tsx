@@ -38,7 +38,7 @@ export const useEdgeMvSdLanData = (props: useEdgeMvSdLanDataProps = {}) => {
     },
     enableRbac: true
   }, {
-    skip: !networkId,
+    skip: !isEdgeSdLanMvEnabled || !networkId,
     selectFromResult: ({ data }) => ({
       networkVlanPool: find(data?.data as VLANPoolViewModelType[], (item) => {
         return item.networkIds?.includes(networkId!)

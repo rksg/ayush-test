@@ -1147,7 +1147,7 @@ describe('SD-LAN feature functions', () => {
   describe('useSdLanScopedVenueNetworks', () => {
     const mockVenueId = 'mock_venue'
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
     })
 
     it('should return networkId for DC case', async () => {

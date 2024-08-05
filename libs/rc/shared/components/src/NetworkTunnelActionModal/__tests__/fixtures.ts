@@ -1,17 +1,4 @@
-import { NetworkTypeEnum, EdgeSdLanFixtures, EdgeMvSdLanViewData } from '@acx-ui/rc/utils'
-
-import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
-
-const { mockedMvSdLanDataList } = EdgeSdLanFixtures
-
-export const mockSdLanScopeVenueMap = {} as SdLanScopedNetworkVenuesData['sdLansVenueMap']
-mockedMvSdLanDataList?.forEach(sdlan => {
-  sdlan.tunneledWlans?.forEach(wlan => {
-    if (!mockSdLanScopeVenueMap[wlan.venueId]) mockSdLanScopeVenueMap[wlan.venueId] = []
-
-    mockSdLanScopeVenueMap[wlan.venueId].push(sdlan as EdgeMvSdLanViewData)
-  })
-})
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 export const mockDeepNetworkList = {
   requestId: '639283c7-7a5e-4ab3-8fdb-6289fe0ed255',

@@ -644,7 +644,6 @@ export function VenueNetworksTab () {
           onOk: async (impactVenueIds: string[]) => {
             if (impactVenueIds.length) {
               // has conflict and confirmed
-              // setSdLanConflictChecked(true)
               const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
               actions.push(...impactVenueIds.map(impactVenueId =>
                 toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
