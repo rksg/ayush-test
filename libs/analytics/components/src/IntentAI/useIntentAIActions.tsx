@@ -42,25 +42,25 @@ type OptimizeValues = {
 const OPTIMIZE_TYPES = {
   1_1: (values:OptimizeValues) => <FormattedMessage
     defaultMessage={`Clicking Yes, will automate 
-    <b>{feature}</b> feature for Zone <b>{zone}</b>.
+    <b>{feature}</b> feature for <VenueSingular></VenueSingular> <b>{zone}</b>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>,
   1_2: (values:OptimizeValues) => <FormattedMessage
     defaultMessage={`Clicking Yes, will automate 
-    <b>{feature}</b> feature for <b>{zone}</b> selected Zones.
+    <b>{feature}</b> feature for <b>{zone}</b> selected <VenuePlural></VenuePlural>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>,
   2_1: (values:OptimizeValues) => <FormattedMessage
     defaultMessage={`Clicking Yes, will automate 
-    <b>{feature}</b> features for Zone <b>{zone}</b>.
+    <b>{feature}</b> features for <VenueSingular></VenueSingular> <b>{zone}</b>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>,
   2_2: (values:OptimizeValues) => <FormattedMessage
     defaultMessage={`Clicking Yes, will automate 
-    <b>{feature}</b> features across <b>{zone}</b> selected Zones.
+    <b>{feature}</b> features across <b>{zone}</b> selected <VenuePlural></VenuePlural>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>
