@@ -697,7 +697,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       }
     }),
     // eslint-disable-next-line max-len
-    patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<UpdateFirmwarePerApModelPayload>>({
+    patchVenueApModelFirmwares: build.mutation<{ batchId: string }, RequestPayload<UpdateFirmwarePerApModelPayload>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
         // eslint-disable-next-line max-len
         const { data, error } = await getBatchOperationResult(ApFirmwareBatchOperationType.UPDATE_NOW, fetchWithBQ)
@@ -709,7 +709,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           params: { venueId, batchId },
           payload: { ...rest }
         }))
-        return batchApi(FirmwareUrlsInfo.patchVenueApModelFirmwares, requests, fetchWithBQ)
+        await batchApi(FirmwareUrlsInfo.patchVenueApModelFirmwares, requests, fetchWithBQ)
+
+        return { data: { batchId } }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
@@ -722,7 +724,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
-    updateVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<UpdateFirmwareSchedulePerApModelPayload>>({
+    updateVenueSchedulesPerApModel: build.mutation<{ batchId: string }, RequestPayload<UpdateFirmwareSchedulePerApModelPayload>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
         // eslint-disable-next-line max-len
         const { data, error } = await getBatchOperationResult(ApFirmwareBatchOperationType.CHANGE_SCHEDULE, fetchWithBQ)
@@ -734,12 +736,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           params: { venueId, batchId },
           payload: { ...rest }
         }))
-        return batchApi(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, requests, fetchWithBQ)
+        await batchApi(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, requests, fetchWithBQ)
+
+        return { data: { batchId } }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
-    skipVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<{ venueIds: string[] }>>({
+    skipVenueSchedulesPerApModel: build.mutation<{ batchId: string }, RequestPayload<{ venueIds: string[] }>>({
       async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
         // eslint-disable-next-line max-len
         const { data, error } = await getBatchOperationResult(ApFirmwareBatchOperationType.SKIP_SCHEDULE, fetchWithBQ)
@@ -747,7 +751,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         const batchId = (data as ApFirmwareStartBatchOperationResult).response.batchId
 
         const requests = args.payload!.venueIds.map(venueId => ({ params: { venueId, batchId } }))
-        return batchApi(FirmwareUrlsInfo.skipVenueSchedulesPerApModel, requests, fetchWithBQ)
+        await batchApi(FirmwareUrlsInfo.skipVenueSchedulesPerApModel, requests, fetchWithBQ)
+
+        return { data: { batchId } }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     })
