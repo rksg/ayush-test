@@ -2,6 +2,7 @@
 import '@testing-library/jest-dom'
 
 import { defaultNetworkPath }                         from '@acx-ui/analytics/utils'
+import { get }                                        from '@acx-ui/config'
 import { intentAIUrl, store, Provider }               from '@acx-ui/store'
 import { act, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 import { DateRange }                                  from '@acx-ui/utils'
@@ -9,23 +10,31 @@ import { DateRange }                                  from '@acx-ui/utils'
 import {
   intentListResult,
   intentListWithAllStatus,
-  filterOptions
+  filterOptions,
+  intentListWithZoneTextStatus
 } from './__tests__/fixtures'
 import { IntentListItem, api, useIntentAITableQuery } from './services'
 
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
 describe('Intent services', () => {
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
+    mockGet.mockReturnValue('') // get('IS_MLISA_SA')
   })
 
   describe('useIntentAITableQuery', () => {
     beforeEach(() => {
       jest.clearAllMocks()
     })
+
     const expectedResult = [
       {
         ...intentListResult.intents.data[0],
@@ -33,9 +42,9 @@ describe('Intent services', () => {
         intent: 'Client Density vs. Throughput for 5 GHz radio',
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
-> zone-1 (Venue)`,
+> zone-1 (Zone)`,
         status: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the Zone zone-1.'
       },
       {
         ...intentListResult.intents.data[1],
@@ -44,9 +53,9 @@ describe('Intent services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
-> 01-Alethea-WiCheck Test (Venue)`,
+> 01-Alethea-WiCheck Test (Zone)`,
         status: 'No Recommendation, Not Enough License',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the 01-Alethea-WiCheck Test.'
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Zone 01-Alethea-WiCheck Test.'
       },
       {
         ...intentListResult.intents.data[2],
@@ -55,9 +64,9 @@ describe('Intent services', () => {
         category: 'Wi-Fi Experience',
         scope: `vsz34 (SZ Cluster)
 > 25-US-CA-D25-SandeepKour-home (Domain)
-> 25-US-CA-D25-SandeepKour-home (Venue)`,
+> 25-US-CA-D25-SandeepKour-home (Zone)`,
         status: 'No Recommendation, No APs',
-        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the 25-US-CA-D25-SandeepKour-home.'
+        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Zone 25-US-CA-D25-SandeepKour-home.'
       }
     ]
     const filterOptionsResult = {
@@ -85,6 +94,7 @@ describe('Intent services', () => {
       ]
     }
     it('should fetch data correctly', async () => {
+      mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListResult
 
@@ -209,6 +219,7 @@ describe('Intent services', () => {
     })
 
   })
+
   describe('status tooltips', () => {
     beforeEach(() => {
       jest.clearAllMocks()
@@ -223,10 +234,12 @@ describe('Intent services', () => {
       pageSize: 10
     }
 
-    it('should return corresponding tooltips according to different statuses', async () => {
+    it('should return corresponding RAI Zone tooltips according to different statuses', async () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
         data: intentListWithAllStatus
       })
+
+      mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
 
       const { status, data, error } = await store.dispatch(
         api.endpoints.intentAIList.initiate({ ...props })
@@ -237,7 +250,7 @@ describe('Intent services', () => {
         intent: 'Client Density vs. Throughput for 5 GHz radio',
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
-> EDU-MeshZone_S12348 (Venue)`
+> EDU-MeshZone_S12348 (Zone)`
       }
 
       const expectedResult = [
@@ -269,19 +282,19 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[4],
           ...expectedCommonResult,
           status: 'Apply In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting applied to the zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting applied to the Zone zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[5],
           ...expectedCommonResult,
           status: 'Active',
-          statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+          statusTooltip: 'IntentAI is active and has successfully applied the changes to the Zone zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[6],
           ...expectedCommonResult,
           status: 'Paused, Applied Failed',
-          statusTooltip: 'IntentAI recommended changes failed to apply to the zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          statusTooltip: 'IntentAI recommended changes failed to apply to the Zone zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
         },
         {
           ...intentListWithAllStatus.intents.data[7],
@@ -293,7 +306,7 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[8],
           ...expectedCommonResult,
           status: 'Revert In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Zone zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[9],
@@ -335,31 +348,103 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[15],
           ...expectedCommonResult,
           status: 'No Recommendation, No APs',
-          statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Zone zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[16],
           ...expectedCommonResult,
           status: 'No Recommendation, Not Enough License',
-          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Zone zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[17],
           ...expectedCommonResult,
           status: 'No Recommendation, Not Enough Data',
-          statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the Zone zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[18],
           ...expectedCommonResult,
           status: 'Verified',
-          statusTooltip: 'IntentAI has validated zone-1 configurations. No new changes have been recommended.'
+          statusTooltip: 'IntentAI has validated the Zone zone-1 configurations. No new changes have been recommended.'
         },
         {
           ...intentListWithAllStatus.intents.data[19],
           ...expectedCommonResult,
           status: 'No Recommendation',
           statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
+        }
+      ]
+      expect(error).toBe(undefined)
+      expect(status).toBe('fulfilled')
+      expect(data?.intents).toEqual(expectedResult)
+    })
+
+    it('should return corresponding R1 Venue tooltips according to different statuses', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListWithZoneTextStatus
+      })
+
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.intentAIList.initiate({ ...props })
+      )
+
+      const expectedCommonResult = {
+        aiFeature: 'AI-Driven RRM',
+        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`
+      }
+
+      const expectedResult = [
+        {
+          ...intentListWithAllStatus.intents.data[4],
+          ...expectedCommonResult,
+          status: 'Apply In Progress',
+          statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[5],
+          ...expectedCommonResult,
+          status: 'Active',
+          statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[6],
+          ...expectedCommonResult,
+          status: 'Paused, Applied Failed',
+          statusTooltip: 'IntentAI recommended changes failed to apply to the Venue zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[8],
+          ...expectedCommonResult,
+          status: 'Revert In Progress',
+          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[15],
+          ...expectedCommonResult,
+          status: 'No Recommendation, No APs',
+          statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[16],
+          ...expectedCommonResult,
+          status: 'No Recommendation, Not Enough License',
+          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[17],
+          ...expectedCommonResult,
+          status: 'No Recommendation, Not Enough Data',
+          statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[18],
+          ...expectedCommonResult,
+          status: 'Verified',
+          statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
         }
       ]
       expect(error).toBe(undefined)

@@ -1,6 +1,8 @@
 import { OnErrorFn, IntlErrorCode }                           from '@formatjs/intl'
 import { createIntl, createIntlCache, IntlConfig, IntlShape } from 'react-intl'
 
+import { get } from '@acx-ui/config'
+
 import { AccountVertical, getJwtTokenPayload } from './jwtToken'
 import { LocaleContextType }                   from './locales'
 
@@ -23,6 +25,20 @@ export function getReSkinningElements (
   // eslint-disable-next-line max-len
   const intl = locale ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache) : null
   const { acx_account_vertical } = getJwtTokenPayload()
+
+  // eslint-disable-next-line no-console
+  console.log('IS_MLISA_SA', get('IS_MLISA_SA'))
+
+  // TODO: UT
+  if (get('IS_MLISA_SA')) {
+    return {
+      venueSingular: () => intl ? intl.$t({ defaultMessage: 'zone' }) : 'zone',
+      venuePlural: () => intl ? intl.$t({ defaultMessage: 'zones' }) : 'zones',
+      VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Zone' }) : 'Zone',
+      VenuePlural: () => intl ? intl.$t({ defaultMessage: 'Zones' }) : 'Zones'
+    }
+  }
+
   return acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ? {
     venueSingular: () => intl ? intl.$t({ defaultMessage: 'space' }) : 'space',
     venuePlural: () => intl ? intl.$t({ defaultMessage: 'spaces' }) : 'spaces',

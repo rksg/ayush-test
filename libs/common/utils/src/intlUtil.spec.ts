@@ -1,10 +1,16 @@
 import { MissingDataError, MissingTranslationError } from '@formatjs/intl'
 import { rest }                                      from 'msw'
 
+import { get }        from '@acx-ui/config'
 import { mockServer } from '@acx-ui/test-utils'
 
 import * as intlUtil  from './intlUtil'
 import { loadLocale } from './locales'
+
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 describe('IntlUtils', () => {
   const messages = {
@@ -115,6 +121,11 @@ describe('IntlUtils', () => {
   })
 
   describe('getReSkinningElements', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+      mockGet.mockReturnValue('') // get('IS_MLISA_SA')
+    })
+
     it('get default re-skinning elements', () => {
       const expected = {
         venueSingular: 'venue',
@@ -147,6 +158,28 @@ describe('IntlUtils', () => {
       }
       const supportReSkinning = true
       const ret = intlUtil.getReSkinningElements(supportReSkinning)
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(ret[fnName]()).toEqual(expected[fnName])
+      }
+
+      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, { lang: 'en-US' })
+      for(const key of Object.keys(expected)) {
+        const fnName = key as keyof typeof expected
+        expect(retWithIntl[fnName]()).toEqual(expected[fnName])
+      }
+    })
+    it('get zone elements with RAI users', () => {
+      const expected = {
+        venueSingular: 'zone',
+        venuePlural: 'zones',
+        VenueSingular: 'Zone',
+        VenuePlural: 'Zones'
+      }
+      mockGet.mockReturnValue(true) // get('IS_MLISA_SA')
+      mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
+      const supportReSkinning = true
+      const ret = intlUtil.getReSkinningElements()
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(ret[fnName]()).toEqual(expected[fnName])
