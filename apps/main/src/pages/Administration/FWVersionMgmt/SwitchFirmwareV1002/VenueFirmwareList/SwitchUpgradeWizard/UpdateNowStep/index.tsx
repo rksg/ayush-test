@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react'
 
 
-import { Button, Form, Radio, RadioChangeEvent, Space } from 'antd'
-import _ from 'lodash'
-import { useIntl } from 'react-intl'
+import { Form, Radio, RadioChangeEvent, Space } from 'antd'
+import _                                        from 'lodash'
+import { useIntl }                              from 'react-intl'
 
 import {
   Subtitle,
   useStepFormContext
 } from '@acx-ui/components'
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
+import { useGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
   compareSwitchVersion,
   SwitchFirmwareVersion1002,
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
-  SwitchFirmware
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
-import { DowngradeTag } from '../../../styledComponents'
-import * as UI from '../../styledComponents'
+import { DowngradeTag }      from '../../../styledComponents'
+import * as UI               from '../../styledComponents'
+import { NoteButton }        from '../../styledComponents'
 import { Switch7150C08Note } from '../Switch7150C08Note'
 
 export interface UpdateNowStepProps {
@@ -27,11 +29,11 @@ export interface UpdateNowStepProps {
   availableVersions: SwitchFirmwareVersion1002[]
   hasVenue: boolean,
   upgradeVenueList: FirmwareSwitchVenueV1002[],
-  upgradeSwitchList: SwitchFirmware[],
+  upgradeSwitchList: SwitchFirmwareV1002[],
   setShowSubTitle: (visible: boolean) => void
 }
 
-export function UpdateNowStep(props: UpdateNowStepProps) {
+export function UpdateNowStep (props: UpdateNowStepProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const { form, current } = useStepFormContext()
@@ -49,6 +51,25 @@ export function UpdateNowStep(props: UpdateNowStepProps) {
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.switchCount || 0
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
+
+
+
+  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
+    payload: {
+      venueIdList: upgradeVenueList.map(item => item.venueId),
+      searchFilter: 'ICX7150-C08P',
+      searchTargetFields: ['model']
+    }
+  }, { skip: upgradeVenueList.length === 0 })
+
+  useEffect(() => {
+    const upgradeSwitchListOfIcx7150C08p = upgradeSwitchList.filter(s =>
+      s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08')
+    if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
+      const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
+      const groupedData = _.groupBy(switchList, 'venueId')
+    }
+  }, [getSwitchFirmwareList])
 
 
   const handleICX71Change = (value: RadioChangeEvent) => {
@@ -74,7 +95,8 @@ export function UpdateNowStep(props: UpdateNowStepProps) {
       )
 
       if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
-        return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+        return firmwareAvailableVersions[0].versions.sort((a, b) =>
+          compareSwitchVersion(a.id, b.id))
       }
 
       return []
@@ -85,9 +107,9 @@ export function UpdateNowStep(props: UpdateNowStepProps) {
   }, [current])
 
   const scrollToTarget = () => {
-    const targetElement = document.getElementById('target');
+    const targetElement = document.getElementById('note_1')
     if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
@@ -196,14 +218,15 @@ export function UpdateNowStep(props: UpdateNowStepProps) {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
-                      {getSwitchVersionLabelV1002(intl, v)}
-                      {v.id.startsWith('090') && <Button
+                      <span style={{ marginRight: '5px' }}>
+                        {getSwitchVersionLabelV1002(intl, v)}
+                      </span>
+                      {v.id.startsWith('100') && <NoteButton
                         size='small'
-                        color='blue'
                         ghost={true}
                         onClick={scrollToTarget}>
                         {$t({ defaultMessage: '[1]' })}
-                      </Button>}
+                      </NoteButton>}
                       {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                         <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                     </span>
@@ -214,7 +237,7 @@ export function UpdateNowStep(props: UpdateNowStepProps) {
               </Radio>
             </Space>
           </Radio.Group>
-          <div id="target">
+          <div id='note_1'>
             <Switch7150C08Note
               upgradeVenueList={upgradeVenueList}
               upgradeSwitchList={upgradeSwitchList}

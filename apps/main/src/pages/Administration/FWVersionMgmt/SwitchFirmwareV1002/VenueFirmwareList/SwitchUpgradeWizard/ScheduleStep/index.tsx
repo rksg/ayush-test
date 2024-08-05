@@ -1,30 +1,30 @@
 import { useEffect, useState } from 'react'
 
 import { DatePicker, Form, Radio, RadioChangeEvent, Space } from 'antd'
-import dayjs from 'dayjs'
-import _ from 'lodash'
-import { useIntl } from 'react-intl'
+import dayjs                                                from 'dayjs'
+import _                                                    from 'lodash'
+import { useIntl }                                          from 'react-intl'
 
 import { Subtitle, useStepFormContext } from '@acx-ui/components'
-import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
+import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   compareSwitchVersion,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
-  SwitchFirmware,
   SwitchFirmwareModelGroup,
-  getSwitchModelGroup
+  getSwitchModelGroup,
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
-import { DowngradeTag } from '../../../styledComponents'
-import * as UI from '../../styledComponents'
+import { DowngradeTag }      from '../../../styledComponents'
+import * as UI               from '../../styledComponents'
+import { Switch7150C08Note } from '../Switch7150C08Note'
 
 import { PreDownload } from './PreDownload'
 
-import type { DatePickerProps } from 'antd'
+import type { DatePickerProps }  from 'antd'
 import type { RangePickerProps } from 'antd/es/date-picker'
-import { Switch7150C08Note } from '../Switch7150C08Note'
 
 export interface ScheduleStepProps {
   visible: boolean,
@@ -32,11 +32,11 @@ export interface ScheduleStepProps {
   hasVenue: boolean,
   data: FirmwareSwitchVenueV1002[],
   upgradeVenueList: FirmwareSwitchVenueV1002[],
-  upgradeSwitchList: SwitchFirmware[],
+  upgradeSwitchList: SwitchFirmwareV1002[],
   setShowSubTitle: (visible: boolean) => void
 }
 
-export function ScheduleStep(props: ScheduleStepProps) {
+export function ScheduleStep (props: ScheduleStepProps) {
   const { availableVersions,
     hasVenue, upgradeVenueList, upgradeSwitchList,
     setShowSubTitle } = props
@@ -145,7 +145,8 @@ export function ScheduleStep(props: ScheduleStepProps) {
       )
 
       if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
-        return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+        return firmwareAvailableVersions[0].versions.sort((a, b) =>
+          compareSwitchVersion(a.id, b.id))
       }
 
       return []
