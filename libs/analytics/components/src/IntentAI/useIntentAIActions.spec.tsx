@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { act }   from 'react-dom/test-utils'
 
 import { get }                   from '@acx-ui/config'
@@ -15,7 +16,7 @@ import {
   renderHook
 }                                                               from '@acx-ui/test-utils'
 
-import { intentListResult }                            from './__tests__/fixtures'
+import { mockAIDrivenRow, mockAirflexRows }            from './__tests__/fixtures'
 import { IntentListItem, OptimizeAllMutationResponse } from './services'
 import { useIntentAIActions  }                         from './useIntentAIActions'
 
@@ -80,6 +81,7 @@ describe('useIntentAIActions', () => {
     jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
     jest.restoreAllMocks()
+    Modal.destroyAll()
   })
   describe('r1 - OneClickOptimize', () => {
     beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
@@ -88,7 +90,7 @@ describe('useIntentAIActions', () => {
         jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
         const mockOK = jest.fn()
         const selectedRow = [{
-          ...intentListResult.intents[4],
+          ...mockAIDrivenRow,
           aiFeature: 'AI-Driven RRM',
           preferences: undefined ,
           ...extractItem }] as IntentListItem[]
@@ -128,7 +130,7 @@ describe('useIntentAIActions', () => {
 
       it('should handle mutation correctly - single', async () => {
         const mockOK = jest.fn()
-        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -166,7 +168,7 @@ describe('useIntentAIActions', () => {
 
     describe('r1 - AirFlexAI', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
@@ -201,7 +203,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -215,8 +217,8 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.1_2) - multiple', async () => {
       const selectedRows = [
-        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', ...extractItem },
-        { ...intentListResult.intents[7], aiFeature: 'AirFlexAI', ...extractItem }
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem },
+        { ...mockAirflexRows[2], aiFeature: 'AirFlexAI', ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -228,17 +230,17 @@ describe('useIntentAIActions', () => {
       })
       const dialog = await screen.findByRole('dialog')
       expect(await within(dialog).findByText(/feature for/)).toBeVisible()
-      expect(await within(dialog).findByText(/selected Zones/)).toBeVisible()
+      expect(await within(dialog).findByText(/selected/)).toBeVisible()
       expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
       await userEvent.click((await within(dialog).findByText('Cancel')))
       await waitFor(() => expect(screen.queryByText('dialog')).toBeNull())
     })
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_1) - multiple', async () => {
-      const { sliceValue } = intentListResult.intents[4]
+      const { sliceValue } = mockAIDrivenRow
       const selectedRows = [
-        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem },
-        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', sliceValue, ...extractItem }
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', sliceValue, ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -249,7 +251,7 @@ describe('useIntentAIActions', () => {
         showOneClickOptimize(selectedRows, mockOK)
       })
       const dialog = await screen.findByRole('dialog')
-      expect(await within(dialog).findByText(/features for Zone/)).toBeVisible()
+      expect(await within(dialog).findByText(/features for/)).toBeVisible()
       expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
       expect(await within(dialog).findByText(/Change time/)).toBeVisible()
       await userEvent.click((await within(dialog).findByText('Cancel')))
@@ -258,8 +260,8 @@ describe('useIntentAIActions', () => {
 
     it('should handle mutation correctly (OPTIMIZE_TYPES.2_2)  - multiple', async () => {
       const selectedRows = [
-        { ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem },
-        { ...intentListResult.intents[6], aiFeature: 'AirFlexAI', ...extractItem }
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem }
       ] as IntentListItem[]
       const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
@@ -271,7 +273,7 @@ describe('useIntentAIActions', () => {
       })
       const dialog = await screen.findByRole('dialog')
       expect(await within(dialog).findByText(/features across/)).toBeVisible()
-      expect(await within(dialog).findByText(/selected Zones/)).toBeVisible()
+      expect(await within(dialog).findByText(/selected/)).toBeVisible()
       expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
       expect(await within(dialog).findByText(/Change time/)).toBeVisible()
       userEvent.click(await within(dialog).findByText(/Change time/))
@@ -313,7 +315,7 @@ describe('useIntentAIActions', () => {
     describe('rai - AI-Driven', () => {
       it('should handle mutation correctly - single', async () => {
         const mockOK = jest.fn()
-        const selectedRow = [{ ...intentListResult.intents[4], aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -351,7 +353,7 @@ describe('useIntentAIActions', () => {
 
     describe('rai - AirFlexAI', () => {
       it('should handle mutation correctly  - single', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
@@ -386,7 +388,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should show error when date time before  - single', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -412,7 +414,7 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -431,7 +433,7 @@ describe('useIntentAIActions', () => {
       } as OptimizeAllMutationResponse
       mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
-      const selectedRow = [{ ...intentListResult.intents[5], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+      const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
       })

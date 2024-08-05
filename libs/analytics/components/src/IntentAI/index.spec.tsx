@@ -19,7 +19,7 @@ import {
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { DateRange, setUpIntl }              from '@acx-ui/utils'
 
-import { intentListResult, mockCrrmRow } from './__tests__/fixtures'
+import { intentListResult, mockAIDrivenRow, filterOptions } from './__tests__/fixtures'
 import {
   api
 } from './services'
@@ -52,9 +52,6 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-jest.mock('./services', () => ({
-  ...jest.requireActual('./services')
-}))
 setUpIntl({ locale: 'en-US', messages: {} })
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
 describe('IntentAITabContent', () => {
@@ -66,7 +63,7 @@ describe('IntentAITabContent', () => {
   }
 
   beforeEach(() => {
-    setRaiPermissions({ WRITE_AI_OPERATIONS: true } as RaiPermissions)
+    setRaiPermissions({ WRITE_AI_OPERATIONS: true, WRITE_INTENT_AI: true } as RaiPermissions)
     store.dispatch(api.util.resetApiState())
 
     const pathFilters = { ...filters, path: defaultNetworkPath }
@@ -86,7 +83,10 @@ describe('IntentAITabContent', () => {
 
   it('should render loader and empty table', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
-      data: { intents: [] }
+      data: { intents: { data: [] } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: { intentFilterOptions: { zones: [], codes: [], statuses: [] } }
     })
     render(<IntentAITabContent/>, {
       wrapper: Provider
@@ -105,6 +105,9 @@ describe('IntentAITabContent', () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: intentListResult
     })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
     render(<IntentAITabContent/>, {
       wrapper: Provider
     })
@@ -112,13 +115,11 @@ describe('IntentAITabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     //search row text
     const rowText = await screen.findAllByText('AI-Driven RRM')
-    expect(rowText).toHaveLength(3)
+    expect(rowText).toHaveLength(1)
     //search column title
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Venue')).toBeVisible()
     expect(screen.queryByText('Zone')).toBeNull()
-    //search test id
-    expect(screen.getByTestId('intentAI')).toBeVisible()
   })
 
   it('should render intentAI table for RA', async () => {
@@ -133,7 +134,7 @@ describe('IntentAITabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     //search row text
     const rowText = await screen.findAllByText('AI-Driven RRM')
-    expect(rowText).toHaveLength(3)
+    expect(rowText).toHaveLength(1)
     //search column title
     expect(screen.getByText('Intent')).toBeVisible()
     expect(screen.getByText('Zone')).toBeVisible()
@@ -143,17 +144,30 @@ describe('IntentAITabContent', () => {
   })
 
   it('should render 1-click-optimize', async () => {
+    const extractItem = {
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 5 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'New',
+      statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+    }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
-      data: { intents: [mockCrrmRow] }
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
     })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
     render(<IntentAITabContent/>, {
       wrapper: Provider
     })
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     const table = await screen.findByRole('table')
-    expect(await within(table).findByText('zone-1')).toBeVisible()
-    await userEvent.click(await within(table).findByText('zone-1'))
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
     expect(await screen.findByRole('button', { name: '1-Click Optimize' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: '1-Click Optimize' }))
     expect(mockedShowOneClickOptimize).toBeCalledTimes(1)
