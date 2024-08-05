@@ -126,7 +126,11 @@ describe('GeneralSettingForm', () => {
   it('should render CLI profile details correctly', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
-        (_, res, ctx) => res(ctx.json(venueSwitchSetting[1])))
+        (_, res, ctx) => res(ctx.json(venueSwitchSetting[1]))),
+      rest.get(
+        SwitchUrlsInfo.getSwitchConfigProfileDetail.url,
+        (_, res, ctx) => res(ctx.json(configProfiles[2]))
+      )
     )
     render(<Provider>
       <VenueEditContext.Provider value={{
@@ -143,6 +147,7 @@ describe('GeneralSettingForm', () => {
     fireEvent.click(await screen.findByText('profile-cli03'))
     expect(await screen.findByText('3 models')).toBeVisible()
     expect(await screen.findByText(/profile-cli03 cli test/)).toBeVisible()
+
     fireEvent.click(screen.getByRole('button', { name: 'OK' }))
   })
 
@@ -279,7 +284,9 @@ describe('GeneralSettingForm', () => {
       [ConfigTemplateType.APPLICATION_POLICY]: false,
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SYSLOG]: false,
-      [ConfigTemplateType.SWITCH_REGULAR]: false
+      [ConfigTemplateType.SWITCH_REGULAR]: false,
+      [ConfigTemplateType.SWITCH_CLI]: false,
+      [ConfigTemplateType.AP_GROUP]: false
     }
     beforeEach(() => {
       mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })

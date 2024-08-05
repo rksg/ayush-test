@@ -13,7 +13,7 @@ import {
 
 import { UserProfile } from './index'
 
-const params = { tenantId: 'tenant-id' }
+const params = { tenantId: 'tenant-id', activeTab: 'settings' }
 const mockedUsedNavigate = jest.fn()
 const userProfile = {
   initials: 'FL',
@@ -74,9 +74,34 @@ describe('UserProfile', () => {
 
     expect(screen.getByText('YYYY/MM/DD')).toBeVisible()
     expect(screen.getByText('Super User')).toBeVisible()
-
-    userEvent.click(screen.getByRole('tab', { name: 'Security' }))
-    expect(await screen.findByTestId('MultiFactor')).toBeVisible()
   })
+  it('should navigate tabs correctly', async () => {
+    setUserProfile({ profile: userProfile, allowedOperations: [] })
 
+    render(<Provider>
+      <UserProfileContext.Provider
+        value={{ data: userProfile } as UserProfileContextProps}
+      >
+        <UserProfile />
+      </UserProfileContext.Provider>
+    </Provider>, { route: { params } })
+
+    expect(screen.getByRole('tab', { name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Security' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'Recent Logins' })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Security' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/userprofile/security',
+      search: ''
+    })
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Recent Logins' }))
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/userprofile/recentLogins',
+      search: ''
+    })
+  })
 })

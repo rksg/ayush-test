@@ -1,11 +1,12 @@
 import { transform } from 'lodash'
 
-import { Features }                                                                            from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                          from '@acx-ui/react-router-dom'
-import { getIntl }                                                                             from '@acx-ui/utils'
+import { Features }                                                                                                 from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                               from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                  from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 
 export const useGetNetworkTunnelInfo = () => {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -61,4 +62,15 @@ export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) =
   }
 
   return payload
+}
+
+export const isGuestTunnelUtilized = (
+  venueSdLanInfo?: EdgeMvSdLanViewData,
+  networkId?: string,
+  networkVenueId?: string
+) => {
+  return !!venueSdLanInfo?.isGuestTunnelEnabled
+        && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+          wlan.networkId === networkId && wlan.venueId === networkVenueId))
+        && !!networkId && !!networkVenueId
 }

@@ -74,7 +74,8 @@ const useVenueWifiSettings = (venueId: string | undefined): VenueSettings | unde
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
     skip: !resolvedRbacEnabled,
     payload: queryPayload,
-    templatePayload: queryPayload
+    templatePayload: queryPayload,
+    enableRbac: resolvedRbacEnabled
   })
 
   const { data: venueMeshSettings } = useVenueConfigTemplateQueryFnSwitcher<Mesh>({

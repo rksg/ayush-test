@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Typography, Space, FormInstance }                           from 'antd'
-import { isNil, pick, remove, cloneDeep, unionBy, transform, unset } from 'lodash'
-import { useIntl }                                                   from 'react-intl'
+import { Typography, Space, FormInstance }                from 'antd'
+import { isNil, pick, remove, cloneDeep, unionBy, unset } from 'lodash'
+import { useIntl }                                        from 'react-intl'
 
-import { Drawer }                                                                from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable }                                     from '@acx-ui/rc/components'
-import { EdgeMvSdLanNetworks, Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork } from '@acx-ui/rc/utils'
+import { Drawer }                                                            from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
+import { Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -67,6 +67,36 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     }
   }, [visible])
 
+  const checkGuestFwdConflict = (
+    networkData: Network,
+    checked: boolean,
+    newSelected: Record<string, EdgeMvSdLanFormNetwork>
+  ) => {
+    const { activatedNetworks, activatedGuestNetworks } = newSelected
+
+    showSdLanGuestFwdConflictModal({
+      currentNetworkVenueId: venueId,
+      currentNetworkId: networkData.id,
+      currentNetworkName: networkData.name,
+      activatedGuest: checked,
+      tunneledWlans: activatedNetworks,
+      tunneledGuestWlans: activatedGuestNetworks,
+      onOk: (impactVenueIds: string[]) => {
+        let newSelectedNetworks = activatedGuestNetworks
+        if (impactVenueIds.length !== 0) {
+          impactVenueIds.forEach((impactVenueId) => {
+          // eslint-disable-next-line max-len
+            newSelectedNetworks = toggleItemFromSelected(checked, impactVenueId, networkData, activatedGuestNetworks)
+          })
+        }
+        setUpdateContent({
+          activatedNetworks,
+          activatedGuestNetworks: newSelectedNetworks
+        })
+      }
+    })
+  }
+
   const handleActivateChange = (
     fieldName: string,
     data: Network,
@@ -84,8 +114,9 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
 
       if (fieldName === 'activatedNetworks') {
         const updateData = {
-          [fieldName]: newSelected
-        } as Record<string, EdgeMvSdLanFormNetwork>
+          [fieldName]: newSelected,
+          activatedGuestNetworks: activatedGuestNetworks
+        }
 
         // vlan pooling enabled cannot be a guest network
         const isVlanPooling = !isNil(data.vlanPool)
@@ -94,20 +125,36 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           updateData['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
-        setUpdateContent(updateData)
+        // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same.
+        // but deactivate network no need to check conflict.
+        if (checked) {
+          checkGuestFwdConflict(data, checked, updateData)
+        } else {
+          setUpdateContent(updateData)
+        }
       } else {
         // eslint-disable-next-line max-len
         const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
-        setUpdateContent({
+
+        // activatedGuestNetworks
+        checkGuestFwdConflict(data, checked, {
           [fieldName]: newSelected,
           activatedNetworks: newSelectedNetworks
         })
       }
     } else {
-      setUpdateContent({
-        ...updateContent,
-        [fieldName]: newSelected
-      })
+      if (fieldName === 'activatedGuestNetworks') {
+        // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
+        checkGuestFwdConflict(data, checked, {
+          ...updateContent,
+          [fieldName]: newSelected
+        })
+      } else {
+        setUpdateContent({
+          ...updateContent,
+          [fieldName]: newSelected
+        })
+      }
     }
   }
 
@@ -118,12 +165,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     formRef.validateFields(['activatedNetworks'])
     onClose()
   }
-
-  // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
-  const mvActivatedGuestNetworks = transform(updateContent.activatedGuestNetworks,
-    (result, value, key) => {
-      result[key] = value.map(v => v.id)
-    }, {} as EdgeMvSdLanNetworks)
 
   return (
     <Drawer
@@ -152,7 +193,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           // eslint-disable-next-line max-len
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
-          mvActivatedGuestNetworks={mvActivatedGuestNetworks}
+          // mvActivatedGuestNetworks={mvActivatedGuestNetworks}
           onActivateChange={handleActivateChange}
         />
       </Space>

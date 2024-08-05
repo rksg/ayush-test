@@ -221,7 +221,8 @@ export const getApNextScheduleTpl = (versionInfo: getApNextScheduleTplProps) => 
 export const getNextSchedulesTooltip = (nextSchedules?: Schedule[]): string | undefined => {
   const { $t } = getIntl()
   const transform = firmwareTypeTrans($t)
-  const schedules = getApSchedules(nextSchedules)
+  // eslint-disable-next-line max-len
+  const schedules = getApSchedules(nextSchedules).sort((a, b) => -compareVersions(a.versionInfo.version, b.versionInfo.version))
   const content: string[] = []
 
   schedules.forEach((schedule: Schedule) => {

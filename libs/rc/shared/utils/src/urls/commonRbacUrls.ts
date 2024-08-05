@@ -203,13 +203,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/aps/query?mesh=true',
     newApi: true
   },
-  /*
   downloadApsCSV: {
     method: 'post',
-    url: '/aps/query/csvFiles',
-    oldUrl: '/aps/query/csvFiles',
+    url: '/venues/aps/query',
+    // url: '/aps/query/csvFiles',
     newApi: true
   },
+  /*
   getFloorplan: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorPlanId',
@@ -328,7 +328,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
-  /*
   getVenueLanPorts: {
     method: 'get',
     //url: '/venues/:venueId/lanPortSettings',
@@ -341,6 +340,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelLanPortSettings',
     newApi: true
   },
+  /*
   getVenueNetworkList: {
     method: 'post',
     url: '/venues/:venueId/networks/query',

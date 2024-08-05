@@ -5,7 +5,6 @@ import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/compone
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
-  useLocation,
   useNavigate,
   useParams,
   useTenantLink
@@ -25,34 +24,24 @@ import {
   RecentLogin
 } from './RecentLogin'
 
-interface fromLoc {
-  from: string
-}
-
 export function UserProfile () {
   const { $t } = useIntl()
   const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
-  const { tenantId } = useParams()
+  const { tenantId, activeTab } = useParams()
   const navigate = useNavigate()
   const { data: userProfile } = useUserProfileContext()
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
-  const location = useLocation().state as fromLoc
-  const dashboardPath = useTenantLink('/dashboard')
-  const backPathname = location?.from ?? dashboardPath.pathname
+  const basePath = useTenantLink('/userprofile')
 
   const handleUpdateSettings = async (data: Partial<UserProfileInterface>) => {
     await updateUserProfile({ payload: data, params: { tenantId } })
-    navigate({
-      pathname: backPathname
-    }, { replace: true })
     window.location.reload()
+    navigate(-1)
   }
 
   const handleCancel = () => {
-    navigate({
-      pathname: backPathname
-    }, { replace: true })
+    navigate(-1)
   }
 
   const SettingsTab = () => {
@@ -111,6 +100,33 @@ export function UserProfile () {
     return <MultiFactor/>
   }
 
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
+  const tabs = [
+    {
+      key: 'settings',
+      title: $t({ defaultMessage: 'Settings' }),
+      component: <SettingsTab />
+    },
+    {
+      key: 'security',
+      title: $t({ defaultMessage: 'Security' }),
+      component: <SecurityTab />
+    },
+    {
+      key: 'recentLogins',
+      title: $t({ defaultMessage: 'Recent Logins' }),
+      disabled: hasRoles([RolesEnum.DPSK_ADMIN]),
+      component: userProfile && <RecentLogin userEmail={userProfile!.email} />
+    }
+  ]
+
+  const ActiveTabPane = tabs.find(({ key }) => key === activeTab)?.component
+
   return (
     <>
       <PageHeader
@@ -122,26 +138,15 @@ export function UserProfile () {
         roleStringMap={roleStringMap}
       />
 
-      <Tabs type='line' defaultActiveKey={'Settings'}>
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Settings' })}
-          key='Settings'>
-          <SettingsTab />
-        </Tabs.TabPane>
-
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Security' })}
-          key='Security'>
-          <SecurityTab />
-        </Tabs.TabPane>
-
-        <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Recent Logins' })}
-          disabled={hasRoles([RolesEnum.DPSK_ADMIN])}
-          key='RecentLogins'>
-          {userProfile && <RecentLogin userEmail={userProfile!.email} />}
-        </Tabs.TabPane>
+      <Tabs
+        defaultActiveKey='settings'
+        activeKey={activeTab}
+        onChange={onTabChange}
+      >
+        {tabs.map(({ key, title, disabled }) =>
+          <Tabs.TabPane tab={title} key={key} disabled={disabled} />)}
       </Tabs>
+      {ActiveTabPane}
     </>
   )
 }

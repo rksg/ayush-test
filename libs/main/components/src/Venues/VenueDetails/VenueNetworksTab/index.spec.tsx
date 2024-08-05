@@ -6,13 +6,21 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import {
-  aggregatedVenueNetworksData,
   aggregatedVenueNetworksDataV2,
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, VlanPoolRbacUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                            from '@acx-ui/store'
+import {
+  ApCompatibility,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  EdgeSdLanFixtures,
+  VlanPoolRbacUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -25,7 +33,6 @@ import {
 import {
   venueNetworkList,
   networkDeepList,
-  venueNetworkApGroup,
   venueData,
   venueNetworkApCompatibilitiesData,
   venueNetworkApGroupData
@@ -101,20 +108,16 @@ describe('VenueNetworksTab', () => {
   beforeEach(() => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-    services.useVenueNetworkTableQuery = jest.fn().mockImplementation(() => {
-      return { data: mockVenueNetworkData2 }
-    })
-
-    services.useVenueNetworkListQuery = jest.fn().mockImplementation(() => {
-      return { data: mockVenueNetworkData1 }
-    })
-
     services.useVenueNetworkTableV2Query = jest.fn().mockImplementation(() => {
       return { data: mockVenueNetworkData2 }
     })
 
     services.useVenueNetworkListV2Query = jest.fn().mockImplementation(() => {
       return { data: mockVenueNetworkData1 }
+    })
+
+    services.useNewVenueNetworkTableQuery = jest.fn().mockImplementation(() => {
+      return { data: mockVenueNetworkData2 }
     })
 
     act(() => {
@@ -125,23 +128,23 @@ describe('VenueNetworksTab', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
+        (_, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
         ConfigTemplateUrlsInfo.getVenueNetworkTemplateList.url,
-        (req, res, ctx) => res(ctx.json(venueNetworkList))
+        (_, res, ctx) => res(ctx.json(venueNetworkList))
       ),
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
-        (req, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
+        (_, res, ctx) => res(ctx.json({ response: venueNetworkApGroupData }))
       ),
       rest.post(
         CommonUrlsInfo.networkActivations.url,
-        (req, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
+        (_, res, ctx) => res(ctx.json({ data: venueNetworkApGroupData }))
       ),
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
-        (req, res, ctx) => res(ctx.json({ venue: venueData }))
+        (_, res, ctx) => res(ctx.json({ venue: venueData }))
       ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
@@ -150,6 +153,12 @@ describe('VenueNetworksTab', () => {
       rest.post(
         VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+
+      // rbac API
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(venueNetworkList))
       )
     )
   })
@@ -202,16 +211,16 @@ describe('VenueNetworksTab', () => {
     const row = await screen.findByRole('row', { name: /test_2/i })
 
     const requestSpy = jest.fn()
-    const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroupData))
-    newApGroup[1].apGroups[0].id = 'test2'
+    const newApGroupData = JSON.parse(JSON.stringify(venueNetworkApGroupData))
+    newApGroupData[1].apGroups[0].id = 'test2'
 
-    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroup }, networkDeepList)
+    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroupData }, networkDeepList)
 
-    services.useVenueNetworkListQuery = jest.fn().mockImplementation(() => {
+    services.useVenueNetworkListV2Query = jest.fn().mockImplementation(() => {
       return { data: newMockVenueNetworkData }
     })
 
-    services.useVenueNetworkTableQuery = jest.fn().mockImplementation(() => {
+    services.useVenueNetworkTableV2Query = jest.fn().mockImplementation(() => {
       return { data: newMockVenueNetworkData }
     })
 
@@ -242,17 +251,16 @@ describe('VenueNetworksTab', () => {
     const row = await screen.findByRole('row', { name: /test_1/i })
 
     const requestSpy = jest.fn()
-    const newApGroup = JSON.parse(JSON.stringify(venueNetworkApGroup))
-    const newApGroupData = newApGroup.response
+    const newApGroupData = JSON.parse(JSON.stringify(venueNetworkApGroupData))
     newApGroupData[0].apGroups[0].id = ''
 
-    const newMockVenueNetworkData = aggregatedVenueNetworksData(venueNetworkList, newApGroup, networkDeepList)
+    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroupData }, networkDeepList)
 
-    services.useVenueNetworkListQuery = jest.fn().mockImplementation(() => {
+    services.useVenueNetworkListV2Query = jest.fn().mockImplementation(() => {
       return { data: newMockVenueNetworkData }
     })
 
-    services.useVenueNetworkTableQuery = jest.fn().mockImplementation(() => {
+    services.useVenueNetworkTableV2Query = jest.fn().mockImplementation(() => {
       return { data: newMockVenueNetworkData }
     })
 
@@ -298,7 +306,6 @@ describe('VenueNetworksTab', () => {
   })
 
   it('should render ap compatibilies correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
     render(<Provider><VenueNetworksTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
@@ -308,6 +315,82 @@ describe('VenueNetworksTab', () => {
 
     const icon = await within(row).findByTestId('InformationSolid')
     expect(icon).toBeVisible()
+  })
+
+  it('activate Network - rbac API', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
+
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+    })
+    const row = await screen.findByRole('row', { name: /test_2/i })
+
+    const requestSpy = jest.fn()
+    const newApGroupData = JSON.parse(JSON.stringify(venueNetworkApGroupData))
+    newApGroupData[1].apGroups[0].id = 'test2'
+
+    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroupData }, networkDeepList)
+
+    services.useNewVenueNetworkTableQuery = jest.fn().mockImplementation(() => {
+      return { data: newMockVenueNetworkData }
+    })
+
+    mockServer.use(
+      rest.put(
+        WifiRbacUrlsInfo.addNetworkVenue.url,
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      )
+    )
+
+    const toogleButton = await within(row).findByRole('switch', { checked: false })
+    await userEvent.click(toogleButton)
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    //await waitFor(() => rows.forEach(row => expect(row).toBeChecked()))
+  })
+
+  it('deactivate Network - rbac API', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
+
+    render(<Provider><VenueNetworksTab /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+    })
+    const row = await screen.findByRole('row', { name: /test_1/i })
+
+    const requestSpy = jest.fn()
+    const newApGroupData = JSON.parse(JSON.stringify(venueNetworkApGroupData))
+    newApGroupData[0].apGroups[0].id = ''
+
+    const newMockVenueNetworkData = aggregatedVenueNetworksDataV2(venueNetworkList, { data: newApGroupData }, networkDeepList)
+
+    services.useNewVenueNetworkTableQuery = jest.fn().mockImplementation(() => {
+      return { data: newMockVenueNetworkData }
+    })
+
+    mockServer.use(
+      rest.delete(
+        WifiRbacUrlsInfo.deleteNetworkVenue.url,
+        (req, res, ctx) => {
+          requestSpy()
+          return res(ctx.json({ requestId: '456' }))
+        }
+      )
+    )
+
+    const toogleButton = await within(row).findByRole('switch', { checked: true })
+    await userEvent.click(toogleButton)
+
+    await waitFor(() => expect(requestSpy).toHaveBeenCalledTimes(1))
+
+    const rows = await screen.findAllByRole('switch')
+    expect(rows).toHaveLength(2)
+    //await waitFor(() => rows.forEach(row => expect(row).not.toBeChecked()))
   })
 
   describe('Edge and SD-LAN FF is on', () => {

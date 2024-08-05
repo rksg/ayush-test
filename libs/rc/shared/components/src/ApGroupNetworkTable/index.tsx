@@ -134,6 +134,8 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
   const { isTemplate } = useConfigTemplate()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isTemplateRbacEnabled : isWifiRbacEnabled
 
   const nonRbacTableQuery = useTableQuery({
     useQuery: useApGroupNetworkListV2Query,
@@ -143,7 +145,7 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: isWifiRbacEnabled }
+    option: { skip: resolvedRbacEnabled }
   })
 
   const rbacTableQuery = useTableQuery({
@@ -154,13 +156,14 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
       filters: {
         'venueApGroups.apGroupIds': [apGroupId]
       },
-      isTemplate: isTemplate
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled
     },
     pagination: { settingsId },
-    option: { skip: !isWifiRbacEnabled || !venueId || !apGroupId }
+    option: { skip: !resolvedRbacEnabled || !venueId || !apGroupId }
   })
 
-  return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 export const getCurrentVenue = (row: Network, venueId: string) => {

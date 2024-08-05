@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { edgeApi, venueApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -13,6 +12,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 import { mockEdgeList } from './__tests__/fixtures'
 
 import { EdgesTable } from '.'
@@ -21,6 +22,11 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+jest.mock('../useEdgeActions', () => ({
+  ...jest.requireActual('../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const mockedDeleteApi = jest.fn()
@@ -298,8 +304,7 @@ describe('Edge Table', () => {
   })
 
   it('should shutdown the selected SmartEdge', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(
-      ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
     const user = userEvent.setup()
     render(
       <Provider>

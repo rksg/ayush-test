@@ -67,7 +67,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList,
+        ConfigTemplateUrlsInfo.getVenuesTemplateListRbac
+      ),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -228,10 +231,16 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'VENUE_MESH_SETTINGS' }]
     }),
     getVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueLanPorts)
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueLanPorts,
+        VenueConfigTemplateUrlsInfo.getVenueLanPortsRbac
+      )
     }),
     updateVenueTemplateLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueLanPorts)
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueLanPorts,
+        VenueConfigTemplateUrlsInfo.updateVenueLanPortsRbac
+      )
     }),
     getVenueTemplateDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
       query: commonQueryFn(

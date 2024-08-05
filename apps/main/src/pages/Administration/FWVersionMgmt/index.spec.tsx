@@ -124,6 +124,10 @@ describe('Firmware Version Management', () => {
         SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
         (req, res, ctx) => res(ctx.json({}))
       ),
+      rest.get(
+        SigPackUrlsInfo.getSigPackRbac.url.replace('?changesIncluded=:changesIncluded', ''),
+        (req, res, ctx) => res(ctx.json({}))
+      ),
       rest.post(
         FirmwareUrlsInfo.getApModelFamilies.url,
         (req, res, ctx) => res(ctx.json(mockedApModelFamilies))

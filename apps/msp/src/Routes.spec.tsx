@@ -59,7 +59,8 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
   [ConfigTemplateType.SYSLOG]: false,
   [ConfigTemplateType.SWITCH_REGULAR]: false,
-  [ConfigTemplateType.SWITCH_CLI]: false
+  [ConfigTemplateType.SWITCH_CLI]: false,
+  [ConfigTemplateType.AP_GROUP]: false
 }
 
 jest.mocked(useIsSplitOn).mockReturnValue(false)

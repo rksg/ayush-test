@@ -1,6 +1,71 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Modal should render custom footer 1`] = `
+.c0 .ant-modal-content {
+  border-radius: 12px;
+  max-height: 80vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c0 .ant-modal-header {
+  border-radius: inherit;
+}
+
+.c0 .ant-modal-header .ant-modal-title {
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-2-font-size);
+  font-weight: var(--acx-headline-2-font-weight);
+  line-height: var(--acx-headline-2-line-height);
+}
+
+.c0 .ant-modal-body {
+  padding-top: 0;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.c0 .ant-modal-body .ant-tabs > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
+  padding-top: 5px;
+}
+
+.c0 .ant-modal-footer {
+  border-radius: inherit;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.c0 .ant-modal-footer .ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
+  margin-left: 12px;
+}
+
+.c0 .ant-modal-close-x {
+  padding-top: 3px;
+}
+
+.c0 .has-steps-form .ant-modal-content .ant-modal-body {
+  padding-bottom: 0px;
+}
+
+.c0 .has-steps-form .ant-modal-content .ant-modal-footer {
+  display: none;
+}
+
+.c0 .ant-modal-content:has(.styledComponents__ActionsContainer-sc-1ibvcih-2) .ant-modal-body {
+  padding-bottom: 0px;
+}
+
+.c0 .ant-modal-content:has(.styledComponents__ActionsContainer-sc-1ibvcih-2) .ant-modal-footer {
+  display: none;
+}
+
 <div
   class="ant-modal-root"
   data-testid="basic-modal"
@@ -15,7 +80,7 @@ exports[`Modal should render custom footer 1`] = `
     <div
       aria-labelledby="test-id"
       aria-modal="true"
-      class="ant-modal styledComponents__Modal-sc-k3durc-0 jjYTpm"
+      class="ant-modal c0"
       role="dialog"
       style="width: 520px;"
     >

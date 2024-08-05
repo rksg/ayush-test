@@ -44,7 +44,7 @@ import {
   subnetMaskIpRegExp,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  layer3ProtocolLabelMapping, TableResult, L3AclPolicy
+  layer3ProtocolLabelMapping, TableResult, L3AclPolicy, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { WifiScopes }                               from '@acx-ui/types'
 import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
@@ -129,6 +129,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -158,6 +159,8 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const [drawerForm] = Form.useForm()
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
 
   const { lockScroll, unlockScroll } = useScrollLock()
 
@@ -187,7 +190,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   })
 
   const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(
-    editMode.isEdit, enableRbac
+    editMode.isEdit, resolvedRbacEnabled
   )
 
   const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
@@ -195,7 +198,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
     skip: skipFetch,
     extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId },
-    enableRbac
+    enableRbac: resolvedRbacEnabled
   })
 
   const isViewMode = () => {
@@ -518,7 +521,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         const l3AclRes: CommonResult = await createL3AclPolicy({
           params: params,
           payload: convertToPayload(),
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
         // let responseData = l3AclRes.response as {
         //   [key: string]: string
@@ -531,7 +534,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         await updateL3AclPolicy({
           params: { ...params, l3AclPolicyId: queryPolicyId },
           payload: convertToPayload(queryPolicyId),
-          enableRbac
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {

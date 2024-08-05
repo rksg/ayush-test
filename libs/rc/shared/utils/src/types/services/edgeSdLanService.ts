@@ -113,7 +113,7 @@ export interface EdgeMvSdLanExtended extends PartiallyOptional<EdgeMvSdLanRespon
   networks: EdgeMvSdLanNetworks;
   isGuestTunnelEnabled: boolean;
   guestEdgeClusterId: string;
-  guestEdgeClusterVenueId?: string;
+  guestEdgeClusterVenueId?: string;     // for RBAC API
   guestTunnelProfileId: string;
   guestNetworks: EdgeMvSdLanNetworks;
 }
@@ -155,6 +155,8 @@ export interface EdgeMvSdLanViewData {
   timestamp?: number
   tunneledWlans?: EdgeSdLanTunneledWlan[]
   tunneledGuestWlans?: EdgeSdLanTunneledWlan[]
+  edgeClusterTunnelInfo?: EdgeSdLanDcTunnelInfo[]
+  guestEdgeClusterTunnelInfo?: EdgeSdLanDmzTunnelInfo[]
 }
 
 export type EdgeMvSdLanFormNetwork = {
@@ -165,11 +167,24 @@ export type EdgeMvSdLanFormNetwork = {
 }
 
 export interface EdgeMvSdLanFormModel extends EdgeMvSdLanExtended {
-  edgeClusterVenueId?: string;
-  guestEdgeClusterVenueId?: string;
+  edgeClusterVenueId?: string;       // for RBAC API
+  guestEdgeClusterVenueId?: string;  // for RBAC API
   edgeClusterName?: string;
   tunnelProfileName?: string;
+  guestTunnelProfileName?: string;
   guestEdgeClusterName?: string;
   activatedNetworks: EdgeMvSdLanFormNetwork;
   activatedGuestNetworks: EdgeMvSdLanFormNetwork;
+}
+
+export interface EdgeSdLanDcTunnelInfo {
+  serialNumber: string
+  activeApCount: number
+  allocatedApCount: number
+}
+
+export interface EdgeSdLanDmzTunnelInfo {
+  serialNumber: string
+  activeNodeCount: number
+  allocatedNodeCount: number
 }
