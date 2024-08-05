@@ -1,14 +1,18 @@
+import { useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Card, Loader, Table, TableProps } from '@acx-ui/components'
-import { SimpleListTooltip }               from '@acx-ui/rc/components'
-import { useVenuesListQuery }              from '@acx-ui/rc/services'
+import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
+import { SimpleListTooltip }                       from '@acx-ui/rc/components'
+import { useVenuesListQuery }                      from '@acx-ui/rc/services'
 import {
   LbsServerProfileViewModel,
   Venue,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { LbsServerVenueApsDrawer } from './LbsServerVenueApsDrawer'
 
 const defaultVenuePayload = {
   searchString: '',
@@ -25,6 +29,8 @@ const defaultVenuePayload = {
 export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileViewModel }) {
   const { $t } = useIntl()
   const { data } = props
+  const [ selectedVenue, setSelectedVenue ] = useState<Venue>()
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
 
   const venueIds = data?.venueIds || []
 
@@ -38,6 +44,11 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
       skip: !venueIds?.length
     }
   })
+
+  const handleCheckAps = (selectedVenue: Venue) => {
+    setSelectedVenue(selectedVenue)
+    setDrawerVisible(true)
+  }
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -64,10 +75,11 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
             .reduce((a, b) => a + b, 0)
           : 0
         return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/devices`}
-            children={count ? count : 0}
-          />
+          <Button type='link'
+            onClick={() => {
+              handleCheckAps(row)
+            }}
+            children={count ? count : 0} />
         )
       }
     },
@@ -100,6 +112,14 @@ export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileV
           rowKey='id'
         />
       </Loader>
+      {selectedVenue
+        ? <LbsServerVenueApsDrawer
+          venue={selectedVenue}
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
+        />
+        : null
+      }
     </Card>
   )
 }

@@ -216,9 +216,9 @@ export const intentListResult = {
     {
       id: '11',
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: 'active',
       statusReason: '',
-      displayStatus: 'applied',
+      displayStatus: 'active',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:05:02.839Z',
       sliceType: 'zone',
@@ -279,21 +279,16 @@ export const intentListResult = {
     {
       id: '13',
       code: 'c-txpower-same',
-      status: 'revertfailed',
-      statusReason: '',
-      displayStatus: 'revertfailed',
+      status: 'paused',
+      statusReason: 'revert-failed',
+      displayStatus: 'paused-revert-failed',
       createdAt: '2023-06-13T07:05:08.638Z',
       updatedAt: '2023-06-16T06:06:02.839Z',
       sliceType: 'zone',
       sliceValue: 'zone-2',
       metadata: {
         error: {
-          details: [{
-            apName: 'AP',
-            apMac: 'MAC',
-            configKey: 'radio5g',
-            message: 'unknown error'
-          }]
+          message: 'unknown error'
         }
       },
       path: [
@@ -404,12 +399,180 @@ export const intentListResult = {
       ] as NetworkPath,
       preferences: { crrmFullOptimization: true },
       trigger: 'daily'
+    }
+  ]
+}
+
+const intentStatus = {
+  id: '1',
+  code: 'c-crrm-channel5g-auto',
+  status: 'applied',
+  statusReason: '',
+  displayStatus: 'applied',
+  createdAt: '2023-06-13T07:05:08.638Z',
+  updatedAt: '2023-06-16T06:05:02.839Z',
+  sliceType: 'zone',
+  sliceValue: 'zone-1',
+  metadata: {},
+  path: [
+    { type: 'system', name: 'vsz611' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  idPath: [
+    { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  statusTrail: [
+    { status: 'new' },
+    { status: 'applyscheduled' },
+    { status: 'applyscheduleinprogress' },
+    { status: 'applied' }
+  ],
+  preferences: { crrmFullOptimization: true },
+  trigger: 'daily'
+}
+
+export const intentListWithAllStatus = {
+  intents: [
+    {
+      ...intentStatus,
+      status: 'new',
+      statusReason: '',
+      displayStatus: 'new'
     },
-    notEnoughLicenses,
-    notEnoughData,
-    verified,
-    conflictConfig,
-    unknownReason,
-    noAps
+    {
+      ...intentStatus,
+      status: 'scheduled',
+      statusReason: '',
+      displayStatus: 'scheduled'
+    },
+    {
+      ...intentStatus,
+      status: 'scheduled',
+      statusReason: 'one-click',
+      displayStatus: 'scheduled-one-click'
+    },
+    {
+      ...intentStatus,
+      status: 'applyscheduled',
+      statusReason: '',
+      displayStatus: 'applyscheduled'
+    },
+    {
+      ...intentStatus,
+      status: 'applyscheduleinprogress',
+      statusReason: '',
+      displayStatus: 'applyscheduleinprogress'
+    },
+    {
+      ...intentStatus,
+      status: 'active',
+      statusReason: '',
+      displayStatus: 'active'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      statusReason: 'apply-failed',
+      displayStatus: 'paused-apply-failed',
+      metadata: {
+        error: {
+          message: 'unknown error'
+        }
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'revertscheduled',
+      statusReason: '',
+      displayStatus: 'revertscheduled',
+      metadata: {
+        scheduledAt: '2023-06-17T00:00:00.000Z'
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'revertscheduleinprogress',
+      statusReason: '',
+      displayStatus: 'revertscheduleinprogress'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      statusReason: 'revert-failed',
+      displayStatus: 'paused-revert-failed',
+      metadata: {
+        error: {
+          message: 'unknown error'
+        }
+      }
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      statusReason: 'reverted',
+      displayStatus: 'paused-reverted'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      statusReason: 'from-inactive',
+      displayStatus: 'paused-from-inactive'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      statusReason: 'from-active',
+      displayStatus: 'paused-from-active'
+    },
+    {
+      ...intentStatus,
+      status: 'paused',
+      statusReason: 'by-default',
+      displayStatus: 'paused-by-default'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'conflicting-configuration',
+      displayStatus: 'na-conflicting-configuration'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'no-aps',
+      displayStatus: 'na-no-aps'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'not-enough-license',
+      displayStatus: 'na-not-enough-license'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'not-enough-data',
+      displayStatus: 'na-not-enough-data'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'verified',
+      displayStatus: 'na-verified'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'waiting-for-etl',
+      displayStatus: 'na-waiting-for-etl'
+    },
+    {
+      //Simulate a displayStatus not defined in UI config and should be handled by UI without errors
+      ...intentStatus,
+      status: 'na',
+      statusReason: 'not-defined',
+      displayStatus: 'na-not-defined'
+    }
   ]
 }

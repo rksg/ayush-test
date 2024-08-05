@@ -37,37 +37,50 @@ export const useCasesToRefreshPortalTemplateList = [
 export const L2AclTemplateUseCases = [
   'AddL2AclPolicyTemplate',
   'UpdateL2AclPolicyTemplate',
-  'DeleteL2AclPolicyTemplate'
+  'DeleteL2AclPolicyTemplate',
+  'AddL2AclPolicyTemplateInCfgTemplate',
+  'UpdateL2AclPolicyTemplateInCfgTemplate',
+  'DeleteL2AclPolicyTemplateInCfgTemplate'
 ]
 
 export const L3AclTemplateUseCases = [
   'AddL3AclPolicyTemplate',
   'UpdateL3AclPolicyTemplate',
-  'DeleteL3AclPolicyTemplate'
+  'DeleteL3AclPolicyTemplate',
+  'AddL3AclPolicyTemplateInCfgTemplate',
+  'UpdateL3AclPolicyTemplateInCfgTemplate',
+  'DeleteL3AclPolicyTemplateInCfgTemplate'
 ]
 
 export const DeviceTemplateUseCases = [
   'AddDevicePolicyTemplate',
   'UpdateDevicePolicyTemplate',
-  'DeleteDevicePolicyTemplate'
+  'DeleteDevicePolicyTemplate',
+  'AddDevicePolicyTemplateInCfgTemplate',
+  'UpdateDevicePolicyTemplateInCfgTemplate',
+  'DeleteDevicePolicyTemplateInCfgTemplate'
 ]
 
 export const ApplicationTemplateUseCases = [
   'AddApplicationPolicyTemplate',
   'UpdateApplicationPolicyTemplate',
-  'DeleteApplicationPolicyTemplate'
+  'DeleteApplicationPolicyTemplate',
+  'AddApplicationPolicyTemplateInCfgTemplate',
+  'UpdateApplicationPolicyTemplateInCfgTemplate',
+  'DeleteApplicationPolicyTemplateInCfgTemplate'
 ]
 
 export const AccessControlTemplateUseCases = [
   'AddAccessControlProfileTemplate',
   'UpdateAccessControlProfileTemplate',
-  'DeleteAccessControlProfileTemplate'
+  'DeleteAccessControlProfileTemplate',
+  'AddAccessControlProfileTemplateInCfgTemplate',
+  'UpdateAccessControlProfileTemplateInCfgTemplate',
+  'DeleteAccessControlProfileTemplateInCfgTemplate'
 ]
 
 export const useCasesToRefreshAccessControlTemplateList = [
-  'AddAccessControlProfileTemplate',
-  'UpdateAccessControlProfileTemplate',
-  'DeleteAccessControlProfileTemplate',
+  ...AccessControlTemplateUseCases,
   ...L2AclTemplateUseCases,
   ...L3AclTemplateUseCases,
   ...DeviceTemplateUseCases,

@@ -12,7 +12,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getWifiNetworksList: {
     method: 'post',
     url: '/wifiNetworks/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getNetworksDetailHeader: {
     // [New API] Path variable not match

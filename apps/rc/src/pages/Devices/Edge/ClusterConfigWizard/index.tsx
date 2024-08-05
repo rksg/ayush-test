@@ -1,18 +1,17 @@
 import { useContext } from 'react'
 
-import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, PageNotFound }                                from '@acx-ui/components'
-import { ClusterHighAvailabilityModeEnum, CommonCategory, Device, genUrl } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                  from '@acx-ui/user'
+import { Button, PageHeader, PageNotFound } from '@acx-ui/components'
+import { ClusterConfigWizardSubtitle }      from '@acx-ui/rc/components'
+import { CommonCategory, Device, genUrl }   from '@acx-ui/rc/utils'
+import { TenantLink, useParams }            from '@acx-ui/react-router-dom'
+import { filterByAccess }                   from '@acx-ui/user'
 
 import { ClusterConfigWizardContext, ClusterConfigWizardDataProvider } from './ClusterConfigWizardDataProvider'
 import { ClusterInterfaceSettings }                                    from './ClusterInterfaceSettings'
 import { InterfaceSettings }                                           from './InterfaceSettings'
 import { SelectType }                                                  from './SelectType'
-import { SubTitle1 }                                                   from './styledComponents'
 import { SubInterfaceSettings }                                        from './SubInterfaceSettings'
 
 const contentMapping = {
@@ -40,33 +39,11 @@ const SelectedContent = () => {
 
   const activeContent = contentMapping[settingType as keyof typeof contentMapping ]
 
-  const getHaModeDisplayStr = (highAvailabilityMode?: ClusterHighAvailabilityModeEnum) => {
-    switch(highAvailabilityMode) {
-      case ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE:
-        return $t({ defaultMessage: '(Active-Active HA mode)' })
-      case ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY:
-        return $t({ defaultMessage: '(Active-Standby HA mode)' })
-      default:
-        return ''
-    }
-  }
-
   return activeContent ?
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Cluster & SmartEdge Configuration Wizard' })}
-        subTitle={
-          <Space>
-            <SubTitle1>{$t({ defaultMessage: 'Cluster: ' })}</SubTitle1>
-            {$t(
-              { defaultMessage: '{clusterName} {haMode}' },
-              {
-                clusterName: clusterInfo?.name,
-                haMode: getHaModeDisplayStr(clusterInfo?.highAvailabilityMode)
-              }
-            )}
-          </Space>
-        }
+        subTitle={<ClusterConfigWizardSubtitle clusterInfo={clusterInfo} />}
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'SmartEdges' }),

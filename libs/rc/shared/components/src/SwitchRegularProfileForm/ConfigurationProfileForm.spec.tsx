@@ -4,11 +4,11 @@ import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { switchApi, venueApi }                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchConfigTemplateUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within }       from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                   from '@acx-ui/feature-toggle'
+import { switchApi, venueApi }                                                                                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ConfigTemplateUrlsInfo, SwitchConfigTemplateUrlsInfo, SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }                                                   from '@acx-ui/test-utils'
 
 import {
   profilesExistResponse,
@@ -33,15 +33,26 @@ const configureProfileContextValues = {
 } as unknown as ConfigurationProfileType
 
 const mockNavigate = jest.fn()
+const mockedUpdateFn = jest.fn()
+const mockedAssociate = jest.fn()
+const mockedDisassociate = jest.fn()
+const mockedUseConfigTemplate = jest.fn()
+
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate
 }))
-const mockedUpdateFn = jest.fn()
+
 describe('Wired', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     mockServer.use(
       rest.post(SwitchUrlsInfo.addSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json({}))
@@ -71,6 +82,10 @@ describe('Wired', () => {
   })
 
   afterEach(() => {
+    mockedUpdateFn.mockClear()
+    mockedAssociate.mockClear()
+    mockedDisassociate.mockClear()
+    mockedUseConfigTemplate.mockRestore()
     Modal.destroyAll()
   })
 
@@ -731,5 +746,303 @@ describe('Wired', () => {
     fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
     fireEvent.blur(profileNameInput)
     expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
+  })
+
+  describe('Edit mode', () => {
+    const params = {
+      tenantId: 'tenant-id',
+      profileId: 'b27ddd7be108495fb9175cec5930ce63',
+      action: 'edit'
+    }
+
+    it('should render Apply profile updates to existing switches button correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.SWITCH_PROFILE_ONBOARD_ONLY
+      )
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={{
+            ...configureProfileContextValues,
+            editMode: true
+          }}>
+            <ConfigurationProfileForm />
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+        })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+      expect(await screen.findByText(/General Properties/)).toBeVisible()
+      fireEvent.blur(await screen.findByLabelText('Profile Name'))
+      expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
+
+      await userEvent.click(await screen.findByText('Venues'))
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+
+      await screen.findByRole('heading', { level: 3, name: 'Venues' })
+      await waitFor(async () => {
+        expect(await screen.findAllByRole('row')).toHaveLength(11)
+      })
+      expect(await screen.findByText(/Apply profile updates to existing switches/)).toBeVisible()
+
+      await userEvent.click(await screen.findByText('Summary'))
+      await screen.findByRole('heading', { level: 3, name: /Summary/i })
+      expect(await screen.findByText(/Apply profile updates to existing switches/)).toBeVisible()
+    })
+  })
+
+  describe('Config template', () => {
+    it('should render correctly with rbac api', async () => {
+      const params = {
+        tenantId: 'tenant-id',
+        action: 'add'
+      }
+
+      mockServer.use(
+        rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+          (_, res, ctx) => res(ctx.json(venues))
+        ),
+        rest.post(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList.url,
+          (_, res, ctx) => res(ctx.json({}))
+        )
+      )
+
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      jest.mocked(useIsSplitOn).mockImplementation(ff =>
+        ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE
+      )
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+            <ConfigurationProfileForm />
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
+        })
+
+      expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
+      const profileNameInput = await screen.findByLabelText('Profile Name')
+      fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
+      const profileDescInput = await screen.findByLabelText('Profile Description')
+      fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
+      fireEvent.blur(profileNameInput)
+      expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
+    })
+
+    it('should render venue table correctly', async () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      const params = {
+        tenantId: 'tenant-id',
+        profileId: 'b27ddd7be108495fb9175cec5930ce63',
+        action: 'edit'
+      }
+
+      mockServer.use(
+        rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+          (_, res, ctx) => res(ctx.json(venues))
+        ),
+        rest.post(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList.url,
+          (_, res, ctx) => res(ctx.json({}))
+        )
+      )
+
+      render(
+        <Provider>
+          <ConfigurationProfileFormContext.Provider value={{
+            ...configureProfileContextValues,
+            editMode: true
+          }}>
+            <ConfigurationProfileForm />
+          </ConfigurationProfileFormContext.Provider>
+        </Provider>, {
+          // eslint-disable-next-line max-len
+          route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+        })
+
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+      expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+      expect(await screen.findByText(/General Properties/)).toBeVisible()
+      fireEvent.blur(await screen.findByLabelText('Profile Name'))
+      expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
+
+      await userEvent.click(await screen.findByText('Venues'))
+      await waitFor(() => {
+        expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+      })
+
+      await screen.findByRole('heading', { level: 3, name: 'Venues' })
+      await waitFor(async () => {
+        expect(await screen.findAllByRole('row')).toHaveLength(11)
+      })
+    })
+
+  })
+
+  describe('RBAC', () => {
+    describe('Edit mode', () => {
+      const params = {
+        tenantId: 'tenant-id',
+        profileId: 'b27ddd7be108495fb9175cec5930ce63',
+        action: 'edit'
+      }
+
+      beforeEach(() => {
+        mockServer.use(
+          rest.get(SwitchRbacUrlsInfo.getCliFamilyModels.url,
+            (_, res, ctx) => res(ctx.json(familyModels))
+          ),
+          rest.put(SwitchRbacUrlsInfo.associateSwitchProfile.url,
+            (_, res, ctx) => {
+              mockedAssociate()
+              return res(ctx.json({ requestId: 'request-id' }))
+            }
+          ),
+          rest.delete(SwitchRbacUrlsInfo.disassociateSwitchProfile.url,
+            (_, res, ctx) => {
+              mockedDisassociate()
+              return res(ctx.json({ requestId: 'request-id' }))
+            }
+          )
+        )
+      })
+
+      it('should update correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(
+          <Provider>
+            <ConfigurationProfileFormContext.Provider value={{
+              ...configureProfileContextValues,
+              editMode: true
+            }}>
+              <ConfigurationProfileForm />
+            </ConfigurationProfileFormContext.Provider>
+          </Provider>, {
+            // eslint-disable-next-line max-len
+            route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+          })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/General Properties/)).toBeVisible()
+
+        // await userEvent.click(await screen.findByText('Venues'))
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdateFn).toBeCalled())
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+        expect(mockedUpdateFn).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+      })
+
+      it('should update and associate with switch correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(
+          <Provider>
+            <ConfigurationProfileFormContext.Provider value={{
+              ...configureProfileContextValues,
+              editMode: true
+            }}>
+              <ConfigurationProfileForm />
+            </ConfigurationProfileFormContext.Provider>
+          </Provider>, {
+            // eslint-disable-next-line max-len
+            route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+          })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/General Properties/)).toBeVisible()
+        fireEvent.blur(await screen.findByLabelText('Profile Name'))
+        expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
+
+        await userEvent.click(await screen.findByText('Venues'))
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+
+        await screen.findByRole('heading', { level: 3, name: 'Venues' })
+        await waitFor(async () => {
+          expect(await screen.findAllByRole('row')).toHaveLength(11)
+        })
+
+        const row = await screen.findByRole('row', { name: /My-Venue/i })
+        await userEvent.click(await within(row).findByRole('checkbox'))
+        expect(await screen.findByRole('alert')).toBeInTheDocument()
+        const alertbar = await screen.findByRole('alert')
+        await userEvent.click(await within(alertbar).findByText('Activate'))
+        expect(await within(row).findByRole('switch')).toBeChecked()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedUpdateFn).toBeCalled())
+        await waitFor(() => expect(mockedAssociate).toBeCalled())
+        expect(mockedDisassociate).toHaveBeenCalledTimes(0)
+        expect(mockedUpdateFn).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(1)
+      })
+
+      it('should update and disassociate with switch correctly', async () => {
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+
+        render(
+          <Provider>
+            <ConfigurationProfileFormContext.Provider value={{
+              ...configureProfileContextValues,
+              editMode: true
+            }}>
+              <ConfigurationProfileForm />
+            </ConfigurationProfileFormContext.Provider>
+          </Provider>, {
+            // eslint-disable-next-line max-len
+            route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+          })
+
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+        expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+        expect(await screen.findByText(/General Properties/)).toBeVisible()
+        fireEvent.blur(await screen.findByLabelText('Profile Name'))
+        expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
+
+        await userEvent.click(await screen.findByText('Venues'))
+        await waitFor(() => {
+          expect(screen.queryByRole('img', { name: 'loader' })).not.toBeInTheDocument()
+        })
+
+        await screen.findByRole('heading', { level: 3, name: 'Venues' })
+        await waitFor(async () => {
+          expect(await screen.findAllByRole('row')).toHaveLength(11)
+        })
+
+        const row = await screen.findByRole('row', { name: /testVenue/i })
+        await userEvent.click(await within(row).findByRole('checkbox'))
+        expect(await screen.findByRole('alert')).toBeInTheDocument()
+        const alertbar = await screen.findByRole('alert')
+        await userEvent.click(await within(alertbar).findByText('Deactivate'))
+        expect(await within(row).findByRole('switch')).not.toBeChecked()
+
+        await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+        await waitFor(() => expect(mockedDisassociate).toBeCalled())
+        await waitFor(() => expect(mockedUpdateFn).toBeCalled())
+        expect(mockedDisassociate).toHaveBeenCalledTimes(1)
+        expect(mockedUpdateFn).toHaveBeenCalledTimes(1)
+        expect(mockedAssociate).toHaveBeenCalledTimes(0)
+      })
+    })
   })
 })

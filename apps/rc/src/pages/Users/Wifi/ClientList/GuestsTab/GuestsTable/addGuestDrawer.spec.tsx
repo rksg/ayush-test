@@ -86,7 +86,7 @@ describe('Add Guest Drawer', () => {
       rest.post(CommonUrlsInfo.getGuestsList.url, (_, res, ctx) =>
         res(ctx.json(GuestList))
       ),
-      rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
+      rest.post(ClientUrlsInfo.getClients.url, (_, res, ctx) =>
         res(ctx.json(GuestClients))
       ),
       rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
