@@ -58,6 +58,9 @@ type Metadata = {
 const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
+  // eslint-disable-next-line no-console
+  console.log('IS_MLISA_SA', get('IS_MLISA_SA'))
+
   const zoneVenueText = get('IS_MLISA_SA')
     ? $t({ defaultMessage: 'Zone' })
     : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })

@@ -72,12 +72,6 @@ export async function initialize () {
 }
 
 export function get (key: keyof EnvironmentConfig): string {
-
-  // eslint-disable-next-line no-console, max-len
-  console.log('config.value', config.value)
-  // eslint-disable-next-line no-console, max-len
-  console.log('process.env.NX_IS_MLISA_SA', process.env.NX_IS_MLISA_SA)
-
   if (key === 'IS_MLISA_SA') return process.env.NX_IS_MLISA_SA || ''
   if (config.value === undefined) throw new Error('Config not initialized')
   return config.value[key]
