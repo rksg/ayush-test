@@ -90,10 +90,15 @@ function DateTimeSetting ({
         renderExtraFooter={
           () => <TimeDropdown type={TimeDropdownTypes.Daily}
             name={name as string}
+            disabledDateTime={
+              { disabledStrictlyBefore: '0',
+                disabledStrictlyAfter: '10' }
+            }
           />}
       />
     </Form.Item>
   )}
+
 // disabledDateTime={
 //   { disabledStrictlyBefore: '0',
 //     disabledStrictlyAfter: '10' }
@@ -102,7 +107,11 @@ function DateTimeSetting ({
 const scheduleActions = {
   datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
   time: () => <TimeDropdown type={TimeDropdownTypes.Daily}
-    name={name as string}/>
+    name={name as string}
+    disabledDateTime={
+      { disabledStrictlyBefore: '0',
+        disabledStrictlyAfter: '10' }
+    }/>
 }
 
 export function getAvailableActions (status: string,

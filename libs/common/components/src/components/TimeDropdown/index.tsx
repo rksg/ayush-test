@@ -21,14 +21,7 @@ export enum TimeDropdownTypes {
 //   disabledStrictlyAfter: string
 // }
 
-interface TimeDropdownProps {
-  type: TimeDropdownTypes
-  name: string
-  disabledDateTime?: {
-    disabledStrictlyBefore: string,
-    disabledStrictlyAfter: string
-  }
-}
+
 
 function timeMap () {
   const timeMap = new Map<number, string>()
@@ -121,11 +114,27 @@ export function getDisplayTime (type: TimeDropdownTypes) {
 const defaultDisabledTime =
 { disabledStrictlyBefore: '0', disabledStrictlyAfter: '24' }
 
+
+interface TimeDropdownProps {
+  type: TimeDropdownTypes
+  name: string
+  disabledDateTime?: {
+    disabledStrictlyBefore?: string,
+    disabledStrictlyAfter?: string
+  }
+}
+
+
 export function TimeDropdown ({ type, name, disabledDateTime }: TimeDropdownProps) {
   const { $t } = useIntl()
   console.log(name)
   console.log(disabledDateTime)
-  const { disabledStrictlyBefore, disabledStrictlyAfter } = disabledDateTime || defaultDisabledTime
+
+  const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
+  || defaultDisabledTime.disabledStrictlyBefore
+  const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
+  || defaultDisabledTime.disabledStrictlyAfter
+
   const renderHour = (spanLength:number) => (
     <Col span={spanLength}>
       <Form.Item

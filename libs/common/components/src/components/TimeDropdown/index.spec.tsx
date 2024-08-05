@@ -8,7 +8,17 @@ import '@testing-library/jest-dom/extend-expect'
 import { getDisplayTime, TimeDropdown, TimeDropdownTypes } from '.'
 
 describe('TimeDropdown', () => {
-  it('renders Daily dropdown correctly', async () => {
+  it('renders Daily dropdown without disabled time correctly', async () => {
+    render(
+      <Form>
+        <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
+      </Form>
+    )
+
+    expect(screen.getByText('Select hour')).toBeInTheDocument()
+  })
+
+  it('renders Daily dropdown with disabled time correctly', async () => {
     render(
       <Form>
         <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />
