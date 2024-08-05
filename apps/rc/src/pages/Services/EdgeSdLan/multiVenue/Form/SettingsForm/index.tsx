@@ -9,8 +9,7 @@ import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { InformationSolid }                        from '@acx-ui/icons'
 import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterListQuery,
-  useGetEdgeMvSdLanViewDataListQuery
+  useGetEdgeClusterListQuery
 } from '@acx-ui/rc/services'
 import {
   servicePolicyNameRegExp,
@@ -18,7 +17,8 @@ import {
   EdgeMvSdLanFormModel
 } from '@acx-ui/rc/utils'
 
-import { messageMappings } from '../messageMappings'
+import { useEdgeMvSdLanContext } from '../EdgeMvSdLanContextProvider'
+import { messageMappings }       from '../messageMappings'
 
 import * as UI from './styledComponents'
 
@@ -26,24 +26,16 @@ export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
+  const { allSdLans } = useEdgeMvSdLanContext()
+
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
+  const guestEdgeClusterId = Form.useWatch('guestEdgeClusterId', form)
 
   const helpUrl = useHelpPageLink()
 
-  const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeMvSdLanViewDataListQuery(
-    { payload: {
-      fields: ['id', 'edgeClusterId', 'guestEdgeClusterId']
-    } },
-    {
-      selectFromResult: ({ data, isLoading }) => ({
-        sdLanBoundEdges: (data?.data
-          ?.filter(item => item.id !== params.serviceId)
-          .flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
-          .filter(val => !!val)) ?? [],
-        isSdLanBoundEdgesLoading: isLoading
-      })
-    }
-  )
+  const sdLanBoundEdges = allSdLans.filter(item => item.id !== params.serviceId)
+    .flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
+    .filter(val => !!val)
 
   const filterSn = editMode ? [initialValues?.edgeClusterId] : []
   if (editMode && initialValues?.guestEdgeClusterId)
@@ -63,7 +55,6 @@ export const SettingsForm = () => {
         : { pageSize: 10000 })
     } },
     {
-      skip: isSdLanBoundEdgesLoading,
       selectFromResult: ({ data, isLoading }) => {
         return {
           clusterData: data?.data
@@ -172,8 +163,8 @@ export const SettingsForm = () => {
                     ]}
                   >
                     <Select
-                      loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
-                      options={clusterOptions}
+                      loading={isClusterOptsLoading}
+                      options={clusterOptions?.filter(item => item.value !== guestEdgeClusterId)}
                       placeholder={$t({ defaultMessage: 'Select ...' })}
                       disabled={editMode}
                       onChange={onEdgeClusterChange}
@@ -226,7 +217,7 @@ export const SettingsForm = () => {
                       ]}
                     >
                       <Select
-                        loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
+                        loading={isClusterOptsLoading}
                         options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
                         placeholder={$t({ defaultMessage: 'Select ...' })}
                         disabled={editMode && !!initialValues?.guestEdgeClusterId}
