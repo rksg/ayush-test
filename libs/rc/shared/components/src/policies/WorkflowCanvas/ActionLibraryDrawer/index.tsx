@@ -36,7 +36,13 @@ const resultActions: ActionType[] = [
 
 export default function ActionLibraryDrawer (props: ActionLibraryProps) {
   const { $t } = useIntl()
-  const { visible, relationshipMap, existingActionTypes, onClose, onClickAction } = props
+  const {
+    visible,
+    relationshipMap,
+    existingActionTypes = new Set(),
+    onClose,
+    onClickAction
+  } = props
 
   const { defMap, isDefLoading } = useGetWorkflowActionDefinitionListQuery({
     params: {
@@ -52,12 +58,6 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
       }
     )
   })
-
-  // useEffect(() => {
-  //   console.log('existingActionTypes = ', existingActionTypes)
-  //   console.log('Definitions :: ', defMap)
-  //   console.log('RelationshipMap :: ', relationshipMap)
-  // }, [existingActionTypes])
 
   const onClick = (type: ActionType) => {
     if(defMap?.get(type)) {
@@ -91,7 +91,6 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
             { isLoading: false, isFetching: isDefLoading }
           ]}
         >
-          {/* TODO: if defMap not found, do not display the ActionCard */}
           <UI.Collapse defaultActiveKey={[1, 2, 3]} ghost={true}>
             <Panel header={$t({ defaultMessage: 'User Interaction' })} key={1}>
               <GridRow>

@@ -23,7 +23,7 @@ export const Card = styled(AntCard)<{ $disabled: boolean }>`
 
    :hover {
     button {
-      opacity: 100%;
+      opacity: 1;
     }
   }
 
