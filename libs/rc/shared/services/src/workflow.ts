@@ -2,7 +2,6 @@
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { image }                                   from 'd3'
 import _                                           from 'lodash'
 
 import {

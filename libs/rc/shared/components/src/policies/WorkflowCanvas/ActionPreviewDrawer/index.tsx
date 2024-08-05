@@ -13,6 +13,7 @@ const previewMap = {
   [ActionType.DPSK]: AupPreview  // FIXME: Implement DPSK preview component
 }
 
+// FIXME: deprecated
 export function ActionPreviewDrawer (props: {
     actionId: string,
     actionType: ActionType,
