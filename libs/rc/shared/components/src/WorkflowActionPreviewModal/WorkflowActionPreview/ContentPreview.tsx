@@ -11,6 +11,7 @@ interface ContentPreviewProps {
   uiConfiguration?: UIConfiguration,
   title?: React.ReactNode,
   body?: React.ReactNode,
+  extra?: React.ReactNode,
   hideNavigation?: boolean
   isStart?: boolean,
   onNext?: () => void,
@@ -18,7 +19,7 @@ interface ContentPreviewProps {
 }
 
 export function ContentPreview (props: ContentPreviewProps) {
-  const { uiConfiguration, title, body, hideNavigation = false, ...rest } = props
+  const { uiConfiguration, title, body, extra, hideNavigation = false, ...rest } = props
   const {
     uiColorSchema,
     uiStyleSchema,
@@ -62,6 +63,8 @@ export function ContentPreview (props: ContentPreviewProps) {
       >
         {body}
       </UI.Body>
+
+      {extra}
 
       {!hideNavigation && <StepNavigation {...rest} />}
 
