@@ -1162,6 +1162,118 @@ export function ManageCustomer () {
     </>
   }
 
+  const EditCustomerSubscriptionFormNew = () => {
+    const trialSubscriptionSubtitle = isTrialActive
+      ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
+      : intl.$t({ defaultMessage: 'Inactive Subscriptions' })
+    return <>
+      {isTrialMode && <div>
+        <Subtitle level={3} style={{ display: 'inline-block' }}>
+          {trialSubscriptionSubtitle}</Subtitle>
+        <Button
+          type='primary'
+          style={{ display: 'inline-block', marginLeft: '80px' }}
+          onClick={() => setStartSubscriptionVisible(true)}
+        >{intl.$t({ defaultMessage: 'Start Subscription' })}
+        </Button>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+          <label>{assignedApswLicense}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
+          <label>{intl.$t({ defaultMessage: 'Trial Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          <label>{intl.$t({ defaultMessage: '30 Day Trial Ends on' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</label>
+        </UI.FieldLabel2></div>
+      }
+
+      {!isTrialMode && <div>
+        <Form.Item
+          name='startSubscriptionMode'
+          initialValue={true}
+        >
+          <Radio.Group onChange={(e: RadioChangeEvent) => {
+            if (e.target.value) {
+            //   setSubscriptionStartDate(moment())
+            //   setSubscriptionEndDate(moment().add(30,'days'))
+            }
+            // setTrialSelected(e.target.value)
+          }}>
+            <Space direction='vertical'>
+              <Radio
+                style={{ marginTop: '2px' }}
+                value={'test2'}
+                disabled={false}>
+                { intl.$t({ defaultMessage: 'Extended Trial Mode' }) }
+              </Radio>
+              <Radio
+                style={{ marginTop: '2px' }}
+                value={'test3'}
+                disabled={false}>
+                { intl.$t({ defaultMessage: 'Paid Subscription' }) }
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
+        <Subtitle level={3}>
+          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+        {!isDeviceAgnosticEnabled && <div>
+          <WifiSubscription />
+          <SwitchSubscription />
+        </div>}
+        {isDeviceAgnosticEnabled && <ApswSubscription />}
+
+        <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
+          <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
+        </UI.FieldLabel2>
+
+        <UI.FieldLabeServiceDate width='275px' style={{ marginTop: '10px' }}>
+          <label>{intl.$t({ defaultMessage: 'Service Expiration Date' })}</label>
+          <Form.Item
+            name='expirationDateSelection'
+            label=''
+            rules={[{ required: true } ]}
+            initialValue={DateSelectionEnum.CUSTOME_DATE}
+            children={
+              <Select onChange={onSelectChange}>
+                {
+                  Object.entries(DateSelectionEnum).map(([label, value]) => (
+                    <Option key={label} value={value}>{intl.$t(dateDisplayText[value])}</Option>
+                  ))
+                }
+              </Select>
+            }
+          />
+          <Form.Item
+            name='service_expiration_date'
+            label=''
+            rules={[
+              { required: true,
+                message: intl.$t({ defaultMessage: 'Please select expiration date' })
+              }
+            ]}
+            children={
+              <DatePicker
+                allowClear={false}
+                disabled={!customDate}
+                disabledDate={(current) => {
+                  return current && current < moment().endOf('day')
+                }}
+                style={{ marginLeft: '4px' }}
+              />
+            }
+          />
+        </UI.FieldLabeServiceDate>
+      </div>}
+    </>
+  }
+
   const CustomerSubscription = () => {
     return <>
       <Subtitle level={3}>{intl.$t({ defaultMessage: 'Start service in' })}</Subtitle>
@@ -1565,7 +1677,8 @@ export function ManageCustomer () {
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
           <Form.Item children={displayCustomerAdmins()} />
-          <EditCustomerSubscriptionForm></EditCustomerSubscriptionForm>
+          {isExtendedTrialToggleEnabled ? <EditCustomerSubscriptionFormNew />
+            : <EditCustomerSubscriptionForm />}
           <EnableSupportForm></EnableSupportForm>
         </StepsFormLegacy.StepForm>}
 
@@ -1634,7 +1747,7 @@ export function ManageCustomer () {
               return true
             }}
           >
-            {isExtendedTrialToggleEnabled ? <CustomerSubscription /> : <CustomerSubscriptionNew />}
+            {isExtendedTrialToggleEnabled ? <CustomerSubscriptionNew /> : <CustomerSubscription />}
           </StepsFormLegacy.StepForm>
 
           <StepsFormLegacy.StepForm name='summary'
