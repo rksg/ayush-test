@@ -132,6 +132,40 @@ export const mockEdgeData = {
   clusterId: 'clusterId_1'
 }
 
+export const mockHaAaFeatureRequirement = {
+  featureSets: [
+    {
+      featureName: 'HA-AA',
+      requiredFw: '2.1.0.500'
+    }
+  ]
+}
+
+export const mockedVenueFirmwareList = [
+  {
+    id: 'mock_venue_1',
+    name: 'Mock Venue 1',
+    versions: [
+      {
+        name: '1.0.0.1709',
+        id: '1.0.0.1709',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: 'mock_venue_2',
+    name: 'Mock Venue 2',
+    versions: [
+      {
+        name: '2.1.0.600',
+        id: '2.1.0.600',
+        category: 'RECOMMENDED'
+      }
+    ]
+  }
+]
+
 
 export const mockEdgeDnsServersData = {
   primary: '1.1.1.1',

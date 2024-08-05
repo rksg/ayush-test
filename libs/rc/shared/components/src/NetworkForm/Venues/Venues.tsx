@@ -1,9 +1,8 @@
-import { useEffect, useState, useContext, useRef } from 'react'
+import { useEffect, useState, useContext, useRef, ReactNode } from 'react'
 
 import { Form, Switch } from 'antd'
 import _                from 'lodash'
 import { useIntl }      from 'react-intl'
-
 
 import {
   Loader,
@@ -12,8 +11,12 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
-import { useNetworkVenueListV2Query, useScheduleSlotIndexMap } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useNetworkVenueListV2Query,
+  useNewNetworkVenueTableQuery,
+  useScheduleSlotIndexMap
+} from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
@@ -25,16 +28,23 @@ import {
   RadioTypeEnum,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum, useConfigTemplate
+  SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
+  NetworkTunnelSdLanAction
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps }              from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm }                                              from '../../NetworkTunnelActionModal/types'
 import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
+import { useIsEdgeFeatureReady }                                                from '../../useEdgeActions'
 import NetworkFormContext                                                       from '../NetworkFormContext'
+import { TMP_NETWORK_ID, getNetworkTunnelSdLanUpdateData }                      from '../utils'
+
+import { NetworkTunnelInfoButtonFormItem } from './NetworkTunnelInfoButtonFormItem'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -63,6 +73,34 @@ const defaultPayload = {
   ]
 }
 
+const defaultRbacPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id',
+    'description',
+    'city',
+    'country',
+    'networks',
+    'aggregatedApStatus',
+    'radios',
+    'aps',
+    'activated',
+    'vlan',
+    'scheduling',
+    'switches',
+    'switchClients',
+    'latitude',
+    'longitude',
+    'mesh',
+    'status',
+    'isOweMaster',
+    'owePairNetworkId',
+    'venueApGroups'
+  ],
+  searchTargetFields: ['name']
+}
+
 const getNetworkId = () => {
   //  Identify tenantId in browser URL
   // const parsedUrl = /\/networks\/([0-9a-f]*)/.exec(window.location.pathname)
@@ -71,6 +109,39 @@ const getNetworkId = () => {
   //   return parsedUrl[1]
   // }
   return 'UNKNOWN-NETWORK-ID'
+}
+
+const useNetworkVenueList = () => {
+  const params = useParams()
+
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+
+  const networkId = resolvedRbacEnabled? (params.networkId ?? getNetworkId()) : getNetworkId()
+
+  const nonRbacTableQuery = useTableQuery({
+    useQuery: useNetworkVenueListV2Query,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
+    option: { skip: resolvedRbacEnabled }
+  })
+
+  const rbacTableQuery = useTableQuery({
+    useQuery: useNewNetworkVenueTableQuery,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate
+    },
+    option: { skip: !resolvedRbacEnabled || !networkId }
+  })
+
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
 }
 
 interface schedule {
@@ -83,7 +154,8 @@ interface VenuesProps {
 
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
-  const { isTemplate } = useConfigTemplate()
+
+  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -95,14 +167,8 @@ export function Venues (props: VenuesProps) {
   const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
-  const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListV2Query,
-    apiParams: { networkId: getNetworkId() },
-    defaultPayload: {
-      ...defaultPayload,
-      isTemplate: isTemplate
-    }
-  })
+
+  const tableQuery = useNetworkVenueList()
 
   const [tableData, setTableData] = useState<Venue[]>([])
 
@@ -114,6 +180,9 @@ export function Venues (props: VenuesProps) {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
+    visible: false
+  } as NetworkTunnelActionModalProps)
   const isDefaultVenueSetted = useRef(false)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
@@ -364,7 +433,26 @@ export function Venues (props: VenuesProps) {
         return transformScheduling(
           getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
-    }
+    },
+    ...(isEdgeSdLanMvEnabled ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneledInfo',
+      render: function (_: ReactNode, row: Venue) {
+        const currentNetwork = data
+
+        return currentNetwork
+          ? <Form.Item noStyle name={['sdLanAssociationUpdate']}>
+            <NetworkTunnelInfoButtonFormItem
+              currentVenue={row}
+              currentNetwork={currentNetwork}
+              sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
+              onClick={handleClickNetworkTunnel}
+            />
+          </Form.Item>
+          : ''
+      }
+    }]: [])
   ]
 
   const getCurrentVenue = (row: Venue) => {
@@ -374,6 +462,22 @@ export function Venues (props: VenuesProps) {
     const venueId = row.id
     // Need to get deepVenue from data(NetworkFormContext) since this table doesn't post data immediately
     return data?.venues?.find(v => v.venueId === venueId)
+  }
+
+  const handleClickNetworkTunnel = (row: Venue, currentNetwork: NetworkSaveData) => {
+    const cachedActs = form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
+
+    // show modal
+    setTunnelModalState({
+      visible: true,
+      network: {
+        id: currentNetwork?.id ?? TMP_NETWORK_ID,
+        type: currentNetwork?.type,
+        venueId: row.id,
+        venueName: row.name
+      },
+      cachedActs
+    } as NetworkTunnelActionModalProps)
   }
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -424,6 +528,9 @@ export function Venues (props: VenuesProps) {
     })
   }
 
+  const handleCloseTunnelModal = () =>
+    setTunnelModalState({ visible: false } as NetworkTunnelActionModalProps)
+
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
     let scheduleData = _.cloneDeep(scheduleModalState.networkVenue)
 
@@ -472,6 +579,24 @@ export function Venues (props: VenuesProps) {
     })
   }
 
+  const handleNetworkTunnelActionFinish = async (
+    modalFormValues: NetworkTunnelActionForm,
+    otherData: { venueSdLan?: EdgeMvSdLanViewData }
+  ) => {
+    // networkId will be undefined in Add Network
+    const networkVenueId = tunnelModalState.network?.venueId
+    const venueSdLanInfo = otherData.venueSdLan
+
+    if (!networkVenueId || !venueSdLanInfo)
+      return
+
+    // eslint-disable-next-line max-len
+    const updateContent = getNetworkTunnelSdLanUpdateData(modalFormValues, form, tunnelModalState, venueSdLanInfo)
+
+    if (updateContent)
+      form.setFieldValue('sdLanAssociationUpdate', updateContent)
+  }
+
   return (
     <>
       <StepsFormLegacy.Title>
@@ -513,6 +638,13 @@ export function Venues (props: VenuesProps) {
               onCancel={handleCancel}
             />
           </Form.Provider>
+          {isEdgeSdLanMvEnabled &&
+            <NetworkTunnelActionModal
+              {...tunnelModalState}
+              onFinish={handleNetworkTunnelActionFinish}
+              onClose={handleCloseTunnelModal}
+            />
+          }
         </Loader>
       </Form.Item>
     </>
