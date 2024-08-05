@@ -15,8 +15,8 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, StatusTrail, aiFeaturesLabel } from './config'
-import { statuses, displayStates }                     from './states'
+import { states, codes, StatusTrail, aiFeaturesLabel, groupedStates } from './config'
+import { statuses, displayStates }                                    from './states'
 
 type Intent = {
   id: string
@@ -199,10 +199,24 @@ export const api = intentAIApi.injectEndpoints({
           !data.categories.includes(category) && data.categories.push(category)
           return data
         }, { aiFeatures: [] as string[], categories: [] as string[] })
-        const displayStatuses = statuses.map(({ label, id }) => ({
-          value: $t(states[label as unknown as keyof typeof states].text),
-          key: id
-        })).sort((a, b) => a.value.localeCompare(b.value))
+
+        const displayStatuses = statuses.reduce((data, { id, label }) => {
+          const groupedState = groupedStates.find(({ states }) => states.includes(id as string))
+          if (groupedState) {
+            const found = data.find(({ value }) => value === $t(groupedState.group))
+            if (!found) {
+              data.push({ key: id, value: $t(groupedState.group) })
+            } else { // state from same group
+              found.key = `${found.key}+${id}`
+            }
+          } else {
+            data.push(
+              { key: id, value: $t(states[label as unknown as keyof typeof states].text) }
+            )
+          }
+          return data
+        }, [] as DisplayOption[])
+          .sort((a, b) => a.value.localeCompare(b.value))
 
         const displayZones = zones.map(({ id, label }) => ({
           value: label,
@@ -277,9 +291,13 @@ const perpareFilterBy = (filters: Filters) => {
     filterBy.push({ col: 'code', values: featCodes })
   }
   if(status) {
+    const filterStates = [] as string[]
+    status.forEach(st => {
+      filterStates.push(...st.split('+'))
+    })
     // concat status and statusReason
     const col = 'concat_ws(\'-\', status, "statusReason")'
-    filterBy.push({ col, values: status })
+    filterBy.push({ col, values: filterStates })
   }
   return filterBy
 

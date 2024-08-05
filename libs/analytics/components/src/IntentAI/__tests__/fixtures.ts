@@ -119,12 +119,12 @@ export const filterOptions = {
       id: 'zone',
       label: 'zone'
     }],
-    statuses: [{
-      id: 'new',
-      label: 'new'
-    }, {
-      id: 'na-no-aps', label: 'na-no-aps'
-    }]
+    statuses: [
+      { id: 'new', label: 'new' },
+      { id: 'na-no-aps', label: 'na-no-aps' },
+      { id: 'paused-from-active', label: 'paused-from-active' },
+      { id: 'paused-by-default', label: 'paused-by-default' }
+    ]
   }
 }
 const intentStatus = {

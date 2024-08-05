@@ -71,7 +71,8 @@ describe('Intent services', () => {
       ],
       statuses: [
         { value: 'New', key: 'new' },
-        { value: 'No Recommendation, No APs', key: 'na-no-aps' }
+        { value: 'No Recommendation, No APs', key: 'na-no-aps' },
+        { value: 'Paused', key: 'paused-from-active+paused-by-default' }
       ],
       zones: [
         {
@@ -141,7 +142,7 @@ describe('Intent services', () => {
         sliceValue: ['1'],
         category: ['Wi-Fi Experience'],
         aiFeature: ['AI-Driven RRM'],
-        status: ['new', 'na-no-aps']
+        status: ['new', 'na-no-aps', 'paused-from-active+paused-by-default']
       }
       act(() => {
         result.current.onFilterChange(customFilter, {})
@@ -179,7 +180,10 @@ describe('Intent services', () => {
             'c-crrm-channel6g-auto'
           ]
         },
-        { col: 'concat_ws(\'-\', status, "statusReason")', values: [ 'new', 'na-no-aps' ] }
+        {
+          col: 'concat_ws(\'-\', status, "statusReason")',
+          values: [ 'new', 'na-no-aps', 'paused-from-active', 'paused-by-default' ]
+        }
       ])
 
     })
