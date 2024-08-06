@@ -398,6 +398,7 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'extIp': 'networkStatus.externalIpAddress',
   'clients': 'clientCount',
   'isMeshEnable': 'meshEnabled',
+  'hops': 'meshStatus.hopCount',
   'apRadioDeploy': 'radioStatuses',
   'lastUpdTime': 'lastUpdatedTime',
   'apStatusData.lanPortStatus': 'lanPortStatuses',
