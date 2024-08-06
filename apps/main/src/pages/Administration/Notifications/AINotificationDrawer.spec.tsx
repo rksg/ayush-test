@@ -382,12 +382,12 @@ describe('IncidentNotificationDrawer', () => {
         params: {},
         payload: {
           id: 'test-tenant',
-          subscribe: {
-            DEVICE_API_CHANGES: true,
+          subscribes: JSON.stringify({
             DEVICE_AP_FIRMWARE: false,
+            DEVICE_SWITCH_FIRMWARE: true,
             DEVICE_EDGE_FIRMWARE: true,
-            DEVICE_SWITCH_FIRMWARE: true
-          }
+            DEVICE_API_CHANGES: true
+          })
         }
       })
     })
@@ -455,12 +455,12 @@ describe('IncidentNotificationDrawer', () => {
         params: {},
         payload: {
           id: 'test-tenant',
-          subscribe: {
-            DEVICE_API_CHANGES: true,
+          subscribes: JSON.stringify({
             DEVICE_AP_FIRMWARE: true,
+            DEVICE_SWITCH_FIRMWARE: true,
             DEVICE_EDGE_FIRMWARE: true,
-            DEVICE_SWITCH_FIRMWARE: true
-          }
+            DEVICE_API_CHANGES: true
+          })
         }
       })
     })
