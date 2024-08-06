@@ -22,14 +22,10 @@ export const onIntlError: OnErrorFn = (error) => {
 export function getReSkinningElements (
   supportReSkinning = false, locale?: Pick<LocaleContextType, 'lang' | 'messages'>
 ) {
-  // eslint-disable-next-line max-len
-  const intl = locale ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache) : null
+  const intl = locale
+    ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache)
+    : null
   const { acx_account_vertical } = getJwtTokenPayload()
-
-  // eslint-disable-next-line no-console
-  console.log('IS_MLISA_SA', get('IS_MLISA_SA'))
-
-  // TODO: UT
   if (get('IS_MLISA_SA')) {
     return {
       venueSingular: () => intl ? intl.$t({ defaultMessage: 'zone' }) : 'zone',
@@ -38,7 +34,6 @@ export function getReSkinningElements (
       VenuePlural: () => intl ? intl.$t({ defaultMessage: 'Zones' }) : 'Zones'
     }
   }
-
   return acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ? {
     venueSingular: () => intl ? intl.$t({ defaultMessage: 'space' }) : 'space',
     venuePlural: () => intl ? intl.$t({ defaultMessage: 'spaces' }) : 'spaces',
