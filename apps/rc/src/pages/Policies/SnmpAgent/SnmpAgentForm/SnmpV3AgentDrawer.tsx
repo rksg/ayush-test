@@ -169,8 +169,9 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         children={
           (isSNMPv3PassphraseOn ?
             <PasswordInputStrength
-              regExRules={RULE_REGEX}
-              regExErrorMessages={RULE_MESSAGES}/> :
+              regexrules={RULE_REGEX}
+              regexerrormessages={RULE_MESSAGES}
+              data-testid={'password-input-strength'} /> :
             <PasswordInput />
           )
         }

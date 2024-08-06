@@ -13,8 +13,8 @@ import { Tooltip }         from '../../Tooltip'
 
 import * as UI from './styledComponents'
 interface PasswordStrengthProps extends InputProps {
-  regExRules: RegExp[]
-  regExErrorMessages: string[]
+  regexrules: RegExp[]
+  regexerrormessages: string[]
   isAllConditionsMet: number
   onConditionCountMet: (newLevel: boolean) => void
   value: string
@@ -22,8 +22,8 @@ interface PasswordStrengthProps extends InputProps {
 
 interface PasswordStrengthIndicatorProps {
   input: string
-  regExRules: RegExp[]
-  regExErrorMessages: string[]
+  regexrules: RegExp[]
+  regexerrormessages: string[]
   isAllConditionsMet: number
   barWidth?: number
   focus: boolean
@@ -41,21 +41,21 @@ const usedBarColor: string[] = [
 export const PasswordInputStrength = ({
   ...props
 }: Partial<PasswordStrengthProps>) => {
-  const { regExRules, regExErrorMessages, isAllConditionsMet, onConditionCountMet, value } = props
+  const { regexrules, regexerrormessages, isAllConditionsMet, onConditionCountMet, value } = props
   const { $t } = useIntl()
   const [input, setInput] = useState('')
   const [focus, setFocus] = useState(false)
   const isAllConditionsCountMet =
     (isAllConditionsMet && isAllConditionsMet > 4 ? 4 : isAllConditionsMet) || 4
 
-  const RULE_REGEX = regExRules || [
+  const RULE_REGEX = regexrules || [
     /^.{8,}$/,
     /(?=.*[a-z])(?=.*[A-Z])/,
     /(?=.*\d)/,
     /(?=.*[^\w\d\s])/
   ]
 
-  const RULE_MESSAGES = regExErrorMessages || [
+  const RULE_MESSAGES = regexerrormessages || [
     $t({ defaultMessage: '8 characters' }),
     $t({ defaultMessage: 'One uppercase and one lowercase letters' }),
     $t({ defaultMessage: 'One number' }),
@@ -83,8 +83,8 @@ export const PasswordInputStrength = ({
       />
       <PasswordStrengthIndicator
         input={input}
-        regExRules={RULE_REGEX}
-        regExErrorMessages={RULE_MESSAGES}
+        regexrules={RULE_REGEX}
+        regexerrormessages={RULE_MESSAGES}
         isAllConditionsMet={isAllConditionsCountMet}
         focus={focus}
       />
@@ -93,7 +93,7 @@ export const PasswordInputStrength = ({
 }
 
 export const PasswordStrengthIndicator = ({
-  input, regExRules, regExErrorMessages, isAllConditionsMet, barWidth, focus }:
+  input, regexrules, regexerrormessages, isAllConditionsMet, barWidth, focus }:
     PasswordStrengthIndicatorProps) => {
   const { $t } = useIntl()
   const [mouseEnterTooltip, setMouseEnterTooltip] = useState(false)
@@ -127,11 +127,11 @@ export const PasswordStrengthIndicator = ({
   const [ strengthStatus, setStrengthStatus ] = useState(PASSWORD_STRENGTH_CODE[0])
 
   const [validRegexIndex, setValidRegexIndex] = useState(new Map<number, boolean>(
-    regExRules.map((_, index) => [index, false])
+    regexrules.map((_, index) => [index, false])
   ))
 
   useEffect(() => {
-    const passedRulesCount = regExRules.reduce((count, regEx, index) => {
+    const passedRulesCount = regexrules.reduce((count, regEx, index) => {
       if (regEx.test(input)) {
         setValidRegexIndex(map => new Map(map.set(index, true)))
         return count + 1
@@ -141,7 +141,7 @@ export const PasswordStrengthIndicator = ({
       }
     }, 0)
 
-    const passedRulesRatio = Math.floor(passedRulesCount/regExRules.length*4)
+    const passedRulesRatio = Math.floor(passedRulesCount/regexrules.length*4)
     setUsedBarColors([
       usedBarColor[passedRulesRatio],
       cssStr('--acx-neutrals-20')
@@ -187,7 +187,7 @@ export const PasswordStrengthIndicator = ({
               {$t({ defaultMessage: 'Password must contain at least:' })}</UI.TooltipTitle>
           </Col>
         </Row>
-        {regExErrorMessages.map((item, index) => (
+        {regexerrormessages.map((item, index) => (
           <Row gutter={[8, 16]} key={index}>
             <Col span={2}>{validRegexIndex.get(index) ?
               <SuccessSolid /> : <UI.QuestionMarkCircleSolidIcon />}</Col>
@@ -209,9 +209,9 @@ export const PasswordStrengthIndicator = ({
 
 }
 
-const calculatePassedRulesRatio = (input: string, regExRules: RegExp[]) => {
-  const passedRulesCount = regExRules.reduce((count, regEx) => {
+const calculatePassedRulesRatio = (input: string, regexrules: RegExp[]) => {
+  const passedRulesCount = regexrules.reduce((count, regEx) => {
     return count + (regEx.test(input) ? 1 : 0)
   }, 0)
-  return Math.floor((passedRulesCount / regExRules.length) * 4)
+  return Math.floor((passedRulesCount / regexrules.length) * 4)
 }
