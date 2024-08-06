@@ -5,7 +5,6 @@ import _       from 'lodash'
 
 import { formattedPath }             from '@acx-ui/analytics/utils'
 import { TableProps }                from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { intentAIApi }               from '@acx-ui/store'
 import {
@@ -58,19 +57,11 @@ type Metadata = {
 const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
-  // eslint-disable-next-line no-console
-  console.log('IS_MLISA_SA in intentAI services', get('IS_MLISA_SA'))
-
-  const zoneVenueText = get('IS_MLISA_SA')
-    ? $t({ defaultMessage: 'Zone' })
-    : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
-
   const stateConfig = states[state]
   return $t(stateConfig.tooltip, {
     errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
-    zoneName: sliceValue,
-    zoneVenueText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
+    zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   })

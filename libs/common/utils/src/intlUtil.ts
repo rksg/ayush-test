@@ -26,11 +26,6 @@ export function getReSkinningElements (
     ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache)
     : null
   const { acx_account_vertical } = getJwtTokenPayload()
-
-  // eslint-disable-next-line no-console
-  console.log('IS_MLISA_SA in intlUtil', get('IS_MLISA_SA'))
-
-  // TODO: UT
   if (get('IS_MLISA_SA')) {
     return {
       venueSingular: () => intl ? intl.$t({ defaultMessage: 'zone' }) : 'zone',
