@@ -12,6 +12,7 @@ import {
   EdgeClusterStatus,
   EdgeClusterTableDataType,
   EdgeDnsServers,
+  EdgeFeatureSets,
   EdgeGeneralSetting,
   EdgeLag,
   EdgeLagStatus,
@@ -863,6 +864,16 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    getEdgeFeatureSets: build.query<EdgeFeatureSets, RequestPayload>({
+      query: ({ payload, params }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getEdgeFeatureSets, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
     patchEdgeClusterNetworkSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterNetworkSettings, params)
@@ -1054,5 +1065,6 @@ export const {
   usePatchEdgeClusterNetworkSettingsMutation,
   useGetEdgeClusterNetworkSettingsQuery,
   useGetEdgesPortStatusQuery,
-  useLazyGetEdgesPortStatusQuery
+  useLazyGetEdgesPortStatusQuery,
+  useGetEdgeFeatureSetsQuery
 } = edgeApi
