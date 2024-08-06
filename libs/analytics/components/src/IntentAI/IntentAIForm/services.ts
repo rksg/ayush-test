@@ -135,7 +135,8 @@ export function specToDto (
 ): IntentAIFormDto | undefined {
   let dto = {
     id: rec.id,
-    status: rec.status,
+    // status: rec.status,
+    status: 'new',
     preferences: rec.preferences,
     sliceValue: rec.sliceValue,
     updatedAt: rec.updatedAt
@@ -146,7 +147,7 @@ export function specToDto (
     // const date = dateTime.format('YYYY-MM-DD')
     const date = '2024-08-19' // to be removed
     // const time = roundUpTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
-    const time = 5.5 // to be removed
+    const time = 7.5 // to be removed
     dto = {
       ...dto,
       settings: {
