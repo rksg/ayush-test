@@ -6,6 +6,7 @@ import { Provider }                            from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { EnrollmentPortalDesignModalProps } from '../../../EnrollmentPortalDesignModal'
+import { WorkflowActionPreviewModalProps }  from '../../../WorkflowActionPreviewModal'
 
 import { WorkflowDesigner } from './index'
 
@@ -26,6 +27,19 @@ jest.mock('../../../EnrollmentPortalDesignModal', () => ({
     )
   }
 }))
+jest.mock('../../../WorkflowActionPreviewModal', () => ({
+  ...jest.requireActual('../../../WorkflowActionPreviewModal'),
+  WorkflowActionPreviewModal: (props: WorkflowActionPreviewModalProps) => {
+    const { Modal } = jest.requireActual('antd')
+    const { onClose } = props
+    return (
+      <Modal title={'test'} onCancel={onClose} visible>
+        <div data-testid='WorkflowActionPreviewModalTestId' />
+      </Modal>
+    )
+  }
+}))
+
 
 const EmptyId = 'empty-policy-id'
 const spyGetStepFn = jest.fn()
@@ -83,10 +97,9 @@ describe('Workflow Designer', () => {
     expect(await screen.findByTestId('WorkflowPanelTestId')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Preview/i })).toBeEnabled()
 
-    // FIXME: Add correct component into test case
-    // await userEvent.click(await screen.findByRole('button', { name: /Preview/i }))
-    // expect(await screen.findByTestId('PreviewTestId')).toBeInTheDocument()
-    // await userEvent.click(await screen.findByRole('img', { name: /close/i }))
-    // expect(screen.queryByTestId('PreviewTestId')).not.toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: /Preview/i }))
+    expect(await screen.findByTestId('WorkflowActionPreviewModalTestId')).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('img', { name: /close/i }))
+    expect(screen.queryByTestId('WorkflowActionPreviewModalTestId')).not.toBeInTheDocument()
   })
 })
