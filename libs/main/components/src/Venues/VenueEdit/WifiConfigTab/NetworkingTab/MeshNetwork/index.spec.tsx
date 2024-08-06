@@ -156,7 +156,7 @@ describe('MeshNetwork', () => {
     await userEvent.click(await screen.findByTestId('radio24'))
     await userEvent.click(await screen.findByTestId('radio56'))
     await userEvent.click(await screen.findByTestId('radio5'))
-    await userEvent.click(await screen.findByTestId('radio6'))
+    expect(await screen.findByTestId('radio6')).toBeDisabled()
     // zero touch mesh
     await userEvent.click(await screen.findByTestId('zero-touch-mesh-switch'))
   })
