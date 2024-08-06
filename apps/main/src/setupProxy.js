@@ -20,7 +20,7 @@ jsonServerCli({
  * See https://create-react-app.dev/docs/proxying-api-requests-in-development/
  */
 //const MOCK_SERVER_URL = 'http://localhost:5000'
-const CLOUD_URL = 'https://int.ruckus.cloud'
+const CLOUD_URL = 'https://dev.ruckus.cloud'
 const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
 const STATIC_ASSETS = 'https://storage.googleapis.com/ruckus-web-1'
 
