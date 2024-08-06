@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
@@ -32,8 +32,7 @@ export interface StepDrawerProps {
   priorNode?: NodeProps
 }
 
-// FIXME: Use enum to make sure new ActionType to be added into this Map
-const actionFormMap = {
+const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
@@ -81,7 +80,7 @@ export default function StepDrawer (props: StepDrawerProps) {
         formInstance.setFieldsValue(data)
       })
 
-  }, [actionId, isEdit])
+  }, [formInstance, actionId, isEdit])
 
   const onSave = async () => {
     try {
@@ -123,7 +122,6 @@ export default function StepDrawer (props: StepDrawerProps) {
         >
           <Form<GenericActionData>
             disabled={isActionError}
-            preserve={false}
             form={formInstance}
             layout={'vertical'}
           >
