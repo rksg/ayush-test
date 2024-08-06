@@ -229,8 +229,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.reboot, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.reboot, params)
         return {
           ...req,
           body: payload
