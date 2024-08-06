@@ -183,6 +183,9 @@ export function ScheduleStep (props: ScheduleStepProps) {
       return []
     }
 
+  const icx71hasVersionStartingWith100 =
+    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
+
   return (
     <div
       data-testid='schedule-step'
@@ -289,12 +292,13 @@ export function ScheduleStep (props: ScheduleStepProps) {
                         <span style={{ marginRight: '5px' }}>
                           {getSwitchVersionLabelV1002(intl, v)}
                         </span>
-                        {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') && <NoteButton
-                          size='small'
-                          ghost={true}
-                          onClick={scrollToTarget}>
-                          {intl.$t({ defaultMessage: '[1]' })}
-                        </NoteButton>}
+                        {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') &&
+                          <NoteButton
+                            size='small'
+                            ghost={true}
+                            onClick={scrollToTarget} >
+                            {intl.$t({ defaultMessage: '[1]' })}
+                          </NoteButton>}
                         {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                       </span>
@@ -305,11 +309,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
-            {icx7150C08pGroupedData.length > 0 && <div id='note_1'>
-              <Switch7150C08Note
-                icx7150C08pGroupedData={icx7150C08pGroupedData}
-              />
-            </div>}
+            {icx7150C08pGroupedData.length > 0 && icx71hasVersionStartingWith100 &&
+              <div id='note_1'>
+                <Switch7150C08Note icx7150C08pGroupedData={icx7150C08pGroupedData} />
+              </div>}
           </>}
         </div>
 

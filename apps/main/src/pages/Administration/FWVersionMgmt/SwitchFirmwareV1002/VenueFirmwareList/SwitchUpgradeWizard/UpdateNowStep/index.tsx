@@ -105,6 +105,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       return []
     }
 
+  const icx71hasVersionStartingWith100 =
+    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
+
   useEffect(() => {
     setShowSubTitle(false)
   }, [current])
@@ -240,11 +243,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
               </Radio>
             </Space>
           </Radio.Group>
-          {icx7150C08pGroupedData.length > 0 && <div id='note_1'>
-            <Switch7150C08Note
-              icx7150C08pGroupedData={icx7150C08pGroupedData}
-            />
-          </div>}
+          {icx7150C08pGroupedData.length > 0 && icx71hasVersionStartingWith100 &&
+            <div id='note_1'>
+              <Switch7150C08Note icx7150C08pGroupedData={icx7150C08pGroupedData} />
+            </div>}
         </>}
 
         <UI.Section>
