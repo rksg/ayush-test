@@ -207,7 +207,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
               EdgeSdLanActivityEnum.UPDATE,
               EdgeSdLanActivityEnum.DELETE,
               EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
-              EdgeSdLanActivityEnum.DEACTIVATE_NETWORK
+              EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
+              'DeleteNetworkVenue',
+              'DeactivateWifiNetworkOnVenue'
             ], () => {
               api.dispatch(serviceApi.util.invalidateTags([
                 { type: 'Service', id: 'LIST' }
@@ -430,7 +432,9 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
             EdgeSdLanActivityEnum.UPDATE,
             EdgeSdLanActivityEnum.DELETE,
             EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
-            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK
+            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
+            'DeleteNetworkVenue',
+            'DeactivateWifiNetworkOnVenue'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -488,7 +492,23 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           return { error: sdLanQuery.error as FetchBaseQueryError }
         }
       },
-      providesTags: [{ type: 'EdgeMvSdLan', id: 'DETAIL' }]
+      providesTags: [{ type: 'EdgeMvSdLan', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            EdgeSdLanActivityEnum.UPDATE,
+            EdgeSdLanActivityEnum.DELETE,
+            EdgeSdLanActivityEnum.ACTIVATE_NETWORK,
+            EdgeSdLanActivityEnum.DEACTIVATE_NETWORK,
+            'DeleteNetworkVenue',
+            'DeactivateWifiNetworkOnVenue'
+          ], () => {
+            api.dispatch(edgeSdLanApi.util.invalidateTags([
+              { type: 'EdgeMvSdLan', id: 'DETAIL' }
+            ]))
+          })
+        })
+      }
     }),
     addEdgeMvSdLan: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
