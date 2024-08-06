@@ -52,7 +52,8 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-
+  const [icx7150C08pGroupedData, setIcx7150C08pGroupedData] =
+    useState([] as SwitchFirmwareV1002[][])
 
   const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
     payload: {
@@ -67,7 +68,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08')
     if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
       const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
-      const groupedData = _.groupBy(switchList, 'venueId')
+      const groupedObject = _.groupBy(switchList, 'venueId')
+      // eslint-disable-next-line no-console
+      setIcx7150C08pGroupedData(Object.values(groupedObject))
     }
   }, [getSwitchFirmwareList])
 
@@ -221,7 +224,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                       <span style={{ marginRight: '5px' }}>
                         {getSwitchVersionLabelV1002(intl, v)}
                       </span>
-                      {v.id.startsWith('100') && <NoteButton
+                      {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') && <NoteButton
                         size='small'
                         ghost={true}
                         onClick={scrollToTarget}>
@@ -237,11 +240,11 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
               </Radio>
             </Space>
           </Radio.Group>
-          <div id='note_1'>
+          {icx7150C08pGroupedData.length > 0 && <div id='note_1'>
             <Switch7150C08Note
-              upgradeVenueList={upgradeVenueList}
-              upgradeSwitchList={upgradeSwitchList}
-            /> </div>
+              icx7150C08pGroupedData={icx7150C08pGroupedData}
+            />
+          </div>}
         </>}
 
         <UI.Section>

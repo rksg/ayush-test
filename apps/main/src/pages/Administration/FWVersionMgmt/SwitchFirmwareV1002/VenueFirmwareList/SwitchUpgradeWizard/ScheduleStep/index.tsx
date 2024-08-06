@@ -266,10 +266,10 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
-            <Switch7150C08Note
+            {/* <Switch7150C08Note
               upgradeVenueList={upgradeVenueList}
               upgradeSwitchList={upgradeSwitchList}
-            />
+            /> */}
           </>}
         </div>
 
