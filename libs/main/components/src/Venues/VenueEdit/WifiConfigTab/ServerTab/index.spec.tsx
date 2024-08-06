@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { venueApi }                                                                         from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonRbacUrlsInfo, CommonUrlsInfo, SyslogUrls, LbsServerProfileUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }        from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                         from '@acx-ui/rc/services'
+import { ApSnmpUrls, CommonRbacUrlsInfo, CommonUrlsInfo, SyslogUrls, LbsServerProfileUrls, ApSnmpRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
 
 
 import {
@@ -69,6 +69,9 @@ describe('ServerTab', () => {
         (_, res, ctx) => res(ctx.json(resultOfGetApSnmpAgentProfiles))),
       rest.get(
         ApSnmpUrls.getVenueApSnmpSettings.url,
+        (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings))),
+      rest.get(
+        ApSnmpRbacUrls.getApSnmpFromViewModel.url,
         (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings))),
       // rbac
       rest.get(CommonRbacUrlsInfo.getVenueMdnsFencingPolicy.url,

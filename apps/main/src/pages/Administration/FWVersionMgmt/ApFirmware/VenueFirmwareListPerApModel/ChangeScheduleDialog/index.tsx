@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 
-import { Button }                                    from '@acx-ui/components'
+import { Button, Modal }                             from '@acx-ui/components'
 import { useUpdateVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
 import {
   FirmwareVenuePerApModel,
@@ -12,7 +12,6 @@ import {
 } from '@acx-ui/rc/utils'
 
 
-import * as UI                              from '../styledComponents'
 import { UpdateFirmwarePerApModelFirmware } from '../UpdateNowDialog'
 
 import FirmwareSelectorPanel from './FirmwareSelectorPanel'
@@ -52,9 +51,11 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
   const createRequestPayload = (): UpdateFirmwareSchedulePerApModelPayload => {
     return {
       venueIds: selectedVenuesFirmwares.map(v => v.id),
-      date: selectedDate!,
-      time: selectedTime!,
-      targetFirmwares: payload!.filter(fw => fw.firmware)
+      targetFirmwares: payload!.filter(fw => fw.firmware),
+      schedule: {
+        date: selectedDate!,
+        time: selectedTime!
+      }
     }
   }
 
@@ -79,11 +80,12 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
   }
 
   return (
-    <UI.ScheduleModal
+    <Modal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
       visible={true}
       onCancel={onModalCancel}
       destroyOnClose={true}
+      width={580}
       footer={[
         <Button key='cancel' onClick={onModalCancel}>
           {$t({ defaultMessage: 'Cancel' })}
@@ -127,6 +129,6 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
           updateTime={updateTime}
         />
       }
-    </UI.ScheduleModal>
+    </Modal>
   )
 }

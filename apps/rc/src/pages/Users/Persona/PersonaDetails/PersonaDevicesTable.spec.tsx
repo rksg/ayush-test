@@ -34,12 +34,11 @@ jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe('PersonaDevicesTable', () => {
   const deleteDeviceFn = jest.fn()
-  const metaRequestSpy = jest.fn()
   let params: { tenantId: string, personaGroupId: string, personaId: string }
 
   beforeEach( async () => {
     deleteDeviceFn.mockClear()
-    metaRequestSpy.mockClear()
+
     mockServer.use(
       rest.post(
         PersonaUrls.addPersonaDevices.url,
@@ -53,36 +52,29 @@ describe('PersonaDevicesTable', () => {
         }
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [
           {
             osType: 'Windows',
-            clientMac: '11:11:11:11:11:11',
+            macAddress: '11:11:11:11:11:11',
             ipAddress: '10.206.1.93',
-            Username: 'mac-device',
+            username: 'mac-device',
             hostname: 'Persona_Host_name',
-            venueName: 'UI-TEST-VENUE',
-            apName: 'UI team ONLY',
-            authmethod: 'Standard+Mac'  // for MAC auth devices
+            venueInformation: { name: 'UI-TEST-VENUE' },
+            apInformation: { name: 'UI team ONLY' },
+            networkInformation: { authenticationMethod: 'Standard+Mac' }  // for MAC auth devices
           },
           {
             osType: 'Windows',
-            clientMac: '22:22:22:22:22:22',
+            macAddress: '22:22:22:22:22:22',
             ipAddress: '10.206.1.93',
-            Username: 'dpsk-device',
+            username: 'dpsk-device',
             hostname: 'dpsk-hostname',
-            venueName: 'UI-TEST-VENUE',
-            apName: 'UI team ONLY',
-            authmethod: 'Standard+Open' // for DPSK auth devices
+            venueInformation: { name: 'UI-TEST-VENUE' },
+            apInformation: { name: 'UI team ONLY' },
+            networkInformation: { authenticationMethod: 'Standard+Open' }// for DPSK auth devices
           }
         ] }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => {
-          metaRequestSpy()
-          return res(ctx.json({ data: [] }))
-        }
       )
     )
     params = {
@@ -183,7 +175,6 @@ describe('PersonaDevicesTable', () => {
 
     const expectedMacAddress = mockedDpskPassphraseDevices[0].mac.replaceAll(':', '-')
 
-    await waitFor(() => expect(metaRequestSpy).toHaveBeenCalled())
     await screen.findByRole('heading', { name: /devices \(4\)/i })
     await screen.findByRole('row', { name: new RegExp(expectedMacAddress) })
     await screen.findByRole('cell', { name: 'dpsk-hostname' })  // to make sure that clients/metas api done

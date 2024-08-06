@@ -177,6 +177,16 @@ export function hasRoles (roles: string | string[]) {
   return profile?.roles?.some(role => roles.includes(role))
 }
 
+export function isCustomAdmin () {
+  const { profile, abacEnabled } = getUserProfile()
+  if (abacEnabled &&
+    profile.customRoleType === CustomRoleType.SYSTEM &&
+    profile.customRoleName === Role.ADMINISTRATOR) {
+    return !profile?.roles?.includes(Role.ADMINISTRATOR)
+  }
+  return false
+}
+
 export function AuthRoute (props: {
     scopes: ScopeKeys,
     children: ReactElement
