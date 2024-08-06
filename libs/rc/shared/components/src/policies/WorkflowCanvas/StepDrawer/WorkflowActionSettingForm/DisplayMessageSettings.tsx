@@ -41,19 +41,23 @@ export function DisplayMessageSetting () {
     <Form.Item
       name={'backButtonText'}
       hidden={true}
+      children={<Input />}
     />
 
     <Form.Item
       name={'continueButtonText'}
       hidden={true}
+      children={<Input />}
     />
     <Form.Item
       name={'displayBackButton'}
       hidden={true}
+      children={<Input />}
     />
     <Form.Item
       name={'displayContinueButton'}
       hidden={true}
+      children={<Input />}
     />
   </>)
 }
