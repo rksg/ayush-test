@@ -3,6 +3,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { formatter }                                       from '@acx-ui/formatter'
 import { InformationOutlined }                             from '@acx-ui/icons'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
@@ -12,7 +13,8 @@ import { showTopNPieChartResult } from '../../../Health/HealthDrillDown/config'
 import {
   PieChartResult, TopNByCPUUsageResult,
   TopNByDHCPFailureResult, WidgetType,
-  TopNByPortCongestionResult, TopNByStormPortCountResult
+  TopNByPortCongestionResult, TopNByStormPortCountResult,
+  showTopNTableResult
 } from './config'
 import { usePieChartDataQuery }        from './services'
 import { ChartTitle, PieChartWrapper } from './styledComponents'
@@ -87,6 +89,7 @@ export const MoreDetailsPieChart = ({
   queryType,
   title
 } : { filters: AnalyticsFilter, queryType: WidgetType, title: string }) => {
+  const enableWithOthers = useIsSplitOn(Features.HEALTH_WIRED_TOPN_WITH_OTHERS)
   const n = 5
   const { $t } = useIntl()
   const { filter, startDate: start, endDate: end } = filters
@@ -105,8 +108,10 @@ export const MoreDetailsPieChart = ({
     })
   })
 
-  const hasOthers = queryResults?.data?.find(({ mac })=> mac === 'Others')
-  const totalCount = queryResults?.data?.filter(({ mac })=> mac !== 'Others').length
+  const totalCount = enableWithOthers
+    ? queryResults?.data?.length
+    : queryResults?.data?.filter(({ mac })=> mac !== 'Others').length
+  const showTopNResult = enableWithOthers ? showTopNPieChartResult : showTopNTableResult
   const Title = <ChartTitle>
     <FormattedMessage
       defaultMessage={`<b>{count}</b> {title} {totalCount, plural,
@@ -114,7 +119,7 @@ export const MoreDetailsPieChart = ({
       other {Switches}
     }`}
       values={{
-        count: showTopNPieChartResult($t, queryResults?.data?.length, n),
+        count: showTopNResult($t, totalCount, n),
         title,
         totalCount,
         b: (chunk) => <b>{chunk}</b>
@@ -122,12 +127,18 @@ export const MoreDetailsPieChart = ({
     />
   </ChartTitle>
 
-  const pieData = (hasOthers
-    ? [
-      ...queryResults.data.slice(0, queryResults.data.length -1 ),
-      { ...queryResults.data.slice(-1)[0], name: $t({ defaultMessage: 'Others' }), mac: undefined }
-    ]
-    : queryResults.data) as PieChartData[]
+  const hasOthers = enableWithOthers
+    ? queryResults?.data?.find(({ mac })=> mac === 'Others')
+    : false
+  const pieData = enableWithOthers
+    ? (hasOthers
+      ? [ ...queryResults.data.slice(0, queryResults.data.length -1 ),
+        { ...queryResults.data.slice(-1)[0],
+          name: $t({ defaultMessage: 'Others' }),
+          mac: undefined
+        } ]
+      : queryResults.data) as PieChartData[]
+    : queryResults.data.slice(0, n)
   const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
     <PieChartWrapper>
