@@ -481,3 +481,38 @@ export interface MspEcTierPayload {
   type: string,
   serviceTierStatus: string
 }
+
+export interface DeviceCompliance {
+  deviceType: string,
+  installedDeviceCount: number,
+  usedLicenseCount: number
+}
+
+export interface ComplianceData {
+  licenseType: string,
+  tenantId: string,
+  tenantName: string,
+  deviceCompliances: {
+    WIFI: DeviceCompliance,
+    SWITCH: DeviceCompliance,
+    EDGE: DeviceCompliance,
+    VIRTUAL_EDGE: DeviceCompliance
+  },
+  totalActivePaidLicenseCount: number,
+  totalActiveTrialLicenseCount: number,
+  nextPaidExpirationDate: string,
+  nextTotalPaidExpiringLicenseCount: number,
+  nextTrialExpirationDate: string,
+  nextTotalTrialExpiringLicenseCount: number,
+  totalActivePaidAssignedLicenseCount: number,
+  totalActiveTrialAssignedLicenseCount: number,
+  licensesUsed: number,
+  licenseGap: number
+}
+
+export interface MspCompliances {
+  APSW: [ {
+    self: ComplianceData,
+    mspEcSummary: ComplianceData
+  } ]
+}

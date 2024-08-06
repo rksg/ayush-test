@@ -141,3 +141,15 @@ export const FwContainer = styled.div`
   line-height: 20px;
   margin-right: 30px;
 `
+export const FieldLabelSubs = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 180px 80px 100px;
+  align-items: baseline;
+`
+export const LicenseGap = styled(Space)`
+  color: var(--acx-semantics-red-50)
+`
+export const LicenseAvailable = styled(Space)`
+  color: var(--acx-semantics-green-50);
+`
