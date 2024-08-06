@@ -82,12 +82,10 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
 
 // eslint-disable-next-line max-len
 function convertToPayload (displayData: ApModelIndividualDisplayDataType[]): UpdateFirmwarePerApModelFirmware {
-  return displayData
-    .filter(item => item.defaultVersion)
-    .map((displayDataItem: ApModelIndividualDisplayDataType) => ({
-      apModel: displayDataItem.apModel,
-      firmware: displayDataItem.defaultVersion
-    }))
+  return displayData.map((displayDataItem: ApModelIndividualDisplayDataType) => ({
+    apModel: displayDataItem.apModel,
+    firmware: displayDataItem.defaultVersion
+  }))
 }
 
 function patchPayload (
