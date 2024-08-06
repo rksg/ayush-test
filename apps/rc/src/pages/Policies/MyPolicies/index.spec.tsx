@@ -12,7 +12,7 @@ import {
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  EdgeQosUrls,
+  EdgeQosProfilesUrls,
   RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
   getSelectPolicyRoutePath
 } from '@acx-ui/rc/utils'
@@ -198,7 +198,7 @@ describe('MyPolicies', () => {
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
     mockServer.use(
       rest.post(
-        EdgeQosUrls.getEdgeQosViewDataList.url,
+        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
       )
     )
