@@ -145,19 +145,22 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         style={{ width: '350px' }}
         rules={[
           { required: true },
+          /* eslint-disable */
           ...(isSNMPv3PassphraseOn ? [
-            { validator: (_, value: string) => {
-              const errors: number[] = []
-              RULE_REGEX.forEach((regex, index) => {
-                if(!regex.test(value)) {
-                  errors.push(index)
+            {
+              validator: (_ : any, value: string) => {
+                const errors: number[] = []
+                RULE_REGEX.forEach((regex, index) => {
+                  if(!regex.test(value)) {
+                    errors.push(index)
+                  }
+                })
+                if(errors.length > 0) {
+                  return Promise.reject(RULE_MESSAGES[errors[0]])
                 }
-              })
-              if(errors.length > 0) {
-                return Promise.reject(RULE_MESSAGES[errors[0]])
-              }
-              return Promise.resolve()
-            } }
+                return Promise.resolve()
+              } }
+          /* eslint-enable */
           ] : [
             { min: 8 },
             { max: 32 }
