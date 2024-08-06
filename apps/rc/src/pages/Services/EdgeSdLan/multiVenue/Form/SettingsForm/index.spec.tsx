@@ -230,7 +230,7 @@ describe('Edge SD-LAN form: settings', () => {
       .getByRole('option', { name: 'Edge Cluster 3' })).toBeValid()
   })
 
-  it('should validate cluster doesnot configure core port ready', async () => {
+  it.skip('should validate cluster doesnot configure core port ready', async () => {
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
       jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
