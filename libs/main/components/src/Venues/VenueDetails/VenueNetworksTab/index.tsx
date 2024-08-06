@@ -24,7 +24,6 @@ import {
   renderConfigTemplateDetailsComponent,
   useGetNetworkTunnelInfo,
   useIsEdgeFeatureReady,
-  NetworkTunnelInfoButton,
   NetworkTunnelActionModalProps,
   NetworkTunnelActionModal,
   tansformSdLanScopedVenueMap,
@@ -68,6 +67,8 @@ import {
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                        from '@acx-ui/types'
 import { filterByAccess, hasPermission }                     from '@acx-ui/user'
+
+import { NetworkTunnelButton } from './NetworkTunnelButton'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
@@ -487,30 +488,17 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
       render: function (_: ReactNode, row: Network) {
-        const currentVenue = {
-          id: venueId,
-          name: venueInfo?.name,
-          activated: { isActivated: row.activated?.isActivated }
-        } as Venue
-
         const sdLanVenueMap = tansformSdLanScopedVenueMap(sdLanScopedNetworks.sdLans as EdgeMvSdLanViewData[])
 
-        return <NetworkTunnelInfoButton
-          network={row}
-          currentVenue={currentVenue}
-          venueSdLan={venueId ? sdLanVenueMap[venueId] : undefined}
-          onClick={() => {
-            // show modal
-            setTunnelModalState({
-              visible: true,
-              network: {
-                id: row.id,
-                type: row.nwSubType,
-                venueId: currentVenue.id,
-                venueName: currentVenue.name
-              }
-            } as NetworkTunnelActionModalProps)
-          }}
+        return <NetworkTunnelButton
+          currentVenue={{
+            id: venueId,
+            name: venueInfo?.name,
+            activated: { isActivated: row.activated?.isActivated }
+          } as Venue}
+          currentNetwork={row}
+          sdLanVenueMap={sdLanVenueMap}
+          onClick={handleClickNetworkTunnel}
         />
       }
     }]: [])
@@ -534,6 +522,18 @@ export function VenueNetworksTab () {
       network: row.deepNetwork,
       networkVenue: getCurrentVenue(row)
     })
+  }
+
+  const handleClickNetworkTunnel = (currentVenue: Venue, currentNetwork: Network) => {
+    setTunnelModalState({
+      visible: true,
+      network: {
+        id: currentNetwork.id,
+        type: currentNetwork.nwSubType,
+        venueId: currentVenue.id,
+        venueName: currentVenue.name
+      }
+    } as NetworkTunnelActionModalProps)
   }
 
   const handleCancel = () => {
