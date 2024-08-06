@@ -5,11 +5,14 @@ import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction } 
 import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 import { useEdgeMvSdLanActions } from '../EdgeSdLan/useEdgeSdLanActions'
 
-import { NetworkTunnelTypeEnum, NetworkTunnelActionModalProps, NetworkTunnelActionForm } from './types'
+import { NetworkTunnelTypeEnum, NetworkTunnelActionForm } from './types'
+
+import { NetworkTunnelActionModalProps } from '.'
 
 export const getNetworkTunnelType = (
   network: NetworkTunnelActionModalProps['network'],
-  venueSdLanInfo?: EdgeMvSdLanViewData) => {
+  venueSdLanInfo?: EdgeMvSdLanViewData
+) => {
   const isSdLanTunneled = Boolean(venueSdLanInfo?.tunneledWlans?.find(wlan =>
     wlan.networkId === network?.id && wlan.venueId === network?.venueId))
 
@@ -22,7 +25,8 @@ export const useUpdateNetworkTunnelAction = () => {
   const updateNetworkTunnel = async (
     formValues: NetworkTunnelActionForm,
     network: NetworkTunnelActionModalProps['network'] ,
-    venueSdLanInfo?: EdgeMvSdLanViewData
+    venueSdLanInfo?: EdgeMvSdLanViewData,
+    otherSdLanActs?: () => Promise<void>
   ) => {
     const networkId = network?.id
     const networkVenueId = network?.venueId
@@ -40,16 +44,22 @@ export const useUpdateNetworkTunnelAction = () => {
 
     const tunnelTypeInitVal = getNetworkTunnelType(network, venueSdLanInfo)
 
-    // activate/deactivate SDLAN tunneling
-    if (formTunnelType !== tunnelTypeInitVal) {
-    // activate/deactivate network
-      return await toggleNetwork(
+    const triggerSdLanOperations = async () => {
+      await toggleNetwork(
         venueSdLanInfo?.id!,
         networkVenueId,
         networkId!,
         sdLanTunneled,
         sdLanTunneled && sdLanTunnelGuest
       )
+
+      await otherSdLanActs?.()
+    }
+
+    // activate/deactivate SDLAN tunneling
+    if (formTunnelType !== tunnelTypeInitVal) {
+    // activate/deactivate network
+      return await triggerSdLanOperations()
     } else {
     // tunnelType still SDLAN
       if (tunnelTypeInitVal === NetworkTunnelTypeEnum.SdLan) {
@@ -58,13 +68,7 @@ export const useUpdateNetworkTunnelAction = () => {
 
         // check if tunnel guest changed
         if(isGuestTunnelUtilizedInitState !== sdLanTunnelGuest) {
-          return await toggleNetwork(
-              venueSdLanInfo?.id!,
-              networkVenueId,
-              networkId!,
-              sdLanTunneled,
-              sdLanTunneled && sdLanTunnelGuest
-          )
+          return await triggerSdLanOperations()
         }
       }
     }
