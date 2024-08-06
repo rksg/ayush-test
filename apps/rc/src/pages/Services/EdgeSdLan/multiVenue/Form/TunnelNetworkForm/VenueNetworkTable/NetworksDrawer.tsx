@@ -104,57 +104,44 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   ) => {
     const { activatedNetworks, activatedGuestNetworks } = updateContent
 
-    // eslint-disable-next-line max-len
-    const affectedNetworks = (fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks)
-    const newSelected = toggleItemFromSelected(checked, venueId, data, affectedNetworks)
+    // vlan pooling enabled cannot be a guest network
+    const isVlanPooling = !isNil(data.vlanPool)
 
     if (isGuestTunnelEnabled
-      && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
-      && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
+      // eslint-disable-next-line max-len
+      && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && !isVlanPooling ))
+    ) {
 
-      if (fieldName === 'activatedNetworks') {
-        const updateData = {
-          [fieldName]: newSelected,
-          activatedGuestNetworks: activatedGuestNetworks
-        }
-
-        // vlan pooling enabled cannot be a guest network
-        const isVlanPooling = !isNil(data.vlanPool)
-        if (!isVlanPooling || (isVlanPooling && !checked)) {
-          // eslint-disable-next-line max-len
-          updateData['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
-        }
-
-        // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same.
-        // but deactivate network no need to check conflict.
-        if (checked) {
-          checkGuestFwdConflict(data, checked, updateData)
-        } else {
-          setUpdateContent(updateData)
-        }
-      } else {
+      // deactivate GuestNetworks: only update GuestNetworks
+      if (fieldName === 'activatedGuestNetworks' && !checked) {
         // eslint-disable-next-line max-len
-        const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
+        const newActivatedGuestNetworks = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
 
-        // activatedGuestNetworks
         checkGuestFwdConflict(data, checked, {
-          [fieldName]: newSelected,
-          activatedNetworks: newSelectedNetworks
+          ...updateContent,
+          activatedGuestNetworks: newActivatedGuestNetworks
         })
+      } else {
+
+        const updateData = {
+          activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks),
+          // eslint-disable-next-line max-len
+          activatedGuestNetworks: toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
+        }
+
+        // no need to check conflict when deactivate dc network
+        if (fieldName === 'activatedNetworks' && !checked) {
+          setUpdateContent(updateData)
+        } else {
+          checkGuestFwdConflict(data, checked, updateData)
+        }
       }
     } else {
-      if (fieldName === 'activatedGuestNetworks') {
-        // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
-        checkGuestFwdConflict(data, checked, {
-          ...updateContent,
-          [fieldName]: newSelected
-        })
-      } else {
-        setUpdateContent({
-          ...updateContent,
-          [fieldName]: newSelected
-        })
-      }
+      setUpdateContent({
+        ...updateContent,
+        activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks)
+      })
     }
   }
 
@@ -193,7 +180,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           // eslint-disable-next-line max-len
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
-          // mvActivatedGuestNetworks={mvActivatedGuestNetworks}
           onActivateChange={handleActivateChange}
         />
       </Space>
