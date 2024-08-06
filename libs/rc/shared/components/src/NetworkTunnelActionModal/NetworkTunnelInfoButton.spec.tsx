@@ -7,14 +7,9 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { SdLanScopedNetworkVenuesData } from '../EdgeSdLan/useEdgeSdLanActions'
-
-import { mockSdLanScopeVenueMap } from './__tests__/fixtures'
-
 import { NetworkTunnelInfoButton } from '.'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
-
 const defaultVenueData = { activated: { isActivated: true } }
 describe('NetworkTunnelInfoButton', () => {
   it('should correctly render DC case', async () => {
@@ -29,9 +24,7 @@ describe('NetworkTunnelInfoButton', () => {
         network={{ id: targetNetworkId } as Network}
         currentVenue={{ id: sdlanVenueId, ...defaultVenueData } as Venue}
         onClick={mockOnClick}
-        sdLanScopedNetworkVenues={{
-          sdLansVenueMap: mockSdLanScopeVenueMap
-        } as SdLanScopedNetworkVenuesData}
+        venueSdLan={mockedDcSdlan}
       />
     )
 
@@ -51,9 +44,7 @@ describe('NetworkTunnelInfoButton', () => {
         network={{ id: targetNetworkId } as Network}
         currentVenue={{ id: sdlanVenueId, ...defaultVenueData } as Venue}
         onClick={jest.fn()}
-        sdLanScopedNetworkVenues={{
-          sdLansVenueMap: mockSdLanScopeVenueMap
-        } as SdLanScopedNetworkVenuesData}
+        venueSdLan={mockedDmzSdlan}
       />
     )
 
@@ -67,9 +58,7 @@ describe('NetworkTunnelInfoButton', () => {
         network={{ id: 'unkown_network_id' } as Network}
         currentVenue={{ id: 'other_venue_id', ...defaultVenueData } as Venue}
         onClick={jest.fn()}
-        sdLanScopedNetworkVenues={{
-          sdLansVenueMap: mockSdLanScopeVenueMap
-        } as SdLanScopedNetworkVenuesData}
+        venueSdLan={undefined}
       />
     )
 
@@ -86,9 +75,7 @@ describe('NetworkTunnelInfoButton', () => {
         network={{ id: targetNetworkId } as Network}
         currentVenue={{ id: sdlanVenueId, activated: { isActivated: false } } as Venue}
         onClick={jest.fn()}
-        sdLanScopedNetworkVenues={{
-          sdLansVenueMap: mockSdLanScopeVenueMap
-        } as SdLanScopedNetworkVenuesData}
+        venueSdLan={mockedDmzSdlan}
       />
     )
 
