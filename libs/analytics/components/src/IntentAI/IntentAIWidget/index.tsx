@@ -35,8 +35,8 @@ function HighlightCard (props: HighlightCardProps) {
   const content = props.active > 0
     ? $t(
       { defaultMessage: `{activeCount} {activeCount, plural,
-        one {intent is}
-        other {intents are}
+        one {Intent is}
+        other {Intents are}
       } active.` },
       { activeCount: props.active }
     )
@@ -117,7 +117,7 @@ export function IntentAIWidget ({
               : <div style={{ width, height }}>
                 <p><b>{$t(firstParagraph)}</b></p>
                 <p>{$t(secondParagraph)}</p>
-                <Row gutter={[24, 24]}>
+                <Row gutter={[12, 12]}>
                   {
                     highlightList.map((detail, index) => <Col span={12} key={index} >
                       <HighlightCard
