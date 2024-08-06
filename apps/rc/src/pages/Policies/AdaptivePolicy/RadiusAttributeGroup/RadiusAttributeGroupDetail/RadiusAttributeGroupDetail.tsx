@@ -13,13 +13,11 @@ import {
   AdaptivePolicy,
   AttributeAssignment,
   getAdaptivePolicyDetailLink,
-  getPolicyDetailsLink,
+  getPolicyDetailsLink, hasCloudpathAccess,
   PolicyOperation,
   PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 export default function RadiusAttributeGroupDetail () {
   const { $t } = useIntl()
@@ -104,18 +102,17 @@ export default function RadiusAttributeGroupDetail () {
       <PageHeader
         title={data?.name || ''}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() && [
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
               oper: PolicyOperation.EDIT,
               policyId: policyId!
             })}
-            scopeKey={[WifiScopes.UPDATE]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <Space direction={'vertical'}>
         <Card>
