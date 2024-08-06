@@ -90,8 +90,8 @@ export function IntentAIWidget ({
     defaultMessage: 'Revolutionize your Network Optimization'
   })
   const secondParagraph = defineMessage({
-    defaultMessage: `Automates configuration, monitors task based, and optimizes your network
-      performance with IntentAI's advanced AI and ML technologies.`
+    defaultMessage: `Automate network configuration & monitoring tasks and optimize your network
+    performance with IntentAI's advanced purpose driven AI/ML configuration models.`
   })
   const highlightList: HighlightCardProps[] = useHighlightList(data)
   const hasData = highlightList.length > 0
