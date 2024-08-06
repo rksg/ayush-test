@@ -44,6 +44,7 @@ export const MeshUplinkApsTable = (props: MeshUplinkApsTableProps) => {
       title: $t({ defaultMessage: 'Signal' }),
       dataIndex: 'rssi',
       sorter: { compare: sortProp('rssi', defaultSort) },
+      defaultSortOrder: 'descend',
       render: function (_, row) {
         return (<WifiSignal
           snr={row?.rssi}
