@@ -59,8 +59,6 @@ export function useWorkflowStepActions () {
   }
 
   const findDiff = (originalObject: GenericActionData, updatedObject: GenericActionData) => {
-    // console.log('Original = ', originalObject)
-    // console.log('Updated = ', updatedObject)
     const differences: Partial<Record<keyof GenericActionData, object>> = {}
 
     Object.keys(updatedObject).forEach((key) => {
@@ -75,8 +73,6 @@ export function useWorkflowStepActions () {
 
   const patchActionMutation = async (data: GenericActionData, formData: GenericActionData) => {
     const patchData = findDiff(data, formData)
-
-    // console.log('Diff', patchData)
 
     if (Object.values(patchData).every((value) => value === undefined)) return
 
