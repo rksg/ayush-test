@@ -4,7 +4,7 @@ import { Form, Input, Select } from 'antd'
 import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Tooltip, PasswordInput }                                               from '@acx-ui/components'
+import { Drawer, Tooltip, PasswordInput, PasswordInputStrength }                        from '@acx-ui/components'
 import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -49,6 +49,30 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const saveButtonText = isEditMode
     ? $t({ defaultMessage: 'Apply' })
     : $t({ defaultMessage: 'Add' })
+
+  const RULE_REGEX = [
+    /^.{8,32}$/,
+    /(?=.*[a-z])(?=.*[A-Z])/,
+    /(?=.*\d)/,
+    /(?=.*[~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]).{1,}/,   // At least one valid special character
+    /^[A-Za-z\d~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]{1,}$/, // No invalid characters
+    /^(?!~).{1,}/,                                            // ~ cannot be the first character
+    /^(?!.*[`]).{1,}/,                                        // ` is not valid in the password
+    /^(?!.*\$\().{1,}/                                        // $( is not valid in the password
+  ]
+
+  const RULE_MESSAGES = [
+    $t({ defaultMessage: 'Length is limited to 8-32 characters.' }),
+    $t({ defaultMessage: 'Contains one uppercase and one lowercase letters' }),
+    $t({ defaultMessage: 'Contains one number' }),
+    // eslint-disable-next-line
+    $t({ defaultMessage: 'Must contains at least one special character, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
+    // eslint-disable-next-line
+    $t({ defaultMessage: 'No other characters are allowed except uppercase, lowercase, digits and special characters, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
+    $t({ defaultMessage: '~ cannot be used as the first character of the password' }),
+    $t({ defaultMessage: '` is not valid to be part of the password' }),
+    $t({ defaultMessage: 'The sequence of $( is not valid to be part of the password' })
+  ]
 
   useEffect(() => {
     if (visible && form) {
@@ -119,10 +143,24 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         style={{ width: '350px' }}
         rules={[
           { required: true },
-          { min: 8 },
-          { max: 32 }
+          { validator: (rule, value) => {
+            const errors: number[] = []
+            RULE_REGEX.forEach((regex, index) => {
+              if(!regex.test(value)) {
+                errors.push(index)
+              }
+            })
+            if(errors.length > 0) {
+              return Promise.reject(RULE_MESSAGES[errors[0]])
+            }
+            return Promise.resolve()
+
+          } }
         ]}
-        children={<PasswordInput />}
+        children={
+          <PasswordInputStrength
+            regExRules={RULE_REGEX}
+            regExErrorMessages={RULE_MESSAGES}/>}
       />
       <Form.Item
         name='privacyProtocol'
