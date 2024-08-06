@@ -5,6 +5,7 @@ import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Drawer, Tooltip, PasswordInput, PasswordInputStrength }                        from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                       from '@acx-ui/feature-toggle'
 import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -30,7 +31,8 @@ type SnmpV3AgentDrawerProps = {
 const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SnmpAgentFormContext)
-
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
   const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
@@ -143,24 +145,32 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         style={{ width: '350px' }}
         rules={[
           { required: true },
-          { validator: (rule, value) => {
-            const errors: number[] = []
-            RULE_REGEX.forEach((regex, index) => {
-              if(!regex.test(value)) {
-                errors.push(index)
+          ...(isSNMPv3PassphraseOn ? [
+            { validator: (_, value: string) => {
+              const errors: number[] = []
+              RULE_REGEX.forEach((regex, index) => {
+                if(!regex.test(value)) {
+                  errors.push(index)
+                }
+              })
+              if(errors.length > 0) {
+                return Promise.reject(RULE_MESSAGES[errors[0]])
               }
-            })
-            if(errors.length > 0) {
-              return Promise.reject(RULE_MESSAGES[errors[0]])
-            }
-            return Promise.resolve()
-
-          } }
+              return Promise.resolve()
+            } }
+          ] : [
+            { min: 8 },
+            { max: 32 }
+          ])
         ]}
         children={
-          <PasswordInputStrength
-            regExRules={RULE_REGEX}
-            regExErrorMessages={RULE_MESSAGES}/>}
+          (isSNMPv3PassphraseOn ?
+            <PasswordInputStrength
+              regExRules={RULE_REGEX}
+              regExErrorMessages={RULE_MESSAGES}/> :
+            <PasswordInput />
+          )
+        }
       />
       <Form.Item
         name='privacyProtocol'
