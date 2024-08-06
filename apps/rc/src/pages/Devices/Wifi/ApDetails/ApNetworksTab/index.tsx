@@ -11,7 +11,8 @@ import {
   NetworkType,
   NetworkTypeEnum,
   useTableQuery,
-  useApContext
+  useApContext,
+  EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -95,8 +96,8 @@ export function ApNetworksTab () {
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',
       render: function (_: ReactNode, row: Network) {
-        const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
-          sdlan.networkIds.includes(row.id))
+        const destinationsInfo = (sdLanScopedNetworks?.sdLans as EdgeSdLanViewDataP2[])
+          ?.filter(sdlan => sdlan.networkIds.includes(row.id))
         return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
       }
     }]: [])

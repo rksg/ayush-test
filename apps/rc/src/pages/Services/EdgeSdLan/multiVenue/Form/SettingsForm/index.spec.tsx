@@ -3,13 +3,12 @@ import { Form }      from 'antd'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { StepsForm } from '@acx-ui/components'
-import { edgeApi }   from '@acx-ui/rc/services'
+import { StepsForm, StepsFormProps } from '@acx-ui/components'
+import { edgeApi }                   from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeGeneralFixtures,
   EdgeSdLanFixtures,
-  EdgeSdLanUrls,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -23,9 +22,11 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../EdgeMvSdLanContextProvider'
+
 import { SettingsForm } from '.'
 
-const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
 mockEdgeClusterList.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
 
@@ -58,10 +59,35 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+const edgeMvSdlanContextValues = {
+  allSdLans: mockedMvSdLanDataList
+} as EdgeMvSdLanContextType
+
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useHelpPageLink: () => ''
 }))
+
+// eslint-disable-next-line max-len
+type MockedTargetComponentType = Pick<StepsFormProps, 'form' | 'editMode'> & {
+  ctxValues?: EdgeMvSdLanContextType
+}
+const MockedTargetComponent = (props: MockedTargetComponentType) => {
+  const { form, editMode, ctxValues } = props
+  return <Provider>
+    <EdgeMvSdLanContext.Provider value={ctxValues ?? edgeMvSdlanContextValues}>
+      <StepsForm form={form} editMode={editMode}>
+        <SettingsForm />
+      </StepsForm>
+    </EdgeMvSdLanContext.Provider>
+  </Provider>
+}
+
+const useMockedFrom = () => {
+  const [ form ] = Form.useForm()
+  jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+  return form
+}
 
 const mockedSetFieldsValue = jest.fn()
 const mockedReqClusterList = jest.fn()
@@ -77,10 +103,6 @@ describe('Edge SD-LAN form: settings', () => {
 
     mockServer.use(
       rest.post(
-        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDataListP2 }))
-      ),
-      rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
         (req, res, ctx) => {
           mockedReqClusterList(req.body)
@@ -91,17 +113,8 @@ describe('Edge SD-LAN form: settings', () => {
   })
 
   it('should render correctly without DMZ enabled', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
-      return form
-    })
-
-    render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await checkBasicSettings()
@@ -111,17 +124,8 @@ describe('Edge SD-LAN form: settings', () => {
   })
 
   it('should render correctly with DMZ enabled', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
-      return form
-    })
-
-    render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await checkBasicSettings()
@@ -142,17 +146,8 @@ describe('Edge SD-LAN form: settings', () => {
   })
 
   it('Input invalid service name should show error message', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
-      return form
-    })
-
-    render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await checkBasicSettings()
@@ -169,21 +164,14 @@ describe('Edge SD-LAN form: settings', () => {
 
   // eslint-disable-next-line max-len
   it('should filter out edges which is already bound with a SD-LAN service in create mode', async () => {
-    const mockedSdLanDuplicateEdge = [{ ...mockedSdLanDataListP2[0] }]
+    const mockedSdLanDuplicateEdge = [{ ...mockedMvSdLanDataList[0] }]
     mockedSdLanDuplicateEdge[0].edgeClusterId = mockEdgeClusterList.data[4].clusterId
 
-    mockServer.use(
-      rest.post(
-        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
-        (_, res, ctx) => res(ctx.json({ data: mockedSdLanDuplicateEdge }))
-      )
-    )
-
-    render(<Provider>
-      <StepsForm>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+      ctxValues={{ allSdLans: mockedSdLanDuplicateEdge }}
+    />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await waitForElementToBeRemoved(await within(formBody).findAllByTestId('loadingIcon'))
@@ -192,7 +180,7 @@ describe('Edge SD-LAN form: settings', () => {
     await waitFor(() => {
       expect(mockedReqClusterList).toBeCalled()
     })
-    expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
+    expect(screen.queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
   })
   it('should be able to configure guest cluster when it is empty in edit mode', async () => {
     const expectedClusterId = 'clusterId_5'
@@ -207,11 +195,9 @@ describe('Edge SD-LAN form: settings', () => {
       return form
     })
 
-    render(<Provider>
-      <StepsForm form={stepFormRef.current} editMode>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+    />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     const icons = await within(formBody).findAllByTestId('loadingIcon')
@@ -230,42 +216,31 @@ describe('Edge SD-LAN form: settings', () => {
       .getByRole('option', { name: 'Edge Cluster 3' })).toBeValid()
   })
 
-  it.skip('should validate cluster doesnot configure core port ready', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
-      return form
-    })
-
-    const mockClusters = cloneDeep(mockEdgeClusterList)
-    mockClusters.data[1].hasCorePort = false
-    mockServer.use(
-      rest.post(
-        EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (_req, res, ctx) => res(ctx.json(mockClusters))
-      )
-    )
-
-    render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+  it('should filter cluster used as DC/DMZ cluster', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await checkBasicSettings()
 
-    const alert = await within(formBody).findByRole('alert')
-    expect(alert).toHaveTextContent('selected cluster must set up a Core port or LAG')
+    // turn on DMZ
+    await userEvent.click(await within(formBody).findByRole('switch'))
+    // select DMZ edge
+    await userEvent.selectOptions(
+      await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
+      'clusterId_5')
+
+    // DMZ cluster won;t be an option for DC cluster
+    const dcSelector = await within(formBody).findByRole('combobox', { name: 'Cluster' })
+    expect(dcSelector).not.toBeDisabled()
+    expect(dcSelector).toBeVisible()
+    expect(within(dcSelector)
+      .queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
+
+    expect(mockedSetFieldsValue).toBeCalledTimes(2)
   })
 
   it('should validate HA mode consistency', async () => {
-    const { result: stepFormRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
-      return form
-    })
-
     const mockClusters = cloneDeep(mockEdgeClusterList)
     mockClusters.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
 
@@ -276,11 +251,8 @@ describe('Edge SD-LAN form: settings', () => {
       )
     )
 
-    render(<Provider>
-      <StepsForm form={stepFormRef.current}>
-        <SettingsForm />
-      </StepsForm>
-    </Provider>)
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />)
 
     const formBody = await screen.findByTestId('steps-form-body')
     await checkBasicSettings()

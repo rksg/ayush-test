@@ -213,7 +213,7 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
                 { type: 'Service', id: 'LIST' }
               ]))
               api.dispatch(edgeSdLanApi.util.invalidateTags([
-                { type: 'EdgeSdLanP2', id: 'LIST' }
+                { type: 'EdgeSdLanP2', id: 'LIST' }, { type: 'EdgeMvSdLan', id: 'LIST' }
               ]))
             })
           })
