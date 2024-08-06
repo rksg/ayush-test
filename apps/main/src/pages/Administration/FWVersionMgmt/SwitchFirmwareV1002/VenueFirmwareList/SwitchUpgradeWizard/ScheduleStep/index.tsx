@@ -5,8 +5,9 @@ import dayjs                                                from 'dayjs'
 import _                                                    from 'lodash'
 import { useIntl }                                          from 'react-intl'
 
-import { Subtitle, useStepFormContext } from '@acx-ui/components'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { Subtitle, useStepFormContext }       from '@acx-ui/components'
+import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
+import { useGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
   AVAILABLE_SLOTS,
   compareSwitchVersion,
@@ -19,6 +20,7 @@ import {
 
 import { DowngradeTag }      from '../../../styledComponents'
 import * as UI               from '../../styledComponents'
+import { NoteButton }        from '../../styledComponents'
 import { Switch7150C08Note } from '../Switch7150C08Note'
 
 import { PreDownload } from './PreDownload'
@@ -84,6 +86,28 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
+  const [icx7150C08pGroupedData, setIcx7150C08pGroupedData] =
+    useState([] as SwitchFirmwareV1002[][])
+
+  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
+    payload: {
+      venueIdList: upgradeVenueList.map(item => item.venueId),
+      searchFilter: 'ICX7150-C08P',
+      searchTargetFields: ['model']
+    }
+  }, { skip: upgradeVenueList.length === 0 })
+
+  useEffect(() => {
+    const upgradeSwitchListOfIcx7150C08p = upgradeSwitchList.filter(s =>
+      s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08')
+    if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
+      const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
+      const groupedObject = _.groupBy(switchList, 'venueId')
+      // eslint-disable-next-line no-console
+      setIcx7150C08pGroupedData(Object.values(groupedObject))
+    }
+  }, [getSwitchFirmwareList])
+
   const handleICX71Change = (value: RadioChangeEvent) => {
     setSelecteedICX71Version(value.target.value)
     form.setFieldValue('selectedICX71Version', value.target.value)
@@ -114,6 +138,13 @@ export function ScheduleStep (props: ScheduleStepProps) {
   useEffect(() => {
     setShowSubTitle(false)
   }, [current])
+
+  const scrollToTarget = () => {
+    const targetElement = document.getElementById('note_1')
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   const startDate = dayjs().endOf('day')
   const endDate = startDate.add(21, 'day')
@@ -255,7 +286,15 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
+                        <span style={{ marginRight: '5px' }}>
+                          {getSwitchVersionLabelV1002(intl, v)}
+                        </span>
+                        {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') && <NoteButton
+                          size='small'
+                          ghost={true}
+                          onClick={scrollToTarget}>
+                          {intl.$t({ defaultMessage: '[1]' })}
+                        </NoteButton>}
                         {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                       </span>
@@ -266,10 +305,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 </Radio>
               </Space>
             </Radio.Group>
-            {/* <Switch7150C08Note
-              upgradeVenueList={upgradeVenueList}
-              upgradeSwitchList={upgradeSwitchList}
-            /> */}
+            {icx7150C08pGroupedData.length > 0 && <div id='note_1'>
+              <Switch7150C08Note
+                icx7150C08pGroupedData={icx7150C08pGroupedData}
+              />
+            </div>}
           </>}
         </div>
 
