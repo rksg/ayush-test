@@ -55,7 +55,7 @@ export const SubscriptionTabs = () => {
       },
       compliance: {
         title: $t({ defaultMessage: 'Compliance' }),
-        content: <LicenseCompliance />,
+        content: <LicenseCompliance isMsp={false}/>,
         visible: isComplianceEnabled
       }
     }
