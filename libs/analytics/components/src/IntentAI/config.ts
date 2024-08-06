@@ -113,6 +113,18 @@ export const states = {
   }
 } as Record<displayStates, StateInfo>
 
+export const groupedStates = [
+  {
+    group: defineMessage({ defaultMessage: 'Scheduled' }),
+    states: [displayStates.scheduled, displayStates.scheduledOneClick, displayStates.applyScheduled] as unknown as string[]
+  },
+  {
+    group: defineMessage({ defaultMessage: 'Paused' }),
+    states: [displayStates.pausedFromInactive, displayStates.pausedFromActive, displayStates.pausedByDefault] as unknown as string[]
+  }
+]
+
+
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {

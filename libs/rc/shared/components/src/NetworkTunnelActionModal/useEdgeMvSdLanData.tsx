@@ -2,17 +2,21 @@ import { useMemo } from 'react'
 
 import { find } from 'lodash'
 
-import { Features }                           from '@acx-ui/feature-toggle'
-import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
-import {  FILTER }                            from '@acx-ui/rc/utils'
+import { Features }                                                                   from '@acx-ui/feature-toggle'
+import { useGetEdgeMvSdLanViewDataListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
+import {  FILTER, VLANPoolViewModelType }                                             from '@acx-ui/rc/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 interface useEdgeMvSdLanDataProps {
-  filters?: FILTER
-  skip?: boolean
+  sdLanQueryOptions?: {
+    filters?: FILTER
+    skip?: boolean
+  }
+  networkId?: string
 }
-export const useEdgeMvSdLanData = (props?: useEdgeMvSdLanDataProps) => {
+export const useEdgeMvSdLanData = (props: useEdgeMvSdLanDataProps = {}) => {
+  const { sdLanQueryOptions, networkId } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const allSdLansQuery = useGetEdgeMvSdLanViewDataListQuery({
@@ -22,10 +26,25 @@ export const useEdgeMvSdLanData = (props?: useEdgeMvSdLanDataProps) => {
         'edgeClusterId', 'guestEdgeClusterId', 'edgeClusterName', 'guestEdgeClusterName',
         'isGuestTunnelEnabled',
         'tunneledWlans', 'tunneledGuestWlans'],
-      filters: props?.filters,
+      filters: sdLanQueryOptions?.filters,
       pageSize: 10000
     }
-  }, { skip: !isEdgeSdLanMvEnabled || props?.skip })
+  }, { skip: !isEdgeSdLanMvEnabled || sdLanQueryOptions?.skip })
+
+  const { networkVlanPool } = useGetVLANPoolPolicyViewModelListQuery({
+    payload: {
+      fields: ['id', 'name', 'wifiNetworkIds'],
+      filters: { wifiNetworkIds: [networkId] }
+    },
+    enableRbac: true
+  }, {
+    skip: !isEdgeSdLanMvEnabled || !networkId,
+    selectFromResult: ({ data }) => ({
+      networkVlanPool: find(data?.data as VLANPoolViewModelType[], (item) => {
+        return item.networkIds?.includes(networkId!)
+      }) as VLANPoolViewModelType
+    })
+  })
 
   const allSdLans = allSdLansQuery.data?.data
 
@@ -37,9 +56,10 @@ export const useEdgeMvSdLanData = (props?: useEdgeMvSdLanDataProps) => {
   const exported = useMemo(() => {
     return {
       allSdLans: allSdLans ?? [],
+      networkVlanPool,
       getVenueSdLan
     }
-  }, [allSdLans])
+  }, [allSdLans, networkVlanPool])
 
   return exported
 }
