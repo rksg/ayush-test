@@ -1,5 +1,5 @@
-import userEvent              from '@testing-library/user-event'
-import { cloneDeep, groupBy } from 'lodash'
+import userEvent                      from '@testing-library/user-event'
+import { cloneDeep, groupBy, remove } from 'lodash'
 
 import { EdgeMvSdLanFormNetwork, EdgeSdLanFixtures, EdgeSdLanTunneledWlan } from '@acx-ui/rc/utils'
 import {  screen }                                                          from '@acx-ui/test-utils'
@@ -10,8 +10,12 @@ const { click } = userEvent
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
-const venue1network4 = mockedMvSdLanDataList[0].tunneledWlans![1]
-const venue2Network2 = mockedMvSdLanDataList[1].tunneledGuestWlans![0]
+const mockedDmzSdLanNoGuestFwd= cloneDeep(mockedMvSdLanDataList[0])
+mockedDmzSdLanNoGuestFwd.tunneledGuestWlans = []
+const mockedDmzSdLanGuestFwded= cloneDeep(mockedMvSdLanDataList[1])
+mockedDmzSdLanGuestFwded.isGuestTunnelEnabled = true
+const venue1network4 = mockedDmzSdLanNoGuestFwd.tunneledWlans![1]
+const venue2Network2 = mockedDmzSdLanGuestFwded.tunneledGuestWlans![0]
 
 // eslint-disable-next-line max-len
 const getEdgeMvSdLanFormNetworkFormat = (tunneledWlans: EdgeSdLanTunneledWlan[] | undefined): EdgeMvSdLanFormNetwork => {
@@ -31,7 +35,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
   })
 
   describe('activate', () => {
-    const mockedSdLanNoGuestFwd = cloneDeep(mockedMvSdLanDataList[0])
+    const mockedSdLanNoGuestFwd = cloneDeep(mockedDmzSdLanNoGuestFwd)
 
     // different venut same network
     const anotherVenueNetwork = {
@@ -91,10 +95,26 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
     })
+
+    it('should not have impact when other venue network is already activated', async () => {
+      const mockData = cloneDeep(mockedSdLanNoGuestFwd)
+      mockData.tunneledWlans?.push(anotherVenueNetwork)
+      mockData.tunneledGuestWlans?.push(anotherVenueNetwork)
+
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: mockData.tunneledWlans,
+        tunneledGuestWlans: mockData.tunneledGuestWlans
+      })
+
+      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(mockOkFn).toBeCalledTimes(1)
+      expect(mockOkFn).toBeCalledWith([])
+    })
   })
 
   describe('deactivate', () => {
-    const mockedSdLanMultiGuestFwd = cloneDeep(mockedMvSdLanDataList[1])
+    const mockedSdLanMultiGuestFwd = cloneDeep(mockedDmzSdLanGuestFwded)
     const otherNetworks = [{
       ...venue2Network2,
       venueId: 'a307d7077410456f8f1a4fc41d861567',
@@ -146,6 +166,24 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
     })
+
+    it('should not have impact when other venue network is already deactivated', async () => {
+      const mockData = cloneDeep(mockedSdLanMultiGuestFwd)
+      // eslint-disable-next-line max-len
+      remove(mockData.tunneledWlans!, (item) => item.venueId !== defaultArgs.currentNetworkVenueId && item.networkId === defaultArgs.currentNetworkId)
+      // eslint-disable-next-line max-len
+      remove(mockData.tunneledGuestWlans!, (item) => item.venueId !== defaultArgs.currentNetworkVenueId && item.networkId === defaultArgs.currentNetworkId)
+
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: mockData.tunneledWlans,
+        tunneledGuestWlans: mockData.tunneledGuestWlans
+      })
+
+      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(mockOkFn).toBeCalledTimes(1)
+      expect(mockOkFn).toBeCalledWith([])
+    })
   })
 
   it('should dothing when impact is 0', async () => {
@@ -156,8 +194,8 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeSdLanTunneledWlan', (
       currentNetworkVenueId,
       currentNetworkId,
       activatedGuest: true,
-      tunneledWlans: mockedMvSdLanDataList[0].tunneledWlans,
-      tunneledGuestWlans: mockedMvSdLanDataList[0].tunneledGuestWlans,
+      tunneledWlans: mockedDmzSdLanNoGuestFwd.tunneledWlans,
+      tunneledGuestWlans: mockedDmzSdLanNoGuestFwd.tunneledGuestWlans,
       onOk: mockOkFn
     })
 
@@ -173,7 +211,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
   })
 
   describe('activate', () => {
-    const mockedSdLan= mockedMvSdLanDataList[0]
+    const mockedSdLan= mockedDmzSdLanNoGuestFwd
     const currentNetworkId = venue1network4.networkId
     const currentNetworkVenueId = venue1network4.venueId
 
@@ -200,6 +238,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
         id: anotherVenueNetwork.networkId,
         name: anotherVenueNetwork.networkName
       }]
+
       // another diff network on diff venue
       mockActivatedNetworks['mocked_v_1'] = [{
         id: 'another_network_1',
@@ -248,10 +287,34 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith(otherNetworks.map(n => n.venueId))
     })
+
+    it('should not have impact when other venue network is already activated', async () => {
+      const mockActivatedNetworks = cloneDeep(activatedNetworks)
+      mockActivatedNetworks[anotherVenueNetwork.venueId] = [{
+        id: anotherVenueNetwork.networkId,
+        name: anotherVenueNetwork.networkName
+      }]
+
+      const mockActivatedGuestNetworks = cloneDeep(activatedGuestNetworks)
+      mockActivatedGuestNetworks[anotherVenueNetwork.venueId] = [{
+        id: anotherVenueNetwork.networkId,
+        name: anotherVenueNetwork.networkName
+      }]
+      // eslint-disable-next-line max-len
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: mockActivatedNetworks,
+        tunneledGuestWlans: mockActivatedGuestNetworks
+      })
+
+      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(mockOkFn).toBeCalledTimes(1)
+      expect(mockOkFn).toBeCalledWith([])
+    })
   })
 
   describe('deactivate', () => {
-    const mockedSdLan = cloneDeep(mockedMvSdLanDataList[1])
+    const mockedSdLan = cloneDeep(mockedDmzSdLanGuestFwded)
     const currentNetworkId = venue2Network2.networkId
     const currentNetworkVenueId = venue2Network2.venueId
 
@@ -287,7 +350,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
       onOk: mockOkFn
     }
 
-    it('should deactivate single', async () => {
+    it('should have 1 impact', async () => {
       // remove the last data of otherNetworks
       const mockActivatedNetworks = cloneDeep(activatedNetworks)
       const mockActivatedGuestNetworks = cloneDeep(activatedGuestNetworks)
@@ -307,7 +370,7 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
       expect(mockOkFn).toBeCalledWith([otherNetworks[0].venueId])
     })
 
-    it('should deactivate multiple', async () => {
+    it('should have multiple impact', async () => {
       showSdLanGuestFwdConflictModal({
         ...defaultArgs,
         tunneledWlans: activatedNetworks,
@@ -320,10 +383,27 @@ describe('Edge SD-LAN showSdLanGuestFwdConflictModal - EdgeMvSdLanFormNetwork', 
       await click(screen.getByRole('button', { name: 'Continue' }))
       expect(mockOkFn).toBeCalledWith([otherNetworks[1].venueId, otherNetworks[0].venueId])
     })
+
+    it('should not have impact when other venue network is already deactivated', async () => {
+      const mockActivatedGuestNetworks = cloneDeep(activatedGuestNetworks)
+      otherNetworks.forEach(n => {
+        delete mockActivatedGuestNetworks[n.venueId]
+      })
+
+      showSdLanGuestFwdConflictModal({
+        ...defaultArgs,
+        tunneledWlans: activatedNetworks,
+        tunneledGuestWlans: mockActivatedGuestNetworks
+      })
+
+      expect(screen.queryByRole('dialog')).toBeNull()
+      expect(mockOkFn).toBeCalledTimes(1)
+      expect(mockOkFn).toBeCalledWith([])
+    })
   })
 
   it('should dothing when impact is 0', async () => {
-    const mockedSdLan = mockedMvSdLanDataList[0]
+    const mockedSdLan = mockedDmzSdLanNoGuestFwd
     const currentNetworkId = venue1network4.networkId
     const currentNetworkVenueId = venue1network4.venueId
     const activatedNetworks = getEdgeMvSdLanFormNetworkFormat(mockedSdLan.tunneledWlans)
