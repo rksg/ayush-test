@@ -8,7 +8,7 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateTenantSelf: {
-    method: 'PATCH',
+    method: 'PUT',
     url: '/tenants/self',
     newApi: true
   },
