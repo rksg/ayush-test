@@ -7,7 +7,7 @@ import { mockServer } from '@acx-ui/test-utils'
 import * as intlUtil  from './intlUtil'
 import { loadLocale } from './locales'
 
-const mockGet = get as jest.Mock
+// const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
@@ -123,7 +123,18 @@ describe('IntlUtils', () => {
   describe('getReSkinningElements', () => {
     beforeEach(() => {
       jest.clearAllMocks()
-      mockGet.mockReturnValue('') // get('IS_MLISA_SA')
+      // mockGet.mockReturnValue('') // get('IS_MLISA_SA')
+      jest.resetModules()
+      // jest.mocked(get).mockReturnValue('true')
+      // jest.doMock('@acx-ui/config', () => ({ get: jest.fn().mockReturnValue('true') }))
+      jest.doMock('@acx-ui/config', () => ({
+        get: jest.fn().mockImplementation(name => {
+          switch(name) {
+            case 'IS_MLISA_SA': return 'true'
+            default: return 'true'
+          }
+        })
+      }))
     })
 
     it('get default re-skinning elements', () => {
@@ -176,8 +187,20 @@ describe('IntlUtils', () => {
         VenueSingular: 'Zone',
         VenuePlural: 'Zones'
       }
-      mockGet.mockReturnValue(true) // get('IS_MLISA_SA')
-      mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
+      // jest.resetModules()
+      // jest.mocked(get).mockReturnValue('true')
+      // jest.doMock('@acx-ui/config', () => ({ get: jest.fn().mockReturnValue('true') }))
+      // jest.doMock('@acx-ui/config', () => ({
+      //   get: jest.fn().mockImplementation(name => {
+      //     switch(name) {
+      //       case 'IS_MLISA_SA': return 'true'
+      //       default: return 'true'
+      //     }
+      //   })
+      // }))
+
+      // mockGet.mockReturnValue(true) // get('IS_MLISA_SA')
+      // mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
       const supportReSkinning = true
       const ret = intlUtil.getReSkinningElements()
       for(const key of Object.keys(expected)) {
