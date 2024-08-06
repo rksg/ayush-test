@@ -10,14 +10,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   FILTER,
-  getPolicyDetailsLink, getPolicyRoutePath,
+  getPolicyDetailsLink, getPolicyRoutePath, hasCloudpathAccess,
   PolicyOperation,
   PolicyType, RadiusAttributeGroup, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                   from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { filterByAccess }                               from '@acx-ui/user'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -61,8 +60,7 @@ export default function RadiusAttributeGroupTable () {
             policyId: selectedRows[0].id!
           })
         })
-      },
-      scopeKey: [WifiScopes.UPDATE]
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -90,8 +88,7 @@ export default function RadiusAttributeGroupTable () {
               })
           }
         )
-      },
-      scopeKey: [WifiScopes.DELETE]
+      }
     }]
 
     function useColumns () {
@@ -161,9 +158,8 @@ export default function RadiusAttributeGroupTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           onFilterChange={handleFilterChange}
-          rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
-          actions={filterByAccess([{
+          rowSelection={hasCloudpathAccess() && { type: 'radio' }}
+          actions={filterByAccess( hasCloudpathAccess() ? [{
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({
@@ -173,9 +169,8 @@ export default function RadiusAttributeGroupTable () {
                   oper: PolicyOperation.CREATE
                 })
               })
-            },
-            scopeKey: [WifiScopes.CREATE]
-          }])}
+            }
+          }] : [])}
         />
       </Loader>
     )

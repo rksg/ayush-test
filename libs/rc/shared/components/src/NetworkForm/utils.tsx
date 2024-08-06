@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react'
 
-import { FormInstance } from 'antd'
-import _                from 'lodash'
-import { Params }       from 'react-router-dom'
+import { FormInstance }            from 'antd'
+import _, { cloneDeep, findIndex } from 'lodash'
+import { Params }                  from 'react-router-dom'
 
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
@@ -81,12 +81,13 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { useIsConfigTemplateEnabledByType }                                              from '../configTemplates'
-import { useEdgeMvSdLanActions }                                                         from '../EdgeSdLan/useEdgeSdLanActions'
-import { NetworkTunnelActionForm, NetworkTunnelActionModalProps, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
-import { getNetworkTunnelType }                                                          from '../NetworkTunnelActionModal/utils'
-import { useLazyGetAAAPolicyInstance }                                                   from '../policies/AAAForm/aaaPolicyQuerySwitcher'
-import { useIsEdgeReady }                                                                from '../useEdgeActions'
+import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
+import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
+import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
+import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
+import { useIsEdgeReady }                                 from '../useEdgeActions'
 
 export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
@@ -803,10 +804,9 @@ export const useUpdateEdgeSdLanActivations = () => {
   return updateEdgeSdLanActivations
 }
 
-// eslint-disable-next-line max-len
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
-  networkFormRef: FormInstance,
+  sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
   tunnelModalProps: NetworkTunnelActionModalProps,
   venueSdLanInfo: EdgeMvSdLanViewData
 ) => {
@@ -845,11 +845,10 @@ export const getNetworkTunnelSdLanUpdateData = (
   if (!isNeedUpdate)
     return
 
-  // eslint-disable-next-line max-len
-  const updateContent = _.cloneDeep(networkFormRef.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]) ?? []
+  const updateContent = cloneDeep(sdLanAssociationUpdates as NetworkTunnelSdLanAction[]) ?? []
 
   // eslint-disable-next-line max-len
-  const existDataIdx = _.findIndex(updateContent, { serviceId: venueSdLanInfo?.id, venueId: networkVenueId })
+  const existDataIdx = findIndex(updateContent, { serviceId: venueSdLanInfo?.id, venueId: networkVenueId })
 
   if (existDataIdx !== -1) {
     updateContent[existDataIdx].guestEnabled = isFwdGuest
