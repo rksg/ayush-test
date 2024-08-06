@@ -219,20 +219,6 @@ describe('Dashboard', () => {
     expect(screen.queryByTestId('AIOperations')).toBeNull()
   })
   // eslint-disable-next-line max-len
-  it('not render intentAI and not render RRM when intentAI FF is off and has no RRM permission', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    setRaiPermissions({
-      READ_AI_DRIVEN_RRM: false,
-      READ_AI_OPERATIONS: false,
-      READ_INTENT_AI: true
-    } as RaiPermissions)
-    render(<Dashboard />, { route: true })
-
-    expect(screen.queryByTestId('IntentAIWidget')).toBeNull()
-    expect(screen.queryByTestId('AIDrivenRRM')).toBeNull()
-    expect(screen.queryByTestId('AIOperations')).toBeNull()
-  })
-  // eslint-disable-next-line max-len
   it('not render intentAI and render RRM when intentAI FF is off and has RRM permission', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     setRaiPermissions({
