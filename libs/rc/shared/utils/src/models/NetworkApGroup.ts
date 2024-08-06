@@ -35,6 +35,10 @@ export class NetworkApGroup {
 
   id?: string
 
+  venueId?: string
+
+  networkId?: string
+
   constructor () {
     this.radio = RadioEnum.Both
 

@@ -542,6 +542,7 @@ export function VenueNetworksTab () {
     if (name === 'networkApGroupForm') {
       let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
+
       updateNetworkVenue({
         params: {
           tenantId: params.tenantId,
@@ -550,7 +551,10 @@ export function VenueNetworksTab () {
           networkId: payload.networkId
         },
         payload: {
-          ...payload,
+          ...{
+            oldPayload: oldData,
+            newPayload: payload
+          },
           isTemplate: isTemplate
         },
         enableRbac: resolvedRbacEnabled

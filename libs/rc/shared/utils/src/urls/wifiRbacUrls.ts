@@ -50,6 +50,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
     newApi: true
   },
+  activateVenueApGroup: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
   getNetworkVenue: {
     method: 'get',
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',

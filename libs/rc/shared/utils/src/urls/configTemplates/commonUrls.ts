@@ -270,6 +270,21 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  activateVenueApGroupRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
+  getVenueApGroupsRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
+  },
+  updateVenueApGroupsRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
+  },
   getNetworkVenueTemplateRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
