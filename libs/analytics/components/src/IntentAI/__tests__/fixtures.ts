@@ -130,9 +130,9 @@ export const filterOptions = {
 const intentStatus = {
   id: '1',
   code: 'c-crrm-channel5g-auto',
-  status: 'applied',
+  status: 'active',
   statusReason: '',
-  displayStatus: 'applied',
+  displayStatus: 'active',
   createdAt: '2023-06-13T07:05:08.638Z',
   updatedAt: '2023-06-16T06:05:02.839Z',
   sliceType: 'zone',
@@ -299,5 +299,71 @@ export const intentListWithAllStatus = {
       displayStatus: 'na-not-defined'
     }
   ], total: 20
+  }
+}
+
+export const intentHighlights = {
+  highlights: {
+    rrm: {
+      new: 4,
+      active: 8
+    },
+    airflex: {
+      new: 5,
+      active: 10
+    },
+    ops: {
+      new: 6,
+      active: 12
+    }
+  }
+}
+
+export const intentHighlightsWithZeroActive = {
+  highlights: {
+    rrm: {
+      new: 4,
+      active: 0
+    },
+    airflex: {
+      new: 5,
+      active: 0
+    },
+    ops: {
+      new: 6,
+      active: 0
+    }
+  }
+}
+
+export const intentHighlightsWithNullFields = {
+  highlights: {
+  }
+}
+
+export const intentHighlightsWithRRM = {
+  highlights: {
+    rrm: {
+      new: 4,
+      active: 8
+    }
+  }
+}
+
+export const intentHighlightsWithAirflex = {
+  highlights: {
+    airflex: {
+      new: 5,
+      active: 10
+    }
+  }
+}
+
+export const intentHighlightsWithOperations = {
+  highlights: {
+    ops: {
+      new: 6,
+      active: 12
+    }
   }
 }

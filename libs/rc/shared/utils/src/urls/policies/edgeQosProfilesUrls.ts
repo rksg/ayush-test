@@ -1,27 +1,27 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-export const EdgeQosUrls: { [key: string]: ApiInfo } = {
-  getEdgeQos: {
+export const EdgeQosProfilesUrls: { [key: string]: ApiInfo } = {
+  getEdgeQosProfileById: {
     method: 'get',
     url: '/edgeQosProfiles/:qosProfileId',
     newApi: true
   },
-  addEdgeQos: {
+  addEdgeQosProfile: {
     method: 'post',
     url: '/edgeQosProfiles',
     newApi: true
   },
-  updateEdgeQos: {
+  updateEdgeQosProfile: {
     method: 'put',
     url: '/edgeQosProfiles/:qosProfileId',
     newApi: true
   },
-  deleteEdgeQos: {
+  deleteEdgeQosProfile: {
     method: 'delete',
     url: '/edgeQosProfiles/:qosProfileId',
     newApi: true
   },
-  getEdgeQosViewDataList: {
+  getEdgeQosProfileViewDataList: {
     method: 'post',
     url: '/edgeQosProfiles/query',
     newApi: true
