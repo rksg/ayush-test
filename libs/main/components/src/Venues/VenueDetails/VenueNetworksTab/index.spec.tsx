@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import { useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
@@ -521,7 +522,27 @@ describe('VenueNetworksTab', () => {
       await waitFor(() => expect(radioOpt_sdlan).toBeChecked())
     })
 
-    it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
+    it('should correctly display local breakout when the network is not SDLAN selected', async () => {
+      const mockSdLan = cloneDeep(mockedMvSdLanDataList[0])
+      mockSdLan.tunneledWlans![0].venueId = params.venueId
+
+      const mockData = {
+        sdLans: [mockSdLan] as EdgeMvSdLanViewData[],
+        scopedNetworkIds: ['network_1', 'network_4'],
+        scopedGuestNetworkIds: ['network_4']
+      }
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockData)
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      await within(activatedRow).findByRole('button', { name: 'Local Breakout' })
+    })
+
+    it('should display local breakout when SD-LAN is not running on it', async () => {
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue({
         sdLans: [],
         scopedNetworkIds: [],
