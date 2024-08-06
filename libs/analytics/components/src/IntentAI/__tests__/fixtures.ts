@@ -336,6 +336,12 @@ export const intentListWithZoneTextStatus = {
     {
       ...intentStatus,
       status: 'na',
+      statusReason: 'conflicting-configuration',
+      displayStatus: 'na-conflicting-configuration'
+    },
+    {
+      ...intentStatus,
+      status: 'na',
       statusReason: 'no-aps',
       displayStatus: 'na-no-aps'
     },

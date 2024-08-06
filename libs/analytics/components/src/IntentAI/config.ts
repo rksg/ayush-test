@@ -89,7 +89,7 @@ export const states = {
   },
   [displayStates.naConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the {zoneVenueText}.' })
   },
   [displayStates.naNoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),

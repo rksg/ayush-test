@@ -342,7 +342,7 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[14],
           ...expectedCommonResult,
           status: 'No Recommendation, Conflicting Configuration',
-          statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.'
+          statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the Zone.'
         },
         {
           ...intentListWithAllStatus.intents.data[15],
@@ -399,49 +399,55 @@ describe('Intent services', () => {
 
       const expectedResult = [
         {
-          ...intentListWithAllStatus.intents.data[4],
+          ...intentListWithZoneTextStatus.intents.data[0],
           ...expectedCommonResult,
           status: 'Apply In Progress',
           statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
         },
         {
-          ...intentListWithAllStatus.intents.data[5],
+          ...intentListWithZoneTextStatus.intents.data[1],
           ...expectedCommonResult,
           status: 'Active',
           statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
         },
         {
-          ...intentListWithAllStatus.intents.data[6],
+          ...intentListWithZoneTextStatus.intents.data[2],
           ...expectedCommonResult,
           status: 'Paused, Applied Failed',
           statusTooltip: 'IntentAI recommended changes failed to apply to the Venue zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
         },
         {
-          ...intentListWithAllStatus.intents.data[8],
+          ...intentListWithZoneTextStatus.intents.data[3],
           ...expectedCommonResult,
           status: 'Revert In Progress',
           statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
         },
         {
-          ...intentListWithAllStatus.intents.data[15],
+          ...intentListWithZoneTextStatus.intents.data[4],
+          ...expectedCommonResult,
+          status: 'No Recommendation, Conflicting Configuration',
+          statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the Venue.'
+        },
+        {
+          ...intentListWithZoneTextStatus.intents.data[5],
           ...expectedCommonResult,
           status: 'No Recommendation, No APs',
           statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue zone-1.'
         },
         {
-          ...intentListWithAllStatus.intents.data[16],
+          ...intentListWithZoneTextStatus.intents.data[6],
           ...expectedCommonResult,
           status: 'No Recommendation, Not Enough License',
           statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
         },
         {
-          ...intentListWithAllStatus.intents.data[17],
+          ...intentListWithZoneTextStatus.intents.data[7],
           ...expectedCommonResult,
           status: 'No Recommendation, Not Enough Data',
           statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the Venue zone-1.'
         },
         {
-          ...intentListWithAllStatus.intents.data[18],
+          ...intentListWithZoneTextStatus.intents.data[8],
           ...expectedCommonResult,
           status: 'Verified',
           statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
