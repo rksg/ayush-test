@@ -112,7 +112,6 @@ export enum Features {
   SWITCH_ADMIN_PASSWORD = 'removable-ff',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_DHCP_CLIENTS = 'removable-ff',
-  SWITCH_EDIT_PORTS_FROM_PANEL = 'removable-ff',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_LEVEL_VLAN = 'switch-level-vlan',
