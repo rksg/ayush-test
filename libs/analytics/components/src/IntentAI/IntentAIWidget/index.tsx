@@ -19,70 +19,58 @@ type IntentAIWidgetProps = {
 }
 
 type HighlightCardProps = HighlightItem & {
-  type: 'rrm' | 'airflex' | 'operations'
+  title: string,
+  icon: JSX.Element
 }
 
 function HighlightCard (props: HighlightCardProps) {
   const { $t } = useIntl()
-  const { type, new: newCount, active: activeCount } = props
-
-  const getTitle = (type: 'rrm' | 'airflex' | 'operations') => {
-    if (type === 'rrm') {
-      return $t({ defaultMessage: 'AI-Driven RRM' })
-    } else if (type === 'airflex') {
-      return $t({ defaultMessage: 'AirFlexAI' })
-    } else if (type === 'operations') {
-      return $t({ defaultMessage: 'AI Operations' })
-    }
-    return ''
-  }
-
-  const getCardIcon = (type: 'rrm' | 'airflex' | 'operations') => {
-    if (type === 'rrm') {
-      return <AIDrivenRRM />
-    } else if (type === 'airflex') {
-      return <AirFlexAI />
-    } else if (type === 'operations') {
-      return <AIOperation />
-    }
-    return null
-  }
-
   const title = {
-    title: getTitle(type),
+    title: props.title,
     icon: <ColorPill
       color='var(--acx-accents-orange-50)'
-      value={$t(countFormat, { value: newCount })}
+      value={$t(countFormat, { value: props.new })}
     />
   }
-  const content = activeCount > 0
+  const content = props.active > 0
     ? $t(
-      {
-        defaultMessage: '{activeCount} Intents are Active.'
-      },
-      { activeCount: activeCount }
+      { defaultMessage: '{activeCount} Intents are Active.' },
+      { activeCount: props.active }
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
 
   return (
     <TenantLink to='/analytics/intentAI'>
-      <Card cardIcon={getCardIcon(type)} title={title} className='highlight-card-title'>
+      <Card cardIcon={props.icon} title={title} className='highlight-card-title'>
         {content}
       </Card>
     </TenantLink>
   )
 }
 
-function getHighlightList (data: IntentHighlight | undefined) {
+function useHighlightList (data: IntentHighlight | undefined) {
+  const { $t } = useIntl()
   const highlightList: HighlightCardProps[] = []
   if (data?.rrm) {
-    highlightList.push({ type: 'rrm', new: data.rrm.new, active: data.rrm.active })
+    highlightList.push({
+      ...data.rrm,
+      title: $t({ defaultMessage: 'AI-Driven RRM' }),
+      icon: <AIDrivenRRM />
+    })
   }
   if (data?.airflex) {
-    highlightList.push({ type: 'airflex', new: data.airflex.new, active: data.airflex.active })
+    highlightList.push({
+      ...data.airflex,
+      title: $t({ defaultMessage: 'AirFlexAI' }),
+      icon: <AirFlexAI />
+    })
   }
   if (data?.ops) {
-    highlightList.push({ type: 'operations', new: data.ops.new, active: data.ops.active })
+    highlightList.push({
+      ...data.ops,
+      title: $t({ defaultMessage: 'AI Operations' }),
+      icon: <AIOperation />
+    })
   }
   return highlightList
 }
@@ -95,21 +83,18 @@ export function IntentAIWidget ({
   const [search] = useSearchParams()
   const selectedTenants = search.get('selectedTenants')
   const queryResults = useIntentHighlightQuery(
-    { ...pathFilters, n: 12, selectedTenants }
+    { ...pathFilters, selectedTenants }
   )
   const data = queryResults?.data
-
   const title = $t({ defaultMessage: 'IntentAI' })
-
-  const firstParagraph = defineMessage({ defaultMessage:
-  'Revolutionize your Network Optimization'
+  const firstParagraph = defineMessage({
+    defaultMessage: 'Revolutionize your Network Optimization'
   })
   const secondParagraph = defineMessage({
     defaultMessage: `Automates configuration, monitors task based, and optimizes your network
-      performance with IntentAI's advanced AI and ML technologies.
-      ` })
-
-  const highlightList: HighlightCardProps[] = getHighlightList(data)
+      performance with IntentAI's advanced AI and ML technologies.`
+  })
+  const highlightList: HighlightCardProps[] = useHighlightList(data)
   const hasData = highlightList.length > 0
 
   return <Loader states={[queryResults]}>
@@ -131,15 +116,15 @@ export function IntentAIWidget ({
                 <p>{$t(secondParagraph)}</p>
                 <Row gutter={[24, 24]}>
                   {
-                    highlightList.map((detail, index) => {
-                      return <Col span={12} key={index} >
-                        <HighlightCard
-                          key={index}
-                          type={detail.type}
-                          new={detail.new}
-                          active={detail.active} />
-                      </Col>
-                    })
+                    highlightList.map((detail, index) => <Col span={12} key={index} >
+                      <HighlightCard
+                        key={index}
+                        icon={detail.icon}
+                        title={detail.title}
+                        new={detail.new}
+                        active={detail.active}
+                      />
+                    </Col>)
 
                   }
                 </Row>

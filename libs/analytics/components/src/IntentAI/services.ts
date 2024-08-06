@@ -252,8 +252,7 @@ export const api = intentAIApi.injectEndpoints({
     }),
     intentHighlight: build.query<
       IntentHighlight,
-      // TODO: do we need n?
-      PathFilter & { n: number } & { selectedTenants?: string | null }
+      PathFilter & { selectedTenants?: string | null }
     >({
       query: (payload) => ({
         document: gql`
