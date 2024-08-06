@@ -42,13 +42,9 @@ function HighlightCard (props: HighlightCardProps) {
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
 
-  return (
-    <TenantLink to='/analytics/intentAI'>
-      <Card cardIcon={props.icon} title={title} className='highlight-card-title'>
-        {content}
-      </Card>
-    </TenantLink>
-  )
+  return <Card cardIcon={props.icon} title={title} className='highlight-card-title'>
+    <TenantLink to='/analytics/intentAI'>{content}</TenantLink>
+  </Card>
 }
 
 function useHighlightList (data: IntentHighlight | undefined) {
