@@ -4,8 +4,7 @@ import { SwitchFirmwareV1002 } from '@acx-ui/rc/utils'
 import { Provider }            from '@acx-ui/store'
 import {
   render,
-  screen,
-  within
+  screen
 } from '@acx-ui/test-utils'
 
 import {
@@ -15,10 +14,10 @@ import {
 import { Switch7150C08Note } from '.'
 
 
-describe('ScheduleStep', () => {
+describe('Switch7150C08Note', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
-  it('render ScheduleStep - 1 Venue', async () => {
+  it('render Switch7150C08Note', async () => {
     render(
       <Provider>
         <Form>
