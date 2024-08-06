@@ -149,7 +149,7 @@ export interface NetworkDevice {
 	rogueCategoryType?: RogueDeviceCategoryType;
 	apMac?: string;
 	switchMac?: string;
-  meshRole?: APMeshRole;
+    meshRole?: APMeshRole;
 }
 
 export interface RogueApLocation {
