@@ -14,6 +14,7 @@ import {
   Tooltip,
   showToast
 } from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
@@ -86,7 +87,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
