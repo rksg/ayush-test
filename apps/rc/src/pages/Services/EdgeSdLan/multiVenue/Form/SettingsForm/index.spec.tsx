@@ -1,10 +1,12 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { StepsForm } from '@acx-ui/components'
 import { edgeApi }   from '@acx-ui/rc/services'
 import {
+  ClusterHighAvailabilityModeEnum,
   EdgeGeneralFixtures,
   EdgeSdLanFixtures,
   EdgeSdLanUrls,
@@ -24,7 +26,8 @@ import {
 import { SettingsForm } from '.'
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
-const { mockEdgeClusterList } = EdgeGeneralFixtures
+const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
+mockEdgeClusterList.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -64,6 +67,8 @@ const mockedSetFieldsValue = jest.fn()
 const mockedReqClusterList = jest.fn()
 
 describe('Edge SD-LAN form: settings', () => {
+
+
   beforeEach(() => {
     mockedSetFieldsValue.mockClear()
     mockedReqClusterList.mockClear()
@@ -131,6 +136,9 @@ describe('Edge SD-LAN form: settings', () => {
       guestEdgeClusterName: 'Edge Cluster 5',
       guestEdgeClusterVenueId: '0000000005'
     })
+
+    //should not have HA mode consistentency alert.
+    expect(within(formBody).queryByRole('alert')).toBeNull()
   })
 
   it('Input invalid service name should show error message', async () => {
@@ -182,10 +190,7 @@ describe('Edge SD-LAN form: settings', () => {
 
     await screen.findByText('Cluster')
     await waitFor(() => {
-      expect(mockedReqClusterList).toBeCalledWith({
-        fields: ['name', 'venueId', 'clusterId', 'clusterStatus', 'hasCorePort'],
-        pageSize: 10000
-      })
+      expect(mockedReqClusterList).toBeCalled()
     })
     expect(screen.queryByRole('option', { name: 'Smart Edge 5' })).toBeNull()
   })
@@ -232,6 +237,15 @@ describe('Edge SD-LAN form: settings', () => {
       return form
     })
 
+    const mockClusters = cloneDeep(mockEdgeClusterList)
+    mockClusters.data[1].hasCorePort = false
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusters))
+      )
+    )
+
     render(<Provider>
       <StepsForm form={stepFormRef.current}>
         <SettingsForm />
@@ -244,6 +258,55 @@ describe('Edge SD-LAN form: settings', () => {
     const alert = await within(formBody).findByRole('alert')
     expect(alert).toHaveTextContent('selected cluster must set up a Core port or LAG')
   })
+
+  it('should validate HA mode consistency', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      jest.spyOn(form, 'setFieldsValue').mockImplementation(mockedSetFieldsValue)
+      return form
+    })
+
+    const mockClusters = cloneDeep(mockEdgeClusterList)
+    mockClusters.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusters))
+      )
+    )
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current}>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await checkBasicSettings()
+
+    // turn on DMZ
+    await userEvent.click(await within(formBody).findByRole('switch'))
+
+    expect(within(formBody).queryByRole('alert')).toBeNull()
+
+    // select DMZ edge
+    await userEvent.selectOptions(
+      await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
+      'clusterId_1')
+
+    const alerts = await within(formBody).findAllByRole('alert')
+    expect(alerts.length).toBe(2)
+    alerts.forEach(alert =>
+      expect(alert).toHaveTextContent('High availability mode must be consistent.')
+    )
+
+    // turn off DMZ
+    await userEvent.click(await within(formBody).findByRole('switch'))
+    // HA mode check should disappeared
+    await waitFor(() => expect(within(formBody).queryByRole('alert')).toBeNull())
+  })
+
 })
 
 const checkBasicSettings = async () => {

@@ -50,7 +50,8 @@ export enum EdgeServiceTypeEnum {
   FIREWALL = 'FIREWALL',
   NETWORK_SEGMENTATION = 'NETWORK_SEGMENTATION',
   SD_LAN = 'SDLAN',
-  SD_LAN_P2 = 'SDLAN_P2'
+  SD_LAN_P2 = 'SDLAN_P2',
+  MV_SD_LAN = 'MV_SDLAN'
 }
 
 export enum EdgeServiceStatusEnum {
