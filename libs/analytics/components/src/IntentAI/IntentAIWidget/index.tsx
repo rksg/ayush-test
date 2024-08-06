@@ -34,7 +34,10 @@ function HighlightCard (props: HighlightCardProps) {
   }
   const content = props.active > 0
     ? $t(
-      { defaultMessage: '{activeCount} Intents are Active.' },
+      { defaultMessage: `{activeCount} {activeCount, plural,
+        one {intent is}
+        other {intents are}
+      } active.` },
       { activeCount: props.active }
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })

@@ -46,13 +46,13 @@ describe('IntentAI dashboard', () => {
     render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
 
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
-    expect(await screen.findByText('8 Intents are Active.')).toBeVisible()
+    expect(await screen.findByText('8 intents are active.')).toBeVisible()
 
     expect(await screen.findByText('AirFlexAI')).toBeVisible()
-    expect(await screen.findByText('10 Intents are Active.')).toBeVisible()
+    expect(await screen.findByText('10 intents are active.')).toBeVisible()
 
     expect(await screen.findByText('AI Operations')).toBeVisible()
-    expect(await screen.findByText('12 Intents are Active.')).toBeVisible()
+    expect(await screen.findByText('12 intents are active.')).toBeVisible()
   })
 
   it('render texts when intentHighlights have zero applied data', async () => {
