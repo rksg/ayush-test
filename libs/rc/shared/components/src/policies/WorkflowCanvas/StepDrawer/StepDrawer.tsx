@@ -11,7 +11,7 @@ import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useG
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
-import { useWorkflowStepActions } from './useWorkflowStepAction'
+import { useWorkflowStepActions } from './useWorkflowStepActions'
 import {
   AupSettings,
   DataPromptSettings,

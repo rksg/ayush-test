@@ -6,7 +6,7 @@ import { Provider }                                    from '@acx-ui/store'
 import { mockServer, renderHook }                      from '@acx-ui/test-utils'
 import { RequestPayload }                              from '@acx-ui/types'
 
-import { useWorkflowStepActions } from './useWorkflowStepAction'
+import { useWorkflowStepActions } from './useWorkflowStepActions'
 
 const mockCreateActionFn = jest.fn()
 const spyCreateChildStepFn = jest.fn()
@@ -30,7 +30,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 }))
 
 
-describe('useWorkflowStepAction', () => {
+describe('useWorkflowStepActions', () => {
 
   beforeEach(() => {
     mockCreateActionFn.mockClear()

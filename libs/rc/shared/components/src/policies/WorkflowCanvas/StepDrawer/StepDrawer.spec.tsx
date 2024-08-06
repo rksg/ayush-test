@@ -33,7 +33,7 @@ const mockPatchActionMutation = jest.fn()
 const spyGetActionFn = jest.fn()
 const spyOnCloseFn = jest.fn()
 
-jest.mock('./useWorkflowStepAction', () => ({
+jest.mock('./useWorkflowStepActions', () => ({
   useWorkflowStepActions: () => ({
     createStepWithActionMutation: async (
       _policyId: string,
