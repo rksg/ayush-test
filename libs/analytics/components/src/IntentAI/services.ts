@@ -59,7 +59,7 @@ const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Me
   const { $t } = getIntl()
 
   // eslint-disable-next-line no-console
-  console.log('IS_MLISA_SA', get('IS_MLISA_SA'))
+  console.log('IS_MLISA_SA in intentAI services', get('IS_MLISA_SA'))
 
   const zoneVenueText = get('IS_MLISA_SA')
     ? $t({ defaultMessage: 'Zone' })
@@ -70,7 +70,7 @@ const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Me
     errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue,
-    zoneVenueText: zoneVenueText
+    zoneVenueText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   })

@@ -18,10 +18,10 @@ import { IntentListItem, api, useIntentAITableQuery } from './services'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
-const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+const mockGet = get as jest.Mock
 
 describe('Intent services', () => {
 
