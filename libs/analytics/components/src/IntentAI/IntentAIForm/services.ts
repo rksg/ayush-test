@@ -130,22 +130,45 @@ function roundUpTimeToNearest15Minutes (timeStr: string) {
   return String(decimalHour)
 }
 
+function decimalToTimeString (decimalHours: number) {
+  const hours = Math.floor(decimalHours)
+  const fractionalHours = decimalHours - hours
+  const minutes = Math.floor(fractionalHours * 60)
+  const seconds = Math.round((fractionalHours * 60 - minutes) * 60)
+  const time = moment.utc().set({ hour: hours, minute: minutes, second: seconds })
+  return time.format('HH:mm:ss')
+}
+
+function handleScheduledAt (scheduledAt:string ) {
+  console.log(scheduledAt)
+  const originalScheduledAt = new Date(scheduledAt)
+  const futureThreshold = new Date(new Date().getTime() + 15 * 60 * 1000)
+  if (originalScheduledAt < futureThreshold) {
+    const newScheduledAt = new Date(originalScheduledAt)
+    newScheduledAt.setDate(newScheduledAt.getDate() + 1)
+    return newScheduledAt.toISOString()
+  } else {
+    return originalScheduledAt.toISOString()
+  }
+}
+
 export function specToDto (
   rec: EnhancedRecommendation
 ): IntentAIFormDto | undefined {
   let dto = {
     id: rec.id,
     // status: rec.status,
-    status: 'new',
+    status: 'revertscheduled',
     preferences: rec.preferences,
     sliceValue: rec.sliceValue,
     updatedAt: rec.updatedAt
   } as IntentAIFormDto
   if (rec.metadata) {
-    const scheduledAt = rec.metadata.scheduledAt ?? new Date().toISOString()
-    const dateTime = moment(scheduledAt)
+    const scheduledAt = rec.metadata.scheduledAt ?? new Date().toISOString() //this is in utc
+    console.log(scheduledAt)
+    const dateTime = moment(scheduledAt).tz('Asia/Singapore')
     // const date = dateTime.format('YYYY-MM-DD')
-    const date = '2024-08-19' // to be removed
+    const date = '2024-08-07' // to be removed
     // const time = roundUpTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
     const time = 7.5 // to be removed
     dto = {
@@ -163,14 +186,20 @@ export function specToDto (
 }
 
 export function processDtoToPayload (dto: IntentAIFormDto) {
-  const newScheduledAt = `${dto.settings!.date}T${dto.settings!.hour}`
+  const newHour = decimalToTimeString(dto.settings!.hour)
+  const scheduledAt = moment.parseZone(
+    `${dto.settings!.date}T${newHour}.000+08:00`).utc().toISOString()
+  const newScheduledAt = handleScheduledAt(scheduledAt)
   console.log('this is dto to payload')
   console.log(dto)
+  console.log(newScheduledAt)
   return {
     id: dto.id,
     status: dto.status,
-    scheduledAt: newScheduledAt,
-    preferences: dto.preferences
+    metadata: {
+      scheduledAt: newScheduledAt,
+      preferences: dto.preferences
+    }
   }
 }
 

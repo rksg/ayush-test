@@ -86,7 +86,7 @@ function DateTimeSetting ({
     // <Form.Item name={['settings', 'date']} valuePropName={'date'}>
     <DateTimeDropdown
       initialDate={initialDate}
-      initialTime={scheduledTime}
+      initialTime={scheduledTime + 0.25}
       disabledDate={disabledDate}
     />
     // </Form.Item>
@@ -105,7 +105,7 @@ const scheduleActions = {
 
 export function getAvailableActions (status: string,
   settings: { date: string, hour: number }) {
-  if  (status === 'new' || status === 'applyscheduled') {
+  if  (status === 'new' || status === 'scheduled') {
     return scheduleActions.datetime({ scheduledDate: settings.date, scheduledTime: settings.hour })
   } else {
     return scheduleActions.time()
