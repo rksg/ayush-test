@@ -30,7 +30,8 @@ import {
   RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
-  MspRbacUrlsInfo
+  MspRbacUrlsInfo,
+  MspCompliances
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -949,7 +950,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
-    getEntitlementsCompliances: build.mutation<UploadUrlResponse, RequestPayload>({
+    getEntitlementsCompliances: build.query<MspCompliances, RequestPayload>({
       query: ({ params, payload }) => {
         const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsCompliances, params)
         return {
@@ -1070,7 +1071,7 @@ export const {
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
   useGetMspUploadURLMutation,
-  useGetEntitlementsCompliancesMutation
+  useGetEntitlementsCompliancesQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

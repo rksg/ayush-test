@@ -1,8 +1,10 @@
 import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Card }           from '@acx-ui/components'
-import { ComplianceData } from '@acx-ui/msp/utils'
+import { Card }                               from '@acx-ui/components'
+import { useGetEntitlementsCompliancesQuery } from '@acx-ui/msp/services'
+import { ComplianceData }                     from '@acx-ui/msp/utils'
+import { useParams }                          from '@acx-ui/react-router-dom'
 
 import { fakeMspSummary } from './__tests__/fixtures'
 import * as UI            from './styledComponents'
@@ -128,9 +130,25 @@ interface ComplianceProps {
 }
 
 export const LicenseCompliance = (props: ComplianceProps) => {
+  const params = useParams()
   const { isMsp } = props
 
-  const complianceData = fakeMspSummary
+  const RecPayload = {
+    filters: {
+      licenseType: ['APSW'],
+      complianceType: 'SELF'
+    }
+  }
+  const MspPayload = {
+    filters: {
+      licenseType: ['APSW'],
+      complianceType: 'MSP_SUMMARY'
+    }
+  }
+  const queryData = useGetEntitlementsCompliancesQuery(
+    { params, payload: isMsp ? MspPayload : RecPayload })
+
+  const complianceData = queryData.data ?? fakeMspSummary
   const selfData = complianceData.compliances.APSW[0].self
   const summaryData = complianceData.compliances.APSW[0].mspEcSummary
   return <>

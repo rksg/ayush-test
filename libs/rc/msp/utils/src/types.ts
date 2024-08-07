@@ -511,8 +511,10 @@ export interface ComplianceData {
 }
 
 export interface MspCompliances {
-  APSW: [ {
-    self: ComplianceData,
-    mspEcSummary: ComplianceData
-  } ]
+  compliances: {
+    APSW: [ {
+      self: ComplianceData,
+      mspEcSummary: ComplianceData
+    } ]
+  }
 }

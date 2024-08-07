@@ -41,10 +41,7 @@ export const fakeOwnAccount =
         licenseGap: -30
       }
     } ]
-  },
-  page: 1,
-  pageSize: 25,
-  totalPages: 3
+  }
 }
 
 export const fakeMspSummary =
@@ -126,9 +123,6 @@ export const fakeMspSummary =
         licenseGap: 0
       }
     } ]
-  },
-  page: 1,
-  pageSize: 25,
-  totalPages: 3
+  }
 }
 
