@@ -188,7 +188,8 @@ describe('MelissaBot', () => {
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
     await new Promise((r) => setTimeout(r, (sessionTimeoutInSecs + 2) * 1000))
-    await screen.findByText('Session Timed out.')
+    const timeoutText=screen.queryByText('Session Timed out.')
+    expect(timeoutText).not.toBeInTheDocument()
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after-session-timeout')
   })
   it('should handle error message from chatbot',async ()=>{

@@ -80,7 +80,7 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
       const now=moment(new Date())
       const start = moment(lastAccessed)
       const diffInSecs = now.diff(start,'seconds')
-      if(diffInSecs > sessionTimeoutInSecs){
+      if(state.isOpen && mode === 'general' && diffInSecs > sessionTimeoutInSecs){
         setLastAccessed(new Date())
         const timeoutMessage: Content = {
           type: 'bot',
@@ -88,25 +88,23 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
         }
         messages.push(timeoutMessage)
         setMessages(messages)
-        if(mode === 'general'){
-          setMode('my-network')
-          askMelissa({
-            queryInput: {
-              event: {
-                languageCode: 'en',
-                name: 'data-mode'
-              }
-            },
-            queryParams: {
-              resetContexts: true
+        setMode('my-network')
+        askMelissa({
+          queryInput: {
+            event: {
+              languageCode: 'en',
+              name: 'data-mode'
             }
-          },true)
-        }
-        defer(doAfterResponse)
+          },
+          queryParams: {
+            resetContexts: true
+          }
+        },true)
+        defer(scrollToBottom)
       }
     },1000)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[lastAccessed])
+  },[lastAccessed,state.isOpen])
 
   const onClose = () => {
     setState({ ...state,isOpen: false })
