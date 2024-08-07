@@ -82,7 +82,8 @@ export const isSdLanGuestUtilizedOnDiffVenue = (
 ): boolean => {
   if (venueSdLanInfo?.isGuestTunnelEnabled) {
 
-    const otherGuestTunnel = venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+    // should reference `tunneledWlans` since we need to consider both activate and deactivate scenario
+    const otherGuestTunnel = venueSdLanInfo?.tunneledWlans?.find(wlan =>
       wlan.venueId !== networkVenueId && wlan.networkId === networkId)
 
     return Boolean(otherGuestTunnel)

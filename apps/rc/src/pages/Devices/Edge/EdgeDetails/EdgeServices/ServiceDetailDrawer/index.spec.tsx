@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { edgeSdLanApi } from '@acx-ui/rc/services'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { edgeSdLanApi }          from '@acx-ui/rc/services'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
@@ -38,7 +39,7 @@ const {
   mockEdgeList,
   mockEdgeServiceList
 } = EdgeGeneralFixtures
-const { mockedSdLanDataList, mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockedSdLanDataList, mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 const { mockFirewallData } = EdgeFirewallFixtures
 const { mockNsgStatsList } = EdgeNSGFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
@@ -49,7 +50,8 @@ const mockedUseSearchParams = jest.fn()
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeFirewallGroupedStatsTables: () => <div data-testid='rc-EdgeFirewallGroupedStatsTables' />,
-  PersonalIdentityNetworkDetailTableGroup: () => <div data-testid='rc-PinTableGroup' />
+  PersonalIdentityNetworkDetailTableGroup: () => <div data-testid='rc-PinTableGroup' />,
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 describe('Edge Detail Services Tab - Service Detail Drawer', () => {
@@ -205,7 +207,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
   describe('SD-LAN Phase2', () => {
     beforeEach(() => {
       // mock SDLAN HA(i,e p2) enabled
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation((ff) => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     })
 
     it('should render DMZ scenario detail successfully', async () => {
@@ -260,6 +263,72 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
         // eslint-disable-next-line testing-library/no-node-access
         .closest('.ant-row.ant-form-item-row')
       expect(within(networkItemContainer as HTMLElement).getByText('1')).toBeVisible()
+    })
+  })
+
+  describe('Multi-venues SD-LAN', () => {
+    beforeEach(() => {
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_SD_LAN_MV_TOGGLE)
+    })
+
+    it('should render DMZ scenario detail successfully', async () => {
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: [mockedMvSdLanDataList[0]] }))
+        )
+      )
+
+      render(
+        <Provider>
+          <ServiceDetailDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            serviceData={mockEdgeServiceList.data[3]}
+          />
+        </Provider>, {
+          route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+        })
+
+      expect(await screen.findByRole('link', { name: 'Mocked_tunnel-1' })).toBeVisible()
+      expect(screen.getByRole('link', { name: 'Mocked_tunnel-3' })).toBeVisible()
+      expect(screen.getByText('Tunnel Profile (Cluster-DMZ Cluster)')).toBeVisible()
+      const venueItemContainer = screen.getByText('Tunneled Venues')
+      // eslint-disable-next-line testing-library/no-node-access
+        .closest('.ant-row.ant-form-item-row')
+      expect(within(venueItemContainer as HTMLElement).getByText('1')).toBeVisible()
+
+      const networkItemContainer = screen.getByText('Tunneled Networks to DMZ')
+        // eslint-disable-next-line testing-library/no-node-access
+        .closest('.ant-row.ant-form-item-row')
+      expect(within(networkItemContainer as HTMLElement).getByText('1')).toBeVisible()
+    })
+
+    it('should render non-DMZ scenario detail successfully', async () => {
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => res(ctx.json({ data: [mockedMvSdLanDataList[1]] }))
+        )
+      )
+
+      render(
+        <Provider>
+          <ServiceDetailDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            serviceData={mockEdgeServiceList.data[3]}
+          />
+        </Provider>, {
+          route: { params, path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab' }
+        })
+
+      expect(await screen.findByRole('link', { name: 'Mocked_tunnel-2' })).toBeVisible()
+      const networkItemContainer = screen.getByText('Tunneled Venues')
+        // eslint-disable-next-line testing-library/no-node-access
+        .closest('.ant-row.ant-form-item-row')
+      expect(within(networkItemContainer as HTMLElement).getByText('2')).toBeVisible()
     })
   })
 })
