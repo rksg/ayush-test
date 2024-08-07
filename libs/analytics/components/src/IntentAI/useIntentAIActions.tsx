@@ -41,25 +41,25 @@ type OptimizeValues = {
 
 const OPTIMIZE_TYPES = {
   1_1: (values:OptimizeValues) => <FormattedMessage
-    defaultMessage={`Clicking Yes, will automate 
+    defaultMessage={`Clicking Yes, will automate
     <b>{feature}</b> feature for <VenueSingular></VenueSingular> <b>{zone}</b>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>,
   1_2: (values:OptimizeValues) => <FormattedMessage
-    defaultMessage={`Clicking Yes, will automate 
+    defaultMessage={`Clicking Yes, will automate
     <b>{feature}</b> feature for <b>{zone}</b> selected <VenuePlural></VenuePlural>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>,
   2_1: (values:OptimizeValues) => <FormattedMessage
-    defaultMessage={`Clicking Yes, will automate 
+    defaultMessage={`Clicking Yes, will automate
     <b>{feature}</b> features for <VenueSingular></VenueSingular> <b>{zone}</b>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
     values={values}/>,
   2_2: (values:OptimizeValues) => <FormattedMessage
-    defaultMessage={`Clicking Yes, will automate 
+    defaultMessage={`Clicking Yes, will automate
     <b>{feature}</b> features across <b>{zone}</b> selected <VenuePlural></VenuePlural>.
     It will apply the config at {date}.{changeTime}{br}{br}
     And don’t worry! You can always revert the change anytime.`}
@@ -152,20 +152,18 @@ export function useIntentAIActions () {
     const response = await optimizeAllIntent({ optimizeList })
     if ('data' in response) {
       const result = response.data as OptimizeAllMutationResponse
-      const errorMsgs:string[] = []
-      Object.entries(result).forEach(([, { success, errorMsg }]) => {
+      const errorMsgs:JSX.Element[] = []
+      Object.entries(result).forEach(([, { success, errorMsg }], index) => {
         if (!success) {
-          errorMsgs.push(errorMsg)
+          errorMsgs.push(
+            <div key={`optimizeAllIntentErrorToast_${index}`} style={{ padding: '10px 0' }}>
+              {rows[index].aiFeature}, {rows[index].sliceValue}:<br />{errorMsg}
+            </div>
+          )
         }
       })
-
-      // TBD error message
       if (errorMsgs.length > 0) {
-        showToast({
-          type: 'error',
-          content: errorMsgs.map((errorMsg, index) =>
-            (<span key={`optimizeAllIntentErrorToast_${index}`}>{errorMsg}<br></br></span>))
-        })
+        showToast({ type: 'error', content: errorMsgs })
       }
     }
   }
