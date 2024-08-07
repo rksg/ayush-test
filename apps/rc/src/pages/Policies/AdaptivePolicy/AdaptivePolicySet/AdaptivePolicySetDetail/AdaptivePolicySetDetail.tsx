@@ -12,14 +12,12 @@ import {
   useLazySearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink,
+  getPolicyDetailsLink, hasCloudpathAccess,
   PolicyOperation,
   PolicyType,
   useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { NetworkTable } from './NetworkTable'
 
@@ -73,7 +71,7 @@ export default function AdaptivePolicySetDetail () {
       <PageHeader
         title={policySetData?.name || ''}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() && [
           <TenantLink
             to={
               getPolicyDetailsLink({
@@ -82,11 +80,10 @@ export default function AdaptivePolicySetDetail () {
                 policyId: policyId as string
               })
             }
-            scopeKey={[WifiScopes.UPDATE]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <Space direction={'vertical'}>
         <Card>

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { Select,Col, Form, Input, Row, Switch } from 'antd'
-import { findIndex }                            from 'lodash'
+import { findIndex, find }                      from 'lodash'
 import { useIntl }                              from 'react-intl'
 import { useParams }                            from 'react-router-dom'
 
@@ -14,7 +14,8 @@ import {
 import {
   servicePolicyNameRegExp,
   useHelpPageLink,
-  EdgeMvSdLanFormModel
+  EdgeMvSdLanFormModel,
+  ClusterHighAvailabilityModeEnum
 } from '@acx-ui/rc/utils'
 
 import { useEdgeMvSdLanContext } from '../EdgeMvSdLanContextProvider'
@@ -30,6 +31,7 @@ export const SettingsForm = () => {
 
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
   const guestEdgeClusterId = Form.useWatch('guestEdgeClusterId', form)
+  const isGuestTunnelEnabled = Form.useWatch('isGuestTunnelEnabled', form)
 
   const helpUrl = useHelpPageLink()
 
@@ -48,7 +50,8 @@ export const SettingsForm = () => {
         'venueId',
         'clusterId',
         'clusterStatus',
-        'hasCorePort'
+        'hasCorePort',
+        'highAvailabilityMode'
       ],
       ...(filterSn.length === 2
         ? { filters: { clusterId: filterSn } }
@@ -67,6 +70,7 @@ export const SettingsForm = () => {
   const clusterOptions = clusterData?.map(item => ({
     label: item.name,
     value: item.clusterId
+
   }))
 
   // prepare venue id
@@ -88,6 +92,15 @@ export const SettingsForm = () => {
       form.setFieldsValue(updateData)
     }
   }, [clusterData, editMode, initialValues])
+
+  useEffect(() => {
+    if (!editMode) {
+      if ((isGuestTunnelEnabled && guestEdgeClusterId) || (!isGuestTunnelEnabled && edgeClusterId))
+        form.validateFields(isGuestTunnelEnabled
+          ? ['edgeClusterId', 'guestEdgeClusterId']
+          : ['edgeClusterId'])
+    }
+  }, [isGuestTunnelEnabled, editMode, edgeClusterId, guestEdgeClusterId])
 
   const onEdgeClusterChange = (val: string) => {
     const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
@@ -117,6 +130,19 @@ export const SettingsForm = () => {
           </a>
         })}
       </UI.ClusterSelectorHelper>)
+  }
+
+  // eslint-disable-next-line max-len
+  const checkHAModeConsist = (dcClusterId: string, dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
+    const dcClusterHaMode = find(clusterData, { clusterId: dcClusterId })
+      ?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+    const dmzClusterHaMode = find(clusterData, { clusterId: dmzClusterId })
+      ?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+
+    if (!isGuestTunnelOn || !dmzClusterId || dcClusterHaMode === dmzClusterHaMode) {
+      return Promise.resolve()
+    } else
+      return Promise.reject($t({ defaultMessage: 'High availability mode must be consistent.' }))
   }
 
   return (
@@ -155,11 +181,19 @@ export const SettingsForm = () => {
                         placement='bottom'
                       />
                     </>}
+                    dependencies={['guestEdgeClusterId']}
                     rules={[{
                       required: true,
                       message: $t({ defaultMessage: 'Please select a Cluster' })
                     },
-                    { validator: (_, value) => checkCorePortConfigured(value) }
+                    { validator: (_, value) => checkCorePortConfigured(value) },
+                    ({ getFieldValue }) => ({
+                      validator: (_, value) => {
+                        const guestEdgeClusterId = getFieldValue('guestEdgeClusterId')
+                        // eslint-disable-next-line max-len
+                        return checkHAModeConsist(value, guestEdgeClusterId, isGuestTunnelEnabled)
+                      }
+                    })
                     ]}
                   >
                     <Select
@@ -170,6 +204,7 @@ export const SettingsForm = () => {
                       onChange={onEdgeClusterChange}
                     />
                   </Form.Item>
+
                 </Col>
               </Row>
             </Col>
@@ -194,56 +229,50 @@ export const SettingsForm = () => {
 
           <Row>
             <Col span={18}>
-              <Form.Item
-                noStyle
-                dependencies={['isGuestTunnelEnabled']}
-              >
-                {({ getFieldValue }) => {
-                  return getFieldValue('isGuestTunnelEnabled')
-                    ? (<Form.Item
-                      name='guestEdgeClusterId'
-                      label={<>
-                        { $t({ defaultMessage: 'DMZ Cluster' }) }
-                        <Tooltip.Question
-                          title={$t(messageMappings.setting_dmz_cluster_tooltip)}
-                          placement='bottom'
-                        />
-                      </>}
-                      rules={[{
-                        required: true,
-                        message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
-                      },
-                      { validator: (_, value) => checkCorePortConfigured(value) }
-                      ]}
-                    >
-                      <Select
-                        loading={isClusterOptsLoading}
-                        options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
-                        placeholder={$t({ defaultMessage: 'Select ...' })}
-                        disabled={editMode && !!initialValues?.guestEdgeClusterId}
-                        onChange={onDmzClusterChange}
-                      />
-                    </Form.Item>)
-                    : null
-                }}
-              </Form.Item>
+              {isGuestTunnelEnabled
+                ? (<Form.Item
+                  name='guestEdgeClusterId'
+                  label={<>
+                    { $t({ defaultMessage: 'DMZ Cluster' }) }
+                    <Tooltip.Question
+                      title={$t(messageMappings.setting_dmz_cluster_tooltip)}
+                      placement='bottom'
+                    />
+                  </>}
+                  dependencies={['edgeClusterId']}
+                  rules={[{
+                    required: true,
+                    message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
+                  },
+                  { validator: (_, value) => checkCorePortConfigured(value) },
+                  ({ getFieldValue }) => ({
+                    validator: (_, value) => {
+                      const edgeClusterId = getFieldValue('edgeClusterId')
+                      return checkHAModeConsist(edgeClusterId, value, true)
+                    }
+                  })
+                  ]}
+                >
+                  <Select
+                    loading={isClusterOptsLoading}
+                    options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
+                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    disabled={editMode && !!initialValues?.guestEdgeClusterId}
+                    onChange={onDmzClusterChange}
+                  />
+                </Form.Item>)
+                : null
+              }
             </Col>
           </Row>
         </SpaceWrapper>
       </Col>
       <UI.VerticalSplitLine span={1} />
       <Col span={10}>
-        <Form.Item
-          noStyle
-          dependencies={['isGuestTunnelEnabled']}
-        >
-          {({ getFieldValue }) => {
-            return <UI.StyledDiagram
-              isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')}
-              vertical={true}
-            />
-          }}
-        </Form.Item>
+        <UI.StyledDiagram
+          isGuestTunnelEnabled={isGuestTunnelEnabled}
+          vertical={true}
+        />
       </Col>
     </UI.Wrapper>
   )

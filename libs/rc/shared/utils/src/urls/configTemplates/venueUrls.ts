@@ -205,7 +205,10 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueLanPortsRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueLanPorts: {
     method: 'put',
@@ -215,7 +218,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueLanPortsRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueDirectedMulticast: {
     method: 'get',
