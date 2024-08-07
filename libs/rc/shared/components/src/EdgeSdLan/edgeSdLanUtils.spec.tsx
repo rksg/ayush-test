@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
 
 import { EdgeSdLanFixtures } from '@acx-ui/rc/utils'
@@ -8,10 +9,16 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockMvSdLanFormData }                                     from './__tests__/fixtures'
-import { edgeSdLanFormRequestPreProcess, useGetNetworkTunnelInfo } from './edgeSdLanUtils'
+import { mockMvSdLanFormData } from './__tests__/fixtures'
+import {
+  edgeSdLanFormRequestPreProcess,
+  isGuestTunnelUtilized,
+  isSdLanGuestUtilizedOnDiffVenue,
+  tansformSdLanScopedVenueMap,
+  useGetNetworkTunnelInfo
+} from './edgeSdLanUtils'
 
-const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
+const { mockedSdLanDataListP2, mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 jest.mock('../useEdgeActions', () => ({
   ...jest.requireActual('../useEdgeActions'),
@@ -99,3 +106,103 @@ describe('edgeSdLanFormRequestPreProcess', () => {
     })
   })
 })
+
+describe('isGuestTunnelUtilized', () => {
+  const mockDcData = mockedMvSdLanDataList[1]
+  const mockDmzData = mockedMvSdLanDataList[0]
+
+  it('should return false when it is DC scenario', async () => {
+    const result = isGuestTunnelUtilized(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
+    expect(result).toBe(false)
+  })
+
+  it('should return false when it is DMZ scenario and no guest forwared', async () => {
+    const mockData = cloneDeep(mockDmzData)
+    mockData.tunneledGuestWlans = []
+    const result = isGuestTunnelUtilized(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(false)
+  })
+
+  it('should return false when one of paramters is undefined', async () => {
+    const result = isGuestTunnelUtilized(mockDmzData)
+    expect(result).toBe(false)
+    const result2 = isGuestTunnelUtilized(mockDmzData, 'network_4')
+    expect(result2).toBe(false)
+    const result3 = isGuestTunnelUtilized(mockDmzData, undefined, 'a307d7077410456f8f1a4fc41d861567')
+    expect(result3).toBe(false)
+  })
+
+  it('should return false when no parameter given', async () => {
+    const result = isGuestTunnelUtilized()
+    expect(result).toBe(false)
+  })
+
+  it('should return false when target network venue is not guest forwared', async () => {
+    const result = isGuestTunnelUtilized(mockDmzData, 'mock_network_1', 'mock_venue_1')
+    expect(result).toBe(false)
+  })
+
+  it('should return true when it is DMZ scenario', async () => {
+    const result = isGuestTunnelUtilized(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(true)
+  })
+})
+
+describe('isSdLanGuestUtilizedOnDiffVenue', () => {
+  const mockDcData = mockedMvSdLanDataList[1]
+  const mockDmzData = mockedMvSdLanDataList[0]
+
+  it('should return false when DC case', async () => {
+    const result = isSdLanGuestUtilizedOnDiffVenue(mockDcData, 'network_2', 'a307d7077410456f8f1a4fc41d861560')
+    expect(result).toBe(false)
+  })
+
+  it('should return false when DMZ case but no guest forwarded on other venues', async () => {
+    const result = isSdLanGuestUtilizedOnDiffVenue(mockDmzData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(false)
+  })
+
+  it('should return true when DMZ case and has guest forwarded on other venues', async () => {
+    const mockData = cloneDeep(mockDmzData)
+    const mockNetwork = {
+      venueId: 'other_venue_1_id',
+      venueName: 'Mocked-Other-Venue-1',
+      networkId: 'network_4',
+      networkName: 'Mocked_network_4',
+      wlanId: '30'
+    }
+    mockData.tunneledWlans?.push(mockNetwork)
+    mockData.tunneledGuestWlans?.push(mockNetwork)
+
+    const result = isSdLanGuestUtilizedOnDiffVenue(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
+    expect(result).toBe(true)
+  })
+})
+
+describe('tansformSdLanScopedVenueMap', () => {
+  it('should correctly transform', async () => {
+    const result = tansformSdLanScopedVenueMap(mockedMvSdLanDataList)
+    expect(result).toStrictEqual({
+      a307d7077410456f8f1a4fc41d861567: mockedMvSdLanDataList[0],
+      a307d7077410456f8f1a4fc41d861560: mockedMvSdLanDataList[1],
+      a307d7077410456f8f1a4fc41d861565: mockedMvSdLanDataList[1]
+    })
+  })
+
+  it('should return empty object when no data given', async () => {
+    const result = tansformSdLanScopedVenueMap()
+    expect(result).toStrictEqual({})
+  })
+
+  it('should return empty object when tunneledWlans is undefined', async () => {
+    const mockData = cloneDeep(mockedMvSdLanDataList)
+    mockData[1].tunneledWlans = undefined
+
+    const result = tansformSdLanScopedVenueMap(mockData)
+    expect(result).toStrictEqual({
+      a307d7077410456f8f1a4fc41d861567: mockedMvSdLanDataList[0]
+    })
+  })
+})
+
+
