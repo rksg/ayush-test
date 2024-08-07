@@ -123,7 +123,7 @@ export interface TenantDetails {
     mfaStatus: string
   }
   accountTier?: AccountTier;
-  subscribes?: NotificationPreference;
+  subscribes?: string;
   extendedTrial?: boolean;
 }
 

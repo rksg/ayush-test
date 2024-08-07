@@ -173,7 +173,9 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       label: $t({ defaultMessage: 'Clone' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].name !== RolesEnum.PRIME_ADMIN)
+        const excludedRoles = [RolesEnum.PRIME_ADMIN, RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER]
+        return (selectedRows.length === 1 &&
+          !excludedRoles.includes(selectedRows[0].name as RolesEnum))
       },
       onClick: (selectedRows) => {
         const stateProp: PrivilegeGroupSateProps = {

@@ -1,28 +1,7 @@
-import { EdgeMvSdLanViewData, NetworkTypeEnum, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
-
-
 export enum NetworkTunnelTypeEnum {
   None = 'None',
   SdLan = 'SdLan',
   SoftGre = 'SoftGre'
-}
-
-export interface NetworkTunnelActionModalProps {
-  visible: boolean
-  network?: {
-    id: string,
-    type: NetworkTypeEnum,
-    venueId: string,
-    venueName?: string,
-  }
-  onClose: () => void
-  onFinish: (
-    values: NetworkTunnelActionForm,
-    otherData: {
-      venueSdLan?: EdgeMvSdLanViewData
-    }
-  ) => Promise<void>
-  cachedActs?: NetworkTunnelSdLanAction[]
 }
 
 export interface NetworkTunnelActionForm {

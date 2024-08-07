@@ -1,3 +1,5 @@
+import { useEffect, useMemo } from 'react'
+
 import { FormInstance } from 'antd'
 import { find }         from 'lodash'
 
@@ -82,12 +84,26 @@ const EdgeMvSdLanForm = (props: EdgeMvSdLanFormProps) => {
   }
 
   const editDataViewData = editData ? find(allSdLans, { id: editData?.id }) : undefined
-  const initFormValues = getSdLanFormDefaultValues(editData, editDataViewData)
-  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-  if (!isEditMode) {
-    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
-  }
+  const initFormValues = useMemo(() => {
+    const result = getSdLanFormDefaultValues(editData, editDataViewData)
+    const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+    if (!isEditMode) {
+      result.tunnelProfileId = defaultSdLanTunnelProfile.value
+      result.tunnelProfileName = defaultSdLanTunnelProfile.label
+    }
+    return result
+  }, [isEditMode, editData, editDataViewData])
+
+  // getSdLanFormDefaultValues(editData, editDataViewData)
+  // const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+  // if (!isEditMode) {
+  //   initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
+  //   initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
+  // }
+
+  useEffect(() => {
+    form.setFieldsValue(initFormValues)
+  }, [initFormValues])
 
   return (<StepsForm
     form={form}
