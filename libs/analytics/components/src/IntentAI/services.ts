@@ -108,7 +108,7 @@ export type OptimizeAllMutationResponse = Record<string, MutationResponse>
 
 
 const buildTransitionGQL = (index:number) => `t${index}: transition(
-  id: $id${index}, status: $status${index}, 
+  id: $id${index}, status: $status${index},
   statusReason: $statusReason${index}, metadata: $metadata${index}) {
     success
     errorMsg
@@ -116,7 +116,7 @@ const buildTransitionGQL = (index:number) => `t${index}: transition(
   }`
 
 export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
-  const status = 'applyscheduled'
+  const status = 'scheduled'
   const statusReason = statusReasons.oneClick
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
