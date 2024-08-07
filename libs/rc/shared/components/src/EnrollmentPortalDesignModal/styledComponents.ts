@@ -104,7 +104,6 @@ export const LayoutContent = styled(AntLayout)<{ $isPreview: boolean | undefined
   align-items: center;
   ${props => props.$isPreview ? css`
   height:100%;`: css`height: 608px;`}
-  margin-bottom:10px;
 `
 export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   ${props => props.$type === 'desk' ? css`
@@ -125,8 +124,8 @@ export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   height:100%;
   overflow-y:auto;
 `
-export const LayoutViewContent = styled(AntLayout)<{ isbg: boolean }>`
-  ${props=>props.isbg ? css`opacity:0.93;`:css`opacity:1;`}
+export const LayoutViewContent = styled(AntLayout)<{ $isbg: boolean }>`
+  ${props=>props.$isbg ? css`opacity:0.93;`:css`opacity:1;`}
   padding-top:3px;
   width:425px;
   max-width:600px;

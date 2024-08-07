@@ -4,7 +4,7 @@ import { useIsSplitOn }                                    from '@acx-ui/feature
 import { WorkflowFormMode }                                from '@acx-ui/rc/components'
 import { PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
-import { render, screen,  waitForElementToBeRemoved }      from '@acx-ui/test-utils'
+import { render, screen }                                  from '@acx-ui/test-utils'
 
 import WorkflowPageForm from '.'
 const mockedUseNavigate = jest.fn()
@@ -25,9 +25,10 @@ jest.mock('@acx-ui/rc/components', ()=> ({
   WorkflowForm: () => <div></div>
 }))
 
-describe('WorkflowOverviewTab', () => {
+describe('Workflow page form', () => {
   const params = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    policyId: 'id'
   }
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   beforeEach(async () => {
@@ -42,8 +43,6 @@ describe('WorkflowOverviewTab', () => {
     </Provider>, {
       route: { params, path }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Add Workflow')
   })
 
@@ -55,8 +54,6 @@ describe('WorkflowOverviewTab', () => {
     </Provider>, {
       route: { params, path }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await screen.findByText('Edit Workflow')
   })
 })

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader }          from '@acx-ui/components'
-import { EnrollmentPortalDesignModal } from '@acx-ui/rc/components'
+import { WorkflowActionPreviewModal } from '@acx-ui/rc/components'
 import { useGetWorkflowByIdQuery }     from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -54,11 +54,8 @@ function WorkflowPageHeader () {
             </TenantLink>
           ])}
       />
-      {visible &&
-       <EnrollmentPortalDesignModal
-         id={policyId!}
-         onFinish={()=>setVisible(false)}/>
-      }
+       {visible &&
+      <WorkflowActionPreviewModal workflowId={policyId!} onClose={()=>setVisible(false)}/>}
     </>
   )
 }

@@ -38,37 +38,65 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   searchInProgressWorkflows: {
     method: 'post',
     url: `${WorkflowBaseUrl}/query${paginationParams}&${excludeContent}`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getWorkflowDetail: {
     method: 'get',
     url: `${WorkflowBaseUrl}/:id`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   createWorkflow: {
     method: 'post',
     url: `${WorkflowBaseUrl}`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateWorkflow: {
     method: 'PATCH',
     url: `${WorkflowBaseUrl}/:id`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteWorkflow: {
     method: 'delete',
     url: `${WorkflowBaseUrl}/:id`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   searchWorkflows: {
     method: 'post',
     url: `${WorkflowBaseUrl}/:id/versions/query${paginationParams}&${excludeContent}`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getWorkflowUIConfig: {
     method: 'get',
     url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateWorkflowUIConfig: {
     method: 'post',
@@ -78,7 +106,11 @@ export const WorkflowUrls: { [key in WorkflowUrlType]: ApiInfo } = {
   resetWorkflowUIConfig: {
     method: 'delete',
     url: `${WorkflowBaseUrl}/:id/uiConfigurations`,
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getWorkflowUIConfigImage: {
     method: 'get',
