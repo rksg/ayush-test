@@ -206,6 +206,7 @@ export const mockEdgeClusterList = {
       venueName: 'venue_1',
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
+      hasCorePort: true,
       edgeList: [
         {
           name: 'Smart Edge 1',
@@ -254,6 +255,7 @@ export const mockEdgeClusterList = {
       venueName: 'venue_2',
       clusterStatus: 'test',
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      hasCorePort: true,
       edgeList: [
         {
           name: 'Smart Edge 4',
@@ -354,6 +356,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000005',
       venueName: 'venue_5',
       clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
+      hasCorePort: true,
       edgeList: [
         {
           name: 'Smart Edge 8',
