@@ -57,6 +57,17 @@ type Metadata = {
   scheduledBy?: string
 }
 
+export type HighlightItem = {
+  new: number
+  active: number
+}
+
+export type IntentHighlight = {
+  rrm?: HighlightItem
+  airflex?: HighlightItem
+  ops?: HighlightItem
+}
+
 const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
@@ -320,6 +331,42 @@ export const api = intentAIApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_FILTER_OPTIONS' }]
+    }),
+    intentHighlight: build.query<
+      IntentHighlight,
+      PathFilter & { selectedTenants?: string | null }
+    >({
+      query: (payload) => ({
+        document: gql`
+        query IntentHighlight(
+          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
+        ) {
+          highlights(start: $start, end: $end, path: $path) {
+            rrm {
+              new
+              active
+            }
+            airflex {
+              new
+              active
+            }
+            ops {
+              new
+              active
+            }
+          }
+        }
+        `,
+        variables: {
+          ...(_.pick(payload,['path'])),
+          ...computeRangeFilter({
+            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
+          })
+        }
+      }),
+      transformResponse: (response: { highlights: IntentHighlight }) =>
+        response.highlights,
+      providesTags: [{ type: 'Monitoring', id: 'INTENT_HIGHLIGHTS' }]
     })
   })
 })
@@ -432,5 +479,6 @@ export function useIntentAITableQuery (filter: PathFilter) {
 export const {
   useIntentAIListQuery,
   useOptimizeAllIntentMutation,
-  useIntentFilterOptionsQuery
+  useIntentFilterOptionsQuery,
+  useIntentHighlightQuery
 } = api

@@ -1,6 +1,7 @@
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { Form }      from 'antd'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { StepsForm }         from '@acx-ui/components'
 import { edgeApi, venueApi } from '@acx-ui/rc/services'
@@ -296,6 +297,15 @@ describe('Edge SD-LAN form: settings', () => {
       jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
       return form
     })
+
+    const mockClusters = cloneDeep(mockEdgeClusterList)
+    mockClusters.data[1].hasCorePort = false
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeClusterStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockClusters))
+      )
+    )
 
     render(<Provider>
       <StepsForm form={stepFormRef.current}>
