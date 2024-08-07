@@ -168,10 +168,10 @@ export const transformApListFromNewModel = (
   }
 
   const data = result?.data.map(item => {
-    const { radioStatuses: apRadio, lanPortStatuses: lanPortStatus } = item
+    const { radioStatuses: APRadio, lanPortStatuses: lanPortStatus } = item
 
-    if (apRadio) {
-      setAPRadioInfo(item, apRadio, channelColumnStatus, true)
+    if (APRadio) {
+      setAPRadioInfo(item, APRadio, channelColumnStatus, true)
     }
 
     if (lanPortStatus) {
