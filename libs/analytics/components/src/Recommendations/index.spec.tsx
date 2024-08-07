@@ -314,7 +314,7 @@ describe('RecommendationTabContent', () => {
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(1)
   })
 
-  it('should hide row action when role = READ_ONLY', async () => {
+  it('should show row action when role = READ_ONLY', async () => {
     const profile = getUserProfile()
     setUserProfile({ ...profile, profile: {
       ...profile.profile, roles: [RolesEnum.READ_ONLY]
@@ -334,7 +334,13 @@ describe('RecommendationTabContent', () => {
       }
     })
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    const mute = await screen.findByRole('button', { name: 'Mute' })
+    expect(mute).toBeVisible()
   })
 
   it('should handle toggle of full/partial crrm correctly', async () => {

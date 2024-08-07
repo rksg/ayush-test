@@ -22,7 +22,7 @@ export function NetworkingTab (props: {
   wlanData: NetworkSaveData | null
 }) {
   const { $t } = useIntl()
-  const { data } = useContext(NetworkFormContext)
+  const { data, editMode } = useContext(NetworkFormContext)
   const { wlanData } = props
   const form = Form.useFormInstance()
 
@@ -79,7 +79,7 @@ export function NetworkingTab (props: {
     if (data?.type === NetworkTypeEnum.DPSK) {
       return false
     }
-    if(data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    if(!editMode && data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
         data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr) {
       return networkWPASecuredList.includes(pskProtocol)
     }

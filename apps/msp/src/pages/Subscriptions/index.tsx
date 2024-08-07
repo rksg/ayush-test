@@ -384,7 +384,7 @@ export function Subscriptions () {
 
     return (
       <>
-        <Subtitle level={4} style={{ marginBottom: '12px' }}>
+        <Subtitle level={3} style={{ marginBottom: '12px' }}>
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
 
@@ -398,6 +398,9 @@ export function Subscriptions () {
               const summary = summaryData[item.value]
               const showUtilBar = summary &&
                   (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+              if (isComplianceEnabled) {
+                item.label = $t({ defaultMessage: 'Device Networking' })
+              }
               return showUtilBar ? <MspSubscriptionUtilizationWidget
                 key={item.value}
                 deviceType={item.value}

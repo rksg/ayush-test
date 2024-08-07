@@ -210,7 +210,7 @@ function useColumns () {
           ? getApNextScheduleTpl({ nextSchedules: schedules })
           : <Tooltip
             // eslint-disable-next-line max-len
-            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(schedules)}</UI.ScheduleTooltipText>}
+            title={getNextSchedulesTooltip(schedules)}
             overlayStyle={{ minWidth: '285px' }}
           // eslint-disable-next-line max-len
           ><UI.WithTooltip>{getApNextScheduleTpl({ nextSchedules: schedules })}</UI.WithTooltip></Tooltip>

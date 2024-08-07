@@ -321,7 +321,7 @@ export function RecommendationTable (
   const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
   const writePermission = hasPermission({
     permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS'
-  })
+  }) || !get('IS_MLISA_SA')
   const fullOptimizationPermission = hasPermission({
     permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS',
     scopes: [WifiScopes.UPDATE]

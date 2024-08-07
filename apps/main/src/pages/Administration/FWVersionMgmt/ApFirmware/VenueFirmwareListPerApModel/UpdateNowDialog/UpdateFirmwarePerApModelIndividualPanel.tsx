@@ -45,7 +45,6 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
   }, [apModelFirmwares])
 
   const update = (apModel: string, version: string) => {
-    // eslint-disable-next-line max-len
     updatePayloadRef.current = patchPayload(updatePayloadRef.current!, apModel, version)
     updatePayload(updatePayloadRef.current)
   }
