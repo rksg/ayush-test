@@ -65,11 +65,18 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
   const { title, subTitle, data, isMsp } = props
 
   return <Col style={{ width: '425px', paddingLeft: 0, marginTop: '15px' }}>
-    <Card
-      title={$t({ defaultMessage: '{title}' }, { title })}
-      subTitle={$t({ defaultMessage: '{subTitle}' }, { subTitle })}
-    >
-      <UI.FieldLabelSubs width='275px' style={{ fontWeight: '600' }}>
+    <Card>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+        marginBottom: '10px' }}>
+        <div style={{ flexDirection: 'column', marginTop: '4px' }}>
+          <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
+          <UI.SubTitle>{$t({ defaultMessage: '{subTitle}' }, { subTitle })}</UI.SubTitle>
+        </div>
+        { data.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}
+      </div>
+
+      <UI.FieldLabelSubs width='275px'
+        style={{ fontWeight: '600', paddingBottom: '10px', borderBottom: '1px solid #02a7f0' }}>
         <label>{$t({ defaultMessage: 'Devices' })}</label>
         <label style={{ textAlign: 'center' }}>
           {$t({ defaultMessage: 'Configured' })}</label>
@@ -110,7 +117,8 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
         <label style={{ textAlign: 'center' }}>{'--'}</label>
         <label style={{ textAlign: 'center' }}>{'--'}</label>
       </UI.FieldLabelSubs>
-      <UI.FieldLabelSubs width='275px'>
+      <UI.FieldLabelSubs width='275px'
+        style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
         <label>{$t({ defaultMessage: 'SmartZones' })}</label>
         <label style={{ textAlign: 'center' }}>{'--'}</label>
         <label style={{ textAlign: 'center' }}>{'--'}</label>
@@ -166,7 +174,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   return <>
     <ComplianceBanner />
     {isMsp
-      ? <div>
+      ? <UI.ComplianceContainer>
         <DeviceNetworkingCard
           title='Device Networking Subscriptions'
           subTitle='My Account License Expiration'
@@ -178,7 +186,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
           subTitle='MSP Customers License Expiration'
           isMsp={isMsp}
           data={summaryData} />
-      </div>
+      </UI.ComplianceContainer>
       : <DeviceNetworkingCard
         title='Device Networking Subscriptions'
         subTitle='License Expiration'

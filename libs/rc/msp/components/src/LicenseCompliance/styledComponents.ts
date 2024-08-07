@@ -1,7 +1,8 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-import { Button, Modal } from '@acx-ui/components'
+import { Button, Card, Modal }  from '@acx-ui/components'
+import { CheckMarkCircleSolid } from '@acx-ui/icons'
 
 export const PreDownloadLabel = styled.label`
   font-size: 15px;
@@ -152,4 +153,59 @@ export const LicenseGap = styled(Space)`
 `
 export const LicenseAvailable = styled(Space)`
   color: var(--acx-semantics-green-50);
+`
+export const ComplianceContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 13px;
+`
+export const Title = styled(Card.Title)`
+  font-size: var(--acx-headline-3-font-size);
+`
+export const SubTitle = styled.div`
+  margin-top: 2px;
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+  color: var(--acx-primary-black);
+  font-weight: var(--acx-subtitle-1-font-weight);
+  white-space: normal;
+`
+export const GreenTickIcon = styled(CheckMarkCircleSolid)`
+  height: 30px;
+  width: 30px;
+  path:nth-child(1) {
+    fill: var(--acx-semantics-green-50);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-semantics-green-50);
+  }
+  path:nth-child(2) {
+    stroke-width: 3px
+  }
+`
+export const YellowTickIcon = styled(CheckMarkCircleSolid)`
+  height: 30px;
+  width: 30px;
+  path:nth-child(1) {
+    fill: var(--acx-semantics-orange-30);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-semantics-orange-30);
+  }
+  path:nth-child(2) {
+    stroke-width: 3px
+  }
+`
+export const RedTickIcon = styled(CheckMarkCircleSolid)`
+  height: 30px;
+  width: 30px;
+  path:nth-child(1) {
+    fill: var(--acx-semantics-red-50);
+  }
+  path:nth-child(3) {
+    stroke: var(--acx-semantics-red-50);
+  }
+  path:nth-child(2) {
+    stroke-width: 3px
+  }
 `
