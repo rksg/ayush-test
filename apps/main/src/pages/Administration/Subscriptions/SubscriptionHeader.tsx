@@ -64,7 +64,7 @@ export const SubscriptionHeader = () => {
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
-  const isComplianceEnabled = true//useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
