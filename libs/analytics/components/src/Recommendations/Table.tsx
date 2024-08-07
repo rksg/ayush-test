@@ -252,7 +252,6 @@ export function RecommendationTable (
           return {
             scopeKey: [WifiScopes.UPDATE],
             label: action.icon as unknown as string,
-            key: getShowWithoutRbacCheckKey(String(i)),
             onClick: () => {},
             disabled: false
           }
