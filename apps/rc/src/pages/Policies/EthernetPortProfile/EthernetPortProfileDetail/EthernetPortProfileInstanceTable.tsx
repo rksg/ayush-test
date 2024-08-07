@@ -1,0 +1,111 @@
+import { useIntl } from 'react-intl'
+
+import { Loader, Table, TableProps }         from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { useApListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
+import { AP, useTableQuery }                 from '@acx-ui/rc/utils'
+import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
+
+interface EthernetPortTableProps {
+  apIds: string[]
+}
+
+export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) => {
+  const { $t } = useIntl()
+  const { apIds=[] } = props
+  const { tenantId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const defaultTablePayload = {
+    fields: [
+      'name',
+      'venueId',
+      'model',
+      'serialNumber'
+    ],
+    filters: { serialNumber: apIds }
+  }
+
+  const tableQuery = useTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: defaultTablePayload,
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'ASC'
+    },
+    search: {
+    },
+    enableRbac: isWifiRbacEnabled
+    // option: {
+    //   skip:apIds.length === 0
+    // }
+  })
+
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
+    })
+  })
+
+  const columns: TableProps<AP>['columns'] =[
+    {
+      title: $t({ defaultMessage: 'AP Name' }),
+      key: 'name',
+      dataIndex: 'name',
+      searchable: true,
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      render: (_, row) => {
+        return (
+          <TenantLink to={'/devices/wifi/'+row.serialNumber+'/details/overview'}>
+            {row.name}
+          </TenantLink>
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Model' }),
+      key: 'model',
+      dataIndex: 'model'
+      // searchable: true,
+      // sorter: true,
+      // defaultSortOrder: 'ascend',
+    }, {
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+      dataIndex: 'venueName',
+      key: 'venueName',
+      sorter: true,
+      filterable: venueNameMap,
+      render: (_, row) => {
+        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
+          {row.venueName}
+        </TenantLink>
+      }
+    }
+  ]
+
+  return (
+    <Loader states={[tableQuery]}>
+      <Table<AP>
+        rowKey='serialNumber'
+        columns={columns}
+        dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        // onChange={tableQuery.handleTableChange}
+      />
+    </Loader>
+  )
+}
+
+// export default EthernetPortProfileInstanceTable
