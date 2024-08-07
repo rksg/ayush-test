@@ -50,12 +50,13 @@ import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
-import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
-import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { isSdLanGuestUtilizedOnDiffVenue, useGetNetworkTunnelInfo }                                   from '../../EdgeSdLan/edgeSdLanUtils'
+import { showSdLanGuestFwdConflictModal }                                                             from '../../EdgeSdLan/SdLanGuestFwdConflictModal'
+import { useEdgeMvSdLanActions,useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
 import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm }                                                          from '../../NetworkTunnelActionModal/types'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                                   from '../../NetworkTunnelActionModal/types'
 import { useUpdateNetworkTunnelAction }                                                     from '../../NetworkTunnelActionModal/utils'
 import {
   NetworkVenueScheduleDialog
@@ -182,7 +183,7 @@ export function NetworkVenuesTab () {
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeMvSdLaneady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const { $t } = useIntl()
   const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -241,6 +242,7 @@ export function NetworkVenuesTab () {
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateNetworkTunnel = useUpdateNetworkTunnelAction()
+  const { toggleNetwork } = useEdgeMvSdLanActions()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
@@ -533,7 +535,7 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
-    ...((isEdgeSdLanHaReady && !isEdgeMvSdLaneady) ? [{
+    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady) ? [{
       key: 'tunneled',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',
@@ -629,7 +631,7 @@ export function NetworkVenuesTab () {
           (!hasUpdatePermission || systemNetwork))
       }
     },
-    ...(isEdgeMvSdLaneady ? [{
+    ...(isEdgeMvSdLanReady ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
@@ -639,7 +641,7 @@ export function NetworkVenuesTab () {
         return <NetworkTunnelInfoButton
           network={currentNetwork}
           currentVenue={row}
-          sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
+          venueSdLan={sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]}
           onClick={() => {
             // show modal
             setTunnelModalState({
@@ -762,9 +764,47 @@ export function NetworkVenuesTab () {
 
   const handleNetworkTunnelActionFinish = async (
     formValues: NetworkTunnelActionForm,
-    otherData: { venueSdLan?: EdgeMvSdLanViewData }
+    otherData: {
+      network: NetworkTunnelActionModalProps['network'],
+      venueSdLan?: EdgeMvSdLanViewData
+    }
   ) => {
-    await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+    const { network, venueSdLan } = otherData
+    // eslint-disable-next-line max-len
+    const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
+     && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
+
+    if (needSdLanConfigConflictCheck) {
+      await new Promise<void>((resolve) => {
+        showSdLanGuestFwdConflictModal({
+          currentNetworkVenueId: network?.venueId!,
+          currentNetworkId: network?.id!,
+          currentNetworkName: '',
+          activatedGuest: formValues.sdLan.isGuestTunnelEnabled,
+          tunneledWlans: venueSdLan!.tunneledWlans,
+          tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+          onOk: async (impactVenueIds: string[]) => {
+            if (impactVenueIds.length) {
+              // has conflict and confirmed
+
+              const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
+              actions.push(...impactVenueIds.map(impactVenueId =>
+                toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
+              await Promise.all(actions)
+            } else {
+              await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+            }
+
+            resolve()
+            handleCloseTunnelModal()
+          },
+          onCancel: () => resolve()
+        })
+      })
+    } else {
+      await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+      handleCloseTunnelModal()
+    }
   }
 
   return (
@@ -813,7 +853,7 @@ export function NetworkVenuesTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
-      {isEdgeMvSdLaneady &&
+      {isEdgeMvSdLanReady && tunnelModalState.visible &&
         <NetworkTunnelActionModal
           {...tunnelModalState}
           onFinish={handleNetworkTunnelActionFinish}

@@ -7,6 +7,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { get }                                                           from '@acx-ui/config'
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
@@ -38,7 +39,7 @@ import ApTabs from './ApTabs'
 
 function ApPageHeader () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()

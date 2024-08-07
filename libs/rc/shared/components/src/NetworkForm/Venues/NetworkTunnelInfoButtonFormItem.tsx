@@ -55,7 +55,7 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
       id: currentNetwork.id ?? TMP_NETWORK_ID
     }}
     currentVenue={currentVenue}
-    sdLanScopedNetworkVenues={sdLanNetworkVenues}
+    venueSdLan={sdLanNetworkVenues.sdLansVenueMap[currentVenue.id]?.[0]}
     onClick={handleClick}
   />
 }

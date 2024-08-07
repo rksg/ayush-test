@@ -75,12 +75,7 @@ export const VenueTable = (props: VenueTableProps) => {
       title: $t({ defaultMessage: 'APs' }),
       key: 'apCount',
       dataIndex: 'apCount',
-      render: (_, row) => (
-        <TenantLink
-          to={`/venues/${row.venueId}/venue-details/devices`}
-          children={row.apCount ?? 0}
-        />
-      )
+      render: (_, row) => (row.apCount ?? 0)
     },
     {
       title: $t({ defaultMessage: 'Selected Networks' }),
