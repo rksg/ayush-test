@@ -33,8 +33,7 @@ import AllRoutes    from './AllRoutes'
 import { showBrowserLangDialog,
   detectBrowserLang,
   PartialUserData } from './BrowserDialog/BrowserDialog'
-import { errorMiddleware }        from './errorMiddleware'
-import { refreshTokenMiddleware } from './refreshTokenMiddleware'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
 
@@ -155,7 +154,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
-  addMiddleware(refreshTokenMiddleware, errorMiddleware)
+  addMiddleware(errorMiddleware)
 
   root.render(
     <React.StrictMode>

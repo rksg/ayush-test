@@ -94,6 +94,14 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     setNetworkDrawerVenueId(undefined)
   }
 
+  const handleNetworkModalSubmit = (updates: Record<string, EdgeMvSdLanFormNetwork>) => {
+    Object.keys(updates).forEach(d => {
+      formRef.setFieldValue(d, updates[d])
+    })
+    formRef.validateFields(['activatedNetworks'])
+    closeNetworkModal()
+  }
+
   // venue list should filter out the venues that already tied to other SDLAN services.
   const usedVenueIds = useMemo(() => {
     return Object.entries(tansformSdLanScopedVenueMap(allSdLans))
@@ -122,9 +130,13 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
       {networkDrawerVenueId && <NetworksDrawer
         visible={true}
         onClose={closeNetworkModal}
+        onSubmit={handleNetworkModalSubmit}
         venueId={networkDrawerVenueId!}
         venueName={tableQuery.data?.data.find(item => item.id === networkDrawerVenueId)?.name}
-        formRef={formRef}
+        isGuestTunnelEnabled={formRef.getFieldValue('isGuestTunnelEnabled') as boolean}
+        tunneledNetworks={formRef.getFieldValue('activatedNetworks') as EdgeMvSdLanFormNetwork}
+        // eslint-disable-next-line max-len
+        tunneledGuestNetworks={formRef.getFieldValue('activatedGuestNetworks') as EdgeMvSdLanFormNetwork}
       />}
     </>
   )

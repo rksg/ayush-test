@@ -20,7 +20,6 @@ import {
   CriteriaOption, defaultSort,
   RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -240,9 +239,9 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 rowKey='id'
                 columns={useColumns()}
                 dataSource={evaluationRules}
-                rowActions={filterByAccess(rowActions)}
+                rowActions={rowActions}
                 rowSelection={{ type: 'radio' }}
-                actions={filterByAccess([{
+                actions={[{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len
                   tooltip: !templateId ? $t({ defaultMessage: 'Please select Policy Type' }) : undefined,
@@ -252,7 +251,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                     setEditCondition(undefined)
                     setAccessConditionsVisible(true)
                   }
-                }])}
+                }]}
               />
             </>
           </Form.Item>
