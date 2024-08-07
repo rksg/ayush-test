@@ -141,7 +141,7 @@ export function useIntentAIActions () {
       }
 
       if (code.startsWith('c-probeflex-')) { // AirflexAI c-probeflex-*
-        item.metadata.wlans = await fetchWlans(row.id, row.code, row.path)
+        item.metadata.wlans = await fetchWlans(row.id, row.code, row.idPath)
 
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         item.metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }

@@ -116,7 +116,7 @@ const buildTransitionGQL = (index:number) => `t${index}: transition(
   }`
 
 export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
-  const status = 'scheduled'
+  const status = statuses.scheduled
   const statusReason = statusReasons.oneClick
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
