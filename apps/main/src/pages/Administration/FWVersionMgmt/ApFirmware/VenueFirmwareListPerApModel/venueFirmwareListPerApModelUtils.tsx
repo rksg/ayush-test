@@ -260,12 +260,10 @@ function getApModelDefaultFirmwareFromOptions (
   versionOptions: ApModelIndividualDisplayDataType['versionOptions'],
   initialPayload?: UpdateFirmwarePerApModelFirmware
 ): string {
-  if (initialPayload) {
-    const targetApModelFirmwares = initialPayload.find(fw => fw.apModel === apModel)
-    return targetApModelFirmwares?.firmware ?? ''
-  }
+  if (versionOptions.length === 0) return ''
 
-  return versionOptions.length === 0 ? '' : versionOptions[0].key
+  const targetApModelFirmwares = initialPayload?.find(fw => fw.apModel === apModel)
+  return targetApModelFirmwares?.firmware ?? versionOptions[0].key
 }
 
 export function findExtremeFirmwareBasedOnApModel (
