@@ -482,7 +482,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
 
         const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
@@ -492,7 +492,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
         const venueIds = uniq(filters.map(item => item.venueId))
         let venueApgroupMap = new Map<string, NetworkApGroup[]>()
-        let networkVenuesApGroupList = [] as NetworkVenue[]
+        let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
 
         for (let venueId of venueIds) {
           // get apGroup list filter by venueId
@@ -506,9 +506,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
-              ? (enableRbac ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac : ApGroupConfigTemplateUrlsInfo.getApGroupsList)
-              : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
-            body: enableRbac ? JSON.stringify(apGroupPayload) : apGroupPayload
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
+              : WifiUrlsInfo.getApGroupsList, params),
+            body: JSON.stringify(apGroupPayload)
           }
 
           const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
@@ -536,25 +536,111 @@ export const venueApi = baseVenueApi.injectEndpoints({
           venueApgroupMap.set(venueId, apgroupsDefaultValue)
         }
 
-        // const apiV2CustomHeader = {
-        //   'Content-Type': 'application/vnd.ruckus.v2+json',
-        //   'Accept': 'application/vnd.ruckus.v2+json'
-        // }
+        const apiV2CustomHeader = {
+          'Content-Type': 'application/vnd.ruckus.v2+json',
+          'Accept': 'application/vnd.ruckus.v2+json'
+        }
 
-        // const networkVenuesApGroupInfo = {
-        //   ...createHttpRequest(CommonUrlsInfo.networkActivations, params, apiV2CustomHeader),
-        //   body: JSON.stringify({ filters })
-        // }
+        const networkVenuesApGroupInfo = {
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, params, apiV2CustomHeader),
+          body: JSON.stringify({ filters })
+        }
 
-        // const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
-        // const networkQuery = await fetchWithBQ({
-        //   ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, apiCustomHeader),
-        //   body: JSON.stringify({
-        //     filters: {
-        //       'venueApGroups.venueId': [payloadData[0].venueId]
-        //     }
-        //   })
-        // })
+        const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
+        networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
+
+        let aggregatedList: NetworkVenue[] | undefined
+
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+          const venueId = filters[0].venueId
+          const networkVenueData = networkVenuesApGroupList.data?.[0]
+          const networkVenue = omit(networkVenueData, ['networkId', 'id'])
+
+          aggregatedList = [{
+            ...networkVenue,
+            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+          }]
+
+        } else {
+          aggregatedList = networkVenuesApGroupList.data?.map(networkVenue => {
+            const { venueId, apGroups=[] } = networkVenue
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+
+            const newApgroups = cloneDeep(apGroups)
+
+            currentApGroupsDefaultValue?.forEach(apGroup => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+              if (!customApGroup) {
+                newApgroups.push(cloneDeep(apGroup))
+              }
+            })
+
+            return {
+              ...networkVenue,
+              apGroups: newApgroups
+            }
+          })
+        }
+
+        return networkVenuesApGroupQuery.data
+          ? { data: aggregatedList }
+          : { error: networkVenuesApGroupQuery.error as FetchBaseQueryError }
+      }
+    }),
+    getRbacNetworkApGroups: build.query<NetworkVenue[], RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const filters = payloadData.map(item => ({
+          venueId: item.venueId,
+          networkId: item.networkId
+        }))
+
+        const venueIds = uniq(filters.map(item => item.venueId))
+        let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+        let networkVenuesApGroupList = [] as NetworkVenue[]
+
+        for (let venueId of venueIds) {
+          // get apGroup list filter by venueId
+          const apGroupPayload = {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: { venueId: [venueId] }
+          }
+
+          const apGroupListInfo = {
+            ...createHttpRequest(payloadData[0].isTemplate
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
+              : WifiRbacUrlsInfo.getApGroupsList, params),
+            body: JSON.stringify(apGroupPayload)
+          }
+
+          const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
+          const apGroupListData = apGroupsQuery.data as {
+            data: {
+              id: string,
+              name: string
+            }[]
+          }
+
+          const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+            return {
+              apGroupId: d.id,
+              ...(d.name && { apGroupName: d.name }),
+              isDefault: !d.name,
+              radio: 'Both',
+              radioTypes: ['2.4-GHz', '5-GHz'],
+              validationError: false,
+              validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+              validationErrorReachedMaxConnectedNetworksLimit: false,
+              validationErrorSsidAlreadyActivated: false
+            } as NetworkApGroup
+          })
+
+          venueApgroupMap.set(venueId, apgroupsDefaultValue)
+        }
 
         const paramsVenueId = payloadData[0].venueId
         const paramsNetworkId = payloadData[0].networkId
@@ -575,7 +661,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
         }, fetchWithBQ)
 
-        // const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
         networkVenuesApGroupList = networkDeepListList.response
           .flatMap(networkInfo => networkInfo.venues)
           .filter(networkVenue => networkVenue.networkId === paramsNetworkId) as NetworkVenue[]
@@ -1890,6 +1975,7 @@ export const {
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
+  useGetRbacNetworkApGroupsQuery,
   useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,

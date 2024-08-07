@@ -24,7 +24,7 @@ import {
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
-  useGetNetworkApGroupsV2Query,
+  useGetNetworkApGroupsV2Query, useGetRbacNetworkApGroupsQuery,
   useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -116,14 +116,27 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
-  const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
-    payload: [{
-      networkId: networkVenue?.networkId,
-      venueId: networkVenue?.venueId,
-      isTemplate: isTemplate
-    }],
-    enableRbac: isWifiRbacEnabled
-  }, { skip: !networkVenue || !wlan })
+  const networkApGroupsV2Query = useNetworkApGroupsInstance()
+
+  function useNetworkApGroupsInstance () {
+    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
+
+    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
+
+    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
+  }
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
