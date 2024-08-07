@@ -116,10 +116,10 @@ type BasicRecommendationWithStatus = BasicRecommendation & {
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    recommendationCode: build.query<BasicRecommendationWithStatus, BasicRecommendation>({
+    intentCode: build.query<BasicRecommendationWithStatus, BasicRecommendation>({
       query: ({ id }) => ({
         document: gql`
-          query ConfigRecommendationCode($id: String) {
+          query IntentCode($id: String) {
             recommendation(id: $id) { id code status }
           }
         `,
@@ -129,13 +129,13 @@ export const api = recommendationApi.injectEndpoints({
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    configRecommendationDetails: build.query<
+    intentDetails: build.query<
       EnhancedRecommendation,
       BasicRecommendation & { isCrrmPartialEnabled: boolean, status: string }
     >({
       query: ({ id, code, isCrrmPartialEnabled }) => ({
         document: gql`
-          query ConfigRecommendationDetails($id: String) {
+          query IntentDetails($id: String) {
             recommendation(id: $id) {
               id code status appliedTime isMuted
               originalValue currentValue recommendedValue metadata
@@ -158,6 +158,6 @@ export const api = recommendationApi.injectEndpoints({
 })
 
 export const {
-  useRecommendationCodeQuery,
-  useConfigRecommendationDetailsQuery
+  useIntentCodeQuery,
+  useIntentDetailsQuery
 } = api

@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react'
 
-import { FormInstance } from 'antd'
-import _                from 'lodash'
-import { Params }       from 'react-router-dom'
+import { FormInstance }            from 'antd'
+import _, { cloneDeep, findIndex } from 'lodash'
+import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
   ComparisonObjectType,
-  covertAAAViewModalTypeToRadius,
   UpdateActionItem,
   useActivateL2AclOnWifiNetworkMutation,
   useDeactivateL2AclOnWifiNetworkMutation,
@@ -39,7 +38,25 @@ import {
   useActivateApplicationPolicyOnWifiNetworkMutation,
   useDeactivateApplicationPolicyOnWifiNetworkMutation,
   useActivateAccessControlProfileOnWifiNetworkMutation,
-  useDeactivateAccessControlProfileOnWifiNetworkMutation
+  useDeactivateAccessControlProfileOnWifiNetworkMutation,
+  useDeactivateRadiusServerTemplateMutation,
+  useActivateRadiusServerTemplateMutation,
+  useUpdateRadiusServerTemplateSettingsMutation,
+  useGetRadiusServerTemplateSettingsQuery,
+  useGetAAAPolicyTemplateListQuery,
+  useActivateWifiCallingServiceTemplateMutation,
+  useDeactivateWifiCallingServiceTemplateMutation,
+  useGetEnhancedWifiCallingServiceTemplateListQuery,
+  useActivateL2AclTemplateOnWifiNetworkMutation,
+  useDeactivateL2AclTemplateOnWifiNetworkMutation,
+  useActivateL3AclTemplateOnWifiNetworkMutation,
+  useDeactivateL3AclTemplateOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useActivateAccessControlProfileTemplateOnWifiNetworkMutation,
+  useDeactivateDeviceTemplateOnWifiNetworkMutation,
+  useActivateDeviceTemplateOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useActivateApplicationPolicyTemplateOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -56,13 +73,23 @@ import {
   CommonResult,
   VlanPool,
   useConfigTemplateMutationFnSwitcher,
-  NetworkVenue
+  NetworkVenue,
+  useConfigTemplateQueryFnSwitcher,
+  NetworkRadiusSettings,
+  EdgeMvSdLanViewData,
+  NetworkTunnelSdLanAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { useIsConfigTemplateEnabledByType } from '../configTemplates'
-import { useIsEdgeReady }                   from '../useEdgeActions'
+import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
+import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
+import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
+import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
+import { useIsEdgeReady }                                 from '../useEdgeActions'
 
+export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
   enableVxLan: boolean,
@@ -208,47 +235,69 @@ export function useRadiusServer () {
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableServicePolicyRbac
   const { networkId } = useParams()
-  const [ activateRadiusServer ] = useActivateRadiusServerMutation()
-  const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
-  const [ updateRadiusServerSettings ] = useUpdateRadiusServerSettingsMutation()
-  const { data: radiusServerProfiles } = useGetAAAPolicyViewModelListQuery({
+  const [ activateRadiusServer ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateRadiusServerMutation,
+    useTemplateMutationFn: useActivateRadiusServerTemplateMutation
+  })
+  const [ deactivateRadiusServer ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateRadiusServerMutation,
+    useTemplateMutationFn: useDeactivateRadiusServerTemplateMutation
+  })
+  const [ updateRadiusServerSettings ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateRadiusServerSettingsMutation,
+    useTemplateMutationFn: useUpdateRadiusServerTemplateSettingsMutation
+  })
+  const { data: radiusServerProfiles } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAAAPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetAAAPolicyTemplateListQuery,
     payload: { filters: { networkIds: [networkId] } },
-    enableRbac: resolvedRbacEnabled
-  }, { skip: !networkId || !resolvedRbacEnabled })
-  const { data: radiusServerSettings } = useGetRadiusServerSettingsQuery({
-    params: { networkId }
-  }, { skip: !networkId || !resolvedRbacEnabled })
+    enableRbac: resolvedRbacEnabled,
+    skip: !networkId || !resolvedRbacEnabled
+  })
+  const { data: radiusServerSettings } = useConfigTemplateQueryFnSwitcher<NetworkRadiusSettings>({
+    useQueryFn: useGetRadiusServerSettingsQuery,
+    useTemplateQueryFn: useGetRadiusServerTemplateSettingsQuery,
+    enableRbac: resolvedRbacEnabled,
+    skip: !networkId || !resolvedRbacEnabled
+  })
+  const [ getAAAPolicy ] = useLazyGetAAAPolicyInstance()
   // eslint-disable-next-line max-len
   const [ radiusServerConfigurations, setRadiusServerConfigurations ] = useState<Partial<NetworkSaveData>>()
 
   useEffect(() => {
     if (!radiusServerProfiles || !radiusServerSettings) return
 
-
-    const resolvedResult: Partial<NetworkSaveData> = {
-      enableAccountingProxy: radiusServerSettings.enableAccountingProxy,
-      enableAuthProxy: radiusServerSettings.enableAuthProxy,
-      wlan: {
-        macAddressAuthenticationConfiguration: {
-          macAuthMacFormat: radiusServerSettings.macAuthMacFormat
+    const fetchRadiusDetails = async () => {
+      const resolvedResult: Partial<NetworkSaveData> = {
+        enableAccountingProxy: radiusServerSettings.enableAccountingProxy,
+        enableAuthProxy: radiusServerSettings.enableAuthProxy,
+        wlan: {
+          macAddressAuthenticationConfiguration: {
+            macAuthMacFormat: radiusServerSettings.macAuthMacFormat
+          }
         }
       }
+
+      for (const profile of radiusServerProfiles.data) {
+        const { id, type } = profile
+        const { data: aaaProfile } = await getAAAPolicy({
+          params: { policyId: id },
+          enableRbac: resolvedRbacEnabled
+        })
+
+        if (type === 'ACCOUNTING') {
+          resolvedResult.accountingRadiusId = id
+          resolvedResult.accountingRadius = aaaProfile
+        } else if (type === 'AUTHENTICATION') {
+          resolvedResult.authRadiusId = id
+          resolvedResult.authRadius = aaaProfile
+        }
+      }
+
+      setRadiusServerConfigurations(resolvedResult)
     }
 
-    radiusServerProfiles.data.forEach(profile => {
-      const { id, type } = profile
-      const radius = covertAAAViewModalTypeToRadius(profile)
-
-      if (type === 'ACCOUNTING') {
-        resolvedResult.accountingRadiusId = id
-        resolvedResult.accountingRadius = radius
-      } else if (type === 'AUTHENTICATION') {
-        resolvedResult.authRadiusId = id
-        resolvedResult.authRadius = radius
-      }
-    })
-
-    setRadiusServerConfigurations(resolvedResult)
+    fetchRadiusDetails()
   }, [radiusServerProfiles, radiusServerSettings])
 
 
@@ -425,18 +474,31 @@ export function useVlanPool () {
 }
 
 export function useWifiCalling (notReady: boolean) {
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
+
   const { networkId } = useParams()
-  const { data: wifiCallingData } = useGetEnhancedWifiCallingServiceListQuery(
-    { payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } }, enableRbac },
-    { skip: !enableRbac || !networkId || notReady }
-  )
+  const { data: wifiCallingData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEnhancedWifiCallingServiceListQuery,
+    useTemplateQueryFn: useGetEnhancedWifiCallingServiceTemplateListQuery,
+    payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } },
+    enableRbac,
+    skip: !enableRbac || !networkId || notReady
+  })
   const wifiCallingIds = useMemo(() =>
     wifiCallingData?.data.map(p => p.id) || []
   , [wifiCallingData])
 
-  const [ activate ] = useActivateWifiCallingServiceMutation()
-  const [ deactivate ] = useDeactivateWifiCallingServiceMutation()
+  const [ activate ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateWifiCallingServiceMutation,
+    useTemplateMutationFn: useActivateWifiCallingServiceTemplateMutation
+  })
+  const [ deactivate ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateWifiCallingServiceMutation,
+    useTemplateMutationFn: useDeactivateWifiCallingServiceTemplateMutation
+  })
 
   const activateAll = async (networkId: string, ids: string[]) => {
     if (ids.length === 0) return
@@ -486,16 +548,46 @@ export function useWifiCalling (notReady: boolean) {
 // eslint-disable-next-line max-len
 export function useAccessControlActivation () {
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const [ activateL2Acl ] = useActivateL2AclOnWifiNetworkMutation()
-  const [ deactivateL2Acl ] = useDeactivateL2AclOnWifiNetworkMutation()
-  const [ activateL3Acl ] = useActivateL3AclOnWifiNetworkMutation()
-  const [ deactivateL3Acl ] = useDeactivateL3AclOnWifiNetworkMutation()
-  const [ activateDevice ] = useActivateDeviceOnWifiNetworkMutation()
-  const [ deactivateDevice ] = useDeactivateDeviceOnWifiNetworkMutation()
-  const [ activateApplication ] = useActivateApplicationPolicyOnWifiNetworkMutation()
-  const [ deactivateApplication ] = useDeactivateApplicationPolicyOnWifiNetworkMutation()
-  const [ activateAccessControl ] = useActivateAccessControlProfileOnWifiNetworkMutation()
-  const [ deactivateAccessControl ] = useDeactivateAccessControlProfileOnWifiNetworkMutation()
+  const [ activateL2Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateL2AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateL2AclTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateL2Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateL2AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateL2AclTemplateOnWifiNetworkMutation
+  })
+  const [ activateL3Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateL3AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateL3AclTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateL3Acl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateL3AclOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateL3AclTemplateOnWifiNetworkMutation
+  })
+  const [ activateDevice ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateDeviceOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateDeviceTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateDevice ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateDeviceOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateDeviceTemplateOnWifiNetworkMutation
+  })
+  const [ activateApplication ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateApplicationPolicyOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateApplicationPolicyTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateApplication ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateApplicationPolicyOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation
+  })
+  const [ activateAccessControl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateAccessControlProfileOnWifiNetworkMutation,
+    useTemplateMutationFn: useActivateAccessControlProfileTemplateOnWifiNetworkMutation
+  })
+  const [ deactivateAccessControl ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateAccessControlProfileOnWifiNetworkMutation,
+    useTemplateMutationFn: useDeactivateAccessControlProfileTemplateOnWifiNetworkMutation
+  })
   const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
@@ -693,3 +785,84 @@ export const getDefaultMloOptions = (wifi7Mlo3LinkFlag: boolean) => ({
   enable50G: true,
   enable6G: wifi7Mlo3LinkFlag ? true : false
 })
+
+export const useUpdateEdgeSdLanActivations = () => {
+  const { toggleNetwork } = useEdgeMvSdLanActions()
+
+  // eslint-disable-next-line max-len
+  const updateEdgeSdLanActivations = async (networkId: string, updates: NetworkTunnelSdLanAction[], activatedVenues: NetworkVenue[]) => {
+    const actions = updates.filter(item => {
+      return _.find(activatedVenues, { venueId: item.venueId })
+    }).map((actInfo) => {
+      // eslint-disable-next-line max-len
+      return toggleNetwork(actInfo.serviceId, actInfo.venueId, networkId, actInfo.enabled, actInfo.enabled && actInfo.guestEnabled)
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateEdgeSdLanActivations
+}
+
+export const getNetworkTunnelSdLanUpdateData = (
+  modalFormValues: NetworkTunnelActionForm,
+  sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
+  tunnelModalProps: NetworkTunnelActionModalProps,
+  venueSdLanInfo: EdgeMvSdLanViewData
+) => {
+  // networkId is undefined in Add mode.
+  const networkId = tunnelModalProps.network?.id ?? TMP_NETWORK_ID
+  const networkVenueId = tunnelModalProps.network?.venueId
+
+  const formTunnelType = modalFormValues.tunnelType
+  const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
+  const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
+
+  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, venueSdLanInfo)
+  const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
+  let isNeedUpdate: boolean = false
+
+  // activate/deactivate SDLAN tunneling
+  if (formTunnelType !== tunnelTypeInitVal) {
+    // activate/deactivate network
+    isNeedUpdate = true
+  } else {
+  // tunnelType still SDLAN
+    if (tunnelTypeInitVal === NetworkTunnelTypeEnum.SdLan) {
+      const isGuestTunnelEnabledInitState = !!venueSdLanInfo?.isGuestTunnelEnabled
+      && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+        wlan.networkId === networkId && wlan.venueId === networkVenueId))
+
+      // check if tunnel guest changed
+      if(isGuestTunnelEnabledInitState !== sdLanTunnelGuest) {
+
+        // activate/deactivate network
+        isNeedUpdate = true
+      }
+    }
+  }
+
+  if (!isNeedUpdate)
+    return
+
+  const updateContent = cloneDeep(sdLanAssociationUpdates as NetworkTunnelSdLanAction[]) ?? []
+
+  // eslint-disable-next-line max-len
+  const existDataIdx = findIndex(updateContent, { serviceId: venueSdLanInfo?.id, venueId: networkVenueId })
+
+  if (existDataIdx !== -1) {
+    updateContent[existDataIdx].guestEnabled = isFwdGuest
+    updateContent[existDataIdx].enabled = sdLanTunneled
+  } else {
+    updateContent.push({
+      serviceId: venueSdLanInfo?.id!,
+      venueId: networkVenueId,
+      guestEnabled: isFwdGuest,
+      networkId: networkId,
+      enabled: sdLanTunneled,
+      venueSdLanInfo
+    } as NetworkTunnelSdLanAction)
+  }
+
+  return updateContent
+}

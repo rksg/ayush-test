@@ -2,32 +2,34 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { useIsEdgeReady }                                                     from '@acx-ui/rc/components'
+import { useIsEdgeFeatureReady, useIsEdgeReady }                              from '@acx-ui/rc/components'
 import {
-  useGetEnhancedAccessControlProfileListQuery,
-  useGetAAAPolicyViewModelListQuery,
-  useGetVLANPoolPolicyViewModelListQuery,
+  useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
+  useGetAAAPolicyViewModelListQuery,
   useGetApSnmpViewModelQuery,
+  useGetCertificateTemplatesQuery,
+  useGetConnectionMeteringListQuery,
+  useGetEdgeQosProfileViewDataListQuery,
+  useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetIdentityProviderListQuery,
-  useSyslogPolicyListQuery,
-  useMacRegListsQuery,
+  useGetLbsServerProfileListQuery,
   useGetTunnelProfileViewDataListQuery,
-  useGetConnectionMeteringListQuery,
-  useAdaptivePolicyListByQueryQuery,
-  useGetCertificateTemplatesQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useGetWifiOperatorListQuery,
-  useGetLbsServerProfileListQuery
+  useMacRegListsQuery,
+  useSyslogPolicyListQuery
 } from '@acx-ui/rc/services'
 import {
+  PolicyOperation,
+  PolicyType,
+  ServicePolicyCardData,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  PolicyType,
-  PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping,
-  ServicePolicyCardData,
   isServicePolicyCardEnabled,
+  policyTypeDescMapping,
+  policyTypeLabelMapping,
   servicePolicyCardDataToScopeKeys
 } from '@acx-ui/rc/utils'
 import {
@@ -62,28 +64,31 @@ export default function MyPolicies () {
         ])}
       />
       <GridRow>
-        {policies.filter(p => isServicePolicyCardEnabled(p, 'read')).map((policy, index) => {
-          return (
-            <GridCol key={policy.type} col={{ span: 6 }}>
-              <RadioCard
-                type={'default'}
-                key={`${policy.type}_${index}`}
-                value={policy.type}
-                title={$t({
-                  defaultMessage: '{name} ({count})'
-                }, {
-                  name: $t(policyTypeLabelMapping[policy.type]),
-                  count: policy.totalCount ?? 0
-                })}
-                description={$t(policyTypeDescMapping[policy.type])}
-                categories={policy.categories}
-                onClick={() => {
-                  policy.listViewPath && navigate(policy.listViewPath)
-                }}
-              />
-            </GridCol>
-          )
-        })}
+        {
+          // eslint-disable-next-line max-len
+          policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+            return (
+              <GridCol key={policy.type} col={{ span: 6 }}>
+                <RadioCard
+                  type={'default'}
+                  key={`${policy.type}_${index}`}
+                  value={policy.type}
+                  title={$t({
+                    defaultMessage: '{name} ({count})'
+                  }, {
+                    name: $t(policyTypeLabelMapping[policy.type]),
+                    count: policy.totalCount ?? 0
+                  })}
+                  description={$t(policyTypeDescMapping[policy.type])}
+                  categories={policy.categories}
+                  onClick={() => {
+                    policy.listViewPath && navigate(policy.listViewPath)
+                  }}
+                />
+              </GridCol>
+            )
+          })
+        }
       </GridRow>
     </>
   )
@@ -99,6 +104,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
   return [
     {
@@ -239,6 +245,15 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
       disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.QOS_BANDWIDTH,
+      categories: [RadioCardCategory.EDGE],
+      // eslint-disable-next-line max-len
+      totalCount: useGetEdgeQosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeQosEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })),
+      disabled: !isEdgeQosEnabled
     }
   ]
 }

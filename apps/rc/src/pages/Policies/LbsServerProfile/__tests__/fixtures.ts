@@ -57,3 +57,33 @@ export const dummyVenuesResult = {
     }
   ]
 }
+
+export const dummyVenue = {
+  id: 'd6062edbdf57451facb33967c2160ccc',
+  name: 'Venue 1'
+}
+
+export const dummyApList = {
+  fields: [
+    'name',
+    'deviceStatus',
+    'apMac',
+    'serialNumber',
+    'lbsStatus'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      serialNumber: '121749001249',
+      name: 'AP-R610',
+      venueId: 'd6062edbdf57451facb33967c2160ccc',
+      venueName: 'Venue 1',
+      apMac: 'D8:38:FC:36:77:F0',
+      lbsStatus: {
+        managementConnected: true,
+        serverConnected: true
+      }
+    }
+  ]
+}

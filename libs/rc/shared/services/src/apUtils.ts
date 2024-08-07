@@ -135,7 +135,7 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     channelU50: false,
     channel60: false
   }
-  result.data = result.data.map(item => {
+  const data = result?.data.map(item => {
     let newItem = { ...item, children: [] as APExtended[], serialNumber: uniqueId() }
     const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
       const { APRadio, lanPortStatus } = ap.apStatusData || {}
@@ -151,8 +151,8 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     newItem.children = aps as unknown as APExtended[]
     return newItem
   })
-  result.extra = channelColumnStatus
-  return result
+
+  return { ...result, data, extra: channelColumnStatus }
 }
 
 export const transformApListFromNewModel = (
@@ -166,7 +166,7 @@ export const transformApListFromNewModel = (
     channel60: false
   }
 
-  result.data = result.data.map(item => {
+  const data = result?.data.map(item => {
     const APRadio = item.radioStatuses
     const lanPortStatus = item.lanPortStatuses
 
@@ -180,8 +180,8 @@ export const transformApListFromNewModel = (
 
     return item
   })
-  result.extra = channelColumnStatus
-  return result
+
+  return { ...result, data, extra: channelColumnStatus }
 }
 
 export const transformGroupByListFromNewModel = (
@@ -398,6 +398,7 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'extIp': 'networkStatus.externalIpAddress',
   'clients': 'clientCount',
   'isMeshEnable': 'meshEnabled',
+  'hops': 'meshStatus.hopCount',
   'apRadioDeploy': 'radioStatuses',
   'lastUpdTime': 'lastUpdatedTime',
   'apStatusData.lanPortStatus': 'lanPortStatuses',

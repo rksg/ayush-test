@@ -96,17 +96,23 @@ import {
   RWG,
   NetworkDevice,
   NetworkDeviceType,
-  NewAPModel,
-  NetworkDevicePosition
+  NetworkDevicePosition,
+  RbacAPMesh
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                                  from '@acx-ui/store'
 import { RequestPayload }                                from '@acx-ui/types'
 import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacApList }                               from './apUtils'
-import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess, isPayloadHasField }                                                       from './utils'
+import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'
 import {
+  getVenueDHCPProfileFn,
+  getVenueRoguePolicyFn,
+  transformGetVenueDHCPPoolsResponse,
+  updateVenueRoguePolicyFn
+} from './servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
+import {
+  convertToApMeshDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
 }   from './venue.utils'
@@ -166,7 +172,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venuesData = venueList.data as Venue[]
+        const venuesData = venueList?.data as Venue[]
         const venueIds = venuesData?.filter(v => {
           if (v.aggregatedApStatus) {
             return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
@@ -284,7 +290,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const USE_CASES = [
             'AddNetworkVenue',
-            'DeleteNetworkVenue'
+            'DeleteNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkOnVenue'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
             'DeleteNetworkVenueTemplate',
@@ -382,30 +390,43 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     meshAps: build.query<TableResult<APMesh>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
-
-        const newPayload = enableRbac
-          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
-          : payload
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
 
         return {
           ...req,
-          body: newPayload
+          body: payload
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }],
-      extraOptions: { maxRetries: 5 },
-      transformResponse: (
-        result: TableResult<APMesh>,
-        _: unknown,
-        args: RequestPayload) => {
-        return args.enableRbac
-          ? transformRbacApList(result as TableResult<NewAPModel>) as TableResult<APMesh>
-          : result
-      }
+      extraOptions: { maxRetries: 5 }
+    }),
+    rbacMeshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const rbacApMeshReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const rbacApMeshListRes = await fetchWithBQ({
+          ...rbacApMeshReq,
+          body: JSON.stringify(payload)
+        })
+
+        const rbacApMeshData = rbacApMeshListRes.data as TableResult<RbacAPMesh>
+        const apMeshData = [] as APMesh[]
+
+
+        rbacApMeshData.data?.forEach((rbacApMesh) => {
+          const { root, members=[] } = rbacApMesh
+          const newApMesh = convertToApMeshDataList([root], members) as APMesh[]
+
+          apMeshData.push(newApMesh[0])
+        })
+
+        const meshAps = { data: apMeshData, totalCount: rbacApMeshData.totalCount } as TableResult<APMesh>
+        return {
+          data: meshAps
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -826,19 +847,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
     }),
     getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueLanPorts, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueLanPorts, params, apiCustomHeader)
         return{
           ...req
         }
       }
     }),
     updateVenueLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.updateVenueLanPorts, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1823,6 +1850,7 @@ export const {
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
+  useRbacMeshApsQuery,
   useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
@@ -1941,7 +1969,7 @@ export const {
 export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>,
   apCompatibilities: { [key:string]: number }) => {
   const data:Venue[] = []
-  venueList.data.forEach(item=>{
+  venueList?.data.forEach(item=>{
     item.incompatible = apCompatibilities[item.id]
     data.push(item)
   })
