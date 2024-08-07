@@ -124,7 +124,7 @@ export interface SchedulePayload extends MutationPayload {
   isRecommendationRevertEnabled?: boolean
   wlans?: RecommendationWlan[]
 }
-export interface ScheduleResponse { schedule: MutationResponse }
+interface ScheduleResponse { schedule: MutationResponse }
 
 interface DeleteMutationPayload extends MutationPayload { }
 interface DeleteMutationResponse { deleteRecommendation: MutationResponse }
