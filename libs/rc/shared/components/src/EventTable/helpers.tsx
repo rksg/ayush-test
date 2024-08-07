@@ -107,7 +107,8 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
     ADMINACTIVITY: 'adminName',
     ADMIN: 'adminName',
     NOTIFICATION: 'adminName',
-    EDGE: 'edgeName'
+    EDGE: 'edgeName',
+    PROFILE: 'profileName'
   }
   const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
   return <EntityLink {...{ entityKey, data, highlightFn }} />

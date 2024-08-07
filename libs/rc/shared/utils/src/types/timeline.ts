@@ -26,7 +26,8 @@ export const eventTypeMapping = {
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  PROFILE: defineMessage({ defaultMessage: 'Profile' })
 }
 
 export const eventProductMapping = {
@@ -133,7 +134,8 @@ export interface EventMeta {
   venueName: string
   tableKey?: string
   edgeName: string,
-  unitName: string
+  unitName: string,
+  profileName: string
 }
 
 export type EventExportSchedule = {
