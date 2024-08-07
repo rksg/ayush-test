@@ -116,7 +116,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
-  const networkApGroupsV2Query = useNetworkApGroupsInstance()
+  const networkApGroupsQuery = useNetworkApGroupsInstance()
 
   function useNetworkApGroupsInstance () {
     const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
@@ -143,7 +143,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    const networkApGroupsData = networkApGroupsV2Query.data
+    const networkApGroupsData = networkApGroupsQuery.data
 
     let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
@@ -159,7 +159,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsV2Query.data])
+  }, [networkVenue, networkApGroupsQuery.data])
 
   useEffect(() => {
     form.setFieldsValue(formInitData)
