@@ -122,14 +122,13 @@ describe('IntlUtils', () => {
         VenueSingular: 'Venue',
         VenuePlural: 'Venues'
       }
-      const supportReSkinning = true
       const ret = intlUtil.getReSkinningElements()
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(ret[fnName]()).toEqual(expected[fnName])
       }
 
-      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, { lang: 'en-US' })
+      const retWithIntl = intlUtil.getReSkinningElements({ lang: 'en-US' })
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(retWithIntl[fnName]()).toEqual(expected[fnName])
@@ -145,14 +144,13 @@ describe('IntlUtils', () => {
         VenueSingular: 'Space',
         VenuePlural: 'Spaces'
       }
-      const supportReSkinning = true
-      const ret = intlUtil.getReSkinningElements(supportReSkinning)
+      const ret = intlUtil.getReSkinningElements()
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(ret[fnName]()).toEqual(expected[fnName])
       }
 
-      const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, { lang: 'en-US' })
+      const retWithIntl = intlUtil.getReSkinningElements({ lang: 'en-US' })
       for(const key of Object.keys(expected)) {
         const fnName = key as keyof typeof expected
         expect(retWithIntl[fnName]()).toEqual(expected[fnName])
