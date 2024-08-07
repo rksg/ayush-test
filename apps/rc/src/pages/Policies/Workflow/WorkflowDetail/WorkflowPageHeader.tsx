@@ -3,9 +3,9 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }          from '@acx-ui/components'
+import { Button, PageHeader }         from '@acx-ui/components'
 import { WorkflowActionPreviewModal } from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery }     from '@acx-ui/rc/services'
+import { useGetWorkflowByIdQuery }    from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   getPolicyDetailsLink,
@@ -54,7 +54,7 @@ function WorkflowPageHeader () {
             </TenantLink>
           ])}
       />
-       {visible &&
+      {visible &&
       <WorkflowActionPreviewModal workflowId={policyId!} onClose={()=>setVisible(false)}/>}
     </>
   )

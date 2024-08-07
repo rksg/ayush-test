@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 import { Path } from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                                              from '@acx-ui/feature-toggle'
-import { ActionType, AupAction, GenericActionData, StepType, UIConfiguration, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                            from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
+import { ActionType, GenericActionData, StepType, UIConfiguration, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                 from '@acx-ui/test-utils'
 
 import { WorkflowActionPreview } from './WorkflowActionPreview'
 
