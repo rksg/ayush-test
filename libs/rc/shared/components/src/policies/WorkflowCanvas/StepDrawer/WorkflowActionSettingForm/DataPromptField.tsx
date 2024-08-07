@@ -16,7 +16,6 @@ interface FieldType {
 
 export function DataPromptField () {
   const { $t } = useIntl()
-  const { useWatch } = Form
   const fieldTypes: FieldType[] = [
     { value: 'username', label: $t({ defaultMessage: 'Username' }) }
     , { value: 'email', label: $t({ defaultMessage: 'Email Address' }) }
@@ -31,13 +30,14 @@ export function DataPromptField () {
     , { value: 'inputField6', label: $t({ defaultMessage: 'Custom Field 6' }) }]
 
 
-  const [selectedTypes] = [useWatch<DataPromptVariable[]>('fields')]
-  const validateDuplicateType = (selctedType: string) => {
-    if (selctedType) {
-      if (selectedTypes.filter(item => item.type === selctedType).length > 1) {
-        return Promise.reject($t({ defaultMessage: 'Field type already selected' }))
-      }
+  const selectedTypes = Form.useWatch<DataPromptVariable[]>('fields')
+  const validateDuplicateType = (selectedType: string) => {
+
+    if (selectedTypes.filter(item =>
+      (item && item.type === selectedType) ? true : false ).length > 1) {
+      return Promise.reject($t({ defaultMessage: 'Field type already selected' }))
     }
+
     return Promise.resolve()
   }
   return (
@@ -77,7 +77,6 @@ export function DataPromptField () {
                   label={$t({ defaultMessage: 'Field Type' })}
                   rules={[
                     { required: true },
-                    { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     { validator: (_, value) => validateDuplicateType(value) }
                   ]}
                 >

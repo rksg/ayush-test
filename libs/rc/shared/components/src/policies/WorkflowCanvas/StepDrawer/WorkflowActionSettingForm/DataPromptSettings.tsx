@@ -27,19 +27,19 @@ export function DataPromptSettings () {
             onChange={setShowTitle}/>
         </Form.Item>
       </FieldLabel>
-      <Form.Item key={'title'}
-        hidden={!showTitle}
-        name={'title'}
-        rules={[
-          { required: true },
-          { min: 1 },
-          { max: 100 },
-          { validator: (_, value) => whitespaceOnlyRegExp(value) }
-        ]}
-      >
-        <Input data-testid={'title'}/>
-      </Form.Item>
-
+      { showTitle &&
+        <Form.Item key={'title'}
+          name={'title'}
+          rules={[
+            { required: true },
+            { min: 1 },
+            { max: 100 },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+          ]}
+        >
+          <Input data-testid={'title'}/>
+        </Form.Item>
+      }
       <FieldLabel width='555px'>
         {$t({ defaultMessage: 'Intro text' })}
         <Form.Item key='displayMessageHtml'
@@ -51,19 +51,20 @@ export function DataPromptSettings () {
             onChange={setShowIntroText}/>
         </Form.Item>
       </FieldLabel>
-      <Form.Item key='messageHtml'
-        hidden={!showIntroText}
-        name={'messageHtml'}
-        rules={[
-          { required: true },
-          { min: 1 },
-          { max: 1000 },
-          { validator: (_, value) => whitespaceOnlyRegExp(value) }
-        ]}
-      >
-        <Input.TextArea rows={8}
-          data-testid={'messageHtml'} />
-      </Form.Item>
+      { showIntroText &&
+        <Form.Item key='messageHtml'
+          name={'messageHtml'}
+          rules={[
+            { required: true },
+            { min: 1 },
+            { max: 1000 },
+            { validator: (_, value) => whitespaceOnlyRegExp(value) }
+          ]}
+        >
+          <Input.TextArea rows={8}
+            data-testid={'messageHtml'} />
+        </Form.Item>
+      }
 
       <Divider dashed={true} />
 
@@ -72,18 +73,22 @@ export function DataPromptSettings () {
       <Form.Item
         name={'backButtonText'}
         hidden={true}
+        children={<Input />}
       />
       <Form.Item
         name={'continueButtonText'}
         hidden={true}
+        children={<Input />}
       />
       <Form.Item
         name={'displayBackButton'}
         hidden={true}
+        children={<Input />}
       />
       <Form.Item
         name={'displayContinueButton'}
         hidden={true}
+        children={<Input />}
       />
     </>
   )
