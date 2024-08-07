@@ -1,4 +1,3 @@
-import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { useEffect, useState } from 'react'
 
