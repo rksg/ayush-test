@@ -605,6 +605,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // deprecate!! Using the POST /venues/aps/query with the meshStatus.meshNeighbors field to replace
   getMeshUplinkAPs: {
     method: 'post',
     url: '/aps/neighbors/query',

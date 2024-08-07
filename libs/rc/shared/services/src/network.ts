@@ -304,7 +304,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         // eslint-disable-next-line max-len
         const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
           return {
-            [key]: { new: currentPayload[key], old: oldPayload?.[key] }
+            [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
           } as ActionItem
         }
 

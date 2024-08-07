@@ -5,7 +5,8 @@ import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeMvSdLanViewData }                from '@acx-ui/rc/utils'
 
 export interface EdgeMvSdLanContextType {
-  allSdLans: Pick<EdgeMvSdLanViewData, 'id' | 'venueId' | 'tunneledWlans' | 'tunneledGuestWlans'>[]
+  allSdLans: Pick<EdgeMvSdLanViewData, 'id' | 'edgeClusterId' | 'guestEdgeClusterId'
+   | 'tunneledWlans' | 'tunneledGuestWlans'>[]
 }
 
 export const EdgeMvSdLanContext = createContext({} as EdgeMvSdLanContextType)
@@ -17,7 +18,8 @@ export function useEdgeMvSdLanContext () {
 export function EdgeMvSdLanContextProvider (props: { children: ReactNode }) {
   const allSdLansQuery = useGetEdgeMvSdLanViewDataListQuery({
     payload: {
-      fields: ['id', 'venueId', 'tunneledWlans', 'tunneledGuestWlans'],
+      fields: ['id', 'edgeClusterId', 'guestEdgeClusterId',
+        'tunneledWlans', 'tunneledGuestWlans'],
       pageSize: 10000
     } })
 

@@ -99,14 +99,18 @@ export function useUpgradePerferences () {
 
 export function renderCurrentFirmwaresColumn (data: FirmwareVenuePerApModel['currentApFirmwares']) {
   const firmwareGroupsMap = groupByFirmware(data)
-  const firmwareGroupsText = Object.keys(firmwareGroupsMap).join(', ')
-  // eslint-disable-next-line max-len
-  const firmwareGroupsTooltipContent = Object.entries(firmwareGroupsMap).map(([ firmware, apModels ]) => {
-    return `${firmware}: ${apModels.join(', ')}`
-  }).join('\n')
+  const firmwareGroupsText = Object
+    .keys(firmwareGroupsMap)
+    .sort((a, b) => -compareVersions(a, b))
+    .join(', ')
+  const firmwareGroupsTooltipContent = Object
+    .entries(firmwareGroupsMap)
+    .sort((a, b) => -compareVersions(a[0], b[0]))
+    .map(([ firmware, apModels ]) => `${firmware}: ${apModels.join(', ')}`)
+    .join('\n')
 
   return (
-    <Tooltip title={firmwareGroupsTooltipContent}>
+    <Tooltip placement='topLeft' dottedUnderline={true} title={firmwareGroupsTooltipContent}>
       <UI.WithTooltip>{firmwareGroupsText}</UI.WithTooltip>
     </Tooltip>
   )
