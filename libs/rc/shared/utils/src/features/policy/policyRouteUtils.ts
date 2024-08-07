@@ -56,6 +56,7 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
   [PolicyType.CERTIFICATE]: 'certificate',
+  [PolicyType.ETHERNET_PORT_PROFILE]: 'ethernetPortProfile',
   [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth'
 }
 

@@ -43,6 +43,7 @@ import {
   baseEdgeSdLanApi,
   baseConfigTemplateApi,
   smartZoneApi,
+  baseEthernetPortProfileApi as ethernetPortProfileApi,
   baseEdgeQosProfilesApi as edgeQosProfilesApi
 } from './baseApi'
 
@@ -90,6 +91,7 @@ export const store = configureStore({
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
+    [ethernetPortProfileApi.reducerPath]: ethernetPortProfileApi.reducer,
     [edgeQosProfilesApi.reducerPath]: edgeQosProfilesApi.reducer
   },
 
@@ -139,6 +141,7 @@ export const store = configureStore({
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
       smartZoneApi.middleware,
+      ethernetPortProfileApi.middleware,
       edgeQosProfilesApi.middleware
     ])
   },

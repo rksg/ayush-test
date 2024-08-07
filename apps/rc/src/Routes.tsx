@@ -95,6 +95,10 @@ import ClientIsolationTable                                             from './
 import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import AddEthernetPortProfile                                           from './pages/Policies/EthernetPortProfile/AddEthernetPortProfile'
+import EditEthernetPortProfile                                          from './pages/Policies/EthernetPortProfile/EditEthernetPortProfile'
+import EthernetPortProfileDetail                                        from './pages/Policies/EthernetPortProfile/EthernetPortProfileDetail'
+import EthernetPortProfileTable                                         from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import IdentityProviderDetail                                           from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                                            from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import LbsServerProfileDetail                                           from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
@@ -152,6 +156,7 @@ import SwitchClientList                                                 from './
 import WifiClientDetails                                                from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum }                             from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                                                 from './pages/Users/Wifi/GuestManagerPage'
+
 
 
 export default function RcRoutes () {
@@ -1192,6 +1197,37 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
           element={<CertificateTemplateDetail/>}
+        />
+      </>
+      }
+      {<>
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.LIST
+          })}
+          element={<EthernetPortProfileTable/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.CREATE
+          })}
+          element={<AddEthernetPortProfile/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.EDIT
+          })}
+          element={<EditEthernetPortProfile/>}
+        />
+        <Route
+          path={getPolicyRoutePath({
+            type: PolicyType.ETHERNET_PORT_PROFILE ,
+            oper: PolicyOperation.DETAIL
+          })}
+          element={<EthernetPortProfileDetail/>}
         />
       </>
       }

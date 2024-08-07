@@ -104,6 +104,8 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  //FIXME: must add FF for EthernetPortProfile
+  const isEthernetPortProfileEnabled = true
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
   return [
@@ -245,6 +247,16 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
       disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.ETHERNET_PORT_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: 0,
+      // totalCount: useGetEthernetPortProfilesQuery({ params, payload: { } }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ETHERNET_PORT_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !isEthernetPortProfileEnabled
     },
     {
       type: PolicyType.QOS_BANDWIDTH,
