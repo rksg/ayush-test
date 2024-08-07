@@ -213,7 +213,7 @@ export function useIntentAIActions () {
     modal.update({
       type: 'confirm',
       title: $t({ defaultMessage: '1-Click Optimize?' }),
-      content: getContent('3AM local time'),
+      content: getContent($t({ defaultMessage: '3AM local time' })),
       okText: $t({ defaultMessage: 'Yes, Optimize!' }),
       cancelText: $t({ defaultMessage: 'Cancel' }),
       icon: <> </>,
