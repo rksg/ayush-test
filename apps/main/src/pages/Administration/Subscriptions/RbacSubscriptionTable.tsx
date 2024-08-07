@@ -105,6 +105,7 @@ export const RbacSubscriptionTable = () => {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const queryResults = useGetEntitlementsListQuery({ params },
     { skip: isEntitlementRbacApiEnabled })
@@ -161,7 +162,8 @@ export const RbacSubscriptionTable = () => {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isComplianceEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
