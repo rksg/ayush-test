@@ -27,7 +27,8 @@ import {
   PolicyOperation,
   policyTypeLabelMapping, policyTypeDescMapping,
   ServicePolicyCardData,
-  isServicePolicyCardEnabled
+  isServicePolicyCardEnabled,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                  from '@acx-ui/types'
@@ -121,7 +122,7 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 
-  if (isConnectionMeteringEnabled) {
+  if (isConnectionMeteringEnabled && hasCloudpathAccess()) {
     // eslint-disable-next-line max-len
     sets.push({ type: PolicyType.CONNECTION_METERING, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE] })
   }
