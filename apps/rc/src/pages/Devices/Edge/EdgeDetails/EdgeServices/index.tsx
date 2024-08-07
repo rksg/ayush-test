@@ -27,14 +27,18 @@ export const EdgeServices = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
+
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
+
+  const { currentEdgeStatus, isEdgeStatusLoading } = useContext(EdgeDetailsDataContext)
+
   const settingsId = 'edge-services-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeServiceListQuery,
@@ -47,6 +51,7 @@ export const EdgeServices = () => {
     },
     pagination: { settingsId }
   })
+
   const { exportCsv, disabled } = useEdgeExportCsv<EdgeService>(
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
   )
@@ -106,7 +111,7 @@ export const EdgeServices = () => {
       title: $t({ defaultMessage: 'Health' }),
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
-      render: (data, row) =>
+      render: (_, row) =>
         <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
     },
     {
@@ -211,7 +216,6 @@ export const EdgeServices = () => {
       scopeKey: [EdgeScopes.UPDATE],
       disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
       tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
-        // eslint-disable-next-line max-len
         ? $t({ defaultMessage: 'Only DHCP can be restarted' }
         ) : undefined,
       onClick: (selectedRows, clearSelection) => {
@@ -261,7 +265,8 @@ export const EdgeServices = () => {
 
   return (
     <Loader states={[
-      tableQuery
+      tableQuery,
+      { isLoading: isEdgeStatusLoading }
     ]}>
       <Table
         settingsId={settingsId}

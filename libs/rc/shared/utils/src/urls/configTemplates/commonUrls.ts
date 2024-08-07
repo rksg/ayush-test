@@ -242,6 +242,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networkActivations/:networkVenueId',
     newApi: true
   },
+  deleteNetworkVenueTemplateRbac: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   deleteNetworkVenuesTemplate: {
     method: 'delete',
     url: '/templates/networkActivations',
@@ -261,6 +270,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  getNetworkVenueTemplateRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true
+  },
   addNetworkVenuesTemplate: {
     method: 'post',
     url: '/templates/networkActivations/mappings',
@@ -269,6 +283,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenuesTemplate: {
     method: 'put',
     url: '/templates/networkActivations/mappings',
+    newApi: true
+  },
+  getVLANPoolPolicyListTemplate: {
+    method: 'post',
+    url: '/templates/vlanPoolProfiles/query',
     newApi: true
   }
 }

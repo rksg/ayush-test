@@ -95,7 +95,7 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
       title: $t({ defaultMessage: 'LBS Mgmt. Connection' }),
       dataIndex: 'lbsStatus.managementConnected',
       key: 'lbsStatus.managementConnected',
-      width: 160,
+      width: 128,
       sorter: true,
       render: (_, { lbsStatus }) =>
       {return renderConnectionState(lbsStatus?.managementConnected as boolean)}
@@ -105,7 +105,7 @@ export function LbsServerVenueApsDrawer (props: LbsServerVenueApsDrawerProps) {
       title: $t({ defaultMessage: 'LBS Server Connection' }),
       dataIndex: 'lbsStatus.serverConnected',
       key: 'lbsStatus.serverConnected',
-      width: 160,
+      width: 128,
       sorter: true,
       render: (_, { lbsStatus }) =>
       { return renderConnectionState(lbsStatus?.serverConnected as boolean)}

@@ -25,8 +25,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
   getEnhancedL2AclPolicies: {
@@ -86,8 +86,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/l3AclPolicies/:l3AclPolicyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
   getEnhancedL3AclPolicies: {
@@ -147,8 +147,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/applicationPolicies/:applicationPolicyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
   getEnhancedApplicationPolicies: {
@@ -226,8 +226,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/accessControlProfiles/:policyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
   getAccessControlProfileList: {
@@ -292,8 +292,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/devicePolicies',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   getDevicePolicy: {
@@ -306,8 +306,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/devicePolicies/:devicePolicyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
   delDevicePolicy: {

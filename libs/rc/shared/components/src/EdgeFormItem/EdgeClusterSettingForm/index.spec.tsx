@@ -1,12 +1,12 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                                                                                                     from '@acx-ui/components'
-import { Features }                                                                                                      from '@acx-ui/feature-toggle'
-import { venueApi }                                                                                                      from '@acx-ui/rc/services'
-import { ClusterHighAvailabilityModeEnum, CommonUrlsInfo, EdgeClusterTableDataType, EdgeGeneralFixtures, VenueFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                           from '@acx-ui/test-utils'
+import { StepsForm }                                                                                                                                     from '@acx-ui/components'
+import { Features }                                                                                                                                      from '@acx-ui/feature-toggle'
+import { venueApi }                                                                                                                                      from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, CommonUrlsInfo, EdgeClusterTableDataType, EdgeGeneralFixtures, EdgeUrlsInfo, FirmwareUrlsInfo, VenueFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                                                           from '@acx-ui/test-utils'
 
 import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
@@ -43,6 +43,8 @@ jest.mock('../../useEdgeActions', () => ({
 
 const { mockVenueOptions } = VenueFixtures
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockHaAaFeatureRequirement } = EdgeGeneralFixtures
+const { mockedVenueFirmwareList } = EdgeGeneralFixtures
 describe('EdgeClusterSettingForm', () => {
   let params: { tenantId: string, clusterId: string, activeTab: string }
   beforeEach(() => {
@@ -56,6 +58,14 @@ describe('EdgeClusterSettingForm', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueOptions))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (req, res, ctx) => res(ctx.json(mockHaAaFeatureRequirement))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
       )
     )
     jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
@@ -243,6 +253,46 @@ describe('EdgeClusterSettingForm', () => {
     const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
     await userEvent.click(deleteBtns[0])
     expect(mockShowDeleteModalFn).toBeCalled()
+  })
+
+  it ('should disable ha radio when the fw of the selected venue is too low for AA', async () => {
+    mockHaAaEnabled()
+    renderClusterForm()
+
+    const venueSelect = screen.getByRole('combobox')
+    await waitFor(() => {
+      expect(screen.getByText(mockVenueOptions.data[0].name)).toBeVisible()
+    })
+
+    userEvent.selectOptions(venueSelect, mockVenueOptions.data[0].name)
+
+    await waitFor(() => {
+      expect(screen.getByText('1.0.0.1709')).toBeInTheDocument()
+    })
+
+    const activeStandbyRadio = screen.getAllByRole('radio')
+      .find((element) => element.id === 'ACTIVE_ACTIVE')
+    expect(activeStandbyRadio).toBeDisabled()
+  })
+
+  it ('should enable ha radio when the fw of the selected venue supports AA', async () => {
+    mockHaAaEnabled()
+    renderClusterForm()
+
+    const venueSelect = screen.getByRole('combobox')
+    await waitFor(() => {
+      expect(screen.getByText(mockVenueOptions.data[1].name)).toBeVisible()
+    })
+
+    userEvent.selectOptions(venueSelect, mockVenueOptions.data[1].name)
+
+    await waitFor(() => {
+      expect(screen.getByText('2.1.0.600')).toBeInTheDocument()
+    })
+
+    const activeStandbyRadio = screen.getAllByRole('radio')
+      .find((element) => element.id === 'ACTIVE_ACTIVE')
+    expect(activeStandbyRadio).toBeEnabled()
   })
 
   function setupHaModeInEditMode (haMode: ClusterHighAvailabilityModeEnum) {
