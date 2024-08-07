@@ -148,6 +148,12 @@ export const FieldLabelSubs = styled.div<{ width: string }>`
   grid-template-columns: 180px 80px 100px;
   align-items: baseline;
 `
+export const FieldLabelSubs2 = styled.div<{ width: string }>`
+  font-size: var(--acx-body-4-font-size);
+  display: grid;
+  grid-template-columns: 180px 45px 160px;
+  align-items: baseline;
+`
 export const LicenseGap = styled(Space)`
   color: var(--acx-semantics-red-50)
 `

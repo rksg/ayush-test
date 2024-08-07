@@ -1,57 +1,11 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Col }     from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Card }           from '@acx-ui/components'
 import { ComplianceData } from '@acx-ui/msp/utils'
 
 import { fakeMspSummary } from './__tests__/fixtures'
 import * as UI            from './styledComponents'
-
-// interface ShowMoreFirmwaresLinkProps {
-//     shownMoreFirmwaresInBanner: boolean
-//     setShownMoreFirmwaresInBanner: (shown: boolean) => void
-// }
-
-// function ShowMoreNotesLink (props: ShowMoreFirmwaresLinkProps) {
-//   const { $t } = useIntl()
-//   const { shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner } = props
-
-//   return <span
-//     style={{
-//       cursor: 'pointer',
-//       color: 'var(--acx-accents-blue-50)',
-//       fontSize: cssNumber('--acx-body-4-font-size')
-//     }}
-//     onClick={() => setShownMoreFirmwaresInBanner(!shownMoreFirmwaresInBanner)}
-//   >
-//     {shownMoreFirmwaresInBanner
-//       ? $t({ defaultMessage: 'Show less' })
-//       : $t({ defaultMessage: 'Show more' })
-//     }
-//   </span>
-// }
-
-const ComplianceBanner = () => {
-  const { $t } = useIntl()
-  // const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
-
-  return (
-    <UI.BannerVersion>
-      <Row justify='space-between' gutter={[16, 16]}>
-        <Col style={{ width: '100%' }}>
-          <UI.LatestVersion>
-            {$t({ defaultMessage: 'Attention Notes' })}
-          </UI.LatestVersion>
-          <div>{$t({ defaultMessage: `- On January 1, 2025 RUCKUS One will 
-            stop adding 5% courtesy licenses to the MSP subscriptions.` })}</div>
-          <div>{$t({ defaultMessage: `- On March 1, 2025 RUCKUS One will start enforcing 
-            subscription expiration policy, which may have an impact on your network operation.` })}
-          </div>
-        </Col>
-      </Row>
-    </UI.BannerVersion>
-  )
-}
 
 interface LicenseCardProps {
   title: string
@@ -123,40 +77,48 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
         <label style={{ textAlign: 'center' }}>{'--'}</label>
         <label style={{ textAlign: 'center' }}>{'--'}</label>
       </UI.FieldLabelSubs>
-      <UI.FieldLabelSubs width='275px' style={{ marginTop: '15px' }}>
+
+      <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
         <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
-        <label style={{ textAlign: 'center' }}>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
           {data.totalActivePaidLicenseCount}</label>
-      </UI.FieldLabelSubs>
-      <UI.FieldLabelSubs width='275px'>
+        <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
+          {`(${data.nextTotalPaidExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
+          ${data.nextPaidExpirationDate})`}</label>
+      </UI.FieldLabelSubs2>
+      <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Active Trial Licenses' })}</label>
-        <label style={{ textAlign: 'center' }}>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
           {data.totalActiveTrialLicenseCount}</label>
-      </UI.FieldLabelSubs>
+        <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
+          {`(${data.nextTotalTrialExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
+          ${data.nextTrialExpirationDate})`}</label>
+      </UI.FieldLabelSubs2>
+
       {isMsp && <div>
-        <UI.FieldLabelSubs width='275px'>
+        <UI.FieldLabelSubs2 width='275px'>
           <label>{$t({ defaultMessage: 'Active Paid Assigned Licenses' })}</label>
-          <label style={{ textAlign: 'center' }}>
+          <label style={{ textAlign: 'right', fontWeight: '600' }}>
             {data.totalActivePaidAssignedLicenseCount}</label>
-        </UI.FieldLabelSubs>
-        <UI.FieldLabelSubs width='275px'>
+        </UI.FieldLabelSubs2>
+        <UI.FieldLabelSubs2 width='275px'>
           <label>{$t({ defaultMessage: 'Active Trial Assigned Licenses' })}</label>
-          <label style={{ textAlign: 'center' }}>
+          <label style={{ textAlign: 'right', fontWeight: '600' }}>
             {data.totalActiveTrialAssignedLicenseCount}</label>
-        </UI.FieldLabelSubs>
+        </UI.FieldLabelSubs2>
       </div>}
-      <UI.FieldLabelSubs width='275px'>
+      <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
-        <label style={{ textAlign: 'center' }}>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
           {data.licensesUsed}</label>
-      </UI.FieldLabelSubs>
-      <UI.FieldLabelSubs width='275px'>
+      </UI.FieldLabelSubs2>
+      <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
-        <label style={{ textAlign: 'center' }}>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
           {data.licenseGap >= 0
             ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
             : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
-      </UI.FieldLabelSubs>
+      </UI.FieldLabelSubs2>
     </Card>
   </Col>
 }
@@ -172,7 +134,6 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   const selfData = complianceData.compliances.APSW[0].self
   const summaryData = complianceData.compliances.APSW[0].mspEcSummary
   return <>
-    <ComplianceBanner />
     {isMsp
       ? <UI.ComplianceContainer>
         <DeviceNetworkingCard
