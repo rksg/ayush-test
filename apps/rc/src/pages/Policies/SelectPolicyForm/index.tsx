@@ -122,7 +122,8 @@ export default function SelectPolicyForm () {
   }
 
   if (isConnectionMeteringEnabled) {
-    sets.push({type: PolicyType.CONNECTION_METERING, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE] })
+    // eslint-disable-next-line max-len
+    sets.push({ type: PolicyType.CONNECTION_METERING, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE] })
   }
 
   if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
