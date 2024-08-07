@@ -164,13 +164,15 @@ describe('isSdLanGuestUtilizedOnDiffVenue', () => {
 
   it('should return true when DMZ case and has guest forwarded on other venues', async () => {
     const mockData = cloneDeep(mockDmzData)
-    mockData.tunneledGuestWlans?.push({
+    const mockNetwork = {
       venueId: 'other_venue_1_id',
       venueName: 'Mocked-Other-Venue-1',
       networkId: 'network_4',
       networkName: 'Mocked_network_4',
       wlanId: '30'
-    })
+    }
+    mockData.tunneledWlans?.push(mockNetwork)
+    mockData.tunneledGuestWlans?.push(mockNetwork)
 
     const result = isSdLanGuestUtilizedOnDiffVenue(mockData, 'network_4', 'a307d7077410456f8f1a4fc41d861567')
     expect(result).toBe(true)
