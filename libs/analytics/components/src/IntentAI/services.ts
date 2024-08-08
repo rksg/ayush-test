@@ -253,7 +253,7 @@ export const api = intentAIApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'Monitoring', id: 'INTENT_AI_LIST' }
+        { type: 'Intent', id: 'INTENT_AI_LIST' }
       ]
     }),
     intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({
