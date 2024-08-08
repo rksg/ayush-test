@@ -1,15 +1,13 @@
-import React, { MutableRefObject, useRef, useState } from 'react'
+import React, {  useRef } from 'react'
 
-import { $CombinedState }                         from '@reduxjs/toolkit'
-import { Row, Col, Typography, Form, DatePicker } from 'antd'
-import { DatePickerProps, RangePickerProps }      from 'antd/lib/date-picker'
-import { NamePath }                               from 'antd/lib/form/interface'
-import dayjs                                      from 'dayjs'
-import moment, { Moment }                         from 'moment-timezone'
-import { data }                                   from 'msw/lib/types/context'
-import { defineMessage, useIntl }                 from 'react-intl'
+import { Row, Col, Typography, Form }        from 'antd'
+import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker'
+import { NamePath }                          from 'antd/lib/form/interface'
+import dayjs                                 from 'dayjs'
+import moment                                from 'moment-timezone'
+import { defineMessage, useIntl }            from 'react-intl'
 
-import { DateTimeDropdown, StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
+import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
 import { IntentAIFormDto } from '../../types'
 import * as UI             from '../styledComponents'
@@ -25,7 +23,6 @@ function DateTimeSetting ({
   scheduledDate,
   scheduledTime
 }: DateTimeSettingProps) {
-  const { $t } = useIntl()
   const initialDate = moment(scheduledDate)
   const initialTime = useRef(scheduledTime)
   const { form } = useStepFormContext<IntentAIFormDto>()
@@ -33,7 +30,6 @@ function DateTimeSetting ({
     return current && current < dayjs().startOf('day')
   }
   const onChange: DatePickerProps['onChange'] = (date) => {
-    console.log(date)
     form.setFieldValue(['settings', 'date'], date)
   }
   return (
@@ -53,23 +49,21 @@ type DateTimeSettingProps = {
 
 const scheduleActions = {
   datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
-  time: (label: string) =>
+  time: () =>
     <Form.Item
       label={'test'}
-      children={<TimeDropdown
-        type={TimeDropdownTypes.Daily}
-        name={name as string}
-        label={label}
-      />}
+      children={
+        <TimeDropdown name={name as string} spanLength={24} />
+      }
     />
 }
 
-export function getAvailableActions (status: string, label: string,
+export function getAvailableActions (status: string,
   settings: { date: string, hour: number }) {
   if  (status === 'new' || status === 'scheduled') {
     return scheduleActions.datetime({ scheduledDate: settings.date, scheduledTime: settings.hour })
   } else {
-    return scheduleActions.time(label)
+    return scheduleActions.time()
   }
 }
 
@@ -98,8 +92,7 @@ export function Settings () {
           {$t(calendarText)}
         </Typography.Paragraph>
       </StepsForm.TextContent>
-      {getAvailableActions(status,$t(defineMessage({ defaultMessage: 'Schedule Time' })),
-        scheduleSettings )}
+      {getAvailableActions(status,scheduleSettings)}
 
     </Col>
     <Col span={7} offset={2}>

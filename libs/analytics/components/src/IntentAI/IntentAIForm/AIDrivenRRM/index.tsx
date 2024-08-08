@@ -146,13 +146,11 @@ export function AIDrivenRRM () {
     useIsSplitOn(Features.CRRM_PARTIAL)
   ].some(Boolean)
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  console.log(codeQuery)
   const detailsQuery = useConfigRecommendationDetailsQuery(
     { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!
-  console.log(details)
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
     { text: $t({ defaultMessage: 'AI Analytics' }) },

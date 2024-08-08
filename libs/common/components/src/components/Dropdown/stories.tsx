@@ -94,11 +94,13 @@ storiesOf('Dropdown', module)
       }
     >{() => <Button>Open Overlay</Button>}</Dropdown>
   })
-  .add('DateTimeDropdown', () => {
-    return <DateTimeDropdown initialDate={useRef(moment('2024-07-03T07:15:00.000Z'))}/>
-  })
-  // .add('ant dDateTimeDropdown', () => {
-  //   return <AntDatePicker renderExtraFooter={
-  //     () => <TimeDropdown type={TimeDropdownTypes.Daily} name='daily' />}
-  //   picker='month' />
-  // })
+
+// .add('DateTimeDropdown', () => {
+//   return <DateTimeDropdown
+//     name={'Testing'}
+//     initialDate={initialDate} // initial date from scheduledAt if  any
+//     time={initialTime}
+//     disabledDate={disabledDate} // disable all date before current
+//     onchange={onChange}
+//   />
+// })

@@ -13,7 +13,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { ScopeKeys } from '@acx-ui/types'
 
-import { TimeDropdown, TimeDropdownTypes } from '../TimeDropdown'
+import { TimeDropdown } from '../TimeDropdown'
 
 import * as UI from './styledComponents'
 
@@ -81,7 +81,7 @@ export const DateTimeDropdown = (
   const { $t } = useIntl()
   return (
     <>
-      <Form.Item name={['settings', 'date']}
+      <Form.Item name={[name, 'date']}
         label={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
         valuePropName={'date'}
         children={
@@ -103,12 +103,11 @@ export const DateTimeDropdown = (
       <Form.Item
         label={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
         children={
-          <TimeDropdown type={TimeDropdownTypes.Daily} // if date is today, disable before current, else no disable
-            name={name}
+          <TimeDropdown name={name}
+            spanLength={24}
             disabledDateTime={
               { disabledStrictlyBefore: time.current }
-            }
-          />
+            }/>
         }
       />
     </>
