@@ -17,13 +17,11 @@ export const onIntlError: OnErrorFn = (error) => {
   console.error(error)
 }
 
-export function getReSkinningElements (
-  supportReSkinning = false, locale?: Pick<LocaleContextType, 'lang' | 'messages'>
-) {
+export function getReSkinningElements (locale?: Pick<LocaleContextType, 'lang' | 'messages'>) {
   // eslint-disable-next-line max-len
   const intl = locale ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache) : null
   const { acx_account_vertical } = getJwtTokenPayload()
-  return acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ? {
+  return acx_account_vertical === AccountVertical.HOSPITALITY ? {
     venueSingular: () => intl ? intl.$t({ defaultMessage: 'space' }) : 'space',
     venuePlural: () => intl ? intl.$t({ defaultMessage: 'spaces' }) : 'spaces',
     VenueSingular: () => intl ? intl.$t({ defaultMessage: 'Space' }) : 'Space',

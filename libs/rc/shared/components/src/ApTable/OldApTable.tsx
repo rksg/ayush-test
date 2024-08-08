@@ -558,9 +558,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const { acx_account_vertical } = getJwtTokenPayload()
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
-  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
-    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = apGpsFlag ?
     `assets/templates/${isHospitality}aps_import_template_with_gps.csv` :
     `assets/templates/${isHospitality}aps_import_template.csv`
