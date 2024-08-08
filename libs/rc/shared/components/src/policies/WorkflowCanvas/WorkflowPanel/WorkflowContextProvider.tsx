@@ -6,20 +6,20 @@ import {
   useNodes
 } from 'reactflow'
 
-import { ActionType, WorkflowActionDef } from '@acx-ui/rc/utils'
+import { ActionType } from '@acx-ui/rc/utils'
 
 
 interface ActionDrawerState {
   visible: boolean,
-  onOpen: (node?: NodeProps) => void,
+  onOpen: () => void,
   onClose: () => void
 }
 
 interface StepDrawerState {
   visible: boolean,
   isEdit: boolean,
-  selectedActionDef?: WorkflowActionDef,
-  onOpen: (isEdit: boolean, definitionId: string, actionType: ActionType) => void,
+  selectedActionType?: ActionType,
+  onOpen: (isEdit: boolean, actionType: ActionType) => void,
   onClose: () => void
 }
 
@@ -51,7 +51,7 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
 
   const [stepDrawerVisible, setStepDrawerVisible] = useState(false)
   const [stepDrawerEditMode, setStepDrawerEditMode] = useState(false)
-  const [stepDrawerActionDef, setStepDrawerActionDef] = useState<WorkflowActionDef | undefined>()
+  const [stepDrawerActionType, setStepDrawerActionType] = useState<ActionType | undefined>()
 
   // const [selectedActionId, setSelectedActionId] = useState<string | undefined>()
 
@@ -97,17 +97,17 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
       stepDrawerState: {
         visible: stepDrawerVisible,
         isEdit: stepDrawerEditMode,
-        selectedActionDef: stepDrawerActionDef,
-        onOpen: (isEdit, definitionId, actionType) => {
+        selectedActionType: stepDrawerActionType,
+        onOpen: (isEdit, actionType) => {
           setStepDrawerVisible(true)
           setStepDrawerEditMode(isEdit)
-          setStepDrawerActionDef({ id: definitionId, actionType })
+          setStepDrawerActionType(actionType)
         },
         onClose: () => {
           setStepDrawerVisible(false)
           setStepDrawerEditMode(false)
           setActionDrawerVisible(false)
-          setStepDrawerActionDef(undefined)
+          setStepDrawerActionType(undefined)
           // setSelectedActionId(undefined)
         }
       },

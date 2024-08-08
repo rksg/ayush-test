@@ -57,7 +57,7 @@ const useRequiredDependency = () => {
 
   useEffect(() => {
     if (isLoading || !actionDefsData) return
-    const gen = async () => {
+    const fetchAllRequiredDependencies = async () => {
       for (const def of actionDefsData?.content) {
         if (def.dependencyType === 'NONE') {
           requiredDependency[def.actionType] = {
@@ -80,7 +80,7 @@ const useRequiredDependency = () => {
       }
     }
 
-    gen().then(() => {
+    fetchAllRequiredDependencies().then(() => {
       setData(requiredDependency)
     })
 
@@ -103,8 +103,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const [nodes, setNodes] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
 
-  const requiredDependency = useRequiredDependency()
-  // console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
+  const { requiredDependency } = useRequiredDependency()
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
     params: { policyId, pageSize: '1000', page: '0', sort: 'id,ASC' }
@@ -128,8 +127,8 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
     setEdges(inputEdges)
   }, [stepsData, actionDefsData])
 
-  const onClickAction = (definitionId: string, type: ActionType) => {
-    stepDrawerState.onOpen(false, definitionId, type)
+  const onClickAction = (type: ActionType) => {
+    stepDrawerState.onOpen(false, type)
   }
 
   return (
@@ -150,17 +149,16 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
           onClose={actionDrawerState.onClose}
           onClickAction={onClickAction}
           existingActionTypes={nodeState.existingDependencies}
-          relationshipMap={requiredDependency.requiredDependency}
+          relationshipMap={requiredDependency}
         />
       }
       {
-        (stepDrawerState.visible && stepDrawerState?.selectedActionDef?.actionType) &&
+        (stepDrawerState.visible && stepDrawerState?.selectedActionType) &&
         <StepDrawer
           isEdit={stepDrawerState.isEdit}
           workflowId={policyId}
           actionId={nodeState.interactedNode?.data?.enrollmentActionId}
-          actionType={stepDrawerState.selectedActionDef.actionType}
-          selectedActionDef={stepDrawerState.selectedActionDef}
+          actionType={stepDrawerState.selectedActionType}
           visible={stepDrawerState.visible}
           onClose={() => {
             stepDrawerState.onClose()

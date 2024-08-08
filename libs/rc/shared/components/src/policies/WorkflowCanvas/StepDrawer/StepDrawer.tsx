@@ -4,10 +4,10 @@ import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                                            from '@acx-ui/components'
-import { EyeOpenSolid }                                                                                      from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                                        from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
+import { Button, Drawer, Loader }                                                         from '@acx-ui/components'
+import { EyeOpenSolid }                                                                   from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery }                                                     from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
@@ -27,7 +27,6 @@ export interface StepDrawerProps {
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-  selectedActionDef?: WorkflowActionDef
 
   priorNode?: NodeProps
 }

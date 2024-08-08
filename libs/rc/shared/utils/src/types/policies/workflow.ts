@@ -110,5 +110,3 @@ export interface WorkflowActionDefinition {
   terminationType?: 'NONE' | 'OPTIONAL' | 'REQUIRED',
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
 }
-
-export interface WorkflowActionDef extends Pick<WorkflowActionDefinition, 'id' | 'actionType'> {}
