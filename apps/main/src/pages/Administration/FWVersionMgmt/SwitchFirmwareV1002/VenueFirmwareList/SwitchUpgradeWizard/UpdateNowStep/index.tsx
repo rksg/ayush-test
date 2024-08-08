@@ -69,7 +69,6 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
     if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
       const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
       const groupedObject = _.groupBy(switchList, 'venueId')
-      // eslint-disable-next-line no-console
       setIcx7150C08pGroupedData(Object.values(groupedObject))
     }
   }, [getSwitchFirmwareList])
@@ -162,7 +161,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             onChange={handleICX82Change}
             value={selectedICX82Version}>
             <Space direction={'vertical'}>
-              { // eslint-disable-next-line max-len
+              {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
@@ -191,7 +190,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             onChange={handleICX7XChange}
             value={selectedICX7XVersion}>
             <Space direction={'vertical'}>
-              { // eslint-disable-next-line max-len
+              {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
@@ -220,7 +219,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             onChange={handleICX71Change}
             value={selectedICX71Version}>
             <Space direction={'vertical'}>
-              { // eslint-disable-next-line max-len
+              {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
@@ -231,7 +230,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                         size='small'
                         ghost={true}
                         onClick={scrollToTarget}>
-                        {$t({ defaultMessage: '[1]' })}
+                        {[1]}
                       </NoteButton>}
                       {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                         <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}

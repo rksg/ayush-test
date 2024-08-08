@@ -71,7 +71,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }
   const currentSchedule = getCurrentSchedule()
 
-  //Switch model group
   const [selectedICX71Version, setSelecteedICX71Version] = useState(
     currentSchedule[SwitchFirmwareModelGroup.ICX71] || '')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState(
@@ -103,7 +102,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
     if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
       const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
       const groupedObject = _.groupBy(switchList, 'venueId')
-      // eslint-disable-next-line no-console
       setIcx7150C08pGroupedData(Object.values(groupedObject))
     }
   }, [getSwitchFirmwareList])
@@ -257,7 +255,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
               onChange={handleICX7XChange}
               value={selectedICX7XVersion}>
               <Space direction={'vertical'}>
-                { // eslint-disable-next-line max-len
+                {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
@@ -297,7 +295,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                             size='small'
                             ghost={true}
                             onClick={scrollToTarget} >
-                            {intl.$t({ defaultMessage: '[1]' })}
+                            {[1]}
                           </NoteButton>}
                         {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
