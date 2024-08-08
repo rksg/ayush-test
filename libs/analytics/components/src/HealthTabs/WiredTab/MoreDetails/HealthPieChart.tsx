@@ -3,6 +3,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
+import { get }                                             from '@acx-ui/config'
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { formatter }                                       from '@acx-ui/formatter'
 import { InformationOutlined }                             from '@acx-ui/icons'
@@ -89,7 +90,10 @@ export const MoreDetailsPieChart = ({
   queryType,
   title
 } : { filters: AnalyticsFilter, queryType: WidgetType, title: string }) => {
-  const enableWithOthers = useIsSplitOn(Features.HEALTH_WIRED_TOPN_WITH_OTHERS)
+  const enableWithOthers = [
+    useIsSplitOn(Features.HEALTH_WIRED_TOPN_WITH_OTHERS),
+    get('IS_MLISA_SA')
+  ].some(Boolean)
   const n = 5
   const { $t } = useIntl()
   const { filter, startDate: start, endDate: end } = filters
@@ -163,7 +167,7 @@ export const MoreDetailsPieChart = ({
                 { hasOthers && <Space align='start' style={{ width }} >
                   <InformationOutlined />
                   {$t({
-                    defaultMessage: `Detailed breakup of all items beyond 
+                    defaultMessage: `Detailed breakup of all items beyond
                     Top {n} can be explored using Data Studio custom charts.` }, { n })}
                 </Space> }
               </>
