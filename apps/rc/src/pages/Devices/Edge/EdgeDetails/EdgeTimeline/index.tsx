@@ -46,7 +46,7 @@ const EdgeEventTable = () => {
       settingsId={settingsId}
       tableQuery={tableQuery}
       filterables={['severity', 'entity_type']}
-      eventTypeMap={pick(eventTypeMapping, 'EDGE', 'PROFILE')}
+      eventTypeMap={pick(eventTypeMapping, 'EDGE')}
       columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
     />
   )
