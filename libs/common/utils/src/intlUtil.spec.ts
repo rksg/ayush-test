@@ -170,7 +170,6 @@ describe('IntlUtils', () => {
           VenueSingular: 'Zone',
           VenuePlural: 'Zones'
         }
-        const supportReSkinning = true
         mockGet.mockReturnValue('true')
         const intlUtil = require('./intlUtil')
         const ret = intlUtil.getReSkinningElements()
@@ -179,7 +178,7 @@ describe('IntlUtils', () => {
           expect(ret[fnName]()).toEqual(expected[fnName])
         }
 
-        const retWithIntl = intlUtil.getReSkinningElements(supportReSkinning, { lang: 'en-US' })
+        const retWithIntl = intlUtil.getReSkinningElements({ lang: 'en-US' })
         for(const key of Object.keys(expected)) {
           const fnName = key as keyof typeof expected
           expect(retWithIntl[fnName]()).toEqual(expected[fnName])
