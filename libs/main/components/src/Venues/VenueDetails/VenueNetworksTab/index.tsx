@@ -587,10 +587,7 @@ export function VenueNetworksTab () {
         venueId: payload.venueId,
         networkId: payload.networkId
       },
-      payload: {
-        ...payload,
-        isTemplate: isTemplate
-      },
+      payload: payload,
       enableRbac: resolvedRbacEnabled
     }).then(()=>{
       setScheduleModalState({
@@ -615,8 +612,7 @@ export function VenueNetworksTab () {
           ...{
             oldPayload: oldData,
             newPayload: payload
-          },
-          isTemplate: isTemplate
+          }
         },
         enableRbac: resolvedRbacEnabled
       }).then(()=>{

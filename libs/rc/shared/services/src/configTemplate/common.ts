@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
-import { cloneDeep }                               from 'lodash'
+import { cloneDeep, find }                         from 'lodash'
 
 import {
   AAAPolicyType,
@@ -20,16 +20,17 @@ import {
   NetworkRadiusSettings,
   GetApiVersionHeader,
   ApiVersionEnum,
-  WifiRbacUrlsInfo
+  NetworkVenue,
+  NetworkApGroup
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }                from '../network'
-import { fetchRbacNetworkVenueList } from '../networkVenueUtils'
-import { commonQueryFn }             from '../servicePolicy.utils'
-import { addNetworkVenueFn }         from '../servicePolicy.utils/network'
+import { networkApi }                                from '../network'
+import { fetchRbacNetworkVenueList }                 from '../networkVenueUtils'
+import { ActionItem, commonQueryFn, comparePayload } from '../servicePolicy.utils'
+import { addNetworkVenueFn }                         from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -297,24 +298,63 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
       async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        const { oldPayload, newPayload } = payload as { oldPayload: NetworkVenue, newPayload: NetworkVenue }
+
         const updateNetworkVenueInfo = {
           ...createHttpRequest(
             enableRbac ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : ConfigTemplateUrlsInfo.updateNetworkVenue,
             params),
-          body: JSON.stringify(payload)
+          body: JSON.stringify(newPayload)
         }
         const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
-        if ((payload as { apGroups: [], isTemplate: boolean }).apGroups.length > 0) {
-          const isTemplate = (payload as { apGroups: [], isTemplate: boolean }).isTemplate
-          await Promise.all((payload as { apGroups: { venueId: string, networkId: string, apGroupId: string }[] }).apGroups.map(apGroup => {
+        const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
+          return {
+            [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
+          } as ActionItem
+        }
+
+        const newApGroups = newPayload.apGroups as NetworkApGroup[]
+        const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
+
+        const updateApGroups = [] as NetworkApGroup[]
+
+        newApGroups.forEach((newApGroup: NetworkApGroup) => {
+          const apGroupId = newApGroup.apGroupId as string
+          const oldApGroup = find(oldApGroups, { apGroupId })
+          const comparisonResult = comparePayload(
+            newApGroup as unknown as Record<string, unknown>,
+            oldApGroup as unknown as Record<string, unknown>,
+            apGroupId,
+            itemProcessFn
+          )
+          if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+        })
+
+        if (newApGroups.length > 0) {
+          await Promise.all(newApGroups.map(apGroup => {
             const apGroupSettingReq = {
               ...createHttpRequest(
-                isTemplate ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
+                ConfigTemplateUrlsInfo.activateVenueApGroupRbac, {
                   venueId: apGroup.venueId,
                   networkId: apGroup.networkId,
                   apGroupId: apGroup.apGroupId
                 })
+            }
+            return fetchWithBQ(apGroupSettingReq)
+          }))
+        }
+
+        if (updateApGroups.length > 0) {
+          await Promise.all(updateApGroups.map(apGroup => {
+            const apGroupSettingReq = {
+              ...createHttpRequest(
+                ConfigTemplateUrlsInfo.updateVenueApGroupsRbac, {
+                  venueId: apGroup.venueId,
+                  networkId: apGroup.networkId,
+                  apGroupId: apGroup.apGroupId
+                }),
+              body: JSON.stringify(apGroup)
             }
             return fetchWithBQ(apGroupSettingReq)
           }))

@@ -291,13 +291,15 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
       async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+        const { oldPayload, newPayload } = payload as { oldPayload: NetworkVenue, newPayload: NetworkVenue }
+
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
 
         const apiCustomHeader = enableRbac? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
 
         const updateNetworkVenueInfo = {
           ...createHttpRequest(urlsInfo.updateNetworkVenue, params, apiCustomHeader),
-          body: JSON.stringify(payload)
+          body: JSON.stringify(newPayload)
         }
         const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
@@ -307,8 +309,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
           } as ActionItem
         }
-
-        const { oldPayload, newPayload } = payload as { oldPayload: NetworkVenue, newPayload: NetworkVenue }
 
         const newApGroups = newPayload.apGroups as NetworkApGroup[]
         const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
@@ -328,11 +328,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         })
 
         if (newApGroups.length > 0) {
-          const isTemplate = (payload as { apGroups: [], isTemplate: boolean }).isTemplate
           await Promise.all(newApGroups.map(apGroup => {
             const apGroupSettingReq = {
               ...createHttpRequest(
-                isTemplate ? ConfigTemplateUrlsInfo.activateVenueApGroupRbac : WifiRbacUrlsInfo.activateVenueApGroup, {
+                WifiRbacUrlsInfo.activateVenueApGroup, {
                   venueId: apGroup.venueId,
                   networkId: apGroup.networkId,
                   apGroupId: apGroup.apGroupId
@@ -343,11 +342,10 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
 
         if (updateApGroups.length > 0) {
-          const isTemplate = (payload as { apGroups: [], isTemplate: boolean }).isTemplate
           await Promise.all(updateApGroups.map(apGroup => {
             const apGroupSettingReq = {
               ...createHttpRequest(
-                isTemplate ? ConfigTemplateUrlsInfo.updateVenueApGroupsRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
+                WifiRbacUrlsInfo.updateVenueApGroups, {
                   venueId: apGroup.venueId,
                   networkId: apGroup.networkId,
                   apGroupId: apGroup.apGroupId
@@ -469,7 +467,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           const useCases = [
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ]
 
@@ -497,7 +497,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'UpdateNetworkDeep',
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
@@ -606,7 +608,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
@@ -781,7 +785,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings',
             'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {

@@ -293,7 +293,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'AddNetworkVenue',
             'DeleteNetworkVenue',
             'ActivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkOnVenue'
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
             'DeleteNetworkVenueTemplate',
