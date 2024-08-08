@@ -9,7 +9,7 @@ import moment, { Moment }                         from 'moment-timezone'
 import { data }                                   from 'msw/lib/types/context'
 import { defineMessage, useIntl }                 from 'react-intl'
 
-import { StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
+import { DateTimeDropdown, StepsForm, TimeDropdown, TimeDropdownTypes, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
 import { IntentAIFormDto } from '../../types'
 import * as UI             from '../styledComponents'
@@ -20,55 +20,6 @@ import { steps, crrmIntent, isOptimized } from '.'
 
 const name = 'settings' as NamePath
 const label = defineMessage({ defaultMessage: 'Settings' })
-
-
-interface DateTimeDropdownProps {
-  initialDate: Moment
-  time: MutableRefObject<number>,
-  disabledDate:(value: Moment) => boolean
-  onchange: DatePickerProps['onChange']
-}
-
-export const DateTimeDropdown = (
-  {
-    initialDate,
-    time,
-    disabledDate,
-    onchange
-  } : DateTimeDropdownProps) => {
-  const [date, setDate] = useState(() => initialDate)
-  const [open, setOpen] = useState(true)
-  const { $t } = useIntl()
-  return (
-    <>
-      <DatePicker
-        style={{ width: '100%' }}
-        picker='date'
-        value={date}
-        showTime={false}
-        showToday={false}
-        disabledDate={disabledDate}
-        onChange={(e,i) => {
-          onchange!(e,i)
-          setOpen(false)
-          setDate(e!)
-        }}
-      />
-
-      <Form.Item
-        label={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
-        children={
-          <TimeDropdown type={TimeDropdownTypes.Daily} // if date is today, disable before current, else no disable
-            name={name as string}
-            disabledDateTime={
-              { disabledStrictlyBefore: time.current }
-            }
-          />
-        }
-      />
-    </>
-  )
-}
 
 function DateTimeSetting ({
   scheduledDate,
@@ -86,16 +37,12 @@ function DateTimeSetting ({
     form.setFieldValue(['settings', 'date'], date)
   }
   return (
-    <Form.Item name={['settings', 'date']}
-      label={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
-      children={
-        <DateTimeDropdown
-          initialDate={initialDate} // initial date from scheduledAt if  any
-          time={initialTime}
-          disabledDate={disabledDate} // disable all date before current
-          onchange={onChange}
-        />
-      }
+    <DateTimeDropdown
+      name={name as string}
+      initialDate={initialDate} // initial date from scheduledAt if  any
+      time={initialTime}
+      disabledDate={disabledDate} // disable all date before current
+      onchange={onChange}
     />
   )}
 

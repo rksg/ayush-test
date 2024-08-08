@@ -3,16 +3,20 @@ import React, { MutableRefObject, useState } from 'react'
 import {
   DatePicker,
   DropdownProps as AntDropdownProps,
-  MenuProps as AntMenuProps
+  MenuProps as AntMenuProps,
+  Form,
+  DatePickerProps
 } from 'antd'
-import { Moment }       from 'moment-timezone'
-import { MenuItemType } from 'rc-menu/lib/interface'
+import { Moment }                 from 'moment-timezone'
+import { MenuItemType }           from 'rc-menu/lib/interface'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { ScopeKeys } from '@acx-ui/types'
 
+import { TimeDropdown, TimeDropdownTypes } from '../TimeDropdown'
+
 import * as UI from './styledComponents'
 
-import { TimeDropdown, TimeDropdownTypes } from '@acx-ui/components'
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>
@@ -55,3 +59,58 @@ export function Dropdown ({ overlay, children, scopeKey, ...props }: DropdownPro
 Dropdown.MenuItemWithIcon = UI.MenuItemWithIcon
 Dropdown.OverlayContainer = UI.OverlayContainer
 Dropdown.OverlayTitle = UI.OverlayTitle
+
+
+interface DateTimeDropdownProps {
+  name: string
+  initialDate: Moment
+  time: MutableRefObject<number>,
+  disabledDate:(value: Moment) => boolean
+  onchange: DatePickerProps['onChange']
+}
+
+export const DateTimeDropdown = (
+  {
+    name,
+    initialDate,
+    time,
+    disabledDate,
+    onchange
+  } : DateTimeDropdownProps) => {
+  const [date, setDate] = useState(() => initialDate)
+  const { $t } = useIntl()
+  return (
+    <>
+      <Form.Item name={['settings', 'date']}
+        label={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
+        valuePropName={'date'}
+        children={
+          <DatePicker
+            style={{ width: '100%' }}
+            picker='date'
+            value={date}
+            showTime={false}
+            showToday={false}
+            disabledDate={disabledDate}
+            onChange={(e,i) => {
+              onchange!(e,i)
+              setDate(e!)
+            }}
+          />
+        }
+      />
+
+      <Form.Item
+        label={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
+        children={
+          <TimeDropdown type={TimeDropdownTypes.Daily} // if date is today, disable before current, else no disable
+            name={name}
+            disabledDateTime={
+              { disabledStrictlyBefore: time.current }
+            }
+          />
+        }
+      />
+    </>
+  )
+}
