@@ -405,7 +405,7 @@ describe('Intent services', () => {
     })
 
     const { status, data, error } = await store.dispatch(
-      api.endpoints.intentHighlight.initiate({ ...props, n: 5 })
+      api.endpoints.intentHighlight.initiate(props)
     )
 
     const expectedResult = {
@@ -428,4 +428,18 @@ describe('Intent services', () => {
     expect(data).toStrictEqual(expectedResult)
   })
 
+  it('returns wlans', async () => {
+    const wlans = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(intentAIUrl, 'Wlans', { data: { intent: { wlans } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentWlans.initiate({ code: 'c1', root: 'r1', sliceId: 's1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(wlans)
+  })
 })
