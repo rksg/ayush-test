@@ -124,7 +124,6 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
           dataSource={availableVenues}
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          onChange={tableQuery.handleTableChange}
         />
       </Loader>
       {networkDrawerVenueId && <NetworksDrawer

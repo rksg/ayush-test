@@ -3,6 +3,7 @@ import { FetchArgs } from '@reduxjs/toolkit/query'
 import {
   ApiVersionEnum,
   APMesh,
+  FloorPlanMeshAP,
   GetApiVersionHeader,
   NewAPModel,
   VenueConfigTemplateUrlsInfo,
@@ -107,6 +108,49 @@ export const convertToApMeshDataList = (newApModels: NewAPModel[], members: NewA
             apDownRssi: downlinks.find(downlinkAp => downlinkAp.macAddress === macAddress)?.rssi
           }
         })
+      }
+    }
+
+    return newApMesh
+  })
+}
+
+export const convertToMeshTopologyDataList = (newApModels: NewAPModel[], members: NewAPModel[]) => {
+  return newApModels.map((newApModel) => {
+    const { name, macAddress, serialNumber,
+      meshRole, meshStatus,
+      venueId, floorplanId } = newApModel
+
+    const { uplinks, downlinks, hopCount } = meshStatus || {}
+
+    const newApMesh = {
+      name,
+      apMac: macAddress,
+      serialNumber,
+      meshRole,
+      hops: hopCount,
+      venueId,
+      floorplanId
+    } as FloorPlanMeshAP
+
+    if (Array.isArray(uplinks) && uplinks.length > 0) {
+      newApMesh.apUpRssi = uplinks[0].rssi
+    }
+
+    if (Array.isArray(downlinks) && downlinks.length > 0) {
+      const downlinkApMacList = downlinks.map(downlink => downlink.macAddress)
+      const downLinkAps = members.filter(member => downlinkApMacList.includes(member.macAddress!))
+      if (downLinkAps.length) {
+        const children = convertToMeshTopologyDataList(downLinkAps, members)
+
+        newApMesh.downlink = children.map(child => {
+          const macAddress = child.apMac
+          return {
+            ...child,
+            apDownRssi: downlinks.find(downlinkAp => downlinkAp.macAddress === macAddress)?.rssi
+          }
+        })
+        newApMesh.downlinkCount = children.length
       }
     }
 
