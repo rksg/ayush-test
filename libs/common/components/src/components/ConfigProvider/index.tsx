@@ -19,8 +19,7 @@ import {
 } from '@acx-ui/utils'
 
 export type ConfigProviderProps = Omit<AntConfigProviderProps, 'locale'> & {
-  lang?: LocaleProviderProps['lang'],
-  supportReSkinning?: boolean
+  lang?: LocaleProviderProps['lang']
 }
 
 function AntConfigProviders (props: ConfigProviderProps) {
@@ -35,14 +34,13 @@ function AntConfigProviders (props: ConfigProviderProps) {
 }
 
 export function ConfigProvider (props: ConfigProviderProps) {
-  const { supportReSkinning } = props
   moment.locale(props.lang)
   return (
-    <LocaleProvider lang={props.lang} supportReSkinning={supportReSkinning}>
+    <LocaleProvider lang={props.lang}>
       <LocaleContext.Consumer>
         {locale => (
           <IntlProvider locale={locale.lang}
-            defaultRichTextElements={getReSkinningElements(supportReSkinning, locale)}
+            defaultRichTextElements={getReSkinningElements(locale)}
             messages={locale.messages}
             onError={onIntlError}
           >

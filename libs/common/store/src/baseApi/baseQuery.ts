@@ -1,6 +1,8 @@
 import { fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import _                         from 'lodash'
 
+import { updateJwtCache } from '@acx-ui/utils'
+
 import type { FetchArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
 
 export const baseQuery = retry(
@@ -19,6 +21,16 @@ export const baseQuery = retry(
           ...result.error,
           meta: result.meta
         })
+      }
+    }
+
+    const headers = result?.meta?.response?.headers
+    if (headers) {
+      const loginToken = headers.get('login-token')
+      if (loginToken) {
+        sessionStorage.setItem('jwt', loginToken)
+        sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
+        updateJwtCache(loginToken)
       }
     }
 

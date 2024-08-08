@@ -248,6 +248,7 @@ export function ApPacketCaptureForm () {
               text: 'Start',
               type: 'primary',
               key: 'start',
+              closeAfterAction: true,
               handler: async () => {
                 try{
                   const formValue = packetCaptureForm.getFieldsValue()
