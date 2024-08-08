@@ -81,6 +81,7 @@ export const StatusTrailWrapper = styled.div`
   max-height: 150px;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-bottom: -30px;
 `
 
 export const KpiContentWrapper = styled.div`

@@ -70,10 +70,10 @@ export const StatusTrail = ({ details }: { details: EnhancedIntent }) => {
   const statusTrail = getStatusTrail(details, $t)
   return <div style={{ marginTop: 40 }}>
     <DetailsHeader>{$t({ defaultMessage: 'Status Trail' })}</DetailsHeader>
-    <StatusTrailWrapper>
-      <Card>
+    <Card>
+      <StatusTrailWrapper>
         {statusTrail.map((val, ind) => <StatusTrailItem statusTrail={val} key={ind}/>)}
-      </Card>
-    </StatusTrailWrapper>
+      </StatusTrailWrapper>
+    </Card>
   </div>
 }
