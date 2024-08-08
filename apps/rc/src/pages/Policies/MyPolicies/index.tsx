@@ -10,7 +10,7 @@ import {
   useGetApSnmpViewModelQuery,
   useGetCertificateTemplatesQuery,
   useGetConnectionMeteringListQuery,
-  useGetEdgeQosViewDataListQuery,
+  useGetEdgeQosProfileViewDataListQuery,
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetIdentityProviderListQuery,
@@ -250,7 +250,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       type: PolicyType.QOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       // eslint-disable-next-line max-len
-      totalCount: useGetEdgeQosViewDataListQuery({ params, payload: {} }, { skip: !isEdgeQosEnabled }).data?.totalCount,
+      totalCount: useGetEdgeQosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeQosEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })),
       disabled: !isEdgeQosEnabled

@@ -1,22 +1,29 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { defaultNetworkPath }                         from '@acx-ui/analytics/utils'
-import { intentAIUrl, store, Provider }               from '@acx-ui/store'
-import { act, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
-import { DateRange }                                  from '@acx-ui/utils'
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
+import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
+import { DateRange, PathFilter }                                           from '@acx-ui/utils'
 
 import {
+  intentHighlights,
   intentListResult,
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { IntentListItem, api, useIntentAITableQuery } from './services'
+import { IntentListItem, api, useIntentAITableQuery, OptimizeAllMutationResponse } from './services'
 
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
 describe('Intent services', () => {
+  const props = {
+    startDate: '2023-06-10T00:00:00+08:00',
+    endDate: '2023-06-17T00:00:00+08:00',
+    range: DateRange.last24Hours,
+    path: defaultNetworkPath
+  } as PathFilter
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
@@ -208,6 +215,30 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
+    it('should mutation OptimizeAll', async () => {
+      const resp = { data: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.optimizeAllIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          optimizeList: [{ id: '11', metadata: {
+            scheduledAt: '2023-11-17T11:45:00.000Z',
+            wlans: [{ name: 'n1', ssid: 's1' }],
+            preferences: {
+              crrmFullOptimization: true
+            }
+          } }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
   })
   describe('status tooltips', () => {
     beforeEach(() => {
@@ -367,4 +398,34 @@ describe('Intent services', () => {
       expect(data?.intents).toEqual(expectedResult)
     })
   })
+
+  it('should return intentHighlight', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
+      data: intentHighlights
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentHighlight.initiate({ ...props, n: 5 })
+    )
+
+    const expectedResult = {
+      rrm: {
+        new: 4,
+        active: 8
+      },
+      airflex: {
+        new: 5,
+        active: 10
+      },
+      ops: {
+        new: 6,
+        active: 12
+      }
+    }
+
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+  })
+
 })
