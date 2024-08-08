@@ -311,16 +311,22 @@ export const useEdgeMvSdLanActions = () => {
     }
   }
 
+  /** use cases
+   * activate network:        activate = true, isGuest = false
+   * deactivate network:      activate = false, isGuest = false
+   * activate guestNetwork:   activate = true, isGuest = true
+   * deactivate guestNetwork: activate = true, isGuest = false
+   */
   const toggleNetwork = async (
     serviceId: string,
     venueId: string,
-    isGuest: boolean,
     networkId: string,
     activate: boolean,
+    isGuest: boolean,
     cb?: () => void) => {
-    // - activate network/guestNetwork
-    // - deactivate guestNetwork
-    if (activate || (!activate && isGuest)) {
+    // - activate network
+    // - activate/deactivate guestNetwork
+    if (activate) {
       await activateNetwork({
         params: {
           venueId,
@@ -328,7 +334,7 @@ export const useEdgeMvSdLanActions = () => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: !isGuest ? false : activate
+          isGuestTunnelUtilized: isGuest
         },
         callback: cb
       }).unwrap()
@@ -530,27 +536,36 @@ export const useEdgeSdLanActions = () => {
   }
 }
 
+export interface SdLanScopedVenueNetworksData {
+  sdLans: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] | undefined,
+  scopedNetworkIds: string[],
+  scopedGuestNetworkIds: string[]
+}
 export const useSdLanScopedVenueNetworks = (
   venueId: string | undefined,
   networkIds: string[] | undefined
 ) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const { data } = useGetEdgeSdLanP2ViewDataListQuery({
     payload: {
-      filters: { networkIds, venueId: [venueId] },
+      filters: isEdgeMvSdLanReady
+        ? { 'tunneledWlans.venueId': [venueId] }
+        : { networkIds, venueId: [venueId] },
       fields: [
         'id',
         'venueId',
         'isGuestTunnelEnabled',
         'tunnelProfileId',
         'guestTunnelProfileId',
-        'networkIds',
-        'guestNetworkIds',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
-          : ['edgeId', 'edgeName'])
+          : ['edgeId', 'edgeName']),
+        ...(isEdgeMvSdLanReady
+          ? ['tunneledWlans', 'tunneledGuestWlans']
+          : ['networkIds', 'guestNetworkIds'])
       ],
       pageSize: 10000
     }
@@ -558,18 +573,34 @@ export const useSdLanScopedVenueNetworks = (
     skip: !venueId || !networkIds || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
   })
 
-  return {
-    sdLans: data?.data,
-    scopedNetworkIds: uniq(flatMap(data?.data, (item) => item.networkIds)),
-    scopedGuestNetworkIds: uniq(flatMap(data?.data, (item) =>
-      item.isGuestTunnelEnabled ? item.guestNetworkIds : undefined)).filter(i => !!i)
-  } as {
-    sdLans: EdgeSdLanViewDataP2[] | undefined,
-    scopedNetworkIds: string[],
-    scopedGuestNetworkIds: string[]
-  }
+  const result = useMemo(() => {
+    if (isEdgeMvSdLanReady) {
+      const mvSdlan = (data?.data as EdgeMvSdLanViewData[])?.[0]
+
+      return {
+        sdLans: mvSdlan ? [mvSdlan] : [],
+        scopedNetworkIds: mvSdlan?.tunneledWlans?.map(wlan => wlan.networkId) ?? [],
+        scopedGuestNetworkIds: mvSdlan?.tunneledGuestWlans?.map(wlan => wlan.networkId) ?? []
+      } as SdLanScopedVenueNetworksData
+    } else {
+      const sdlans = data?.data as EdgeSdLanViewDataP2[]
+      return {
+        sdLans: sdlans,
+        scopedNetworkIds: uniq(flatMap(sdlans, (item) => item.networkIds)),
+        scopedGuestNetworkIds: uniq(flatMap(sdlans, (item) =>
+          item.isGuestTunnelEnabled ? item.guestNetworkIds : undefined)).filter(i => !!i)
+      } as SdLanScopedVenueNetworksData
+    }
+  }, [data])
+
+  return result
 }
 
+export interface SdLanScopedNetworkVenuesData {
+    sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] | EdgeSdLanViewDataP2[] },
+    networkVenueIds: string[] | undefined,
+    guestNetworkVenueIds: string[] | undefined
+}
 export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
@@ -585,13 +616,12 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         'isGuestTunnelEnabled',
         'tunnelProfileId',
         'guestTunnelProfileId',
-        'guestNetworkIds',
         ...(isEdgeSdLanHaReady
           ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
           : ['edgeId', 'edgeName']),
         ...(isEdgeMvSdLanReady
           ? ['tunneledWlans', 'tunneledGuestWlans']
-          : [])
+          : ['guestNetworkIds'])
       ],
       pageSize: 10000
     }
@@ -625,11 +655,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         sdLansVenueMap,
         networkVenueIds: Object.keys(sdLansVenueMap),
         guestNetworkVenueIds
-      } as {
-        sdLansVenueMap: { [venueId in string]: EdgeMvSdLanViewData[] },
-        networkVenueIds: string[] | undefined,
-        guestNetworkVenueIds: string[] | undefined
-      }
+      } as SdLanScopedNetworkVenuesData
     } else {
       return {
         sdLansVenueMap: groupBy(data?.data, 'venueId'),
@@ -639,11 +665,7 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
             // eslint-disable-next-line max-len
             item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
           .filter(i => !!i)
-      } as {
-        sdLansVenueMap: { [venueId in string]: EdgeSdLanViewDataP2[] },
-        networkVenueIds: string[] | undefined,
-        guestNetworkVenueIds: string[] | undefined
-      }
+      } as SdLanScopedNetworkVenuesData
     }
 
   }, [data?.data, networkId])

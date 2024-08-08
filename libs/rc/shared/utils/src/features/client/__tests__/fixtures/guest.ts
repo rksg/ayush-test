@@ -118,6 +118,21 @@ export const GuestList = {
       notes: '',
       maxNumberOfClients: 3,
       devicesMac: []
+    },
+    {
+      name: 'test6',
+      id: '37a626e9-5d97-4349-b7a5-8822c62d3bf6',
+      creationDate: '2022-11-28T08:15:14.690Z',
+      expiryDate: '2030-12-28T08:15:14.695Z',
+      mobilePhoneNumber: '+12015550322',
+      emailAddress: '',
+      guestType: 'GuestPass',
+      wifiNetworkId: 'tenant-guest-pass',
+      passDurationHours: 720,
+      guestStatus: 'Offline',
+      notes: '',
+      maxNumberOfClients: -1,
+      devicesMac: []
     }
   ]
 }

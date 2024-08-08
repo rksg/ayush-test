@@ -150,12 +150,14 @@ export const transformAps = (
   if (currentVenue.isAllApGroups) {
     result = $t({ defaultMessage: 'All APs' })
   } else if (Array.isArray(currentVenue.apGroups)) {
-    const firstApGroup = currentVenue.apGroups[0]
-    const apGroupName = firstApGroup?.isDefault ? $t({ defaultMessage: 'Unassigned APs' }) : firstApGroup.apGroupName
-    result = $t({ defaultMessage: `{count, plural,
+    if (currentVenue.apGroups.length >= 1) {
+      const firstApGroup = currentVenue.apGroups[0]
+      const apGroupName = firstApGroup?.isDefault ? $t({ defaultMessage: 'Unassigned APs' }) : firstApGroup.apGroupName
+      result = $t({ defaultMessage: `{count, plural,
       one {{apGroupName}}
       other {{count} AP Groups}
-    }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
+      }` }, { count: currentVenue.apGroups.length, apGroupName: apGroupName })
+    }
   }
   return (
     <>

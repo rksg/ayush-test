@@ -167,7 +167,7 @@ export const mockedWifiNetworkTemplates = {
     'nwSubType',
     'captiveType',
     'network',
-    'venueApGroups.venueId'
+    'venueApGroups'
   ],
   totalCount: 1,
   page: 1,
