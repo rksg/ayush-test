@@ -1,10 +1,11 @@
-import { rest } from 'msw'
-import { Path } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { UIConfiguration, WorkflowUrls }                                  from '@acx-ui/rc/utils'
-import { Provider }                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { UIConfiguration, WorkflowUrls }                                             from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import PortalDesign from './PortalDesign'
 
@@ -42,7 +43,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-
+const file = new File(['logo ruckus'],
+  'https://storage.cloud.google.com/ruckus-web-1/acx-ui-static-resources/logo-ruckus.png',
+  { type: 'image/png' })
 
 describe('Portal Design', () => {
   const getUIConfigApi = jest.fn()
@@ -77,10 +80,42 @@ describe('Portal Design', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await userEvent.click(await screen.findByTitle('deskicon'))
+    await userEvent.click(await screen.findByTitle('tableticon'))
+    await userEvent.click(await screen.findByTitle('mobileicon'))
+    await userEvent.click(await screen.findByAltText('logo'))
+    await userEvent.click(await screen.findByTitle('plusen'))
+    await userEvent.click(await screen.findByTitle('plusen'))
+    await userEvent.click(await screen.findByTitle('minusen'))
+    await userEvent.upload(await screen.findByPlaceholderText('logoimage'), file)
+    await userEvent.click((await screen.findAllByTitle('pictureout'))[0])
+    fireEvent.mouseLeave(await screen.findByAltText('logo'))
+    await userEvent.click(await screen.findByAltText('logo'))
+    fireEvent.mouseLeave(await screen.findByAltText('logo'))
+
+
     await screen.findByText('Portal Design')
     await screen.findByText('Reset')
     await screen.findByText('Components')
     await screen.findByText('Powered By')
+    await screen.findByText('Title text style')
+    await screen.findByText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+
+    await userEvent.click(await screen.findByText('Components'))
+    const rows = await screen.findAllByRole('switch')
+    const toogleButton = rows[2]
+    fireEvent.click(toogleButton)
+    fireEvent.click(toogleButton)
+    const setRows = await screen.findAllByTestId('settingicon')
+    fireEvent.click(setRows[0])
+    await userEvent.type(await screen.findByPlaceholderText(
+      'Copy from your WiFi4EU installation report'),'UUID')
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    fireEvent.click(setRows[0])
+    await userEvent.type(await screen.findByPlaceholderText(
+      'Copy from your WiFi4EU installation report'),'UUID')
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
   })
