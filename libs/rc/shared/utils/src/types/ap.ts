@@ -396,7 +396,8 @@ export interface MeshStatus {
   hopCount: number,
   uplinks?: MeshLinkStatus[],
   downlinks?: MeshLinkStatus[],
-  neighbors?: MeshLinkStatus[]
+  neighbors?: MeshLinkStatus[],
+  downlinkRadios?: meshRadioStatus[]
 }
 export interface APMesh {
   IP?: string
@@ -429,12 +430,17 @@ export interface APMesh {
   rxFrames?: string,
   type?: number,
   upMac?: string,
-  downlinkCount?: number
+  downlinkCount?: number,
+  meshBand?: string
 }
 
 export interface RbacAPMesh {
   root: NewAPModel,
   members: NewAPModel[]
+}
+
+export interface meshRadioStatus {
+  band: string
 }
 
 export interface FloorPlanMeshAP extends APMesh {
