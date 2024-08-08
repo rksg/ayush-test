@@ -102,13 +102,14 @@ export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link'
 
 export const GraphBeforeTextWrapper = styled.div`
   position: absolute;
-  top: 5%;
+  top: 4%;
+  left: 3%;
 `
 
 export const GraphAfterTextWrapper = styled.div`
   position: absolute;
-  top: 5%;
-  right: 45%;
+  top: 4%;
+  right: 43%;
   color: var(--acx-primary-black);
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-5-line-height);
