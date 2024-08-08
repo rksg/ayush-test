@@ -87,7 +87,7 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number,
+  downlinkCount?: number,
   apRadioDeploy?: string,
   powerSavingStatus?: string,
   lbsStatus?: {
