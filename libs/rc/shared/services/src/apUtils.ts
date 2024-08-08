@@ -599,13 +599,11 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
       } else if (key === 'cellularStatus') {
         parsingCellularStatusFromNewType(result, value)
       } else if (oldApFieldNameExist) {
-        // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
         set(result, oldApFieldName, value)
       } else {
         parsingApFromNewType(value as Record<string, unknown>, result, namePath)
       }
     } else {
-      // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
       set(result, oldApFieldName, value)
     }
   }
