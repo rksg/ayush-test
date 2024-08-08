@@ -292,5 +292,6 @@ function OptimizeAllDateTimePicker ({
     initialDate={initialDate}
     onApply={onApply}
     disabledDateTime={disabledDateTime}
+    placement='bottomLeft'
   />
 }
