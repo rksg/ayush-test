@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react'
 import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Card }                               from '@acx-ui/components'
-import { useGetEntitlementsCompliancesQuery } from '@acx-ui/msp/services'
-import { ComplianceData }                     from '@acx-ui/msp/utils'
-import { useParams }                          from '@acx-ui/react-router-dom'
+import { Card }                                 from '@acx-ui/components'
+import { useGetEntitlementsCompliancesQuery }   from '@acx-ui/msp/services'
+import { ComplianceData, DeviceComplianceType } from '@acx-ui/msp/utils'
+import { useParams }                            from '@acx-ui/react-router-dom'
 
 import { emptyCompliance } from './__tests__/fixtures'
 import * as UI             from './styledComponents'
@@ -45,15 +45,25 @@ export const LicenseCompliance = (props: ComplianceProps) => {
 
   useEffect(() => {
     if (queryData?.data?.compliances) {
-      setSelfData(queryData?.data?.compliances.APSW.self)
-      if (queryData?.data?.compliances.APSW.mspEcSummary)
-        setEcSummaryData(queryData?.data?.compliances.APSW.mspEcSummary)
+      const retData = queryData?.data?.compliances.filter(comp => comp.licenseType === 'APSW')
+      setSelfData(retData[0].self ?? emptyCompliance as ComplianceData)
+      if (retData[0].mspEcSummary)
+        setEcSummaryData(retData[0].mspEcSummary)
     }
   }, [queryData?.data])
 
   const DeviceNetworkingCard = (props: LicenseCardProps) => {
     const { $t } = useIntl()
     const { title, subTitle, data, isMsp } = props
+
+    const wifiData = data.deviceCompliances.find(item =>
+      item.deviceType === DeviceComplianceType.WIFI)
+    const switchData = data.deviceCompliances.find(item =>
+      item.deviceType === DeviceComplianceType.SWITCH)
+    const edgeData = data.deviceCompliances.find(item =>
+      item.deviceType === DeviceComplianceType.EDGE)
+    const virtualEdgeData = data.deviceCompliances.find(item =>
+      item.deviceType === DeviceComplianceType.VIRTUAL_EDGE)
 
     return <Col style={{ width: '435px', paddingLeft: 0, marginTop: '15px' }}>
       <Card>
@@ -78,30 +88,30 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         <UI.FieldLabelSubs width='275px' style={{ marginTop: '10px' }}>
           <label>{$t({ defaultMessage: 'Access Points' })}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.WIFI.installedDeviceCount}</label>
+            {wifiData?.installedDeviceCount}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.WIFI.usedLicenseCount}</label>
+            {wifiData?.usedLicenseCount}</label>
         </UI.FieldLabelSubs>
         <UI.FieldLabelSubs width='275px'>
           <label>{$t({ defaultMessage: 'Switches' })}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.SWITCH.installedDeviceCount}</label>
+            {switchData?.installedDeviceCount}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.SWITCH.usedLicenseCount}</label>
+            {switchData?.usedLicenseCount}</label>
         </UI.FieldLabelSubs>
         <UI.FieldLabelSubs width='275px'>
           <label>{$t({ defaultMessage: 'SmartEdge vAppliances' })}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.VIRTUAL_EDGE.installedDeviceCount}</label>
+            {virtualEdgeData?.installedDeviceCount}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.VIRTUAL_EDGE.usedLicenseCount}</label>
+            {virtualEdgeData?.usedLicenseCount}</label>
         </UI.FieldLabelSubs>
         <UI.FieldLabelSubs width='275px'>
           <label>{$t({ defaultMessage: 'SmartEdge HW Appliances' })}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.EDGE.installedDeviceCount}</label>
+            {edgeData?.installedDeviceCount}</label>
           <label style={{ textAlign: 'center' }}>
-            {data.deviceCompliances.EDGE.usedLicenseCount}</label>
+            {edgeData?.usedLicenseCount}</label>
         </UI.FieldLabelSubs>
         <UI.FieldLabelSubs width='275px'>
           <label>{$t({ defaultMessage: 'RWGs' })}</label>
@@ -162,27 +172,25 @@ export const LicenseCompliance = (props: ComplianceProps) => {
     </Col>
   }
 
-  return <>
-    {isMsp
-      ? <UI.ComplianceContainer>
-        <DeviceNetworkingCard
-          title='Device Networking Subscriptions'
-          subTitle='My Account License Expiration'
-          data={selfData}
-          isMsp={isMsp}
-        />
-        <DeviceNetworkingCard
-          title='Device Networking Subscriptions'
-          subTitle='MSP Customers License Expiration'
-          isMsp={isMsp}
-          data={ecSummaryData} />
-      </UI.ComplianceContainer>
-      : <DeviceNetworkingCard
+  return isMsp
+    ? <UI.ComplianceContainer>
+      <DeviceNetworkingCard
         title='Device Networking Subscriptions'
-        subTitle='License Expiration'
-        isMsp={false}
+        subTitle='My Account License Expiration'
         data={selfData}
+        isMsp={isMsp}
       />
-    }
-  </>
+      <DeviceNetworkingCard
+        title='Device Networking Subscriptions'
+        subTitle='MSP Customers License Expiration'
+        isMsp={isMsp}
+        data={ecSummaryData} />
+    </UI.ComplianceContainer>
+    : <DeviceNetworkingCard
+      title='Device Networking Subscriptions'
+      subTitle='License Expiration'
+      isMsp={false}
+      data={selfData}
+    />
+
 }

@@ -482,8 +482,15 @@ export interface MspEcTierPayload {
   serviceTierStatus: string
 }
 
+export enum DeviceComplianceType {
+  WIFI = 'WIFI',
+  SWITCH = 'SWITCH',
+  EDGE = 'EDGE',
+  VIRTUAL_EDGE = 'VIRTUAL_EDGE'
+}
+
 export interface DeviceCompliance {
-  deviceType: string,
+  deviceType: DeviceComplianceType,
   installedDeviceCount: number,
   usedLicenseCount: number
 }
@@ -492,12 +499,7 @@ export interface ComplianceData {
   licenseType: string,
   tenantId: string,
   tenantName: string,
-  deviceCompliances: {
-    WIFI: DeviceCompliance,
-    SWITCH: DeviceCompliance,
-    EDGE: DeviceCompliance,
-    VIRTUAL_EDGE: DeviceCompliance
-  },
+  deviceCompliances: DeviceCompliance[]
   totalActivePaidLicenseCount: number,
   totalActiveTrialLicenseCount: number,
   nextPaidExpirationDate: string,
@@ -512,9 +514,8 @@ export interface ComplianceData {
 
 export interface MspCompliances {
   compliances: {
-    APSW: {
-      self: ComplianceData,
-      mspEcSummary: ComplianceData
-    }
-  }
+    licenseType: string,
+    self?: ComplianceData,
+    mspEcSummary?: ComplianceData
+  }[]
 }

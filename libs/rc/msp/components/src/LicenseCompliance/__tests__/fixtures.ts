@@ -1,12 +1,13 @@
 
 export const fakeOwnAccount =
 {
-  compliances: {
-    APSW: [ {
+  compliances: [
+    {
+      licenseType: 'APSW',
       self: {
-        licenseType: 'APSW',
         tenantId: 'c5415309a2a14559a38d6707671c2997',
         tenantName: 'rec-1',
+        licenseType: 'APSW',
         deviceCompliances: {
           EDGE: {
             deviceType: 'EDGE',
@@ -40,14 +41,15 @@ export const fakeOwnAccount =
         licensesUsed: 60,
         licenseGap: -30
       }
-    } ]
-  }
+    }
+  ]
 }
 
 export const fakeMspSummary =
 {
-  compliances: {
-    APSW: [ {
+  compliances: [
+    {
+      licenseType: 'APSW',
       self: {
         licenseType: 'APSW',
         tenantId: '0b6aef780d8d40af8473a4bd8ab923ab',
@@ -122,8 +124,7 @@ export const fakeMspSummary =
         licensesUsed: 180,
         licenseGap: 0
       }
-    } ]
-  }
+    }]
 }
 
 export const emptyCompliance =
@@ -131,28 +132,28 @@ export const emptyCompliance =
   licenseType: 'APSW',
   tenantId: '',
   tenantName: '',
-  deviceCompliances: {
-    EDGE: {
+  deviceCompliances: [
+    {
       deviceType: 'EDGE',
       installedDeviceCount: 0,
       usedLicenseCount: 0
     },
-    SWITCH: {
+    {
       deviceType: 'SWITCH',
       installedDeviceCount: 0,
       usedLicenseCount: 0
     },
-    WIFI: {
+    {
       deviceType: 'WIFI',
       installedDeviceCount: 0,
       usedLicenseCount: 0
     },
-    VIRTUAL_EDGE: {
+    {
       deviceType: 'VIRTUAL_EDGE',
       installedDeviceCount: 0,
       usedLicenseCount: 0
     }
-  },
+  ],
   totalActivePaidLicenseCount: 0,
   totalActiveTrialLicenseCount: 0,
   nextPaidExpirationDate: '',
