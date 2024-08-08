@@ -28,7 +28,7 @@ export const SubscriptionTabs = () => {
       Platinum = 'Professional',
       Gold = 'Essentials'
     }
-    const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
+    const isDelegationTierApi = isDelegationMode()
     const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
