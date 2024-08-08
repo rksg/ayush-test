@@ -16,7 +16,7 @@ import {
 import type { PathFilter } from '@acx-ui/utils'
 
 import { states, codes, StatusTrail, aiFeaturesLabel, groupedStates } from './config'
-import { statuses, displayStates }                                    from './states'
+import { statuses, displayStates, statusReasons }                     from './states'
 
 type Intent = {
   id: string
@@ -38,10 +38,13 @@ export type IntentListItem = Intent & {
   aiFeature: string
   intent: string
   scope: string
-  type: string
+  type?: string
   category: string
   status: string
-  statusTooltip: string
+  statusTooltip: string,
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
 }
 
 type Metadata = {
@@ -77,6 +80,66 @@ const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Me
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   })
 }
+
+type IntentWlan = {
+  name: string
+  ssid: string
+}
+
+type OptimizeAllMetadata = {
+  scheduledAt: string
+  wlans?: IntentWlan[]
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
+}
+
+export type OptimizeAllItemMutationPayload = {
+  id: string
+  metadata: OptimizeAllMetadata
+}
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
+
+interface OptimizeAllMutationPayload {
+  optimizeList: OptimizeAllItemMutationPayload[]
+}
+
+export type OptimizeAllMutationResponse = Record<string, MutationResponse>
+
+
+const buildTransitionGQL = (index:number) => `t${index}: transition(
+  id: $id${index}, status: $status${index},
+  statusReason: $statusReason${index}, metadata: $metadata${index}) {
+    success
+    errorMsg
+    errorCode
+  }`
+
+export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
+  const status = statuses.scheduled
+  const statusReason = statusReasons.oneClick
+  const paramsGQL:string[] = []
+  const transitionsGQLs:string[] = []
+  const variables:Record<string, string|OptimizeAllMetadata> = {}
+  optimizeList.forEach((item, index) => {
+    const currentIndex = index + 1
+    const { id, metadata } = item
+    paramsGQL.push(
+      `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
+      $statusReason${currentIndex}:String, $metadata${currentIndex}:JSON`
+    )
+    transitionsGQLs.push(buildTransitionGQL(currentIndex))
+    variables[`id${currentIndex}`] = id
+    variables[`status${currentIndex}`] = status
+    variables[`statusReason${currentIndex}`] = statusReason
+    variables[`metadata${currentIndex}`] = metadata
+  })
+  return { paramsGQL,transitionsGQLs, variables } as {
+    paramsGQL:string[],
+    transitionsGQLs:string[],
+    variables: Record<string, string|OptimizeAllMetadata> }
+}
+
 type Payload = PathFilter & {
   page: number
   pageSize: number
@@ -128,6 +191,7 @@ export const api = intentAIApi.injectEndpoints({
               sliceType
               sliceValue
               metadata
+              preferences
               path {
                 type
                 name
@@ -173,6 +237,24 @@ export const api = intentAIApi.injectEndpoints({
         return { intents: items, total: response.intents.total }
       },
       providesTags: [{ type: 'Intent', id: 'INTENT_AI_LIST' }]
+    }),
+    optimizeAllIntent: build.mutation<OptimizeAllMutationResponse, OptimizeAllMutationPayload>({
+      query: ({ optimizeList }) => {
+        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQL( optimizeList )
+        return {
+          document: gql`
+          mutation OptimizeAll(
+            ${paramsGQL.join(',')}
+          ) {
+            ${transitionsGQLs.join('\n')}
+          }
+        `,
+          variables
+        }
+      },
+      invalidatesTags: [
+        { type: 'Monitoring', id: 'INTENT_AI_LIST' }
+      ]
     }),
     intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({
       query: (payload) => ({
@@ -396,6 +478,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
 }
 export const {
   useIntentAIListQuery,
+  useOptimizeAllIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery
 } = api
