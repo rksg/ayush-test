@@ -397,7 +397,7 @@ export interface MeshStatus {
   uplinks?: MeshLinkStatus[],
   downlinks?: MeshLinkStatus[],
   neighbors?: MeshLinkStatus[],
-  downlinkRadios?: meshRadioStatus[]
+  radios?: meshRadioStatus[]
 }
 export interface APMesh {
   IP?: string
