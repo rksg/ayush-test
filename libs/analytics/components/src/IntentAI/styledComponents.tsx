@@ -7,7 +7,18 @@ export const IntentAITableStyle = createGlobalStyle`
     }
   }
 `
-
+export const ActionsText = styled.span`
+  color: var(--acx-accents-blue-50);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-4-line-height);
+`
+export const ApplyModalStyle = createGlobalStyle`
+  .intent-ai-optimize-modal {
+    .ant-modal-confirm-content > span {
+      display: inline-block;
+    }
+  }
+`
 export const FeatureIcon = styled.div`
   display: flex;
   align-items: center;
