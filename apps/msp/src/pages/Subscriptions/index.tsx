@@ -483,7 +483,7 @@ export function Subscriptions () {
     compliance: {
       title: $t({ defaultMessage: 'Compliance' }),
       content: <LicenseCompliance isMsp={true}/>,
-      visible: isComplianceEnabled
+      visible: false // not supported in phase 1
     }
   }
 

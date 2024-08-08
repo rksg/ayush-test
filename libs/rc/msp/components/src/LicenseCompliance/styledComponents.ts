@@ -151,7 +151,7 @@ export const FieldLabelSubs = styled.div<{ width: string }>`
 export const FieldLabelSubs2 = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
-  grid-template-columns: 180px 45px 160px;
+  grid-template-columns: 180px 45px 180px;
   align-items: baseline;
 `
 export const LicenseGap = styled(Space)`

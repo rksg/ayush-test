@@ -126,3 +126,42 @@ export const fakeMspSummary =
   }
 }
 
+export const emptyCompliance =
+{
+  licenseType: 'APSW',
+  tenantId: '',
+  tenantName: '',
+  deviceCompliances: {
+    EDGE: {
+      deviceType: 'EDGE',
+      installedDeviceCount: 0,
+      usedLicenseCount: 0
+    },
+    SWITCH: {
+      deviceType: 'SWITCH',
+      installedDeviceCount: 0,
+      usedLicenseCount: 0
+    },
+    WIFI: {
+      deviceType: 'WIFI',
+      installedDeviceCount: 0,
+      usedLicenseCount: 0
+    },
+    VIRTUAL_EDGE: {
+      deviceType: 'VIRTUAL_EDGE',
+      installedDeviceCount: 0,
+      usedLicenseCount: 0
+    }
+  },
+  totalActivePaidLicenseCount: 0,
+  totalActiveTrialLicenseCount: 0,
+  nextPaidExpirationDate: '',
+  nextTotalPaidExpiringLicenseCount: 0,
+  nextTrialExpirationDate: '0',
+  nextTotalTrialExpiringLicenseCount: 0,
+  totalActivePaidAssignedLicenseCount: 0,
+  totalActiveTrialAssignedLicenseCount: 0,
+  licensesUsed: 0,
+  licenseGap: 0
+}
+
