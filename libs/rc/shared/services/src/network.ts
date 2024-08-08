@@ -1317,6 +1317,7 @@ export const {
   useVenueNetworkListV2Query,
   useNewVenueNetworkTableQuery,
   useVenueRadioActiveNetworksQuery,
+  useLazyVenueRadioActiveNetworksQuery,
   useVenueNetworkTableV2Query,
   useApGroupNetworkListV2Query,
   useLazyApGroupNetworkListV2Query,
