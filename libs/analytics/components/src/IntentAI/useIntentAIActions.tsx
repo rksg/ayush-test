@@ -10,8 +10,8 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum }        from '@acx-ui/rc/utils'
-import { getIntl, NetworkPath } from '@acx-ui/utils'
+import { RadioTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }       from '@acx-ui/utils'
 
 import {
   IntentListItem,
