@@ -23,6 +23,7 @@ import {
   FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,
+  MeshStatus,
   NewAPExtendedGrouped,
   NewApGroupViewModelResponseType,
   NewAPModel,
@@ -167,8 +168,7 @@ export const transformApListFromNewModel = (
   }
 
   const data = result?.data.map(item => {
-    const APRadio = item.radioStatuses
-    const lanPortStatus = item.lanPortStatuses
+    const { radioStatuses: APRadio, lanPortStatuses: lanPortStatus } = item
 
     if (APRadio) {
       setAPRadioInfo(item, APRadio, channelColumnStatus, true)
@@ -592,16 +592,18 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
             }
           }))
         }
+      } else if (key === 'meshStatus') {
+        const { downlinks , hopCount } = value as MeshStatus
+        set(result, 'downlinkCount', downlinks?.length)
+        set(result, 'hops', hopCount)
       } else if (key === 'cellularStatus') {
         parsingCellularStatusFromNewType(result, value)
       } else if (oldApFieldNameExist) {
-        // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
         set(result, oldApFieldName, value)
       } else {
         parsingApFromNewType(value as Record<string, unknown>, result, namePath)
       }
     } else {
-      // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
       set(result, oldApFieldName, value)
     }
   }

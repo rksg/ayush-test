@@ -36,7 +36,8 @@ const defaultApPayload = {
     'healthStatus',
     'clients',
     'downLinkCount',
-    'powerSavingStatus'
+    'powerSavingStatus',
+    'meshStatus'
   ]
 }
 
