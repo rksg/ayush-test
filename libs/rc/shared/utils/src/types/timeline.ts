@@ -114,6 +114,7 @@ export interface EventBase {
   venueId: string
   clientMac?: string
   clientName?: string
+  remoteEdgeId?: string
 }
 
 export interface EventMeta {
@@ -126,6 +127,7 @@ export interface EventMeta {
   isSwitchExists: boolean
   isVenueExists: boolean,
   isUnitExists: boolean,
+  isRemoteedgeExists: boolean,
   networkId?: string
   networkName?: string
   switchMac?: string
@@ -133,6 +135,7 @@ export interface EventMeta {
   venueName: string
   tableKey?: string
   edgeName: string,
+  remoteedgeName: string,
   unitName: string
 }
 
