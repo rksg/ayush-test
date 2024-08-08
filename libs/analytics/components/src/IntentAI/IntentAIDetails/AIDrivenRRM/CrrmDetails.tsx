@@ -75,7 +75,6 @@ export const CrrmDetails = () => {
       </GridCol>
       <div hidden>
         <SummaryGraphBefore
-          details={details}
           crrmData={crrmData}
           setSummaryUrlBefore={setSummaryUrlBefore}
           detailsPage={true}

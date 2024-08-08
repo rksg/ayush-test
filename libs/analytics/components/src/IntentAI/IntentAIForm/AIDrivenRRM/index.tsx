@@ -158,7 +158,7 @@ export function AIDrivenRRM () {
       {crrmData && <div hidden data-testid='hidden-graph'>
         <SliderGraphBefore crrmData={crrmData} setSliderUrlBefore={setSliderUrlBefore} />
         <SliderGraphAfter crrmData={crrmData} setSliderUrlAfter={setSliderUrlAfter} />
-        <SummaryGraphBefore details={details} crrmData={crrmData} setSummaryUrlBefore={setSummaryUrlBefore} />
+        <SummaryGraphBefore crrmData={crrmData} setSummaryUrlBefore={setSummaryUrlBefore} />
         <SummaryGraphAfter crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
       </div>}
       <StepsForm

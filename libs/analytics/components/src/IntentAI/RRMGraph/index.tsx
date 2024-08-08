@@ -50,6 +50,7 @@ function useGraph (
     })}
     data={graphs[0]}
     zoomScale={zoomScale}
+    backgroundColor='transparent'
   />}</AutoSizer></div>
   const beforeImage = <img
     key={'crrm-graph-before-image'}
@@ -64,6 +65,7 @@ function useGraph (
     title={$t({ defaultMessage: 'Recommended' })}
     data={graphs[1]}
     zoomScale={zoomScale}
+    backgroundColor='transparent'
   />}</AutoSizer></div>
   const afterImage = <img
     key={'crrm-graph-after-image'}
@@ -75,9 +77,9 @@ function useGraph (
 
   return (graphs?.length)
     ? [ isDrawer ? beforeGraph : beforeImage,
-      ...(!isDrawer ? [<div key='crrm-arrow' style={{ display: 'flex', alignItems: 'center' }}>
+      <div key='crrm-arrow' style={{ display: 'flex', alignItems: 'center' }}>
         <UI.RightArrow/>
-      </div>] : []),
+      </div>,
       isDrawer ? afterGraph : afterImage,
       ...(legend?.length ? [<Legend key='crrm-graph-legend' bandwidths={legend}/>] : [])
     ]
@@ -87,7 +89,7 @@ function useGraph (
 const detailsZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 20, 30, 63, 125, 250, 375, 500])
-  .range([1, 0.45, 0.3, 0.25, 0.135, 0.1, 0.075, 0.06, 0.05])
+  .range([0.8, 0.45, 0.3, 0.25, 0.135, 0.1, 0.075, 0.06, 0.05])
 const drawerZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 63, 125, 250, 375, 500])
@@ -116,6 +118,15 @@ export const IntentAIRRMGraph = ({
           crrmData, details, bandwidthMapping[band],
           detailsZoomScale, false, summaryUrlBefore, summaryUrlAfter)
       } />
+      <UI.GraphBeforeTextWrapper>
+        <UI.GraphTitleText>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleText>
+        <UI.GraphSubTitleText>
+          {$t({ defaultMessage: 'As at {dateTime}' }, {
+            dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
+          })}
+        </UI.GraphSubTitleText>
+      </UI.GraphBeforeTextWrapper>
+      <UI.GraphAfterTextWrapper>{$t({ defaultMessage: 'Recommended' })}</UI.GraphAfterTextWrapper>
     </Card>
     <UI.ViewMoreButton onClick={showDrawer} children={$t({ defaultMessage: 'View More' })} />
     <Drawer
@@ -211,12 +222,10 @@ export const SliderGraphAfter = (
 }
 
 export const SummaryGraphBefore = (
-  { details, crrmData, setSummaryUrlBefore, detailsPage = false }:
-  { details: EnhancedIntent,
-    crrmData: ProcessedCloudRRMGraph[],
+  { crrmData, setSummaryUrlBefore, detailsPage = false }:
+  { crrmData: ProcessedCloudRRMGraph[],
     detailsPage?: boolean,
     setSummaryUrlBefore: (url: string) => void }) => {
-  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -236,10 +245,7 @@ export const SummaryGraphBefore = (
       }}>
       {crrmData[0] && <BasicGraph
         chartRef={connectChart}
-        title={$t({ defaultMessage: 'Before' })}
-        subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
-          dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
-        })}
+        title={''}
         data={crrmData[0]}
         zoomScale={detailsZoomScale}
         style={{
@@ -258,7 +264,6 @@ export const SummaryGraphAfter = (
   { crrmData: ProcessedCloudRRMGraph[],
     detailsPage?: boolean,
     setSummaryUrlAfter: (url: string) => void }) => {
-  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -278,7 +283,7 @@ export const SummaryGraphAfter = (
       }}>
       {crrmData[1] && <BasicGraph
         chartRef={connectChart}
-        title={$t({ defaultMessage: 'Recommended' })}
+        title={''}
         data={crrmData[1]}
         zoomScale={detailsZoomScale}
         style={{

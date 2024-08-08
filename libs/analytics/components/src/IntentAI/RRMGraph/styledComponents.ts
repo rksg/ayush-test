@@ -35,7 +35,7 @@ export const DownloadWrapper = styled.div`
 
 export const DrawerGraphWrapper = styled.div`
   display: grid;
-  grid-template-columns: 3fr 3fr 1fr;
+  grid-template-columns: 3fr 0.25fr 3fr 1.5fr;
   grid-template-rows: 19fr 1fr;
   gap: 10px;
   width: 100%;
@@ -60,7 +60,6 @@ export const LegendsWrapper = styled.div`
 export const LegendWrapper = styled.div`
   display: grid;
   grid-template-columns: auto 1fr;
-  align-items: center;
   grid-column-gap: 10px;
   grid-row-gap: 10px;
   padding: 10px 0px;
@@ -86,13 +85,46 @@ export const Square = styled.span<{ $color: string }>`
   width: 12px;
   height: 12px;
   justify-self: end;
+  margin-top: 4px;
 `
 
 export const RightArrow = styled(ArrowChevronRight)``
 
 export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link' })`
   position: absolute;
-  text-decoration: underline;
   bottom: 12px;
   right: 16px;
+
+  :hover {
+    text-decoration: underline;
+  }
+`
+
+export const GraphBeforeTextWrapper = styled.div`
+  position: absolute;
+  top: 5%;
+`
+
+export const GraphAfterTextWrapper = styled.div`
+  position: absolute;
+  top: 5%;
+  right: 45%;
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+`
+
+export const GraphTitleText = styled.div`
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-3-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-headline-4-font-weight-bold);
+`
+
+export const GraphSubTitleText = styled.div`
+  color: var(--acx-primary-black);
+  font-size: var(--acx-body-4-font-size);
+  line-height: var(--acx-body-5-line-height);
+  font-weight: var(--acx-headline-4-font-weight);
 `
