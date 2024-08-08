@@ -39,6 +39,7 @@ const metaFields = [
   'floorPlanName',
   'recipientName',
   'edgeName',
+  'remoteedgeName',
   'unitName'
 ]
 
