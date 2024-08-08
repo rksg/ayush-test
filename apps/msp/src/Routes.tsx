@@ -82,7 +82,6 @@ export default function MspRoutes () {
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -154,7 +153,7 @@ export default function MspRoutes () {
   return (
     <Loader states={[{ isLoading: !loadMspRoute }]}>
       <HspContext.Provider value={{ state, dispatch }}>
-        <ConfigProvider supportReSkinning={supportReSkinning}>
+        <ConfigProvider>
           <Provider children={routes} />
         </ConfigProvider>
       </HspContext.Provider>
