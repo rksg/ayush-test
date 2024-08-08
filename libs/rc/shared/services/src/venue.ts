@@ -113,6 +113,7 @@ import {
 import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
 import {
   convertToApMeshDataList,
+  convertToMeshTopologyDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
 }   from './venue.utils'
@@ -172,7 +173,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venuesData = venueList.data as Venue[]
+        const venuesData = venueList?.data as Venue[]
         const venueIds = venuesData?.filter(v => {
           if (v.aggregatedApStatus) {
             return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
@@ -429,19 +430,34 @@ export const venueApi = baseVenueApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    getRbacFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const newPayload = JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
 
-        const newPayload = enableRbac
-          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
-          : payload
-        const apListReq = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
+        const apListReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
         const apListRes = await fetchWithBQ({ ...apListReq, body: newPayload })
-        const apListData = apListRes.data as TableResult<FloorPlanMeshAP>
+        const rbacApListData = apListRes.data as TableResult<RbacAPMesh>
+        const apMeshData = [] as FloorPlanMeshAP[]
 
+        rbacApListData.data?.forEach((rbacApMesh) => {
+          const { root, members=[] } = rbacApMesh
+          const newApMesh = convertToMeshTopologyDataList([root], members) as FloorPlanMeshAP[]
+
+          apMeshData.push(newApMesh[0])
+        })
+
+        const apListData = { data: apMeshData, totalCount: rbacApListData.totalCount } as TableResult<FloorPlanMeshAP>
         // fetch ap position data
-        if (enableRbac && (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent'))) {
+        if (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent')) {
           await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
         }
 
@@ -1852,6 +1868,7 @@ export const {
   useMeshApsQuery,
   useRbacMeshApsQuery,
   useGetFloorPlanMeshApsQuery,
+  useGetRbacFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
@@ -1969,7 +1986,7 @@ export const {
 export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>,
   apCompatibilities: { [key:string]: number }) => {
   const data:Venue[] = []
-  venueList.data.forEach(item=>{
+  venueList?.data.forEach(item=>{
     item.incompatible = apCompatibilities[item.id]
     data.push(item)
   })

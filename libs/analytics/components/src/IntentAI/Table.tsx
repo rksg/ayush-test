@@ -1,16 +1,19 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
+
 
 import { useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip }             from '@acx-ui/components'
-import { get }                                            from '@acx-ui/config'
-import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
-import { noDataDisplay, PathFilter }                      from '@acx-ui/utils'
+import { Loader, TableProps, Table, Tooltip }                        from '@acx-ui/components'
+import { get }                                                       from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }            from '@acx-ui/icons'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
 import { codes }                                 from './config'
 import { useIntentAITableQuery, IntentListItem } from './services'
 import * as UI                                   from './styledComponents'
+import { useIntentAIActions }                    from './useIntentAIActions'
 
 const icons = {
   'AI-Driven RRM': <AIDrivenRRM />,
@@ -23,6 +26,7 @@ export function IntentAITable (
   { pathFilters }: { pathFilters: PathFilter }
 ) {
   const { $t } = useIntl()
+  const intentActions = useIntentAIActions()
 
   const {
     tableQuery: queryResults,
@@ -33,6 +37,19 @@ export function IntentAITable (
   } = useIntentAITableQuery(
     { ...pathFilters }
   )
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+
+  const rowActions: TableProps<IntentListItem>['rowActions'] = [
+    {
+      key: getShowWithoutRbacCheckKey('1-click-optimize'),
+      label: $t({ defaultMessage: '1-Click Optimize' }),
+      visible: rows => !rows.some(row => row.status !== 'New' as string),
+      onClick: (rows) => {
+        intentActions.showOneClickOptimize(rows, ()=> clearSelection())
+      }
+    }
+  ]
+
   const { aiFeatures = [], categories =[], statuses = [], zones = [] } = filterOptions?.data || {}
   const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
@@ -114,6 +131,10 @@ export function IntentAITable (
     }
   ]
 
+  const clearSelection = () => {
+    setSelectedRowKeys([])
+  }
+
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle/>
@@ -125,6 +146,11 @@ export function IntentAITable (
         dataSource={data}
         columns={columns}
         rowKey='id'
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
+          type: 'checkbox',
+          selectedRowKeys
+        }}
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
