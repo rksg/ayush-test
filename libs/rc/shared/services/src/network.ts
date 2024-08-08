@@ -902,10 +902,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddNetwork'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, NetworkUseCases.concat([
+            'AddNetworkVenue',
+            'DeleteNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkOnVenue'
+          ]), () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
           })
         })
@@ -1378,6 +1380,7 @@ export const {
   useVenueNetworkListV2Query,
   useNewVenueNetworkTableQuery,
   useVenueRadioActiveNetworksQuery,
+  useLazyVenueRadioActiveNetworksQuery,
   useVenueNetworkTableV2Query,
   useApGroupNetworkListV2Query,
   useLazyApGroupNetworkListV2Query,
