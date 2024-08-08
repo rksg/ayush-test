@@ -1,7 +1,7 @@
 import { MessageDescriptor } from 'react-intl'
 import { Edge, Node }        from 'reactflow'
 
-import { ActionType } from '@acx-ui/rc/utils'
+import { ActionType, NewAPITableResult, WorkflowActionDefinition, WorkflowStep } from '@acx-ui/rc/utils'
 
 // To make sure that the tests are working, it's important that you are using
 // this implementation of ResizeObserver and DOMMatrixReadOnly
@@ -89,3 +89,73 @@ export const mockInitialEdges: Edge[] = [
     target: mockInitialNodes[1].id
   }
 ]
+
+export const mockGetStepsByIdResult: NewAPITableResult<WorkflowStep> = {
+  content: [
+    {
+      id: 'step-1',
+      enrollmentActionId: 'step-1-action-id',
+      nextStepId: 'step-2'
+    },
+    {
+      id: 'step-2',
+      enrollmentActionId: 'step-2-action-id',
+      priorStepId: 'step-1'
+    }
+  ],
+  paging: {
+    page: 0,
+    pageSize: 10,
+    totalCount: 3
+  }
+}
+
+export const mockGetActionDefinitionsResult: NewAPITableResult<WorkflowActionDefinition> = {
+  content: [
+    {
+      id: 'd1342c9e-c379-4fe6-9a18-8eec67e34eb6',
+      name: 'Display an Acceptable Use Policy (AUP)',
+      localizationDescriptionId: 'aup_workflow_locale',
+      isSplit: false,
+      actionType: 'AUP' as ActionType,
+      category: 'basic',
+      dependencyType: 'NONE',
+      hasEndActions: false
+    },
+    {
+      id: 'b300d030-f415-4252-90cc-8265e5314696',
+      name: 'Display a message',
+      localizationDescriptionId: 'display_message_locale',
+      isSplit: false,
+      actionType: 'DISPLAY_MESSAGE' as ActionType,
+      category: 'basic',
+      dependencyType: 'NONE',
+      hasEndActions: false
+    },
+    {
+      id: '8c0168b4-5b34-4b0e-9356-d2b42cb88967',
+      name: 'Generate a Ruckus DPSK',
+      localizationDescriptionId: 'generate_dpsk_locale',
+      isSplit: false,
+      actionType: 'DPSK' as ActionType,
+      category: 'onboard',
+      dependencyType: 'NONE',
+      hasEndActions: true
+    },
+    {
+      id: '580584f1-a3f4-407f-b3ac-a62addea530e',
+      name: 'Prompt user for information',
+      localizationDescriptionId: 'data_prompt_locale',
+      isSplit: false,
+      actionType: 'DATA_PROMPT' as ActionType,
+      category: 'basic',
+      dependencyType: 'NONE',
+      hasEndActions: false
+    }
+  ],
+  paging: {
+    page: 0,
+    pageSize: 10,
+    totalCount: 4
+  }
+}

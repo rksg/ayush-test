@@ -104,6 +104,8 @@ export interface WorkflowActionDefinition {
   name: string,
   category: string
   isSplit: boolean,
+  localizationDescriptionId: string,
+  hasEndActions: boolean,
 
   actionType: ActionType,
   description?: string,

@@ -56,7 +56,7 @@ const useRequiredDependency = () => {
   const [data, setData] = useState<Partial<Record<ActionType, RequiredDependency>>>({})
 
   useEffect(() => {
-    if (isLoading || !actionDefsData) return
+    if (isLoading || !actionDefsData?.content) return
     const fetchAllRequiredDependencies = async () => {
       for (const def of actionDefsData?.content) {
         if (def.dependencyType === 'NONE') {
@@ -114,7 +114,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   })
 
   useEffect(() => {
-    if (!actionDefsData || !stepsData ) return
+    if (!actionDefsData || !stepsData?.content ) return
 
     const defsMap = actionDefsData?.content
       ?.reduce((map, def) => map.set(def.id, def.actionType), new Map())
