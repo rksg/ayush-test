@@ -152,14 +152,6 @@ export default function WorkflowTable () {
       disabled: (selectedItems => selectedItems.length > 1)
     },
     {
-      label: $t({ defaultMessage: 'Clone' }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: ([data], clearSelection) => {
-        clearSelection()
-      },
-      disabled: (selectedItems => selectedItems.length > 1)
-    },
-    {
       label: $t({ defaultMessage: 'Preview' }),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: ([data], clearSelection) => {
