@@ -172,7 +172,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venuesData = venueList.data as Venue[]
+        const venuesData = venueList?.data as Venue[]
         const venueIds = venuesData?.filter(v => {
           if (v.aggregatedApStatus) {
             return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
@@ -1969,7 +1969,7 @@ export const {
 export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>,
   apCompatibilities: { [key:string]: number }) => {
   const data:Venue[] = []
-  venueList.data.forEach(item=>{
+  venueList?.data.forEach(item=>{
     item.incompatible = apCompatibilities[item.id]
     data.push(item)
   })

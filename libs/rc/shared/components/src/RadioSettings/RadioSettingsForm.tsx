@@ -9,7 +9,7 @@ import { isNumber }                                                  from 'lodas
 import { useIntl }                                                   from 'react-intl'
 
 import { cssStr, Tooltip, Button, Alert }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { get }                                             from '@acx-ui/config'
 import { InformationOutlined, QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import { useNavigate, useLocation }                        from '@acx-ui/react-router-dom'
 import { validationMessages }                              from '@acx-ui/utils'
@@ -46,7 +46,7 @@ export function RadioSettingsForm (props:{
   LPIButtonText?: LPIButtonText
 }) {
   const { $t } = useIntl()
-  const afcFeatureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const {
     radioType,
     disabled = false,

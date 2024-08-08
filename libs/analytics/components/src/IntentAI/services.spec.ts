@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { defaultNetworkPath }                         from '@acx-ui/analytics/utils'
-import { intentAIUrl, store, Provider }               from '@acx-ui/store'
-import { act, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
-import { DateRange, PathFilter }                      from '@acx-ui/utils'
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
+import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
+import { DateRange, PathFilter }                                           from '@acx-ui/utils'
 
 import {
   intentHighlights,
@@ -12,7 +12,7 @@ import {
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { IntentListItem, api, useIntentAITableQuery } from './services'
+import { IntentListItem, api, useIntentAITableQuery, OptimizeAllMutationResponse } from './services'
 
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
@@ -214,6 +214,30 @@ describe('Intent services', () => {
         result.current.onFilterChange(customFilter, {})
       })
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
+    })
+
+    it('should mutation OptimizeAll', async () => {
+      const resp = { data: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.optimizeAllIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          optimizeList: [{ id: '11', metadata: {
+            scheduledAt: '2023-11-17T11:45:00.000Z',
+            wlans: [{ name: 'n1', ssid: 's1' }],
+            preferences: {
+              crrmFullOptimization: true
+            }
+          } }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
     })
 
   })
