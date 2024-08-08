@@ -117,6 +117,7 @@ export const TunnelNetworkForm = () => {
         <Col span={24}>
           <Form.Item
             name='activatedNetworks'
+            dependencies={['isGuestTunnelEnabled', 'activatedGuestNetworks']}
             rules={[
               { required: true },
               {

@@ -37,7 +37,6 @@ export const notEnoughLicenses = {
   preferences: null
 }
 
-
 export const noAps = {
   id: '24',
   code: 'c-bgscan24g-enable',
@@ -65,6 +64,119 @@ export const noAps = {
   ] as NetworkPath,
   preferences: null
 }
+
+export const mockAIDrivenRow = {
+  id: '15',
+  code: 'c-crrm-channel24g-auto',
+  status: 'new',
+  statusReason: '',
+  displayStatus: 'new',
+  createdAt: '2023-06-13T07:05:08.638Z',
+  updatedAt: '2023-06-16T06:05:02.839Z',
+  sliceType: 'zone',
+  sliceValue: 'zone-1',
+  metadata: { algorithmData: { isCrrmFullOptimization: false } },
+  path: [
+    { type: 'system', name: 'vsz612' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  idPath: [
+    { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  preferences: { crrmFullOptimization: true },
+  statusTrail: [
+    { status: 'new' },
+    { status: 'applyscheduled' },
+    { status: 'applyscheduleinprogress' },
+    { status: 'applied' }
+  ],
+  trigger: 'daily'
+}
+
+export const mockAirflexRows = [
+  {
+    id: '16',
+    code: 'c-probeflex-24g',
+    status: 'new',
+    statusReason: '',
+    displayStatus: 'new',
+    createdAt: '2023-06-13T07:05:08.638Z',
+    updatedAt: '2023-06-16T06:05:02.839Z',
+    sliceType: 'zone',
+    sliceValue: 'zone-1',
+    metadata: {},
+    path: [
+      { type: 'system', name: 'vsz612' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    idPath: [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    statusTrail: [
+      { status: 'new' },
+      { status: 'applyscheduled' },
+      { status: 'applyscheduleinprogress' },
+      { status: 'applied' }
+    ],
+    trigger: 'daily'
+  },
+  {
+    id: '17',
+    code: 'c-probeflex-5g',
+    status: 'new',
+    statusReason: '',
+    displayStatus: 'new',
+    createdAt: '2023-06-13T07:05:08.638Z',
+    updatedAt: '2023-06-16T06:05:02.839Z',
+    sliceType: 'zone',
+    sliceValue: 'zone-2',
+    metadata: {},
+    path: [
+      { type: 'system', name: 'vsz612' },
+      { type: 'zone', name: 'EDU-MeshZone_S12349' }
+    ] as NetworkPath,
+    idPath: [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    statusTrail: [
+      { status: 'new' },
+      { status: 'applyscheduled' },
+      { status: 'applyscheduleinprogress' },
+      { status: 'applied' }
+    ],
+    trigger: 'daily'
+  },
+  {
+    id: '18',
+    code: 'c-probeflex-6g',
+    status: 'new',
+    statusReason: '',
+    displayStatus: 'new',
+    createdAt: '2023-06-13T07:05:08.638Z',
+    updatedAt: '2023-06-16T06:05:02.839Z',
+    sliceType: 'zone',
+    sliceValue: 'zone-1',
+    metadata: {},
+    path: [
+      { type: 'system', name: 'vsz612' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    idPath: [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    statusTrail: [
+      { status: 'new' },
+      { status: 'applyscheduled' },
+      { status: 'applyscheduleinprogress' },
+      { status: 'applied' }
+    ],
+    trigger: 'daily'
+  }
+]
 
 export const intentListResult = {
   intents: { data: [
@@ -130,9 +242,9 @@ export const filterOptions = {
 const intentStatus = {
   id: '1',
   code: 'c-crrm-channel5g-auto',
-  status: 'applied',
+  status: 'active',
   statusReason: '',
-  displayStatus: 'applied',
+  displayStatus: 'active',
   createdAt: '2023-06-13T07:05:08.638Z',
   updatedAt: '2023-06-16T06:05:02.839Z',
   sliceType: 'zone',
@@ -299,5 +411,71 @@ export const intentListWithAllStatus = {
       displayStatus: 'na-not-defined'
     }
   ], total: 20
+  }
+}
+
+export const intentHighlights = {
+  highlights: {
+    rrm: {
+      new: 4,
+      active: 8
+    },
+    airflex: {
+      new: 5,
+      active: 10
+    },
+    ops: {
+      new: 6,
+      active: 12
+    }
+  }
+}
+
+export const intentHighlightsWithZeroActive = {
+  highlights: {
+    rrm: {
+      new: 4,
+      active: 0
+    },
+    airflex: {
+      new: 5,
+      active: 0
+    },
+    ops: {
+      new: 6,
+      active: 0
+    }
+  }
+}
+
+export const intentHighlightsWithNullFields = {
+  highlights: {
+  }
+}
+
+export const intentHighlightsWithRRM = {
+  highlights: {
+    rrm: {
+      new: 4,
+      active: 8
+    }
+  }
+}
+
+export const intentHighlightsWithAirflex = {
+  highlights: {
+    airflex: {
+      new: 5,
+      active: 10
+    }
+  }
+}
+
+export const intentHighlightsWithOperations = {
+  highlights: {
+    ops: {
+      new: 6,
+      active: 12
+    }
   }
 }

@@ -1,14 +1,11 @@
 /* eslint-disable max-len */
 import {
-  renderHook,
   waitFor,
   within
 } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsFormProps }                       from '@acx-ui/components'
 import { networkApi }                           from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                      from '@acx-ui/store'
@@ -20,7 +17,7 @@ import {
 
 import { mockNetworkViewmodelList } from '../../../__tests__/fixtures'
 
-import { NetworksDrawer } from './NetworksDrawer'
+import { NetworksDrawer, NetworksDrawerProps } from './NetworksDrawer'
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
@@ -30,30 +27,21 @@ jest.mock('@acx-ui/utils', () => ({
 const mockedSetFieldValue = jest.fn()
 const mockedGetNetworkViewmodelList = jest.fn()
 const mockedCloseFn = jest.fn()
+const mockedSubmitFn = jest.fn()
 const mockedVenueId = 'mocked_venue_id'
 const { click } = userEvent
 
-const useMockedFormHook = (initData: Record<string, unknown>) => {
-  const [ form ] = Form.useForm()
-  form.setFieldsValue({
-    venueId: 'venue_00002',
-    venueName: 'airport',
-    isGuestTunnelEnabled: false,
-    ...initData
-  })
-  return form
-}
-
-const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
+const MockedTargetComponent = (props: { initData?: Partial<NetworksDrawerProps> }) => {
+  const { initData } = props
   return <Provider>
-    <Form form={props.form} initialValues={props.initialValues}>
-      <NetworksDrawer
-        visible={true}
-        onClose={mockedCloseFn}
-        venueId={mockedVenueId}
-        formRef={props.form!}
-      />
-    </Form>
+    <NetworksDrawer
+      visible={true}
+      onClose={mockedCloseFn}
+      onSubmit={mockedSubmitFn}
+      venueId={mockedVenueId}
+      isGuestTunnelEnabled={false}
+      {...initData}
+    />
   </Provider>
 }
 
@@ -91,34 +79,22 @@ describe('Network Drawer', () => {
   })
 
   it('should correctly render', async () => {
-    const { result: stepFormRef } = renderHook(useMockedFormHook)
-    render(<MockedTargetComponent
-      form={stepFormRef.current}
-    />, { route: { params: { tenantId: 't-id' } } })
-
+    render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
     await basicCheck(false)
-    expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
   })
 
   it('should correctly render in edit mode', async () => {
-    const mockedNetworkIds = ['network_1', 'network_2']
-    const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-      activatedNetworks: { [mockedVenueId]: mockedNetworkIds.map(id => ({ id })) }
-    }))
-
     render(<MockedTargetComponent
-      form={stepFormRef.current}
-      initialValues={{
-        networks: { [mockedVenueId]: mockedNetworkIds }
+      initData={{
+        tunneledNetworks: {
+          [mockedVenueId]: [
+            { id: 'network_1', name: 'MockedNetwork 1' },
+            { id: 'network_2', name: 'MockedNetwork 2' }
+          ] }
       }}
     />, { route: { params: { tenantId: 't-id' } } })
 
     const rows = await basicCheck(false)
-    await waitFor(() =>
-      expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual({ [mockedVenueId]: [
-        { id: 'network_1' },
-        { id: 'network_2' }
-      ] }))
 
     expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
     const switchBtn = within(rows[1]).getByRole('switch')
@@ -129,40 +105,31 @@ describe('Network Drawer', () => {
   })
 
   it('should correctly activate by switcher', async () => {
-    const { result: stepFormRef } = renderHook(useMockedFormHook)
-    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
     render(<MockedTargetComponent
-      form={stepFormRef.current}
     />, { route: { params: { tenantId: 't-id' } } })
 
     const rows = await basicCheck(false)
-    expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
     expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
     await click(within(rows[1]).getByRole('switch'))
 
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSetFieldValue).toBeCalledWith(
-      'activatedNetworks', { [mockedVenueId]: [
+    expect(mockedSubmitFn).toBeCalledWith({
+      activatedNetworks: { [mockedVenueId]: [
         { name: 'MockedNetwork 2', id: 'network_2' }
-      ] }
-    )
-    expect(mockedSetFieldValue).toBeCalledWith(
-      'activatedGuestNetworks', {}
-    )
+      ] },
+      activatedGuestNetworks: {}
+    })
   })
 
   it('should correctly deactivate by switch', async () => {
-    const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-      activatedNetworks: { [mockedVenueId]: [
-        { name: 'MockedNetwork 1', id: 'network_1' },
-        { name: 'MockedNetwork 2', id: 'network_2' }
-      ] }
-    }))
-    jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
     render(<MockedTargetComponent
-      form={stepFormRef.current}
+      // form={stepFormRef.current}
+      initData={{
+        tunneledNetworks: { [mockedVenueId]: [
+          { name: 'MockedNetwork 1', id: 'network_1' },
+          { name: 'MockedNetwork 2', id: 'network_2' }
+        ] }
+      }}
     />, { route: { params: { tenantId: 't-id' } } })
 
     const rows = await basicCheck(false)
@@ -171,44 +138,38 @@ describe('Network Drawer', () => {
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
     await click(screen.getByRole('button', { name: 'OK' }))
-    expect(mockedSetFieldValue).toBeCalledWith(
-      'activatedNetworks', { [mockedVenueId]: [
+    expect(mockedSubmitFn).toBeCalledWith({
+      activatedNetworks: { [mockedVenueId]: [
         { name: 'MockedNetwork 2', id: 'network_2' }
-      ] }
-    )
-    expect(mockedSetFieldValue).toBeCalledWith(
-      'activatedGuestNetworks', {}
-    )
+      ] },
+      activatedGuestNetworks: {}
+    })
   })
 
   it('activatedNetworks will be default into {} when networks is not touched in create mode', async () => {
-    const { result: stepFormRef } = renderHook(useMockedFormHook)
-
-    render(<MockedTargetComponent
-      form={stepFormRef.current}
-    />, { route: { params: { tenantId: 't-id' } } })
+    render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
 
     await basicCheck(false)
     await click(await screen.findByRole('button', { name: 'OK' }))
-    const actualVal = stepFormRef.current.getFieldValue('activatedNetworks')
-    expect(actualVal).toStrictEqual({})
+    expect(mockedSubmitFn).toBeCalledWith({
+      activatedNetworks: {},
+      activatedGuestNetworks: {}
+    })
   })
 
   describe('guest tunnel enabled', () => {
     it('should correctly display', async () => {
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true,
-        activatedNetworks: { [mockedVenueId]: [
-          { name: 'MockedNetwork 1', id: 'network_1' },
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] },
-        activatedGuestNetworks: { [mockedVenueId]: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] }
-      }))
-
       render(<MockedTargetComponent
-        form={stepFormRef.current}
+        initData={{
+          isGuestTunnelEnabled: true,
+          tunneledNetworks: { [mockedVenueId]: [
+            { name: 'MockedNetwork 1', id: 'network_1' },
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] },
+          tunneledGuestNetworks: { [mockedVenueId]: [
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] }
+        }}
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
@@ -227,13 +188,10 @@ describe('Network Drawer', () => {
     })
 
     it('guest tunnel network should default true when is captivePortal network', async () => {
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
       render(<MockedTargetComponent
-        form={stepFormRef.current}
+        initData={{
+          isGuestTunnelEnabled: true
+        }}
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
@@ -246,26 +204,21 @@ describe('Network Drawer', () => {
       })
       await click(switchBtns[0])
       await click(screen.getByRole('button', { name: 'OK' }))
-      expect(mockedSetFieldValue).toBeCalledWith(
-        'activatedNetworks', { [mockedVenueId]: [
+      expect(mockedSubmitFn).toBeCalledWith({
+        activatedNetworks: { [mockedVenueId]: [
+          { name: 'MockedNetwork 4', id: 'network_4' }
+        ] },
+        activatedGuestNetworks: { [mockedVenueId]: [
           { name: 'MockedNetwork 4', id: 'network_4' }
         ] }
-      )
-      expect(mockedSetFieldValue).toBeCalledWith(
-        'activatedGuestNetworks', { [mockedVenueId]: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] }
-      )
+      })
     })
 
     it('data network should be true when enable guest captivePortal network', async () => {
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
       render(<MockedTargetComponent
-        form={stepFormRef.current}
+        initData={{
+          isGuestTunnelEnabled: true
+        }}
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
@@ -277,32 +230,27 @@ describe('Network Drawer', () => {
       })
       await click(switchBtns[1])
       await click(screen.getByRole('button', { name: 'OK' }))
-      expect(mockedSetFieldValue).toBeCalledWith(
-        'activatedNetworks', { [mockedVenueId]: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] }
-      )
-      expect(mockedSetFieldValue).toBeCalledWith(
-        'activatedGuestNetworks', { [mockedVenueId]: [
-          { name: 'MockedNetwork 4', id: 'network_4' }
-        ] }
-      )
-    })
-
-    it('should be able to deactivate guest then deactivate dc tunnel', async () => {
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true,
+      expect(mockedSubmitFn).toBeCalledWith({
         activatedNetworks: { [mockedVenueId]: [
           { name: 'MockedNetwork 4', id: 'network_4' }
         ] },
         activatedGuestNetworks: { [mockedVenueId]: [
           { name: 'MockedNetwork 4', id: 'network_4' }
         ] }
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      })
+    })
 
+    it('should be able to deactivate guest then deactivate dc tunnel', async () => {
       render(<MockedTargetComponent
-        form={stepFormRef.current}
+        initData={{
+          isGuestTunnelEnabled: true,
+          tunneledNetworks: { [mockedVenueId]: [
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] },
+          tunneledGuestNetworks: { [mockedVenueId]: [
+            { name: 'MockedNetwork 4', id: 'network_4' }
+          ] }
+        }}
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
@@ -320,28 +268,27 @@ describe('Network Drawer', () => {
       switchBtns.forEach((switchBtn) => expect(switchBtn).not.toBeChecked())
 
       await click(screen.getByRole('button', { name: 'OK' }))
-      expect(mockedSetFieldValue).toBeCalledWith('activatedNetworks', {})
-      expect(mockedSetFieldValue).toBeCalledWith('activatedGuestNetworks', {})
+      expect(mockedSubmitFn).toBeCalledWith({
+        activatedNetworks: {},
+        activatedGuestNetworks: {}
+      })
     })
 
     it('should not check conflict when deactivate dc tunnel on guest forwarded network', async () => {
       const mockedNetwork4 = { name: 'MockedNetwork 4', id: 'network_4' }
 
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true,
-        activatedNetworks: {
-          [mockedVenueId]: [mockedNetwork4],
-          other_venue_id: [mockedNetwork4]
-        },
-        activatedGuestNetworks: {
-          [mockedVenueId]: [mockedNetwork4],
-          other_venue_id: [mockedNetwork4]
-        }
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
       render(<MockedTargetComponent
-        form={stepFormRef.current}
+        initData={{
+          isGuestTunnelEnabled: true,
+          tunneledNetworks: {
+            [mockedVenueId]: [mockedNetwork4],
+            other_venue_id: [mockedNetwork4]
+          },
+          tunneledGuestNetworks: {
+            [mockedVenueId]: [mockedNetwork4],
+            other_venue_id: [mockedNetwork4]
+          }
+        }}
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
@@ -359,17 +306,14 @@ describe('Network Drawer', () => {
     it('should popup conflict when activate guest forward network', async () => {
       const mockedNetwork4 = { name: 'MockedNetwork 4', id: 'network_4' }
 
-      const { result: stepFormRef } = renderHook(() => useMockedFormHook({
-        isGuestTunnelEnabled: true,
-        activatedNetworks: {
-          [mockedVenueId]: [mockedNetwork4],
-          other_venue_id: [mockedNetwork4]
-        }
-      }))
-      jest.spyOn(stepFormRef.current, 'setFieldValue').mockImplementation(mockedSetFieldValue)
-
       render(<MockedTargetComponent
-        form={stepFormRef.current}
+        initData={{
+          isGuestTunnelEnabled: true,
+          tunneledNetworks: {
+            [mockedVenueId]: [mockedNetwork4],
+            other_venue_id: [mockedNetwork4]
+          }
+        }}
       />, { route: { params: { tenantId: 't-id' } } })
 
       const rows = await basicCheck(true)
