@@ -27,6 +27,7 @@ describe('WorkflowContextProvider', () => {
         <WorkflowContextProvider
           workflowId={mockWorkflowId}
         >
+          {/* eslint-disable-next-line testing-library/no-node-access */}
           {props.children}
         </WorkflowContextProvider>
       </ReactFlowProvider>
