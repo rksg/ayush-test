@@ -1,7 +1,8 @@
 import React, { MutableRefObject, useRef, useState } from 'react'
 
+import { $CombinedState }                         from '@reduxjs/toolkit'
 import { Row, Col, Typography, Form, DatePicker } from 'antd'
-import { RangePickerProps }                       from 'antd/lib/date-picker'
+import { DatePickerProps, RangePickerProps }      from 'antd/lib/date-picker'
 import { NamePath }                               from 'antd/lib/form/interface'
 import dayjs                                      from 'dayjs'
 import moment, { Moment }                         from 'moment-timezone'
@@ -21,57 +22,53 @@ const name = 'settings' as NamePath
 const label = defineMessage({ defaultMessage: 'Settings' })
 
 
-// interface DateTimeDropdownProps {
-//   initialDate: Moment
-//   initialTime: number,
-//   disabledDate:(value: Moment) => boolean
-// }
+interface DateTimeDropdownProps {
+  initialDate: Moment
+  time: MutableRefObject<number>,
+  disabledDate:(value: Moment) => boolean
+  onchange: DatePickerProps['onChange']
+}
 
-// export const DateTimeDropdown = (
-//   {
-//     initialDate,
-//     initialTime,
-//     disabledDate
-//   } : DateTimeDropdownProps) => {
-//   const [date, setDate] = useState(initialDate)
-//   console.log(date)
-//   return (
-//     <Form.Item name={['settings', 'date']}
-//       // valuePropName={'date'}
-//       // getValueProps={() => ({
-//       //   value: { date },
-//       //   onChange: (date: { format: (arg0: string) => any }) => {
-//       //     console.log('Date selected:', date ? date.format('YYYY-MM-DD') : 'No date')
-//       //   }
-//       // })}
-//       // defaultValue={initialDate}
-//       getValueProps={(i) => ({ value: moment(i) })}
-//     >
-//       <DatePicker
-//         open={true}
-//         className='hidden-date-input'
-//         dropdownClassName='hidden-date-input-popover'
-//         picker='date'
-//         // value={date}
-//         showTime={false}
-//         showToday={false}
-//         disabledDate={disabledDate}
-//         // onChange={(value) => {
-//         //   console.log(value)
-//         //   setDate(value!)
-//         // }}
+export const DateTimeDropdown = (
+  {
+    initialDate,
+    time,
+    disabledDate,
+    onchange
+  } : DateTimeDropdownProps) => {
+  const [date, setDate] = useState(() => initialDate)
+  const [open, setOpen] = useState(true)
+  const { $t } = useIntl()
+  return (
+    <>
+      <DatePicker
+        style={{ width: '100%' }}
+        picker='date'
+        value={date}
+        showTime={false}
+        showToday={false}
+        disabledDate={disabledDate}
+        onChange={(e,i) => {
+          onchange!(e,i)
+          setOpen(false)
+          setDate(e!)
+        }}
+      />
 
-//         renderExtraFooter={
-//           () => <TimeDropdown type={TimeDropdownTypes.Daily}
-//             name={name as string}
-//             disabledDateTime={
-//               { disabledStrictlyBefore: initialTime }
-//             }
-//           />}
-//       />
-//     </Form.Item>
-//   )
-// }
+      <Form.Item
+        label={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
+        children={
+          <TimeDropdown type={TimeDropdownTypes.Daily} // if date is today, disable before current, else no disable
+            name={name as string}
+            disabledDateTime={
+              { disabledStrictlyBefore: time.current }
+            }
+          />
+        }
+      />
+    </>
+  )
+}
 
 function DateTimeSetting ({
   scheduledDate,
@@ -79,57 +76,27 @@ function DateTimeSetting ({
 }: DateTimeSettingProps) {
   const { $t } = useIntl()
   const initialDate = moment(scheduledDate)
-  // const [date, setDate] = useState(initialDate)
+  const initialTime = useRef(scheduledTime)
+  const { form } = useStepFormContext<IntentAIFormDto>()
   const disabledDate : RangePickerProps['disabledDate']= (current) => {
     return current && current < dayjs().startOf('day')
   }
+  const onChange: DatePickerProps['onChange'] = (date) => {
+    console.log(date)
+    form.setFieldValue(['settings', 'date'], date)
+  }
   return (
     <Form.Item name={['settings', 'date']}
-      label={$t(label)}
-      valuePropName={'date'}
-
-      // getValueProps={() => ({
-      //   value: { date },
-      //   onChange: (value: moment.Moment) => {
-      //     console.log(value)
-      //     setDate(value!)
-      //   }
-      // })}
-
-
-      // defaultValue={initialDate}
-      // getValueProps={(i) => ({
-      //   value: moment(i)
-      //   // onChange: (value: moment.Moment) => {
-      //   //   console.log(value)
-      //   //   setDate(value!)
-      //   // }
-      // })}
-
-    >
-      <DatePicker
-        open={true}
-        className='hidden-date-input'
-        dropdownClassName='hidden-date-input-popover'
-        picker='date'
-        // value={date}
-        showTime={false}
-        showToday={false}
-        disabledDate={disabledDate}
-        // onChange={(value) => {
-        //   console.log(value)
-        //   setDate(value!)
-        // }}
-
-        renderExtraFooter={
-          () => <TimeDropdown type={TimeDropdownTypes.Daily}
-            name={name as string}
-            disabledDateTime={
-              { disabledStrictlyBefore: scheduledTime + 0.25 }
-            }
-          />}
-      />
-    </Form.Item>
+      label={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
+      children={
+        <DateTimeDropdown
+          initialDate={initialDate} // initial date from scheduledAt if  any
+          time={initialTime}
+          disabledDate={disabledDate} // disable all date before current
+          onchange={onChange}
+        />
+      }
+    />
   )}
 
 type DateTimeSettingProps = {
@@ -139,18 +106,23 @@ type DateTimeSettingProps = {
 
 const scheduleActions = {
   datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
-  time: () => <TimeDropdown type={TimeDropdownTypes.Daily}
-    name={name as string}/>
+  time: (label: string) =>
+    <Form.Item
+      label={'test'}
+      children={<TimeDropdown
+        type={TimeDropdownTypes.Daily}
+        name={name as string}
+        label={label}
+      />}
+    />
 }
 
-export function getAvailableActions (status: string,
+export function getAvailableActions (status: string, label: string,
   settings: { date: string, hour: number }) {
-  console.log(status)
   if  (status === 'new' || status === 'scheduled') {
-    console.log('hereee')
     return scheduleActions.datetime({ scheduledDate: settings.date, scheduledTime: settings.hour })
   } else {
-    return scheduleActions.time()
+    return scheduleActions.time(label)
   }
 }
 
@@ -179,7 +151,8 @@ export function Settings () {
           {$t(calendarText)}
         </Typography.Paragraph>
       </StepsForm.TextContent>
-      {getAvailableActions(status,scheduleSettings)}
+      {getAvailableActions(status,$t(defineMessage({ defaultMessage: 'Schedule Time' })),
+        scheduleSettings )}
 
     </Col>
     <Col span={7} offset={2}>

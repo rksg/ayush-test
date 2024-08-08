@@ -101,18 +101,16 @@ const defaultDisabledTime =
 interface TimeDropdownProps {
   type: TimeDropdownTypes
   name: string
+  label?: string
   disabledDateTime?: {
     disabledStrictlyBefore?: number,
     disabledStrictlyAfter?: number
   }
 }
 
-export function TimeDropdown ({ type, name, disabledDateTime }: TimeDropdownProps) {
+export function TimeDropdown ({ type, name, disabledDateTime, label }: TimeDropdownProps) {
   const { $t } = useIntl()
-  // const value: number | null = typeof initialValue === 'string' ? parseInt(initialValue, 10) : null
-  // const [selectedTime, setSelectedTime] = useState(null)
-  // console.log(selectedTime)
-
+  console.log(label)
   const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
   ?? defaultDisabledTime.disabledStrictlyBefore
   const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
@@ -122,6 +120,7 @@ export function TimeDropdown ({ type, name, disabledDateTime }: TimeDropdownProp
     <Col span={spanLength}>
       <Form.Item
         name={[name, 'hour']}
+        label={label}
         rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
         noStyle
       >
