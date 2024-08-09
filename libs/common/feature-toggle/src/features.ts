@@ -47,6 +47,7 @@ export enum Features {
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
+  ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
   EXPORT_DEVICE = 'viewmodel-export-device-inventory',
   EXPORT_EVENTS_TOGGLE = 'acx-ui-scheduled-events-export-toggle',
@@ -111,7 +112,6 @@ export enum Features {
   SWITCH_ADMIN_PASSWORD = 'removable-ff',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
   SWITCH_DHCP_CLIENTS = 'removable-ff',
-  SWITCH_EDIT_PORTS_FROM_PANEL = 'removable-ff',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_LEVEL_VLAN = 'switch-level-vlan',
@@ -128,7 +128,6 @@ export enum Features {
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
-  VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -167,7 +166,8 @@ export enum Features {
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
-  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle'
+  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
+  WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
