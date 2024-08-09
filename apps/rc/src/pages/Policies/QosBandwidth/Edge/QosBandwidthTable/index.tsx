@@ -8,6 +8,7 @@ import {
   useGetEdgeQosProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
+  EdgeQosTrafficClass,
   EdgeQosViewData,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -80,7 +81,9 @@ const EdgeQosBandwidthTable = () => {
 
   const genClassTextForToolTip =
   (trafficClass: string, priority: string, priorityScheduling: boolean) => {
-    const capFirstClass = _.capitalize(trafficClass)
+    const trafficClassEnumValue =
+    EdgeQosTrafficClass[trafficClass as keyof typeof EdgeQosTrafficClass]
+    const capFirstClass = _.capitalize(trafficClassEnumValue)
     const capFirstPriority = _.capitalize(priority)
     const starSolidWhite = priorityScheduling === true ?
       <UI.StarSolidCustom
