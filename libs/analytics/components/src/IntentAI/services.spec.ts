@@ -177,7 +177,8 @@ describe('Intent services', () => {
             'c-crrm-channel6g-auto',
             'c-probeflex-24g',
             'c-probeflex-5g',
-            'c-probeflex-6g'
+            'c-probeflex-6g',
+            'eco-flex-code'
           ]
         },
         {
