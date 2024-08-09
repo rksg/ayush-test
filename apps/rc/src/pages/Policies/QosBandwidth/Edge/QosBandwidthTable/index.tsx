@@ -18,7 +18,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }              from '@acx-ui/user'
+import { EdgeScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -255,7 +256,9 @@ const EdgeQosBandwidthTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasPermission({
+            scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
+          }) && { type: 'radio' }}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
