@@ -12,7 +12,9 @@ import {
   useTableQuery,
   Venue,
   EdgeMvSdLanFormModel,
-  EdgeMvSdLanFormNetwork
+  EdgeMvSdLanFormNetwork,
+  sortProp,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
@@ -51,13 +53,13 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
     fixed: 'left',
-    sorter: true
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Address' }),
     width: Infinity,
     key: 'country',
     dataIndex: 'country',
-    sorter: true,
+    sorter: { compare: sortProp('country', defaultSort) },
     render: (_, row) => {
       return `${row.country}, ${row.city}`
     }
