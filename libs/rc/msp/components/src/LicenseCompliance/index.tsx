@@ -45,10 +45,12 @@ export const LicenseCompliance = (props: ComplianceProps) => {
 
   useEffect(() => {
     if (queryData?.data?.compliances) {
-      const retData = queryData?.data?.compliances.filter(comp => comp.licenseType === 'APSW')
-      setSelfData(retData[0].self ?? emptyCompliance as ComplianceData)
-      if (retData[0].mspEcSummary)
-        setEcSummaryData(retData[0].mspEcSummary)
+      const retData = queryData.data.compliances.filter(comp => comp.licenseType === 'APSW')
+      if (retData.length > 0) {
+        setSelfData(retData[0].self ?? emptyCompliance as ComplianceData)
+        if (isMsp && retData[0].mspEcSummary)
+          setEcSummaryData(retData[0].mspEcSummary)
+      }
     }
   }, [queryData?.data])
 

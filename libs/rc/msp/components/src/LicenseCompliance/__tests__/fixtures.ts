@@ -1,3 +1,4 @@
+import { DeviceComplianceType } from '@acx-ui/msp/utils'
 
 export const fakeOwnAccount =
 {
@@ -8,28 +9,28 @@ export const fakeOwnAccount =
         tenantId: 'c5415309a2a14559a38d6707671c2997',
         tenantName: 'rec-1',
         licenseType: 'APSW',
-        deviceCompliances: {
-          EDGE: {
-            deviceType: 'EDGE',
-            installedDeviceCount: 5,
-            usedLicenseCount: 5
-          },
-          SWITCH: {
-            deviceType: 'SWITCH',
-            installedDeviceCount: 10,
-            usedLicenseCount: 10
-          },
-          WIFI: {
-            deviceType: 'WIFI',
+        deviceCompliances: [
+          {
+            deviceType: DeviceComplianceType.WIFI,
             installedDeviceCount: 20,
             usedLicenseCount: 20
           },
-          VIRTUAL_EDGE: {
-            deviceType: 'VIRTUAL_EDGE',
+          {
+            deviceType: DeviceComplianceType.SWITCH,
+            installedDeviceCount: 10,
+            usedLicenseCount: 10
+          },
+          {
+            deviceType: DeviceComplianceType.EDGE,
+            installedDeviceCount: 5,
+            usedLicenseCount: 5
+          },
+          {
+            deviceType: DeviceComplianceType.VIRTUAL_EDGE,
             installedDeviceCount: 5,
             usedLicenseCount: 25
           }
-        },
+        ],
         totalActivePaidLicenseCount: 20,
         totalActiveTrialLicenseCount: 10,
         nextPaidExpirationDate: '2024-09-23',
@@ -54,28 +55,28 @@ export const fakeMspSummary =
         licenseType: 'APSW',
         tenantId: '0b6aef780d8d40af8473a4bd8ab923ab',
         tenantName: 'msp-1',
-        deviceCompliances: {
-          EDGE: {
-            deviceType: 'EDGE',
-            installedDeviceCount: 5,
-            usedLicenseCount: 5
-          },
-          SWITCH: {
-            deviceType: 'SWITCH',
-            installedDeviceCount: 10,
-            usedLicenseCount: 10
-          },
-          WIFI: {
-            deviceType: 'WIFI',
+        deviceCompliances: [
+          {
+            deviceType: DeviceComplianceType.WIFI,
             installedDeviceCount: 20,
             usedLicenseCount: 20
           },
-          VIRTUAL_EDGE: {
-            deviceType: 'VIRTUAL_EDGE',
+          {
+            deviceType: DeviceComplianceType.SWITCH,
+            installedDeviceCount: 10,
+            usedLicenseCount: 10
+          },
+          {
+            deviceType: DeviceComplianceType.EDGE,
+            installedDeviceCount: 5,
+            usedLicenseCount: 5
+          },
+          {
+            deviceType: DeviceComplianceType.VIRTUAL_EDGE,
             installedDeviceCount: 5,
             usedLicenseCount: 25
           }
-        },
+        ],
         totalActivePaidLicenseCount: 20,
         totalActiveTrialLicenseCount: 10,
         nextPaidExpirationDate: '2024-09-23',
@@ -91,28 +92,24 @@ export const fakeMspSummary =
         licenseType: 'APSW',
         tenantId: 'e062a078b5dc427c97ebdcecaf65a34b',
         tenantName: 'msp-1',
-        deviceCompliances: {
-          EDGE: {
-            deviceType: 'EDGE',
-            installedDeviceCount: 10,
-            usedLicenseCount: 10
-          },
-          SWITCH: {
-            deviceType: 'SWITCH',
-            installedDeviceCount: 20,
-            usedLicenseCount: 20
-          },
-          WIFI: {
+        deviceCompliances: [
+          {
             deviceType: 'WIFI',
             installedDeviceCount: 100,
             usedLicenseCount: 100
           },
-          VIRTUAL_EDGE: {
+          {
+            deviceType: 'SWITCH',
+            installedDeviceCount: 20,
+            usedLicenseCount: 20
+          },
+
+          {
             deviceType: 'VIRTUAL_EDGE',
             installedDeviceCount: 10,
             usedLicenseCount: 50
           }
-        },
+        ],
         totalActivePaidLicenseCount: 200,
         totalActiveTrialLicenseCount: 50,
         nextPaidExpirationDate: '2024-12-31',
@@ -134,22 +131,22 @@ export const emptyCompliance =
   tenantName: '',
   deviceCompliances: [
     {
-      deviceType: 'EDGE',
+      deviceType: DeviceComplianceType.WIFI,
       installedDeviceCount: 0,
       usedLicenseCount: 0
     },
     {
-      deviceType: 'SWITCH',
+      deviceType: DeviceComplianceType.SWITCH,
       installedDeviceCount: 0,
       usedLicenseCount: 0
     },
     {
-      deviceType: 'WIFI',
+      deviceType: DeviceComplianceType.EDGE,
       installedDeviceCount: 0,
       usedLicenseCount: 0
     },
     {
-      deviceType: 'VIRTUAL_EDGE',
+      deviceType: DeviceComplianceType.VIRTUAL_EDGE,
       installedDeviceCount: 0,
       usedLicenseCount: 0
     }
