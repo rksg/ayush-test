@@ -397,7 +397,7 @@ export interface MeshStatus {
   uplinks?: MeshLinkStatus[],
   downlinks?: MeshLinkStatus[],
   neighbors?: MeshLinkStatus[],
-  radios?: meshRadioStatus[]
+  radios?: MeshRadioStatus[]
 }
 export interface APMesh {
   IP?: string
@@ -439,7 +439,7 @@ export interface RbacAPMesh {
   members: NewAPModel[]
 }
 
-export interface meshRadioStatus {
+export interface MeshRadioStatus {
   band: string
 }
 
