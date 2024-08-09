@@ -22,6 +22,127 @@ interface ComplianceProps {
   isMsp: boolean
 }
 
+const DeviceNetworkingCard = (props: LicenseCardProps) => {
+  const { $t } = useIntl()
+  const { title, subTitle, data, isMsp } = props
+
+  const wifiData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.WIFI)
+  const switchData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.SWITCH)
+  const virtualEdgeData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.VIRTUAL_EDGE)
+  const rwgData = data.deviceCompliances.find(item =>
+    item.deviceType === DeviceComplianceType.RWG)
+
+  return <Col style={{ width: '435px', paddingLeft: 0, marginTop: '15px' }}>
+    <Card>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
+        marginBottom: '10px' }}>
+        <div style={{ flexDirection: 'column', marginTop: '4px' }}>
+          <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
+          <UI.SubTitle>{$t({ defaultMessage: '{subTitle}' }, { subTitle })}</UI.SubTitle>
+        </div>
+        { data.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}
+      </div>
+
+      <UI.FieldLabelSubs width='275px'
+        style={{ fontWeight: '600', paddingBottom: '10px', borderBottom: '1px solid #02a7f0' }}>
+        <label>{$t({ defaultMessage: 'Devices' })}</label>
+        <label style={{ textAlign: 'center' }}>
+          {$t({ defaultMessage: 'Configured' })}</label>
+        <label style={{ textAlign: 'center' }}>
+          {$t({ defaultMessage: 'Licenses Used' })}</label>
+      </UI.FieldLabelSubs>
+
+      <UI.FieldLabelSubs width='275px' style={{ marginTop: '10px' }}>
+        <label>{$t({ defaultMessage: 'Access Points' })}</label>
+        <label style={{ textAlign: 'center' }}>
+          {wifiData?.installedDeviceCount}</label>
+        <label style={{ textAlign: 'center' }}>
+          {wifiData?.usedLicenseCount}</label>
+      </UI.FieldLabelSubs>
+      <UI.FieldLabelSubs width='275px'>
+        <label>{$t({ defaultMessage: 'Switches' })}</label>
+        <label style={{ textAlign: 'center' }}>
+          {switchData?.installedDeviceCount}</label>
+        <label style={{ textAlign: 'center' }}>
+          {switchData?.usedLicenseCount}</label>
+      </UI.FieldLabelSubs>
+      <UI.FieldLabelSubs width='275px'>
+        <label>{$t({ defaultMessage: 'SmartEdge vAppliances' })}</label>
+        <label style={{ textAlign: 'center' }}>
+          {virtualEdgeData?.installedDeviceCount}</label>
+        <label style={{ textAlign: 'center' }}>
+          {virtualEdgeData?.usedLicenseCount}</label>
+      </UI.FieldLabelSubs>
+      {/* <UI.FieldLabelSubs width='275px'>
+        <label>{$t({ defaultMessage: 'SmartEdge HW Appliances' })}</label>
+        <label style={{ textAlign: 'center' }}>{'--'}</label>
+        <label style={{ textAlign: 'center' }}>{'--'}</label>
+      </UI.FieldLabelSubs> */}
+      <UI.FieldLabelSubs width='275px'
+        style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
+        <label>{$t({ defaultMessage: 'RWGs' })}</label>
+        <label style={{ textAlign: 'center' }}>
+          {rwgData?.installedDeviceCount}</label>
+        <label style={{ textAlign: 'center' }}>
+          {rwgData?.usedLicenseCount}</label>
+      </UI.FieldLabelSubs>
+      {/* <UI.FieldLabelSubs width='275px'
+        style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
+        <label>{$t({ defaultMessage: 'SmartZones' })}</label>
+        <label style={{ textAlign: 'center' }}>{'--'}</label>
+        <label style={{ textAlign: 'center' }}>{'--'}</label>
+      </UI.FieldLabelSubs> */}
+
+      <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
+        <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
+          {data.totalActivePaidLicenseCount}</label>
+        {data.totalActivePaidLicenseCount > 0 &&
+          <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
+            {`(${data.nextTotalPaidExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
+            ${data.nextPaidExpirationDate})`}</label>}
+      </UI.FieldLabelSubs2>
+      <UI.FieldLabelSubs2 width='275px'>
+        <label>{$t({ defaultMessage: 'Active Trial Licenses' })}</label>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
+          {data.totalActiveTrialLicenseCount}</label>
+        {data.totalActiveTrialLicenseCount > 0 &&
+          <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
+            {`(${data.nextTotalTrialExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
+            ${data.nextTrialExpirationDate})`}</label>}
+      </UI.FieldLabelSubs2>
+
+      {isMsp && <div>
+        <UI.FieldLabelSubs2 width='275px'>
+          <label>{$t({ defaultMessage: 'Active Paid Assigned Licenses' })}</label>
+          <label style={{ textAlign: 'right', fontWeight: '600' }}>
+            {data.totalActivePaidAssignedLicenseCount}</label>
+        </UI.FieldLabelSubs2>
+        <UI.FieldLabelSubs2 width='275px'>
+          <label>{$t({ defaultMessage: 'Active Trial Assigned Licenses' })}</label>
+          <label style={{ textAlign: 'right', fontWeight: '600' }}>
+            {data.totalActiveTrialAssignedLicenseCount}</label>
+        </UI.FieldLabelSubs2>
+      </div>}
+      <UI.FieldLabelSubs2 width='275px'>
+        <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
+          {data.licensesUsed}</label>
+      </UI.FieldLabelSubs2>
+      <UI.FieldLabelSubs2 width='275px'>
+        <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
+        <label style={{ textAlign: 'right', fontWeight: '600' }}>
+          {data.licenseGap >= 0
+            ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
+            : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
+      </UI.FieldLabelSubs2>
+    </Card>
+  </Col>
+}
+
 export const LicenseCompliance = (props: ComplianceProps) => {
   const params = useParams()
   const [selfData, setSelfData] = useState(emptyCompliance as ComplianceData)
@@ -53,126 +174,6 @@ export const LicenseCompliance = (props: ComplianceProps) => {
       }
     }
   }, [queryData?.data])
-
-  const DeviceNetworkingCard = (props: LicenseCardProps) => {
-    const { $t } = useIntl()
-    const { title, subTitle, data, isMsp } = props
-
-    const wifiData = data.deviceCompliances.find(item =>
-      item.deviceType === DeviceComplianceType.WIFI)
-    const switchData = data.deviceCompliances.find(item =>
-      item.deviceType === DeviceComplianceType.SWITCH)
-    const edgeData = data.deviceCompliances.find(item =>
-      item.deviceType === DeviceComplianceType.EDGE)
-    const virtualEdgeData = data.deviceCompliances.find(item =>
-      item.deviceType === DeviceComplianceType.VIRTUAL_EDGE)
-
-    return <Col style={{ width: '435px', paddingLeft: 0, marginTop: '15px' }}>
-      <Card>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between',
-          marginBottom: '10px' }}>
-          <div style={{ flexDirection: 'column', marginTop: '4px' }}>
-            <UI.Title>{$t({ defaultMessage: '{title}' }, { title })}</UI.Title>
-            <UI.SubTitle>{$t({ defaultMessage: '{subTitle}' }, { subTitle })}</UI.SubTitle>
-          </div>
-          { data.licenseGap >= 0 ? <UI.GreenTickIcon /> : <UI.RedTickIcon />}
-        </div>
-
-        <UI.FieldLabelSubs width='275px'
-          style={{ fontWeight: '600', paddingBottom: '10px', borderBottom: '1px solid #02a7f0' }}>
-          <label>{$t({ defaultMessage: 'Devices' })}</label>
-          <label style={{ textAlign: 'center' }}>
-            {$t({ defaultMessage: 'Configured' })}</label>
-          <label style={{ textAlign: 'center' }}>
-            {$t({ defaultMessage: 'Licenses Used' })}</label>
-        </UI.FieldLabelSubs>
-
-        <UI.FieldLabelSubs width='275px' style={{ marginTop: '10px' }}>
-          <label>{$t({ defaultMessage: 'Access Points' })}</label>
-          <label style={{ textAlign: 'center' }}>
-            {wifiData?.installedDeviceCount}</label>
-          <label style={{ textAlign: 'center' }}>
-            {wifiData?.usedLicenseCount}</label>
-        </UI.FieldLabelSubs>
-        <UI.FieldLabelSubs width='275px'>
-          <label>{$t({ defaultMessage: 'Switches' })}</label>
-          <label style={{ textAlign: 'center' }}>
-            {switchData?.installedDeviceCount}</label>
-          <label style={{ textAlign: 'center' }}>
-            {switchData?.usedLicenseCount}</label>
-        </UI.FieldLabelSubs>
-        <UI.FieldLabelSubs width='275px'>
-          <label>{$t({ defaultMessage: 'SmartEdge vAppliances' })}</label>
-          <label style={{ textAlign: 'center' }}>
-            {virtualEdgeData?.installedDeviceCount}</label>
-          <label style={{ textAlign: 'center' }}>
-            {virtualEdgeData?.usedLicenseCount}</label>
-        </UI.FieldLabelSubs>
-        <UI.FieldLabelSubs width='275px'>
-          <label>{$t({ defaultMessage: 'SmartEdge HW Appliances' })}</label>
-          <label style={{ textAlign: 'center' }}>
-            {edgeData?.installedDeviceCount}</label>
-          <label style={{ textAlign: 'center' }}>
-            {edgeData?.usedLicenseCount}</label>
-        </UI.FieldLabelSubs>
-        <UI.FieldLabelSubs width='275px'>
-          <label>{$t({ defaultMessage: 'RWGs' })}</label>
-          <label style={{ textAlign: 'center' }}>{'--'}</label>
-          <label style={{ textAlign: 'center' }}>{'--'}</label>
-        </UI.FieldLabelSubs>
-        <UI.FieldLabelSubs width='275px'
-          style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
-          <label>{$t({ defaultMessage: 'SmartZones' })}</label>
-          <label style={{ textAlign: 'center' }}>{'--'}</label>
-          <label style={{ textAlign: 'center' }}>{'--'}</label>
-        </UI.FieldLabelSubs>
-
-        <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
-          <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
-          <label style={{ textAlign: 'right', fontWeight: '600' }}>
-            {data.totalActivePaidLicenseCount}</label>
-          {data.totalActivePaidLicenseCount > 0 &&
-            <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
-              {`(${data.nextTotalPaidExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
-              ${data.nextPaidExpirationDate})`}</label>}
-        </UI.FieldLabelSubs2>
-        <UI.FieldLabelSubs2 width='275px'>
-          <label>{$t({ defaultMessage: 'Active Trial Licenses' })}</label>
-          <label style={{ textAlign: 'right', fontWeight: '600' }}>
-            {data.totalActiveTrialLicenseCount}</label>
-          {data.totalActiveTrialLicenseCount > 0 &&
-            <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
-              {`(${data.nextTotalTrialExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
-              ${data.nextTrialExpirationDate})`}</label>}
-        </UI.FieldLabelSubs2>
-
-        {isMsp && <div>
-          <UI.FieldLabelSubs2 width='275px'>
-            <label>{$t({ defaultMessage: 'Active Paid Assigned Licenses' })}</label>
-            <label style={{ textAlign: 'right', fontWeight: '600' }}>
-              {data.totalActivePaidAssignedLicenseCount}</label>
-          </UI.FieldLabelSubs2>
-          <UI.FieldLabelSubs2 width='275px'>
-            <label>{$t({ defaultMessage: 'Active Trial Assigned Licenses' })}</label>
-            <label style={{ textAlign: 'right', fontWeight: '600' }}>
-              {data.totalActiveTrialAssignedLicenseCount}</label>
-          </UI.FieldLabelSubs2>
-        </div>}
-        <UI.FieldLabelSubs2 width='275px'>
-          <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
-          <label style={{ textAlign: 'right', fontWeight: '600' }}>
-            {data.licensesUsed}</label>
-        </UI.FieldLabelSubs2>
-        <UI.FieldLabelSubs2 width='275px'>
-          <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
-          <label style={{ textAlign: 'right', fontWeight: '600' }}>
-            {data.licenseGap >= 0
-              ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
-              : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
-        </UI.FieldLabelSubs2>
-      </Card>
-    </Col>
-  }
 
   return isMsp
     ? <UI.ComplianceContainer>

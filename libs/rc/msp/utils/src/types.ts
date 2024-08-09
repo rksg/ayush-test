@@ -486,7 +486,8 @@ export enum DeviceComplianceType {
   WIFI = 'WIFI',
   SWITCH = 'SWITCH',
   EDGE = 'EDGE',
-  VIRTUAL_EDGE = 'VIRTUAL_EDGE'
+  VIRTUAL_EDGE = 'VIRTUAL_EDGE',
+  RWG = 'RWG'
 }
 
 export interface DeviceCompliance {
