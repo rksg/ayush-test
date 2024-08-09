@@ -30,7 +30,7 @@ export const MSPUtils = () => {
   }
 
   const isOnboardedMsp = (msp: MspProfile | undefined): boolean => {
-    if (msp?.msp_label !== '') {
+    if (!!msp?.msp_label) {
       return true
     }
 
