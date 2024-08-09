@@ -140,7 +140,7 @@ export const DataPromptActionDefaultValue: {
   continueButtonText: 'Continue',
   displayBackButton: true,
   displayContinueButton: true,
-  fields: [{ type: 'username', label: 'Username' }]
+  variables: [{ type: 'USER_NAME', label: 'Username' }]
 }
 
 export const DisplayMessageActionDefaultValue: {

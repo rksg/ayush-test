@@ -14,7 +14,7 @@ describe('DataPromptSettings', () => {
   it('should render the form with default values', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('fields', [{ type: 'username', label: 'Username' }])
+      form.setFieldValue('variables', [{ type: 'USER_NAME', label: 'Username' }])
       return form
     })
     render(
@@ -78,7 +78,7 @@ describe('DataPromptSettings', () => {
   it('should adds field when clicking add button',async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('fields', [{ type: 'username', label: 'Username' }])
+      form.setFieldValue('variables', [{ type: 'USER_NAME', label: 'Username' }])
       return form
     })
     render(
@@ -105,8 +105,8 @@ describe('DataPromptSettings', () => {
   it('should validate duplicate type',async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('fields', [{ type: 'username', label: 'Username' },
-        { type: 'username', label: 'Username1' }
+      form.setFieldValue('variables', [{ type: 'USER_NAME', label: 'Username' },
+        { type: 'USER_NAME', label: 'Username1' }
       ])
       return form
     })
@@ -130,7 +130,7 @@ describe('DataPromptSettings', () => {
   it('should validate the fields minimum length', async () => {
     const { result: formRef } = renderHook(() => {
       const [ form ] = Form.useForm()
-      form.setFieldValue('fields', [{ type: 'username', label: '' }])
+      form.setFieldValue('variables', [{ type: 'USER_NAME', label: '' }])
       return form
     })
 

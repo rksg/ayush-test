@@ -41,7 +41,7 @@ export interface DataPromptAction extends ActionBase {
   displayTitle: boolean,
   messageHtml?: string, // max = 1000
   displayMessageHtml: boolean
-  fields?: DataPromptVariable[],
+  variables?: DataPromptVariable[],
   bottomLabel?: string // max = 1000
   backButtonText: string,
   continueButtonText: string,

@@ -17,20 +17,20 @@ interface FieldType {
 export function DataPromptField () {
   const { $t } = useIntl()
   const fieldTypes: FieldType[] = [
-    { value: 'username', label: $t({ defaultMessage: 'Username' }) }
-    , { value: 'email', label: $t({ defaultMessage: 'Email Address' }) }
-    , { value: 'phoneNumber', label: $t({ defaultMessage: 'Phone Number' }) }
-    , { value: 'firstName', label: $t({ defaultMessage: 'First Name' }) }
-    , { value: 'lastName', label: $t({ defaultMessage: 'Last Name' }) }
-    , { value: 'inputField1', label: $t({ defaultMessage: 'Custom Field 1' }) }
-    , { value: 'inputField2', label: $t({ defaultMessage: 'Custom Field 2' }) }
-    , { value: 'inputField3', label: $t({ defaultMessage: 'Custom Field 3' }) }
-    , { value: 'inputField4', label: $t({ defaultMessage: 'Custom Field 4' }) }
-    , { value: 'inputField5', label: $t({ defaultMessage: 'Custom Field 5' }) }
-    , { value: 'inputField6', label: $t({ defaultMessage: 'Custom Field 6' }) }]
+    { value: 'USER_NAME', label: $t({ defaultMessage: 'Username' }) }
+    , { value: 'EMAIL', label: $t({ defaultMessage: 'Email Address' }) }
+    , { value: 'PHONE', label: $t({ defaultMessage: 'Phone Number' }) }
+    , { value: 'FIRST_NAME', label: $t({ defaultMessage: 'First Name' }) }
+    , { value: 'LAST_NAME', label: $t({ defaultMessage: 'Last Name' }) }
+    , { value: 'INPUT_FIELD_1', label: $t({ defaultMessage: 'Custom Field 1' }) }
+    , { value: 'INPUT_FIELD_2', label: $t({ defaultMessage: 'Custom Field 2' }) }
+    , { value: 'INPUT_FIELD_3', label: $t({ defaultMessage: 'Custom Field 3' }) }
+    , { value: 'INPUT_FIELD_4', label: $t({ defaultMessage: 'Custom Field 4' }) }
+    , { value: 'INPUT_FIELD_5', label: $t({ defaultMessage: 'Custom Field 5' }) }
+    , { value: 'INPUT_FIELD_6', label: $t({ defaultMessage: 'Custom Field 6' }) }]
 
 
-  const selectedTypes = Form.useWatch<DataPromptVariable[]>('fields')
+  const selectedTypes = Form.useWatch<DataPromptVariable[]>('variables')
   const validateDuplicateType = (selectedType: string) => {
 
     if (selectedTypes.filter(item =>
@@ -41,11 +41,11 @@ export function DataPromptField () {
     return Promise.resolve()
   }
   return (
-    <Form.List name={'fields'}>
-      {(fields, { add, remove }) => {
+    <Form.List name={'variables'}>
+      {(variables, { add, remove }) => {
         return (
           <>
-            {fields.map((field, index) => (
+            {variables.map((field, index) => (
               <div key={field.key} data-testid={'field'+index}>
                 <FieldLabel width='555px' key={'label_'+index}>
                   {`${$t({ defaultMessage: 'Field' })} ${index + 1}`}
