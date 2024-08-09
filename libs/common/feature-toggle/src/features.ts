@@ -55,7 +55,6 @@ export enum Features {
   HELP_SUPPORT = 'acx-ui-help-support',
   HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
   I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
-  I18N_DE_ZH_TOGGLE = 'acx-ui-i18n-de-zh-toggle',
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
   INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
