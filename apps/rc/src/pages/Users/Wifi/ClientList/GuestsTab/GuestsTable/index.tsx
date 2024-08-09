@@ -65,10 +65,12 @@ const defaultGuestNetworkPayload = {
   pageSize: 10000
 }
 
+export const operationRoles =
+[RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.GUEST_MANAGER]
+
 export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
   const filters = {
@@ -78,7 +80,7 @@ export const GuestsTable = () => {
   const queryOptions = {
     defaultPayload: {
       ...defaultGuestPayload,
-      filters: filters
+      filters
     },
     search: {
       searchTargetFields: ['name', 'mobilePhoneNumber', 'emailAddress']
@@ -106,12 +108,10 @@ export const GuestsTable = () => {
       </span>
       {
         hasPermission({
-          scopes: [WifiScopes.CREATE],
-          allowedOperations: 'POST:/wifiNetworks'
+          scopes: [WifiScopes.CREATE]
         }) &&
         <Button type='link'
           onClick={() => setNetworkModalVisible(true)}
-          disabled={!isServicesEnabled}
           size='small'>
           {$t({ defaultMessage: 'Add Guest Pass Network' })}
         </Button>
@@ -329,7 +329,7 @@ export const GuestsTable = () => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       scopeKey: [WifiScopes.DELETE],
-      allowedOperations: 'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      roles: operationRoles,
       onClick: (selectedRows:Guest[]) => {
         guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
       }
@@ -338,7 +338,7 @@ export const GuestsTable = () => {
       key: 'downloadInformation',
       label: $t({ defaultMessage: 'Download Information' }),
       scopeKey: [WifiScopes.READ],
-      allowedOperations: 'POST:/guestUsers',
+      operationRoles,
       onClick: (selectedRows:Guest[]) => {
         guestAction.showDownloadInformation(selectedRows, params.tenantId)
       }
@@ -347,7 +347,7 @@ export const GuestsTable = () => {
       key: 'generatePassword',
       label: $t({ defaultMessage: 'Generate New Password' }),
       scopeKey: [WifiScopes.UPDATE],
-      allowedOperations: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      roles: operationRoles,
       visible: (selectedRows:Guest[]) => {
         if (selectedRows.length !== 1) { return false }
         const guestDetail = selectedRows[0]
@@ -362,7 +362,7 @@ export const GuestsTable = () => {
       key: 'disableGuest',
       label: $t({ defaultMessage: 'Disable' }),
       scopeKey: [WifiScopes.UPDATE],
-      allowedOperations: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      roles: operationRoles,
       visible: (selectedRows:Guest[]) => {
         return selectedRows.length === 1 &&
           !_.isEmpty(selectedRows[0].wifiNetworkId) &&
@@ -376,7 +376,7 @@ export const GuestsTable = () => {
       key: 'enableGuest',
       label: $t({ defaultMessage: 'Enable' }),
       scopeKey: [WifiScopes.UPDATE],
-      allowedOperations: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      roles: operationRoles,
       visible: (selectedRows:Guest[]) => {
         return selectedRows.length === 1 &&
           !_.isEmpty(selectedRows[0].wifiNetworkId) &&
@@ -386,7 +386,7 @@ export const GuestsTable = () => {
       { guestAction.enableGuest(selectedRows[0], params.tenantId)}
     }
   ].filter(item =>
-    hasPermission({ scopes: item.scopeKey, allowedOperations: item.allowedOperations }))
+    hasPermission({ scopes: item.scopeKey, roles: item.roles }))
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestType?.includes('SelfSign')) {
@@ -401,7 +401,6 @@ export const GuestsTable = () => {
     tableQuery.handleFilterChange(customFilters,customSearch)
   }
 
-  //setGuestCount?.(tableQuery.data?.totalCount || 0)
   return (
     <Loader states={[
       tableQuery
@@ -428,22 +427,21 @@ export const GuestsTable = () => {
         actions={[{
           key: 'addGuest',
           scopeKey: [WifiScopes.CREATE],
-          allowedOperationUrl: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+          roles: operationRoles,
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
           key: 'addNetworks',
           scopeKey: [WifiScopes.CREATE],
-          allowedOperationUrl: 'POST:/wifiNetworks',
+          roles: operationRoles.filter(role => role !== RolesEnum.GUEST_MANAGER),
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
-          onClick: () => {setNetworkModalVisible(true) },
-          disabled: !isServicesEnabled
+          onClick: () => {setNetworkModalVisible(true) }
         },
         {
           key: 'importGuests',
           scopeKey: [WifiScopes.CREATE],
-          allowedOperationUrl: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+          roles: operationRoles,
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
@@ -451,7 +449,7 @@ export const GuestsTable = () => {
           .filter(item =>
             hasPermission({
               scopes: item.scopeKey,
-              allowedOperations: item.allowedOperationUrl
+              roles: item.roles
             }))}
       />
 

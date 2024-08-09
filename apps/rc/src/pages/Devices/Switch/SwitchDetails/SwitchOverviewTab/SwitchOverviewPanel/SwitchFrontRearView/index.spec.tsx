@@ -14,7 +14,6 @@ import { stackMembersData, standaloneFront, standaloneRear, switchDetailSatckOnl
 import { SwitchFrontRearView, SwitchPanelContext } from '.'
 
 export const panelContext = {
-  editPortsFromPanelEnabled: true,
   editPortDrawerVisible: false,
   setEditPortDrawerVisible: () => {},
   breakoutPortDrawerVisible: false,

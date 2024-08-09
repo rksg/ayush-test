@@ -1,4 +1,4 @@
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   ApDetails, ApDeviceStatusEnum, ApPosition, CommonUrlsInfo,
   FloorPlanDto, NetworkDeviceType, SwitchStatusEnum,
@@ -199,7 +199,7 @@ describe('AP floorplan', () => {
   })
 
   it('should render floorplan with mesh info', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(
       rest.post(

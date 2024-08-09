@@ -6,6 +6,7 @@ import { capitalize, includes }     from 'lodash'
 import { useIntl }                  from 'react-intl'
 
 import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
+import { get }                                 from '@acx-ui/config'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   EditPortDrawer,
@@ -52,10 +53,10 @@ interface ApDetailsDrawerProps {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
+  const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
   const routeParams = useParams()
