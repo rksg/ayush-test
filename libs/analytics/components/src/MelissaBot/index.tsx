@@ -285,10 +285,10 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
   },[])
   const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: $t({ defaultMessage: 'My Network' }),
-      tooltip: $t({ defaultMessage: 'Provides AI assistance to retrieve network-specific information by interpreting your request, analyzing your network data, and delivering insightful responses and recommendations.' }),
+      tooltip: $t({ defaultMessage: 'Use power of RUCKUS Network Intelligence, to interpret your network data and generate meaningful insights.' }),
       children: <div/>, value: 'my-network' },
     { label: $t({ defaultMessage: 'General' }),
-      tooltip: $t({ defaultMessage: 'Provides generative AI assistance by interpreting your request and retrieving product-focused technical information and usage guidelines from published RUCKUS AI resources.' }),
+      tooltip: $t({ defaultMessage: 'Use power of Generative AI to get RUCKUS product details and technical knowledge.' }),
       children: <div/>, value: 'general' }
   ]
   return (<>{state.showFloatingButton && <MelissaIcon
