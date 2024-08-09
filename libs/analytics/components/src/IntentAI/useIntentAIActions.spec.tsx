@@ -21,7 +21,7 @@ import { IntentListItem, OptimizeAllMutationResponse } from './services'
 import { useIntentAIActions  }                         from './useIntentAIActions'
 
 const mockedOptimizeAllIntent = jest.fn()
-const mockedRecommendationWlansQuery = jest.fn()
+const mockedIntentWlansQuery = jest.fn()
 const mockedVenueRadioActiveNetworksQuery = jest.fn()
 
 const raiWlans = [
@@ -34,12 +34,9 @@ const r1Wlans = [
   { id: 'i5', name: 'n5', ssid: 's5' },
   { id: 'i6', name: 'n6', ssid: 's6' }]
 
-jest.mock('../Recommendations/services', () => ({
-  ...jest.requireActual<typeof import('../Recommendations/services')>('../Recommendations/services'),
-  useLazyRecommendationWlansQuery: () => [mockedRecommendationWlansQuery]
-}))
 jest.mock('./services', () => ({
   ...jest.requireActual<typeof import('./services')>('./services'),
+  useLazyIntentWlansQuery: () => [mockedIntentWlansQuery],
   useOptimizeAllIntentMutation: () => [mockedOptimizeAllIntent]
 }))
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -71,7 +68,7 @@ describe('useIntentAIActions', () => {
   beforeEach(() => {
     const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
     mockedOptimizeAllIntent.mockReturnValue(Promise.resolve(resp))
-    mockedRecommendationWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
+    mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
     mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
@@ -203,13 +200,13 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = { ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem } as IntentListItem
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { fetchWlans } = result.current
         act(() => {
-          fetchWlans(selectedRow[0].id, selectedRow[0].code, selectedRow[0].path)
+          fetchWlans(selectedRow)
         })
         await waitFor(() => expect(mockedVenueRadioActiveNetworksQuery).toBeCalledTimes(1))
       })
@@ -414,15 +411,16 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle fetchWlans correctly', async () => {
-        const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+        const selectedRow = { ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem } as IntentListItem
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
         const { fetchWlans } = result.current
         act(() => {
-          fetchWlans(selectedRow[0].id, selectedRow[0].code, selectedRow[0].path)
+          fetchWlans(selectedRow)
         })
-        await waitFor(() => expect(mockedRecommendationWlansQuery).toBeCalledTimes(1))
+        await waitFor(() => expect(mockedIntentWlansQuery).toBeCalledTimes(1))
+        expect(mockedIntentWlansQuery).toHaveBeenCalledWith(selectedRow)
       })
     })
 
