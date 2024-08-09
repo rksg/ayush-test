@@ -24,6 +24,24 @@ import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
+const genClassTextForToolTip =
+  (trafficClass: string, priority: string, priorityScheduling: boolean) => {
+    const trafficClassEnumValue =
+    EdgeQosTrafficClass[trafficClass as keyof typeof EdgeQosTrafficClass]
+    const capFirstClass = _.capitalize(trafficClassEnumValue)
+    const capFirstPriority = _.capitalize(priority)
+    const starSolidWhite = priorityScheduling === true ?
+      <UI.StarSolidCustom
+        height={8}
+        width={12}
+        color={cssStr('--acx-primary-white')}/> : undefined
+    return <>{capFirstClass + ' (' + capFirstPriority + ') '}{starSolidWhite}</>
+  }
+
+const genBandWidthTextForToolTip = (bandwidth: number) => {
+  return bandwidth ? bandwidth + '%' : ''
+}
+
 const EdgeQosBandwidthTable = () => {
 
   const { $t } = useIntl()
@@ -78,24 +96,6 @@ const EdgeQosBandwidthTable = () => {
     })
 
   const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeQosProfileMutation()
-
-  const genClassTextForToolTip =
-  (trafficClass: string, priority: string, priorityScheduling: boolean) => {
-    const trafficClassEnumValue =
-    EdgeQosTrafficClass[trafficClass as keyof typeof EdgeQosTrafficClass]
-    const capFirstClass = _.capitalize(trafficClassEnumValue)
-    const capFirstPriority = _.capitalize(priority)
-    const starSolidWhite = priorityScheduling === true ?
-      <UI.StarSolidCustom
-        height={8}
-        width={12}
-        color={cssStr('--acx-primary-white')}/> : undefined
-    return <>{capFirstClass + ' (' + capFirstPriority + ') '}{starSolidWhite}</>
-  }
-
-  const genBandWidthTextForToolTip = (bandwidth: number) => {
-    return bandwidth ? bandwidth + '%' : ''
-  }
 
   const tracfficClassColumns: TableProps<TrafficClassSetting>['columns'] = [
     {
