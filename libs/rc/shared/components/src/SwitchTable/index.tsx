@@ -139,9 +139,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
-  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
-    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = `assets/templates/${isHospitality}switches_import_template.csv`
 
   useImperativeHandle(ref, () => ({

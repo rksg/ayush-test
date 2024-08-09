@@ -269,8 +269,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/apModelFirmwares/batchOperations/:batchId/venues/:venueId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
+      Accept: 'application/vnd.ruckus.v1+json'
     }
   },
   getApModelScheduledFirmware: {

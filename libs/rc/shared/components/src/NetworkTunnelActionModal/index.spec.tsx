@@ -1,65 +1,53 @@
-import { within }          from '@testing-library/react'
+import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { cloneDeep, find } from 'lodash'
-import { rest }            from 'msw'
 
-import { EdgeSdLanFixtures, EdgeSdLanUrls, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { EdgeSdLanFixtures, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
+import { mockDeepNetworkList } from './__tests__/fixtures'
 
-import { mockDeepNetworkList } from '../__tests__/fixtures'
-
-import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from './EdgeMvSdLanContextProvider'
-
-import { NetworkMvTunnelModal } from '.'
+import { NetworkTunnelActionModal, NetworkTunnelTypeEnum } from '.'
 
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useHelpPageLink: () => ''
 }))
 
+jest.mock('../useEdgeActions', () => ({
+  ...jest.requireActual('../useEdgeActions'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(true)
+}))
+
 const mockedActivateReq = jest.fn()
 const mockedDeactivateReq = jest.fn()
-const mockedGetVenueSdlanFn = jest.fn()
+const mockedGetVenueSdLanFn = jest.fn()
+const mockedOnFinish = jest.fn()
+jest.mock('./useEdgeMvSdLanData', () => ({
+  ...jest.requireActual('./useEdgeMvSdLanData'),
+  useEdgeMvSdLanData: () => ({
+    getVenueSdLan: mockedGetVenueSdLanFn
+  })
+}))
+
 const { click } = userEvent
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 
 const mockedNetworksData = mockDeepNetworkList
 const mockedSdLan = mockedMvSdLanDataList[0]
 
-const edgeMvSdlanContextValues = {
-  allSdLans: mockedMvSdLanDataList,
-  getVenueSdLan: mockedGetVenueSdlanFn
-} as EdgeMvSdLanContextType
-
-describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
+describe('NetworkTunnelModal', () => {
   beforeEach(() => {
     mockedActivateReq.mockReset()
     mockedDeactivateReq.mockReset()
-    mockedGetVenueSdlanFn.mockReset()
-
-    mockServer.use(
-      rest.put(
-        EdgeSdLanUrls.activateEdgeMvSdLanNetwork.url,
-        (req, res, ctx) => {
-          mockedActivateReq(req.params, req.body)
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeSdLanUrls.deactivateEdgeMvSdLanNetwork.url,
-        (req, res, ctx) => {
-          mockedDeactivateReq(req.params)
-          return res(ctx.status(202))
-        }
-      )
-    )
+    mockedGetVenueSdLanFn.mockReset()
+    mockedOnFinish.mockReset()
   })
+
   describe('SD-LAN exist', () => {
     describe('DC case', () => {
       const mockedDcSdlan = cloneDeep(mockedSdLan)
@@ -71,7 +59,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
       const sdlanVenueName = mockedDcSdlan.tunneledWlans![0].venueName
 
       beforeEach(() => {
-        mockedGetVenueSdlanFn.mockReturnValue(mockedDcSdlan)
+        mockedGetVenueSdLanFn.mockReturnValue(mockedDcSdlan)
       })
 
       it('should correctly render DC case', async () => {
@@ -79,23 +67,22 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
 
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={{
-                  id: targetNetwork.id,
-                  type: targetNetwork!.type,
-                  venueId: sdlanVenueId,
-                  venueName: sdlanVenueName
-                }}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={{
+                id: targetNetwork.id,
+                type: targetNetwork!.type,
+                venueId: sdlanVenueId,
+                venueName: sdlanVenueName
+              }}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
         const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-        expect(localBreakout).not.toBeChecked()
+        await waitFor(() => expect(localBreakout).not.toBeChecked())
         // eslint-disable-next-line max-len
         const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedDcSdlan.name} )` })
         expect(tunneling).toBeChecked()
@@ -111,23 +98,22 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
 
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={{
-                  id: targetNetwork.id,
-                  type: targetNetwork.type,
-                  venueId: sdlanVenueId,
-                  venueName: sdlanVenueName
-                }}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={{
+                id: targetNetwork.id,
+                type: targetNetwork.type,
+                venueId: sdlanVenueId,
+                venueName: sdlanVenueName
+              }}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
         const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-        expect(localBreakout).toBeChecked()
+        await waitFor(() => expect(localBreakout).toBeChecked())
         // eslint-disable-next-line max-len
         const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedDcSdlan.name} )` })
         expect(tunneling).not.toBeChecked()
@@ -137,12 +123,13 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
         expect(screen.queryByRole('switch')).toBeNull()
         await click(tunneling)
         await click(screen.getByRole('button', { name: 'Apply' }))
-        expect(mockedActivateReq).toBeCalledTimes(1)
-        expect(mockedActivateReq).toBeCalledWith({
-          serviceId: mockedDcSdlan.id,
-          venueId: sdlanVenueId,
-          wifiNetworkId: targetNetwork.id
-        }, { isGuestTunnelUtilized: false })
+        expect(mockedOnFinish).toBeCalledTimes(1)
+        expect(mockedOnFinish.mock.calls[0][0]).toStrictEqual({
+          sdLan: {
+            isGuestTunnelEnabled: false
+          },
+          tunnelType: NetworkTunnelTypeEnum.SdLan
+        })
       })
     })
 
@@ -159,24 +146,23 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
       }
 
       beforeEach(() => {
-        mockedGetVenueSdlanFn.mockReturnValue(mockedSdLan)
+        mockedGetVenueSdLanFn.mockReturnValue(mockedSdLan)
       })
 
       it('should correctly render DMZ case', async () => {
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={defaultNetworkData}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={defaultNetworkData}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(defaultNetworkData.venueName)
         const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-        expect(localBreakout).not.toBeChecked()
+        await waitFor(() => expect(localBreakout).not.toBeChecked())
         // eslint-disable-next-line max-len
         const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedSdLan.name} )` })
         expect(tunneling).toBeChecked()
@@ -193,23 +179,22 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
 
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={{
-                  id: anotherGuestNetwork.id,
-                  type: anotherGuestNetwork.type,
-                  venueId: sdlanVenueId,
-                  venueName: sdlanVenueName
-                }}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={{
+                id: anotherGuestNetwork.id,
+                type: anotherGuestNetwork.type,
+                venueId: sdlanVenueId,
+                venueName: sdlanVenueName
+              }}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
         const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-        expect(localBreakout).toBeChecked()
+        await waitFor(() => expect(localBreakout).toBeChecked())
         // eslint-disable-next-line max-len
         const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedSdLan.name} )` })
         expect(tunneling).not.toBeChecked()
@@ -218,125 +203,127 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
 
         // change to DC case
         await click(tunneling)
-        const fwdGuest = screen.getByRole('switch')
+        const fwdGuest = await screen.findByRole('switch')
+        await screen.findByText(/SE_Cluster 3/)
         // default enabled
         expect(fwdGuest).toBeChecked()
         expect(fwdGuest).not.toBeDisabled()
         await click(screen.getByRole('button', { name: 'Apply' }))
-        expect(mockedActivateReq).toBeCalledTimes(1)
-        expect(mockedActivateReq).toBeCalledWith({
-          serviceId: mockedSdLan.id,
-          venueId: sdlanVenueId,
-          wifiNetworkId: anotherGuestNetwork.id
-        }, { isGuestTunnelUtilized: true })
+        expect(mockedOnFinish).toBeCalledTimes(1)
+        expect(mockedOnFinish.mock.calls[0][0]).toStrictEqual({
+          sdLan: {
+            isGuestTunnelEnabled: true
+          },
+          tunnelType: NetworkTunnelTypeEnum.SdLan
+        })
       })
 
       it('should change tunnel from DC into DMZ', async () => {
         const mockedNoGuestNetwork = cloneDeep(mockedSdLan)
         mockedNoGuestNetwork.tunneledGuestWlans = []
-        mockedGetVenueSdlanFn.mockReturnValue(mockedNoGuestNetwork)
+        mockedGetVenueSdLanFn.mockReturnValue(mockedNoGuestNetwork)
 
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={defaultNetworkData}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={defaultNetworkData}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(defaultNetworkData.venueName)
         // eslint-disable-next-line max-len
         const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedNoGuestNetwork.name} )` })
-        expect(tunneling).toBeChecked()
+        await waitFor(() => expect(tunneling).toBeChecked())
         const fwdGuest = screen.getByRole('switch')
         expect(fwdGuest).not.toBeChecked()
         await click(fwdGuest)
         await click(screen.getByRole('button', { name: 'Apply' }))
-        expect(mockedActivateReq).toBeCalledTimes(1)
-        expect(mockedActivateReq).toBeCalledWith({
-          serviceId: mockedNoGuestNetwork.id,
-          venueId: sdlanVenueId,
-          wifiNetworkId: targetNetwork!.id
-        }, { isGuestTunnelUtilized: true })
+        expect(mockedOnFinish).toBeCalledTimes(1)
+        expect(mockedOnFinish.mock.calls[0][0]).toStrictEqual({
+          sdLan: {
+            isGuestTunnelEnabled: true
+          },
+          tunnelType: NetworkTunnelTypeEnum.SdLan
+        })
       })
 
-      it('should change tunnel from DC into DMZ and greyout', async () => {
-        render(
-          <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={{
-                  ...defaultNetworkData,
-                  venueId: 'mock_venue_3',
-                  venueName: 'Mocked-Venue-3'
-                }}
-              />
-            </EdgeMvSdLanContext.Provider>
-          </Provider>, { route: { params: { tenantId: 't-id' } } })
+      // TODO: shoud add back when `popup confirm dialog: ACX-58399` ready
+      // it('should change tunnel from DC into DMZ and popup conflict', async () => {
+      //   render(
+      //     <Provider>
+      //       <NetworkTunnelActionModal
+      //         visible={true}
+      //         onClose={() => {}}
+      //         network={{
+      //           ...defaultNetworkData,
+      //           venueId: 'mock_venue_3',
+      //           venueName: 'Mocked-Venue-3'
+      //         }}
+      //         onFinish={mockedOnFinish}
+      //       />
+      //     </Provider>, { route: { params: { tenantId: 't-id' } } })
 
-        await checkPageLoaded('Mocked-Venue-3')
-        const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-        expect(localBreakout).toBeChecked()
-        // eslint-disable-next-line max-len
-        const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedSdLan.name} )` })
-        await click(tunneling)
-        expect(tunneling).toBeChecked()
-        const fwdGuest = screen.getByRole('switch')
-        expect(fwdGuest).toBeChecked()
-        expect(fwdGuest).toBeDisabled()
-      })
+      //   await checkPageLoaded('Mocked-Venue-3')
+      //   const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
+      //   await waitFor(() => expect(localBreakout).toBeChecked())
+      //   // eslint-disable-next-line max-len
+      //   const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedSdLan.name} )` })
+      //   await click(tunneling)
+      //   expect(tunneling).toBeChecked()
+      //   const fwdGuest = screen.getByRole('switch')
+      //   expect(fwdGuest).toBeChecked()
+      //   expect(fwdGuest).toBeDisabled()
+      // })
 
       it('should change tunnel from DMZ into DC', async () => {
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={defaultNetworkData}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={defaultNetworkData}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
         const fwdGuest = await screen.findByRole('switch')
-        expect(fwdGuest).toBeChecked()
+        await waitFor(() => expect(fwdGuest).toBeChecked())
         await click(fwdGuest)
         await click(screen.getByRole('button', { name: 'Apply' }))
-        expect(mockedActivateReq).toBeCalledTimes(1)
-        expect(mockedActivateReq).toBeCalledWith({
-          serviceId: mockedSdLan.id,
-          venueId: sdlanVenueId,
-          wifiNetworkId: targetNetwork!.id
-        }, { isGuestTunnelUtilized: false })
+        expect(mockedOnFinish).toBeCalledTimes(1)
+        expect(mockedOnFinish.mock.calls[0][0]).toStrictEqual({
+          sdLan: {
+            isGuestTunnelEnabled: false
+          },
+          tunnelType: NetworkTunnelTypeEnum.SdLan
+        })
       })
 
       it('should change tunnel from DMZ into local breakout', async () => {
         render(
           <Provider>
-            <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-              <NetworkMvTunnelModal
-                visible={true}
-                onClose={() => {}}
-                network={defaultNetworkData}
-              />
-            </EdgeMvSdLanContext.Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={() => {}}
+              network={defaultNetworkData}
+              onFinish={mockedOnFinish}
+            />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
         await checkPageLoaded(sdlanVenueName)
-        expect(await screen.findByRole('switch')).toBeChecked()
+        await waitFor(async () => expect(await screen.findByRole('switch')).toBeChecked())
         await click(screen.getByRole('radio', { name: 'Local Breakout' }))
         await click(screen.getByRole('button', { name: 'Apply' }))
-        expect(mockedDeactivateReq).toBeCalledTimes(1)
-        expect(mockedDeactivateReq).toBeCalledWith({
-          serviceId: mockedSdLan.id,
-          venueId: sdlanVenueId,
-          wifiNetworkId: targetNetwork!.id
+        expect(mockedOnFinish).toBeCalledTimes(1)
+        expect(mockedOnFinish.mock.calls[0][0]).toStrictEqual({
+          sdLan: {
+            isGuestTunnelEnabled: true
+          },
+          tunnelType: NetworkTunnelTypeEnum.None
         })
       })
     })
@@ -344,7 +331,7 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
 
   describe('No existing SD-LAN', () => {
     beforeEach(() => {
-      mockedGetVenueSdlanFn.mockReturnValue(undefined)
+      mockedGetVenueSdLanFn.mockReturnValue(undefined)
     })
     it('should correctly display when no SDLAN run on this venue', async () => {
       const mockedNetworkData = {
@@ -356,27 +343,45 @@ describe('Edge SD-LAN multi venue NetworkTunnelModal', () => {
 
       render(
         <Provider>
-          <EdgeMvSdLanContext.Provider value={edgeMvSdlanContextValues}>
-            <NetworkMvTunnelModal
-              visible={true}
-              onClose={() => {}}
-              network={mockedNetworkData}
-            />
-          </EdgeMvSdLanContext.Provider>
+          <NetworkTunnelActionModal
+            visible={true}
+            onClose={() => {}}
+            network={mockedNetworkData}
+            onFinish={mockedOnFinish}
+          />
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
       await checkPageLoaded(mockedNetworkData.venueName)
       const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-      expect(localBreakout).toBeChecked()
+      await waitFor(() => expect(localBreakout).toBeChecked())
       const tunneling = screen.getByRole('radio', { name: 'SD-LAN Tunneling' })
       expect(tunneling).not.toBeChecked()
       expect(tunneling).toBeDisabled()
       screen.getByText('See more information')
     })
   })
+
+  it('should do nothing when given network data is undefined', async () => {
+    render(
+      <Provider>
+        <NetworkTunnelActionModal
+          visible={true}
+          onClose={() => {}}
+          network={undefined}
+          onFinish={mockedOnFinish}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+    await screen.findByRole('radio', { name: 'Local Breakout' })
+    expect(mockedGetVenueSdLanFn).toBeCalledTimes(0)
+    const venueNameSentence = screen.getByText(/Define how this network traffic/)
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(venueNameSentence?.textContent)
+      .toBe('Define how this network traffic will be tunnelled at venue "":')
+  })
 })
 
 const checkPageLoaded = async (venueName: string) => {
-  await screen.findByText(new RegExp(`will be tunnelled at venue "${venueName}"`))
+  await screen.findByText(venueName)
   await screen.findByRole('radio', { name: 'Local Breakout' })
 }

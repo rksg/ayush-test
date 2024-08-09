@@ -87,7 +87,7 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number,
+  downlinkCount?: number,
   apRadioDeploy?: string,
   powerSavingStatus?: string,
   lbsStatus?: {
@@ -123,6 +123,7 @@ export interface NewAPModel {
   afcStatus?: NewAFCInfo
   floorplanId?: string
   powerSavingStatus?: string
+  meshStatus?: MeshStatus
 }
 
 export interface ApViewModel extends AP {
@@ -386,6 +387,17 @@ export interface ApStatusDetails {
   name: string,
   serialNumber: string
 }
+
+export interface MeshLinkStatus {
+  macAddress: string,
+  rssi: number
+}
+export interface MeshStatus {
+  hopCount: number,
+  uplinks?: MeshLinkStatus[],
+  downlinks?: MeshLinkStatus[],
+  neighbors?: MeshLinkStatus[]
+}
 export interface APMesh {
   IP?: string
   apMac?: string
@@ -393,6 +405,7 @@ export interface APMesh {
     APRadio?: Array<RadioProperties>
   },
   clients?: CountAndNames,
+  clientCount?: number
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
@@ -416,8 +429,14 @@ export interface APMesh {
   rxFrames?: string,
   type?: number,
   upMac?: string,
-  downlinkCount?: number,
+  downlinkCount?: number
 }
+
+export interface RbacAPMesh {
+  root: NewAPModel,
+  members: NewAPModel[]
+}
+
 export interface FloorPlanMeshAP extends APMesh {
   floorplanId?: string;
   xPercent?: number;
@@ -704,8 +723,8 @@ export type MeshApNeighbor = {
 
 export type MeshUplinkAp = {
   name: string,
-  deviceStatus: string,
-  healthStatus: string,
+  deviceStatus?: string,
+  healthStatus?: string,
   neighbors: MeshApNeighbor[]
 }
 
