@@ -16,10 +16,11 @@ import {
   SwitchFirmwareVersion1002,
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
-  SwitchFirmwareV1002
+  SwitchFirmwareV1002,
+  FirmwareCategory
 } from '@acx-ui/rc/utils'
 
-import { DowngradeTag }      from '../../../styledComponents'
+import { DowngradeTag, RecommendedTag }      from '../../../styledComponents'
 import * as UI               from '../../styledComponents'
 import { NoteButton }        from '../../styledComponents'
 import { Switch7150C08Note } from '../Switch7150C08Note'
@@ -39,7 +40,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const { form, current } = useStepFormContext()
   const { availableVersions, hasVenue, setShowSubTitle,
     upgradeVenueList, upgradeSwitchList } = props
-  const { getSwitchVersionLabelV1002 } = useSwitchFirmwareUtils()
+  const { getSwitchVersionLabelV1002,
+    parseSwitchVersion,
+     getSwitchVersionTagV1002 } = useSwitchFirmwareUtils()
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
@@ -165,9 +168,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
-                      {getSwitchVersionLabelV1002(intl, v)}
-                      {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
-                        <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      <span style={{ marginRight: '5px' }}>
+                        {parseSwitchVersion(v?.name)}
+                      </span>
+                      {getSwitchVersionTagV1002(intl, v)}
+
+
                     </span>
                   </Radio>)}
 
@@ -194,9 +200,12 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
-                      {getSwitchVersionLabelV1002(intl, v)}
-                      {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
-                        <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      <span style={{ marginRight: '5px' }}>
+                        {parseSwitchVersion(v?.name)}
+                      </span>
+                      {getSwitchVersionTagV1002(intl, v)}
+
+
                     </span>
                   </Radio>)}
 
@@ -224,16 +233,15 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
                     <span style={{ lineHeight: '22px' }}>
                       <span style={{ marginRight: '5px' }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
+                        {parseSwitchVersion(v?.name)}
                       </span>
                       {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') && <NoteButton
                         size='small'
                         ghost={true}
                         onClick={scrollToTarget}>
-                        {[1]}
+                        {'[1]'}
                       </NoteButton>}
-                      {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
-                        <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      {getSwitchVersionTagV1002(intl, v)}
                     </span>
                   </Radio>)}
 
