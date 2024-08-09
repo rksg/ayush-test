@@ -41,7 +41,14 @@ const usedBarColor: string[] = [
 export const PasswordInputStrength = ({
   ...props
 }: Partial<PasswordStrengthProps>) => {
-  const { regExRules, regExErrorMessages, isAllConditionsMet, onConditionCountMet, value } = props
+  const {
+    regExRules,
+    regExErrorMessages,
+    isAllConditionsMet,
+    onConditionCountMet,
+    ...others
+  } = props
+  const { value } = others
   const { $t } = useIntl()
   const [input, setInput] = useState('')
   const [focus, setFocus] = useState(false)
@@ -71,7 +78,7 @@ export const PasswordInputStrength = ({
   return (
     <>
       <PasswordInput
-        {...props}
+        {...others}
         onChange={(e) => {
           setInput(e.target.value)
           const passedRulesRatio = calculatePassedRulesRatio(e.target.value, RULE_REGEX)
