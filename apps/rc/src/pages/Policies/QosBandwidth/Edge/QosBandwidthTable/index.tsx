@@ -1,7 +1,7 @@
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { EyeOpenSolid }                                                                    from '@acx-ui/icons'
 import {
   useDeleteEdgeQosProfileMutation,
   useGetEdgeClusterListQuery,
@@ -78,20 +78,16 @@ const EdgeQosBandwidthTable = () => {
 
   const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeQosProfileMutation()
 
-  const capitalizeFirstLetter = (str : string) => {
-    let lowerCaseStr = str.toLowerCase()
-    return lowerCaseStr?.charAt?.(0)?.toUpperCase() + lowerCaseStr?.slice(1)
-  }
-
   const genClassTextForToolTip =
   (trafficClass: string, priority: string, priorityScheduling: boolean) => {
-    const capFirstClass = capitalizeFirstLetter(trafficClass)
+    const capFirstClass = _.capitalize(trafficClass)
+    const capFirstPriority = _.capitalize(priority)
     const starSolidWhite = priorityScheduling === true ?
-      <UI.StarSolidCustom stroke={cssStr('--acx-primary-white')}
+      <UI.StarSolidCustom
         height={8}
         width={12}
         color={cssStr('--acx-primary-white')}/> : undefined
-    return <>{capFirstClass + '(' + priority + ')'}{starSolidWhite}</>
+    return <>{capFirstClass + ' (' + capFirstPriority + ') '}{starSolidWhite}</>
   }
 
   const genBandWidthTextForToolTip = (bandwidth: number) => {
@@ -117,7 +113,7 @@ const EdgeQosBandwidthTable = () => {
     },
     {
       key: 'maxBandwidth',
-      title: $t({ defaultMessage: 'BW' }),
+      title: $t({ defaultMessage: 'Max BW' }),
       dataIndex: 'maxBandwidth',
       render: function (_, row) {
         return genBandWidthTextForToolTip(row.maxBandwidth)
@@ -157,9 +153,8 @@ const EdgeQosBandwidthTable = () => {
     {
       title: $t({ defaultMessage: 'QoS Bandwidth Control' }),
       align: 'center',
-      key: 'edgeNum',
-      dataIndex: 'edgeNum',
-      sorter: true,
+      key: 'tracfficClass',
+      dataIndex: 'tracfficClass',
       render: function (_, row) {
         return <Tooltip title={
           <Table<TrafficClassSetting>
@@ -173,7 +168,10 @@ const EdgeQosBandwidthTable = () => {
         overlayClassName={UI.toolTipClassName}
         overlayInnerStyle={{ width: 415 }}
         dottedUnderline={true}>
-          <EyeOpenSolid />
+          <UI.EyeOpenSolidCustom
+            height={12}
+            width={24}
+            color={cssStr('--acx-accents-blue-60')}/>
         </Tooltip>
       }
     },
