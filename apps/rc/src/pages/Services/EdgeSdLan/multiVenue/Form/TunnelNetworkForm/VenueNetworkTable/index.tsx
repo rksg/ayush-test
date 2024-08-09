@@ -96,7 +96,6 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     width: 100,
     sorter: { compare: sortProp('selectedNetworks', arraySizeSort) },
     render: (_, row) => {
-      // const venueNetworks = get(activated, row.id) as { id:string, name: string }[]
       const venueNetworks = row.selectedNetworks
       const networkCount = venueNetworks?.length ?? 0
       const networkNames = venueNetworks?.filter(i => i)
