@@ -110,6 +110,7 @@ export function Subscriptions () {
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
   const {
     state
   } = useContext(HspContext)
@@ -483,7 +484,7 @@ export function Subscriptions () {
     compliance: {
       title: $t({ defaultMessage: 'Compliance' }),
       content: <LicenseCompliance isMsp={true}/>,
-      visible: false // not supported in phase 1
+      visible: isComplianceEnabled
     }
   }
 

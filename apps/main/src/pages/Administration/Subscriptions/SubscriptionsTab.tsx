@@ -30,7 +30,7 @@ export const SubscriptionTabs = () => {
     }
     const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
     const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
-    const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+    const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
 
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
