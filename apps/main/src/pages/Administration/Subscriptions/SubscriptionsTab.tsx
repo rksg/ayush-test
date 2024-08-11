@@ -30,7 +30,9 @@ export const SubscriptionTabs = () => {
     }
     const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
     const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+    const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
     const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
+    const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
 
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
@@ -56,7 +58,7 @@ export const SubscriptionTabs = () => {
       compliance: {
         title: $t({ defaultMessage: 'Compliance' }),
         content: <LicenseCompliance isMsp={false}/>,
-        visible: isComplianceEnabled
+        visible: showCompliance
       }
     }
 

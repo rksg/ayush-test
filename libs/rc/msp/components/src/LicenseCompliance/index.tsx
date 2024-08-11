@@ -49,32 +49,24 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
       <UI.FieldLabelSubs width='275px'
         style={{ fontWeight: '600', paddingBottom: '10px', borderBottom: '1px solid #02a7f0' }}>
         <label>{$t({ defaultMessage: 'Devices' })}</label>
-        <label style={{ textAlign: 'center' }}>
-          {$t({ defaultMessage: 'Configured' })}</label>
-        <label style={{ textAlign: 'center' }}>
-          {$t({ defaultMessage: 'Licenses Used' })}</label>
+        <label>{$t({ defaultMessage: 'Configured' })}</label>
+        <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
       </UI.FieldLabelSubs>
 
       <UI.FieldLabelSubs width='275px' style={{ marginTop: '10px' }}>
         <label>{$t({ defaultMessage: 'Access Points' })}</label>
-        <label style={{ textAlign: 'center' }}>
-          {wifiData?.installedDeviceCount}</label>
-        <label style={{ textAlign: 'center' }}>
-          {wifiData?.usedLicenseCount}</label>
+        <label>{wifiData?.installedDeviceCount}</label>
+        <label>{wifiData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
       <UI.FieldLabelSubs width='275px'>
         <label>{$t({ defaultMessage: 'Switches' })}</label>
-        <label style={{ textAlign: 'center' }}>
-          {switchData?.installedDeviceCount}</label>
-        <label style={{ textAlign: 'center' }}>
-          {switchData?.usedLicenseCount}</label>
+        <label>{switchData?.installedDeviceCount}</label>
+        <label>{switchData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
       <UI.FieldLabelSubs width='275px'>
         <label>{$t({ defaultMessage: 'SmartEdge vAppliances' })}</label>
-        <label style={{ textAlign: 'center' }}>
-          {virtualEdgeData?.installedDeviceCount}</label>
-        <label style={{ textAlign: 'center' }}>
-          {virtualEdgeData?.usedLicenseCount}</label>
+        <label>{virtualEdgeData?.installedDeviceCount}</label>
+        <label>{virtualEdgeData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
       {/* <UI.FieldLabelSubs width='275px'>
         <label>{$t({ defaultMessage: 'SmartEdge HW Appliances' })}</label>
@@ -84,10 +76,8 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
       <UI.FieldLabelSubs width='275px'
         style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
         <label>{$t({ defaultMessage: 'RWGs' })}</label>
-        <label style={{ textAlign: 'center' }}>
-          {rwgData?.installedDeviceCount}</label>
-        <label style={{ textAlign: 'center' }}>
-          {rwgData?.usedLicenseCount}</label>
+        <label>{rwgData?.installedDeviceCount}</label>
+        <label>{rwgData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
       {/* <UI.FieldLabelSubs width='275px'
         style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
@@ -98,8 +88,7 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
 
       <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
         <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
-        <label style={{ textAlign: 'right', fontWeight: '600' }}>
-          {data.totalActivePaidLicenseCount}</label>
+        <label>{data.totalActivePaidLicenseCount}</label>
         {data.totalActivePaidLicenseCount > 0 &&
           <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
             {`(${data.nextTotalPaidExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
@@ -107,8 +96,7 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
       </UI.FieldLabelSubs2>
       <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Active Trial Licenses' })}</label>
-        <label style={{ textAlign: 'right', fontWeight: '600' }}>
-          {data.totalActiveTrialLicenseCount}</label>
+        <label>{data.totalActiveTrialLicenseCount}</label>
         {data.totalActiveTrialLicenseCount > 0 &&
           <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
             {`(${data.nextTotalTrialExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
@@ -118,23 +106,20 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
       {isMsp && <div>
         <UI.FieldLabelSubs2 width='275px'>
           <label>{$t({ defaultMessage: 'Active Paid Assigned Licenses' })}</label>
-          <label style={{ textAlign: 'right', fontWeight: '600' }}>
-            {data.totalActivePaidAssignedLicenseCount}</label>
+          <label>{data.totalActivePaidAssignedLicenseCount}</label>
         </UI.FieldLabelSubs2>
         <UI.FieldLabelSubs2 width='275px'>
           <label>{$t({ defaultMessage: 'Active Trial Assigned Licenses' })}</label>
-          <label style={{ textAlign: 'right', fontWeight: '600' }}>
-            {data.totalActiveTrialAssignedLicenseCount}</label>
+          <label>{data.totalActiveTrialAssignedLicenseCount}</label>
         </UI.FieldLabelSubs2>
       </div>}
       <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
-        <label style={{ textAlign: 'right', fontWeight: '600' }}>
-          {data.licensesUsed}</label>
+        <label>{data.licensesUsed}</label>
       </UI.FieldLabelSubs2>
       <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
-        <label style={{ textAlign: 'right', fontWeight: '600' }}>
+        <label>
           {data.licenseGap >= 0
             ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
             : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
