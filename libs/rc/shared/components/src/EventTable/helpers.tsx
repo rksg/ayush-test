@@ -12,7 +12,17 @@ import { typeMapping } from './mapping'
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
 const entityTypes
-  = ['ap', 'client', 'network', 'switch', 'venue', 'transaction', 'edge', 'unit'] as const
+  = [
+    'ap',
+    'client',
+    'network',
+    'switch',
+    'venue',
+    'transaction',
+    'edge',
+    'remoteedge',
+    'unit'
+  ] as const
 const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
@@ -49,6 +59,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     edge: {
       path: 'devices/edge/:serialNumber/details/overview',
       params: ['serialNumber']
+    },
+    remoteedge: {
+      path: 'devices/edge/:remoteEdgeId/details/overview',
+      params: ['remoteEdgeId']
     },
     unit: {
       path: 'venues/:venueId/venue-details/units',
@@ -107,7 +121,8 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
     ADMINACTIVITY: 'adminName',
     ADMIN: 'adminName',
     NOTIFICATION: 'adminName',
-    EDGE: 'edgeName'
+    EDGE: 'edgeName',
+    PROFILE: 'profileName'
   }
   const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
   return <EntityLink {...{ entityKey, data, highlightFn }} />

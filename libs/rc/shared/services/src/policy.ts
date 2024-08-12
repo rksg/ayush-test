@@ -721,14 +721,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const policyIds = payload as string[]
           const requests = policyIds.map(policyId => ({ params: { policyId }, payload: {} }))
-          // eslint-disable-next-line max-len
-          return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+          const rbacResult = await batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ)
+
+          if (rbacResult.error) return { error: rbacResult.error as FetchBaseQueryError }
+
+          return { data: {} as CommonResult }
         } else {
           const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
-          return fetchWithBQ({
-            ...req,
-            body: payload
-          })
+          const result = await fetchWithBQ({ ...req, body: payload })
+
+          if (result.error) return { error: result.error as FetchBaseQueryError }
+
+          return { data: result.data as CommonResult }
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
@@ -797,14 +801,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
         if (enableRbac) {
           const requests = args.payload!.map(policyId => ({ params: { policyId } }))
-          return batchApi(
-            AaaUrls.deleteAAAPolicy, requests, baseQuery
-          )
+          const rbacResult = await batchApi(AaaUrls.deleteAAAPolicy, requests, baseQuery)
+
+          if (rbacResult.error) return { error: rbacResult.error as FetchBaseQueryError }
+
+          return { data: { requestId: '' } }
         } else {
-          return baseQuery({
+          const result = await baseQuery({
             ...createHttpRequest(AaaUrls.deleteAAAPolicyList, params),
             body: payload
           })
+          if (result.error) return { error: result.error as FetchBaseQueryError }
+
+          return { data: result.data as CommonResult }
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -2320,15 +2329,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion =
+          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.addApSnmpPolicy, customParams , apiCustomHeader)
         return {
@@ -2339,15 +2348,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion =
+          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateApSnmpPolicy, customParams, apiCustomHeader)

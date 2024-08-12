@@ -12,13 +12,12 @@ import {
 import {
   AdaptivePolicySet, FILTER,
   getPolicyDetailsLink,
-  getPolicyRoutePath,
+  getPolicyRoutePath, hasCloudpathAccess,
   PolicyOperation,
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                   from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
+import { filterByAccess }                               from '@acx-ui/user'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
@@ -172,8 +171,7 @@ export default function AdaptivePolicySetTable () {
           policyId: selectedRows[0].id!
         })
       })
-    },
-    scopeKey: [WifiScopes.UPDATE]
+    }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -201,8 +199,7 @@ export default function AdaptivePolicySetTable () {
             })
         }
       )
-    },
-    scopeKey: [WifiScopes.DELETE]
+    }
   }]
 
   const actions = [{
@@ -215,8 +212,7 @@ export default function AdaptivePolicySetTable () {
           oper: PolicyOperation.CREATE
         })
       })
-    },
-    scopeKey: [WifiScopes.CREATE]
+    }
   }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
@@ -240,8 +236,7 @@ export default function AdaptivePolicySetTable () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={
-          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
+        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
         actions={filterByAccess(actions)}
       />
     </Loader>

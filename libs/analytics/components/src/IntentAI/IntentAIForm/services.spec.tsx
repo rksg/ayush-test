@@ -17,11 +17,11 @@ describe('recommendation services', () => {
 
   describe('crrm recommendation code', () => {
     it('should return correct value', async () => {
-      mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationCode', {
+      mockGraphqlQuery(recommendationUrl, 'IntentCode', {
         data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
       })
       const { status, data, error } = await store.dispatch(
-        recApi.endpoints.recommendationCode.initiate({
+        recApi.endpoints.intentCode.initiate({
           ...recommendationPayload })
       )
       expect(status).toBe('fulfilled')
@@ -35,14 +35,14 @@ describe('recommendation services', () => {
 
   describe('crrm recommendation details', () => {
     it('should return correct value', async () => {
-      mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+      mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
         data: {
           recommendation: mockedRecommendationCRRM
         }
       })
 
       const { status, data, error } = await store.dispatch(
-        recApi.endpoints.configRecommendationDetails.initiate({
+        recApi.endpoints.intentDetails.initiate({
           ...recommendationPayload, isCrrmPartialEnabled: true })
       )
       expect(status).toBe('fulfilled')
@@ -92,13 +92,13 @@ describe('recommendation services', () => {
     jest.spyOn(Date, 'now').mockImplementation(() => {
       return new Date(appliedTime).getTime()
     })
-    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
       data: {
         recommendation: mockedRecommendationCRRMApplied
       }
     })
     const { status, data, error } = await store.dispatch(
-      recApi.endpoints.configRecommendationDetails.initiate({
+      recApi.endpoints.intentDetails.initiate({
         ...recommendationPayload, isCrrmPartialEnabled: true
       })
     )

@@ -37,21 +37,21 @@ storiesOf('TimeDropdown', module)
         }/>
     </Row>
   </Form.Item>)
-  .add('Weekly', () => <Form.Item style={{ width: '30%' }}>
+  .add('Weekly', () => <Form><Form.Item style={{ width: '30%' }}>
     <Row align='middle' justify='center'>
       <DayTimeDropdown type={DayTimeDropdownTypes.Weekly}
         name='weekly'
         spanLength={11}
       />
     </Row>
-  </Form.Item>)
-  .add('Monthly', () => <Form.Item style={{ width: '30%' }}>
+  </Form.Item></Form>)
+  .add('Monthly', () => <Form><Form.Item style={{ width: '30%' }}>
     <Row align='middle' justify='center'>
       <DayTimeDropdown type={DayTimeDropdownTypes.Monthly}
         name='monthly'
         spanLength={11}
       />
     </Row>
-  </Form.Item>)
+  </Form.Item></Form>)
 
 export {}
