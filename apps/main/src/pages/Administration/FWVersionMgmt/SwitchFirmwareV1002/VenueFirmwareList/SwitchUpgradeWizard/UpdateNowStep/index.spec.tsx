@@ -5,6 +5,7 @@ import { rest }        from 'msw'
 import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   FirmwareRbacUrlsInfo,
+  FirmwareSwitchVenueV1002,
   SwitchFirmwareFixtures,
   SwitchFirmwareVersion1002
 } from '@acx-ui/rc/utils'
@@ -16,6 +17,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { switchVenueV1002 }    from '../../../__tests__/fixtures'
 import {
   availableVersions_hasInUse
 } from '../../__test__/fixtures'
@@ -52,6 +54,10 @@ describe('UpdateNowStep', () => {
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
         (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
+      ),
+      rest.post(
+        FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
       ))
   })
 
@@ -63,6 +69,8 @@ describe('UpdateNowStep', () => {
             setShowSubTitle={jest.fn()}
             visible={true}
             availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
+            upgradeVenueList={switchVenueV1002 as FirmwareSwitchVenueV1002[]}
+            upgradeSwitchList={[]}
             hasVenue={true}/>
         </Form>
       </Provider>
@@ -87,6 +95,8 @@ describe('UpdateNowStep', () => {
             visible={true}
             availableVersions={availableVersions_hasInUse as SwitchFirmwareVersion1002[]}
             hasVenue={true}
+            upgradeVenueList={switchVenueV1002 as FirmwareSwitchVenueV1002[]}
+            upgradeSwitchList={[]}
           />
         </Form>
       </Provider>
