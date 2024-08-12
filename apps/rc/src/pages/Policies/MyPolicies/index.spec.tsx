@@ -12,10 +12,10 @@ import {
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  getSelectPolicyRoutePath,
+  EdgeQosProfilesUrls,
   RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
-  WorkflowUrls,
-  EdgeQosProfilesUrls
+  getSelectPolicyRoutePath,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
