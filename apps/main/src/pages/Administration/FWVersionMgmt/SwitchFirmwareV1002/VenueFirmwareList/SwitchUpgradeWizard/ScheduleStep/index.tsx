@@ -45,7 +45,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const intl = useIntl()
   const { form, current } = useStepFormContext()
-  const { getSwitchVersionLabelV1002 } = useSwitchFirmwareUtils()
+  const { getSwitchVersionLabelV1002, parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -231,6 +231,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
+                        {parseSwitchVersion(v?.name)}
                         {getSwitchVersionLabelV1002(intl, v)}
                         {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
@@ -259,6 +260,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
+                        {parseSwitchVersion(v?.name)}
                         {getSwitchVersionLabelV1002(intl, v)}
                         {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
@@ -288,6 +290,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
                         <span style={{ marginRight: '5px' }}>
+                          {parseSwitchVersion(v?.name)}
                           {getSwitchVersionLabelV1002(intl, v)}
                         </span>
                         {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') &&
@@ -295,7 +298,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                             size='small'
                             ghost={true}
                             onClick={scrollToTarget} >
-                            {[1]}
+                            {'[1]'}
                           </NoteButton>}
                         {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
