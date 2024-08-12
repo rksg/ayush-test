@@ -1,4 +1,5 @@
 import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { cssStr, StackedBarChart } from '@acx-ui/components'
 import { EntitlementDeviceType }   from '@acx-ui/rc/utils'
@@ -10,15 +11,18 @@ import * as UI from './styledComponent'
 interface SubscriptionUtilizationWidgetProps {
   deviceType: EntitlementDeviceType;
   title: string;
+  title2?: string;
   used: number;
   total: number;
   barColors?: string[];
 }
 
 export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidgetProps) => {
+  const { $t } = useIntl()
   const {
     deviceType,
     title,
+    title2,
     used,
     total
   } = props
@@ -53,11 +57,38 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
     ]
   }
 
-  return (
-    <SpaceWrapper full size='small' justifycontent='space-around'>
-      <Typography.Text>{title}</Typography.Text>
+  const utilBar =
+  <SpaceWrapper full size='small' justifycontent='space-around'>
+    <Typography.Text>{title}</Typography.Text>
+    <StackedBarChart
+      style={{ height: 16, width: 135 }}
+      showLabels={false}
+      showTotal={false}
+      showTooltip={false}
+      barWidth={12}
+      data={[{
+        category: `${deviceType} Licenses `,
+        series
+      }]}
+      barColors={usedBarColors}
+    />
+    <Typography.Text>
+      {
+        isOverused
+          ? <UI.OverutilizationText>{used}</UI.OverutilizationText>
+          : used
+      } / {total}
+    </Typography.Text>
+  </SpaceWrapper>
+
+  const utilBar2 = <>
+    <UI.FieldLabelUtil>
+      <div>
+        <div>{title}</div>
+        <div>{title2}</div>
+      </div>
       <StackedBarChart
-        style={{ height: 16, width: 135 }}
+        style={{ height: 12, width: 250 }}
         showLabels={false}
         showTotal={false}
         showTooltip={false}
@@ -75,6 +106,14 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
             : used
         } / {total}
       </Typography.Text>
-    </SpaceWrapper>
-  )
+    </UI.FieldLabelUtil>
+    <div style={{ marginTop: '-10px', fontSize: '11px' }}>
+      <UI.LegendDot style={{ marginLeft: '210px', backgroundColor: usedBarColors[0] }} />
+      <span >{$t({ defaultMessage: 'Used' })} ({used})</span>
+      <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
+      <span >{$t({ defaultMessage: 'Available' })} ({total - used})</span>
+    </div>
+  </>
+
+  return title2 ? utilBar2 : utilBar
 }

@@ -94,9 +94,9 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
   </>
 
   const utilBar2 = <>
-    <UI.FieldLabelUtil>
+    <UI.FieldLabelUtilMsp>
       <div>
-        <li>{$t({ defaultMessage: 'Device Networking' })}</li>
+        <li>{title}</li>
         <li>{trial ? $t({ defaultMessage: 'Trial Licenses' })
           : $t({ defaultMessage: 'Paid Licenses' })}
         </li>
@@ -121,7 +121,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
         ><Typography.Text>{used} / {total}</Typography.Text>
         </Tooltip>
         : <Typography.Text>{used} / {total}</Typography.Text>}
-    </UI.FieldLabelUtil>
+    </UI.FieldLabelUtilMsp>
     {trial
       ? <div style={{ marginTop: '-10px', fontSize: '11px' }}>
         <UI.LegendDot style={{ marginLeft: '165px', backgroundColor: usedBarColors[1] }} />

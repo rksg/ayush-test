@@ -87,9 +87,9 @@ export const SubscriptionHeader = () => {
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Subscription Utilization' })}
             </Subtitle>
-            <h4 style={{ marginTop: '-8px' }}>
+            {!isvSmartEdgeEnabled && <h4 style={{ marginTop: '-8px' }}>
               {$t({ defaultMessage: 'Paid, Assigned & Trial' })}
-            </h4>
+            </h4>}
           </Col>
           <Col span={12}>
             <SpaceWrapper full justifycontent='flex-end' size='large'>
@@ -121,6 +121,8 @@ export const SubscriptionHeader = () => {
                   key={item.value}
                   deviceType={item.value}
                   title={item.label}
+                  title2={isvSmartEdgeEnabled
+                    ? $t({ defaultMessage: 'Paid, Trial & Assigned Licenses' }) : undefined}
                   total={summary.total}
                   used={summary.used}
                 /> : ''
