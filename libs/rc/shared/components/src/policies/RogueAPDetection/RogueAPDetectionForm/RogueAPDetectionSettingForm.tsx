@@ -80,9 +80,6 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
       const policy = policyList.data?.find(p => p.id === policyData?.id)
       // eslint-disable-next-line max-len
       const defaultPolicyId = policyList.data?.find(p => p.name === RogueApConstant.DefaultProfile)?.id
-      if (!defaultPolicyId) {
-        throw new Error('Default profile not found')
-      }
       if (policy) {
         dispatch({
           type: RogueAPDetectionActionTypes.UPDATE_STATE,
@@ -95,7 +92,7 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
               venues: policy.venueIds.map((id: string) => ({ id, name: '' })),
               oldVenues: policy.venueIds.map((id: string) => ({ id, name: '' })),
               rules: policyData.rules ?? [],
-              defaultPolicyId: defaultPolicyId
+              defaultPolicyId: defaultPolicyId ?? ''
             }
           }
         })
