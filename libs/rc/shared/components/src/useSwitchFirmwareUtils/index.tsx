@@ -75,12 +75,13 @@ export function useSwitchFirmwareUtils () {
           <StarSolid
             style={{
               color: cssStr('--acx-semantics-yellow-40'),
-              width: '13px',
-              height: '13px',
-              marginBottom: '-1.5px',
-              marginRight: '2px'
+              width: '16px',
+              height: '16px',
+              marginRight: '5px',
+              marginBottom: '-3px'
             }}
-          />{intl.$t({ defaultMessage: 'Recommended' })}
+          />
+          <span>{intl.$t({ defaultMessage: 'Recommended' })}</span>
         </RecommendedTag>}
       {(version.isDowngradeVersion || version.isDowngraded10to90) && !version.inUse &&
         <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
