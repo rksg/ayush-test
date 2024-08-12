@@ -155,6 +155,7 @@ export const SubscriptionTable = () => {
         dataIndex: 'assignedLicense',
         key: 'assignedLicense',
         show: isOnboardedMsp,
+        width: 120,
         sorter: { compare: sortProp('assignedLicense', defaultSort) },
         render: function (data: React.ReactNode, row: Entitlement) {
           return row.assignedLicense

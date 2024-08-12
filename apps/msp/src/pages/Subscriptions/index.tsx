@@ -407,6 +407,7 @@ export function Subscriptions () {
                 key={item.value}
                 deviceType={item.value}
                 title={item.label}
+                multiLine={isvSmartEdgeEnabled}
                 total={summary.total}
                 assigned={summary.assigned}
                 used={summary.used}

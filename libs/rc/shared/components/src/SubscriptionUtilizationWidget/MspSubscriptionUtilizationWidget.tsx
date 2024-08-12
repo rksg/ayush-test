@@ -11,6 +11,7 @@ import * as UI from './styledComponent'
 interface MspSubscriptionUtilizationWidgetProps {
   deviceType: EntitlementDeviceType;
   title: string;
+  multiLine?: boolean;
   used: number;
   assigned: number;
   total: number;
@@ -24,6 +25,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
   const {
     deviceType,
     title,
+    multiLine,
     used,
     assigned,
     total,
@@ -49,7 +51,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
       value: isZeroQuantity ? 100 : ((total-used-assigned) / total)*100 }
   ]
 
-  return <>
+  const utilBar = <>
     <SpaceWrapper full size='small' justifycontent='space-around'>
       <Typography.Text>{title}</Typography.Text>
       <StackedBarChart
@@ -89,6 +91,53 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
       <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
       <span >{$t({ defaultMessage: 'Available' })} ({total - used - assigned})</span>
     </div>}
-
   </>
+
+  const utilBar2 = <>
+    <UI.FieldLabelUtil>
+      <div>
+        <li>{$t({ defaultMessage: 'Device Networking' })}</li>
+        <li>{trial ? $t({ defaultMessage: 'Trial Licenses' })
+          : $t({ defaultMessage: 'Paid Licenses' })}
+        </li>
+      </div>
+      <StackedBarChart
+        style={{ height: 12, width: 290 }}
+        showLabels={false}
+        showTotal={false}
+        showTooltip={false}
+        total={100}
+        barWidth={12}
+        data={[{
+          category: `${deviceType} Licenses `,
+          series
+        }]}
+        barColors={usedBarColors}
+      />
+      {tooltip ?
+        <Tooltip
+          title={trial ? '' : tooltip}
+          placement={'top'}
+        ><Typography.Text>{used} / {total}</Typography.Text>
+        </Tooltip>
+        : <Typography.Text>{used} / {total}</Typography.Text>}
+    </UI.FieldLabelUtil>
+    {trial
+      ? <div style={{ marginTop: '-10px', fontSize: '11px' }}>
+        <UI.LegendDot style={{ marginLeft: '165px', backgroundColor: usedBarColors[1] }} />
+        <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
+        <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
+        <span >{$t({ defaultMessage: 'Available' })} ({total - assigned})</span>
+      </div>
+      : <div style={{ marginTop: '-10px', fontSize: '11px' }}>
+        <UI.LegendDot style={{ marginLeft: '140px', backgroundColor: usedBarColors[0] }} />
+        <span >{$t({ defaultMessage: 'MSP EC' })} ({used})</span>
+        <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
+        <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
+        <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[2] }} />
+        <span >{$t({ defaultMessage: 'Available' })} ({total - used - assigned})</span>
+      </div>}
+  </>
+
+  return multiLine ? utilBar2 : utilBar
 }

@@ -12,3 +12,8 @@ export const LegendDot = styled.span`
   background: var(--acx-accents-blue-50);
   border-radius: 50%;
 `
+export const FieldLabelUtil = styled.div<{ }>`
+  display: grid;
+  grid-template-columns: 140px 300px 100px;
+  align-items: baseline;
+`
