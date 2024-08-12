@@ -23,7 +23,8 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   scopes?: ScopeKeys
-  isCustomRole?: boolean
+  isCustomRole?: boolean,
+  hasAllVenues?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -54,6 +55,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
+  userProfile.hasAllVenues = profile?.hasAllVenues
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
@@ -177,14 +179,10 @@ export function hasRoles (roles: string | string[]) {
   return profile?.roles?.some(role => roles.includes(role))
 }
 
-export function isCustomAdmin () {
-  const { profile, abacEnabled } = getUserProfile()
-  if (abacEnabled &&
-    profile.customRoleType === CustomRoleType.SYSTEM &&
-    profile.customRoleName === Role.ADMINISTRATOR) {
-    return !profile?.roles?.includes(Role.ADMINISTRATOR)
-  }
-  return false
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function hasCrossVenuesPermission (scopes?: ScopeKeys[]) {
+  const { abacEnabled, hasAllVenues } = getUserProfile()
+  return abacEnabled ? hasAllVenues : true
 }
 
 export function AuthRoute (props: {
