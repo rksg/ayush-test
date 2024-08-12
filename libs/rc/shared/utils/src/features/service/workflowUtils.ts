@@ -35,12 +35,10 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
     }, {})
 }
 
-export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep => {
-  const firstIndex = steps.findIndex(step =>
+export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep | undefined => {
+  return steps.find(step =>
     step.priorStepId === undefined && !step.splitOptionId
   )
-
-  return firstIndex ? steps[firstIndex] : steps[0]
 }
 
 export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
@@ -56,17 +54,6 @@ export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, Acti
   })
 
   return map
-}
-
-export const getInitialNodes = (x: number, y: number): Node[] => {
-  return [
-    {
-      id: 'initial-id',
-      position: { x, y },
-      data: { },
-      type: 'START'
-    }
-  ]
 }
 
 /* eslint-disable max-len */
@@ -203,7 +190,7 @@ export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<strin
   const START_Y = 0
 
   if (steps.length === 0) {
-    return { nodes: getInitialNodes(START_X, START_Y), edges }
+    return { nodes, edges }
   }
 
   const firstStep = findFirstStep(steps)
