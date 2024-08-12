@@ -10,13 +10,12 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum }        from '@acx-ui/rc/utils'
-import { getIntl, NetworkPath } from '@acx-ui/utils'
-
-import { useLazyRecommendationWlansQuery } from '../Recommendations/services'
+import { RadioTypeEnum } from '@acx-ui/rc/utils'
+import { getIntl }       from '@acx-ui/utils'
 
 import {
   IntentListItem,
+  useLazyIntentWlansQuery,
   useOptimizeAllIntentMutation,
   OptimizeAllItemMutationPayload,
   OptimizeAllMutationResponse
@@ -118,17 +117,17 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 export function useIntentAIActions () {
   const { $t } = useIntl()
   const [optimizeAllIntent] = useOptimizeAllIntentMutation()
-  const [recommendationWlans] = useLazyRecommendationWlansQuery()
+  const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
-  const fetchWlans = async (id:string, code:string, path:NetworkPath) => {
+  const fetchWlans = async (row: IntentListItem) => {
     if (isMlisa) {
-      const wlans = await recommendationWlans({ id } ).unwrap()
+      const wlans = await recommendationWlans(row).unwrap()
       return wlans.map(wlan => ({ ...wlan, id: wlan.name }))
     }
-    const venueId = path?.filter(({ type }) => type === 'zone')?.[0].name
-    const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, code)).unwrap()
+    const venueId = row.idPath.filter(({ type }) => type === 'zone')?.[0].name
+    const wlans = await venueRadioActiveNetworks(getR1WlanPayload(venueId, row.code)).unwrap()
     return wlans.map(wlan => ({ name: wlan.id, ssid: wlan.ssid })) // wlan name is id in config ds
   }
 
@@ -141,7 +140,7 @@ export function useIntentAIActions () {
       }
 
       if (code.startsWith('c-probeflex-')) { // AirflexAI c-probeflex-*
-        item.metadata.wlans = await fetchWlans(row.id, row.code, row.idPath)
+        item.metadata.wlans = await fetchWlans(row)
 
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         item.metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
@@ -292,5 +291,6 @@ function OptimizeAllDateTimePicker ({
     initialDate={initialDate}
     onApply={onApply}
     disabledDateTime={disabledDateTime}
+    placement='bottomLeft'
   />
 }

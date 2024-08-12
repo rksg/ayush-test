@@ -2329,15 +2329,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion =
+          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
         const req = createHttpRequest(urlsInfo.addApSnmpPolicy, customParams , apiCustomHeader)
         return {
@@ -2348,15 +2348,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isSNMPv3PassphraseOn }) => {
         const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
         const customParams = {
           ...params,
           profileId: params?.policyId
         }
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion =
+          enableRbac ? (isSNMPv3PassphraseOn? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateApSnmpPolicy, customParams, apiCustomHeader)
