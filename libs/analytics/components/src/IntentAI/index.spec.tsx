@@ -153,7 +153,7 @@ describe('IntentAITabContent', () => {
   it('should render 1-click-optimize', async () => {
     const extractItem = {
       aiFeature: 'AI-Driven RRM',
-      intent: 'Client Density vs. Throughput for 5 GHz radio',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,

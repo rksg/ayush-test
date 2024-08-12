@@ -40,7 +40,7 @@ const IconTooltip = (props: IconTooltipProps) => {
   const subTitleRight = $t(props.subTitleRight)
   const content = $t(props.content)
   return (
-    <UI.FeatureTooltip>
+    <UI.FeatureTooltip onClick={(e) => e.stopPropagation()}>
       <div> {props.icon} </div>
       <div>
         <b className='title'>{title}</b><br />
