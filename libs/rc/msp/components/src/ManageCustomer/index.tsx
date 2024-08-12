@@ -176,7 +176,7 @@ export function ManageCustomer () {
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
-  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -1002,7 +1002,7 @@ export function ManageCustomer () {
   const ApswSubscription = () => {
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{isComplianceEnabled
+        <label>{isvSmartEdgeEnabled
           ? intl.$t({ defaultMessage: 'Device Networking' })
           : intl.$t({ defaultMessage: 'Device Subscription' })
         }</label>
@@ -1018,7 +1018,7 @@ export function ManageCustomer () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {isComplianceEnabled
+          {isvSmartEdgeEnabled
             ? intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
               availableApswLicense: availableApswLicense })
             : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
@@ -1100,7 +1100,7 @@ export function ManageCustomer () {
           </UI.FieldLabel2>
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{isComplianceEnabled
+          <label>{isvSmartEdgeEnabled
             ? intl.$t({ defaultMessage: 'Device Networking' })
             : intl.$t({ defaultMessage: 'Device Subscription' })
           }</label>
@@ -1220,11 +1220,11 @@ export function ManageCustomer () {
           </UI.FieldLabel2>}
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{isComplianceEnabled
+          <label>{isvSmartEdgeEnabled
             ? intl.$t({ defaultMessage: 'Device Subscription' })
             : intl.$t({ defaultMessage: 'Device Networking' })
           }</label>
-          <label>{isComplianceEnabled
+          <label>{isvSmartEdgeEnabled
             ? intl.$t({ defaultMessage: '50 trial licenses' })
             : intl.$t({ defaultMessage: '50 devices' })
           }</label>
