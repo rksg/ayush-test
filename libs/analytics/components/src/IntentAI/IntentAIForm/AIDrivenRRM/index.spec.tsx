@@ -2,6 +2,7 @@
 import userEvent      from '@testing-library/user-event'
 import { DatePicker } from 'antd'
 import { pick }       from 'lodash'
+import moment         from 'moment-timezone'
 
 import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
@@ -27,7 +28,14 @@ jest.mock('@acx-ui/components', () => ({
       initialValues: {
         status: 'new',
         sliceValue: '21_US_Beta_Samsung',
-        updatedAt: '2023-06-26T00:00:25.772Z'
+        updatedAt: '2023-06-26T00:00:25.772Z',
+        preferences: { crrmFullOptimization: true },
+        id: 'id'
+        // settings: {
+        //   date: moment('2024-08-12T10:30:00'),
+        //   hour: 13.75
+        // }
+
       },
       form: {
         getFieldValue: (value: string) => {

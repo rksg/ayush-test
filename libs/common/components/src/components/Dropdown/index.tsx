@@ -82,14 +82,16 @@ function roundUpTimeToNearest15Minutes (timeStr: string) {
   return decimalHour
 }
 
-function getDisabledTime (dateSelected: Moment) {
-  if (dateSelected.startOf('day').isSame(moment().startOf('day'))) {
-    const result = roundUpTimeToNearest15Minutes(
-      moment().format('HH:mm:ss'))
-    return result
+function getDisabledTime (dateSelected: Moment | null) {
+  if (dateSelected === null || !dateSelected.startOf('day').isSame(moment().startOf('day'))) {
+    return 0
   }
-  return 0
+  const result = roundUpTimeToNearest15Minutes(
+    moment().format('HH:mm:ss'))
+  return result
+
 }
+
 export const DateTimeDropdown = (
   {
     name,
@@ -101,7 +103,7 @@ export const DateTimeDropdown = (
     form
   } : DateTimeDropdownProps) => {
   const [date, setDate] = useState(() => initialDate)
-  const dateSelected: Moment = form.getFieldValue([name, 'date'])
+  // const dateSelected: Moment = form.getFieldValue([name, 'date'])
   return (
     <>
       <Form.Item name={[name, 'date']}
@@ -130,7 +132,7 @@ export const DateTimeDropdown = (
           <TimeDropdown name={name}
             spanLength={24}
             disabledDateTime={
-              { disabledStrictlyBefore: getDisabledTime(dateSelected) }
+              { disabledStrictlyBefore: getDisabledTime(date) }
             }
           />
         }

@@ -1,6 +1,6 @@
 import { gql }                 from 'graphql-request'
 import { snakeCase, findLast } from 'lodash'
-import moment                  from 'moment-timezone'
+import moment, { Moment }      from 'moment-timezone'
 import { MessageDescriptor }   from 'react-intl'
 
 import { intentAIApi, recommendationApi } from '@acx-ui/store'
@@ -127,7 +127,7 @@ function roundUpTimeToNearest15Minutes (timeStr: string) {
   const roundedHours = Math.floor(roundedMinutes / 60)
   const roundedMinutesInHour = roundedMinutes % 60
   const decimalHour = roundedHours + roundedMinutesInHour / 60
-  return String(decimalHour)
+  return decimalHour
 }
 
 function decimalToTimeString (decimalHours: number) {
@@ -163,26 +163,33 @@ export function specToDto (
     sliceValue: rec.sliceValue,
     updatedAt: rec.updatedAt
   } as IntentAIFormDto
-  if (rec.metadata) {
-    const scheduledAt = rec.metadata.scheduledAt ?? new Date().toISOString() //this is in utc
-    // const dateTime = moment(scheduledAt).tz('Asia/Singapore')
-    // const date = dateTime.format('YYYY-MM-DD')
-    const date = moment() // to be removed
-    // const time = roundUpTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
-    const time = 7.5 // to be removed
-    dto = {
-      ...dto,
-      settings: {
-        date: date,
-        hour: time
-      }
-    } as IntentAIFormDto
-  }
+
+  // let date: Moment | null = null
+  // let hour: number | null = null
+  // if (rec.metadata.scheduledAt) {
+  //   date=moment(rec.metadata.scheduledAt),
+  //   hour=roundUpTimeToNearest15Minutes(
+  //     moment(rec.metadata.scheduledAt).format('HH:mm:ss')
+  //   )
+  // }
+
+  // let date: Moment | null = moment()
+  // let hour: number | null = 7.5
+  let date: Moment | null = null
+  let hour: number | null = null
+
+  dto = {
+    ...dto,
+    settings: {
+      date: date,
+      hour: hour
+    }
+  } as IntentAIFormDto
   return dto
 }
 
 export function processDtoToPayload (dto: IntentAIFormDto) {
-  const newHour = decimalToTimeString(dto.settings!.hour)
+  const newHour = decimalToTimeString(dto.settings!.hour!)
   const scheduledAt = moment.parseZone(
     `${dto.settings!.date}T${newHour}.000+08:00`).utc().toISOString()
   console.log(moment(dto.settings!.date).format())
