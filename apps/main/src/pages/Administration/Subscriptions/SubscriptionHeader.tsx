@@ -6,6 +6,8 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                                     from '@acx-ui/msp/services'
+import { MSPUtils }                                                    from '@acx-ui/msp/utils'
 import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
@@ -65,6 +67,9 @@ export const SubscriptionHeader = () => {
   const isEdgeEnabled = useIsEdgeReady()
   const isDelegationTierApi = isDelegationMode()
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const mspUtils = MSPUtils()
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
@@ -122,7 +127,9 @@ export const SubscriptionHeader = () => {
                   deviceType={item.value}
                   title={item.label}
                   title2={isvSmartEdgeEnabled
-                    ? $t({ defaultMessage: 'Paid, Trial & Assigned Licenses' }) : undefined}
+                    ? (isMspEc ? $t({ defaultMessage: 'Assigned Licenses' })
+                      : $t({ defaultMessage: 'Paid, Trial & Assigned Licenses' }))
+                    : undefined}
                   total={summary.total}
                   used={summary.used}
                 /> : ''
