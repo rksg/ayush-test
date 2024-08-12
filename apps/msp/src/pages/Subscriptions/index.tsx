@@ -204,7 +204,8 @@ export function Subscriptions () {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? '--'
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },

@@ -11,12 +11,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                          from '@acx-ui/config'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
-import { useGetMspProfileQuery }        from '@acx-ui/msp/services'
-import { MSPUtils }                     from '@acx-ui/msp/utils'
-import { SpaceWrapper, useIsEdgeReady } from '@acx-ui/rc/components'
+import { get }                                            from '@acx-ui/config'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
+import { useGetMspEcProfileQuery, useGetMspProfileQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                                       from '@acx-ui/msp/utils'
+import { SpaceWrapper, useIsEdgeReady }                   from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -95,13 +95,17 @@ export const SubscriptionTable = () => {
   const mspUtils = MSPUtils()
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
+  const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
+
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const columns: TableProps<Entitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
       {
-        title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Services' })
+        title: (isvSmartEdgeEnabled && isMspEc)
+          ? $t({ defaultMessage: 'Services' })
           : $t({ defaultMessage: 'Part Number' }),
         dataIndex: 'sku',
         key: 'sku',
