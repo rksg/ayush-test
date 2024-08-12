@@ -4,10 +4,13 @@
 import { MessageDescriptor } from 'react-intl'
 
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
+import { UIConfiguration } from './workflow'
+
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
-  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE'
+  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
+  DPSK = 'DPSK'
 }
 
 export interface ActionBase {
@@ -34,6 +37,12 @@ export interface AupAction extends ActionBase {
 
   useContentFile?: boolean,
   contentFileLocation?: string
+}
+
+export interface DpskAction extends ActionBase {
+  dpskPoolId?: string,
+  identityId?: string,
+  identityGroupId?: string
 }
 
 export interface DataPromptAction extends ActionBase {
@@ -67,9 +76,16 @@ export interface DisplayMessageAction extends ActionBase {
 export type AupActionContext = Omit<AupAction, keyof ActionBase>
 export type DataPromptActionContext = Omit<DataPromptAction, keyof ActionBase>
 export type DisplayMessageActionContext = Omit<DisplayMessageAction, keyof ActionBase>
+export type DpskActionContext = Omit<DpskAction, keyof ActionBase>
 
 export type GenericActionData =
   ActionBase &
   AupActionContext &
   DataPromptActionContext &
-  DisplayMessageActionContext
+  DisplayMessageActionContext &
+  DpskAction
+
+export interface GenericActionPreviewProps<T> {
+  data?: T,
+  uiConfiguration?: UIConfiguration
+}

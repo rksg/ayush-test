@@ -1,3 +1,5 @@
+import { RcFile } from 'antd/lib/upload'
+
 import { ActionType } from './workflowAction'
 
 export interface Workflow {
@@ -21,8 +23,8 @@ export interface PublishDetail {
 }
 
 export interface UIColorSchema {
-  titleFontColor: string
-  bodyFontColor: string
+  fontHeaderColor: string
+  fontColor: string
   backgroundColor: string
   buttonColor: string
   buttonFontColor: string
@@ -31,16 +33,25 @@ export interface UIColorSchema {
 export interface UIStyleSchema {
   logoRatio: number
   titleFontSize: number
-  bodyFontSize: number
+  logoImageFileName?: string
+  backgroundImageName?: string
 }
 
 export interface UIConfiguration {
   wifi4EUNetworkId?: string
   disablePoweredBy: boolean
   logoImage?: string
+  logoFile?: RcFile
   backgroundImage?: string
+  backgroundImageFile?: RcFile
   uiColorSchema: UIColorSchema
   uiStyleSchema: UIStyleSchema
+  welcomeTitle: string
+  welcomeName: string
+}
+
+export interface ImageUrl {
+  fileUrl: string
 }
 
 // Workflow Step Part
@@ -93,11 +104,11 @@ export interface WorkflowActionDefinition {
   name: string,
   category: string
   isSplit: boolean,
+  localizationDescriptionId: string,
+  hasEndActions: boolean,
 
   actionType: ActionType,
   description?: string,
   terminationType?: 'NONE' | 'OPTIONAL' | 'REQUIRED',
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
 }
-
-export interface WorkflowActionDef extends Pick<WorkflowActionDefinition, 'id' | 'actionType'> {}

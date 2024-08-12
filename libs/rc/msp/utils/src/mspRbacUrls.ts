@@ -364,5 +364,10 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/tenants/uploadurls',
     oldUrl: '/files/uploadurls',
     newApi: true
+  },
+  getEntitlementsCompliances: {
+    method: 'post',
+    url: '/entitlements/compliances/query',
+    newApi: true
   }
 }

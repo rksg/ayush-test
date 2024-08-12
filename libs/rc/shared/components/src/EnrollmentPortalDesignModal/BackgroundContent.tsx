@@ -14,7 +14,7 @@ export interface BackgroundContentProps {
   $isDesk: boolean
   value: UIConfiguration
   onColorChange: (v: string) => void
-  onImageChange: (v:string) => void
+  onImageChange: (v:string, f: RcFile) => void
 }
 
 export function BackgroundContent (props: BackgroundContentProps){
@@ -41,7 +41,7 @@ export function BackgroundContent (props: BackgroundContentProps){
       showUploadList={false}
       customRequest={async ({ file }) => {
         Utils.loadFile(file as RcFile, url => {
-          onImageChange(url)
+          onImageChange(url, file as RcFile)
         })
       }}
     >

@@ -13,13 +13,20 @@ export interface CustomRoleSelectorProps {
     disabled?: boolean;
   }
 
+const NonSupportedRoles = [
+  RolesEnum.PRIME_ADMIN,
+  RolesEnum.DPSK_ADMIN,
+  RolesEnum.GUEST_MANAGER
+]
+
 const CustomRoleSelector = (props: CustomRoleSelectorProps) => {
   const { $t } = useIntl()
   const { disabled } = props
   const params = useParams()
   const { data: roleList } = useGetCustomRolesQuery({ params })
 
-  const rolesList = roleList?.map((item) => ({
+  const rolesList = roleList?.filter(item =>
+    !NonSupportedRoles.includes(item.name as RolesEnum)).map((item) => ({
     label: roleStringMap[item.name as RolesEnum]
       ? $t(roleStringMap[item.name as RolesEnum]) : item.name,
     value: item.name

@@ -1,11 +1,7 @@
-import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { useEffect, useState } from 'react'
 
 import {
-  ConnectionLineType,
-  Edge,
-  Node,
   ReactFlowProvider,
   useEdgesState,
   useNodesState
@@ -18,9 +14,9 @@ import {
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowActionRequiredDefinitionsQuery
 } from '@acx-ui/rc/services'
-import { ActionType, findFirstStep, getInitialNodes, StepType, toStepMap, WorkflowStep } from '@acx-ui/rc/utils'
+import { ActionType, toReactFlowData } from '@acx-ui/rc/utils'
 
-import ActionLibraryDrawer from '../ActionLibraryDrawer/ActionLibraryDrawer'
+import ActionLibraryDrawer from '../ActionLibraryDrawer'
 import StepDrawer          from '../StepDrawer/StepDrawer'
 
 import * as UI                                         from './styledComponents'
@@ -44,79 +40,7 @@ interface WorkflowPanelProps {
   type?: PanelType
 }
 
-const composeNext = (
-  stepId: string, stepMap: Map<string, WorkflowStep>,
-  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
-  currentX: number, currentY: number,
-  isStart?: boolean
-) => {
-  const SPACE_OF_NODES = 110
-  const step = stepMap.get(stepId)
 
-  if (!step) return
-
-  const {
-    id,
-    nextStepId,
-    type,
-    actionType
-  } = step
-  const nodeType: ActionType = (actionType ?? 'START') as ActionType
-  const nextStep = stepMap.get(nextStepId ?? '')
-
-  // console.log('Step :: ', nodeType, type, enrollmentActionId)
-
-  nodes.push({
-    id,
-    type: nodeType,
-    position: { x: currentX, y: currentY },
-    data: {
-      ...step,
-      isStart,
-      isEnd: nextStep?.type === StepType.End
-    },
-
-    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
-    deletable: false
-  })
-
-  if (nextStepId) {
-    edges.push({
-      id: `${id} -- ${nextStepId}`,
-      source: id,
-      target: nextStepId,
-      type: ConnectionLineType.Step,
-      style: { stroke: 'var(--acx-primary-black)' },
-
-      deletable: false
-    })
-
-    composeNext(nextStepId, stepMap, nodes, edges,
-      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
-  }
-}
-
-function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
-  : { nodes: Node[], edges: Edge[] } {
-  const nodes: Node<WorkflowStep, ActionType>[] = []
-  const edges: Edge[] = []
-  const START_X = 100
-  const START_Y = 0
-
-  if (steps.length === 0) {
-    return { nodes: getInitialNodes(START_X, START_Y), edges }
-  }
-
-  const firstStep = findFirstStep(steps)
-  const stepMap = toStepMap(steps, definitionMap)
-
-  if (firstStep) {
-    composeNext(firstStep.id, stepMap, nodes, edges,
-      START_X, START_Y, firstStep.type === StepType.Start)
-  }
-
-  return { nodes, edges }
-}
 
 export interface RequiredDependency {
   type: 'NONE' | 'ONE_OF' | 'ALL',
@@ -132,8 +56,8 @@ const useRequiredDependency = () => {
   const [data, setData] = useState<Partial<Record<ActionType, RequiredDependency>>>({})
 
   useEffect(() => {
-    if (isLoading || !actionDefsData) return
-    const gen = async () => {
+    if (isLoading || !actionDefsData?.content) return
+    const fetchAllRequiredDependencies = async () => {
       for (const def of actionDefsData?.content) {
         if (def.dependencyType === 'NONE') {
           requiredDependency[def.actionType] = {
@@ -156,7 +80,7 @@ const useRequiredDependency = () => {
       }
     }
 
-    gen().then(() => {
+    fetchAllRequiredDependencies().then(() => {
       setData(requiredDependency)
     })
 
@@ -179,8 +103,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const [nodes, setNodes] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
 
-  const requiredDependency = useRequiredDependency()
-  // console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
+  const { requiredDependency } = useRequiredDependency()
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
     params: { policyId, pageSize: '1000', page: '0', sort: 'id,ASC' }
@@ -191,7 +114,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   })
 
   useEffect(() => {
-    if (!actionDefsData || !stepsData ) return
+    if (!actionDefsData || !stepsData?.content ) return
 
     const defsMap = actionDefsData?.content
       ?.reduce((map, def) => map.set(def.id, def.actionType), new Map())
@@ -204,8 +127,8 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
     setEdges(inputEdges)
   }, [stepsData, actionDefsData])
 
-  const onClickAction = (definitionId: string, type: ActionType) => {
-    stepDrawerState.onOpen(false, definitionId, type)
+  const onClickAction = (type: ActionType) => {
+    stepDrawerState.onOpen(false, type)
   }
 
   return (
@@ -226,17 +149,16 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
           onClose={actionDrawerState.onClose}
           onClickAction={onClickAction}
           existingActionTypes={nodeState.existingDependencies}
-          relationshipMap={requiredDependency.requiredDependency}
+          relationshipMap={requiredDependency}
         />
       }
       {
-        (stepDrawerState.visible && stepDrawerState?.selectedActionDef?.actionType) &&
+        (stepDrawerState.visible && stepDrawerState?.selectedActionType) &&
         <StepDrawer
           isEdit={stepDrawerState.isEdit}
           workflowId={policyId}
           actionId={nodeState.interactedNode?.data?.enrollmentActionId}
-          actionType={stepDrawerState.selectedActionDef.actionType}
-          selectedActionDef={stepDrawerState.selectedActionDef}
+          actionType={stepDrawerState.selectedActionType}
           visible={stepDrawerState.visible}
           onClose={() => {
             stepDrawerState.onClose()
@@ -251,7 +173,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 export function WorkflowPanel (props: WorkflowPanelProps) {
   const { type = PanelType.Default, ...rest } = props
   const content = <ReactFlowProvider>
-    <WorkflowContextProvider>
+    <WorkflowContextProvider workflowId={props.workflowId}>
       <WorkflowPanelWrapper
         {...rest}
       />

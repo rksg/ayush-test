@@ -1,3 +1,4 @@
+import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { useEffect } from 'react'
 
@@ -22,6 +23,7 @@ import {
   AupNode,
   DataPromptNode,
   DisplayMessageNode,
+  DpskNode,
   StartNode
 } from './WorkflowStepNode'
 
@@ -32,7 +34,8 @@ const nodeTypes: NodeTypes = {
   START: StartNode, // This is a special type for the starter node displaying
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
+  [ActionType.DPSK]: DpskNode
 }
 
 interface WorkflowProps {
@@ -85,11 +88,16 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       elementsSelectable={isEditMode}
       style={{ background: isEditMode ? 'var(--acx-neutrals-15)' : '' }}
     >
-      {/*<MiniMap position={'bottom-left'} />*/}
       { isEditMode &&
         <>
-          <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />
-          <Background color='#ccc' variant={BackgroundVariant.Dots} />
+          <Controls
+            fitViewOptions={{ maxZoom: 1 }}
+            position={'bottom-right'}
+          />
+          <Background
+            color='#ccc'
+            variant={BackgroundVariant.Dots}
+          />
         </>
       }
 

@@ -41,7 +41,6 @@ export function WorkflowDetailOverview () {
       content: $t({ defaultMessage: ` {
         status, select,
         PUBLISHED {Published}
-        PUBLISHED_INACTIVE {Published}
         other {Draft}
       }` }, {
         status: data?.publishedDetails?.status
@@ -58,10 +57,10 @@ export function WorkflowDetailOverview () {
       visible: data?.publishedDetails?.status === 'PUBLISHED',
       content: () => {
         const link = data?.links?.find(v => v.rel === 'enrollmentPortal')
-        if (link) return <EnrollmentPortalLink name={data?.name!!} url={link.href} />
+        if (link) return <EnrollmentPortalLink url={link.href} />
         return undefined
       },
-      colSpan: 2
+      colSpan: 5
     }
   ]
 

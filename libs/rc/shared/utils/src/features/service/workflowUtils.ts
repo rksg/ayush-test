@@ -1,8 +1,9 @@
-import { MessageDescriptor }      from '@formatjs/intl'
-import { defineMessage, useIntl } from 'react-intl'
-import { Node }                   from 'reactflow'
+import { MessageDescriptor }              from '@formatjs/intl'
+import { defineMessage, useIntl }         from 'react-intl'
+import { ConnectionLineType, Edge, Node } from 'reactflow'
 
 import {
+  DpskActionTypeIcon,
   AupActionTypeIcon,
   DataPromptActionTypeIcon,
   DisplayMessageActionTypeIcon
@@ -14,6 +15,7 @@ import {
   DataPromptActionContext, DataPromptVariable,
   DisplayMessageActionContext,
   UIConfiguration,
+  StepType,
   WorkflowStep
 } from '../../types'
 
@@ -33,12 +35,10 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
     }, {})
 }
 
-export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep => {
-  const firstIndex = steps.findIndex(step =>
+export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep | undefined => {
+  return steps.find(step =>
     step.priorStepId === undefined && !step.splitOptionId
   )
-
-  return firstIndex ? steps[firstIndex] : steps[0]
 }
 
 export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
@@ -56,60 +56,34 @@ export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, Acti
   return map
 }
 
-export const getInitialNodes = (x: number, y: number): Node[] => {
-  return [
-    {
-      id: 'initial-id',
-      position: { x, y },
-      data: { },
-      type: 'START'
-    }
-  ]
-}
-
 /* eslint-disable max-len */
 // TODO: need to be defined by UX designer
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK Node' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.AUP]: AupActionTypeIcon,
   [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
+  [ActionType.DPSK]: DpskActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a Ruckus DPSK' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a RUCKUS DPSK' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' })
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in Ruckus WLAN controllers as "External DPSK") or via a Ruckus WLAN controller.' }),
-}
-
-// FIXME: Deprecated => due to we don't support action template selector anymore.
-export const ActionTypeSelectionTerms: Record<ActionType, MessageDescriptor | undefined> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'Select the existing AUP to use:' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Select the existing data prompt template to use:' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined
-  // [ActionType.DPSK]: undefined,
-}
-
-// FIXME: Deprecated => due to we don't support action template selector anymore.
-export const ActionTypeNewTemplateTerms: Record<ActionType, MessageDescriptor | undefined> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'A new AUP created from a standard template.' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'A new prompt created from a standard template.' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined
-  // [ActionType.DPSK]: undefined,
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in RUCKUS WLAN controllers as "External DPSK") or via a RUCKUS WLAN controller.' })
 }
 
 export const AupActionDefaultValue: {
@@ -157,26 +131,100 @@ export const DisplayMessageActionDefaultValue: {
 export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue
-  // [ActionType.DPSK]: {},
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
+  [ActionType.DPSK]: {}
 }
 /* eslint-enable max-len */
 
-// TODO:
-// - Remove `defaultConfiguration` in PortalDesign.tsx
+export const composeNext = (
+  stepId: string, stepMap: Map<string, WorkflowStep>,
+  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
+  currentX: number, currentY: number,
+  isStart?: boolean
+) => {
+  const SPACE_OF_NODES = 110
+  const step = stepMap.get(stepId)
+
+  if (!step) return
+
+  const {
+    id,
+    nextStepId,
+    type,
+    actionType
+  } = step
+  const nodeType: ActionType = (actionType ?? 'START') as ActionType
+  const nextStep = stepMap.get(nextStepId ?? '')
+
+  // console.log('Step :: ', nodeType, type, enrollmentActionId)
+
+  nodes.push({
+    id,
+    type: nodeType,
+    position: { x: currentX, y: currentY },
+    data: {
+      ...step,
+      isStart,
+      isEnd: nextStep?.type === StepType.End
+    },
+
+    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
+    deletable: false
+  })
+
+  if (nextStepId) {
+    edges.push({
+      id: `${id} -- ${nextStepId}`,
+      source: id,
+      target: nextStepId,
+      type: ConnectionLineType.Step,
+      style: { stroke: 'var(--acx-primary-black)' },
+
+      deletable: false
+    })
+
+    composeNext(nextStepId, stepMap, nodes, edges,
+      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
+  }
+}
+
+
+export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
+  : { nodes: Node[], edges: Edge[] } {
+  const nodes: Node<WorkflowStep, ActionType>[] = []
+  const edges: Edge[] = []
+  const START_X = 100
+  const START_Y = 0
+
+  if (steps.length === 0) {
+    return { nodes, edges }
+  }
+
+  const firstStep = findFirstStep(steps)
+  const stepMap = toStepMap(steps, definitionMap)
+
+  if (firstStep) {
+    composeNext(firstStep.id, stepMap, nodes, edges,
+      START_X, START_Y, firstStep.type === StepType.Start)
+  }
+
+  return { nodes, edges }
+}
+
 export const DefaultUIConfiguration : UIConfiguration = {
   disablePoweredBy: false,
   uiColorSchema: {
-    titleFontColor: 'var(--acx-neutrals-100)',
+    fontHeaderColor: 'var(--acx-neutrals-100)',
     backgroundColor: 'var(--acx-primary-white)',
-    bodyFontColor: 'var(--acx-neutrals-100)',
+    fontColor: 'var(--acx-neutrals-100)',
 
     buttonFontColor: 'var(--acx-primary-white)',
     buttonColor: 'var(--acx-accents-orange-50)'
   },
   uiStyleSchema: {
     logoRatio: 1,
-    titleFontSize: 16,
-    bodyFontSize: 14
-  }
+    titleFontSize: 16
+  },
+  welcomeName: '',
+  welcomeTitle: ''
 }

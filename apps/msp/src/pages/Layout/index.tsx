@@ -57,8 +57,7 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
-    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
+  const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)

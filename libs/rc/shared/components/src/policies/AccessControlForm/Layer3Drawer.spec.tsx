@@ -2,9 +2,10 @@ import '@testing-library/jest-dom'
 
 import React from 'react'
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
-import { rest }  from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { Form }    from 'antd'
+import { rest }    from 'msw'
 
 import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
@@ -176,7 +177,7 @@ const subnetSetting = async () => {
   await screen.findByText(/add layer 3 rule/i)
 
   await userEvent.type(screen.getByRole('textbox', {
-    name: 'Description'
+    name: /description/i
   }), 'layer3-test-desc-subnet')
 
   await userEvent.selectOptions(
@@ -206,12 +207,16 @@ const subnetSetting = async () => {
 const layer3Data = enhancedLayer3PolicyListResponse.data
 
 describe('Layer3Drawer Component', () => {
+  const mockAddL3AclPolicy = jest.fn()
   beforeEach(() => {
     mockServer.use(
       rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.post(AccessControlUrls.addL3AclPolicy.url,
-        (_, res, ctx) => res(ctx.json(layer3Response))),
+        (_, res, ctx) => {
+          mockAddL3AclPolicy()
+          return res(ctx.json(layer3Response))
+        }),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.get(AccessControlUrls.getL3AclPolicyList.url,
@@ -294,7 +299,7 @@ describe('Layer3Drawer Component', () => {
 
   })
 
-  it.skip('Render Layer3Drawer component with subnet option successfully', async () => {
+  it('Render Layer3Drawer component with subnet option successfully', async () => {
     render(
       <Provider>
         <Form>
@@ -343,28 +348,36 @@ describe('Layer3Drawer Component', () => {
     await userEvent.click(screen.getAllByText('Save')[1])
 
     await userEvent.click(await screen.findByText('layer3-test-desc-subnet-ruleDescription'))
-
-    await userEvent.click(screen.getByRole('button', {
-      name: /delete/i
-    }))
-
-    await screen.findByText(/delete rule/i)
-
-    await userEvent.click(screen.getByRole('button', {
-      name: /delete rule/i
-    }))
-
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3Update)
+    await waitFor(() => {
+      expect(mockAddL3AclPolicy).toHaveBeenCalled()
+    })
+
+    mockServer.use(
+      rest.get(
+        AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(
+          ctx.json(queryLayer3Update)
+        )),
+      rest.post(
+        AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(
+          {
+            ...enhancedLayer3PolicyListResponse,
+            data: [
+              ...enhancedLayer3PolicyListResponse.data,
+              {
+                id: '4279f73355044b8fa54e0e738188dc6e',
+                name: 'layer3-test',
+                networkIds: []
+              }
+            ]
+          }))
       )
-    ))
+    )
 
-    await screen.findByRole('option', { name: 'layer3-test' })
-
+    expect(await screen.findByRole('option', { name: 'layer3-test' })).toBeInTheDocument()
   })
 
   it('Render Layer3Drawer component in viewMode successfully', async () => {

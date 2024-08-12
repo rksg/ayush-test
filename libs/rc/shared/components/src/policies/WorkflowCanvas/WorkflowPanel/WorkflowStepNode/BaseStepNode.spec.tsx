@@ -30,9 +30,9 @@ jest.mock('reactflow', () => ({
   ...jest.requireActual('reactflow'),
   useNodeId: () => 'mock-step-id'
 }))
-jest.mock('../../ActionPreviewDrawer', () => ({
-  ActionPreviewDrawer: () => (
-    <div data-testid={'ActionPreviewDrawer'} />
+jest.mock('../../../../WorkflowActionPreviewModal', () => ({
+  WorkflowActionPreviewModal: () => (
+    <div data-testid={'WorkflowActionPreviewModalTestId'} />
   )
 }))
 
@@ -112,7 +112,7 @@ describe('BaseStepNode', () => {
     render(
       <Provider>
         <ReactFlowProvider>
-          <WorkflowContextProvider>
+          <WorkflowContextProvider workflowId={'mock-workflow-id'}>
             <BaseStepNode
               {...mockNodeProps}
               children={child}
@@ -142,6 +142,7 @@ describe('BaseStepNode', () => {
       <Provider>
         <ReactFlowProvider>
           <WorkflowContext.Provider value={{
+            workflowId: 'mock-workflow-id',
             stepDrawerState: {
               onOpen: spyStepDrawerOnOpen
             },
@@ -169,7 +170,7 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.click(await screen.findByTestId('EyeOpenOutlined'))
-    expect(await screen.findByTestId('ActionPreviewDrawer')).toBeVisible()
+    expect(await screen.findByTestId('WorkflowActionPreviewModalTestId')).toBeVisible()
 
     await userEvent.click(await screen.findByTestId('Plus'))
     expect(spyActionDrawerOnOpen).toHaveBeenCalled()

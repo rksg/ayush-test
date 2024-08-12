@@ -1,44 +1,31 @@
 import { Provider, recommendationUrl }     from '@acx-ui/store'
 import { mockGraphqlQuery, render,screen } from '@acx-ui/test-utils'
 
-import { transformDetailsResponse } from '../../IntentAIForm/services'
+import { transformDetailsResponse }           from '../../IntentAIForm/services'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
-import { mockedCRRMGraphs, mockedRecommendationCRRM, mockedRecommendationCRRMnew } from './__tests__/fixtures'
-import { CrrmBenefits }                                                            from './CrrmBenefits'
+import { CrrmBenefits } from './CrrmBenefits'
 
 describe('CrrmBenefits', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+      data: { intent: mockedCRRMGraphs }
     })
+    jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => true)
   })
   it('should render correctly', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     render(<CrrmBenefits details={crrmDetails} />, { wrapper: Provider })
 
     expect(await screen.findByText('Benefits')).toBeVisible()
-    const interferingLinks = expect(await screen.findByTestId('interfering-links'))
-    interferingLinks.toBeVisible()
-    interferingLinks.toHaveTextContent('2')
-    interferingLinks.toHaveTextContent('-100%')
-    const interferingLinksPerAp = expect(await screen.findByTestId('interfering-links-per-ap'))
-    interferingLinksPerAp.toBeVisible()
-    interferingLinksPerAp.toHaveTextContent('1')
-    interferingLinksPerAp.toHaveTextContent('-100%')
+    expect(await screen.findByText('Interfering links')).toBeVisible()
+    expect(await screen.findByText('-100%')).toBeVisible()
   })
-
-  it('should render correctly with no interfering link', async () => {
-    const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
+  it('should handle when beyond data retention', async () => {
+    jest.spyOn(require('../../utils'), 'isDataRetained').mockImplementation(() => false)
+    const crrmDetails = transformDetailsResponse(mockedIntentCRRM)
     render(<CrrmBenefits details={crrmDetails} />, { wrapper: Provider })
-
     expect(await screen.findByText('Benefits')).toBeVisible()
-    const interferingLinks = expect(await screen.findByTestId('interfering-links'))
-    interferingLinks.toBeVisible()
-    interferingLinks.toHaveTextContent('0')
-    interferingLinks.toHaveTextContent('0%')
-    const interferingLinksPerAp = expect(await screen.findByTestId('interfering-links-per-ap'))
-    interferingLinksPerAp.toBeVisible()
-    interferingLinksPerAp.toHaveTextContent('0')
-    interferingLinksPerAp.toHaveTextContent('0%')
+    expect(await screen.findByText('Beyond data retention period')).toBeVisible()
   })
 })

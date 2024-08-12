@@ -3,7 +3,7 @@ import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
-import { clientApi, networkApi }                                             from '@acx-ui/rc/services'
+import { clientApi, networkApi, switchApi }                                  from '@acx-ui/rc/services'
 import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
 import {
@@ -15,7 +15,7 @@ import {
   within,
   fireEvent
 } from '@acx-ui/test-utils'
-import { WifiScopes }                     from '@acx-ui/types'
+import { RolesEnum, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
@@ -99,19 +99,17 @@ describe('Guest Table', () => {
     act(() => {
       store.dispatch(clientApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(switchApi.util.resetApiState())
     })
 
     setUserProfile({
       ...userProfile,
+      profile: {
+        ...userProfile.profile,
+        customRoleName: RolesEnum.GUEST_MANAGER
+      },
       abacEnabled: false,
-      isCustomRole: false,
-      allowedOperations: [
-        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
-        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
-        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
-        'POST:/wifiNetworks',
-        'POST:/guestUsers'
-      ]
+      isCustomRole: false
     })
 
     mockServer.use(
@@ -322,8 +320,13 @@ describe('Guest Table', () => {
       })
 
     const userProfile = getUserProfile()
-    setUserProfile({ ...userProfile, profile: {
-      ...userProfile.profile, dateFormat: 'dd/mm/yyyy' } })
+    setUserProfile({
+      ...userProfile,
+      profile: {
+        ...userProfile.profile,
+        dateFormat: 'dd/mm/yyyy'
+      }
+    })
 
     const table = await screen.findByRole('table')
     await userEvent.click(await within(table).findByText('20/11/2022 08:57'))
@@ -493,10 +496,7 @@ describe('Guest Table', () => {
   describe('ABAC permission', () => {
     it('should dispaly with custom scopeKeys', async () => {
       setUserProfile({
-        profile: {
-          ...getUserProfile().profile
-        },
-        allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers'],
+        ...userProfile,
         abacEnabled: true,
         isCustomRole: true,
         scopes: [WifiScopes.CREATE]
@@ -522,9 +522,7 @@ describe('Guest Table', () => {
 
     it('should correctly hide with custom scopeKeys', async () => {
       setUserProfile({
-        profile: {
-          ...getUserProfile().profile
-        },
+        ...userProfile,
         allowedOperations: [],
         abacEnabled: true,
         isCustomRole: true,

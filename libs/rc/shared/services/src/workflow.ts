@@ -1,4 +1,9 @@
 
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                           from 'lodash'
+
 import {
   createNewTableHttpRequest,
   TableChangePayload,
@@ -18,11 +23,16 @@ import {
   SplitOption,
   GenericActionData,
   TxStatus,
-  ActionBase
+  ActionBase,
+  GetApiVersionHeader,
+  ApiVersionEnum,
+  ImageUrl
 } from '@acx-ui/rc/utils'
 import { baseWorkflowApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
+
+import { commonQueryFn } from './servicePolicy.utils'
 
 
 export interface ActionQueryCriteria {
@@ -39,9 +49,6 @@ export interface AsyncResponse {
   id: string,
   requestId: string
 }
-
-// FIXME: think about should I declare this variable here or not?
-// type UnionAction = AupAction | DataPromptAction
 
 export const workflowApi = baseWorkflowApi.injectEndpoints({
   endpoints: build => ({
@@ -151,6 +158,54 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       providesTags: [{ type: 'Workflow', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    searchWorkflowsVersionList: build.query<Workflow[], RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const ids = payload as string[]
+        // eslint-disable-next-line max-len
+        const promises: MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>[] = []
+        const result:Workflow[] = []
+        ids.forEach(id => promises.push(
+          fetchWithBQ({ ...createNewTableHttpRequest({
+            apiInfo: WorkflowUrls.searchWorkflows,
+            params: { ...params, id: id },
+            payload: payload as TableChangePayload
+          }),
+          body: {
+            ...Object.assign({}, payload),
+            ...transferToNewTablePaginationParams (payload as TableChangePayload)
+          }
+          })))
+        const responses = await Promise.all(promises)
+        responses.forEach(res => {
+          if (res.data) {
+            const data = res.data as NewTableResult<Workflow>
+            if (data.content) {
+              data.content.forEach(workflow => result.push(_.cloneDeep(workflow)))
+            }
+          }
+        })
+
+        return { data: result }
+      },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_WORKFLOW',
+            'UPDATE_WORKFLOW',
+            'DELETE_WORKFLOW',
+            'PUBLISH_WORKFLOW'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Workflow', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'Workflow', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     searchInProgressWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createNewTableHttpRequest({
@@ -216,10 +271,12 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
     }),
     updateUIConfiguration: build.mutation<UIConfiguration, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WorkflowUrls.updateWorkflowUIConfig, params)
+        const header = { ...GetApiVersionHeader(ApiVersionEnum.v1), 'Content-Type': undefined }
+        const req = createHttpRequest(WorkflowUrls.updateWorkflowUIConfig, params, header)
         return {
           ...req,
-          body: payload
+          body: payload,
+          formData: true
         }
       },
       invalidatesTags: [{ type: 'WorkflowUIConfig', id: 'ID' }]
@@ -232,6 +289,39 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'WorkflowUIConfig', id: 'ID' }]
+    }),
+    getUIConfigurationLogoImage: build.query<ImageUrl, RequestPayload>({
+      query: ({ params }) => {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        const param = { ...params, imageType: 'logoImages' }
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfigImage, param, header)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0
+    }),
+    getUIConfigurationBackgroundImage: build.query<ImageUrl, RequestPayload>({
+      query: ({ params }) => {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        const param = { ...params, imageType: 'backgroundImages' }
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfigImage, param, header)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0
+    }),
+    getUIConfigurationIconImage: build.query<ImageUrl, RequestPayload>({
+      query: ({ params }) => {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        const param = { ...params, imageType: 'iconImages' }
+        const req = createHttpRequest(WorkflowUrls.getWorkflowUIConfigImage, param, header)
+        return {
+          ...req
+        }
+      },
+      keepUnusedDataFor: 0
     }),
     /** Workflow Action Definitions */
     getWorkflowActionDefinitionList:
@@ -253,21 +343,11 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 
     /** Workflow Step API */
     createWorkflowStep: build.mutation<WorkflowStep, RequestPayload>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(WorkflowUrls.createWorkflowStep, params),
-          body: payload
-        }
-      },
+      query: commonQueryFn(WorkflowUrls.createWorkflowStep),
       invalidatesTags: [{ type: 'Step' }]
     }),
     createWorkflowChildStep: build.mutation<WorkflowStep, RequestPayload>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(WorkflowUrls.createWorkflowChildStep, params),
-          body: payload
-        }
-      },
+      query: commonQueryFn(WorkflowUrls.createWorkflowChildStep),
       invalidatesTags: [{ type: 'Step' }]
     }),
     deleteWorkflowStepById: build.mutation({
@@ -295,7 +375,6 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         })
       }
     }),
-    // FIXME: need to check
     getWorkflowStepById: build.query<WorkflowStep, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.getWorkflowStepById, params)
@@ -308,40 +387,31 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(WorkflowUrls.createWorkflowStepUnderOption, params),
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Step' }]
     }),
     createSplitOption: build.mutation<SplitOption, RequestPayload>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(WorkflowUrls.createWorkflowOption, params),
-          body: payload
-        }
-      },
-      // FIXME: Change the `type` to SplitOption
+      query: commonQueryFn(WorkflowUrls.createWorkflowOption),
       invalidatesTags: [{ type: 'Step' }]
     }),
     getSplitOptionById: build.query<SplitOption, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.getWorkflowStepById, params)
       },
-      // FIXME: Change the `type` to SplitOption
       providesTags: [{ type: 'Step' }]
     }),
     getSplitOptionsByStepId: build.query<NewTableResult<SplitOption>, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.getWorkflowOptionsByStepId, params)
       },
-      // FIXME: Change the `type` to SplitOption
       providesTags: [{ type: 'Step' }]
     }),
     deleteSplitOptionById: build.mutation({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.deleteSplitOptionById, params)
       },
-      // FIXME: Change the `type` to SplitOption
       invalidatesTags: [{ type: 'Step' }]
     }),
 
@@ -349,12 +419,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
     /** Workflow Actions API */
     // eslint-disable-next-line max-len
     createAction: build.mutation<AsyncResponse, RequestPayload & { callback?: (response: AsyncResponse) => void }>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(WorkflowUrls.createAction, params),
-          body: payload
-        }
-      },
+      query: commonQueryFn(WorkflowUrls.createAction),
       invalidatesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
@@ -389,12 +454,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       }
     }),
     searchActions: build.query<NewTableResult<ActionBase>, RequestPayload<ActionQueryCriteria>>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(WorkflowUrls.queryActions, params),
-          body: payload
-        }
-      },
+      query: commonQueryFn(WorkflowUrls.queryActions),
       providesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -429,12 +489,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       }
     }),
     patchAction: build.mutation<GenericActionData, RequestPayload>({
-      query: ({ params, payload }) => {
-        return {
-          ...createHttpRequest(WorkflowUrls.patchAction, params),
-          body: payload
-        }
-      },
+      query: commonQueryFn(WorkflowUrls.patchAction),
       invalidatesTags: [{ type: 'Action' }]
     }),
     deleteActionById: build.mutation({
@@ -456,9 +511,12 @@ export const {
   useLazySearchWorkflowListQuery,
   useSearchInProgressWorkflowListQuery,
   useLazySearchInProgressWorkflowListQuery,
+  useLazySearchWorkflowsVersionListQuery,
   useGetUIConfigurationQuery,
   useLazyGetUIConfigurationQuery,
-  useUpdateUIConfigurationMutation
+  useUpdateUIConfigurationMutation,
+  useLazyGetUIConfigurationLogoImageQuery,
+  useLazyGetUIConfigurationBackgroundImageQuery
 } = workflowApi
 
 export const {

@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                                            from '@acx-ui/components'
-import { EyeOpenSolid }                                                                                      from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                                        from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
+import { Button, Drawer, Loader }                                                         from '@acx-ui/components'
+import { EyeOpenSolid }                                                                   from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery }                                                     from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
-import { useWorkflowStepActions } from './useWorkflowStepAction'
+import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
+
+import { useWorkflowStepActions } from './useWorkflowStepActions'
 import {
   AupSettings,
   DataPromptSettings,
@@ -25,16 +27,15 @@ export interface StepDrawerProps {
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-  selectedActionDef?: WorkflowActionDef
 
   priorNode?: NodeProps
 }
 
-// FIXME: Use enum to make sure new ActionType to be added into this Map
-const actionFormMap = {
+const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
+  [ActionType.DPSK]: DisplayMessageSetting // TODO: update this
 }
 
 export default function StepDrawer (props: StepDrawerProps) {
@@ -50,6 +51,7 @@ export default function StepDrawer (props: StepDrawerProps) {
   const [ formInstance ] = Form.useForm()
 
   const { createStepWithActionMutation: createStep, patchActionMutation } = useWorkflowStepActions()
+  const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const [actionData, setActionData] = useState<GenericActionData | undefined>()
   const [ getActionById, {
     isLoading: isActionLoading,
@@ -79,7 +81,7 @@ export default function StepDrawer (props: StepDrawerProps) {
         setTimeout(() => formInstance.setFieldsValue(data), 0)
       })
 
-  }, [actionId, isEdit])
+  }, [formInstance, actionId, isEdit])
 
   const onSave = async () => {
     try {
@@ -106,7 +108,7 @@ export default function StepDrawer (props: StepDrawerProps) {
     }
   }
 
-  return (
+  return (<>
     <Drawer
       title={$t(ActionTypeTitle[actionType])}
       destroyOnClose
@@ -121,7 +123,6 @@ export default function StepDrawer (props: StepDrawerProps) {
         >
           <Form<GenericActionData>
             disabled={isActionError}
-            preserve={false}
             form={formInstance}
             layout={'vertical'}
           >
@@ -147,6 +148,7 @@ export default function StepDrawer (props: StepDrawerProps) {
             <Button
               type={'link'}
               icon={<EyeOpenSolid/>}
+              onClick={() => setIsPreviewOpen(true)}
             >
               {$t({ defaultMessage: 'Preview' })}
             </Button>
@@ -159,5 +161,16 @@ export default function StepDrawer (props: StepDrawerProps) {
         padding: '20px'
       }}
     />
-  )
+
+    {isPreviewOpen &&
+      <WorkflowActionPreviewModal
+        workflowId={policyId}
+        actionData={{
+          ...formInstance.getFieldsValue(),
+          actionType
+        }}
+        onClose={() => setIsPreviewOpen(false)}
+      />
+    }
+  </>)
 }
