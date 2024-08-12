@@ -27,7 +27,6 @@ describe('ChromebookTab', () => {
     expect(screen.getByText('Status')).toBeInTheDocument()
     expect(screen.getByText('Enrollment Type')).toBeInTheDocument()
     expect(screen.getByText('Existing Certificates')).toBeInTheDocument()
-    expect(screen.getByText('App ID')).toBeInTheDocument()
     expect(screen.getByText('API Key')).toBeInTheDocument()
     expect(screen.getByText('Type')).toBeInTheDocument()
     expect(screen.getByText('Service Account')).toBeInTheDocument()

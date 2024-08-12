@@ -5,8 +5,8 @@ import { MAX_CERTIFICATE_PER_TENANT }                                         fr
 import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 import { CertificateTemplate }                                                from '@acx-ui/rc/utils'
 
-import { certificateDescription } from '../contentsMap'
-import { Description }            from '../styledComponents'
+import { certificateDescription, onboardSettingsDescription } from '../contentsMap'
+import { Description }                                        from '../styledComponents'
 
 export default function CertificateSettings (
   { templateData }: { templateData?: CertificateTemplate }) {
@@ -96,6 +96,7 @@ export default function CertificateSettings (
       </Row>
       {csrType === 'copy' &&
         <Row>
+          <Description>{$t(onboardSettingsDescription.KEY_LENGTH)}</Description>
           <Col span={10}>
             <Form.Item
               name='csrString'
