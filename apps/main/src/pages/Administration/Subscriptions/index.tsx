@@ -101,7 +101,8 @@ export const SubscriptionTable = () => {
   const columns: TableProps<Entitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
       {
-        title: $t({ defaultMessage: 'Part Number' }),
+        title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Services' })
+          : $t({ defaultMessage: 'Part Number' }),
         dataIndex: 'sku',
         key: 'sku',
         sorter: { compare: sortProp('sku', defaultSort) }
@@ -193,7 +194,8 @@ export const SubscriptionTable = () => {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? '--'
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },
