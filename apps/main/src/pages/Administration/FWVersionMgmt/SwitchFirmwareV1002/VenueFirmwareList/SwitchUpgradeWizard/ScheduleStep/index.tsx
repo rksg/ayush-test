@@ -226,7 +226,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: '10px 0 30px 0', fontSize: '14px' }}
+              style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
               onChange={handleICX82Change}
               value={selectedICX82Version}>
               <Space direction={'vertical'}>
@@ -260,7 +260,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX7XCount} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: '10px 0 30px 0', fontSize: '14px' }}
+              style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
               onChange={handleICX7XChange}
               value={selectedICX7XVersion}>
               <Space direction={'vertical'}>
@@ -294,7 +294,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: '10px 0 30px 0', fontSize: '14px' }}
+              style={{ margin: '5px 0 20px 0', fontSize: '14px' }}
               onChange={handleICX71Change}
               value={selectedICX71Version}>
               <Space direction={'vertical'}>
