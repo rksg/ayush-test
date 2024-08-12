@@ -4,7 +4,7 @@ import { Row, Col, Typography, Form }        from 'antd'
 import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker'
 import { NamePath }                          from 'antd/lib/form/interface'
 import dayjs                                 from 'dayjs'
-import moment                                from 'moment-timezone'
+import moment, { Moment }                    from 'moment-timezone'
 import { defineMessage, useIntl }            from 'react-intl'
 
 import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
@@ -23,7 +23,6 @@ function DateTimeSetting ({
   scheduledDate,
   scheduledTime
 }: DateTimeSettingProps) {
-  const initialDate = moment(scheduledDate)
   const initialTime = useRef(scheduledTime)
   const { form } = useStepFormContext<IntentAIFormDto>()
   const disabledDate : RangePickerProps['disabledDate']= (current) => {
@@ -38,15 +37,16 @@ function DateTimeSetting ({
       name={name as string}
       dateLabel={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
       timeLabel={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
-      initialDate={initialDate} // initial date from scheduledAt if  any
+      initialDate={scheduledDate} // initial date from scheduledAt if  any
       time={initialTime}
       disabledDate={disabledDate} // disable all date before current
       onchange={onChange}
+      form={form}
     />
   )}
 
 type DateTimeSettingProps = {
-  scheduledDate: string
+  scheduledDate: Moment
   scheduledTime: number
 }
 
@@ -62,7 +62,7 @@ const scheduleActions = {
 }
 
 export function getAvailableActions (status: string,
-  settings: { date: string, hour: number }) {
+  settings: { date: Moment, hour: number }) {
   if  (status === 'new' || status === 'scheduled') {
     return scheduleActions.datetime({ scheduledDate: settings.date, scheduledTime: settings.hour })
   } else {

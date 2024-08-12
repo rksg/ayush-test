@@ -167,9 +167,9 @@ export function specToDto (
   if (rec.metadata) {
     const scheduledAt = rec.metadata.scheduledAt ?? new Date().toISOString() //this is in utc
     console.log(scheduledAt)
-    const dateTime = moment(scheduledAt).tz('Asia/Singapore')
+    // const dateTime = moment(scheduledAt).tz('Asia/Singapore')
     // const date = dateTime.format('YYYY-MM-DD')
-    const date = '2024-08-14' // to be removed
+    const date = moment() // to be removed
     // const time = roundUpTimeToNearest15Minutes(dateTime.format('HH:mm:ss'))
     const time = 7.5 // to be removed
     dto = {

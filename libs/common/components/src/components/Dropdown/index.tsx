@@ -5,11 +5,11 @@ import {
   DropdownProps as AntDropdownProps,
   MenuProps as AntMenuProps,
   Form,
-  DatePickerProps
+  DatePickerProps,
+  FormInstance
 } from 'antd'
-import { Moment }                 from 'moment-timezone'
-import { MenuItemType }           from 'rc-menu/lib/interface'
-import { defineMessage, useIntl } from 'react-intl'
+import moment,{ Moment } from 'moment-timezone'
+import { MenuItemType }  from 'rc-menu/lib/interface'
 
 import { ScopeKeys } from '@acx-ui/types'
 
@@ -69,22 +69,39 @@ interface DateTimeDropdownProps {
   time: MutableRefObject<number>,
   disabledDate:(value: Moment) => boolean
   onchange: DatePickerProps['onChange']
+  form: FormInstance
 }
 
+function roundUpTimeToNearest15Minutes (timeStr: string) {
+  const [hours, minutes] = timeStr.split(':').map(Number)
+  const totalMinutes = hours * 60 + minutes
+  const roundedMinutes = Math.ceil(totalMinutes / 15) * 15
+  const roundedHours = Math.floor(roundedMinutes / 60)
+  const roundedMinutesInHour = roundedMinutes % 60
+  const decimalHour = roundedHours + roundedMinutesInHour / 60
+  return decimalHour
+}
+
+function getDisabledTime (dateSelected: Moment) {
+  if (dateSelected.startOf('day').isSame(moment().startOf('day'))) {
+    const result = roundUpTimeToNearest15Minutes(
+      moment().format('HH:mm:ss'))
+    return result
+  }
+  return 0
+}
 export const DateTimeDropdown = (
   {
     name,
     dateLabel,
     timeLabel,
     initialDate,
-    time,
     disabledDate,
-    onchange
+    onchange,
+    form
   } : DateTimeDropdownProps) => {
   const [date, setDate] = useState(() => initialDate)
-  const { $t } = useIntl()
-  // dateLabel = dateLabel ?? 'Date'
-  // timeLabel=timeLabel ?? 'Time'
+  const dateSelected: Moment = form.getFieldValue([name, 'date'])
   return (
     <>
       <Form.Item name={[name, 'date']}
@@ -112,8 +129,9 @@ export const DateTimeDropdown = (
           <TimeDropdown name={name}
             spanLength={24}
             disabledDateTime={
-              { disabledStrictlyBefore: time.current }
-            }/>
+              { disabledStrictlyBefore: getDisabledTime(dateSelected) }
+            }
+          />
         }
       />
     </>

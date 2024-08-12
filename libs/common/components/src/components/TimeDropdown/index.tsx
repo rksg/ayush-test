@@ -37,6 +37,12 @@ function timeOptions (disabledStrictlyBefore: number, disabledStrictlyAfter: num
     value <= disabledStrictlyAfter) {
       timeOptions.push(<Select.Option value={+value} key={hour} children={hour} />)
     }
+    else {
+      timeOptions.push(<Select.Option value={+value}
+        key={hour}
+        children={hour}
+        disabled={true}/>)
+    }
   }
   return timeOptions
 }
