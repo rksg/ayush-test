@@ -275,6 +275,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
     newApi: true
   },
+  deactivateVenueApGroupRbac: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
   getVenueApGroupsRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',

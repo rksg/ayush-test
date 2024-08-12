@@ -318,46 +318,71 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
 
         const updateApGroups = [] as NetworkApGroup[]
+        const addApGroups = [] as NetworkApGroup[]
+        const deleteApGroups = [] as NetworkApGroup[]
 
-        newApGroups.forEach((newApGroup: NetworkApGroup) => {
-          const apGroupId = newApGroup.apGroupId as string
-          const oldApGroup = find(oldApGroups, { apGroupId })
-          const comparisonResult = comparePayload(
-            newApGroup as unknown as Record<string, unknown>,
-            oldApGroup as unknown as Record<string, unknown>,
-            apGroupId,
-            itemProcessFn
-          )
-          if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
-        })
+        if (enableRbac) {
+          newApGroups.forEach((newApGroup: NetworkApGroup) => {
+            const apGroupId = newApGroup.apGroupId as string
+            const oldApGroup = find(oldApGroups, { apGroupId })
+            const comparisonResult = comparePayload(
+              newApGroup as unknown as Record<string, unknown>,
+              oldApGroup as unknown as Record<string, unknown>,
+              apGroupId,
+              itemProcessFn
+            )
+            if (!oldApGroup) addApGroups.push(newApGroup)
+            if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+          })
 
-        if (newApGroups.length > 0) {
-          await Promise.all(newApGroups.map(apGroup => {
-            const apGroupSettingReq = {
-              ...createHttpRequest(
-                ConfigTemplateUrlsInfo.activateVenueApGroupRbac, {
-                  venueId: apGroup.venueId,
-                  networkId: apGroup.networkId,
-                  apGroupId: apGroup.apGroupId
-                })
-            }
-            return fetchWithBQ(apGroupSettingReq)
-          }))
-        }
+          oldApGroups.forEach((oldApGroup: NetworkApGroup) => {
+            const apGroupId = oldApGroup.apGroupId as string
+            const newApGroup = find(newApGroups, { apGroupId })
+            if (!newApGroup) deleteApGroups.push(oldApGroup)
+          })
 
-        if (updateApGroups.length > 0) {
-          await Promise.all(updateApGroups.map(apGroup => {
-            const apGroupSettingReq = {
-              ...createHttpRequest(
-                ConfigTemplateUrlsInfo.updateVenueApGroupsRbac, {
-                  venueId: apGroup.venueId,
-                  networkId: apGroup.networkId,
-                  apGroupId: apGroup.apGroupId
-                }),
-              body: JSON.stringify(apGroup)
-            }
-            return fetchWithBQ(apGroupSettingReq)
-          }))
+          if (addApGroups.length > 0) {
+            await Promise.all(addApGroups.map(apGroup => {
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  ConfigTemplateUrlsInfo.activateVenueApGroupRbac, {
+                    venueId: apGroup.venueId,
+                    networkId: apGroup.networkId,
+                    apGroupId: apGroup.apGroupId
+                  })
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
+
+          if (updateApGroups.length > 0) {
+            await Promise.all(updateApGroups.map(apGroup => {
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  ConfigTemplateUrlsInfo.updateVenueApGroupsRbac, {
+                    venueId: apGroup.venueId,
+                    networkId: apGroup.networkId,
+                    apGroupId: apGroup.apGroupId
+                  }),
+                body: JSON.stringify(apGroup)
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
+
+          if (deleteApGroups.length > 0) {
+            await Promise.all(deleteApGroups.map(apGroup => {
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac, {
+                    venueId: apGroup.venueId,
+                    networkId: apGroup.networkId,
+                    apGroupId: apGroup.apGroupId
+                  })
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
         }
 
         return updateNetworkVenueQuery.data
