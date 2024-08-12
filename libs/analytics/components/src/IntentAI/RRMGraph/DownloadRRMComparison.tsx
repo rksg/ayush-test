@@ -13,10 +13,10 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { EnhancedRecommendation } from '../../../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
-import { useCRRMQuery }    from './services'
-import { DownloadWrapper } from './styledComponents'
+import { useIntentAICRRMQuery } from './services'
+import { DownloadWrapper }      from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -24,20 +24,21 @@ const useDownloadUrl = (data: unknown, type: string) => {
   const [url, setUrl] = useState<string>()
   useEffect(() => {
     if (!data) return
-    setUrl(URL.createObjectURL(new Blob([data as BlobPart], { type })))
+    const url = URL.createObjectURL(new Blob([data as BlobPart], { type }))
+    setUrl(url)
     return () => URL.revokeObjectURL(url!)
-  }, [data])
+  }, [data, type])
   return url
 }
 
 export function DownloadRRMComparison (props: {
-  details: EnhancedRecommendation,
+  details: EnhancedIntent,
   title?: string
 }) {
   const { $t } = useIntl()
   const band = recommendationBandMapping[
     props.details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useCRRMQuery(props.details, band)
+  const queryResult = useIntentAICRRMQuery(props.details, band)
   const url = useDownloadUrl(queryResult.csv, 'text/csv')
 
   const filename = sanitize([
@@ -53,8 +54,8 @@ export function DownloadRRMComparison (props: {
         icon={<DownloadOutlined/>}
         download={filename}
         href={url}
+        type={'primary'}
       >{props.title || $t({ defaultMessage: 'Download RRM comparison' })}</Button>
     </Loader>
   </DownloadWrapper>
 }
-

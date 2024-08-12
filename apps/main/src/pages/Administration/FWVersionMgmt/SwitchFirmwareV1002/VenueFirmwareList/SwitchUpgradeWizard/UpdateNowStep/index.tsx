@@ -230,7 +230,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                         size='small'
                         ghost={true}
                         onClick={scrollToTarget}>
-                        {[1]}
+                        {'[1]'}
                       </NoteButton>}
                       {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
                         <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
