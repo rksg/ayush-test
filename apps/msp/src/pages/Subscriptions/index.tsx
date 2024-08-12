@@ -17,6 +17,7 @@ import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
+  LicenseCompliance,
   PendingActivations,
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -108,6 +109,9 @@ export function Subscriptions () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
+  const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
   const {
     state
   } = useContext(HspContext)
@@ -157,7 +161,8 @@ export function Subscriptions () {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
@@ -381,7 +386,7 @@ export function Subscriptions () {
 
     return (
       <>
-        <Subtitle level={4} style={{ marginBottom: '12px' }}>
+        <Subtitle level={3} style={{ marginBottom: '12px' }}>
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
 
@@ -395,6 +400,9 @@ export function Subscriptions () {
               const summary = summaryData[item.value]
               const showUtilBar = summary &&
                   (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+              if (isvSmartEdgeEnabled) {
+                item.label = $t({ defaultMessage: 'Device Networking' })
+              }
               return showUtilBar ? <MspSubscriptionUtilizationWidget
                 key={item.value}
                 deviceType={item.value}
@@ -473,6 +481,11 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Pending Activations' }),
       content: <PendingActivations />,
       visible: isPendingActivationEnabled
+    },
+    compliance: {
+      title: $t({ defaultMessage: 'Compliance' }),
+      content: <LicenseCompliance isMsp={true}/>,
+      visible: showCompliance
     }
   }
 

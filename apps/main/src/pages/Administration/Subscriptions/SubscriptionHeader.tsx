@@ -64,6 +64,7 @@ export const SubscriptionHeader = () => {
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
@@ -113,6 +114,9 @@ export const SubscriptionHeader = () => {
             )
               .map((item) => {
                 const summary = summaryData[item.value]
+                if (isvSmartEdgeEnabled) {
+                  item.label = $t({ defaultMessage: 'Device Networking' })
+                }
                 return summary ? <SubscriptionUtilizationWidget
                   key={item.value}
                   deviceType={item.value}

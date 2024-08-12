@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { apApi, venueApi }                                                    from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -42,9 +42,15 @@ describe('AP Lan port settings', () => {
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(WifiUrlsInfo.getApLanPorts.url,
         (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
       rest.put(WifiUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(WifiUrlsInfo.resetApLanPorts.url,
         (_, res, ctx) => res(ctx.json({})))

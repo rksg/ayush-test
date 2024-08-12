@@ -91,7 +91,7 @@ describe('ClientOverviewTab root', () => {
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
-      rest.post(ClientUrlsInfo.getClientList.url,
+      rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
       rest.post(CommonUrlsInfo.getVenues.url,

@@ -128,8 +128,9 @@ export const VenueFirmwareTable = (
       sorter: { compare: sortProp(isSwitchRbacEnabled ? 'venueName' : 'name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return isSwitchRbacEnabled ? row.venueName : row.name
+      render: function (_, row, __, highlightFn) {
+        const name = isSwitchRbacEnabled ? row.venueName : row.name
+        return highlightFn(name)
       }
     },
     {
