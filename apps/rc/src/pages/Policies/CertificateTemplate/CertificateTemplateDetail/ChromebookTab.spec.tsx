@@ -14,7 +14,6 @@ describe('ChromebookTab', () => {
       chromebook: {
         enrollmentType: ChromebookEnrollmentType.DEVICE,
         certRemovalType: ChromebookCertRemovalType.NONE,
-        notifyAppId: 'notifyAppIdValue',
         apiKey: 'apiKeyValue',
         enabled: true,
         type: 'typeValue',
@@ -35,7 +34,6 @@ describe('ChromebookTab', () => {
     expect(screen.getByText('Enabled')).toBeInTheDocument()
     expect(screen.getByText('Device')).toBeInTheDocument()
     expect(screen.getByText('Do not remove existing certificates.')).toBeInTheDocument()
-    expect(screen.getByText('notifyAppIdValue')).toBeInTheDocument()
     expect(screen.getByText('apiKeyValue')).toBeInTheDocument()
     expect(screen.getByText('typeValue')).toBeInTheDocument()
     expect(screen.getByText('projectIdValue')).toBeInTheDocument()

@@ -90,7 +90,6 @@ describe('CertificateTemplateForm', () => {
     expect(await screen.findByText('Enabled')).toBeVisible()
     expect(await screen.findByText('Device')).toBeVisible()
     expect(await screen.findByText('Do not remove existing certificates.')).toBeVisible()
-    expect(await screen.findByText('testAppId')).toBeVisible()
     expect(await screen.findByText('testApiKey')).toBeVisible()
 
     await userEvent.click(screen.getByText('Add'))
