@@ -6,7 +6,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { statusTrailMsgs }                from '../../IntentAIForm/AIDrivenRRM'
 import { StatusTrail as StatusTrailType } from '../../IntentAIForm/config'
-import { EnhancedRecommendation }         from '../../IntentAIForm/services'
+import { EnhancedIntent }                 from '../../IntentAIForm/services'
 import {
   DetailsHeader,
   StatusTrailDateLabel,
@@ -49,7 +49,7 @@ const trailFormatter = (
   return $t(msg)
 }
 
-const getStatusTrail = (details: EnhancedRecommendation, $t: IntlShape['$t']) => {
+const getStatusTrail = (details: EnhancedIntent, $t: IntlShape['$t']) => {
   const { statusTrail } = details
   return statusTrail.map(({ createdAt }, index) => ({
     status: trailFormatter(statusTrail, index, $t),
@@ -65,7 +65,7 @@ const StatusTrailItem = ({ statusTrail }:{ statusTrail: ReturnType<typeof getSta
   </StatusTrailItemWrapper>
 }
 
-export const StatusTrail = ({ details }: { details: EnhancedRecommendation }) => {
+export const StatusTrail = ({ details }: { details: EnhancedIntent }) => {
   const { $t } = useIntl()
   const statusTrail = getStatusTrail(details, $t)
   return <div style={{ marginTop: 40 }}>
