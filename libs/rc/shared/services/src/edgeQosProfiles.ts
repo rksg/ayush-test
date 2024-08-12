@@ -30,7 +30,7 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
     }),
     deleteEdgeQosProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeQosProfilesUrls.deleteEdgeQos, params)
+        const req = createHttpRequest(EdgeQosProfilesUrls.deleteEdgeQosProfile, params)
         return {
           ...req
         }
