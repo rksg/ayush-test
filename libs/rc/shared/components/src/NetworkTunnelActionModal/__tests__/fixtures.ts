@@ -1,0 +1,32 @@
+import { NetworkTypeEnum } from '@acx-ui/rc/utils'
+
+export const mockDeepNetworkList = {
+  requestId: '639283c7-7a5e-4ab3-8fdb-6289fe0ed255',
+  response: [
+    { name: 'MockedNetwork 1', id: 'network_1', type: NetworkTypeEnum.DPSK },
+    { name: 'MockedNetwork 2', id: 'network_2', type: NetworkTypeEnum.PSK },
+    { name: 'MockedNetwork 3', id: 'network_3', type: NetworkTypeEnum.OPEN },
+    { name: 'MockedNetwork 4', id: 'network_4', type: NetworkTypeEnum.CAPTIVEPORTAL }
+  ]
+}
+
+export const mockVlanPoolList = [ {
+  id: 'ec24eb9fb6f54e42a27a2cab821161d9',
+  name: 'mockPool1',
+  vlanMembers: [
+    '66-100'
+  ],
+  wifiNetworkIds: [
+    'network_4'
+  ],
+  wifiNetworkVenueApGroups: [
+    {
+      venueId: '0df9555db7174b2cb12747b643c6fca6',
+      wifiNetworkId: 'network_4',
+      apGroupIds: [
+        '0fe95abe95e04fafaa6254e8fa4eae48'
+      ],
+      isAllApGroups: true
+    }
+  ]
+}]

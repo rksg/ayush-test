@@ -33,6 +33,9 @@ describe('NetworkPageHeader', () => {
       ),
       rest.get(ConfigTemplateUrlsInfo.getNetworkTemplate.url,
         (_, res, ctx) => res(ctx.json([]))
+      ),
+      rest.get(ConfigTemplateUrlsInfo.getNetworkTemplateRbac.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })

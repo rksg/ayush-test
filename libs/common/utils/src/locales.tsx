@@ -218,7 +218,7 @@ function LocaleProvider (props: LocaleProviderProps) {
       setUpIntl({
         locale: lang,
         messages: message,
-        defaultRichTextElements: getReSkinningElements(props.supportReSkinning, {
+        defaultRichTextElements: getReSkinningElements({
           lang: lang, messages: message
         })
       })

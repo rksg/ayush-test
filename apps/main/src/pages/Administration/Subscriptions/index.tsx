@@ -96,7 +96,7 @@ export const SubscriptionTable = () => {
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
   const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
-
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const columns: TableProps<Entitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
@@ -140,7 +140,8 @@ export const SubscriptionTable = () => {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },

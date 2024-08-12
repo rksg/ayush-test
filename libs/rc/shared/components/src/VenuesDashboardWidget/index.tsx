@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { cssStr, Loader, Card , DonutChart }                      from '@acx-ui/components'
-import type { DonutChartData }                                    from '@acx-ui/components'
-import { useDashboardOverviewQuery, useDashboardV2OverviewQuery } from '@acx-ui/rc/services'
+import { cssStr, Loader, Card , DonutChart } from '@acx-ui/components'
+import type { DonutChartData }               from '@acx-ui/components'
+import { useDashboardV2OverviewQuery }       from '@acx-ui/rc/services'
 import {
   Dashboard,
   ApVenueStatusEnum
@@ -46,34 +46,6 @@ export const getVenuesDonutChartData = (overviewData?: Dashboard): DonutChartDat
     })
   }
   return chartData
-}
-
-export function VenuesDashboardWidget () {
-  const { $t } = useIntl()
-  const onArrowClick = useNavigateToPath('/venues/')
-
-  const queryResults = useDashboardOverviewQuery({
-    params: useParams()
-  },{
-    selectFromResult: ({ data, ...rest }) => ({
-      data: getVenuesDonutChartData(data),
-      ...rest
-    })
-  })
-  return (
-    <Loader states={[queryResults]}>
-      <Card title={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })}
-        onArrowClick={onArrowClick}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <DonutChart
-              style={{ width, height }}
-              data={queryResults.data} />
-          )}
-        </AutoSizer>
-      </Card>
-    </Loader>
-  )
 }
 
 export function VenuesDashboardWidgetV2 () {

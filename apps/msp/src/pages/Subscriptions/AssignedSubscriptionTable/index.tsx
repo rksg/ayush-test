@@ -33,6 +33,7 @@ export function AssignedSubscriptionTable () {
   const { tenantId } = useParams()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
@@ -55,7 +56,8 @@ export function AssignedSubscriptionTable () {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Assigned Devices' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Assigned Licenses' })
+        : $t({ defaultMessage: 'Assigned Devices' }),
       dataIndex: 'quantity',
       key: 'quantity',
       align: 'center',
