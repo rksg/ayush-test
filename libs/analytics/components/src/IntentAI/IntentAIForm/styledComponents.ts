@@ -20,3 +20,12 @@ export const SideNotes = styled.div.attrs((props: { $pageHeaderY: number }) => p
   border-radius: 4px;
   padding: 20px;
 `
+
+export const Kpi = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const KpiText = styled.div`
+  padding-right: 5px;
+`

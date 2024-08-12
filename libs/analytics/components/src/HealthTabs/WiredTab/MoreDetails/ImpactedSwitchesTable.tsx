@@ -118,21 +118,12 @@ export const ImpactedSwitchesTable = ({
       }
     }
   ]
-  const isSwitchDetails = (item: SwitchDetails): item is SwitchDetails => {
-    return 'serial' in item && 'model' in item && 'status' in item &&
-    'firmware' in item && 'numOfPorts' in item
-  }
 
   const totalCount = queryResults?.data?.length
-  const data = queryResults?.data?.map((item, i) => {
-    if (isSwitchDetails(item as SwitchDetails)) {
-      return {
-        ...item,
-        rowId: i + 1 // added to make rowKey unique
-      }
-    }
-    return item
-  })
+  const data = queryResults?.data?.map((item, i) => ({
+    ...item,
+    rowId: i + 1
+  }))
 
   return (
     <Loader states={[queryResults]}>

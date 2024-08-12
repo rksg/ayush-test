@@ -34,6 +34,20 @@ describe('Graph', () => {
     expect(fragment).toMatchSnapshot()
   })
 
+  it('should show transparent background', () => {
+    const { asFragment } = render(<Graph
+      chartRef={() => {}}
+      title='Current'
+      data={deriveInterfering(sample, BandEnum._5_GHz)}
+      zoomScale={zoomScale}
+      grayBackground={false}
+    />)
+    const fragment = asFragment()
+    fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')
+    fragment.querySelectorAll('path').forEach(path => path?.removeAttribute('transform'))
+    expect(fragment).toMatchSnapshot()
+  })
+
   it('should use imperative handle', async () => {
     const mockCallbackRef = jest.fn()
     let createHandleCallback: () => RefObject<ReactECharts>
