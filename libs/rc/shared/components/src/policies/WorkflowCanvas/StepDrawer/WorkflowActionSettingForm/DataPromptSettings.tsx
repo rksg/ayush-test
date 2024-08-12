@@ -37,7 +37,7 @@ function DataPromptField () {
   const validateDuplicateType = (selectedType: string) => {
 
     if (selectedTypes.filter(item =>
-      (item && item.type === selectedType) ? true : false ).length > 1) {
+      (item && item.type === selectedType) ).length > 1) {
       return Promise.reject($t({ defaultMessage: 'Field type already selected' }))
     }
 
