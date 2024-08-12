@@ -2,21 +2,21 @@ import { recommendationBandMapping }             from '@acx-ui/components'
 import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { EnhancedRecommendation }                                                                               from '../../../IntentAIForm/services'
-import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedRecommendationCRRM, mockedRecommendationCRRMApplied } from '../__tests__/fixtures'
+import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedIntentCRRM, mockedIntentCRRMApplied } from '../IntentAIDetails/__tests__/fixtures'
+import { EnhancedIntent }                                                                       from '../IntentAIForm/services'
 
-import { useCRRMQuery } from './services'
+import { useIntentAICRRMQuery } from './services'
 
-describe('useCRRMQuery', () => {
+describe('useIntentAICRRMQuery', () => {
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
-      data: { recommendation: mockedCRRMGraphs }
+      data: { intent: mockedCRRMGraphs }
     })
     const band = recommendationBandMapping[
-      mockedRecommendationCRRM.code as keyof typeof recommendationBandMapping]
-    const { result } = renderHook(() => useCRRMQuery(
-      mockedRecommendationCRRM as EnhancedRecommendation,
+      mockedIntentCRRM.code as keyof typeof recommendationBandMapping]
+    const { result } = renderHook(() => useIntentAICRRMQuery(
+      mockedIntentCRRM as EnhancedIntent,
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
@@ -25,12 +25,12 @@ describe('useCRRMQuery', () => {
   })
   it('should return correct data for applied status', async () => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
-      data: { recommendation: mockedCRRMGraphsApplied }
+      data: { intent: mockedCRRMGraphsApplied }
     })
     const band = recommendationBandMapping[
-      mockedRecommendationCRRMApplied.code as keyof typeof recommendationBandMapping]
-    const { result } = renderHook(() => useCRRMQuery(
-      mockedRecommendationCRRMApplied as EnhancedRecommendation,
+      mockedIntentCRRMApplied.code as keyof typeof recommendationBandMapping]
+    const { result } = renderHook(() => useIntentAICRRMQuery(
+      mockedIntentCRRMApplied as EnhancedIntent,
       band
     ), { wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
