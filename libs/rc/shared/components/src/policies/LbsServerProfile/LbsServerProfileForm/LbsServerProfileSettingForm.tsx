@@ -12,6 +12,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { LbsServerConnectionProtocolInfo } from '../LbsServerConnectionProtocolInfo/LbsServerConnectionProtocolInfo'
 
 const LbsServerProfileSettingForm = () => {
   const { $t } = useIntl()
@@ -108,6 +109,7 @@ const LbsServerProfileSettingForm = () => {
         ]}
         children={<PasswordInput />}
       />
+      <LbsServerConnectionProtocolInfo />
     </>
   )
 }

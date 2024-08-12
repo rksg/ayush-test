@@ -289,6 +289,12 @@ export const PortStatusMessages = {
   })
 }
 
+export const LbsServerProfileMessages = {
+  CONNECTION_PROTOCOL_TOOLTIP: defineMessage({
+    defaultMessage: 'This server uses Transport Layer Security (TLS) version 1.2 to ensure secure and encrypted communication.'
+  })
+}
+
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {
