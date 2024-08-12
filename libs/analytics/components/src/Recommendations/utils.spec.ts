@@ -29,7 +29,7 @@ describe('crrmText', () => {
             autoCellSizing: 'true'
           }
         ],
-        expectedText: 'ChannelFly and 80 MHz for 5 GHz with Auto Cell Sizing on'
+        expectedText: 'Channel Fly and 80 MHz for 5 GHz with Auto Cell Sizing on'
       },
       {
         config: [
@@ -86,7 +86,7 @@ describe('crrmText', () => {
             autoCellSizing: 'true'
           }
         ],
-        expectedText: 'ChannelFly and Auto for 5 GHz, lower 5 GHz, and upper 5 GHz with Auto Cell Sizing on' // eslint-disable-line max-len
+        expectedText: 'Channel Fly and Auto for 5 GHz, lower 5 GHz, and upper 5 GHz with Auto Cell Sizing on' // eslint-disable-line max-len
       },
       {
         config: [
@@ -109,7 +109,7 @@ describe('crrmText', () => {
             autoCellSizing: 'false'
           }
         ],
-        expectedText: 'ChannelFly and 20 MHz for 5 GHz with Auto Cell Sizing on, Background scanning and 40 MHz for lower 5 GHz and upper 5 GHz with static AP Tx Power' // eslint-disable-line max-len
+        expectedText: 'Channel Fly and 20 MHz for 5 GHz with Auto Cell Sizing on, Background scanning and 40 MHz for lower 5 GHz and upper 5 GHz with static AP Tx Power' // eslint-disable-line max-len
       },
       {
         config: [
@@ -132,7 +132,7 @@ describe('crrmText', () => {
             autoCellSizing: 'true'
           }
         ],
-        expectedText: 'Background scanning and 20 MHz for 5 GHz and upper 5 GHz with Auto Cell Sizing on, ChannelFly and 40 MHz for lower 5 GHz with static AP Tx Power' // eslint-disable-line max-len
+        expectedText: 'Background scanning and 20 MHz for 5 GHz and upper 5 GHz with Auto Cell Sizing on, Channel Fly and 40 MHz for lower 5 GHz with static AP Tx Power' // eslint-disable-line max-len
       },
       {
         config: [
@@ -155,7 +155,7 @@ describe('crrmText', () => {
             autoCellSizing: 'true'
           }
         ],
-        expectedText: 'Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Tx Power, ChannelFly and Auto for upper 5 GHz with Auto Cell Sizing on' // eslint-disable-line max-len
+        expectedText: 'Background scanning and 20 MHz for 5 GHz and lower 5 GHz with static AP Tx Power, Channel Fly and Auto for upper 5 GHz with Auto Cell Sizing on' // eslint-disable-line max-len
       },
       {
         config: [

@@ -17,14 +17,14 @@ describe('CrrmValues', () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRMnew)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Recommended Configuration')).toBeVisible()
-    expect(await screen.findByText('ChannelFly and Auto for 5 GHz with Auto Cell Sizing on'))
+    expect(await screen.findByText('Channel Fly and Auto for 5 GHz with Auto Cell Sizing on'))
       .toBeVisible()
   })
   it('should render correctly for applied crrm', async () => {
     const crrmDetails = transformDetailsResponse(mockedRecommendationCRRM)
     render(<CrrmValues details={crrmDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Original Configuration')).toBeVisible()
-    expect(await screen.findByText('ChannelFly and 80 MHz for 2.4 GHz with static AP Tx Power'))
+    expect(await screen.findByText('Channel Fly and 80 MHz for 2.4 GHz with static AP Tx Power'))
       .toBeVisible()
   })
   it('should render correctly for pull optimized crrm', async () => {
