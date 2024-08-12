@@ -32,9 +32,12 @@ function DateTimeSetting ({
   const onChange: DatePickerProps['onChange'] = (date) => {
     form.setFieldValue(['settings', 'date'], date)
   }
+  const { $t } = useIntl()
   return (
     <DateTimeDropdown
       name={name as string}
+      dateLabel={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
+      timeLabel={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
       initialDate={initialDate} // initial date from scheduledAt if  any
       time={initialTime}
       disabledDate={disabledDate} // disable all date before current

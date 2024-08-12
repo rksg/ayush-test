@@ -63,6 +63,8 @@ Dropdown.OverlayTitle = UI.OverlayTitle
 
 interface DateTimeDropdownProps {
   name: string
+  dateLabel: string
+  timeLabel: string
   initialDate: Moment
   time: MutableRefObject<number>,
   disabledDate:(value: Moment) => boolean
@@ -72,6 +74,8 @@ interface DateTimeDropdownProps {
 export const DateTimeDropdown = (
   {
     name,
+    dateLabel,
+    timeLabel,
     initialDate,
     time,
     disabledDate,
@@ -79,10 +83,12 @@ export const DateTimeDropdown = (
   } : DateTimeDropdownProps) => {
   const [date, setDate] = useState(() => initialDate)
   const { $t } = useIntl()
+  // dateLabel = dateLabel ?? 'Date'
+  // timeLabel=timeLabel ?? 'Time'
   return (
     <>
       <Form.Item name={[name, 'date']}
-        label={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
+        label={dateLabel}
         valuePropName={'date'}
         children={
           <DatePicker
@@ -101,7 +107,7 @@ export const DateTimeDropdown = (
       />
 
       <Form.Item
-        label={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
+        label={timeLabel}
         children={
           <TimeDropdown name={name}
             spanLength={24}
