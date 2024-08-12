@@ -67,7 +67,7 @@ interface DateTimeDropdownProps {
   timeLabel: string
   initialDate: Moment
   time: MutableRefObject<number>,
-  disabledDate:(value: Moment) => boolean
+  disabledDate:((date: moment.Moment) => boolean) | undefined
   onchange: DatePickerProps['onChange']
   form: FormInstance
 }
@@ -118,6 +118,7 @@ export const DateTimeDropdown = (
             onChange={(e,i) => {
               onchange!(e,i)
               setDate(e!)
+              form.setFieldValue([name, 'hour'], null)
             }}
           />
         }

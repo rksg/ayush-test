@@ -140,7 +140,6 @@ function decimalToTimeString (decimalHours: number) {
 }
 
 function handleScheduledAt (scheduledAt:string ) {
-  console.log(scheduledAt)
   const originalScheduledAt = new Date(scheduledAt)
   const futureThreshold = new Date(new Date().getTime() + 15 * 60 * 1000)
   if (originalScheduledAt < futureThreshold) {
@@ -166,7 +165,6 @@ export function specToDto (
   } as IntentAIFormDto
   if (rec.metadata) {
     const scheduledAt = rec.metadata.scheduledAt ?? new Date().toISOString() //this is in utc
-    console.log(scheduledAt)
     // const dateTime = moment(scheduledAt).tz('Asia/Singapore')
     // const date = dateTime.format('YYYY-MM-DD')
     const date = moment() // to be removed
@@ -180,9 +178,6 @@ export function specToDto (
       }
     } as IntentAIFormDto
   }
-
-  console.log('this is specToDtoo')
-  console.log(dto)
   return dto
 }
 

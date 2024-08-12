@@ -4,7 +4,7 @@ import { Row, Col, Typography, Form }        from 'antd'
 import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker'
 import { NamePath }                          from 'antd/lib/form/interface'
 import dayjs                                 from 'dayjs'
-import moment, { Moment }                    from 'moment-timezone'
+import { Moment }                            from 'moment-timezone'
 import { defineMessage, useIntl }            from 'react-intl'
 
 import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
@@ -54,7 +54,7 @@ const scheduleActions = {
   datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
   time: () =>
     <Form.Item
-      label={'test'}
+      label={'Schedule Time'}
       children={
         <TimeDropdown name={name as string} spanLength={24} />
       }

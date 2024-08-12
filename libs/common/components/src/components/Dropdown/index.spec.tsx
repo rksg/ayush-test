@@ -46,3 +46,31 @@ describe('Dropdown', () => {
     )
   })
 })
+
+describe('DateTimeDropdown', () => {
+  it('renders correctly and handle events', () => {
+    const testDate = moment('2024-08-12T10:30:00')
+    const [testForm] = Form.useForm()
+    const testTime = useRef(5.5)
+    const testOnChange: DatePickerProps['onChange'] = (date) => {
+      testForm.setFieldValue(['settings', 'date'], date)
+    }
+    const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
+      return current
+    }
+    return <DateTimeDropdown
+      name={'Testing'}
+      dateLabel={'This is Date Label'}
+      timeLabel={'This is Time Label'}
+      initialDate={testDate}
+      disabledDate={testDisabledDate}
+      time={testTime}
+      onchange={testOnChange}
+      form={testForm}
+    />
+  })
+
+  it('renders', () => {
+
+  })
+})

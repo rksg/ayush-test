@@ -1,9 +1,11 @@
 import React, { useRef } from 'react'
 
-import { storiesOf }   from '@storybook/react'
-import { Menu, Space } from 'antd'
-import moment          from 'moment-timezone'
-import styled          from 'styled-components/macro'
+import { storiesOf }                          from '@storybook/react'
+import { DatePickerProps, Form, Menu, Space } from 'antd'
+import { RangePickerProps }                   from 'antd/lib/date-picker'
+import dayjs                                  from 'dayjs'
+import moment                                 from 'moment-timezone'
+import styled                                 from 'styled-components/macro'
 
 import { WorldSolid, QuestionMarkCircleSolid, ConfigurationOutlined, CaretDownSolid } from '@acx-ui/icons'
 
@@ -13,6 +15,7 @@ import { LayoutUI } from '../Layout/styledComponents'
 import { CaretDownSolidIcon } from './styledComponents'
 
 import { DateTimeDropdown, Dropdown } from '.'
+
 
 
 const FakeLink = (props: React.PropsWithChildren) =>
@@ -95,12 +98,28 @@ storiesOf('Dropdown', module)
     >{() => <Button>Open Overlay</Button>}</Dropdown>
   })
 
-// .add('DateTimeDropdown', () => {
-//   return <DateTimeDropdown
-//     name={'Testing'}
-//     initialDate={initialDate} // initial date from scheduledAt if  any
-//     time={initialTime}
-//     disabledDate={disabledDate} // disable all date before current
-//     onchange={onChange}
-//   />
-// })
+  .add('DateTimeDropdown', () => {
+    const testDate = moment('2024-08-12T10:30:00')
+    const [testForm] = Form.useForm()
+    const testTime = useRef(5.5)
+    testForm.setFieldValue(['Testing', 'date'], testDate)
+    testForm.setFieldValue(['Testing', 'hour'], 7.5)
+    const testOnChange: DatePickerProps['onChange'] = (date) => {
+      testForm.setFieldValue(['Testing', 'date'], date)
+    }
+    const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
+      return current && current < dayjs().startOf('day')
+    }
+    return <Form>
+      <DateTimeDropdown
+        name={'Testing'}
+        dateLabel={'This is Date Label'}
+        timeLabel={'This is Time Label'}
+        initialDate={testDate}
+        disabledDate={testDisabledDate}
+        time={testTime}
+        onchange={testOnChange}
+        form={testForm}
+      />
+    </Form>
+  })
