@@ -32,9 +32,9 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { AccountType }    from '@acx-ui/utils'
+import { useParams }                  from '@acx-ui/react-router-dom'
+import { filterByAccess }             from '@acx-ui/user'
+import { AccountType, noDataDisplay } from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -198,7 +198,7 @@ export const SubscriptionTable = () => {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          (isvSmartEdgeEnabled && remainingDays < 0) ? '--'
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
             : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }

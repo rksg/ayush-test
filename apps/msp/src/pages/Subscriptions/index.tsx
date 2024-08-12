@@ -44,6 +44,7 @@ import {
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                        from '@acx-ui/types'
 import { filterByAccess, hasRoles }                                         from '@acx-ui/user'
+import { noDataDisplay }                                                    from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -204,7 +205,7 @@ export function Subscriptions () {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          (isvSmartEdgeEnabled && remainingDays < 0) ? '--'
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
             : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
