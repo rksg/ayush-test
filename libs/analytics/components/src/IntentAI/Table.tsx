@@ -44,7 +44,8 @@ const IconTooltip = (props: IconTooltipProps) => {
       <div> {props.icon} </div>
       <div>
         <b className='title'>{title}</b><br />
-        <div><b>{subTitleLeft}</b> {subTitleMiddle} <b>{subTitleRight}</b></div><br />
+        <div><b>{subTitleLeft}</b> {subTitleMiddle} <b>{subTitleRight}</b></div>
+        <span className='br-size'></span>
         {content}
       </div>
     </UI.FeatureTooltip>
@@ -86,7 +87,7 @@ export const iconTooltips = {
     icon={<EcoFlexAI />}
     title={defineMessage({ defaultMessage: 'EcoFlexAI' })}
     subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
-    subTitleMiddle={defineMessage({ defaultMessage: 'with' })}
+    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
     subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
     content={defineMessage({
       defaultMessage: `Reduce energy footprint for efficiency and sustainability,

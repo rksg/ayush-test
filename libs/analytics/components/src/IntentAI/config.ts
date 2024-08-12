@@ -13,7 +13,7 @@ export enum aiFeatures {
 }
 
 export const aiFeaturesLabel = {
-  'AI-Driven RRM': defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+  [aiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
   [aiFeatures.AirFlexAI]: defineMessage({ defaultMessage: 'AirFlexAI' }),
   [aiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
   [aiFeatures.EcoFlexAI]: defineMessage({ defaultMessage: 'EcoFlexAI' })

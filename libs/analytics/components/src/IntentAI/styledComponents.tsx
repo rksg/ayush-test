@@ -36,6 +36,7 @@ export const FeatureTooltip = styled.div`
   font-size: var(--acx-body-4-font-size);
   font-weight: var(--acx-body-4-font-weight);
   line-height: var(--acx-body-4-line-height);
+  color: var(--acx-neutrals-30);
   .title {
     font-family: var(--acx-accent-brand-font);
     font-size: var(--acx-headline-3-font-size);
@@ -45,6 +46,10 @@ export const FeatureTooltip = styled.div`
   svg {
     height: 40px;
     width: 40px;
+  }
+  .br-size {
+    display: block; 
+    margin-bottom: 0.5em; 
   }
 `
 
