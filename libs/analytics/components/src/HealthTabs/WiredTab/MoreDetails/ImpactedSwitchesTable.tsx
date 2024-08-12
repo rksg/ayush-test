@@ -12,7 +12,7 @@ import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult, SwitchDetails,
-  showTopResult, topImpactedSwitchesLimit
+  showTopNTableResult, topImpactedSwitchesLimit
 } from './config'
 import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
 import { ChartTitle }                                                from './styledComponents'
@@ -33,15 +33,16 @@ export const ImpactedSwitchesTable = ({
   }
   const getTableData = (data: PieChartResult, type: WidgetType) => {
     if (!data) return []
-    return data[topNQueryMapping[type] as keyof PieChartResult]
+    return (data[topNQueryMapping[type] as keyof PieChartResult] as Array<{ mac: string }>)
+      .filter(({ mac }) => mac !== 'Others')
+      .slice (0, topImpactedSwitchesLimit) as PieChartResult[keyof PieChartResult]
   }
-
 
   const queryResults = useImpactedSwitchesDataQuery(
     {
       ...payload,
       type: queryType,
-      n: 10
+      n: topImpactedSwitchesLimit + 1
     }, {
       selectFromResult: (result) => {
         const { data, ...rest } = result
@@ -133,7 +134,7 @@ export const ImpactedSwitchesTable = ({
             other {Switches}
           }`}
           values={{
-            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
           }}

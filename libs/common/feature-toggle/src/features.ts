@@ -103,6 +103,7 @@ export enum Features {
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
+  HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
   RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
