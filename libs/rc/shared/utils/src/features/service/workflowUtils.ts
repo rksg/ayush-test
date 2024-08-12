@@ -12,7 +12,7 @@ import {
 import {
   ActionType,
   AupActionContext,
-  DataPromptActionContext,
+  DataPromptActionContext, DataPromptVariable,
   DisplayMessageActionContext,
   UIConfiguration,
   StepType,
@@ -25,8 +25,8 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
   const { $t } = useIntl()
 
   return Object.entries(ActionDefaultValueMap[actionType])
-    .reduce((acc: Record<string, string | boolean>, [key, value]) => {
-      if (typeof value === 'string' || typeof value === 'boolean') {
+    .reduce((acc: Record<string, string | boolean | object>, [key, value]) => {
+      if (typeof value === 'string' || typeof value === 'boolean' || Array.isArray(value)) {
         acc[key] = value
       } else {
         acc[key] = $t(value)
@@ -104,10 +104,17 @@ export const AupActionDefaultValue: {
 }
 
 export const DataPromptActionDefaultValue: {
-  [key in keyof DataPromptActionContext]: MessageDescriptor | string
+  [key in keyof DataPromptActionContext]: MessageDescriptor | boolean | string | DataPromptVariable[]
 } = {
-  backButtonText: defineMessage({ defaultMessage: '< Back' }),
-  continueButtonText: defineMessage({ defaultMessage: 'Continue >' })
+  title: defineMessage({ defaultMessage: 'Default Display Message Title' }),
+  displayTitle: true,
+  messageHtml: defineMessage({ defaultMessage: 'Default Display Message Body' }),
+  displayMessageHtml: true,
+  backButtonText: 'Back',
+  continueButtonText: 'Continue',
+  displayBackButton: true,
+  displayContinueButton: true,
+  variables: [{ type: 'USER_NAME', label: 'Username' }]
 }
 
 export const DisplayMessageActionDefaultValue: {
