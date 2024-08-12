@@ -12,15 +12,13 @@ import { NotificationPreference }                                from '@acx-ui/r
 const labels = {
   DEVICE_AP_FIRMWARE: defineMessage({ defaultMessage: 'AP Firmware' }),
   DEVICE_SWITCH_FIRMWARE: defineMessage({ defaultMessage: 'Switch Firmware' }),
-  DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'SmartEdge Firmware' }),
-  DEVICE_API_CHANGES: defineMessage({ defaultMessage: 'API Changes' })
+  DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'SmartEdge Firmware' })
 }
 
 const defaultNotification: NotificationPreference = {
   DEVICE_AP_FIRMWARE: true,
   DEVICE_SWITCH_FIRMWARE: true,
-  DEVICE_EDGE_FIRMWARE: true,
-  DEVICE_API_CHANGES: true
+  DEVICE_EDGE_FIRMWARE: true
 }
 const getApplyErrorMsg = () => {
   return defineMessage({ defaultMessage: 'Update failed, please try again later.' })

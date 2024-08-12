@@ -144,10 +144,10 @@ describe('IncidentNotificationDrawer', () => {
     expect(await screen.findByText('Notifications Preferences')).toBeVisible()
     expect(screen.queryByText('AI Notifications')).toBeNull()
     await waitFor(() => {
-      expect(screen.getAllByRole('checkbox')).toHaveLength(9)
+      expect(screen.getAllByRole('checkbox')).toHaveLength(8)
     })
     const inputs = await screen.findAllByRole('checkbox')
-    await waitFor(() => { expect(inputs[4]).toBeChecked() })
+    await waitFor(() => { expect(inputs[3]).toBeChecked() })
   })
   it('should handle notification preference update', async () => {
     const mockedPref = {
