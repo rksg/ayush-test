@@ -94,71 +94,70 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { data: venueSettings } = useGetVenueSettingsQuery({ params, enableRbac: isUseRbacApi },
     { skip: !currentAP?.venueId })
 
-  useEffect(() => {
-    const fetchSwitchDetails = async () => {
-      if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
-        return
-      }
-
-      const { data: switchPortsData } = await switchPortlist({
-        params: { tenantId: routeParams.tenantId },
-        payload: {
-          filters: { switchId: [currentAP.switchId] },
-          sortField: 'portIdentifierFormatted',
-          sortOrder: 'ASC',
-          page: 1,
-          pageSize: 10000,
-          fields: SwitchPortViewModelQueryFields
-        },
-        enableRbac: isSwitchRbacEnabled
-      })
-      const portData = switchPortsData?.data.filter((item: SwitchPortViewModel) => item.portIdentifier === currentAP?.switchPort)[0]
-      const disablePortEdit = portData && (!isOperationalSwitchPort(portData) || isStackPort(portData))
-
-      if (disablePortEdit) {
-        const tooltip = portData ? getInactiveTooltip(portData) :
-          $t({
-            defaultMessage:
-              'The port cannot be edited since it is on a switch that is not operational'
-          })
-
-        setSwitchPort(<Tooltip title={tooltip}> {currentAP?.switchPort} </Tooltip>)
-      }
-      if(portData){
-        const onEditLag = async () => {
-          const { data: lagList } = await getLagList({
-            params: {
-              ...routeParams,
-              switchId: portData.switchMac,
-              venueId: portData.venueId
-            },
-            enableRbac: isSwitchRbacEnabled
-          })
-          const lagData = lagList?.find((item: Lag) =>
-            item.lagId?.toString() === portData.lagId) as Lag
-
-          setLagDrawerParams({
-            switchMac: portData.switchMac,
-            serialNumber: portData.switchSerial
-          })
-          setEditLag([lagData])
-          setEditPortDrawerVisible(false)
-          setEditLagModalVisible(true)
-        }
-
-        const onEditPort = () => {
-          setSelectedPorts([portData])
-          setEditLagModalVisible(false)
-          setEditPortDrawerVisible(true)
-        }
-
-        const onClickHandler = isLAGMemberPort(portData) ? onEditLag : onEditPort
-
-        setSwitchPort(<Button type='link' onClick={onClickHandler} data-testid='portButton'>
-          {currentAP?.switchPort} </Button>)
-      }
+  const fetchSwitchDetails = async () => {
+    if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
+      return
     }
 
+    const { data: switchPortsData } = await switchPortlist({
+      params: { tenantId: routeParams.tenantId },
+      payload: {
+        filters: { switchId: [currentAP.switchId] },
+        sortField: 'portIdentifierFormatted',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10000,
+        fields: SwitchPortViewModelQueryFields
+      },
+      enableRbac: isSwitchRbacEnabled
+    })
+    const portData = switchPortsData?.data.filter((item: SwitchPortViewModel) => item.portIdentifier === currentAP?.switchPort)[0]
+    const disablePortEdit = portData && (!isOperationalSwitchPort(portData) || isStackPort(portData))
+
+    if (disablePortEdit) {
+      const tooltip = portData ? getInactiveTooltip(portData) :
+        $t({
+          defaultMessage:
+              'The port cannot be edited since it is on a switch that is not operational'
+        })
+
+      setSwitchPort(<Tooltip title={tooltip}> {currentAP?.switchPort} </Tooltip>)
+    }else if(portData){
+      const onEditLag = async () => {
+        const { data: lagList } = await getLagList({
+          params: {
+            ...routeParams,
+            switchId: portData.switchMac,
+            venueId: portData.venueId
+          },
+          enableRbac: isSwitchRbacEnabled
+        })
+        const lagData = lagList?.find((item: Lag) =>
+          item.lagId?.toString() === portData.lagId) as Lag
+
+        setLagDrawerParams({
+          switchMac: portData.switchMac,
+          serialNumber: portData.switchSerial
+        })
+        setEditLag([lagData])
+        setEditPortDrawerVisible(false)
+        setEditLagModalVisible(true)
+      }
+
+      const onEditPort = () => {
+        setSelectedPorts([portData])
+        setEditLagModalVisible(false)
+        setEditPortDrawerVisible(true)
+      }
+
+      const onClickHandler = isLAGMemberPort(portData) ? onEditLag : onEditPort
+
+      setSwitchPort(<Button type='link' onClick={onClickHandler} data-testid='portButton'>
+        {currentAP?.switchPort} </Button>)
+    }
+  }
+
+  useEffect(() => {
     fetchSwitchDetails()
   }, [currentAP])
 
