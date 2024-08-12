@@ -179,6 +179,21 @@ export const Description = styled.div`
     line-height: 20px;
     ul {
       list-style-type: disc;
+      li {
+        margin-bottom: 10px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
-}
+  }
+  ol {
+    margin-bottom: 0;
+  }
+`
+
+export const NoteButton = styled(Button)`
+  color: var(--acx-accents-blue-50) !important;
+  padding: 4px 0px !important;
 `
