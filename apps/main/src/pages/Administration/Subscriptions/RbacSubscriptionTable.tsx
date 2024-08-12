@@ -30,6 +30,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import * as UI from './styledComponent'
 
@@ -215,7 +216,8 @@ export const RbacSubscriptionTable = () => {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },

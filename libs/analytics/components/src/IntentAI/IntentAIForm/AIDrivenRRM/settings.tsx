@@ -5,8 +5,8 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { EnhancedRecommendation } from '../services'
-import * as UI                    from '../styledComponents'
+import { EnhancedIntent } from '../services'
+import * as UI            from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
@@ -14,12 +14,12 @@ import { steps, crrmIntent, isOptimized } from '.'
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EnhancedRecommendation>()
+  const { form } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
 
-  const calendarText = defineMessage({ defaultMessage: `This recommendation will be 
-    applied at the chosen time whenever there is a need to change the channel plan. 
+  const calendarText = defineMessage({ defaultMessage: `This recommendation will be
+    applied at the chosen time whenever there is a need to change the channel plan.
     Schedule a time during off-hours when the number of WiFi clients is at the minimum.`
   })
 
