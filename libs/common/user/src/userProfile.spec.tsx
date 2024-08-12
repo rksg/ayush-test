@@ -20,7 +20,8 @@ import {
   setRaiPermissions,
   setUserProfile,
   WrapIfAccessible,
-  hasRaiPermission
+  hasRaiPermission,
+  hasCrossVenuesPermission
 } from './userProfile'
 
 
@@ -145,6 +146,37 @@ describe('hasRoles', () => {
     ])).toBe(false)
 
 
+  })
+})
+
+describe('hasCrossVenuesPermission', () => {
+  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  it('check permissions for All Venues', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      abacEnabled: true,
+      hasAllVenues: true
+    })
+    expect(hasCrossVenuesPermission()).toBe(true)
+  })
+  it('check permissions for Specific Venues', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      abacEnabled: true,
+      hasAllVenues: false
+    })
+    expect(hasCrossVenuesPermission()).toBe(false)
+  })
+
+  it('check permissions for ABAC disabled', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      abacEnabled: false
+    })
+    expect(hasCrossVenuesPermission()).toBe(true)
   })
 })
 
