@@ -71,7 +71,7 @@ describe('WifiClientList', () => {
           return res(ctx.json({ data: [] }))
         }
       ),
-      rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+      rest.post(ClientUrlsInfo.getClients.url, (req, res, ctx) =>
         res(ctx.json(GuestClients))
       )
     )

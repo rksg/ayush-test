@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react'
 
-import { FormInstance } from 'antd'
-import _                from 'lodash'
-import { Params }       from 'react-router-dom'
+import { FormInstance }            from 'antd'
+import _, { cloneDeep, findIndex } from 'lodash'
+import { Params }                  from 'react-router-dom'
 
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
@@ -75,14 +75,21 @@ import {
   useConfigTemplateMutationFnSwitcher,
   NetworkVenue,
   useConfigTemplateQueryFnSwitcher,
-  NetworkRadiusSettings
+  NetworkRadiusSettings,
+  EdgeMvSdLanViewData,
+  NetworkTunnelSdLanAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { useIsConfigTemplateEnabledByType } from '../configTemplates'
-import { useLazyGetAAAPolicyInstance }      from '../policies/AAAForm/aaaPolicyQuerySwitcher'
-import { useIsEdgeReady }                   from '../useEdgeActions'
+import { useIsConfigTemplateEnabledByType }               from '../configTemplates'
+import { useEdgeMvSdLanActions }                          from '../EdgeSdLan/useEdgeSdLanActions'
+import { NetworkTunnelActionModalProps }                  from '../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../NetworkTunnelActionModal/types'
+import { getNetworkTunnelType }                           from '../NetworkTunnelActionModal/utils'
+import { useLazyGetAAAPolicyInstance }                    from '../policies/AAAForm/aaaPolicyQuerySwitcher'
+import { useIsEdgeReady }                                 from '../useEdgeActions'
 
+export const TMP_NETWORK_ID = 'tmpNetworkId'
 export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
   enableVxLan: boolean,
@@ -778,3 +785,84 @@ export const getDefaultMloOptions = (wifi7Mlo3LinkFlag: boolean) => ({
   enable50G: true,
   enable6G: wifi7Mlo3LinkFlag ? true : false
 })
+
+export const useUpdateEdgeSdLanActivations = () => {
+  const { toggleNetwork } = useEdgeMvSdLanActions()
+
+  // eslint-disable-next-line max-len
+  const updateEdgeSdLanActivations = async (networkId: string, updates: NetworkTunnelSdLanAction[], activatedVenues: NetworkVenue[]) => {
+    const actions = updates.filter(item => {
+      return _.find(activatedVenues, { venueId: item.venueId })
+    }).map((actInfo) => {
+      // eslint-disable-next-line max-len
+      return toggleNetwork(actInfo.serviceId, actInfo.venueId, networkId, actInfo.enabled, actInfo.enabled && actInfo.guestEnabled)
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateEdgeSdLanActivations
+}
+
+export const getNetworkTunnelSdLanUpdateData = (
+  modalFormValues: NetworkTunnelActionForm,
+  sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
+  tunnelModalProps: NetworkTunnelActionModalProps,
+  venueSdLanInfo: EdgeMvSdLanViewData
+) => {
+  // networkId is undefined in Add mode.
+  const networkId = tunnelModalProps.network?.id ?? TMP_NETWORK_ID
+  const networkVenueId = tunnelModalProps.network?.venueId
+
+  const formTunnelType = modalFormValues.tunnelType
+  const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
+  const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
+
+  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, venueSdLanInfo)
+  const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
+  let isNeedUpdate: boolean = false
+
+  // activate/deactivate SDLAN tunneling
+  if (formTunnelType !== tunnelTypeInitVal) {
+    // activate/deactivate network
+    isNeedUpdate = true
+  } else {
+  // tunnelType still SDLAN
+    if (tunnelTypeInitVal === NetworkTunnelTypeEnum.SdLan) {
+      const isGuestTunnelEnabledInitState = !!venueSdLanInfo?.isGuestTunnelEnabled
+      && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+        wlan.networkId === networkId && wlan.venueId === networkVenueId))
+
+      // check if tunnel guest changed
+      if(isGuestTunnelEnabledInitState !== sdLanTunnelGuest) {
+
+        // activate/deactivate network
+        isNeedUpdate = true
+      }
+    }
+  }
+
+  if (!isNeedUpdate)
+    return
+
+  const updateContent = cloneDeep(sdLanAssociationUpdates as NetworkTunnelSdLanAction[]) ?? []
+
+  // eslint-disable-next-line max-len
+  const existDataIdx = findIndex(updateContent, { serviceId: venueSdLanInfo?.id, venueId: networkVenueId })
+
+  if (existDataIdx !== -1) {
+    updateContent[existDataIdx].guestEnabled = isFwdGuest
+    updateContent[existDataIdx].enabled = sdLanTunneled
+  } else {
+    updateContent.push({
+      serviceId: venueSdLanInfo?.id!,
+      venueId: networkVenueId,
+      guestEnabled: isFwdGuest,
+      networkId: networkId,
+      enabled: sdLanTunneled,
+      venueSdLanInfo
+    } as NetworkTunnelSdLanAction)
+  }
+
+  return updateContent
+}

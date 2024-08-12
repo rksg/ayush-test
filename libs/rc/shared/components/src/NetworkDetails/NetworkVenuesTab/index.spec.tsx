@@ -280,6 +280,13 @@ describe('NetworkVenuesTab', () => {
           mockedNetworkActivation()
           return res(ctx.json(mockNetworkSaveData))
         }
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesNetwork.url,
+        (_, res, ctx) => {
+          mockedGetApCompatibilitiesNetwork()
+          return res(ctx.json(networkVenueApCompatibilities))
+        }
       )
     )
 

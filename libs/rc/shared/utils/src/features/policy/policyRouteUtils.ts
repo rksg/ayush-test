@@ -55,7 +55,8 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.LBS_SERVER_PROFILE]: 'lbsServerProfile',
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
-  [PolicyType.CERTIFICATE]: 'certificate'
+  [PolicyType.CERTIFICATE]: 'certificate',
+  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {
