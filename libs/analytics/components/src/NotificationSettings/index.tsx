@@ -10,11 +10,11 @@ import {
   useGetPreferencesQuery,
   useSetNotificationMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile }            from '@acx-ui/analytics/utils'
-import { Select, showToast, Loader } from '@acx-ui/components'
-import * as config                   from '@acx-ui/config'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { hasRaiPermission }          from '@acx-ui/user'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
+import { Select, showToast, Loader, Tooltip } from '@acx-ui/components'
+import * as config                            from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { hasRaiPermission }                   from '@acx-ui/user'
 
 const getApplyMsg = (success?: boolean) => {
   return success
@@ -121,10 +121,18 @@ export const NotificationSettings = ({ tenantId, apply }: {
         <OptionsList preferences={preferences} setState={setState} type='incident' />
       </Form.Item>
     }
-    {showIntentAI &&
-      <Form.Item label={$t({ defaultMessage: 'IntentAI' })}>
-        <OptionsList preferences={preferences} setState={setState} type='intentAI' />
-      </Form.Item>
+    {showIntentAI && <Form.Item
+      label={<>
+        {$t({ defaultMessage: 'IntentAI' })}
+        <Tooltip.Question
+          // eslint-disable-next-line max-len
+          title={$t({ defaultMessage: 'AI-Driven RRM, other FlexAI features and all AIOps Recommendations available under IntentAI' })}
+          placement='right'
+        />
+      </>}
+    >
+      <OptionsList preferences={preferences} setState={setState} type='intentAI' />
+    </Form.Item>
     }
     {showConfigRec &&
       <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
