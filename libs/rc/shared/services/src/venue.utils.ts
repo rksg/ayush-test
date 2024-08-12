@@ -77,7 +77,7 @@ export const convertToApMeshDataList = (newApModels: NewAPModel[], members: NewA
   return newApModels.map((newApModel) => {
     const { name, macAddress, serialNumber, model,
       meshRole, meshStatus, networkStatus, venueId, clientCount } = newApModel
-    const { uplinks, downlinks, hopCount } = meshStatus || {}
+    const { uplinks, downlinks, hopCount, radios } = meshStatus || {}
 
     const newApMesh = {
       name,
@@ -88,7 +88,8 @@ export const convertToApMeshDataList = (newApModels: NewAPModel[], members: NewA
       IP: networkStatus?.ipAddress,
       clientCount,
       hops: hopCount,
-      venueId
+      venueId,
+      meshBand: radios?.flatMap(r => r.band).join(', ')
     } as APMesh
 
     if (Array.isArray(uplinks) && uplinks.length > 0) {
