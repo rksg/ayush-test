@@ -230,19 +230,18 @@ export function ScheduleStep (props: ScheduleStepProps) {
               onChange={handleICX82Change}
               value={selectedICX82Version}>
               <Space direction={'vertical'}>
-                { // eslint-disable-next-line max-len
-                  getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
-                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      <span style={{ lineHeight: '22px' }}>
-                        <span style={{ marginRight: '5px' }}>
-                          {parseSwitchVersion(v?.name)}
-                        </span>
-                        {getSwitchVersionTagV1002(intl, v)}
-                        <br />
-                        <span style={{ color: v.inUse ? 'inherit' : '#808284' }}>
-                          {getSwitchVersionLabelV1002(intl, v)}</span>
+                { getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    <span style={{ lineHeight: '22px' }}>
+                      <span style={{ marginRight: '5px' }}>
+                        {parseSwitchVersion(v?.name)}
                       </span>
-                    </Radio>)}
+                      {getSwitchVersionTagV1002(intl, v)}
+                      <br />
+                      <span style={{ color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)' }}>
+                        {getSwitchVersionLabelV1002(intl, v)}</span>
+                    </span>
+                  </Radio>)}
                 <Radio value='' key='0'>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
@@ -269,7 +268,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                       </span>
                       {getSwitchVersionTagV1002(intl, v)}
                       <br/>
-                      <span style={{ color: v.inUse ? 'inherit' : '#808284' }}>
+                      <span style={{ color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)' }}>
                         {getSwitchVersionLabelV1002(intl, v)}</span>
                     </span>
                   </Radio>)}
@@ -307,7 +306,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                           </NoteButton>}
                         {getSwitchVersionTagV1002(intl, v)}
                         <br />
-                        <span style={{ color: v.inUse ? 'inherit' : '#808284' }}>
+                        <span style={{ color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)' }}>
                           {getSwitchVersionLabelV1002(intl, v)}</span>
                       </span>
                     </Radio>)}
