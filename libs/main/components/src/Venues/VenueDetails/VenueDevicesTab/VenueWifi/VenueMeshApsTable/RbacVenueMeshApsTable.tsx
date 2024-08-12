@@ -62,6 +62,12 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       }
     },
     {
+      key: 'meshBand',
+      title: intl.$t({ defaultMessage: 'Mesh Radio' }),
+      dataIndex: 'meshBand',
+      align: 'left'
+    },
+    {
       key: 'apMac',
       title: intl.$t({ defaultMessage: 'Mac Address' }),
       dataIndex: 'apMac',
