@@ -4,7 +4,9 @@ import { Tag, Tooltip, Typography } from 'antd'
 import _                            from 'lodash'
 import { IntlShape }                from 'react-intl'
 
+import { cssStr }                   from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { StarSolid }                from '@acx-ui/icons'
 import {
   useGetSwitcDefaultVersionsQuery
 } from '@acx-ui/rc/services'
@@ -28,8 +30,6 @@ import {
 import { noDataDisplay } from '@acx-ui/utils'
 
 import { DowngradeTag, RecommendedTag, Statistic } from './styledComponents'
-import { StarSolid } from '@acx-ui/icons'
-import { cssStr } from '@acx-ui/components'
 
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
