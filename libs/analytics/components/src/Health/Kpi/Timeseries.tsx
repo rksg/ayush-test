@@ -63,6 +63,7 @@ function KpiTimeseries ({
         {({ height, width }) =>
           queryResults.data[0]?.data.length ? (
             <MultiLineTimeSeriesChart
+              seriesChartTypes={['area']}
               grid={{ bottom: '10%', top: '5%' }}
               style={{ height, width }}
               data={queryResults.data}

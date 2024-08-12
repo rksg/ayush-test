@@ -15,6 +15,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 import { UserUrlsInfo }                   from '@acx-ui/user'
 
@@ -70,16 +71,12 @@ describe('Add Guest Drawer', () => {
 
     setUserProfile({
       ...userProfile,
+      profile: {
+        ...userProfile.profile,
+        customRoleName: RolesEnum.GUEST_MANAGER
+      },
       abacEnabled: false,
-      isCustomRole: false,
-      allowedOperations: [
-        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
-        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
-        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers',
-        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
-        'POST:/wifiNetworks',
-        'POST:/guestUsers'
-      ]
+      isCustomRole: false
     })
 
     mockServer.use(

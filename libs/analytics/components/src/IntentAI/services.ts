@@ -183,6 +183,7 @@ export const api = intentAIApi.injectEndpoints({
             data {
               id
               code
+              root
               status
               statusReason
               displayStatus
@@ -190,6 +191,7 @@ export const api = intentAIApi.injectEndpoints({
               updatedAt
               sliceType
               sliceValue
+              sliceId
               metadata
               preferences
               path {
@@ -236,7 +238,27 @@ export const api = intentAIApi.injectEndpoints({
         }, [] as Array<IntentListItem>)
         return { intents: items, total: response.intents.total }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_LIST' }]
+    }),
+    intentWlans: build.query<
+      IntentWlan[],
+      Partial<{ code: String, root: String, sliceId: String }>
+    >({
+      query: ({ code, root, sliceId }) => ({
+        document: gql`
+          query Wlans($code: String!, $root: String!, $sliceId: String!) {
+            intent(code: $code, root: $root, sliceId: $sliceId) {
+              wlans {
+                name
+                ssid
+              }
+            }
+          }
+        `,
+        variables: { code, root, sliceId }
+      }),
+      transformResponse: (response: { intent: { wlans: IntentWlan[] } }) =>
+        response.intent.wlans
     }),
     optimizeAllIntent: build.mutation<OptimizeAllMutationResponse, OptimizeAllMutationPayload>({
       query: ({ optimizeList }) => {
@@ -253,7 +275,7 @@ export const api = intentAIApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'Monitoring', id: 'INTENT_AI_LIST' }
+        { type: 'Intent', id: 'INTENT_AI_LIST' }
       ]
     }),
     intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({
@@ -330,7 +352,7 @@ export const api = intentAIApi.injectEndpoints({
           zones: displayZones
         }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_FILTER_OPTIONS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }]
     }),
     intentHighlight: build.query<
       IntentHighlight,
@@ -366,7 +388,7 @@ export const api = intentAIApi.injectEndpoints({
       }),
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_HIGHLIGHTS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
     })
   })
 })
@@ -478,6 +500,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
 }
 export const {
   useIntentAIListQuery,
+  useLazyIntentWlansQuery,
   useOptimizeAllIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery

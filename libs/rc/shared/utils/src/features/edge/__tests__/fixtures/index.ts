@@ -8,6 +8,7 @@ import * as EdgeGeneralFixtures       from './general'
 import * as EdgeLagFixtures           from './lag'
 import * as EdgeNSGFixtures           from './networkSegmentation'
 import * as EdgePortConfigFixtures    from './portsConfig'
+import * as EdgeQosProfileFixtures    from './qosProfile'
 import * as EdgeSdLanFixtures         from './sdLan'
 import * as EdgeSubInterfaceFixtures  from './subInterface'
 import * as EdgeTunnelProfileFixtures from './tunnelProfile'
@@ -30,5 +31,6 @@ export {
   EdgeFirmwareFixtures,
   VenueFixtures,
   CommonFixtures,
-  CommonFixtureTypes
+  CommonFixtureTypes,
+  EdgeQosProfileFixtures
 }

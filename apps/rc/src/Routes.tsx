@@ -102,6 +102,7 @@ import LbsServerProfileTable                                            from './
 import MacRegistrationListDetails                                       from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import EdgeQosBandwidthTable                                            from './pages/Policies/QosBandwidth/Edge/QosBandwidthTable'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
@@ -1050,6 +1051,10 @@ function PolicyRoutes () {
         element={<AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
           <EditTunnelProfile />
         </AuthRoute>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })}
+        element={<EdgeQosBandwidthTable />}
       />
       {isConnectionMeteringEnabled && <>
         <Route
