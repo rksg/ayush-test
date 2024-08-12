@@ -73,6 +73,15 @@ export const VenueList = styled.div`
   overflow: hidden;
  `
 export const ExpanderTableWrapper = styled.div`
+  .disabled-row {
+    pointer-events: none;
+    .ant-checkbox-inner {
+      border-color: var(--acx-neutrals-50);
+    }
+    .ant-table-cell {
+      color: var(--acx-neutrals-50);
+    }
+  }
   .ant-table-row-level-0 {
     background-color: var(--acx-neutrals-20);
     .ant-table-cell {

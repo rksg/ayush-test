@@ -47,7 +47,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [totalCount, setTotalCount] = useState<number>(0)
 
   function getSelectedKeys (selected: MspEcWithVenue[]) {
-    const customers = selected.filter(ec => ec.children.some(venue => venue.selected))
+    const customers = selected.filter(ec => ec.children?.some(venue => venue.selected))
     const venueIds = customers.flatMap(ec => ec.children).filter(venue => venue.selected)
       .map(venue => venue.id)
     return venueIds
@@ -87,7 +87,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
       return selectedRows
     }
     const ecsWithSelVenues: MspEcWithVenue[] = customerList?.data.filter(ec =>
-      ec.children.some(venue => selVenueIds.includes(venue.id))) ?? []
+      ec.children?.some(venue => selVenueIds.includes(venue.id))) ?? []
     return ecsWithSelVenues.map(ec => {
       return {
         ...ec,
@@ -147,6 +147,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
             },
             checkStrictly: false
           }}
+          rowClassName={customer => customer.isUnauthorizedAccess ? 'disabled-row' : ''}
         />
       </Loader>
     </Space>
