@@ -44,6 +44,7 @@ export enum Features {
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
+  ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
