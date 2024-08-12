@@ -7,6 +7,7 @@ exports[`Legend should render properly 1`] = `
   grid-template-columns: 1fr;
   grid-template-rows: min-content;
   grid-row-gap: 20px;
+  margin-left: 10px;
 }
 
 .c2 {
@@ -36,24 +37,6 @@ exports[`Legend should render properly 1`] = `
 }
 
 .c3 {
-  display: inline-block;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--acx-neutrals-60);
-  justify-self: end;
-}
-
-.c5 {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1px solid var(--acx-neutrals-60);
-  justify-self: end;
-}
-
-.c6 {
   background-color: #ED1C24;
   display: inline-block;
   width: 12px;
@@ -61,7 +44,7 @@ exports[`Legend should render properly 1`] = `
   justify-self: end;
 }
 
-.c7 {
+.c5 {
   background-color: #EC7100;
   display: inline-block;
   width: 12px;
@@ -69,7 +52,7 @@ exports[`Legend should render properly 1`] = `
   justify-self: end;
 }
 
-.c8 {
+.c6 {
   background-color: #ACAEB0;
   display: inline-block;
   width: 12px;
@@ -84,7 +67,7 @@ exports[`Legend should render properly 1`] = `
       <div
         class="c1"
       >
-        Channel Bandwidth
+        Legend
       </div>
       <div
         class="c2"
@@ -95,7 +78,7 @@ exports[`Legend should render properly 1`] = `
         <div
           class="c4"
         >
-          40 MHz
+          Has interfering links
         </div>
         <span
           class="c5"
@@ -103,37 +86,10 @@ exports[`Legend should render properly 1`] = `
         <div
           class="c4"
         >
-          20 MHz
-        </div>
-      </div>
-    </span>
-    <span>
-      <div
-        class="c1"
-      >
-        Transmit Power
-      </div>
-      <div
-        class="c2"
-      >
-        <span
-          class="c6"
-        />
-        <div
-          class="c4"
-        >
-          Has interfering links
-        </div>
-        <span
-          class="c7"
-        />
-        <div
-          class="c4"
-        >
           Reduction in transmit power
         </div>
         <span
-          class="c8"
+          class="c6"
         />
         <div
           class="c4"
