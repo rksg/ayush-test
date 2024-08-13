@@ -11,7 +11,7 @@ import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult,
-  showTopResult, topImpactedSwitchesLimit,
+  showTopNTableResult, topImpactedSwitchesLimit,
   ImpactedClientsResult, ImpactedClients
 } from './config'
 import {
@@ -157,7 +157,7 @@ export const ImpactedClientsTable = ({
             other {Uplink Ports}
           }`}
           values={{
-            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
           }}
