@@ -201,7 +201,8 @@ interface DateTimePickerProps {
     disabledDate?: (value: Moment) => boolean,
     disabledHours?: (value: Moment) => number[],
     disabledMinutes?: (value: Moment) => number[],
-  }
+  },
+  placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight'
 }
 
 let currentDateTimePicker: {
@@ -227,7 +228,8 @@ export const DateTimePicker = ({
   initialDate,
   onApply,
   title,
-  disabledDateTime
+  disabledDateTime,
+  placement
 }: DateTimePickerProps) => {
   const { disabledDate, disabledHours, disabledMinutes } = disabledDateTime || {}
   const wrapperRef = useRef<HTMLDivElement | null>(null)
@@ -248,7 +250,7 @@ export const DateTimePicker = ({
         showTime={false}
         showNow={false}
         showToday={false}
-        placement='topLeft'
+        placement={placement ?? 'topLeft'}
         bordered={false}
         allowClear={false}
         suffixIcon={icon ? icon : <ClockOutlined />}

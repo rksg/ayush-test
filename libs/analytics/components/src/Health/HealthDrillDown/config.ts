@@ -111,6 +111,7 @@ export const stageLabels: Record<Stages, MessageDescriptor> = {
   DHCP: defineMessage({ defaultMessage: 'DHCP' })
 }
 
-export const showTopResult = ($t: IntlShape['$t'], count: number, limit: number) => count > limit
-  ? $t({ defaultMessage: 'Top {limit}' }, { limit })
-  : count
+export const showTopNPieChartResult = ($t: IntlShape['$t'], count: number, limit: number) =>
+  count > limit
+    ? $t({ defaultMessage: 'Top {limit}' }, { limit })
+    : count

@@ -78,7 +78,7 @@ function TopSwitchesByPoEUsageWidget ({ filters }: { filters : AnalyticsFilter }
   const queryResults = useTopSwitchesByPoEUsageQuery(filters,
     {
       selectFromResult: ({ data, ...rest }) => ({
-        data: getBarChartSeriesData(data!,seriesMapping),
+        data: getBarChartSeriesData(data!,seriesMapping, 'name'),
         ...rest
       })
     })

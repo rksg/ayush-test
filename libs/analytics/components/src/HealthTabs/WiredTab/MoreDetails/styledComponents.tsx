@@ -12,5 +12,5 @@ export const ChartTitle = styled.span`
 `
 export const PieChartWrapper = styled.div`
   height: 260px;
-  min-width: 430px;
+  min-width: 380px;
 `
