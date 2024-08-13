@@ -520,3 +520,10 @@ export interface MspCompliances {
     mspEcSummary?: ComplianceData
   }[]
 }
+
+export interface LicenseAttentionNotes {
+  attentionNotes: {
+    summary?: string,
+    details?: string[]
+  }[]
+}
