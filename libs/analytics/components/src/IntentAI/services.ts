@@ -21,12 +21,14 @@ import { statuses, displayStates, statusReasons }                     from './st
 type Intent = {
   id: string
   code: string
+  root: string
   status: statuses
   displayStatus: displayStates
   createdAt: string
   updatedAt: string
   sliceType: string
   sliceValue: string
+  sliceId: string
   metadata: object
   path: NetworkPath
   idPath: NetworkPath
