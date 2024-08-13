@@ -36,7 +36,8 @@ import {
   VLANPoolViewModelRbacType,
   transformWifiNetwork,
   DpskSaveData,
-  NetworkApGroup
+  NetworkApGroup,
+  CertificateTemplate
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -965,6 +966,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       }
     }),
+    getCertificateTemplateNetworkBinding: build.query<CertificateTemplate, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryCertificateTemplate, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<CertificateTemplate>) => {
+        return response?.data[0]
+      }
+    }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.activateCertificateTemplate, params)
@@ -1421,6 +1433,7 @@ export const {
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
+  useGetCertificateTemplateNetworkBindingQuery,
   useActivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,

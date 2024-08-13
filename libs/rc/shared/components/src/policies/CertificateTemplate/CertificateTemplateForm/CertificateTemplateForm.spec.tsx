@@ -73,10 +73,8 @@ describe('CertificateTemplateForm', () => {
     await userEvent.click(await screen.findByText('ps12'))
     const enableChromebookInput = screen.getByLabelText('Enable Chromebook Enrollment')
     await userEvent.click(enableChromebookInput)
-    const notifyAppIdInput = await screen.findByLabelText('App ID To Notify')
     const apiKeyInput = await screen.findByLabelText('Google API Key')
     const credential = await screen.findByTestId('credential')
-    await userEvent.type(notifyAppIdInput, 'testAppId')
     await userEvent.type(apiKeyInput, 'testApiKey')
     // eslint-disable-next-line max-len
     const file = new File(['{"type":"service_account","project_id":"test","private_key_id":"123","private_key":"123","client_email":"123@crucial.com","client_id":"123","auth_uri":"123","token_uri":"123"}'], 'public.json', { type: 'application/json' })
@@ -92,7 +90,6 @@ describe('CertificateTemplateForm', () => {
     expect(await screen.findByText('Enabled')).toBeVisible()
     expect(await screen.findByText('Device')).toBeVisible()
     expect(await screen.findByText('Do not remove existing certificates.')).toBeVisible()
-    expect(await screen.findByText('testAppId')).toBeVisible()
     expect(await screen.findByText('testApiKey')).toBeVisible()
 
     await userEvent.click(screen.getByText('Add'))
