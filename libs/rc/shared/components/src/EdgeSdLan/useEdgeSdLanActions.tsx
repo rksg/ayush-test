@@ -486,9 +486,12 @@ export const useEdgeSdLanActions = () => {
 
           const requiredActions = []
           // DC scenario into DMZ scenario
-          if (payload.isGuestTunnelEnabled && !originData.guestEdgeClusterId) {
-            requiredActions.push(activateGuestEdgeCluster(serviceId!, payload))
-            requiredActions.push(activateGuestTunnel(serviceId!, payload))
+          if (payload.isGuestTunnelEnabled) {
+            if (!originData.guestEdgeClusterId)
+              requiredActions.push(activateGuestEdgeCluster(serviceId!, payload))
+
+            if (originData?.guestTunnelProfileId !== payload.guestTunnelProfileId)
+              requiredActions.push(activateGuestTunnel(serviceId!, payload))
 
             try {
               const reqResult = await Promise.all(requiredActions)
