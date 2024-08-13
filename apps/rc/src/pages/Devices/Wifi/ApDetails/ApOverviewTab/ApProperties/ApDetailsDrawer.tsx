@@ -158,7 +158,9 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   useEffect(() => {
-    fetchSwitchDetails()
+    if (currentAP?.switchId) {
+      fetchSwitchDetails()
+    }
   }, [currentAP])
 
   const onClose = () => {
