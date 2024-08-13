@@ -60,7 +60,7 @@ export function ActionNavigationDrawer (props: ActionNavigationDrawerProps) {
     mask={false}
     width={'336px'}
     style={{ position: 'absolute', top: '-25px' }}
-    contentWrapperStyle={{ height: '750px' }}
+    contentWrapperStyle={{ height: '745px' }}
     getContainer={()=>document.getElementById('actiondemocontent') as HTMLElement}
   >
     <Tree
