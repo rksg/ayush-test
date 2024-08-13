@@ -76,15 +76,15 @@ export function useMenuConfig () {
     })
   } else {
     aiAnalyticsMenu
-    .push({
-      permission: 'READ_AI_DRIVEN_RRM',
-      uri: '/recommendations/crrm',
-      label: $t({ defaultMessage: 'AI-Driven RRM' })
-    }, {
-      permission: 'READ_AI_OPERATIONS',
-      uri: '/recommendations/aiOps',
-      label: $t({ defaultMessage: 'AI Operations' })
-    })
+      .push({
+        permission: 'READ_AI_DRIVEN_RRM',
+        uri: '/recommendations/crrm',
+        label: $t({ defaultMessage: 'AI-Driven RRM' })
+      }, {
+        permission: 'READ_AI_OPERATIONS',
+        uri: '/recommendations/aiOps',
+        label: $t({ defaultMessage: 'AI Operations' })
+      })
   }
   return buildMenu([{
     uri: '/dashboard',

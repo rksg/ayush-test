@@ -77,7 +77,7 @@ describe('NetworkAssurance', () => {
     expect(screen.queryByTestId('intentAI')).not.toBeInTheDocument()
   })
   it('should handle recommendation tab click in RA SA', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(false) // intentAI not enabled
     mockGet.mockReturnValue(true)
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -109,7 +109,7 @@ describe('NetworkAssurance', () => {
     expect(screen.queryByTestId('Recommendations')).not.toBeInTheDocument()
   })
   it('should render config recommendation tab for R1', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(false) // intentAI not enabled
     jest.mocked(mockGet).mockReturnValue(false)
     render(<AIAnalytics />, {
       wrapper: Provider,

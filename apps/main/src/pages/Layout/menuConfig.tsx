@@ -33,9 +33,9 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                       from '@acx-ui/types'
+import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
-import { useTenantId }                     from '@acx-ui/utils'
+import { useTenantId }                                    from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -80,15 +80,15 @@ export function useMenuConfig () {
     })
   } else {
     aiAnalyticsMenu
-    .push({
-      permission: 'READ_AI_DRIVEN_RRM',
-      uri: '/analytics/recommendations/crrm',
-      label: $t({ defaultMessage: 'AI-Driven RRM' })
-    }, {
-      permission: 'READ_AI_OPERATIONS',
-      uri: '/analytics/recommendations/aiOps',
-      label: $t({ defaultMessage: 'AI Operations' })
-    })
+      .push({
+        permission: 'READ_AI_DRIVEN_RRM',
+        uri: '/analytics/recommendations/crrm',
+        label: $t({ defaultMessage: 'AI-Driven RRM' })
+      }, {
+        permission: 'READ_AI_OPERATIONS',
+        uri: '/analytics/recommendations/aiOps',
+        label: $t({ defaultMessage: 'AI Operations' })
+      })
   }
 
   const config: LayoutProps['menuConfig'] = [
