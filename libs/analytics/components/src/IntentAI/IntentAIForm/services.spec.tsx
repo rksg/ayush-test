@@ -1,5 +1,5 @@
-import { omit, pick } from 'lodash'
-import moment         from 'moment'
+import { omit, pick }          from 'lodash'
+import moment, { MomentInput } from 'moment-timezone'
 
 import { intentAIUrl, Provider, recommendationUrl, store }                 from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
@@ -10,7 +10,8 @@ import {
   mockedRecommendationCRRM,
   mockedRecommendationCRRMApplied
 } from './__tests__/fixtures'
-import { recApi, EnhancedRecommendation, kpiHelper, useUpdatePreferenceScheduleMutation } from './services'
+import { recApi, EnhancedRecommendation, kpiHelper, useUpdatePreferenceScheduleMutation, roundUpTimeToNearest15Minutes } from './services'
+
 
 describe('recommendation services', () => {
   const recommendationPayload = {
@@ -92,7 +93,7 @@ describe('recommendation services', () => {
 
   it('should return recommendation details with monitoring data for CRRM', async () => {
     const appliedTime = mockedRecommendationCRRMApplied.appliedTime
-    jest.spyOn(Date, 'now').mockImplementation(() => {
+    const spy =jest.spyOn(Date, 'now').mockImplementation(() => {
       return new Date(appliedTime).getTime()
     })
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
@@ -115,6 +116,7 @@ describe('recommendation services', () => {
         }
       })
     )
+    spy.mockRestore()
   })
 })
 
@@ -127,30 +129,146 @@ describe('kpiHelper', () => {
   })
 })
 
-describe('intentai services', () => {
-  it('should update preference and schedule correctly', async () => {
-    const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
-    mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
-
-    const { result } = renderHook(
-      () => useUpdatePreferenceScheduleMutation(),
-      { wrapper: Provider }
-    )
-    act(() => {
-      result.current[0]({
-        id: 'test',
-        status: 'new',
-        sliceValue: 'test',
-        updatedAt: '',
-        preferences: { crrmFullOptimization: false },
-        settings: {
-          date: moment(),
-          hour: 7.5
-        }
-      } as IntentAIFormDto)
-    })
-    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
-    expect(result.current[1].data)
-      .toEqual(resp)
+describe('roundUpTimeToNearest15Minutes', () => {
+  it('should return correct decimal hour', () => {
+    const timeString = '08:30:00'
+    expect(roundUpTimeToNearest15Minutes(timeString)).toEqual(8.5)
   })
+})
+
+// describe('specToDto', () => {
+//   const scheduledAt = '2024-07-13T07:30:00.000Z'
+//   const spec = {
+//     id: 'test',
+//     status: 'new',
+//     sliceValue: 'test',
+//     updatedAt: 'test',
+//     metadata: {
+//       scheduledAt: scheduledAt,
+//       preferences: { crrmFullOptimization: false }
+//     }
+//   } as unknown as EnhancedRecommendation
+
+//   it('should process spec with',
+//     async () => {
+//   const dto = {
+//     id: 'test',
+//     status: 'new',
+//     sliceValue: 'test',
+//     updatedAt: '',
+//     preferences: { crrmFullOptimization: false },
+//     settings: {
+//       date: moment(scheduledAt),
+//       hour: 7.5
+//     }
+//   } as IntentAIFormDto
+//   expect(specToDto(spec)).toEqual()
+
+// })
+
+describe('intentai services', () => {
+  // jest.mock('moment-timezone', () => {
+  //   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
+  //   return {
+  //     __esModule: true,
+  //     ...moment,
+  //     default: (date: MomentInput) => date === '2024-07-13T07:30:00.000Z'
+  //       ? moment(date)
+  //       : moment('2024-07-13T07:35:00') // mock current date
+  //   }
+  // })
+  const commonArgs = {
+    id: 'test',
+    status: 'new',
+    sliceValue: 'test',
+    updatedAt: '',
+    preferences: { crrmFullOptimization: false }
+  }
+  beforeEach(() => {
+    jest.mock('moment-timezone', () => {
+      const actualMoment = jest.requireActual('moment-timezone')
+      return {
+        __esModule: true,
+        ...actualMoment,
+        default: (date: MomentInput) =>
+          date === '2024-07-13T07:30:00.000Z'
+            ? actualMoment(date)
+            : actualMoment('2024-07-13T07:35:00') // mock current date
+      }
+    })
+    jest.resetModules()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  it('should update preference and schedule correctly if scheduledAt < currentTime + 15',
+    async () => {
+      const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
+      mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
+
+      const { result } = renderHook(
+        () => useUpdatePreferenceScheduleMutation(),
+        { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          ...commonArgs,
+          settings: {
+            date: moment('2024-07-13'),
+            hour: 7.5
+          }
+        } as IntentAIFormDto)
+      })
+      await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+      expect(result.current[1].data)
+        .toEqual(resp)
+    })
+
+  it('should update preference and schedule correctly if scheduledAt >= currentTime + 15',
+    async () => {
+      const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
+      mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
+
+      const { result } = renderHook(
+        () => useUpdatePreferenceScheduleMutation(),
+        { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          ...commonArgs,
+          settings: {
+            date: moment('2024-09-13'),
+            hour: 8.5
+          }
+        } as IntentAIFormDto)
+      })
+      await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+      expect(result.current[1].data)
+        .toEqual(resp)
+    })
+
+  // it('should update preference and schedule correctly if no initial scheduledAt',
+  //   async () => {
+  //     const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
+  //     mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
+
+  //     const { result } = renderHook(
+  //       () => useUpdatePreferenceScheduleMutation(),
+  //       { wrapper: Provider }
+  //     )
+  //     act(() => {
+  //       result.current[0]({
+  //         ...commonArgs,
+  //         settings: {
+  //           date: null,
+  //           hour: null
+  //         }
+  //       } as IntentAIFormDto)
+  //     })
+  //     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+  //     expect(result.current[1].data)
+  //       .toEqual(resp)
+  //   })
 })

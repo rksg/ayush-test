@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { MutableRefObject, useRef } from 'react'
+import { MutableRefObject } from 'react'
 
 import userEvent                             from '@testing-library/user-event'
 import { Form, Menu }                        from 'antd'

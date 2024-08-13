@@ -106,7 +106,7 @@ storiesOf('Dropdown', module)
     testForm.setFieldValue(['Testing', 'hour'], 7.5)
     const testOnChange: DatePickerProps['onChange'] = (date) => {
       testForm.setFieldValue(['Testing', 'date'], date)
-      testTime.setFieldValue(['settings', 'hour'], null)
+      testForm.setFieldValue(['settings', 'hour'], null)
     }
     const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
       return current && current < dayjs().startOf('day')

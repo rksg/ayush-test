@@ -6,7 +6,7 @@ import { MessageDescriptor }   from 'react-intl'
 import { intentAIApi, recommendationApi } from '@acx-ui/store'
 import { NetworkPath }                    from '@acx-ui/utils'
 
-import { IntentAIFormDto } from '../types'
+import { IntentAIFormDto, IntentAIFormSpec } from '../types'
 
 import { codes }                                                 from './AIDrivenRRM'
 import { StateType, IconValue, StatusTrail, ConfigurationValue } from './config'
@@ -120,7 +120,7 @@ type MutationResponse = { success: boolean, errorMsg: string, errorCode: string 
 
 interface UpdatePreferenceScheduleMutationResponse { transition: MutationResponse }
 
-function roundUpTimeToNearest15Minutes (timeStr: string) {
+export function roundUpTimeToNearest15Minutes (timeStr: string) {
   const [hours, minutes] = timeStr.split(':').map(Number)
   const totalMinutes = hours * 60 + minutes
   const roundedMinutes = Math.ceil(totalMinutes / 15) * 15
@@ -139,12 +139,27 @@ function decimalToTimeString (decimalHours: number) {
   return time.format('HH:mm:ss')
 }
 
-function handleScheduledAt (scheduledAt:string ) {
-  const originalScheduledAt = new Date(scheduledAt)
-  const futureThreshold = new Date(new Date().getTime() + 15 * 60 * 1000)
-  if (originalScheduledAt < futureThreshold) {
-    const newScheduledAt = new Date(originalScheduledAt)
-    newScheduledAt.setDate(newScheduledAt.getDate() + 1)
+// function handleScheduledAt (scheduledAt:string ) {
+//   const originalScheduledAt = new Date(scheduledAt)
+//   const futureThreshold = new Date(new Date().getTime() + 15 * 60 * 1000)
+//   if (originalScheduledAt < futureThreshold) {
+//     const newScheduledAt = new Date(originalScheduledAt)
+//     newScheduledAt.setDate(newScheduledAt.getDate() + 1)
+//     return newScheduledAt.toISOString()
+//   } else {
+//     return originalScheduledAt.toISOString()
+//   }
+// }
+function handleScheduledAt (scheduledAt:string) {
+
+  const originalScheduledAt = moment(scheduledAt)
+  console.log(originalScheduledAt)
+  const futureThreshold = moment().add(15, 'minutes')
+  console.log(moment())
+  console.log(futureThreshold)
+
+  if (originalScheduledAt.isBefore(futureThreshold)) {
+    const newScheduledAt = originalScheduledAt.add(1, 'day')
     return newScheduledAt.toISOString()
   } else {
     return originalScheduledAt.toISOString()
@@ -152,7 +167,7 @@ function handleScheduledAt (scheduledAt:string ) {
 }
 
 export function specToDto (
-  rec: EnhancedRecommendation
+  rec: IntentAIFormSpec
 ): IntentAIFormDto | undefined {
   let dto = {
     id: rec.id,
@@ -164,8 +179,8 @@ export function specToDto (
     updatedAt: rec.updatedAt
   } as IntentAIFormDto
 
-  let date: Moment | null = null
-  let hour: number | null = null
+  // let date: Moment | null = null
+  // let hour: number | null = null
   // if (rec.metadata.scheduledAt) {
   //   date=moment(rec.metadata.scheduledAt)
   //   hour=roundUpTimeToNearest15Minutes(
@@ -173,8 +188,8 @@ export function specToDto (
   //   )
   // }
 
-  // let date: Moment | null = moment()
-  // let hour: number | null = 7.5
+  let date: Moment | null = moment()
+  let hour: number | null = 7.5
 
   dto = {
     ...dto,
@@ -187,13 +202,19 @@ export function specToDto (
 }
 
 export function processDtoToPayload (dto: IntentAIFormDto) {
-  const newHour = decimalToTimeString(dto.settings!.hour!)
-  const scheduledAt = moment.parseZone(
-    `${dto.settings!.date}T${newHour}.000+08:00`).utc().toISOString()
-  console.log(moment(dto.settings!.date).format())
-  const newScheduledAt = handleScheduledAt(scheduledAt)
   console.log('this is dto to payload')
   console.log(dto)
+  const newDate = dto!.settings!.date!.format('YYYY-MM-DD')
+  console.log(newDate)
+  const newHour = decimalToTimeString(dto.settings!.hour!)
+  console.log(newHour)
+
+  const offset = moment().format('Z')
+  console.log(`${newDate}T${newHour}.000${offset}`)
+  const scheduledAt = moment.parseZone(
+    `${newDate}T${newHour}.000${offset}`).utc().toISOString()
+  console.log(scheduledAt)
+  const newScheduledAt = handleScheduledAt(scheduledAt)
   console.log(newScheduledAt)
   return {
     id: dto.id,
