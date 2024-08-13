@@ -56,15 +56,17 @@ export const R1NotificationSettings = ({ tenantId, apply }: {
   const { $t } = useIntl()
   const params = useParams()
   const tenantDetailsData = useGetTenantDetailsQuery({ params })
-  const [preferences, setState] = useState<NotificationPreference>({})
+  const [preferences, setState] = useState<NotificationPreference>(defaultNotification)
   const [updatePrefrences] = useUpdateTenantSelfMutation()
   useEffect(() => {
-    setState(tenantDetailsData?.data?.subscribes || defaultNotification)
+    if (tenantDetailsData?.data?.subscribes) {
+      setState(JSON.parse(tenantDetailsData?.data?.subscribes))
+    }
   }, [tenantDetailsData.data])
   apply.current = async (): Promise<boolean | void> => {
     const payload = {
       id: tenantId,
-      subscribe: preferences
+      subscribes: JSON.stringify(preferences)
     }
     return updatePrefrences({ params, payload: payload })
       .unwrap()

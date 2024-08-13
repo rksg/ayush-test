@@ -62,7 +62,8 @@ const useIsVenueDhcpEnabled = (venueId: string | undefined) => {
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
     skip: !resolvedRbacEnabled,
     payload: queryPayload,
-    templatePayload: queryPayload
+    templatePayload: queryPayload,
+    enableRbac: resolvedRbacEnabled
   })
 
   return resolvedRbacEnabled

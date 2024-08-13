@@ -8,7 +8,11 @@ import { useParams }                                                            
 import { Alert, Button, Select, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
 import { Features }                                                       from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }                                             from '@acx-ui/icons'
-import { useVenuesListQuery }                                             from '@acx-ui/rc/services'
+import {
+  useGetEdgeFeatureSetsQuery,
+  useGetVenueEdgeFirmwareListQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
@@ -17,10 +21,11 @@ import {
   edgeSerialNumberValidator,
   isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
+import { compareVersions } from '@acx-ui/utils'
 
 import { showDeleteModal, useIsEdgeFeatureReady } from '../../useEdgeActions'
 
-import { RadioDescription } from './styledComponents'
+import { RadioDescription, FwDescription, FwVersion } from './styledComponents'
 
 interface EdgeClusterSettingFormProps {
   editData?: EdgeClusterStatus
@@ -46,6 +51,12 @@ const venueOptionsDefaultPayload = {
   pageSize: 10000
 }
 
+const haAaFeatureRequirementPayload = {
+  filters: {
+    featureNames: ['HA-AA']
+  }
+}
+
 export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   const { editData } = props
   const { $t } = useIntl()
@@ -54,6 +65,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   const formListRef = useRef<NodeListRef>()
   const smartEdges = Form.useWatch('smartEdges', form) as EdgeClusterSettingFormType['smartEdges']
   const haMode = Form.useWatch('highAvailabilityMode', form) as ClusterHighAvailabilityModeEnum
+  const venueId = Form.useWatch('venueId', form) as string
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({
     params: { tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -63,6 +75,25 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
       }
     }
   })
+  const { requiredFw, isLoading: isFeatureSetsLoading } = useGetEdgeFeatureSetsQuery({
+    params: { tenantId }, payload: haAaFeatureRequirementPayload }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets?.find(item => item.featureName === 'HA-AA')?.requiredFw,
+        isLoading
+      }
+    }
+  })
+  const {
+    data: venueFirmwareList,
+    isLoading: isVenueFirmwareListLoading
+  } = useGetVenueEdgeFirmwareListQuery({})
+
+
+  const getVenueFirmware = (venueId: string) => {
+    return venueFirmwareList?.find(item => item.id === venueId)?.versions?.[0]?.id
+  }
+
   const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
 
   useEffect(() => {
@@ -79,8 +110,13 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
           isEdit: true
         }))
       })
+    } else {
+      form.setFieldsValue({ highAvailabilityMode:
+        (!isEdgeHaAaReady || isAaNotSuportedByFirmware()) ?
+          ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY :
+          ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE })
     }
-  }, [editData])
+  }, [editData, venueId])
 
   const editMode = !!editData
 
@@ -130,8 +166,16 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   const isDisableAddEdgeButton = () => {
     return (smartEdges?.length ?? 0) >= getMaxNodes()
   }
+  const isAaNotSuportedByFirmware = () => {
+    let venueVersion = getVenueFirmware(venueId)
+    return Boolean(requiredFw && venueVersion && compareVersions(venueVersion, requiredFw) < 0)
+  }
   const isDisableHaModeRadio = () => {
-    return isAaSelected() && (smartEdges?.length ?? 0) > maxActiveStandbyNodes
+    if (isFeatureSetsLoading) {
+      return true
+    }
+    let exceedAbNodeCountLimit = isAaSelected() && (smartEdges?.length ?? 0) > maxActiveStandbyNodes
+    return exceedAbNodeCountLimit || isAaNotSuportedByFirmware()
   }
 
   return (
@@ -144,11 +188,20 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
             rules={[{
               required: true
             }]}
+            extra={
+              <div>
+                <FwDescription>
+                  {$t({ defaultMessage:
+                    '<VenueSingular></VenueSingular> firmware version for SmartEdge:'
+                  })}
+                </FwDescription> <FwVersion>{getVenueFirmware(venueId)}</FwVersion>
+              </div>
+            }
           >
             <Select
               options={venueOptions}
               disabled={editMode}
-              loading={isVenuesListLoading}
+              loading={isVenuesListLoading || isVenueFirmwareListLoading}
             />
           </Form.Item>
           <Form.Item

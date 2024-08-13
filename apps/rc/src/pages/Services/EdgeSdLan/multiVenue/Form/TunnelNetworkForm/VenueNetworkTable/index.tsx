@@ -1,23 +1,35 @@
 import { useMemo, useState } from 'react'
 
 import { Space }     from 'antd'
-import { get, uniq } from 'lodash'
+import { get, pick } from 'lodash'
 import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { tansformSdLanScopedVenueMap }                            from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                     from '@acx-ui/rc/services'
 import {
-  useTableQuery,
-  Venue,
   EdgeMvSdLanFormModel,
-  EdgeMvSdLanFormNetwork
+  EdgeMvSdLanFormNetwork,
+  sortProp,
+  defaultSort,
+  arraySizeSort
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
 
 import { useEdgeMvSdLanContext } from '../../EdgeMvSdLanContextProvider'
 
 import { NetworksDrawer } from './NetworksDrawer'
+
+export interface VenueTableDataType {
+  id: string
+  name: string
+  address: string
+  selectedNetworks: {
+    id: string
+    name: string
+  }[]
+}
 
 export interface VenueNetworksTableProps {
   value?: EdgeMvSdLanFormNetwork,
@@ -32,42 +44,59 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
   const serviceId = formRef.getFieldValue('id')
 
-  const tableQuery = useTableQuery<Venue>({
-    useQuery: useVenuesListQuery,
-    defaultPayload: {
+  // venue list should filter out the venues that already tied to other SDLAN services.
+  const usedVenueIds = useMemo(() => {
+    return Object.entries(tansformSdLanScopedVenueMap(allSdLans))
+      .map(([venueId, sdlan]) => {
+        return (!!serviceId && sdlan.id === serviceId) ? undefined : venueId
+      })
+      .filter(i => !!i)
+  }, [allSdLans, serviceId])
+
+  const { availableVenues, isLoading, isFetching } = useVenuesListQuery({
+    payload: {
       fields: ['name', 'country', 'city', 'id'],
+      pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
-    },
-    pagination: {
-      pageSize: 10000
     }
+  }, {
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      isLoading,
+      isFetching,
+      availableVenues: data?.data.filter(venue => {
+        return !usedVenueIds.includes(venue.id)
+      }).map(item => ({
+        ...pick(item, ['id', 'name']),
+        address: `${item.country}, ${item.city}`,
+        selectedNetworks: get(activated, item.id) as { id:string, name: string }[]
+      } as VenueTableDataType)) ?? []
+    })
   })
 
-  const columns: TableProps<Venue>['columns'] = useMemo(() => ([{
+
+  const columns: TableProps<VenueTableDataType>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     key: 'name',
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
     fixed: 'left',
-    sorter: true
+    sorter: { compare: sortProp('name', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Address' }),
     width: Infinity,
-    key: 'country',
-    dataIndex: 'country',
-    sorter: true,
-    render: (_, row) => {
-      return `${row.country}, ${row.city}`
-    }
+    key: 'address',
+    dataIndex: 'address',
+    sorter: { compare: sortProp('address', defaultSort) }
   }, {
     title: $t({ defaultMessage: 'Selected Networks' }),
     key: 'selectedNetworks',
     dataIndex: 'selectedNetworks',
     align: 'center' as AlignType,
     width: 100,
+    sorter: { compare: sortProp('selectedNetworks', arraySizeSort) },
     render: (_, row) => {
-      const venueNetworks = get(activated, row.id) as { id:string, name: string }[]
+      const venueNetworks = row.selectedNetworks
       const networkCount = venueNetworks?.length ?? 0
       const networkNames = venueNetworks?.filter(i => i)
         .map(item => <span key={item.id}>{item.name}</span>)
@@ -82,7 +111,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     }
   }]), [activated])
 
-  const rowActions: TableProps<Venue>['rowActions'] = [{
+  const rowActions: TableProps<VenueTableDataType>['rowActions'] = [{
     label: $t({ defaultMessage: 'Select Networks' }),
     onClick: (selectedRows) => {
       setNetworkDrawerVenueId(selectedRows[0].id)
@@ -93,37 +122,35 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     setNetworkDrawerVenueId(undefined)
   }
 
-  // venue list should filter out the venues that already tied to other SDLAN services.
-  const usedVenueIds = uniq(allSdLans.flatMap((sdlan) => {
-    // exclude edit sdlan itself in edit mode
-    return sdlan.id === serviceId
-      ? []
-      // need to BC some old data
-      : sdlan.tunneledWlans?.map(wlan => wlan.venueId) ?? []
-  }))
-  const availableVenues = (tableQuery.data?.data.filter(venue => {
-    return !usedVenueIds.includes(venue.id)
-  })) || []
+  const handleNetworkModalSubmit = (updates: Record<string, EdgeMvSdLanFormNetwork>) => {
+    Object.keys(updates).forEach(d => {
+      formRef.setFieldValue(d, updates[d])
+    })
+    formRef.validateFields(['activatedNetworks'])
+    closeNetworkModal()
+  }
 
   return (
     <>
-      <Loader states={[ tableQuery ]}>
+      <Loader states={[ { isLoading, isFetching } ]}>
         <Table
           rowKey='id'
           columns={columns}
           dataSource={availableVenues}
           rowActions={filterByAccess(rowActions)}
           rowSelection={{ type: 'radio' }}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
         />
       </Loader>
       {networkDrawerVenueId && <NetworksDrawer
         visible={true}
         onClose={closeNetworkModal}
+        onSubmit={handleNetworkModalSubmit}
         venueId={networkDrawerVenueId!}
-        venueName={tableQuery.data?.data.find(item => item.id === networkDrawerVenueId)?.name}
-        formRef={formRef}
+        venueName={availableVenues.find(item => item.id === networkDrawerVenueId)?.name}
+        isGuestTunnelEnabled={formRef.getFieldValue('isGuestTunnelEnabled') as boolean}
+        tunneledNetworks={formRef.getFieldValue('activatedNetworks') as EdgeMvSdLanFormNetwork}
+        // eslint-disable-next-line max-len
+        tunneledGuestNetworks={formRef.getFieldValue('activatedGuestNetworks') as EdgeMvSdLanFormNetwork}
       />}
     </>
   )

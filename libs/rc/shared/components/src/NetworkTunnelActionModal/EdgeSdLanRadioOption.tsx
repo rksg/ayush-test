@@ -1,34 +1,49 @@
+import { useEffect } from 'react'
+
 import { Form, Radio, Row, Space, Switch, Typography } from 'antd'
+import { isNil }                                       from 'lodash'
 import { useIntl }                                     from 'react-intl'
 
-import { EdgeMvSdLanViewData, NetworkTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink, useHelpPageLink } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                  from '@acx-ui/react-router-dom'
+import {
+  EdgeMvSdLanViewData,
+  NetworkTypeEnum,
+  ServiceOperation,
+  ServiceType,
+  VLANPoolViewModelType,
+  getServiceDetailsLink,
+  useHelpPageLink
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 
 import * as UI                   from './styledComponents'
 import { NetworkTunnelTypeEnum } from './types'
 
 interface SdLanRadioOptionProps {
+  tunnelTypeInitVal: NetworkTunnelTypeEnum
   currentTunnelType: NetworkTunnelTypeEnum
   networkId: string
   networkVenueId: string
   networkType: NetworkTypeEnum
   venueSdLan: EdgeMvSdLanViewData | undefined
+  networkVlanPool?: VLANPoolViewModelType
 }
 
 export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
-  const { currentTunnelType, networkType, venueSdLan } = props
   const { $t } = useIntl()
   const helpUrl = useHelpPageLink()
+  const form = Form.useFormInstance()
+
+  const {
+    networkId, networkVenueId, networkType,
+    tunnelTypeInitVal, currentTunnelType,
+    venueSdLan, networkVlanPool
+  } = props
 
   const sdLanTunneled = currentTunnelType === NetworkTunnelTypeEnum.SdLan
   const isVenueSdLanExist = !!venueSdLan
   const isGuestTunnelEnabled = venueSdLan?.isGuestTunnelEnabled
-
-  // TODO: popup confirm dialog: ACX-58399
-  // const otherGuestTunnel = venueSdLan?.tunneledGuestWlans?.find(wlan =>
-  //   wlan.networkId === networkId)
-  // eslint-disable-next-line max-len
-  // const isOtherGuestTunnelEnabled = venueSdLan?.isGuestTunnelEnabled && Boolean(otherGuestTunnel)
 
   const linkToSdLanDetail = venueSdLan?.id ? getServiceDetailsLink({
     type: ServiceType.EDGE_SD_LAN,
@@ -39,8 +54,27 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
   const sdlanName = (isVenueSdLanExist && linkToSdLanDetail)
     ? <TenantLink to={linkToSdLanDetail}>{venueSdLan?.name}</TenantLink>
     : ''
+
   // eslint-disable-next-line max-len
   const showFwdGuestSwitch = isGuestTunnelEnabled && networkType === NetworkTypeEnum.CAPTIVEPORTAL && sdLanTunneled
+  const hasVlanPool = !isNil(networkVlanPool)
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    const isGuestTunnelUtilizedInitState = isGuestTunnelUtilized(venueSdLan, networkId, networkVenueId)
+
+    form.setFieldValue(['sdLan', 'isGuestTunnelEnabled'], isGuestTunnelUtilizedInitState)
+  }, [venueSdLan, networkId, networkVenueId])
+
+  useEffect(() => {
+    // only update when tunnelType has changed
+    if (currentTunnelType === NetworkTunnelTypeEnum.SdLan && currentTunnelType !== tunnelTypeInitVal
+        && networkType === NetworkTypeEnum.CAPTIVEPORTAL && !hasVlanPool) {
+
+      // eslint-disable-next-line max-len
+      form.setFieldValue(['sdLan', 'isGuestTunnelEnabled'], Boolean(venueSdLan?.isGuestTunnelEnabled))
+    }
+  }, [currentTunnelType, venueSdLan, tunnelTypeInitVal, networkType])
 
   return <Row>
     <Form.Item
@@ -83,7 +117,7 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
         {showFwdGuestSwitch &&
         <>
           <Form.Item name={['sdLan', 'isGuestTunnelEnabled']} valuePropName='checked' noStyle>
-            <Switch />
+            <Switch disabled={hasVlanPool} />
           </Form.Item>
           <Typography.Text style={{ fontSize: 14 }}>
             {$t({ defaultMessage: 'Forward guest traffic to DMZ' })}
