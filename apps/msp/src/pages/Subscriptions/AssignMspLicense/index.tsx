@@ -126,7 +126,7 @@ export function AssignMspLicense () {
   const { Option } = Select
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
-  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: assignment } =
@@ -428,7 +428,7 @@ export function AssignMspLicense () {
 
       {isDeviceAgnosticEnabled &&
       <div>{(availableApswLicense > 0) && <UI.FieldLabelSubs width='315px'>
-        <label>{isComplianceEnabled
+        <label>{isvSmartEdgeEnabled
           ? intl.$t({ defaultMessage: 'Assigned Device Networking' })
           : intl.$t({ defaultMessage: 'Assigned Paid Device Subscriptions' })
         }</label>
@@ -446,7 +446,7 @@ export function AssignMspLicense () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {isComplianceEnabled
+          {isvSmartEdgeEnabled
             ? intl.$t({ defaultMessage: 'paid licenses out of {availableApswLicense} available' }, {
               availableApswLicense: availableApswLicense })
             : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
@@ -455,7 +455,7 @@ export function AssignMspLicense () {
         </label>
       </UI.FieldLabelSubs>}
       {(availableApswTrialLicense > 0) && <UI.FieldLabelSubs width='315px'>
-        <label>{isComplianceEnabled
+        <label>{isvSmartEdgeEnabled
           ? intl.$t({ defaultMessage: 'Assigned Device Networking' })
           : intl.$t({ defaultMessage: 'Assigned Trial Device Subscriptions' })
         }</label>
@@ -473,7 +473,7 @@ export function AssignMspLicense () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {isComplianceEnabled
+          {isvSmartEdgeEnabled
           // eslint-disable-next-line max-len
             ? intl.$t({ defaultMessage: 'trial licenses out of {availableApswTrialLicense} available' }, {
               availableApswTrialLicense: availableApswTrialLicense })
