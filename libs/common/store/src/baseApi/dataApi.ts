@@ -51,7 +51,7 @@ export const recommendationApi = createApi({
   }),
   reducerPath: 'analytics-data-api-recommendation',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Monitoring'],
+  tagTypes: ['Monitoring', 'Intent'],
   endpoints: () => ({ })
 })
 
@@ -66,7 +66,7 @@ export const intentAIApi = createApi({
   }),
   reducerPath: 'analytics-data-api-intentai',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Monitoring'],
+  tagTypes: ['Intent'],
   endpoints: () => ({ })
 })
 
