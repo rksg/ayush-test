@@ -1,11 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                                         from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }      from '@acx-ui/rc/services'
-import { CertificateCategoryType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                                       from '@acx-ui/types'
-import { filterByAccess }                                                                                   from '@acx-ui/user'
+import { Button, PageHeader, Tabs }                                                                                             from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                          from '@acx-ui/rc/services'
+import { CertificateCategoryType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
 import CertificateTable          from '../CertificateTemplateTable/CertificateTable'
@@ -73,10 +71,9 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         }]}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() && ([
           <TenantLink
             to={buttonLinkMapping[props.tabKey]}
-            scopeKey={[WifiScopes.CREATE]}
           >
             <Button key='configure' type='primary'>{buttonTextMapping[props.tabKey]}</Button>
           </TenantLink>

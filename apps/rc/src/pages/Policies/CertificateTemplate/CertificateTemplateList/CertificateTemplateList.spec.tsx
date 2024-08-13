@@ -3,7 +3,7 @@ import { rest } from 'msw'
 import { CertificateCategoryType, CertificateUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                 from '@acx-ui/store'
 import { mockServer, render, screen }                               from '@acx-ui/test-utils'
-import { WifiScopes }                                               from '@acx-ui/types'
+import { RolesEnum, WifiScopes }                                    from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                           from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateList, certificateTemplateList } from '../__test__/fixtures'
@@ -91,12 +91,12 @@ describe('CertificateTemplateList', () => {
     expect(await screen.findByText('Generate Certificate')).toBeInTheDocument()
   })
 
-  it('should render component correctly with wifi-c permission', async () => {
+  it('should render component correctly with prime admin', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
-      isCustomRole: true,
-      scopes: [WifiScopes.CREATE]
+      isCustomRole: false,
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
     render(
@@ -113,12 +113,13 @@ describe('CertificateTemplateList', () => {
     expect(await screen.findByText('Add Certificate Template')).toBeInTheDocument()
   })
 
-  it('should render component correctly with wifi-r permission', async () => {
+  it('should render component correctly with read only permission', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
       isCustomRole: true,
-      scopes: [WifiScopes.READ]
+      scopes: [WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
 
     render(
