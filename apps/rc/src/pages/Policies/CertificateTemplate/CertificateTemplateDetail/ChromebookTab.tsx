@@ -5,6 +5,7 @@ import { enrollmentTypeLabel, existingCertLabel } from '@acx-ui/rc/components'
 import { CertificateTemplate }                    from '@acx-ui/rc/utils'
 import { noDataDisplay }                          from '@acx-ui/utils'
 
+import { onboardSettingsDescription }           from '../contentsMap'
 import { Description, DescriptionRow, Section } from '../styledComponents'
 
 export default function ChromebookTab ({ data }: { data: CertificateTemplate | undefined }) {
@@ -25,10 +26,6 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
         // eslint-disable-next-line max-len
         $t(existingCertLabel[data.chromebook.certRemovalType as keyof typeof existingCertLabel])
         : noDataDisplay
-    },
-    {
-      title: $t({ defaultMessage: 'App ID' }),
-      content: data?.chromebook?.notifyAppId
     },
     {
       title: $t({ defaultMessage: 'API Key' }),
@@ -74,6 +71,7 @@ export default function ChromebookTab ({ data }: { data: CertificateTemplate | u
         <Section>
           <Text strong>{$t({ defaultMessage: 'Google Service Account' })}</Text>
           <Divider style={{ marginTop: 6 }} />
+          <Description>{$t(onboardSettingsDescription.KEY_LENGTH)}</Description>
           {chromebookServiceAccountInfo.map((item, index) => (
             <DescriptionRow key={index}>
               <Description>{item.title}</Description>
