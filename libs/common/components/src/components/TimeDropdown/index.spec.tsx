@@ -1,16 +1,34 @@
 import { ReactElement } from 'react'
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
+import { Form } from 'antd'
 
 import { render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom/extend-expect'
 import { DayTimeDropdown, DayTimeDropdownTypes, getDisplayTime, TimeDropdown, DayAndTimeDropdownTypes } from '.'
 
+type MockSelectProps = React.PropsWithChildren<{
+  showSearch: boolean
+  onChange?: (value: string) => void
+}>
 
-
-const { click } = userEvent
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({
+    children,
+    showSearch, // remove and left unassigned to prevent warning
+    ...props
+  }: MockSelectProps) => {
+    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>)
+  }
+  Select.Option = 'option'
+  Select.OptGroup = 'optgroup'
+  return { ...components, Select }
+})
 
 describe('TimeDropdown', () => {
   it('renders Daily dropdown without disabled time correctly', async () => {
@@ -20,7 +38,7 @@ describe('TimeDropdown', () => {
       </Form>
     )
 
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Daily dropdown with disabled strictly before correctly', async () => {
@@ -34,11 +52,13 @@ describe('TimeDropdown', () => {
         />
       </Form>
     )
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
-    await click(screen.getByText('Select hour'))
-    expect(screen.getByText('10:15 (UTC+00)')).toBeInTheDocument()
-    expect(screen.queryByText('09:30 (UTC+00)')).not.toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
+    expect(screen.queryByText('00:00 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('09:45 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('10:00 (UTC+00)')).not.toBeDisabled()
+    expect(screen.queryByText('23:45 (UTC+00)')).not.toBeDisabled()
   })
+
 
   it('renders Daily dropdown with disabled strictly after correctly', async () => {
     render(
@@ -46,15 +66,16 @@ describe('TimeDropdown', () => {
         <TimeDropdown name='daily'
           spanLength={24}
           disabledDateTime={
-            { disabledStrictlyAfter: 1.75 }
+            { disabledStrictlyAfter: 7.75 }
           }
         />
       </Form>
     )
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
-    await click(screen.getByText('Select hour'))
-    expect(screen.getByText('01:30 (UTC+00)')).toBeInTheDocument()
-    expect(screen.queryByText('02:00 (UTC+00)')).not.toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
+    expect(screen.queryByText('08:00 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('23:45 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('00:00 (UTC+00)')).not.toBeDisabled()
+    expect(screen.queryByText('07:45 (UTC+00)')).not.toBeDisabled()
   })
 
   it('renders Daily dropdown with disabled correctly', async () => {
@@ -63,18 +84,20 @@ describe('TimeDropdown', () => {
         <TimeDropdown name='daily'
           spanLength={24}
           disabledDateTime={
-            { disabledStrictlyBefore: 1,
-              disabledStrictlyAfter: 1.75 }
+            { disabledStrictlyBefore: 5.75,
+              disabledStrictlyAfter: 11.25 }
           }
         />
       </Form>
     )
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
-    await click(screen.getByText('Select hour'))
-    expect(screen.getByText('01:15 (UTC+00)')).toBeInTheDocument()
-    expect(screen.getByText('01:30 (UTC+00)')).toBeInTheDocument()
-    expect(screen.queryByText('00:45 (UTC+00)')).not.toBeInTheDocument()
-    expect(screen.queryByText('02:00 (UTC+00)')).not.toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
+    expect(screen.queryByText('00:00 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('05:30 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('11:30 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('23:45 (UTC+00)')).toBeDisabled()
+
+    expect(screen.queryByText('05:45 (UTC+00)')).not.toBeDisabled()
+    expect(screen.queryByText('11:15 (UTC+00)')).not.toBeDisabled()
   })
 
   it('renders Weekly dropdown correctly', () => {
@@ -87,8 +110,8 @@ describe('TimeDropdown', () => {
       </Form>
     )
 
-    expect(screen.getByText('Select day')).toBeInTheDocument()
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select day')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Month dropdown correctly', () => {
@@ -100,8 +123,8 @@ describe('TimeDropdown', () => {
         />
       </Form>
     )
-    expect(screen.getByText('Select day')).toBeInTheDocument()
-    expect(screen.getByText('Select hour')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select day')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
   })
 })
 

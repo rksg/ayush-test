@@ -1,7 +1,10 @@
 import { omit, pick } from 'lodash'
+import moment         from 'moment'
 
 import { intentAIUrl, Provider, recommendationUrl, store }                 from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
+
+import { IntentAIFormDto } from '../types'
 
 import {
   mockedRecommendationCRRM,
@@ -137,11 +140,14 @@ describe('intentai services', () => {
       result.current[0]({
         id: 'test',
         status: 'new',
-        metadata: {
-          scheduledAt: '2021-11-12T13:04:55+08:00'
-        },
-        preferences: { crrmFullOptimization: false }
-      } as EnhancedRecommendation)
+        sliceValue: 'test',
+        updatedAt: '',
+        preferences: { crrmFullOptimization: false },
+        settings: {
+          date: moment(),
+          hour: 7.5
+        }
+      } as IntentAIFormDto)
     })
     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
     expect(result.current[1].data)

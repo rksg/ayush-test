@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AIDrivenRRM should render correctly when IS_MLISA_SA is true 1`] = `
+exports[`AIDrivenRRM should work correctly for statuses other than new/scheduled 1`] = `
 <DocumentFragment>
-  .c14 {
+  .c13 {
   display: -webkit-inline-box;
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
@@ -19,100 +19,65 @@ exports[`AIDrivenRRM should render correctly when IS_MLISA_SA is true 1`] = `
   gap: 8px;
 }
 
-.c14 svg {
+.c13 svg {
   width: 16px;
   height: 16px;
 }
 
-.c14 svg:before {
+.c13 svg:before {
   content: 'a';
 }
 
-.c14 svg path {
+.c13 svg path {
   stroke: var(--acx-primary-black);
 }
 
-.c14.ant-btn-primary svg path {
+.c13.ant-btn-primary svg path {
   stroke: var(--acx-primary-white) !important;
   fill: var(--acx-primary-white) !important;
 }
 
-.c14[disabled] svg path,
-.c14.ant-btn-disabled svg path {
+.c13[disabled] svg path,
+.c13.ant-btn-disabled svg path {
   stroke: var(--acx-primary-white);
 }
 
-.c14[disabled].ant-btn-default svg path,
-.c14.ant-btn-disabled.ant-btn-default svg path,
-.c14[disabled].ant-btn-primary svg path,
-.c14.ant-btn-disabled.ant-btn-primary svg path {
+.c13[disabled].ant-btn-default svg path,
+.c13.ant-btn-disabled.ant-btn-default svg path,
+.c13[disabled].ant-btn-primary svg path,
+.c13.ant-btn-disabled.ant-btn-primary svg path {
   stroke: var(--acx-neutrals-40);
 }
 
-.c7 {
-  padding: calc(var(--acx-descriptions-space) / 2) 0;
-}
-
-.c7 .ant-descriptions-row:last-child .ant-descriptions-item {
-  padding-bottom: 0;
-}
-
-.c7 .ant-descriptions-item {
-  padding: 0;
-  padding-bottom: calc(var(--acx-body-4-line-height) - var(--acx-body-4-font-size));
-}
-
-.c7 .ant-descriptions-item .ant-descriptions-item-container {
-  -webkit-align-items: baseline;
-  -webkit-box-align: baseline;
-  -ms-flex-align: baseline;
-  align-items: baseline;
-}
-
-.c7 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label,
-.c7 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  font-size: var(--acx-body-4-font-size);
-  line-height: var(--acx-body-4-line-height);
-}
-
-.c7 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label {
-  width: unset;
-  color: var(--acx-neutrals-60);
-}
-
-.c7 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
-  display: unset;
-}
-
-h1.c8.ant-typography {
+h1.c9.ant-typography {
   line-height: var(--acx-subtitle-1-line-height);
   font-size: var(--acx-subtitle-1-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-1-font-weight);
 }
 
-h2.c8.ant-typography {
+h2.c9.ant-typography {
   line-height: var(--acx-subtitle-2-line-height);
   font-size: var(--acx-subtitle-2-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-2-font-weight);
 }
 
-h3.c8.ant-typography {
+h3.c9.ant-typography {
   line-height: var(--acx-subtitle-3-line-height);
   font-size: var(--acx-subtitle-3-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-3-font-weight);
 }
 
-h4.c8.ant-typography {
+h4.c9.ant-typography {
   line-height: var(--acx-subtitle-4-line-height);
   font-size: var(--acx-subtitle-4-font-size);
   font-family: var(--acx-neutral-brand-font);
   font-weight: var(--acx-subtitle-4-font-weight);
 }
 
-h5.c8.ant-typography {
+h5.c9.ant-typography {
   line-height: var(--acx-subtitle-5-line-height);
   font-size: var(--acx-subtitle-5-font-size);
   font-family: var(--acx-neutral-brand-font);
@@ -238,7 +203,7 @@ h5.c8.ant-typography {
   background-color: var(--acx-steps-form-steps-step-color);
 }
 
-.c13 {
+.c12 {
   position: fixed;
   width: calc( 100% - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
   min-width: calc( 1280px - var(--acx-sider-width) - var(--acx-content-horizontal-space) * 2 );
@@ -248,14 +213,14 @@ h5.c8.ant-typography {
   z-index: 5;
 }
 
-.c13::before {
+.c12::before {
   content: '';
   position: absolute;
   inset: 0 -100% 0 -100%;
   background-color: var(--acx-neutrals-10);
 }
 
-.c13 .ant-space-item .ant-space {
+.c12 .ant-space-item .ant-space {
   position: absolute;
   left: 50%;
   bottom: var(--acx-steps-form-actions-vertical-space);
@@ -285,27 +250,27 @@ h5.c8.ant-typography {
   height: 16px;
 }
 
-.c10.ant-typography {
+.c11.ant-typography {
   margin-top: 20px;
   margin-bottom: 12px;
 }
 
-.c5 + .c9.ant-typography {
+.c5 + .c10.ant-typography {
   margin-top: 4px;
 }
 
-.c11,
-.c11 .ant-list {
+.c7,
+.c7 .ant-list {
   font-size: var(--acx-body-4-font-size);
   line-height: var(--acx-body-4-line-height);
   font-weight: var(--acx-body-font-weight);
 }
 
-.c11 .ant-checkbox-wrapper-in-form-item {
+.c7 .ant-checkbox-wrapper-in-form-item {
   color: var(--acx-neutrals-60);
 }
 
-.c11 .indent {
+.c7 .indent {
   margin-left: 24px;
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
@@ -315,7 +280,7 @@ h5.c8.ant-typography {
   align-content: flex-start;
 }
 
-.c11 .greyText {
+.c7 .greyText {
   color: var(--acx-neutrals-50);
 }
 
@@ -417,7 +382,7 @@ h5.c8.ant-typography {
   height: 32px;
 }
 
-.c12 {
+.c8 {
   position: relative;
   min-height: calc( 100vh - 0px - var(--acx-steps-form-actions-vertical-space) * 2 - 32px - var(--acx-content-horizontal-space) );
   border: 1px solid var(--acx-neutrals-25);
@@ -467,7 +432,7 @@ h5.c8.ant-typography {
                 class="ant-breadcrumb-link"
               >
                 <a
-                  href="/intentAI"
+                  href="/undefined/t/analytics/intentAI"
                 >
                   IntentAI
                 </a>
@@ -527,7 +492,7 @@ h5.c8.ant-typography {
               />
             </span>
             <span>
-              Zone: 
+              Venue: 
             </span>
           </span>
         </div>
@@ -539,7 +504,7 @@ h5.c8.ant-typography {
     >
       <form
         class="ant-form ant-form-vertical"
-        step="0"
+        step="2"
       >
         <div
           class="ant-row"
@@ -554,7 +519,7 @@ h5.c8.ant-typography {
               class="ant-steps ant-steps-vertical c4 ant-steps-dot"
             >
               <div
-                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+                class="ant-steps-item ant-steps-item-finish"
               >
                 <div
                   class="ant-steps-item-container"
@@ -587,10 +552,12 @@ h5.c8.ant-typography {
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+                class="ant-steps-item ant-steps-item-finish"
               >
                 <div
                   class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -618,10 +585,12 @@ h5.c8.ant-typography {
                 </div>
               </div>
               <div
-                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
                   class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
                 >
                   <div
                     class="ant-steps-item-tail"
@@ -697,164 +666,204 @@ h5.c8.ant-typography {
                 <h3
                   class="ant-typography c5 c6"
                 >
-                  Introduction
+                  Settings
                 </h3>
                 <div
-                  class="ant-descriptions c7"
+                  class="c7"
                 >
                   <div
-                    class="ant-descriptions-view"
+                    class="ant-typography"
                   >
-                    <table>
-                      <tbody>
-                        <tr
-                          class="ant-descriptions-row"
-                        >
-                          <td
-                            class="ant-descriptions-item"
-                            colspan="1"
-                          >
-                            <div
-                              class="ant-descriptions-item-container"
-                            >
-                              <span
-                                class="ant-descriptions-item-label"
-                              >
-                                Intent
-                              </span>
-                              <span
-                                class="ant-descriptions-item-content"
-                              >
-                                Client density vs Client throughput
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr
-                          class="ant-descriptions-row"
-                        >
-                          <td
-                            class="ant-descriptions-item"
-                            colspan="1"
-                          >
-                            <div
-                              class="ant-descriptions-item-container"
-                            >
-                              <span
-                                class="ant-descriptions-item-label"
-                              >
-                                Category
-                              </span>
-                              <span
-                                class="ant-descriptions-item-content"
-                              >
-                                Wi-Fi Client Experience
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr
-                          class="ant-descriptions-row"
-                        >
-                          <td
-                            class="ant-descriptions-item"
-                            colspan="1"
-                          >
-                            <div
-                              class="ant-descriptions-item-container"
-                            >
-                              <span
-                                class="ant-descriptions-item-label"
-                              >
-                                Zone
-                              </span>
-                              <span
-                                class="ant-descriptions-item-content"
-                              >
-                                21_US_Beta_Samsung
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr
-                          class="ant-descriptions-row"
-                        >
-                          <td
-                            class="ant-descriptions-item"
-                            colspan="1"
-                          >
-                            <div
-                              class="ant-descriptions-item-container"
-                            >
-                              <span
-                                class="ant-descriptions-item-label"
-                              >
-                                Status
-                              </span>
-                              <span
-                                class="ant-descriptions-item-content"
-                              >
-                                Scheduled
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr
-                          class="ant-descriptions-row"
-                        >
-                          <td
-                            class="ant-descriptions-item"
-                            colspan="1"
-                          >
-                            <div
-                              class="ant-descriptions-item-container"
-                            >
-                              <span
-                                class="ant-descriptions-item-label"
-                              >
-                                Last update
-                              </span>
-                              <span
-                                class="ant-descriptions-item-content"
-                              >
-                                06/26/2023 00:00
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.
                   </div>
                 </div>
-                <h4
-                  class="ant-typography c8 c9 c10"
-                >
-                  Network Intent plays a crucial role in wireless network design
-                </h4>
                 <div
-                  class="c11"
+                  class="ant-form-item ant-form-item-has-success"
                 >
                   <div
-                    class="ant-typography"
+                    class="ant-row ant-form-item-row"
                   >
-                    <b>
-                      High number of clients in a dense network:
-                    </b>
-                     
-                    <span>
-                      High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
-                    </span>
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class="ant-form-item-required"
+                        for="settings_date"
+                        title="Schedule Date"
+                      >
+                        Schedule Date
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-picker ant-picker-status-success"
+                            style="width: 100%;"
+                          >
+                            <div
+                              class="ant-picker-input"
+                            >
+                              <input
+                                autocomplete="off"
+                                id="settings_date"
+                                placeholder="Select date"
+                                size="12"
+                                title="2024-08-15"
+                                value="2024-08-15"
+                              />
+                              <span
+                                class="ant-picker-suffix"
+                              >
+                                <span
+                                  aria-label="calendar"
+                                  class="anticon anticon-calendar"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="calendar"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M880 184H712v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H384v-64c0-4.4-3.6-8-8-8h-56c-4.4 0-8 3.6-8 8v64H144c-17.7 0-32 14.3-32 32v664c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V216c0-17.7-14.3-32-32-32zm-40 656H184V460h656v380zM184 392V256h128v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h256v48c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-48h128v136H184z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                              <span
+                                class="ant-picker-clear"
+                                role="button"
+                              >
+                                <span
+                                  aria-label="close-circle"
+                                  class="anticon anticon-close-circle"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="close-circle"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm165.4 618.2l-66-.3L512 563.4l-99.3 118.4-66.1.3c-4.4 0-8-3.5-8-8 0-1.9.7-3.7 1.9-5.2l130.1-155L340.5 359a8.32 8.32 0 01-1.9-5.2c0-4.4 3.6-8 8-8l66.1.3L512 464.6l99.3-118.4 66-.3c4.4 0 8 3.5 8 8 0 1.9-.7 3.7-1.9 5.2L553.5 514l130 155c1.2 1.5 1.9 3.3 1.9 5.2 0 4.4-3.6 8-8 8z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                </div>
+                <div
+                  class="ant-form-item"
+                >
                   <div
-                    class="ant-typography"
+                    class="ant-row ant-form-item-row"
                   >
-                    <b>
-                      High client throughput in sparse network:
-                    </b>
-                     
-                    <span>
-                      In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
-                    </span>
+                    <div
+                      class="ant-col ant-form-item-label"
+                    >
+                      <label
+                        class=""
+                        title="Schedule Time"
+                      >
+                        Schedule Time
+                      </label>
+                    </div>
+                    <div
+                      class="ant-col ant-form-item-control"
+                    >
+                      <div
+                        class="ant-form-item-control-input"
+                      >
+                        <div
+                          class="ant-form-item-control-input-content"
+                        >
+                          <div
+                            class="ant-col ant-col-24"
+                          >
+                            <div
+                              class="ant-select ant-select-in-form-item ant-select-single ant-select-show-arrow ant-select-open"
+                            >
+                              <div
+                                class="ant-select-selector"
+                              >
+                                <span
+                                  class="ant-select-selection-search"
+                                >
+                                  <input
+                                    aria-activedescendant="settings_hour_list_0"
+                                    aria-autocomplete="list"
+                                    aria-controls="settings_hour_list"
+                                    aria-expanded="true"
+                                    aria-haspopup="listbox"
+                                    aria-owns="settings_hour_list"
+                                    autocomplete="off"
+                                    class="ant-select-selection-search-input"
+                                    id="settings_hour"
+                                    readonly=""
+                                    role="combobox"
+                                    style="opacity: 0;"
+                                    type="search"
+                                    unselectable="on"
+                                    value=""
+                                  />
+                                </span>
+                                <span
+                                  class="ant-select-selection-placeholder"
+                                >
+                                  Select hour
+                                </span>
+                              </div>
+                              <span
+                                aria-hidden="true"
+                                class="ant-select-arrow"
+                                style="user-select: none;"
+                                unselectable="on"
+                              >
+                                <span
+                                  aria-label="down"
+                                  class="anticon anticon-down ant-select-suffix"
+                                  role="img"
+                                >
+                                  <svg
+                                    aria-hidden="true"
+                                    data-icon="down"
+                                    fill="currentColor"
+                                    focusable="false"
+                                    height="1em"
+                                    viewBox="64 64 896 896"
+                                    width="1em"
+                                  >
+                                    <path
+                                      d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"
+                                    />
+                                  </svg>
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -863,7 +872,7 @@ h5.c8.ant-typography {
                 style="padding-left: 10px; padding-right: 10px;"
               >
                 <div
-                  class="c12"
+                  class="c8"
                 >
                   <h4
                     class="ant-typography"
@@ -871,76 +880,17 @@ h5.c8.ant-typography {
                     Side Notes
                   </h4>
                   <h4
-                    class="ant-typography c8 c9 c10"
+                    class="ant-typography c9 c10 c11"
                   >
-                    Benefits
+                    High number of clients in a dense network
                   </h4>
                   <div
-                    class="c11"
+                    class="c7"
                   >
                     <div
                       class="ant-typography"
                     >
-                      Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
-                    </div>
-                  </div>
-                  <h4
-                    class="ant-typography c8 c9 c10"
-                  >
-                    Resources:
-                  </h4>
-                  <div
-                    class="c11"
-                  >
-                    <div
-                      class="ant-typography"
-                    >
-                      <a
-                        href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        <div
-                          class="ant-space ant-space-horizontal ant-space-align-center"
-                        >
-                          <div
-                            class="ant-space-item"
-                            style="margin-right: 8px;"
-                          >
-                            <svg
-                              data-testid="LinkVideoIcon"
-                            />
-                          </div>
-                          <div
-                            class="ant-space-item"
-                          >
-                            RUCKUS AI - AI-Driven RRM Demo
-                          </div>
-                        </div>
-                      </a>
-                      <a
-                        href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        <div
-                          class="ant-space ant-space-horizontal ant-space-align-center"
-                        >
-                          <div
-                            class="ant-space-item"
-                            style="margin-right: 8px;"
-                          >
-                            <svg
-                              data-testid="LinkDocumentIcon"
-                            />
-                          </div>
-                          <div
-                            class="ant-space-item"
-                          >
-                            RUCKUS AI User Guide
-                          </div>
-                        </div>
-                      </a>
+                      High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
                     </div>
                   </div>
                 </div>
@@ -949,7 +899,7 @@ h5.c8.ant-typography {
           </div>
         </div>
         <div
-          class="c13"
+          class="c12"
           data-testid="steps-form-actions"
         >
           <div
@@ -960,7 +910,7 @@ h5.c8.ant-typography {
               style="margin-right: 12px;"
             >
               <button
-                class="ant-btn ant-btn-default c14"
+                class="ant-btn ant-btn-default c13"
                 type="button"
               >
                 <span>
@@ -979,8 +929,7 @@ h5.c8.ant-typography {
                   style="margin-right: 12px;"
                 >
                   <button
-                    class="ant-btn ant-btn-default c14"
-                    hidden=""
+                    class="ant-btn ant-btn-default c13"
                     type="button"
                     value="pre"
                   >
@@ -993,7 +942,8 @@ h5.c8.ant-typography {
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-primary c14"
+                    ant-click-animating-without-extra-node="true"
+                    class="ant-btn ant-btn-primary c13"
                     type="button"
                     value="next"
                   >

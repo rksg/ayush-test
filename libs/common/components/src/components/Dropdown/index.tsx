@@ -10,6 +10,10 @@ import {
 } from 'antd'
 import moment,{ Moment } from 'moment-timezone'
 import { MenuItemType }  from 'rc-menu/lib/interface'
+import {
+  useIntl
+} from 'react-intl'
+
 
 import { ScopeKeys } from '@acx-ui/types'
 
@@ -103,12 +107,14 @@ export const DateTimeDropdown = (
     form
   } : DateTimeDropdownProps) => {
   const [date, setDate] = useState(() => initialDate)
+  const { $t } = useIntl()
   // const dateSelected: Moment = form.getFieldValue([name, 'date'])
   return (
     <>
       <Form.Item name={[name, 'date']}
         label={dateLabel}
         valuePropName={'date'}
+        rules={[{ required: true, message: $t({ defaultMessage: 'Please enter date' }) }]}
         children={
           <DatePicker
             style={{ width: '100%' }}

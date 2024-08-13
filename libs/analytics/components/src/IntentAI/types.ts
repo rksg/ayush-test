@@ -5,7 +5,7 @@ import { EnhancedRecommendation } from './IntentAIForm/services'
 export type IntentAIFormDto = Pick<EnhancedRecommendation,
 'status' | 'preferences' | 'sliceValue' | 'updatedAt'> & {
     id?: EnhancedRecommendation['id'],
-    settings?: {
+    settings: {
         date: Moment | null,
         hour: number | null
     }

@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import userEvent      from '@testing-library/user-event'
-import { DatePicker } from 'antd'
-import { pick }       from 'lodash'
-import moment         from 'moment-timezone'
+import userEvent               from '@testing-library/user-event'
+import { DatePicker }          from 'antd'
+import { pick }                from 'lodash'
+import moment, { MomentInput } from 'moment-timezone'
 
-import { get }                                      from '@acx-ui/config'
-import { recommendationUrl, Provider }              from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
+import { get }                                                           from '@acx-ui/config'
+import { recommendationUrl, Provider, intentAIUrl }                      from '@acx-ui/store'
+import { mockGraphqlMutation, mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockedRecommendationCRRM } from '../__tests__/fixtures'
 
@@ -21,6 +21,17 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   })
 }))
 
+// jest.mock('moment-timezone', () => {
+//   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
+//   return {
+//     __esModule: true,
+//     ...moment,
+//     default: (date: MomentInput) => date === '2023-11-17T11:15:00.000Z'
+//       ? moment(date)
+//       : moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
+//   }
+// })
+
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   useStepFormContext: () => {
@@ -30,11 +41,11 @@ jest.mock('@acx-ui/components', () => ({
         sliceValue: '21_US_Beta_Samsung',
         updatedAt: '2023-06-26T00:00:25.772Z',
         preferences: { crrmFullOptimization: true },
-        id: 'id'
-        // settings: {
-        //   date: moment('2024-08-12T10:30:00'),
-        //   hour: 13.75
-        // }
+        id: 'id',
+        settings: {
+          date: null,
+          hour: null
+        }
 
       },
       form: {
@@ -42,10 +53,17 @@ jest.mock('@acx-ui/components', () => ({
           if (value === 'status') {
             return 'new'
           }
+          else if (value === 'settings') {
+            return {
+              date: null,
+              hour: null
+            }
+          }
           else {
             return 'applyscheduled'
           }
-        }
+        },
+        setFieldValue: jest.fn()
       }
     }
   } }))
@@ -56,6 +74,7 @@ jest.mock('@acx-ui/config', () => ({
 }))
 
 describe('AIDrivenRRM', () => {
+  const timezone = 'UTC'
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'IntentCode', {
       data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
@@ -63,10 +82,17 @@ describe('AIDrivenRRM', () => {
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
       data: { recommendation: mockedRecommendationCRRM }
     })
+    const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
 
     // add mockGraphqlQuery for intentAi url
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
+
+    moment.tz.setDefault(timezone)
+  })
+  afterEach(() => {
+    moment.tz.setDefault(moment.tz.guess())
   })
 
   // it('should render correctly', async () => {
@@ -122,25 +148,54 @@ describe('AIDrivenRRM', () => {
     // Step 3
     await userEvent.click(actions.getByRole('button', { name: 'Next' }))
     await screen.findAllByRole('heading', { name: 'Settings' })
+    // expect(form.getByTitle('2024-08-15')).toBeVisible()
 
+    const formBody = within(form.getByTestId('steps-form-body'))
 
-    await userEvent.click(form.getByPlaceholderText('Select date'))
-
-    // await userEvent.click(screen.getByTestId('date-picker'))
+    // expect(await formBody.findByText('Select date')).toBeVisible()
+    await userEvent.click(formBody.getByPlaceholderText('Select date'))
     await screen.findByText('Mo')
     await userEvent.click(screen.getByText('15'))
 
+    // expect(form.getByTitle('2024-08-15')).toBeVisible()
 
 
-    // const datepicker = await
-    // await type(screen.findByRole('combobox'), '2024-08-07'))
-    // expect(await datepicker.findByTitle('2024-08-07')).toBeVisible()
+    expect(screen.getByText('Select hour')).toBeInTheDocument()
+    await click(screen.getByText('Select hour'))
+    await screen.findByText('03:30 (UTC+00)')
+    expect(screen.getByText('03:30 (UTC+00)')).toBeInTheDocument()
 
-    // await type(datepicker), '2024-08-07')
-    // expect(await screen.findByTitle('2024-08-07')).toHaveClass('ant-picker-cell ant-picker-cell-in-view ant-picker-cell-today ant-picker-cell-selected')
 
-    // await userEvent.clickform.getByPlaceholderText('Select date')
+    // expect(await formBody.findByText('Select hour')).toBeVisible()
+    // expect(screen.getByText('01:30 (UTC+00)')).toBeInTheDocument()
 
+    // await userEvent.click(formBody.getByRole('combobox'))
+
+    // await click(formBody.getByText('Select hour'))
+    // expect(await screen.findByText('10:15 (UTC+00)')).toBeInTheDocument()
+    // await screen.findByText('01:10 (UTC+08)')
+    // await userEvent.click(screen.getByText('01:10 (UTC+08)'))
+    // // await screen.findByText('-15')
+
+    // await type(formBody.getByRole('combobox'), '2024-08-07')
+
+
+    // await click(await formBody.findByText('Select hour'))
+
+
+
+
+    // await formBody.findByRole('combobox')
+
+    // await selectOptions(
+    //   await screen.findByRole('combobox'),
+    //   '05:15 (UTC+08)')
+
+
+
+    // await screen.findByTitle('05:15 (UTC+08)')
+    // await click(screen.getByTitle('05:15 (UTC+08)'))
+    // expect(await formBody.findByTitle('05:15 (UTC+08)')).toBeVisible()
 
 
 
@@ -159,6 +214,6 @@ describe('AIDrivenRRM', () => {
   //     route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
   //     wrapper: Provider
   //   })
-  //   expect(asFragment()).toMatchSnapshot()
+  // expect(asFragment()).toMatchSnapshot()
   // })
 })
