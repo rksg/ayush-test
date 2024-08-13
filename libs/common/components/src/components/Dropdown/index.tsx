@@ -73,7 +73,6 @@ interface DateTimeDropdownProps {
   time: MutableRefObject<number>,
   disabledDate:((date: moment.Moment) => boolean) | undefined
   onchange: DatePickerProps['onChange']
-  form: FormInstance
 }
 
 function roundUpTimeToNearest15Minutes (timeStr: string) {
@@ -87,8 +86,6 @@ function roundUpTimeToNearest15Minutes (timeStr: string) {
 }
 
 function getDisabledTime (dateSelected: Moment | null) {
-  console.log(moment())
-  console.log(dateSelected)
   if (dateSelected === null || !dateSelected.startOf('day').isSame(moment().startOf('day'))) {
     return 0
   }
@@ -105,12 +102,10 @@ export const DateTimeDropdown = (
     timeLabel,
     initialDate,
     disabledDate,
-    onchange,
-    form
+    onchange
   } : DateTimeDropdownProps) => {
   const [date, setDate] = useState(() => initialDate)
   const { $t } = useIntl()
-  // const dateSelected: Moment = form.getFieldValue([name, 'date'])
   return (
     <>
       <Form.Item name={[name, 'date']}
@@ -128,7 +123,6 @@ export const DateTimeDropdown = (
             onChange={(e,i) => {
               onchange!(e,i)
               setDate(e!)
-              form.setFieldValue([name, 'hour'], null)
             }}
           />
         }

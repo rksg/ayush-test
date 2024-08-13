@@ -119,7 +119,6 @@ storiesOf('Dropdown', module)
         disabledDate={testDisabledDate}
         time={testTime}
         onchange={testOnChange}
-        form={testForm}
       />
     </Form>
   })

@@ -30,6 +30,7 @@ function DateTimeSetting ({
   }
   const onChange: DatePickerProps['onChange'] = (date) => {
     form.setFieldValue(['settings', 'date'], date)
+    form.setFieldValue(['settings', 'hour'], null)
   }
   console.log(scheduledDate)
   const { $t } = useIntl()
@@ -42,7 +43,7 @@ function DateTimeSetting ({
       time={initialTime}
       disabledDate={disabledDate} // disable all date before current
       onchange={onChange}
-      form={form}
+      // form={form}
     />
   )}
 
