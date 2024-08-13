@@ -355,13 +355,18 @@ function NetworkRoutes () {
       />
       <Route path='networks/wired/:configType/add'
         element={
-          <AuthRoute scopes={[SwitchScopes.CREATE]}>
+          <AuthRoute scopes={[SwitchScopes.CREATE]} requireCrossVenuesPermission>
             <CliTemplateForm />
           </AuthRoute>
-        } />
+        }
+      />
       <Route
         path='networks/wired/:configType/:templateId/:action'
-        element={<CliTemplateForm />}
+        element={
+          <AuthRoute scopes={[SwitchScopes.UPDATE]} requireCrossVenuesPermission>
+            <CliTemplateForm />
+          </AuthRoute>
+        }
       />
       <Route
         path='networks/wireless/:networkId/:action'
