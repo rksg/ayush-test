@@ -213,6 +213,7 @@ const TunnelProfileTable = () => {
     },
     {
       scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE],
+      visible: (selectedRows) => !selectedRows.some(row => isDefaultTunnelProfile(row)),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({

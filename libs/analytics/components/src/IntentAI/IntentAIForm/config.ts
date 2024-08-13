@@ -26,23 +26,9 @@ export const crrmStates: Record<CRRMStates, IconValue> = {
   [CRRMStates.unknown]: { order: 2, label: defineMessage({ defaultMessage: 'Unknown' }) }
 }
 
-export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
-  low: { order: 0, label: defineMessage({ defaultMessage: 'Low' }) },
-  medium: { order: 1, label: defineMessage({ defaultMessage: 'Medium' }) },
-  high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
-}
-
-export type CodeInfo = {
-  category: MessageDescriptor,
-  summary: MessageDescriptor,
-  partialOptimizedSummary?: MessageDescriptor,
-  priority: IconValue
-}
-
-type RecommendationKPIConfig = {
+export type IntentKPIConfig = {
   key: string;
   label: MessageDescriptor;
-  tooltipContent?: MessageDescriptor;
   format: ReturnType<typeof formatter>;
   deltaSign: '+' | '-' | 'none';
   valueAccessor?: (value: number[]) => number;
@@ -51,23 +37,12 @@ type RecommendationKPIConfig = {
   filter?: CallableFunction
 }
 
-export type RecommendationConfig = {
-  valueFormatter: ReturnType<typeof formatter>
-  valueText: MessageDescriptor
-  actionText: MessageDescriptor
+export type IntentConfig = {
   reasonText: MessageDescriptor
   tradeoffText: MessageDescriptor
   appliedReasonText?: MessageDescriptor
-  kpis: RecommendationKPIConfig[]
-  recommendedValueTooltipContent?:
-    string |
-    ((status: StateType, currentValue: ConfigurationValue, recommendedValue: string) =>
-      MessageDescriptor)
-  partialOptimizedActionText?: MessageDescriptor
   partialOptimizationAppliedReasonText?: MessageDescriptor
   partialOptimizedTradeoffText?: MessageDescriptor
-  appliedActionText?: MessageDescriptor
-  continuous: boolean
 }
 
 export const categories = {

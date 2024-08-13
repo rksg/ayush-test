@@ -16,7 +16,7 @@ export type WidgetType =
 
 export type Switch = {
   mac: string
-  name: string
+  name: string | null
 }
 export type SwitchDetails = {
   serial: string
@@ -72,6 +72,7 @@ export interface RequestPayload {
 
 export const topImpactedSwitchesLimit = 10
 
-export const showTopResult = ($t: IntlShape['$t'], count: number, limit: number) => count === limit
-  ? $t({ defaultMessage: 'Top {limit}' }, { limit })
-  : count
+export const showTopNTableResult = ($t: IntlShape['$t'], count: number, limit: number) =>
+  count === limit
+    ? $t({ defaultMessage: 'Top {limit}' }, { limit })
+    : count

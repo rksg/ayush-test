@@ -35,7 +35,6 @@ import { FrontViewTooltip } from './FrontViewTooltip'
 import { RearView }         from './RearView'
 import * as UI              from './styledComponents'
 
-import { SwitchPanelContext } from '.'
 interface unitType {
   switchUnit: number
   model: string
@@ -103,9 +102,6 @@ export function Unit (props:{
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
-  const {
-    editPortsFromPanelEnabled
-  } = useContext(SwitchPanelContext)
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const { switchDetailHeader: switchDetail, switchDetailViewModelQuery, switchQuery } = switchDetailsContextData
@@ -452,7 +448,7 @@ export function Unit (props:{
       </div>
     </UI.TitleBar>
     {
-      (editPortsFromPanelEnabled && !isRearView && props.index === 0) && (
+      (!isRearView && props.index === 0) && (
         <UI.FrontViewTooltipContainer>
           <FrontViewTooltip />
         </UI.FrontViewTooltipContainer>
