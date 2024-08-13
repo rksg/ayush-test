@@ -1,5 +1,4 @@
-import { ReactNode, useState } from 'react'
-
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -7,14 +6,16 @@ import { Loader, TableProps, Table, Tooltip }                        from '@acx-
 import { get }                                                       from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }            from '@acx-ui/icons'
-import { TenantLink }                                                from '@acx-ui/react-router-dom'
+import { useNavigate, useTenantLink, TenantLink }                    from '@acx-ui/react-router-dom'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
-import { aiFeatures, codes }                     from './config'
-import { useIntentAITableQuery, IntentListItem } from './services'
-import * as UI                                   from './styledComponents'
-import { useIntentAIActions }                    from './useIntentAIActions'
+import { aiFeatures, codes }                          from './config'
+import { useIntentAITableQuery, IntentListItem }      from './services'
+import { displayStates }                              from './states'
+import * as UI                                        from './styledComponents'
+import { IntentAIDateTimePicker, useIntentAIActions } from './useIntentAIActions'
+import { Actions, getDefaultTime }                    from './utils'
 
 export const icons = {
   [aiFeatures.RRM]: <AIDrivenRRM />,
@@ -120,11 +121,58 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
   </UI.FeatureIcon>)
 }
 
+export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
+  switch (action) {
+    case Actions.One_Click_Optimize:
+      return !rows.some(row => row.displayStatus !== displayStates.new)
+    case Actions.Optimize:
+      return rows.length === 1 &&
+        !rows.some(row =>
+          ![displayStates.new, displayStates.scheduled,
+            displayStates.scheduledOneClick,displayStates.applyScheduled,
+            displayStates.active].includes(row.displayStatus)
+        )
+    case Actions.Revert:
+      return !rows.some(row =>
+        ![displayStates.applyScheduled,
+          displayStates.pausedApplyFailed,
+          displayStates.active,
+          displayStates.revertScheduled,
+          displayStates.pausedRevertFailed].includes(row.displayStatus)
+      )
+    case Actions.Stop:
+      return !rows.some(row =>
+        ![displayStates.new, displayStates.scheduled,
+          displayStates.scheduledOneClick,displayStates.applyScheduled,
+          displayStates.active, displayStates.naVerified,
+          displayStates.naNoAps, displayStates.naWaitingForEtl].includes(row.displayStatus)
+      )
+    case Actions.Cancel:
+      return !rows.some(row =>
+        ![displayStates.scheduled,
+          displayStates.scheduledOneClick,
+          displayStates.revertScheduled].includes(row.displayStatus)
+      )
+    case Actions.Resume:
+      return !rows.some(row =>
+        ![displayStates.pausedApplyFailed, displayStates.pausedRevertFailed,
+          displayStates.pausedReverted,displayStates.pausedFromInactive,
+          displayStates.pausedByDefault, displayStates.pausedFromActive].includes(row.displayStatus)
+      )
+
+    default:
+      return false
+  }
+}
+
 export function IntentAITable (
   { pathFilters }: { pathFilters: PathFilter }
 ) {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/intentAI')
   const intentActions = useIntentAIActions()
+  const revertInitialDate = useRef(getDefaultTime())
 
   const {
     tableQuery: queryResults,
@@ -136,15 +184,69 @@ export function IntentAITable (
     { ...pathFilters }
   )
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRows, setSelectedRows] = useState<IntentListItem[]>([])
+
+  const clearSelection = useCallback(() => {
+    setSelectedRowKeys([])
+    setSelectedRows([])
+  }, [setSelectedRowKeys, setSelectedRows])
+
+  const getRevertPickerJSX = () => (<IntentAIDateTimePicker
+    id={'intent-ai-revert-picker'}
+    title={$t({ defaultMessage: 'Revert' })}
+    disabled={false}
+    initialDate={revertInitialDate}
+    onApply={(date) => intentActions.revert(date, selectedRows, clearSelection)}
+  />)
 
   const rowActions: TableProps<IntentListItem>['rowActions'] = [
     {
-      key: getShowWithoutRbacCheckKey('1-click-optimize'),
+      key: getShowWithoutRbacCheckKey(Actions.One_Click_Optimize),
       label: $t({ defaultMessage: '1-Click Optimize' }),
-      visible: rows => !rows.some(row => row.status !== 'New' as string),
+      visible: rows => isVisibledByAction(rows, Actions.One_Click_Optimize),
+      onClick: (rows) => intentActions.showOneClickOptimize(rows, clearSelection)
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Optimize),
+      label: $t({ defaultMessage: 'Optimize' }),
+      visible: rows => isVisibledByAction(rows, Actions.Optimize),
       onClick: (rows) => {
-        intentActions.showOneClickOptimize(rows, ()=> clearSelection())
+        const row = rows[0]
+        const editPath = get('IS_MLISA_SA')
+          ? `${row.root}/${row.sliceId}/${row.code}/edit`
+          : `${row.sliceId}/${row.code}/edit`
+        navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/${editPath}`
+        })
       }
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Revert),
+      label: getRevertPickerJSX() as unknown as string,
+      visible: rows => isVisibledByAction(rows, Actions.Revert),
+      onClick: () => {}
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Stop),
+      label: $t({ defaultMessage: 'Stop' }),
+      visible: rows => isVisibledByAction(rows, Actions.Stop),
+      onClick: (rows) =>
+        intentActions.handleTransitionIntent(Actions.Stop, rows, () => clearSelection())
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Cancel),
+      label: $t({ defaultMessage: 'Cancel' }),
+      visible: rows => isVisibledByAction(rows, Actions.Cancel),
+      onClick: (rows) =>
+        intentActions.handleTransitionIntent(Actions.Cancel, rows, () => clearSelection())
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Resume),
+      label: $t({ defaultMessage: 'Resume' }),
+      visible: rows => isVisibledByAction(rows, Actions.Resume),
+      onClick: (rows) =>
+        intentActions.handleTransitionIntent(Actions.Resume, rows, () => clearSelection())
     }
   ]
 
@@ -226,14 +328,10 @@ export function IntentAITable (
     }
   ]
 
-  const clearSelection = () => {
-    setSelectedRowKeys([])
-  }
-
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle/>
-      <Table
+      <Table<IntentListItem>
         className='intentai-table'
         data-testid='intentAI'
         settingsId={'intentai-table'}
@@ -244,7 +342,8 @@ export function IntentAITable (
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
           type: 'checkbox',
-          selectedRowKeys
+          selectedRowKeys,
+          onChange: (_, selRows) => setSelectedRows(selRows)
         }}
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}

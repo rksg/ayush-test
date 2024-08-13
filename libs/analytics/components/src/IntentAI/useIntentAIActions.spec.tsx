@@ -2,6 +2,7 @@
 
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
+import moment    from 'moment-timezone'
 import { act }   from 'react-dom/test-utils'
 
 import { get }                   from '@acx-ui/config'
@@ -16,11 +17,13 @@ import {
   renderHook
 }                                                               from '@acx-ui/test-utils'
 
-import { mockAIDrivenRow, mockAirflexRows }            from './__tests__/fixtures'
-import { IntentListItem, OptimizeAllMutationResponse } from './services'
-import { useIntentAIActions  }                         from './useIntentAIActions'
+import { mockAIDrivenRow, mockAirflexRows }           from './__tests__/fixtures'
+import { IntentListItem, TransitionMutationResponse } from './services'
+import { useIntentAIActions  }                        from './useIntentAIActions'
+import { Actions }                                    from './utils'
 
 const mockedOptimizeAllIntent = jest.fn()
+const mockedTransitionIntent = jest.fn()
 const mockedIntentWlansQuery = jest.fn()
 const mockedVenueRadioActiveNetworksQuery = jest.fn()
 
@@ -37,7 +40,8 @@ const r1Wlans = [
 jest.mock('./services', () => ({
   ...jest.requireActual<typeof import('./services')>('./services'),
   useLazyIntentWlansQuery: () => [mockedIntentWlansQuery],
-  useOptimizeAllIntentMutation: () => [mockedOptimizeAllIntent]
+  useOptimizeAllIntentMutation: () => [mockedOptimizeAllIntent],
+  useTransitionIntentMutation: () => [mockedTransitionIntent]
 }))
 jest.mock('@acx-ui/rc/utils', () => ({
   RadioTypeEnum: {
@@ -55,6 +59,8 @@ jest.spyOn(global.Date, 'now').mockImplementation(
 )
 
 const extractItem = {
+  root: 'root',
+  sliceId: 'sliceId',
   intent: 'Client Density vs. Throughput for 5 GHz radio',
   category: 'Wi-Fi Experience',
   scope: `vsz611 (SZ Cluster)
@@ -66,11 +72,13 @@ const extractItem = {
 describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
-    const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
-    mockedOptimizeAllIntent.mockReturnValue(Promise.resolve(resp))
+    const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+    mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
+    mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
   })
   afterEach(() => {
@@ -81,11 +89,14 @@ describe('useIntentAIActions', () => {
     Modal.destroyAll()
   })
   describe('r1 - OneClickOptimize', () => {
-    beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+    const mockOK = jest.fn()
+    beforeEach(() => {
+      mockOK.mockClear()
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+    })
     describe('r1 - AI-Driven', () => {
       it('should handle current time is less than 3 AM - single1', async () => {
         jest.mocked(Date.now).mockReturnValue(new Date('2024-07-21T00:01:00.000Z').getTime())
-        const mockOK = jest.fn()
         const selectedRow = [{
           ...mockAIDrivenRow,
           aiFeature: 'AI-Driven RRM',
@@ -126,7 +137,6 @@ describe('useIntentAIActions', () => {
       })
 
       it('should handle mutation correctly - single', async () => {
-        const mockOK = jest.fn()
         const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
@@ -166,7 +176,6 @@ describe('useIntentAIActions', () => {
     describe('r1 - AirFlexAI', () => {
       it('should handle mutation correctly  - single', async () => {
         const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
-        const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -217,7 +226,6 @@ describe('useIntentAIActions', () => {
         { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem },
         { ...mockAirflexRows[2], aiFeature: 'AirFlexAI', ...extractItem }
       ] as IntentListItem[]
-      const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
       })
@@ -260,7 +268,6 @@ describe('useIntentAIActions', () => {
         { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem },
         { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem }
       ] as IntentListItem[]
-      const mockOK = jest.fn()
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
       })
@@ -305,13 +312,14 @@ describe('useIntentAIActions', () => {
   })
 
   describe('rai - OneClickOptimize', () => {
+    const mockOK = jest.fn()
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockReturnValue(false)
       jest.mocked(get).mockReturnValue('true')
+      mockOK.mockClear()
     })
     describe('rai - AI-Driven', () => {
       it('should handle mutation correctly - single', async () => {
-        const mockOK = jest.fn()
         const selectedRow = [{ ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem }] as IntentListItem[]
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
@@ -351,7 +359,6 @@ describe('useIntentAIActions', () => {
     describe('rai - AirFlexAI', () => {
       it('should handle mutation correctly  - single', async () => {
         const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
-        const mockOK = jest.fn()
         const { result } = renderHook(() => useIntentAIActions(), {
           wrapper: ({ children }) => <Provider children={children} />
         })
@@ -391,7 +398,7 @@ describe('useIntentAIActions', () => {
         })
         const { showOneClickOptimize } = result.current
         act(() => {
-          showOneClickOptimize(selectedRow)
+          showOneClickOptimize(selectedRow, mockOK)
         })
         const dialog = await screen.findByRole('dialog')
         expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
@@ -428,7 +435,7 @@ describe('useIntentAIActions', () => {
       const resp = {
         t1: { success: false, errorMsg: 'mutation fail' , errorCode: '' },
         t2: { success: true, errorMsg: '' , errorCode: '' }
-      } as OptimizeAllMutationResponse
+      } as TransitionMutationResponse
       mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
       mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
       const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
@@ -437,7 +444,7 @@ describe('useIntentAIActions', () => {
       })
       const { showOneClickOptimize } = result.current
       act(() => {
-        showOneClickOptimize(selectedRow)
+        showOneClickOptimize(selectedRow, mockOK)
       })
       const dialog = await screen.findByRole('dialog')
       expect(await within(dialog).findByText(/3AM local time/)).toBeVisible()
@@ -454,6 +461,70 @@ describe('useIntentAIActions', () => {
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
       await waitFor(() => expect(mockedOptimizeAllIntent).toBeCalledTimes(1))
       expect(await screen.findByText(/mutation fail/)).toBeVisible()
+    })
+  })
+
+  describe('Other Actions', () => {
+    const mockOK = jest.fn()
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+      jest.mocked(get).mockReturnValue('true')
+      mockOK.mockClear()
+    })
+    it('should handle handleTransitionIntent', async () => {
+      const statusTrail = [ { status: 'new' }]
+      const selectedRows = [
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: 'active', statusTrail },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: 'active', statusTrail }
+      ] as IntentListItem[]
+      const { result } = renderHook(() => useIntentAIActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { handleTransitionIntent } = result.current
+      act(() => {
+        handleTransitionIntent(Actions.Stop, selectedRows, mockOK)
+      })
+      expect(mockedTransitionIntent).toHaveBeenCalledWith({
+        action: Actions.Stop,
+        data: [{
+          id: '15',
+          displayStatus: 'active',
+          statusTrail
+        },{
+          id: '17',
+          displayStatus: 'active',
+          statusTrail
+        }]
+      })
+      await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+    })
+
+    it('should handle revert', async () => {
+      const statusTrail = [ { status: 'new' }]
+      const selectedRows = [
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: 'active', statusTrail },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: 'active', statusTrail }
+      ] as IntentListItem[]
+      const { result } = renderHook(() => useIntentAIActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { revert } = result.current
+      act(() => {
+        revert(moment('2024-07-21T04:45:00.000Z'), selectedRows, mockOK)
+      })
+      expect(mockedTransitionIntent).toHaveBeenCalledWith({
+        action: Actions.Revert,
+        data: [{
+          id: '15',
+          displayStatus: 'active',
+          metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
+        },{
+          id: '17',
+          displayStatus: 'active',
+          metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
+        }]
+      })
+      await waitFor(() => expect(mockOK).toBeCalledTimes(1))
     })
   })
 })

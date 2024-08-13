@@ -16,7 +16,14 @@ import {
 import type { PathFilter } from '@acx-ui/utils'
 
 import { states, codes, StatusTrail, aiFeaturesLabel, groupedStates } from './config'
-import { statuses, displayStates, statusReasons }                     from './states'
+import { statuses, displayStates }                                    from './states'
+import {
+  Actions,
+  IntentWlan,
+  OptimizeAllItemMutationPayload,
+  parseTransitionGQLByAction,
+  parseTransitionGQLByOneClick,
+  TransitionIntentItem } from './utils'
 
 type Intent = {
   id: string
@@ -83,64 +90,18 @@ const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Me
   })
 }
 
-type IntentWlan = {
-  name: string
-  ssid: string
-}
-
-type OptimizeAllMetadata = {
-  scheduledAt: string
-  wlans?: IntentWlan[]
-  preferences?: {
-    crrmFullOptimization: boolean
-  }
-}
-
-export type OptimizeAllItemMutationPayload = {
-  id: string
-  metadata: OptimizeAllMetadata
-}
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
 interface OptimizeAllMutationPayload {
   optimizeList: OptimizeAllItemMutationPayload[]
 }
 
-export type OptimizeAllMutationResponse = Record<string, MutationResponse>
-
-
-const buildTransitionGQL = (index:number) => `t${index}: transition(
-  id: $id${index}, status: $status${index},
-  statusReason: $statusReason${index}, metadata: $metadata${index}) {
-    success
-    errorMsg
-    errorCode
-  }`
-
-export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
-  const status = statuses.scheduled
-  const statusReason = statusReasons.oneClick
-  const paramsGQL:string[] = []
-  const transitionsGQLs:string[] = []
-  const variables:Record<string, string|OptimizeAllMetadata> = {}
-  optimizeList.forEach((item, index) => {
-    const currentIndex = index + 1
-    const { id, metadata } = item
-    paramsGQL.push(
-      `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
-      $statusReason${currentIndex}:String, $metadata${currentIndex}:JSON`
-    )
-    transitionsGQLs.push(buildTransitionGQL(currentIndex))
-    variables[`id${currentIndex}`] = id
-    variables[`status${currentIndex}`] = status
-    variables[`statusReason${currentIndex}`] = statusReason
-    variables[`metadata${currentIndex}`] = metadata
-  })
-  return { paramsGQL,transitionsGQLs, variables } as {
-    paramsGQL:string[],
-    transitionsGQLs:string[],
-    variables: Record<string, string|OptimizeAllMetadata> }
+interface TransitionMutationPayload {
+  action: Actions
+  data: TransitionIntentItem[]
 }
+
+export type TransitionMutationResponse = Record<string, MutationResponse>
 
 type Payload = PathFilter & {
   page: number
@@ -196,6 +157,7 @@ export const api = intentAIApi.injectEndpoints({
               sliceId
               metadata
               preferences
+              statusTrail { status statusReason createdAt }
               path {
                 type
                 name
@@ -262,12 +224,30 @@ export const api = intentAIApi.injectEndpoints({
       transformResponse: (response: { intent: { wlans: IntentWlan[] } }) =>
         response.intent.wlans
     }),
-    optimizeAllIntent: build.mutation<OptimizeAllMutationResponse, OptimizeAllMutationPayload>({
+    optimizeAllIntent: build.mutation<TransitionMutationResponse, OptimizeAllMutationPayload>({
       query: ({ optimizeList }) => {
-        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQL( optimizeList )
+        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQLByOneClick(optimizeList)
         return {
           document: gql`
           mutation OptimizeAll(
+            ${paramsGQL.join(',')}
+          ) {
+            ${transitionsGQLs.join('\n')}
+          }
+        `,
+          variables
+        }
+      },
+      invalidatesTags: [
+        { type: 'Intent', id: 'INTENT_AI_LIST' }
+      ]
+    }),
+    transitionIntent: build.mutation<TransitionMutationResponse, TransitionMutationPayload>({
+      query: ({ action, data }) => {
+        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQLByAction(action, data)
+        return {
+          document: gql`
+          mutation TransitionIntent(
             ${paramsGQL.join(',')}
           ) {
             ${transitionsGQLs.join('\n')}
@@ -504,6 +484,7 @@ export const {
   useIntentAIListQuery,
   useLazyIntentWlansQuery,
   useOptimizeAllIntentMutation,
+  useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery
 } = api

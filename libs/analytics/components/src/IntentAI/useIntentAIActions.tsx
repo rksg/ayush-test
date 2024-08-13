@@ -15,13 +15,19 @@ import { getIntl }       from '@acx-ui/utils'
 
 import {
   IntentListItem,
+  TransitionMutationResponse,
   useLazyIntentWlansQuery,
   useOptimizeAllIntentMutation,
-  OptimizeAllItemMutationPayload,
-  OptimizeAllMutationResponse
+  useTransitionIntentMutation
 } from './services'
-import * as UI from './styledComponents'
-interface OptimizeAllDateTimePickerProps {
+import * as UI     from './styledComponents'
+import {
+  Actions,
+  OptimizeAllItemMutationPayload,
+  TransitionIntentItem,
+  getDefaultTime
+} from './utils'
+interface IntentAIDateTimePickerProps {
   id: string
   title: string
   disabled?: boolean
@@ -77,10 +83,9 @@ const getFutureTime = (value: Moment) => {
   return bufferedTime.clone().add(remainder, 'minutes')
 }
 
-const getDefaultTime = () => {
-  const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
-  return moment().isSameOrBefore(datetime3AM) ?
-    moment(datetime3AM) : moment(datetime3AM).add(1, 'd')
+const validateDate = (date:Moment) => {
+  const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
+  return futureTime <= date
 }
 
 const aggregateFeaturesZones = (rows:IntentListItem[]) => {
@@ -119,8 +124,26 @@ export function useIntentAIActions () {
   const [optimizeAllIntent] = useOptimizeAllIntentMutation()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
+  const [transitionIntent] = useTransitionIntentMutation()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
+
+  const handleResponse = (rows:IntentListItem[], result: TransitionMutationResponse) => {
+    const errorMsgs:JSX.Element[] = []
+    Object.entries(result).forEach(([, { success, errorMsg }], index) => {
+      if (!success) {
+        errorMsgs.push(
+          <div key={`optimizeAllIntentErrorToast_${index}`} style={{ padding: '10px 0' }}>
+            {rows[index].aiFeature}, {rows[index].sliceValue}:<br />{errorMsg}
+          </div>
+        )
+      }
+    })
+    if (errorMsgs.length > 0) {
+      showToast({ type: 'error', content: errorMsgs })
+    }
+  }
+
   const fetchWlans = async (row: IntentListItem) => {
     if (isMlisa) {
       const wlans = await recommendationWlans(row).unwrap()
@@ -149,25 +172,10 @@ export function useIntentAIActions () {
     }))
 
     const response = await optimizeAllIntent({ optimizeList })
-    if ('data' in response) {
-      const result = response.data as OptimizeAllMutationResponse
-      const errorMsgs:JSX.Element[] = []
-      Object.entries(result).forEach(([, { success, errorMsg }], index) => {
-        if (!success) {
-          errorMsgs.push(
-            <div key={`optimizeAllIntentErrorToast_${index}`} style={{ padding: '10px 0' }}>
-              {rows[index].aiFeature}, {rows[index].sliceValue}:<br />{errorMsg}
-            </div>
-          )
-        }
-      })
-      if (errorMsgs.length > 0) {
-        showToast({ type: 'error', content: errorMsgs })
-      }
-    }
+    handleResponse(rows, (response as { data: TransitionMutationResponse }).data )
   }
 
-  const showOneClickOptimize = (rows:IntentListItem[], onOk?: ()=>void) => {
+  const showOneClickOptimize = (rows:IntentListItem[], onOk: ()=>void) => {
     const { feature, zone, getOptimizeMessage } = aggregateFeaturesZones(rows)
     const modal = AntModal.confirm({})
     initialDate.current = getDefaultTime()
@@ -178,15 +186,6 @@ export function useIntentAIActions () {
       })
     }
 
-
-    const validateDate = (date:Moment) => {
-      const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
-      if (futureTime <= date){
-        return true
-      }
-      return false
-    }
-
     const getValues = (date:string) => ({
       feature, zone,
       b: (text: string) => <strong>{text}</strong>,
@@ -194,8 +193,8 @@ export function useIntentAIActions () {
       date,
       changeTime:
       (
-        <OptimizeAllDateTimePicker
-          id={'apply-intent-ai-change-time'}
+        <IntentAIDateTimePicker
+          id={'intent-ai-change-time'}
           title={$t({ defaultMessage: 'Change time' })}
           disabled={false}
           initialDate={initialDate}
@@ -221,7 +220,7 @@ export function useIntentAIActions () {
           const scheduledAt = initialDate.current.toISOString()
           await doAllOptimize(rows, scheduledAt)
           initialDate.current = getDefaultTime()
-          onOk && onOk()
+          onOk()
         } else {
           showToast({
             type: 'error',
@@ -235,19 +234,61 @@ export function useIntentAIActions () {
     })
   }
 
+  const revert = async (date: Moment, rows:IntentListItem[], onOk: ()=>void) => {
+    if (validateDate(date)) {
+      const scheduledAt = date.toISOString()
+      const response = await transitionIntent({
+        action: Actions.Revert,
+        data: rows.map(item =>(
+          {
+            id: item.id,
+            displayStatus: item.displayStatus,
+            metadata: { scheduledAt }
+          } as TransitionIntentItem))
+      })
+      handleResponse(rows, (response as { data: TransitionMutationResponse }).data)
+      onOk()
+    } else {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Revert Scheduled time cannot be before {futureTime}' }, {
+          futureTime: formatter(DateFormatEnum.DateTimeFormat)(date)
+        })
+      })
+    }
+  }
+
+  const handleTransitionIntent = async (
+    action: Actions,
+    rows:IntentListItem[],
+    onOk: ()=>void) => {
+    const response = await transitionIntent({
+      action,
+      data: rows.map(item =>
+        ({ id: item.id,
+          displayStatus: item.displayStatus,
+          statusTrail: item.statusTrail
+        } as TransitionIntentItem))
+    })
+    handleResponse(rows, (response as { data: TransitionMutationResponse }).data)
+    onOk()
+  }
+
   return {
     showOneClickOptimize,
-    fetchWlans
+    fetchWlans,
+    handleTransitionIntent,
+    revert
   }
 }
 
-function OptimizeAllDateTimePicker ({
+export function IntentAIDateTimePicker ({
   id,
   title,
   initialDate,
   onApply,
   disabled
-}: OptimizeAllDateTimePickerProps) {
+}: IntentAIDateTimePickerProps) {
   const futureDate = useRef(getFutureTime(moment().seconds(0).milliseconds(0)))
   const disabledDate = useCallback((value: Moment) =>
     value.isBefore(futureDate.current, 'date')
