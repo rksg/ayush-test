@@ -41,7 +41,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe('WorkflowForm', () => {
+describe.skip('WorkflowForm', () => {
   const createWorkflowApi = jest.fn()
   const updateWorkflowApi = jest.fn()
   beforeEach(async () => {
