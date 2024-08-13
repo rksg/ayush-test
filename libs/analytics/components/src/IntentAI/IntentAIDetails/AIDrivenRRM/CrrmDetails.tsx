@@ -76,12 +76,12 @@ export const CrrmDetails = () => {
       <div hidden>
         <SummaryGraphBefore
           crrmData={crrmData}
-          setSummaryUrlBefore={setSummaryUrlBefore}
+          setUrl={setSummaryUrlBefore}
           detailsPage={true}
         />
         <SummaryGraphAfter
           crrmData={crrmData}
-          setSummaryUrlAfter={setSummaryUrlAfter}
+          setUrl={setSummaryUrlAfter}
           detailsPage={true}
         />
       </div>

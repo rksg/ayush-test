@@ -156,10 +156,10 @@ export function AIDrivenRRM () {
       />
       {/* hide the graph, only rendering the graph image for the slider & summary */}
       {crrmData && <div hidden data-testid='hidden-graph'>
-        <SliderGraphBefore crrmData={crrmData} setSliderUrlBefore={setSliderUrlBefore} />
-        <SliderGraphAfter crrmData={crrmData} setSliderUrlAfter={setSliderUrlAfter} />
-        <SummaryGraphBefore crrmData={crrmData} setSummaryUrlBefore={setSummaryUrlBefore} />
-        <SummaryGraphAfter crrmData={crrmData} setSummaryUrlAfter={setSummaryUrlAfter} />
+        <SliderGraphBefore crrmData={crrmData} setUrl={setSliderUrlBefore} />
+        <SliderGraphAfter crrmData={crrmData} setUrl={setSliderUrlAfter} />
+        <SummaryGraphBefore crrmData={crrmData} setUrl={setSummaryUrlBefore} />
+        <SummaryGraphAfter crrmData={crrmData} setUrl={setSummaryUrlAfter} />
       </div>}
       <StepsForm
         buttonLabel={{

@@ -31,7 +31,6 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   zoomScale: ScalePower<number, number, never>
   subtext?: string
   style?: EChartsReactProps['style'] & { width?: number, height?: number }
-  grayBackground?: boolean
   backgroundColor?: string | undefined
 }
 

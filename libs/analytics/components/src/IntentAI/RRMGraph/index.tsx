@@ -150,15 +150,23 @@ export const IntentAIRRMGraph = ({
   </UI.Wrapper>
 }
 
-export const SliderGraphBefore = (
-  { crrmData, setSliderUrlBefore }:
-  { crrmData: ProcessedCloudRRMGraph[], setSliderUrlBefore: (url: string) => void }) => {
+const GraphImage = (
+  { crrmData, data, setUrl, justifyContent, backgroundColor, width } :
+  {
+    crrmData: ProcessedCloudRRMGraph[],
+    data: number,
+    setUrl: (url: string) => void,
+    justifyContent: string,
+    backgroundColor?: string,
+    width: number
+  }
+) => {
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
       instance.group = 'graphGroup'
       const url = instance.getDataURL()
-      setSliderUrlBefore(url)
+      setUrl(url)
     }
   }
   return (
@@ -168,131 +176,73 @@ export const SliderGraphBefore = (
         alignItems: 'center',
         width: '100%',
         height: '100%',
-        justifyContent: 'start'
+        justifyContent: justifyContent
       }}>
-      {crrmData[0] && <BasicGraph
+      {crrmData[data] && <BasicGraph
         chartRef={connectChart}
         title={''}
-        data={crrmData[0]}
+        data={crrmData[data]}
         zoomScale={detailsZoomScale}
         style={{
           display: 'flex',
           alignItems: 'center',
-          width: 300
+          width: width
         }}
-        backgroundColor='#333333'
+        backgroundColor={backgroundColor}
       />}
     </div>
   )
+}
+
+export const SliderGraphBefore = (
+  { crrmData, setUrl }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
+) => {
+  return <GraphImage
+    crrmData={crrmData}
+    data={0}
+    setUrl={setUrl}
+    justifyContent='start'
+    backgroundColor='#333333'
+    width={300}
+  />
 }
 
 export const SliderGraphAfter = (
-  { crrmData, setSliderUrlAfter }:
-  { crrmData: ProcessedCloudRRMGraph[], setSliderUrlAfter: (url: string) => void }) => {
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = 'graphGroup'
-      const url = instance.getDataURL()
-      setSliderUrlAfter(url)
-    }
-  }
-  return (
-    <div key='crrm-slider-after'
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'end'
-      }}>
-      {crrmData[1] && <BasicGraph
-        chartRef={connectChart}
-        title={''}
-        data={crrmData[1]}
-        zoomScale={detailsZoomScale}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: 300
-        }}
-      />}
-    </div>
-  )
+  { crrmData, setUrl }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void }
+) => {
+  return <GraphImage
+    crrmData={crrmData}
+    data={1}
+    setUrl={setUrl}
+    justifyContent='end'
+    width={300}
+  />
 }
-
 export const SummaryGraphBefore = (
-  { crrmData, setSummaryUrlBefore, detailsPage = false }:
-  { crrmData: ProcessedCloudRRMGraph[],
-    detailsPage?: boolean,
-    setSummaryUrlBefore: (url: string) => void }) => {
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = 'graphGroup'
-      const url = instance.getDataURL()
-      setSummaryUrlBefore(url)
-    }
-  }
-  return (
-    <div key='crrm-graph-before'
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'start'
-      }}>
-      {crrmData[0] && <BasicGraph
-        chartRef={connectChart}
-        title={''}
-        data={crrmData[0]}
-        zoomScale={detailsZoomScale}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: detailsPage ? 350 : 250
-        }}
-        backgroundColor='transparent'
-      />}
-    </div>
-  )
+  { crrmData, setUrl, detailsPage }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, detailsPage?: boolean }
+) => {
+  return <GraphImage
+    crrmData={crrmData}
+    data={0}
+    setUrl={setUrl}
+    justifyContent='start'
+    backgroundColor='transparent'
+    width={detailsPage ? 350 : 250}
+  />
 }
-
 export const SummaryGraphAfter = (
-  { crrmData, setSummaryUrlAfter, detailsPage = false }:
-  { crrmData: ProcessedCloudRRMGraph[],
-    detailsPage?: boolean,
-    setSummaryUrlAfter: (url: string) => void }) => {
-  const connectChart = (chart: ReactECharts | null) => {
-    if (chart) {
-      const instance = chart.getEchartsInstance()
-      instance.group = 'graphGroup'
-      const url = instance.getDataURL()
-      setSummaryUrlAfter(url)
-    }
-  }
-  return (
-    <div key='crrm-graph-after'
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-        justifyContent: 'start'
-      }}>
-      {crrmData[1] && <BasicGraph
-        chartRef={connectChart}
-        title={''}
-        data={crrmData[1]}
-        zoomScale={detailsZoomScale}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: detailsPage ? 350 : 250
-        }}
-        backgroundColor='transparent'
-      />}
-    </div>
-  )
+  { crrmData, setUrl, detailsPage }:
+  { crrmData: ProcessedCloudRRMGraph[], setUrl: (url: string) => void, detailsPage?: boolean }
+) => {
+  return <GraphImage
+    crrmData={crrmData}
+    data={1}
+    setUrl={setUrl}
+    justifyContent='end'
+    backgroundColor='transparent'
+    width={detailsPage ? 350 : 250}
+  />
 }
