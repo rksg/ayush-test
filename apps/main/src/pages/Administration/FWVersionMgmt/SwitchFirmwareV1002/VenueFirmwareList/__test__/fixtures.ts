@@ -669,3 +669,43 @@ export const availableVersions_hasInUse = [
     ]
   }
 ]
+
+export const icx7150C08pGroupedData = [
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue',
+      switchId: '58:fb:96:0e:87:88',
+      switchName: 'FEK3230S0CZ-YC',
+      isStack: true,
+      model: 'ICX7150-C12P',
+      currentFirmware: '10010e_b5107',
+      preDownload: false,
+      isSwitchLevelSchedule: false
+    },
+    {
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue',
+      switchId: 'c0:c5:20:aa:32:79',
+      switchName: 'FEK3224R0AG - Real Stack',
+      isStack: true,
+      model: 'ICX7150-C12P',
+      currentFirmware: '09010j',
+      preDownload: false,
+      isSwitchLevelSchedule: false
+    }
+  ],
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce36453',
+      venueName: 'My-Venue2',
+      switchId: 'c0:c5:20:b2:0e:e9',
+      switchName: 'ICX7150-C08P Switch - testt',
+      isStack: false,
+      model: 'ICX7150-C08P',
+      currentFirmware: '09010j_cd3',
+      preDownload: true,
+      isSwitchLevelSchedule: false
+    }
+  ]
+]

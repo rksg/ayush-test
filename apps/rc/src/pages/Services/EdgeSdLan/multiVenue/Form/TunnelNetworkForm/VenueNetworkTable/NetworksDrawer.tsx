@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Typography, Space, FormInstance }                           from 'antd'
-import { isNil, pick, remove, cloneDeep, unionBy, transform, unset } from 'lodash'
-import { useIntl }                                                   from 'react-intl'
+import { Typography, Space }                              from 'antd'
+import { isNil, pick, remove, cloneDeep, unionBy, unset } from 'lodash'
+import { useIntl }                                        from 'react-intl'
 
-import { Drawer }                                                                from '@acx-ui/components'
-import { EdgeSdLanP2ActivatedNetworksTable }                                     from '@acx-ui/rc/components'
-import { EdgeMvSdLanNetworks, Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork } from '@acx-ui/rc/utils'
+import { Drawer }                                                            from '@acx-ui/components'
+import { EdgeSdLanP2ActivatedNetworksTable, showSdLanGuestFwdConflictModal } from '@acx-ui/rc/components'
+import { Network, NetworkTypeEnum, EdgeMvSdLanFormNetwork }                  from '@acx-ui/rc/utils'
 
 import { messageMappings } from '../../messageMappings'
 
@@ -31,12 +31,15 @@ const toggleItemFromSelected = (
   return newSelected
 }
 
-interface NetworksDrawerProps {
+export interface NetworksDrawerProps {
   visible: boolean,
   onClose: () => void,
+  onSubmit: (updates: Record<string, EdgeMvSdLanFormNetwork>) => void,
   venueId: string,
   venueName?: string,
-  formRef: FormInstance
+  isGuestTunnelEnabled?: boolean,
+  tunneledNetworks?: EdgeMvSdLanFormNetwork,
+  tunneledGuestNetworks?: EdgeMvSdLanFormNetwork
 }
 
 export const NetworksDrawer = (props: NetworksDrawerProps) => {
@@ -44,28 +47,54 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   const {
     visible,
     onClose,
+    onSubmit,
     venueId,
     venueName,
-    formRef
+    isGuestTunnelEnabled = false,
+    tunneledNetworks,
+    tunneledGuestNetworks
   } = props
 
   const [updateContent, setUpdateContent] = useState<Record<string, EdgeMvSdLanFormNetwork>>({})
 
-  const isGuestTunnelEnabled = formRef.getFieldValue('isGuestTunnelEnabled')
-
   useEffect(() => {
     if (visible) {
-    // eslint-disable-next-line max-len
-      const activatedNetworks = (formRef.getFieldValue('activatedNetworks') ?? {}) as EdgeMvSdLanFormNetwork
-      // eslint-disable-next-line max-len
-      const activatedGuestNetworks = (formRef.getFieldValue('activatedGuestNetworks') ?? {}) as EdgeMvSdLanFormNetwork
-
       setUpdateContent({
-        activatedNetworks,
-        activatedGuestNetworks
+        activatedNetworks: tunneledNetworks ?? ({} as EdgeMvSdLanFormNetwork),
+        activatedGuestNetworks: tunneledGuestNetworks ?? ({} as EdgeMvSdLanFormNetwork)
       })
     }
-  }, [visible])
+  }, [visible, tunneledNetworks, tunneledGuestNetworks])
+
+  const checkGuestFwdConflict = (
+    networkData: Network,
+    checked: boolean,
+    newSelected: Record<string, EdgeMvSdLanFormNetwork>
+  ) => {
+    const { activatedNetworks, activatedGuestNetworks } = newSelected
+
+    showSdLanGuestFwdConflictModal({
+      currentNetworkVenueId: venueId,
+      currentNetworkId: networkData.id,
+      currentNetworkName: networkData.name,
+      activatedGuest: checked,
+      tunneledWlans: activatedNetworks,
+      tunneledGuestWlans: activatedGuestNetworks,
+      onOk: (impactVenueIds: string[]) => {
+        let newSelectedNetworks = activatedGuestNetworks
+        if (impactVenueIds.length !== 0) {
+          impactVenueIds.forEach((impactVenueId) => {
+          // eslint-disable-next-line max-len
+            newSelectedNetworks = toggleItemFromSelected(checked, impactVenueId, networkData, newSelectedNetworks)
+          })
+        }
+        setUpdateContent({
+          activatedNetworks,
+          activatedGuestNetworks: newSelectedNetworks
+        })
+      }
+    })
+  }
 
   const handleActivateChange = (
     fieldName: string,
@@ -74,56 +103,50 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
   ) => {
     const { activatedNetworks, activatedGuestNetworks } = updateContent
 
+    // vlan pooling enabled cannot be a guest network
+    const isVlanPooling = !isNil(data.vlanPool)
+
     // eslint-disable-next-line max-len
-    const affectedNetworks = (fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks)
-    const newSelected = toggleItemFromSelected(checked, venueId, data, affectedNetworks)
+    const isGuestNetworkAction = fieldName === 'activatedGuestNetworks' || !(fieldName === 'activatedNetworks' && checked && isVlanPooling)
 
-    if (isGuestTunnelEnabled
-      && (fieldName === 'activatedNetworks' || (fieldName === 'activatedGuestNetworks' && checked))
-      && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
+    // eslint-disable-next-line max-len
+    if (isGuestTunnelEnabled && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && isGuestNetworkAction) {
 
-      if (fieldName === 'activatedNetworks') {
+      // deactivate GuestNetworks: only update GuestNetworks
+      if (fieldName === 'activatedGuestNetworks' && !checked) {
+        // eslint-disable-next-line max-len
+        const newActivatedGuestNetworks = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
+
+        checkGuestFwdConflict(data, checked, {
+          ...updateContent,
+          activatedGuestNetworks: newActivatedGuestNetworks
+        })
+      } else {
+
         const updateData = {
-          [fieldName]: newSelected
-        } as Record<string, EdgeMvSdLanFormNetwork>
-
-        // vlan pooling enabled cannot be a guest network
-        const isVlanPooling = !isNil(data.vlanPool)
-        if (!isVlanPooling || (isVlanPooling && !checked)) {
+          activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks),
           // eslint-disable-next-line max-len
-          updateData['activatedGuestNetworks'] = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
+          activatedGuestNetworks: toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
-        setUpdateContent(updateData)
-      } else {
-        // eslint-disable-next-line max-len
-        const newSelectedNetworks = toggleItemFromSelected(checked, venueId, data, activatedNetworks)
-        setUpdateContent({
-          [fieldName]: newSelected,
-          activatedNetworks: newSelectedNetworks
-        })
+        // no need to check conflict when deactivate dc network
+        if (fieldName === 'activatedNetworks' && !checked) {
+          setUpdateContent(updateData)
+        } else {
+          checkGuestFwdConflict(data, checked, updateData)
+        }
       }
     } else {
       setUpdateContent({
         ...updateContent,
-        [fieldName]: newSelected
+        activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks)
       })
     }
   }
 
   const handleSubmit = async () => {
-    Object.keys(updateContent).forEach(d => {
-      formRef.setFieldValue(d, updateContent[d])
-    })
-    formRef.validateFields(['activatedNetworks'])
-    onClose()
+    onSubmit(updateContent)
   }
-
-  // the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
-  const mvActivatedGuestNetworks = transform(updateContent.activatedGuestNetworks,
-    (result, value, key) => {
-      result[key] = value.map(v => v.id)
-    }, {} as EdgeMvSdLanNetworks)
 
   return (
     <Drawer
@@ -152,7 +175,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
           // eslint-disable-next-line max-len
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
-          mvActivatedGuestNetworks={mvActivatedGuestNetworks}
           onActivateChange={handleActivateChange}
         />
       </Space>

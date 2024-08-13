@@ -96,7 +96,7 @@ export function ApFloorplan (props: {
         }
         return true
       })
-      .map(apDevice => {
+      .forEach(apDevice => {
         let rogueApLocationInfo = {}
         if (rogueApMac && detectingNodes) {
           rogueApLocationInfo = {

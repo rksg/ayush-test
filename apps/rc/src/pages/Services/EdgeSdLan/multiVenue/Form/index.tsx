@@ -1,3 +1,5 @@
+import { useEffect, useMemo } from 'react'
+
 import { FormInstance } from 'antd'
 import { find }         from 'lodash'
 
@@ -60,7 +62,7 @@ interface EdgeSdLanFormStep {
   content: React.FC
 }
 
-interface EdgeMvSdLanFormProps {
+export interface EdgeMvSdLanFormProps {
   form: FormInstance,
   steps: EdgeSdLanFormStep[]
   editData?: EdgeMvSdLanExtended
@@ -82,12 +84,23 @@ const EdgeMvSdLanForm = (props: EdgeMvSdLanFormProps) => {
   }
 
   const editDataViewData = editData ? find(allSdLans, { id: editData?.id }) : undefined
-  const initFormValues = getSdLanFormDefaultValues(editData, editDataViewData)
-  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-  if (!isEditMode) {
-    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
-  }
+  const initFormValues = useMemo(() => {
+    const result = getSdLanFormDefaultValues(editData, editDataViewData)
+    const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+    if (!isEditMode) {
+      result.tunnelProfileId = defaultSdLanTunnelProfile.value
+      result.tunnelProfileName = defaultSdLanTunnelProfile.label
+    }
+    return result
+  }, [isEditMode, editData, editDataViewData])
+
+  useEffect(() => {
+    form.setFieldsValue(initFormValues)
+    // need to separately set `activatedNetworks`, `activatedGuestNetworks`
+    // https://github.com/ant-design/ant-design/issues/30212
+    form.setFieldValue('activatedNetworks', initFormValues.activatedNetworks)
+    form.setFieldValue('activatedGuestNetworks', initFormValues.activatedGuestNetworks)
+  }, [initFormValues])
 
   return (<StepsForm
     form={form}

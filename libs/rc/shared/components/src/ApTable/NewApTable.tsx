@@ -16,6 +16,7 @@ import {
   cssStr,
   showToast
 } from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
@@ -79,7 +80,7 @@ export const newDefaultApPayload = {
   searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
-    'switchName', 'meshRole', 'clientCount', 'apGroupId',
+    'switchName', 'meshRole', 'clientCount', 'apGroupId', 'apGroupName',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
     'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus',
     'powerSavingStatus'
@@ -100,7 +101,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)

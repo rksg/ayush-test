@@ -11,6 +11,7 @@ import { getEdgeServiceTypeString } from '../utils'
 
 import { DhcpDetails }                    from './DhcpDetails'
 import { FirewallDetails }                from './FirewallDetails'
+import { MvSdLanDetails }                 from './MvSdLan'
 import { PersonalIdentityNetworkDetails } from './PersonalIdentityNetworkDetails'
 import { SdLanDetails }                   from './SdLanDetails'
 import { SdLanDetailsP2 }                 from './SdLanDetailsP2'
@@ -26,32 +27,46 @@ const drawerWidthMap = {
   [EdgeServiceTypeEnum.FIREWALL]: '60%',
   [EdgeServiceTypeEnum.NETWORK_SEGMENTATION]: '50%',
   [EdgeServiceTypeEnum.SD_LAN]: 500,
-  [EdgeServiceTypeEnum.SD_LAN_P2]: 500
+  [EdgeServiceTypeEnum.SD_LAN_P2]: 500,
+  [EdgeServiceTypeEnum.MV_SD_LAN]: 500
 }
 
 const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {
   switch(serviceType) {
     case EdgeServiceTypeEnum.SD_LAN_P2:
+    case EdgeServiceTypeEnum.MV_SD_LAN:
       return 12
     default:
       return 8
   }
 }
 
+const useSdLanServiceType = () => {
+  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isMvEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+
+  return isMvEdgeSdLanEnabled
+    ? EdgeServiceTypeEnum.MV_SD_LAN
+    : (isEdgeSdLanHaEnabled ? EdgeServiceTypeEnum.SD_LAN_P2 : EdgeServiceTypeEnum.SD_LAN)
+}
+
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
   const { visible, setVisible, serviceData } = props
   const { $t } = useIntl()
-  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const serviceContent = useServiceContentByType(serviceData)
+  const sdLanServiceType = useSdLanServiceType()
 
   const onClose = () => {
     setVisible(false)
   }
 
+  const serviceType = serviceData.serviceType === EdgeServiceTypeEnum.SD_LAN
+    ? sdLanServiceType
+    : serviceData.serviceType
+
   const drawerContent =(
     <Form
-      labelCol={{ span: getDrawerFormLebelColMap(isEdgeSdLanHaEnabled
-        ? EdgeServiceTypeEnum.SD_LAN_P2
-        : serviceData.serviceType) }}
+      labelCol={{ span: getDrawerFormLebelColMap(serviceType) }}
       labelAlign='left'
     >
       <Form.Item
@@ -67,11 +82,8 @@ export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
         label={$t({ defaultMessage: 'Service Type' })}
         children={getEdgeServiceTypeString($t, serviceData.serviceType)}
       />
-      {
-        isEdgeSdLanHaEnabled
-          ? <SdLanDetailsP2 serviceData={serviceData} />
-          : getContentByType(serviceData)
-      }
+
+      {serviceContent}
     </Form>
   )
 
@@ -118,7 +130,9 @@ const getServiceDetailUrl = (serviceType: EdgeServiceTypeEnum, serviceId: string
   }
 }
 
-const getContentByType = (serviceData: EdgeService) => {
+const useServiceContentByType = (serviceData: EdgeService) => {
+  const sdLanServiceType = useSdLanServiceType()
+
   switch(serviceData.serviceType) {
     case EdgeServiceTypeEnum.DHCP:
       return <DhcpDetails serviceData={serviceData} />
@@ -127,7 +141,11 @@ const getContentByType = (serviceData: EdgeService) => {
     case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
       return <PersonalIdentityNetworkDetails serviceData={serviceData} />
     case EdgeServiceTypeEnum.SD_LAN:
-      return <SdLanDetails serviceData={serviceData} />
+      return sdLanServiceType === EdgeServiceTypeEnum.MV_SD_LAN
+        ? <MvSdLanDetails serviceData={serviceData} />
+        : (sdLanServiceType === EdgeServiceTypeEnum.SD_LAN_P2
+          ? <SdLanDetailsP2 serviceData={serviceData} />
+          : <SdLanDetails serviceData={serviceData} />)
     default:
       return
   }

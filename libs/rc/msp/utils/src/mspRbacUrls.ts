@@ -282,20 +282,18 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/entitlement-assign/tenant/:tenantId'
   },
-
-  // getParentLogoUrl: {
-  //   method: 'get',
-  //   url: '/mspCustomers/:tenantId/logoUrls',
-  //   oldUrl: '/api/mspservice/tenant/:tenantId/logourl',
-  //   newApi: true
-  // },
-  // getBrandingData: {
-  //   method: 'get',
-  //   url: '/brandingsData',
-  //   oldUrl: '/api/mspservice/tenant/:tenantId/brandingdata',
-  //   newApi: true
-  // },
-
+  getParentLogoUrl: {
+    method: 'get',
+    url: '/tenants/:tenantId',
+    oldUrl: '/mspCustomers/:tenantId/logoUrls',
+    newApi: true
+  },
+  getBrandingData: {
+    method: 'get',
+    url: '/brandings',
+    oldUrl: '/brandingsData',
+    newApi: true
+  },
   assignMultiMspEcDelegatedAdmins: {
     method: 'PATCH',
     // url: '/tenants/:tenantId/adminDelegations',
@@ -365,6 +363,11 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/tenants/uploadurls',
     oldUrl: '/files/uploadurls',
+    newApi: true
+  },
+  getEntitlementsCompliances: {
+    method: 'post',
+    url: '/entitlements/compliances/query',
     newApi: true
   }
 }

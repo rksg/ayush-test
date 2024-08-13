@@ -30,7 +30,8 @@ import {
   RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
-  MspRbacUrlsInfo
+  MspRbacUrlsInfo,
+  MspCompliances
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -714,9 +715,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req = createHttpRequest(
-          MspUrlsInfo.getParentLogoUrl,
+          mspUrlsInfo.getParentLogoUrl,
           params
         )
         return {
@@ -725,9 +727,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getBrandingData: build.query<MspProfile, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req =
-          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+          createHttpRequest(mspUrlsInfo.getBrandingData, params)
         return {
           ...req
         }
@@ -946,6 +949,15 @@ export const mspApi = baseMspApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getEntitlementsCompliances: build.query<MspCompliances, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsCompliances, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1058,7 +1070,8 @@ export const {
   useGetMspEcWithVenuesListQuery,
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
-  useGetMspUploadURLMutation
+  useGetMspUploadURLMutation,
+  useGetEntitlementsCompliancesQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

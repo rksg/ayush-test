@@ -672,7 +672,7 @@ export const kpiConfig = {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
       thresholdDesc: [
         defineMessage({ defaultMessage: 'under' }),
-        defineMessage({ defaultMessage: '{threshold} multicast packets storm' })
+        defineMessage({ defaultMessage: '{threshold} MC packets storm' })
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
@@ -749,8 +749,6 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
     connection: {
       kpis: [
         'switchAuthentication'
-        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
-        //'switchDhcp'
       ]
     },
     performance: {
@@ -773,6 +771,7 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
   if (is10010eKPIsEnabled) {
     kpis.performance.kpis.push('switchInterfaceAnomalies')
     kpis.performance.kpis.push('switchStormControl')
+    kpis.connection.kpis.push('switchDhcp')
   }
   return kpis
 }

@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import { BaseQueryApi } from '@reduxjs/toolkit/query'
+import _                from 'lodash'
 
 import {
   APGeneralFixtures,
@@ -8,18 +9,28 @@ import {
   NewApGroupViewModelResponseType,
   TableResult,
   Venue,
-  WifiNetwork
+  WifiNetwork,
+  ApGroupConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import {
+  addApGroupFn,
   aggregateApGroupApInfo,
   aggregateApGroupNetworkInfo,
   aggregateApGroupVenueInfo,
+  deleteApGroupsTemplateFn,
+  getApGroupFn,
+  getApGroupsListFn,
+  updateApGroupFn,
   getNewApGroupViewmodelPayloadFromOld
 } from './apGroupUtils'
 
 const { mockRbacAPGroupList } = APGroupFixtures
 const { mockVenueList } = APGeneralFixtures
+
+jest.mock('@acx-ui/utils')
+const fetchWithBQ = jest.fn()
 
 describe('AP group utils', () => {
   describe('getNewApGroupViewmodelPayloadFromOld', () => {
@@ -189,5 +200,223 @@ describe('AP group utils', () => {
       expect(apGroupList.data[0].members).toStrictEqual({ count: 0, names: [] })
       expect(apGroupList.data[1].members).toStrictEqual({ count: 0, names: [] })
     })
+  })
+})
+
+describe('AP group utils Fn', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+    jest.resetAllMocks()
+  })
+
+  it('getApGroupsListFn with rbac', async () => {
+    const mockPayload = {
+      fields: ['id', 'name', 'venueName', 'venueId', 'members', 'networks'],
+      searchTargetFields: ['id'],
+      searchString: 'apGroupId'
+    }
+
+    const mockTransformRbacPayload = {
+      fields: ['id', 'name', 'venueName', 'venueId', 'apSerialNumbers', 'wifiNetworkIds'],
+      searchTargetFields: ['id'],
+      searchString: 'apGroupId'
+    }
+
+    const args = {
+      // eslint-disable-next-line max-len
+      params: { tenantId: 'tenantId' },
+      payload: mockPayload,
+      page: 1,
+      pageSize: 10,
+      enableRbac: true
+    }
+    const mockResponse = { data: { data: [
+      {
+        id: '22e749bea9354cb48aee9db181c96856',
+        name: 'apgroup-temp-1-modify',
+        venueId: '3046e23a9ef8458b945a38ee39c4b2e7',
+        wifiNetworkIds: [
+          'ae6e97d0067244dfb659d1c060a929b9'
+        ]
+      }
+    ], requestId: 'req' } }
+
+    const mockNetworkResponse = { data: { data: [], requestId: 'req' } }
+
+    fetchWithBQ.mockImplementation((arg) => {
+      // eslint-disable-next-line max-len
+      if (JSON.stringify(arg?.body).indexOf('apGroupId')) {
+        return Promise.resolve(mockResponse)
+      }
+      // eslint-disable-next-line max-len
+      if (JSON.stringify(arg?.body).indexOf(mockResponse.data.data[0].wifiNetworkIds[0])) {
+        return Promise.resolve(mockNetworkResponse)
+      }
+      return Promise.reject(new Error('error'))
+    })
+    await getApGroupsListFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+
+    // eslint-disable-next-line max-len
+    expect(createHttpRequest).toHaveBeenCalledWith(
+      ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac,
+      args.params
+    )
+    expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
+      body: JSON.stringify(mockTransformRbacPayload)
+    }))
+  })
+
+  it('getApGroupFn with rbac', async () => {
+    const mockResponse = { data: { data: [], requestId: 'req' } }
+
+    const args = {
+      // eslint-disable-next-line max-len
+      params: { tenantId: 'tenantId' },
+      page: 1,
+      pageSize: 10,
+      enableRbac: true
+    }
+
+    fetchWithBQ.mockImplementation(() => {
+      return Promise.resolve(mockResponse)
+    })
+    await getApGroupFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+
+    // eslint-disable-next-line max-len
+    expect(createHttpRequest).toHaveBeenCalledWith(
+      ApGroupConfigTemplateUrlsInfo.getApGroupRbac,
+      args.params
+    )
+  })
+
+  it('addApGroupFn with rbac', async () => {
+    const mockPayload = {
+      searchString: 'apgroup-temp-2',
+      fields: [
+        'name',
+        'id'
+      ],
+      searchTargetFields: [
+        'name'
+      ],
+      filters: {
+        venueId: [
+          '3046e23a9ef8458b945a38ee39c4b2e7'
+        ]
+      },
+      pageSize: 10000
+    }
+
+    const mockTransformRbacPayload = {
+      searchString: 'apgroup-temp-2',
+      fields: [
+        'name',
+        'id'
+      ],
+      searchTargetFields: [
+        'name'
+      ],
+      filters: {
+        venueId: [
+          '3046e23a9ef8458b945a38ee39c4b2e7'
+        ]
+      },
+      pageSize: 10000,
+      apSerialNumbers: []
+    }
+
+    const args = {
+      // eslint-disable-next-line max-len
+      params: { tenantId: 'tenantId' },
+      payload: mockPayload,
+      page: 1,
+      pageSize: 10,
+      enableRbac: true
+    }
+    const mockResponse = { data: { data: [], requestId: 'req' } }
+
+    fetchWithBQ.mockImplementation(() => {
+      return Promise.resolve(mockResponse)
+    })
+    await addApGroupFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+
+    // eslint-disable-next-line max-len
+    expect(createHttpRequest).toHaveBeenCalledWith(
+      ApGroupConfigTemplateUrlsInfo.addApGroup,
+      args.params
+    )
+    expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
+      body: JSON.stringify(mockTransformRbacPayload)
+    }))
+  })
+
+  it('updateApGroupFn with rbac', async () => {
+    const mockPayload = {
+      name: 'apgroup-temp-1-modify-n',
+      venueId: '3046e23a9ef8458b945a38ee39c4b2e7',
+      apSerialNumbers: []
+    }
+
+    const args = {
+      // eslint-disable-next-line max-len
+      params: { tenantId: 'tenantId' },
+      payload: mockPayload,
+      page: 1,
+      pageSize: 10,
+      enableRbac: true
+    }
+    const mockResponse = { data: { data: [], requestId: 'req' } }
+
+    fetchWithBQ.mockImplementation(() => {
+      return Promise.resolve(mockResponse)
+    })
+    await updateApGroupFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+
+    // eslint-disable-next-line max-len
+    expect(createHttpRequest).toHaveBeenCalledWith(
+      ApGroupConfigTemplateUrlsInfo.updateApGroupRbac,
+      args.params
+    )
+    expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
+      body: JSON.stringify(mockPayload)
+    }))
+  })
+
+  it('deleteApGroupsTemplateFn with rbac', async () => {
+    const mockPayload = {
+      searchString: '',
+      fields: [
+        'id',
+        'venueId'
+      ],
+      filters: {
+        id: [
+          '0e56aa832e434a4ab129c776029d012a'
+        ]
+      },
+      pageSize: 1
+    }
+
+    const args = {
+      // eslint-disable-next-line max-len
+      params: { tenantId: 'tenantId' },
+      payload: mockPayload,
+      page: 1,
+      pageSize: 10,
+      enableRbac: true
+    }
+    const mockResponse = { data: { data: [], requestId: 'req' } }
+
+    fetchWithBQ.mockImplementation(() => {
+      return Promise.resolve(mockResponse)
+    })
+    await deleteApGroupsTemplateFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+
+    // eslint-disable-next-line max-len
+    expect(createHttpRequest).toHaveBeenCalledWith(
+      ApGroupConfigTemplateUrlsInfo.deleteApGroupRbac,
+      args.params
+    )
+    expect(fetchWithBQ).toBeCalledTimes(2) // apListQuery + deleteApGroup
   })
 })

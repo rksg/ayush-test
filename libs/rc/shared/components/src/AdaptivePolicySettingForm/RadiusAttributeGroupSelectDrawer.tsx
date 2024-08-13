@@ -3,11 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { Form, FormInstance } from 'antd'
 import {  useIntl }           from 'react-intl'
 
-import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
-import { useRadiusAttributeGroupListByQueryQuery }                  from '@acx-ui/rc/services'
-import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
-import { WifiScopes }                                               from '@acx-ui/types'
-import { filterByAccess }                                           from '@acx-ui/user'
+import { Card, Descriptions, Drawer, Loader, Table, TableProps }                        from '@acx-ui/components'
+import { useRadiusAttributeGroupListByQueryQuery }                                      from '@acx-ui/rc/services'
+import { AttributeAssignment, hasCloudpathAccess, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                               from '@acx-ui/user'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 
@@ -137,13 +136,12 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
               selectedRowKeys: selectedRowKeys }}
             rowKey='id'
             type={'form'}
-            actions={filterByAccess([{
+            actions={filterByAccess( hasCloudpathAccess() ? [{
               label: $t({ defaultMessage: 'Add Group' }),
               onClick: () => {
                 setRadiusAttributeGroupFormDrawerVisible(true)
-              },
-              scopeKey: [WifiScopes.CREATE]
-            }])}
+              }
+            }] : [])}
           />
         </Loader>
       </Form.Item>

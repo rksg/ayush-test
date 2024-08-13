@@ -13,7 +13,9 @@ import { useParams } from '@acx-ui/react-router-dom'
 
 export default function AlarmsHeaderButton () {
   const params = useParams()
-  const { data } = useGetAlarmCountQuery({ params })
+
+  const payload = { filters: { } }
+  const { data } = useGetAlarmCountQuery({ params, payload })
 
   const [visible, setVisible] = useState(false)
 
