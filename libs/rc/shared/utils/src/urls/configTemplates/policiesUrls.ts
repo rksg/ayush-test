@@ -381,7 +381,10 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteSyslogPolicy: {
     method: 'delete',
     url: '/templates/syslogServerProfiles/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteSyslogPolicyRbac: {
     method: 'delete',
@@ -395,7 +398,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addSyslogPolicy: {
     method: 'post',
     url: '/templates/syslogServerProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addSyslogPolicyRbac: {
     method: 'post',
@@ -409,7 +416,10 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getSyslogPolicy: {
     method: 'get',
     url: '/templates/syslogServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   getSyslogPolicyRbac: {
     method: 'get',
@@ -422,7 +432,11 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateSyslogPolicy: {
     method: 'put',
     url: '/templates/syslogServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateSyslogPolicyRbac: {
     method: 'put',
