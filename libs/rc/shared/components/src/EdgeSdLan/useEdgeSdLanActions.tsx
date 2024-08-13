@@ -177,10 +177,14 @@ export const useEdgeMvSdLanActions = () => {
       const requiredActions = []
       // DC scenario into DMZ scenario
       // or addMode DMZ scenario
-      if (payload.isGuestTunnelEnabled && !originData?.guestEdgeClusterId) {
-        requiredActions.push(activateGuestEdgeCluster(serviceId,
-          { ...payload, venueId: payload.guestEdgeClusterVenueId }))
-        requiredActions.push(activateGuestTunnel(serviceId, payload))
+      if (payload.isGuestTunnelEnabled) {
+        if (!originData?.guestEdgeClusterId) {
+          // eslint-disable-next-line max-len
+          requiredActions.push(activateGuestEdgeCluster(serviceId, { ...payload, venueId: payload.guestEdgeClusterVenueId }))
+        }
+
+        if (originData?.guestTunnelProfileId !== payload.guestTunnelProfileId)
+          requiredActions.push(activateGuestTunnel(serviceId, payload))
 
         try {
           const reqResult = await Promise.all(requiredActions)
@@ -193,8 +197,9 @@ export const useEdgeMvSdLanActions = () => {
       }
 
       // skip if in `addMode` and isGuestTunnelEnabled === false
-      if (!(isAddMode && !payload.isGuestTunnelEnabled))
+      if (!(isAddMode && !payload.isGuestTunnelEnabled)) {
         actions.push(toggleGuestTunnelEnable(serviceId, payload.isGuestTunnelEnabled))
+      }
     } else {
       // for change guest tunnel: only need to do PUT
       // eslint-disable-next-line max-len
