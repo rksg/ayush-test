@@ -44,19 +44,11 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
   let series = [
     // name does not need i18n as these will not shown, just for ordering purpose.
     { name: '<3>used',
-      value: isZeroQuantity ? 0: (used / total)*100,
-      itemStyle: used === 0 ? { borderRadius: [0] } : { borderRadius: [30, 0, 0, 30] }
-    },
+      value: isZeroQuantity ? 0: (used / total)*100 },
     { name: '<2>assigned',
-      value: isZeroQuantity ? 0: (assigned / total)*100,
-      itemStyle: (used === 0 && assigned > 0) ? { borderRadius: [30, 0, 0, 30] }
-        : { borderRadius: [0] }
-    },
+      value: isZeroQuantity ? 0: (assigned / total)*100 },
     { name: '<1>available',
-      value: isZeroQuantity ? 100 : ((total-used-assigned) / total)*100,
-      itemStyle: (used === 0 && assigned === 0) ? { borderRadius: [30] }
-        : { borderRadius: [0, 30, 30, 0] }
-    }
+      value: isZeroQuantity ? 100 : ((total-used-assigned) / total)*100 }
   ]
 
   const utilBar = <>
