@@ -4,13 +4,13 @@ import moment, { MomentInput } from 'moment-timezone'
 import { intentAIUrl, Provider, recommendationUrl, store }                 from '@acx-ui/store'
 import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { IntentAIFormDto } from '../types'
+import { IntentAIFormDto, IntentAIFormSpec } from '../types'
 
 import {
   mockedRecommendationCRRM,
   mockedRecommendationCRRMApplied
 } from './__tests__/fixtures'
-import { recApi, EnhancedRecommendation, kpiHelper, useUpdatePreferenceScheduleMutation, roundUpTimeToNearest15Minutes } from './services'
+import { recApi, EnhancedRecommendation, kpiHelper, useUpdatePreferenceScheduleMutation, roundUpTimeToNearest15Minutes, specToDto } from './services'
 
 
 describe('recommendation services', () => {
@@ -136,35 +136,60 @@ describe('roundUpTimeToNearest15Minutes', () => {
   })
 })
 
-// describe('specToDto', () => {
-//   const scheduledAt = '2024-07-13T07:30:00.000Z'
-//   const spec = {
-//     id: 'test',
-//     status: 'new',
-//     sliceValue: 'test',
-//     updatedAt: 'test',
-//     metadata: {
-//       scheduledAt: scheduledAt,
-//       preferences: { crrmFullOptimization: false }
-//     }
-//   } as unknown as EnhancedRecommendation
+describe('specToDto', () => {
+  const scheduledAt = '2024-07-13T07:30:00.000Z'
+  const commonSpec = {
+    id: 'test',
+    status: 'new',
+    sliceValue: 'test',
+    updatedAt: 'test',
+    preferences: { crrmFullOptimization: false }
+  } as IntentAIFormSpec
+  it('should process spec with scheduledAt',
+    async () => {
+      const spec ={
+        ...commonSpec,
+        metadata: {
+          scheduledAt: scheduledAt
+        }
+      }
+      const dto = {
+        id: 'test',
+        status: 'new',
+        sliceValue: 'test',
+        updatedAt: 'test',
+        preferences: { crrmFullOptimization: false },
+        settings: {
+          date: moment(scheduledAt),
+          hour: 7.5
+        }
+      } as IntentAIFormDto
+      expect(specToDto(spec)).toEqual(dto)
 
-//   it('should process spec with',
-//     async () => {
-//   const dto = {
-//     id: 'test',
-//     status: 'new',
-//     sliceValue: 'test',
-//     updatedAt: '',
-//     preferences: { crrmFullOptimization: false },
-//     settings: {
-//       date: moment(scheduledAt),
-//       hour: 7.5
-//     }
-//   } as IntentAIFormDto
-//   expect(specToDto(spec)).toEqual()
+    })
+  it('should process spec without scheduledAt',
+    async () => {
+      const spec ={
+        ...commonSpec,
+        metadata: {
+        }
+      }
+      const dto = {
+        id: 'test',
+        status: 'new',
+        sliceValue: 'test',
+        updatedAt: 'test',
+        preferences: { crrmFullOptimization: false },
+        settings: {
+          date: null,
+          hour: null
+        }
+      } as IntentAIFormDto
+      expect(specToDto(spec)).toEqual(dto)
 
-// })
+    })
+
+})
 
 describe('intentai services', () => {
   // jest.mock('moment-timezone', () => {

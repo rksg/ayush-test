@@ -139,25 +139,9 @@ function decimalToTimeString (decimalHours: number) {
   return time.format('HH:mm:ss')
 }
 
-// function handleScheduledAt (scheduledAt:string ) {
-//   const originalScheduledAt = new Date(scheduledAt)
-//   const futureThreshold = new Date(new Date().getTime() + 15 * 60 * 1000)
-//   if (originalScheduledAt < futureThreshold) {
-//     const newScheduledAt = new Date(originalScheduledAt)
-//     newScheduledAt.setDate(newScheduledAt.getDate() + 1)
-//     return newScheduledAt.toISOString()
-//   } else {
-//     return originalScheduledAt.toISOString()
-//   }
-// }
 function handleScheduledAt (scheduledAt:string) {
-
   const originalScheduledAt = moment(scheduledAt)
-  console.log(originalScheduledAt)
   const futureThreshold = moment().add(15, 'minutes')
-  console.log(moment())
-  console.log(futureThreshold)
-
   if (originalScheduledAt.isBefore(futureThreshold)) {
     const newScheduledAt = originalScheduledAt.add(1, 'day')
     return newScheduledAt.toISOString()
@@ -172,7 +156,6 @@ export function specToDto (
   let dto = {
     id: rec.id,
     // status: rec.status,
-    // status: 'revertscheduled',
     status: 'new',
     preferences: rec.preferences,
     sliceValue: rec.sliceValue,
@@ -187,7 +170,6 @@ export function specToDto (
   //     moment(rec.metadata.scheduledAt).format('HH:mm:ss')
   //   )
   // }
-
   let date: Moment | null = moment()
   let hour: number | null = 7.5
 
@@ -202,20 +184,12 @@ export function specToDto (
 }
 
 export function processDtoToPayload (dto: IntentAIFormDto) {
-  console.log('this is dto to payload')
-  console.log(dto)
   const newDate = dto!.settings!.date!.format('YYYY-MM-DD')
-  console.log(newDate)
   const newHour = decimalToTimeString(dto.settings!.hour!)
-  console.log(newHour)
-
   const offset = moment().format('Z')
-  console.log(`${newDate}T${newHour}.000${offset}`)
   const scheduledAt = moment.parseZone(
     `${newDate}T${newHour}.000${offset}`).utc().toISOString()
-  console.log(scheduledAt)
   const newScheduledAt = handleScheduledAt(scheduledAt)
-  console.log(newScheduledAt)
   return {
     id: dto.id,
     status: dto.status,

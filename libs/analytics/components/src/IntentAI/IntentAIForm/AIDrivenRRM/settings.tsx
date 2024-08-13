@@ -32,7 +32,6 @@ function DateTimeSetting ({
     form.setFieldValue(['settings', 'date'], date)
     form.setFieldValue(['settings', 'hour'], null)
   }
-  console.log(scheduledDate)
   const { $t } = useIntl()
   return (
     <DateTimeDropdown
@@ -79,7 +78,6 @@ export function Settings () {
   const intentPriority = form.getFieldValue(Priority.fieldName)
   const scheduleSettings = form.getFieldValue('settings')
   const status = form.getFieldValue('status')
-  console.log(scheduleSettings)
 
   const calendarText = defineMessage({ defaultMessage: `This recommendation will be
     applied at the chosen time whenever there is a need to change the channel plan.

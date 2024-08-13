@@ -5,8 +5,7 @@ import {
   DropdownProps as AntDropdownProps,
   MenuProps as AntMenuProps,
   Form,
-  DatePickerProps,
-  FormInstance
+  DatePickerProps
 } from 'antd'
 import moment,{ Moment } from 'moment-timezone'
 import { MenuItemType }  from 'rc-menu/lib/interface'
