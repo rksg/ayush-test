@@ -155,23 +155,25 @@ export function specToDto (
 ): IntentAIFormDto | undefined {
   let dto = {
     id: rec.id,
-    // status: rec.status,
-    status: 'new',
+    status: rec.status,
+    // status: 'new',
     preferences: rec.preferences,
     sliceValue: rec.sliceValue,
     updatedAt: rec.updatedAt
   } as IntentAIFormDto
 
-  // let date: Moment | null = null
-  // let hour: number | null = null
-  // if (rec.metadata.scheduledAt) {
-  //   date=moment(rec.metadata.scheduledAt)
-  //   hour=roundUpTimeToNearest15Minutes(
-  //     moment(rec.metadata.scheduledAt).format('HH:mm:ss')
-  //   )
-  // }
-  let date: Moment | null = moment()
-  let hour: number | null = 7.5
+  let date: Moment | null = null
+  let hour: number | null = null
+  if (rec.metadata.scheduledAt) {
+    const localScheduledAt =moment.utc(rec.metadata.scheduledAt).local()
+    date=localScheduledAt
+    hour=roundUpTimeToNearest15Minutes(
+      localScheduledAt.format('HH:mm:ss')
+    )
+  }
+
+  // let date: Moment | null = moment()
+  // let hour: number | null = 7.5
 
   dto = {
     ...dto,
