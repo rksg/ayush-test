@@ -97,12 +97,6 @@ export const channelGroupMapping = {
 }
 
 export const categoryStyles = {
-  [Type.CategoryState.Normal]: {
-    color: cssStr('--acx-neutrals-50'),
-    emphasisColor: cssStr('--acx-neutrals-50'),
-    lineStyle: Type.LineStyle.Solid,
-    legendText: defineMessage({ defaultMessage: 'No interfering links' })
-  },
   [Type.CategoryState.Highlight]: {
     color: cssStr('--acx-semantics-red-50'),
     emphasisColor: cssStr('--acx-semantics-red-30'),
@@ -114,6 +108,12 @@ export const categoryStyles = {
     emphasisColor: cssStr('--acx-accents-orange-30'), //25
     lineStyle: Type.LineStyle.Dotted,
     legendText: defineMessage({ defaultMessage: 'Reduction in transmit power' })
+  },
+  [Type.CategoryState.Normal]: {
+    color: cssStr('--acx-neutrals-50'),
+    emphasisColor: cssStr('--acx-neutrals-50'),
+    lineStyle: Type.LineStyle.Solid,
+    legendText: defineMessage({ defaultMessage: 'No interfering links' })
   }
 }
 
