@@ -4,7 +4,7 @@ import { ConfigTemplateType }                                     from '@acx-ui/
 export * from './ConfigTemplateLink'
 
 export function useIsConfigTemplateBeta (): boolean {
-  return useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE)
+  return useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE)
 }
 
 export function useIsConfigTemplateGA (): boolean {

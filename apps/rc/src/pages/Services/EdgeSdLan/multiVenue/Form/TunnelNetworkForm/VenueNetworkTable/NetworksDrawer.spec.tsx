@@ -123,7 +123,6 @@ describe('Network Drawer', () => {
 
   it('should correctly deactivate by switch', async () => {
     render(<MockedTargetComponent
-      // form={stepFormRef.current}
       initData={{
         tunneledNetworks: { [mockedVenueId]: [
           { name: 'MockedNetwork 1', id: 'network_1' },
@@ -311,7 +310,9 @@ describe('Network Drawer', () => {
           isGuestTunnelEnabled: true,
           tunneledNetworks: {
             [mockedVenueId]: [mockedNetwork4],
-            other_venue_id: [mockedNetwork4]
+            other_venue_id: [mockedNetwork4],
+            other_venue_id2: [mockedNetwork4],
+            other_venue_id3: [mockedNetwork4]
           }
         }}
       />, { route: { params: { tenantId: 't-id' } } })
@@ -326,6 +327,22 @@ describe('Network Drawer', () => {
       // activate dmz tunnel
       await click(switchBtns[1])
       await screen.findByText(/setting must be consistent across all venues/)
+      await click(screen.getByRole('button', { name: 'Continue' }))
+      await click(screen.getByRole('button', { name: 'OK' }))
+      expect(mockedSubmitFn).toBeCalledWith({
+        activatedNetworks: {
+          [mockedVenueId]: [mockedNetwork4],
+          other_venue_id: [mockedNetwork4],
+          other_venue_id2: [mockedNetwork4],
+          other_venue_id3: [mockedNetwork4]
+        },
+        activatedGuestNetworks: {
+          [mockedVenueId]: [mockedNetwork4],
+          other_venue_id: [mockedNetwork4],
+          other_venue_id2: [mockedNetwork4],
+          other_venue_id3: [mockedNetwork4]
+        }
+      })
     })
   })
 })

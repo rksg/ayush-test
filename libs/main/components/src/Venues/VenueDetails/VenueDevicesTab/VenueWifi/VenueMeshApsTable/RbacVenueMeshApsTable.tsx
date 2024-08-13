@@ -72,7 +72,6 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       title: intl.$t({ defaultMessage: 'Mac Address' }),
       dataIndex: 'apMac',
       sorter: true,
-      width: 230,
       align: 'center'
     },
     {
@@ -93,6 +92,7 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       key: 'clientCount',
       title: intl.$t({ defaultMessage: 'Connected clients' }),
       dataIndex: 'clientCount',
+      width: 155,
       align: 'center',
       render: function (_, row) {
         return row.clientCount || 0
