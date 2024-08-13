@@ -74,7 +74,9 @@ export const VenueList = styled.div`
  `
 export const ExpanderTableWrapper = styled.div`
   .disabled-row {
-    pointer-events: none;
+    :active {
+      pointer-events: none;
+    }
     .ant-checkbox-inner {
       border-color: var(--acx-neutrals-50);
     }

@@ -159,9 +159,10 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
         }
       },
       render: function (_, row) {
+        const selRole = selectedRoles.find((sel) => sel.id === row.id)
         return row.role === RolesEnum.DPSK_ADMIN ||
               (row.role === RolesEnum.GUEST_MANAGER && rowNotSelected(row.email)) ||
-              (!SupportedDelegatedRoles.includes(row.role) && !rowNotSelected(row.email))
+              (selRole && !SupportedDelegatedRoles.includes(selRole.role as RolesEnum))
           ? <span>
             {roleDisplayText[row.role] ? $t(roleDisplayText[row.role]) : row.role}
           </span>
@@ -177,8 +178,8 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
-      ?? (SupportedDelegatedRoles.includes(initialRole)
-        ? initialRole : RolesEnum.ADMINISTRATOR)
+    ?? (SupportedDelegatedRoles.includes(initialRole)
+      ? initialRole : RolesEnum.ADMINISTRATOR)
 
     return isLoaded &&
     <Select defaultValue={role}
@@ -212,13 +213,24 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
             type: 'checkbox',
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
-              setSelectedRows(selRows)
+              const updatedSelRows = selRows.map((element:MspAdministrator) => {
+                const role = selectedRoles.find(row => row.id === element.id)?.role
+                  ?? SupportedDelegatedRoles.includes(element.role)
+                  ? element.role
+                  : RolesEnum.ADMINISTRATOR
+                const rowEntry = { ...element }
+                rowEntry.role = role as RolesEnum
+                return rowEntry
+              })
+              setSelectedRows(updatedSelRows)
             },
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled:
-                 record.role === RolesEnum.DPSK_ADMIN ||
+              record.role === RolesEnum.DPSK_ADMIN ||
                 (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email)) ||
-                (!SupportedDelegatedRoles.includes(record.role) && !rowNotSelected(record.email))
+                (selectedRoles.find((sel) => sel.id === record.id)
+                  && !SupportedDelegatedRoles.includes(selectedRoles.find((sel) =>
+                    sel.id === record.id)?.role as RolesEnum))
             })
           }}
         />

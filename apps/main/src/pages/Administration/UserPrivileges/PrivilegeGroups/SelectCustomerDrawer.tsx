@@ -1,8 +1,8 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Space }     from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Space, Tooltip } from 'antd'
+import { useIntl }        from 'react-intl'
+import { useParams }      from 'react-router-dom'
 
 import {
   Button,
@@ -139,6 +139,13 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
           indentSize={20}
           rowKey='id'
           rowSelection={{
+            renderCell (checked, record, index, node) {
+              if (record.isUnauthorizedAccess) {
+                return <Tooltip
+                  title='You are not authorized to manage this customer'>{node}</Tooltip>
+              }
+              return node
+            },
             selectedRowKeys: selectedKeys,
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
