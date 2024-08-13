@@ -71,7 +71,7 @@ export const iconTooltips = {
     subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}
     content={defineMessage({
       defaultMessage: `Choose between fine-tuning your wireless LAN for extremely high client
-      density environment or focus on keeping the faster client time to connect.` })}
+      density environment or focus on keeping faster client time to connect.` })}
   />,
   [aiFeatures.AIOps]: <IconTooltip
     icon={<AIOperation />}
