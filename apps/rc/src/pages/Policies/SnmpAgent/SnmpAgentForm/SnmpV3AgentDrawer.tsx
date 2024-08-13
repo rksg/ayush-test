@@ -53,10 +53,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
     : $t({ defaultMessage: 'Add' })
 
   const RULE_REGEX = [
-    /^.{8,32}$/,
-    /(?=.*[a-z])(?=.*[A-Z])/,
-    /(?=.*\d)/,
-    /(?=.*[~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]).{1,}/,   // At least one valid special character
     /^[A-Za-z\d~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]{1,}$/, // No invalid characters
     /^(?!~).{1,}/,                                            // ~ cannot be the first character
     /^(?!.*[`]).{1,}/,                                        // ` is not valid in the password
@@ -64,11 +60,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   ]
 
   const RULE_MESSAGES = [
-    $t({ defaultMessage: 'Length is limited to 8-32 characters.' }),
-    $t({ defaultMessage: 'Contains one uppercase and one lowercase letters' }),
-    $t({ defaultMessage: 'Contains one number' }),
-    // eslint-disable-next-line
-    $t({ defaultMessage: 'Must contains at least one special character, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
     // eslint-disable-next-line
     $t({ defaultMessage: 'No other characters are allowed except uppercase, lowercase, digits and special characters, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
     $t({ defaultMessage: '~ cannot be used as the first character of the password' }),
@@ -169,8 +160,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         children={
           (isSNMPv3PassphraseOn ?
             <PasswordInputStrength
-              regExRules={RULE_REGEX}
-              regExErrorMessages={RULE_MESSAGES}
               data-testid={'password-input-strength'}/> :
             <PasswordInput />
           )
