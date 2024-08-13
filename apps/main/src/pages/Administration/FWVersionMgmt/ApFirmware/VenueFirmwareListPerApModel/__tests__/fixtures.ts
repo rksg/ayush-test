@@ -33,7 +33,7 @@ export const mockedFirmwareVenuesPerApModel = {
       name: 'venueBBB-upToDate',
       isApFirmwareUpToDate: true,
       currentApFirmwares: [
-        { apModel: 'R550', firmware: '7.0.0.104.1220' }
+        { apModel: 'R550', firmware: '7.0.0.104.1242' }
       ],
       lastApFirmwareUpdate: '2024-02-22T14:00:01.099-08:00',
       nextApFirmwareSchedules: [

@@ -63,7 +63,7 @@ export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
-  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
+  const isDelegationTierApi = isDelegationMode()
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
