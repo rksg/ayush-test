@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { useRef } from 'react'
+import { MutableRefObject, useRef } from 'react'
 
 import userEvent                             from '@testing-library/user-event'
 import { Form, Menu }                        from 'antd'
@@ -7,7 +7,7 @@ import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker'
 import dayjs                                 from 'dayjs'
 import moment                                from 'moment-timezone'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { regionMenu } from './stories'
 
@@ -70,13 +70,24 @@ describe('Dropdown', () => {
   })
 })
 
+export const renderFormHook = () => {
+  const { result: { current: form } } = renderHook(() => {
+    const [form] = Form.useForm()
+    return form
+  })
+  return { form, formRender: render(<Form form={form} data-testid='form' />) }
+}
+
+const mockTime : MutableRefObject<number> = { current: 5.5 }
 describe('DateTimeDropdown', () => {
+
   it.only('renders correctly and handle events', async () => {
     const testDate = moment('2024-08-12T10:30:00')
-    const [testForm] = Form.useForm()
-    const testTime = useRef(5.5)
+    const { form } = renderFormHook()
+
     const testOnChange: DatePickerProps['onChange'] = (date) => {
-      testForm.setFieldValue(['settings', 'date'], date)
+      form.setFieldValue(['settings', 'date'], date)
+      form.setFieldValue(['settings', 'hour'], null)
     }
     const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
       return current && current < dayjs().startOf('day')
@@ -87,12 +98,14 @@ describe('DateTimeDropdown', () => {
       timeLabel={'This is Time Label'}
       initialDate={testDate}
       disabledDate={testDisabledDate}
-      time={testTime}
+      time={mockTime}
       onchange={testOnChange}
-      form={testForm}
     />
     )
-    expect(await screen.findByText('Testing')).toBeVisible()
+    expect(await screen.findByText('This is Date Label')).toBeVisible()
+    expect(await screen.findByText('This is Time Label')).toBeVisible()
+
+    expect(await screen.findByPlaceholderText('Select hour')).toBeVisible()
   })
 
   it('should reset time when date is changed', () => {
