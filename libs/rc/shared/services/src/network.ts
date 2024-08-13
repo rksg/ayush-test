@@ -303,21 +303,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
         const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
-        // eslint-disable-next-line max-len
-        const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
-          return {
-            [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
-          } as ActionItem
-        }
-
-        const newApGroups = newPayload.apGroups as NetworkApGroup[]
-        const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
-
-        const updateApGroups = [] as NetworkApGroup[]
-        const addApGroups = [] as NetworkApGroup[]
-        const deleteApGroups = [] as NetworkApGroup[]
-
         if (enableRbac) {
+          // eslint-disable-next-line max-len
+          const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
+            return {
+              [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
+            } as ActionItem
+          }
+
+          const newApGroups = newPayload.apGroups as NetworkApGroup[]
+          const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
+
+          const updateApGroups = [] as NetworkApGroup[]
+          const addApGroups = [] as NetworkApGroup[]
+          const deleteApGroups = [] as NetworkApGroup[]
+
           newApGroups.forEach((newApGroup: NetworkApGroup) => {
             const apGroupId = newApGroup.apGroupId as string
             const oldApGroup = find(oldApGroups, { apGroupId })
