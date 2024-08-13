@@ -46,7 +46,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
   const isInstaller = tenantType === AccountType.MSP_INSTALLER
   // eslint-disable-next-line max-len
-  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE), tenantType)
+  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.CONFIG_TEMPLATE), tenantType)
 
   const {
     state

@@ -21,7 +21,8 @@ import { DateRange, setUpIntl }              from '@acx-ui/utils'
 
 import { intentListResult, mockAIDrivenRow, filterOptions } from './__tests__/fixtures'
 import {
-  api
+  api,
+  IntentListItem
 } from './services'
 
 import { IntentAITabContent } from './index'
@@ -31,7 +32,7 @@ const mockedShowOneClickOptimize = jest.fn()
 jest.mock('./useIntentAIActions', () => ({
   ...jest.requireActual('./useIntentAIActions'),
   useIntentAIActions: () => ({
-    showOneClickOptimize: (_, callbackFun: () => void) => {
+    showOneClickOptimize: (_: IntentListItem[], callbackFun: () => void) => {
       mockedShowOneClickOptimize()
       callbackFun && callbackFun()
     }
@@ -89,6 +90,7 @@ describe('IntentAITabContent', () => {
       data: { intentFilterOptions: { zones: [], codes: [], statuses: [] } }
     })
     render(<IntentAITabContent/>, {
+      route: {},
       wrapper: Provider
     })
 
@@ -109,6 +111,7 @@ describe('IntentAITabContent', () => {
       data: filterOptions
     })
     render(<IntentAITabContent/>, {
+      route: {},
       wrapper: Provider
     })
 
@@ -126,8 +129,12 @@ describe('IntentAITabContent', () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: intentListResult
     })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
     jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
     render(<IntentAITabContent />, {
+      route: {},
       wrapper: Provider
     })
 
@@ -146,7 +153,7 @@ describe('IntentAITabContent', () => {
   it('should render 1-click-optimize', async () => {
     const extractItem = {
       aiFeature: 'AI-Driven RRM',
-      intent: 'Client Density vs. Throughput for 5 GHz radio',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
@@ -161,6 +168,7 @@ describe('IntentAITabContent', () => {
     })
     jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
     render(<IntentAITabContent/>, {
+      route: {},
       wrapper: Provider
     })
 
