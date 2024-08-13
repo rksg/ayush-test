@@ -56,8 +56,11 @@ describe('ScheduleStep', () => {
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
         (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
-      )
-    )
+      ),
+      rest.post(
+        FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ))
   })
 
   it('render ScheduleStep - 1 Venue', async () => {
