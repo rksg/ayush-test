@@ -240,6 +240,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                       <br />
                       <div style={{
                         marginTop: '5px',
+                        fontSize: 'var(--acx-body-4-font-size)',
                         color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
                       }}>
                         {getSwitchVersionLabelV1002(intl, v)}
@@ -274,6 +275,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                       <br/>
                       <div style={{
                         marginTop: '5px',
+                        fontSize: 'var(--acx-body-4-font-size)',
                         color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
                       }}>
                         {getSwitchVersionLabelV1002(intl, v)}
@@ -315,6 +317,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                         {getSwitchVersionTagV1002(intl, v)}
                         <div style={{
                           marginTop: '5px',
+                          fontSize: 'var(--acx-body-4-font-size)',
                           color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
                         }}>
                           {getSwitchVersionLabelV1002(intl, v)}

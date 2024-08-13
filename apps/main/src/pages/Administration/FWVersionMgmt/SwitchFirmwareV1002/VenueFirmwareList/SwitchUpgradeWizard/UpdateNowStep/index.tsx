@@ -172,6 +172,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                     <br />
                     <div style={{
                       marginTop: '5px',
+                      fontSize: 'var(--acx-body-4-font-size)',
                       color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
                     }}>
                       {getSwitchVersionLabelV1002(intl, v)}
@@ -207,6 +208,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                     <br/>
                     <div style={{
                       marginTop: '5px',
+                      fontSize: 'var(--acx-body-4-font-size)',
                       color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
                     }}>
                       {getSwitchVersionLabelV1002(intl, v)}
@@ -250,6 +252,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                       <br />
                       <div style={{
                         marginTop: '5px',
+                        fontSize: 'var(--acx-body-4-font-size)',
                         color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
                       }}>
                         {getSwitchVersionLabelV1002(intl, v)}
