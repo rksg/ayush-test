@@ -37,9 +37,14 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
 
   let series = [
     { name: 'used',
-      value: isZeroQuantity ? 0: (used / total)*100 },
+      value: isZeroQuantity ? 0: (used / total)*100,
+      itemStyle: used === 0 ? { borderRadius: [0] }
+        : { borderRadius: [30, 0, 0, 30] }
+    },
     { name: 'available',
-      value: isZeroQuantity ? 100 : ((total-used) / total)*100 }
+      value: isZeroQuantity ? 100 : ((total-used) / total)*100,
+      itemStyle: used === 0 ? { borderRadius: [30] } : { borderRadius: [0, 30, 30, 0] }
+    }
   ]
 
   if (isOverused) {
@@ -51,9 +56,13 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
     const overPercent = (Math.abs(total-used) / total)*100
     series = [
       { name: 'used',
-        value: isZeroQuantity ? 0 : (100 - (overPercent > 100 ? 100 : overPercent)) },
+        value: isZeroQuantity ? 0 : (100 - (overPercent > 100 ? 100 : overPercent)),
+        itemStyle: { borderRadius: [30, 0, 0, 30] }
+      },
       { name: 'overused',
-        value: isZeroQuantity ? 100: overPercent }
+        value: isZeroQuantity ? 100: overPercent,
+        itemStyle: { borderRadius: [0, 30, 30, 0] }
+      }
     ]
   }
 
