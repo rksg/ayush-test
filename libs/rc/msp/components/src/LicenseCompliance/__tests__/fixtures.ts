@@ -163,3 +163,24 @@ export const emptyCompliance =
   licenseGap: 0
 }
 
+export const fakeAttentionNotes =
+{
+  attentionNotes: [
+    {
+      // eslint-disable-next-line max-len
+      summary: 'On January 1st, 2025, RUCKUS One will stop adding 5% courtesy licenses to the MSP subscriptions',
+      details: [
+        `As of this date, MSP subscriptions with a starting date before Jan 1st, 
+        2025 will continue to carry their courtesy 5% until their expiration`,
+        `All MSP subscriptions starting on January 1st, 
+        2025 or after will not receive the 5% courtesy licenses`
+      ]
+    },
+    {
+      // eslint-disable-next-line max-len
+      summary: 'On March 1, 2025 RUCKUS One will start enforcing subscription expiration policy, which may have an impact on your network operation.'
+    }
+
+  ]
+}
+
