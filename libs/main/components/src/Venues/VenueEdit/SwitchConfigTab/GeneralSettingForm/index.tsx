@@ -99,6 +99,8 @@ export function GeneralSettingForm () {
   const [formState, setFormState] = useState<FormState>(defaultState)
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
   const selectedProfiles = getProfilesByKeys(formState.configProfiles, formData.profileId)
+  const profilesType = selectedProfiles.length > 0 ? selectedProfiles[0].profileType : undefined
+  const isCliProfile = profilesType === ProfileTypeEnum.CLI
 
   useEffect(() => {
     // set default data when switching sub tab
@@ -278,13 +280,13 @@ export function GeneralSettingForm () {
               <Form.Item
                 label={$t({ defaultMessage: 'DNS' })}
                 children={<Space direction='vertical' style={{ width: '100%' }}>
-                  <Tooltip title={formState?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+                  <Tooltip title={isCliProfile? $t(VenueMessages.CLI_APPLIED) : ''}>
                     <Space direction='vertical' style={{ width: '100%' }}>
                       <Button
                         type='link'
                         size='small'
                         style={{ float: 'right' }}
-                        disabled={formData?.dns?.length === 4 || formState?.cliApplied}
+                        disabled={formData?.dns?.length === 4 || isCliProfile}
                         onClick={() => {
                           setFormData({ ...formData, dns: [...(formData?.dns ?? []), ''] })
                         }}>{$t({ defaultMessage: 'Add IP Address' })}
@@ -308,9 +310,9 @@ export function GeneralSettingForm () {
                       children={
                         <Input
                           size='small'
-                          disabled={formState?.cliApplied}
+                          disabled={isCliProfile}
                           suffix={
-                            !formState?.cliApplied && <DeleteOutlinedIcon
+                            !isCliProfile && <DeleteOutlinedIcon
                               role='deleteBtn'
                               onClick={() => {
                                 const dns = formRef?.current?.getFieldsValue()?.dns
@@ -330,11 +332,11 @@ export function GeneralSettingForm () {
                 valuePropName='checked'
                 initialValue={formData.syslogEnabled}
                 children={<Space>
-                  <Tooltip title={formState?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : ''}>
+                  <Tooltip title={isCliProfile ? $t(VenueMessages.CLI_APPLIED) : ''}>
                     <Switch
                       defaultChecked={formData.syslogEnabled}
                       checked={formData.syslogEnabled}
-                      disabled={formState?.cliApplied}
+                      disabled={isCliProfile}
                       onClick={(checked, event) => {
                         event.stopPropagation()
                         handleSyslogServer(checked)
