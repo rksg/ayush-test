@@ -26,7 +26,7 @@ import {
 
 
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
-  scopes?:ScopeKeys) {
+  scopes?:ScopeKeys, hasAllVenues?: boolean) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
@@ -39,7 +39,8 @@ function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
     betaEnabled: false,
     abacEnabled: abacEnabled ?? false,
     isCustomRole,
-    scopes
+    scopes,
+    hasAllVenues: hasAllVenues ?? true
   })
 }
 
@@ -334,7 +335,7 @@ describe('WrapIfAccessible', () => {
 })
 
 describe('AuthRoute', () => {
-  it('should go to no permissions page', async () => {
+  it('should go to no permissions page for scope', async () => {
     setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.READ])
     render(
       <Router>
@@ -346,6 +347,33 @@ describe('AuthRoute', () => {
     )
     expect(await screen.findByTestId('no-permissions')).toBeVisible()
   })
+
+  it('should go to no permissions page for cross venues', async () => {
+    setRole(RolesEnum.ADMINISTRATOR, true, false, [], false)
+    render(
+      <Router>
+        <AuthRoute requireCrossVenuesPermission>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByTestId('no-permissions')).toBeVisible()
+  })
+
+  it('should go to correct page for cross venues', async () => {
+    setRole(RolesEnum.ADMINISTRATOR, true, false, [], true)
+    render(
+      <Router>
+        <AuthRoute requireCrossVenuesPermission>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByText('test page')).toBeVisible()
+  })
+
 
   it('should go to correct page: custom role', async () => {
     setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.UPDATE])

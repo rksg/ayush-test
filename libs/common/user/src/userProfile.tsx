@@ -186,11 +186,16 @@ export function hasCrossVenuesPermission (scopes?: ScopeKeys[]) {
 }
 
 export function AuthRoute (props: {
-    scopes: ScopeKeys,
-    children: ReactElement
+    scopes?: ScopeKeys,
+    children: ReactElement,
+    requireCrossVenuesPermission?: boolean
   }) {
-  const { scopes, children } = props
-  return !hasScope(scopes) ? <TenantNavigate replace to='/no-permissions' /> : children
+  const { scopes = [], children, requireCrossVenuesPermission } = props
+  if(requireCrossVenuesPermission) {
+    return hasScope(scopes) && hasCrossVenuesPermission()
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
+  return hasScope(scopes) ? children : <TenantNavigate replace to='/no-permissions' />
 }
 
 
