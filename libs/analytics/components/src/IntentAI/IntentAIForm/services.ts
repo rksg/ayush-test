@@ -156,9 +156,9 @@ export function specToDto (
 ): IntentAIFormDto | undefined {
   let dto = {
     id: rec.id,
-    status: rec.status,
+    // status: rec.status,
     // status: 'revertscheduled',
-    // status: 'new',
+    status: 'new',
     preferences: rec.preferences,
     sliceValue: rec.sliceValue,
     updatedAt: rec.updatedAt
