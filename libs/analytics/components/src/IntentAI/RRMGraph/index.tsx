@@ -170,7 +170,7 @@ const GraphImage = (
     }
   }
   return (
-    <div key='crrm-slider-before'
+    <div key='graph-image'
       style={{
         display: 'flex',
         alignItems: 'center',
