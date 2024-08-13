@@ -391,7 +391,7 @@ export function EmbeddedReport (props: ReportProps) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
     }
 
-    return !systemRolesWithWritePermissions.includes(roles[0] as RolesEnumR1)
+    return !systemRolesWithWritePermissions.some(role => roles.includes(role))
   }
 
   useEffect(() => {
