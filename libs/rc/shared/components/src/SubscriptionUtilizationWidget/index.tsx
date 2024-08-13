@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { Space, Typography } from 'antd'
+import { useIntl }           from 'react-intl'
 
 import { cssStr, StackedBarChart } from '@acx-ui/components'
 import { EntitlementDeviceType }   from '@acx-ui/rc/utils'
@@ -81,24 +81,33 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
     </Typography.Text>
   </SpaceWrapper>
 
-  const utilBar2 = <>
+  const utilBar2 =
+  <Space size={10} direction='vertical'>
     <UI.FieldLabelUtil>
       <div>
         <div>{title}</div>
         <div>{title2}</div>
       </div>
-      <StackedBarChart
-        style={{ height: 12, width: 250 }}
-        showLabels={false}
-        showTotal={false}
-        showTooltip={false}
-        barWidth={12}
-        data={[{
-          category: `${deviceType} Licenses `,
-          series
-        }]}
-        barColors={usedBarColors}
-      />
+      <Space size={10} direction='vertical'>
+        <StackedBarChart
+          style={{ height: 12, width: 250 }}
+          showLabels={false}
+          showTotal={false}
+          showTooltip={false}
+          barWidth={12}
+          data={[{
+            category: `${deviceType} Licenses `,
+            series
+          }]}
+          barColors={usedBarColors}
+        />
+        <div style={{ fontSize: '11px' }}>
+          <UI.LegendDot style={{ marginLeft: '25px', backgroundColor: usedBarColors[0] }} />
+          <span >{$t({ defaultMessage: 'Used' })} ({used})</span>
+          <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
+          <span >{$t({ defaultMessage: 'Available' })} ({total - used})</span>
+        </div>
+      </Space>
       <Typography.Text>
         {
           isOverused
@@ -107,13 +116,7 @@ export const SubscriptionUtilizationWidget = (props: SubscriptionUtilizationWidg
         } / {total}
       </Typography.Text>
     </UI.FieldLabelUtil>
-    <div style={{ marginTop: '-10px', fontSize: '11px' }}>
-      <UI.LegendDot style={{ marginLeft: '210px', backgroundColor: usedBarColors[0] }} />
-      <span >{$t({ defaultMessage: 'Used' })} ({used})</span>
-      <UI.LegendDot style={{ marginLeft: '15px', backgroundColor: usedBarColors[1] }} />
-      <span >{$t({ defaultMessage: 'Available' })} ({total - used})</span>
-    </div>
-  </>
+  </Space>
 
   return title2 ? utilBar2 : utilBar
 }
