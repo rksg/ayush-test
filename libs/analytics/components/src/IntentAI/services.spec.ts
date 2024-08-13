@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { defaultNetworkPath }                         from '@acx-ui/analytics/utils'
-import { intentAIUrl, store, Provider }               from '@acx-ui/store'
-import { act, mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
-import { DateRange, PathFilter }                      from '@acx-ui/utils'
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
+import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
+import { DateRange, PathFilter }                                           from '@acx-ui/utils'
 
 import {
   intentHighlights,
@@ -12,7 +12,7 @@ import {
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { IntentListItem, api, useIntentAITableQuery } from './services'
+import { IntentListItem, api, useIntentAITableQuery, OptimizeAllMutationResponse } from './services'
 
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
@@ -33,6 +33,7 @@ describe('Intent services', () => {
     beforeEach(() => {
       jest.clearAllMocks()
     })
+
     const expectedResult = [
       {
         ...intentListResult.intents.data[0],
@@ -42,7 +43,7 @@ describe('Intent services', () => {
         scope: `vsz611 (SZ Cluster)
 > zone-1 (Venue)`,
         status: 'Active',
-        statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
       },
       {
         ...intentListResult.intents.data[1],
@@ -53,7 +54,7 @@ describe('Intent services', () => {
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
         status: 'No Recommendation, Not Enough License',
-        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the 01-Alethea-WiCheck Test.'
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue 01-Alethea-WiCheck Test.'
       },
       {
         ...intentListResult.intents.data[2],
@@ -64,7 +65,7 @@ describe('Intent services', () => {
 > 25-US-CA-D25-SandeepKour-home (Domain)
 > 25-US-CA-D25-SandeepKour-home (Venue)`,
         status: 'No Recommendation, No APs',
-        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the 25-US-CA-D25-SandeepKour-home.'
+        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue 25-US-CA-D25-SandeepKour-home.'
       }
     ]
     const filterOptionsResult = {
@@ -176,7 +177,8 @@ describe('Intent services', () => {
             'c-crrm-channel6g-auto',
             'c-probeflex-24g',
             'c-probeflex-5g',
-            'c-probeflex-6g'
+            'c-probeflex-6g',
+            'eco-flex-code'
           ]
         },
         {
@@ -215,7 +217,32 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
+    it('should mutation OptimizeAll', async () => {
+      const resp = { data: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.optimizeAllIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          optimizeList: [{ id: '11', metadata: {
+            scheduledAt: '2023-11-17T11:45:00.000Z',
+            wlans: [{ name: 'n1', ssid: 's1' }],
+            preferences: {
+              crrmFullOptimization: true
+            }
+          } }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
   })
+
   describe('status tooltips', () => {
     beforeEach(() => {
       jest.clearAllMocks()
@@ -276,19 +303,19 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[4],
           ...expectedCommonResult,
           status: 'Apply In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting applied to the zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[5],
           ...expectedCommonResult,
           status: 'Active',
-          statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+          statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[6],
           ...expectedCommonResult,
           status: 'Paused, Applied Failed',
-          statusTooltip: 'IntentAI recommended changes failed to apply to the zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          statusTooltip: 'IntentAI recommended changes failed to apply to the Venue zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
         },
         {
           ...intentListWithAllStatus.intents.data[7],
@@ -300,7 +327,7 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[8],
           ...expectedCommonResult,
           status: 'Revert In Progress',
-          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the zone-1.'
+          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[9],
@@ -336,31 +363,31 @@ describe('Intent services', () => {
           ...intentListWithAllStatus.intents.data[14],
           ...expectedCommonResult,
           status: 'No Recommendation, Conflicting Configuration',
-          statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.'
+          statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the Venue.'
         },
         {
           ...intentListWithAllStatus.intents.data[15],
           ...expectedCommonResult,
           status: 'No Recommendation, No APs',
-          statusTooltip: 'No recommendation was generated because IntentAI found no APs in the zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[16],
           ...expectedCommonResult,
           status: 'No Recommendation, Not Enough License',
-          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[17],
           ...expectedCommonResult,
           status: 'No Recommendation, Not Enough Data',
-          statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the zone-1.'
+          statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[18],
           ...expectedCommonResult,
           status: 'Verified',
-          statusTooltip: 'IntentAI has validated zone-1 configurations. No new changes have been recommended.'
+          statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
         },
         {
           ...intentListWithAllStatus.intents.data[19],
@@ -373,6 +400,7 @@ describe('Intent services', () => {
       expect(status).toBe('fulfilled')
       expect(data?.intents).toEqual(expectedResult)
     })
+
   })
 
   it('should return intentHighlight', async () => {
@@ -381,7 +409,7 @@ describe('Intent services', () => {
     })
 
     const { status, data, error } = await store.dispatch(
-      api.endpoints.intentHighlight.initiate({ ...props, n: 5 })
+      api.endpoints.intentHighlight.initiate(props)
     )
 
     const expectedResult = {
@@ -404,4 +432,18 @@ describe('Intent services', () => {
     expect(data).toStrictEqual(expectedResult)
   })
 
+  it('returns wlans', async () => {
+    const wlans = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(intentAIUrl, 'Wlans', { data: { intent: { wlans } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentWlans.initiate({ code: 'c1', root: 'r1', sliceId: 's1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(wlans)
+  })
 })

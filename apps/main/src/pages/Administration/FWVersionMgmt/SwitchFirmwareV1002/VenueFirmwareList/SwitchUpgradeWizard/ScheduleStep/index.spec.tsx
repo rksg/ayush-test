@@ -56,8 +56,11 @@ describe('ScheduleStep', () => {
       rest.get(
         FirmwareRbacUrlsInfo.getSwitchCurrentVersions.url,
         (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersionsV1002))
-      )
-    )
+      ),
+      rest.post(
+        FirmwareRbacUrlsInfo.getSwitchFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ))
   })
 
   it('render ScheduleStep - 1 Venue', async () => {
@@ -106,14 +109,14 @@ describe('ScheduleStep', () => {
     expect(within(form).getByText(/Firmware available for ICX 8200 Series/i)).toBeInTheDocument()
 
     const icx82Radio10010rc3 = within(form).getByRole('radio', {
-      name: /10\.0\.10_rc3_icx82 \(release\)/i
+      name: /10\.0\.10_rc3_icx82/i
     })
     await userEvent.click(icx82Radio10010rc3, { delay: null })
     expect(icx82Radio10010rc3).toBeEnabled()
 
 
     const icx7XRadio10010rc3 = within(form).getByRole('radio', {
-      name: /10010_rc3_ICX7 \(release\)/i
+      name: /10010_rc3_ICX7/i
     })
     await userEvent.click(icx7XRadio10010rc3, { delay: null })
     expect(icx7XRadio10010rc3).toBeEnabled()
