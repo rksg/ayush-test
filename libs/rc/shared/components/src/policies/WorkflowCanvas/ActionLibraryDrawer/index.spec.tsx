@@ -130,7 +130,7 @@ describe('ActionLibraryDrawer', () => {
       .getByRole('button', { name: /add/i })).toBeEnabled()
 
     await userEvent.click(targetButton)
-    expect(spyOnClickAction).toHaveBeenCalledWith(`id-${ActionType.AUP}`, ActionType.AUP)
+    expect(spyOnClickAction).toHaveBeenCalledWith(ActionType.AUP)
   })
 
   it('should allow DataPrompt Card although there is ONE_OF dependency', async () => {
