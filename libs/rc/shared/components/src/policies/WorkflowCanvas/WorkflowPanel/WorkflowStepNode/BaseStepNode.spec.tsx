@@ -166,7 +166,7 @@ describe('BaseStepNode', () => {
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.click(await screen.findByTestId('EditOutlined'))
-    expect(spyStepDrawerOnOpen).toHaveBeenCalledWith(true, 'definitionId', mockNodeProps.type)
+    expect(spyStepDrawerOnOpen).toHaveBeenCalledWith(true, mockNodeProps.type)
 
     await userEvent.hover(screen.getByTestId('MoreVertical'))
     await userEvent.click(await screen.findByTestId('EyeOpenOutlined'))
