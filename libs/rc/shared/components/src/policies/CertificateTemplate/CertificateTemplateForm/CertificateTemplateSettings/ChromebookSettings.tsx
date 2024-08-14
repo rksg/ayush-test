@@ -135,15 +135,6 @@ export default function ChromebookSettings () {
           </GridRow>
           <GridRow>
             <GridCol col={{ span: 10 }}>
-              <Form.Item name={['chromebook', 'notifyAppId']}
-                label={$t({ defaultMessage: 'App ID To Notify' })}
-              >
-                <Input></Input>
-              </Form.Item>
-            </GridCol>
-          </GridRow>
-          <GridRow>
-            <GridCol col={{ span: 10 }}>
               <Form.Item
                 name={['chromebook', 'apiKey']}
                 label={$t({ defaultMessage: 'Google API Key' })}

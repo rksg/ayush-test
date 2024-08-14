@@ -1,5 +1,8 @@
 import { NetworkPath } from '@acx-ui/utils'
 
+import { aiFeatures }     from '../config'
+import { AIFeatureProps } from '../Table'
+
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {
   id: '19',
@@ -479,3 +482,31 @@ export const intentHighlightsWithOperations = {
     }
   }
 }
+
+export const aiFeatureWithRRM = {
+  code: 'c-crrm-channel5g-auto',
+  aiFeature: aiFeatures.RRM,
+  root: 'root1',
+  sliceId: 'sliceId1'
+} as AIFeatureProps
+
+export const aiFeatureWithAirFlexAI = {
+  code: 'c-probeflex-6g',
+  aiFeature: aiFeatures.AirFlexAI,
+  root: 'root2',
+  sliceId: 'sliceId2'
+} as AIFeatureProps
+
+export const aiFeatureWithAIOps = {
+  code: 'c-bgscan24g-enable',
+  aiFeature: aiFeatures.AIOps,
+  root: 'root3',
+  sliceId: 'sliceId3'
+} as AIFeatureProps
+
+export const aiFeatureWithEcoFlexAI = {
+  code: 'eco-flex-code',  //EcoFlexAI code is not defined
+  aiFeature: aiFeatures.EcoFlexAI,
+  root: 'root4',
+  sliceId: 'sliceId4'
+} as AIFeatureProps
