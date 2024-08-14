@@ -83,7 +83,7 @@ export const ImpactedClientsTable = ({
       key: 'switchName',
       render: (_, row: ImpactedClients) => (
         <TenantLink
-          to={`/devices/switch/${row.switchId}/serial/details/${get('IS_MLISA_SA')
+          to={`/devices/switch/${row.switchId?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
             ? 'reports': 'overview'}`
           }>
           {row.switchName}
