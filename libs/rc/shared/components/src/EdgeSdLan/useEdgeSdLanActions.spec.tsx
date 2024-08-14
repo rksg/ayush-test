@@ -424,7 +424,7 @@ describe('useEdgeMvSdLanActions', () => {
       })
     })
 
-    it('should only activate dmz cluster when change from DC again', async () => {
+    it('should only enable dmz when change from DC again', async () => {
       const mockedData = cloneDeep(mockedEditData)
       mockedData.isGuestTunnelEnabled = false
       const mockedPayload = {
@@ -447,6 +447,41 @@ describe('useEdgeMvSdLanActions', () => {
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
+    })
+
+    // eslint-disable-next-line max-len
+    it('should only activate dmz tunnel when change from DC again and it is originaly empty', async () => {
+      const mockedData = cloneDeep(mockedEditData)
+      mockedData.isGuestTunnelEnabled = false
+      mockedData.guestTunnelProfileId = ''
+      const mockedPayload = {
+        ...mockedData,
+        isGuestTunnelEnabled: true,
+        guestTunnelProfileId: 'mock_guestTunnelId'
+      }
+      const { result } = renderHook(() => useEdgeMvSdLanActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { editEdgeSdLan } = result.current
+      await editEdgeSdLan(mockedData, {
+        payload: mockedPayload,
+        callback: mockedCallback
+      })
+
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true }))
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(1)
+      expect(mockedActivateDmzTunnelReq).toBeCalledWith({
+        serviceId: mockedPayload.id,
+        tunnelProfileId: mockedPayload.guestTunnelProfileId
+      })
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
       expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
       expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)

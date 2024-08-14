@@ -228,7 +228,7 @@ function DeviceRoutes () {
       <Route
         path='devices/apgroups/:action'
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
             <ApGroupEdit />
           </AuthRoute>
         } />
