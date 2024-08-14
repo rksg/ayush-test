@@ -67,6 +67,13 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
     $t({ defaultMessage: 'The sequence of $( is not valid to be part of the password' })
   ]
 
+  const RULE_REGEX_NO_MESSAGE = [
+    /^.{8,32}$/,
+    /(?=.*[a-z])(?=.*[A-Z])/,
+    /(?=.*\d)/,
+    /(?=.*[~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]).{1,}/   // At least one valid special character
+  ]
+
   useEffect(() => {
     if (visible && form) {
       const { snmpV3Agents } = state
@@ -142,15 +149,28 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
               validator: (_ : any, value: string) => {
                 const errors: number[] = []
                 RULE_REGEX.forEach((regex, index) => {
-                  if(!regex.test(value)) {
+                  if(value && !regex.test(value)) {
                     errors.push(index)
                   }
                 })
-                if(errors.length > 0) {
+                if(errors.length > 0 || !value) {
                   return Promise.reject(RULE_MESSAGES[errors[0]])
                 }
                 return Promise.resolve()
-              } }
+              } },
+              {
+                validator: (_ : any, value: string) => {
+                  const errors: number[] = []
+                  RULE_REGEX_NO_MESSAGE.forEach((regex, index) => {
+                    if(value && !regex.test(value)) {
+                      errors.push(index)
+                    }
+                  })
+                  if(errors.length > 0 || !value) {
+                    return Promise.reject()
+                  }
+                  return Promise.resolve()
+                } }
           /* eslint-enable */
           ] : [
             { min: 8 },
