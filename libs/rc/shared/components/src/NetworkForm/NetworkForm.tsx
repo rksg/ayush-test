@@ -21,7 +21,6 @@ import {
   useActivateWifiOperatorOnWifiNetworkMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
   useActivateCertificateTemplateMutation,
-  useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
   useDeactivateIdentityProviderOnWifiNetworkMutation,
@@ -30,6 +29,7 @@ import {
   useActivateDpskServiceTemplateMutation,
   useGetDpskServiceQuery,
   useGetDpskServiceTemplateQuery,
+  useGetCertificateTemplateNetworkBindingQuery,
   useAddNetworkVenueMutation,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueMutation,
@@ -238,11 +238,11 @@ export function NetworkForm (props:{
 
   const { data } = useGetInstance(editMode)
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
-  const { certificateTemplateId } = useGetCertificateTemplatesQuery(
-    { payload: { pageSize: 1, page: 1, filters: { networkId: data?.id } } },
+  const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
+    { params: { networkId: data?.id } },
     {
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
-      selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
+      selectFromResult: ({ data }) => ({ certificateTemplateId: data?.id })
     })
   const { data: dpskService } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetDpskServiceQuery,
