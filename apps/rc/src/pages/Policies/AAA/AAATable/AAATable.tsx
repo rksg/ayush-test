@@ -235,7 +235,7 @@ function useColumns () {
       align: 'center',
       filterKey: 'networkIds',
       filterable: networkNameMap,
-      sorter: true,
+      sorter: !isWifiRbacEnabled,
       render: (_, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
@@ -251,7 +251,7 @@ function useColumns () {
       align: 'center',
       filterKey: 'hotspot20IdentityProviderIds',
       filterable: identityProviderNameMap,
-      sorter: true,
+      sorter: false,
       render: (_, row) =>{
         const hotspot20IdentityProviderIds = row.hotspot20IdentityProviderIds
         if (!hotspot20IdentityProviderIds || hotspot20IdentityProviderIds.length === 0) return 0
