@@ -239,7 +239,8 @@ export const api = intentAIApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'Intent', id: 'INTENT_AI_LIST' }
+        { type: 'Intent', id: 'INTENT_AI_LIST' },
+        { type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }
       ]
     }),
     transitionIntent: build.mutation<TransitionMutationResponse, TransitionMutationPayload>({
@@ -257,7 +258,8 @@ export const api = intentAIApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'Intent', id: 'INTENT_AI_LIST' }
+        { type: 'Intent', id: 'INTENT_AI_LIST' },
+        { type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }
       ]
     }),
     intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({

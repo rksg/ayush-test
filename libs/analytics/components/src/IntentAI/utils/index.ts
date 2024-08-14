@@ -16,7 +16,7 @@ export const dataRetentionText = defineMessage({ defaultMessage: 'Beyond data re
 export const getDefaultTime = () => {
   const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
   return moment().isSameOrBefore(datetime3AM) ?
-    moment(datetime3AM) : moment(datetime3AM).add(1, 'd')
+    datetime3AM : datetime3AM.add(1, 'd')
 }
 
 export type IntentWlan = {

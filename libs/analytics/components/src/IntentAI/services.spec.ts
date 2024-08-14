@@ -12,8 +12,9 @@ import {
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { IntentListItem, api, useIntentAITableQuery, OptimizeAllMutationResponse } from './services'
-
+import { IntentListItem, api, useIntentAITableQuery, TransitionMutationResponse } from './services'
+import { displayStates, statuses, statusReasons }                                 from './states'
+import { Actions }                                                                from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
@@ -218,7 +219,7 @@ describe('Intent services', () => {
     })
 
     it('should mutation OptimizeAll', async () => {
-      const resp = { data: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
       mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.optimizeAllIntent.useMutation(),
@@ -233,6 +234,61 @@ describe('Intent services', () => {
               crrmFullOptimization: true
             }
           } }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
+    it('should mutation TransitionIntent(Actions.Cancel)', async () => {
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.transitionIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          action: Actions.Cancel,
+          data: [{
+            id: '11',
+            displayStatus: displayStates.pausedApplyFailed,
+            statusTrail: [
+              { status: statuses.revertScheduled },
+              { status: statuses.paused, statusReason: statusReasons.applyFailed }
+
+            ] }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
+    it('should mutation TransitionIntent(Actions.Revert)', async () => {
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.transitionIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          action: Actions.Revert,
+          data: [{
+            id: '12',
+            displayStatus: displayStates.active,
+            statusTrail: [
+              { status: statuses.revertScheduled },
+              { status: statuses.active }
+
+            ],
+            metadata: {
+              scheduledAt: '2023-11-17T11:45:00.000Z'
+            } }]
         }).unwrap()
       })
 
