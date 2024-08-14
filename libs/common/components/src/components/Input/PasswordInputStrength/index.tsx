@@ -125,9 +125,9 @@ export const PasswordStrengthIndicator = ({
 
   const PASSWORD_STRENGTH_CODE = [
     $t({ defaultMessage: 'Insecure' }),
+    $t({ defaultMessage: 'Very Weak' }),
     $t({ defaultMessage: 'Weak' }),
     $t({ defaultMessage: 'Fair' }),
-    $t({ defaultMessage: 'Good' }),
     $t({ defaultMessage: 'Strong' })
   ]
 
