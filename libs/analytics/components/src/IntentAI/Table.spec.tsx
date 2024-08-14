@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { Tooltip }    from '@acx-ui/components'
-import { get }        from '@acx-ui/config'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import userEvent from '@testing-library/user-event'
+
+import { Tooltip }        from '@acx-ui/components'
+import { get }            from '@acx-ui/config'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM } from './__tests__/fixtures'
 import { aiFeatures }                                                                           from './config'
@@ -147,4 +150,8 @@ describe('AIFeature component', () => {
     )
   })
 
+  it('should trigger click tooltip for R1', async () => {
+    render(iconTooltips[aiFeatures.RRM])
+    await userEvent.click(await screen.findByTestId('featureTooltip'))
+  })
 })
