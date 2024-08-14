@@ -12,8 +12,8 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
+import { EnhancedIntent }    from '../../IntentAIForm/services'
 import { intentBandMapping } from '../config'
-import { EnhancedIntent }    from '../IntentAIForm/services'
 
 import { useIntentAICRRMQuery } from './services'
 import { DownloadWrapper }      from './styledComponents'

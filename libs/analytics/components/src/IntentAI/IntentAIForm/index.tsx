@@ -1,6 +1,6 @@
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { AIDrivenRRM } from './AIDrivenRRM'
+import { AIDrivenRRM } from '../AIDrivenRRM/IntentAIForm'
 
 const intentAIFormMap = {
   'c-crrm-channel24g-auto': AIDrivenRRM,
@@ -8,11 +8,9 @@ const intentAIFormMap = {
   'c-crrm-channel6g-auto': AIDrivenRRM
 }
 
-type IntentAIFormKey = keyof typeof intentAIFormMap
-
 export function IntentAIForm () {
   const params = useParams()
-  const code = params.code as IntentAIFormKey
+  const code = params.code as keyof typeof intentAIFormMap
   const Form = intentAIFormMap[code]
   return <Form />
 }

@@ -1,12 +1,16 @@
+// TODO
+// this file seems to be common for all cases?
 import { snakeCase } from 'lodash'
 
 import { productNames } from '@acx-ui/analytics/utils'
 import { get }          from '@acx-ui/config'
 import { getIntl }      from '@acx-ui/utils'
 
-import { codes, kpis }                                   from '../../IntentAIForm/AIDrivenRRM'
 import { EnhancedIntent, extractBeforeAfter, IntentKpi } from '../../IntentAIForm/services'
 import { isDataRetained }                                from '../../utils'
+// TODO
+// move kpis into common
+import { codes, kpis } from '../IntentAIForm'
 
 export const kpiBeforeAfter = (intent: EnhancedIntent, key: string) => {
   const config = kpis.find(kpi => kpi.key === key)!

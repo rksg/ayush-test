@@ -7,15 +7,17 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { intentBandMapping } from '../../config'
-import { kpis }              from '../../IntentAIForm/AIDrivenRRM'
+import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../../IntentAIDetails/styledComponents'
 import {
   useIntentCodeQuery,
   useIntentDetailsQuery
 } from '../../IntentAIForm/services'
-import { SummaryGraphAfter, SummaryGraphBefore } from '../../RRMGraph'
-import { useIntentAICRRMQuery }                  from '../../RRMGraph/services'
-import { AIDrivenRRMHeader, AIDrivenRRMIcon }    from '../styledComponents'
+import { intentBandMapping } from '../config'
+// TODO
+// move kpis into common
+import { kpis }                                  from '../IntentAIForm'
+import { SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
+import { useIntentAICRRMQuery }                  from '../RRMGraph/services'
 
 import { CrrmBenefits }    from './CrrmBenefits'
 import { CrrmGraph }       from './CrrmGraph'

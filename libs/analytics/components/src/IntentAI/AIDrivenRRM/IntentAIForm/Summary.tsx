@@ -6,10 +6,10 @@ import { defineMessage, useIntl } from 'react-intl'
 import { TrendTypeEnum }                                                                      from '@acx-ui/analytics/utils'
 import { StepsForm, useLayoutContext, useStepFormContext, TrendPill, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { IntentAIRRMGraph }                  from '../../RRMGraph'
+import { EnhancedIntent, getGraphKPIs }      from '../../IntentAIForm/services'
+import * as UI                               from '../../IntentAIForm/styledComponents'
 import { dataRetentionText, isDataRetained } from '../../utils'
-import { EnhancedIntent, getGraphKPIs }      from '../services'
-import * as UI                               from '../styledComponents'
+import { IntentAIRRMGraph }                  from '../RRMGraph'
 
 import { IntentPriority, Priority } from './Priority'
 

@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
+import { DetailsHeader, Wrapper } from '../../IntentAIDetails/styledComponents'
 import { EnhancedIntent }         from '../../IntentAIForm/services'
-import { DetailsHeader, Wrapper } from '../styledComponents'
 
 import { getValuesText } from './Values'
 

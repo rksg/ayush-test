@@ -9,8 +9,8 @@ import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/compone
 import { get }                                             from '@acx-ui/config'
 
 import { TradeOff }       from '../../../TradeOff'
-import { EnhancedIntent } from '../services'
-import * as UI            from '../styledComponents'
+import { EnhancedIntent } from '../../IntentAIForm/services'
+import * as UI            from '../../IntentAIForm/styledComponents'
 
 import { steps } from '.'
 

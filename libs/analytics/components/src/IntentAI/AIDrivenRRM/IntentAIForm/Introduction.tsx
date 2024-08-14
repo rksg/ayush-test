@@ -10,10 +10,10 @@ import { DateFormatEnum, formatter }                                            
 import { LinkDocumentIcon, LinkVideoIcon }                                       from '@acx-ui/icons'
 
 import { CompareSlider }        from '../../../CompareSlider'
-import { useIntentAICRRMQuery } from '../../RRMGraph/services'
+import { EnhancedIntent }       from '../../IntentAIForm/services'
+import * as UI                  from '../../IntentAIForm/styledComponents'
 import { states }               from '../config'
-import { EnhancedIntent }       from '../services'
-import * as UI                  from '../styledComponents'
+import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import { steps, crrmIntent, statusTrailMsgs } from '.'
 

@@ -17,8 +17,8 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
+import { EnhancedIntent }    from '../../IntentAIForm/services'
 import { intentBandMapping } from '../config'
-import { EnhancedIntent }    from '../IntentAIForm/services'
 
 import { Legend } from './Legend'
 import * as UI    from './styledComponents'

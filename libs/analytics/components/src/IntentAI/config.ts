@@ -30,12 +30,6 @@ type StateInfo = {
   tooltip: MessageDescriptor
 }
 
-enum BandEnum {
-  _2_4_GHz = '2.4',
-  _5_GHz = '5',
-  _6_GHz = '6',
-}
-
 const categories = {
   'Wi-Fi Experience': defineMessage({ defaultMessage: 'Wi-Fi Experience' }),
   'Security': defineMessage({ defaultMessage: 'Security' }),
@@ -242,9 +236,3 @@ export const codes = {
     category: categories['Wi-Fi Experience']
   }
 } as Record<string, CodeInfo>
-
-export const intentBandMapping = {
-  'c-crrm-channel24g-auto': BandEnum._2_4_GHz,
-  'c-crrm-channel5g-auto': BandEnum._5_GHz,
-  'c-crrm-channel6g-auto': BandEnum._6_GHz
-}

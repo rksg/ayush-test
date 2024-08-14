@@ -2,14 +2,14 @@ import { useIntl } from 'react-intl'
 
 import { ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { EnhancedIntent }                    from '../../IntentAIForm/services'
-import { IntentAIRRMGraph }                  from '../../RRMGraph'
-import { dataRetentionText, isDataRetained } from '../../utils'
 import {
   DetailsHeader,
   DetailsWrapper,
   Wrapper
-} from '../styledComponents'
+} from '../../IntentAIDetails/styledComponents'
+import { EnhancedIntent }                    from '../../IntentAIForm/services'
+import { dataRetentionText, isDataRetained } from '../../utils'
+import { IntentAIRRMGraph }                  from '../RRMGraph'
 
 export const CrrmGraph = ({ details, summaryUrlBefore, summaryUrlAfter, crrmData }:
   {

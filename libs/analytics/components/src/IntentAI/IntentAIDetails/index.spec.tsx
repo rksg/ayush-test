@@ -1,39 +1,20 @@
-import { CrrmDetails } from './AIDrivenRRM/CrrmDetails'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { IntentAIDetails } from './index'
 
-const mockParams = jest.fn()
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'),
-  useParams: () => mockParams()
+// TODO: should rename to IntentAIDetails
+jest.mock('../AIDrivenRRM/IntentAIDetails/CrrmDetails', () => ({
+  CrrmDetails: () => <div data-testid='crrm-details' />
 }))
 
 describe('IntentAIDetails', () => {
-  beforeEach(() => {
-    mockParams.mockClear()
-  })
+  it('should render for AIDrivenRRM', async () => {
+    const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
 
-  it('should render a CrrmDetails when code is crrm 2.4g', () => {
-    mockParams.mockReturnValue({
-      code: 'c-crrm-channel24g-auto'
-    })
-
-    expect(IntentAIDetails()).toEqual(<CrrmDetails/>)
-  })
-
-  it('should render a CrrmDetails when code is crrm 5g', () => {
-    mockParams.mockReturnValue({
-      code: 'c-crrm-channel5g-auto'
-    })
-
-    expect(IntentAIDetails()).toEqual(<CrrmDetails/>)
-  })
-
-  it('should render a CrrmDetails when code is crrm 6g', () => {
-    mockParams.mockReturnValue({
-      code: 'c-crrm-channel6g-auto'
-    })
-
-    expect(IntentAIDetails()).toEqual(<CrrmDetails/>)
+    for (const code of codes) {
+      const { unmount } = render(<IntentAIDetails />, { route: { params: { code } } })
+      expect(await screen.findByTestId('crrm-details')).toBeVisible()
+      unmount()
+    }
   })
 })

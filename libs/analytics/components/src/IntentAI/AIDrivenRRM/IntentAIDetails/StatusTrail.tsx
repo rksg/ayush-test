@@ -4,15 +4,17 @@ import { defineMessage, IntlShape, useIntl } from 'react-intl'
 import { Card }                      from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { statusTrailMsgs }                from '../../IntentAIForm/AIDrivenRRM'
-import { StatusTrail as StatusTrailType } from '../../IntentAIForm/config'
-import { EnhancedIntent }                 from '../../IntentAIForm/services'
 import {
   DetailsHeader,
   StatusTrailDateLabel,
   StatusTrailItemWrapper,
   StatusTrailWrapper
-} from '../styledComponents'
+} from '../../IntentAIDetails/styledComponents'
+import { StatusTrail as StatusTrailType } from '../../IntentAIForm/config'
+import { EnhancedIntent }                 from '../../IntentAIForm/services'
+// TODO
+// move kpis into common
+import { statusTrailMsgs } from '../IntentAIForm'
 
 const trailFormatter = (
   trail: StatusTrailType,

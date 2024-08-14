@@ -7,9 +7,11 @@ import { Descriptions, Loader }      from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { statusTrailMsgs }       from '../../IntentAIForm/AIDrivenRRM'
-import { EnhancedIntent }        from '../../IntentAIForm/services'
-import { DownloadRRMComparison } from '../../RRMGraph/DownloadRRMComparison'
+import { EnhancedIntent } from '../../IntentAIForm/services'
+// TODO
+// move kpis into common
+import { statusTrailMsgs }       from '../IntentAIForm'
+import { DownloadRRMComparison } from '../RRMGraph/DownloadRRMComparison'
 
 export const Overview = ({ details }: { details: EnhancedIntent }) => {
   const { $t } = useIntl()
@@ -41,7 +43,8 @@ export const Overview = ({ details }: { details: EnhancedIntent }) => {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
-        children={$t(statusTrailMsgs[status])}
+        // TODO: fix below to do without keyof typeof
+        children={$t(statusTrailMsgs[status as keyof typeof statusTrailMsgs])}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Date' })}

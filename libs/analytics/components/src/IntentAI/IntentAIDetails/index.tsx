@@ -1,6 +1,7 @@
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { CrrmDetails } from './AIDrivenRRM/CrrmDetails'
+// TODO: should rename to IntentAIDetails
+import { CrrmDetails } from '../AIDrivenRRM/IntentAIDetails/CrrmDetails'
 
 const intentAIDetailsMap = {
   'c-crrm-channel24g-auto': CrrmDetails,

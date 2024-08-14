@@ -1,10 +1,10 @@
 import { Provider, recommendationUrl }     from '@acx-ui/store'
 import { mockGraphqlQuery, render,screen } from '@acx-ui/test-utils'
 
-import { transformDetailsResponse }           from '../../IntentAIForm/services'
-import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
+import { transformDetailsResponse } from '../../IntentAIForm/services'
 
-import { CrrmBenefits } from './CrrmBenefits'
+import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
+import { CrrmBenefits }                       from './CrrmBenefits'
 
 describe('CrrmBenefits', () => {
   beforeEach(() => {

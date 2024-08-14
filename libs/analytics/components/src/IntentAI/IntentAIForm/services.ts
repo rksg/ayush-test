@@ -8,7 +8,7 @@ import { NetworkPath }       from '@acx-ui/utils'
 
 import { codes } from '../config'
 
-import { StateType, StatusTrail, IntentKPIConfig } from './config'
+import { StatusTrail, IntentKPIConfig } from './config'
 
 export type BasicIntent = {
   id: string;
@@ -30,7 +30,7 @@ export type IntentKpi = Record<string, {
 export type IntentDetails = {
   id: string;
   code: keyof typeof codes;
-  status: StateType;
+  status: string // StateType;
   metadata: object & { scheduledAt: string, wlans?: IntentWlan[] };
   sliceType: string;
   sliceValue: string;

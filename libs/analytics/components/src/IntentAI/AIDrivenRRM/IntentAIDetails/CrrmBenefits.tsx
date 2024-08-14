@@ -3,9 +3,6 @@ import { useIntl } from 'react-intl'
 import { TrendTypeEnum }          from '@acx-ui/analytics/utils'
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { kpis }                              from '../../IntentAIForm/AIDrivenRRM'
-import { EnhancedIntent, getGraphKPIs }      from '../../IntentAIForm/services'
-import { dataRetentionText, isDataRetained } from '../../utils'
 import {
   BenefitsBody,
   BenefitsHeader,
@@ -13,7 +10,12 @@ import {
   DetailsHeader,
   DetailsWrapper,
   TrendPill
-} from '../styledComponents'
+} from '../../IntentAIDetails/styledComponents'
+import { EnhancedIntent, getGraphKPIs }      from '../../IntentAIForm/services'
+import { dataRetentionText, isDataRetained } from '../../utils'
+// TODO
+// move kpis into common
+import { kpis } from '../IntentAIForm'
 
 export const CrrmBenefits = ({ details }: { details: EnhancedIntent }) => {
   const { $t } = useIntl()

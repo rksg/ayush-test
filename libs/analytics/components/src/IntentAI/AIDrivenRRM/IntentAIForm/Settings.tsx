@@ -5,8 +5,8 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { EnhancedIntent } from '../services'
-import * as UI            from '../styledComponents'
+import { EnhancedIntent } from '../../IntentAIForm/services'
+import * as UI            from '../../IntentAIForm/styledComponents'
 
 import { IntentPriority, Priority } from './Priority'
 
