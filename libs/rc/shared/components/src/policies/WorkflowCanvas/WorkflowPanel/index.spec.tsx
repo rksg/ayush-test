@@ -57,7 +57,6 @@ describe('WorkflowPanel', () => {
 
     await waitFor(() => expect(spyGetStepsFn).toHaveBeenCalled())
     await waitFor(() => expect(spyGetDefinitionFn).toHaveBeenCalled())
-
-    expect(screen.getByTestId('WorkflowCanvasTestId')).toBeInTheDocument()
+    await screen.findByTestId('WorkflowCanvasTestId')
   })
 })
