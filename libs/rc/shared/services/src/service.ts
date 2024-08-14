@@ -55,7 +55,8 @@ import {
   GetApiVersionHeader,
   convertMdnsProxyViewModelToMdnsProxyFormData,
   APExtended,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  PortalRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
@@ -977,6 +978,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
+    bindPortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PortalRbacUrlsInfo.bindPortal,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     uploadPhoto: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PortalUrlsInfo.uploadPhoto,
@@ -1088,6 +1101,7 @@ export const {
   useUpdatePortalMutation,
   useUploadBgImageMutation,
   useUploadLogoMutation,
+  useBindPortalMutation,
   useUploadPhotoMutation,
   useUploadPoweredImgMutation,
   useUploadURLMutation,

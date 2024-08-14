@@ -7,7 +7,7 @@ import {
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
   onSocketActivityChanged, Portal, PortalSaveData,
   WifiCallingFormContextType, WifiCallingSetting, GetApiVersionHeader, ApiVersionEnum,
-  DHCP_LIMIT_NUMBER
+  DHCP_LIMIT_NUMBER, ServicesConfigTemplateRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -77,6 +77,18 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       transformResponse: (response: TableResult<DpskSaveData>) => {
         return response?.data[0]
+      }
+    }),
+    bindPortalTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          ServicesConfigTemplateRbacUrlsInfo.bindPortal,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
       }
     }),
     getEnhancedDpskTemplateList: build.query<TableResult<DpskSaveData>, RequestPayload>({
@@ -375,7 +387,8 @@ export const {
   useUpdateWifiCallingServiceTemplateMutation,
   useDeleteWifiCallingServiceTemplateMutation,
   useActivateWifiCallingServiceTemplateMutation,
-  useDeactivateWifiCallingServiceTemplateMutation
+  useDeactivateWifiCallingServiceTemplateMutation,
+  useBindPortalTemplateMutation
 } = servicesConfigTemplateApi
 
 
