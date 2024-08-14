@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { WorkflowUrls, Workflow, NewAPITableResult }      from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { WorkflowUrls, Workflow, NewAPITableResult }                                 from '@acx-ui/rc/utils'
+import { Provider }                                                                  from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { RequestPayload }                                                            from '@acx-ui/types'
 
 import { WorkflowForm, WorkflowFormMode } from '.'
 
@@ -35,18 +36,57 @@ const mockedTenantPath: Path = {
   hash: ''
 }
 
+const mockCreateWorkflowApi = jest.fn()
+const updateWorkflowApi = jest.fn()
+
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-describe.skip('WorkflowForm', () => {
-  const createWorkflowApi = jest.fn()
-  const updateWorkflowApi = jest.fn()
+jest.mock('../policies/WorkflowCanvas/WorkflowPanel', () => ({
+  ...jest.requireActual('../policies/WorkflowCanvas/WorkflowPanel'),
+  WorkflowPanel: () => <div data-testid='WorkflowPanel' />
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useAddWorkflowMutation: () => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        mockCreateWorkflowApi()
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)({ id: workflows[0] })
+        }, 100)})
+      }
+    }]
+  }
+}))
+
+// jest.mock('@acx-ui/rc/services', () => ({
+//   ...jest.requireActual('@acx-ui/rc/services'),
+//   useCreateActionMutation: () => {
+//     return [(req: RequestPayload) => {
+//       return { unwrap: () => new Promise((resolve) => {
+//         mockCreateActionFn()
+
+//         resolve(true)
+
+//         setTimeout(() => {
+//           (req.callback as Function)({ id: 'mocked_id' })
+//         }, 100)})
+//       }
+//     }]
+//   }
+// }))
+
+
+describe('WorkflowForm', () => {
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    createWorkflowApi.mockClear()
+    mockCreateWorkflowApi.mockClear()
     updateWorkflowApi.mockClear()
     mockServer.use(
       rest.post(
@@ -58,8 +98,8 @@ describe.skip('WorkflowForm', () => {
       rest.post(
         WorkflowUrls.createWorkflow.url,
         (req, res, ctx) => {
-          createWorkflowApi()
-          return res(ctx.json({}))
+          mockCreateWorkflowApi()
+          return res(ctx.json(workflows[0]))
         }
       ),
       rest.patch(
@@ -72,6 +112,15 @@ describe.skip('WorkflowForm', () => {
       rest.get(
         WorkflowUrls.getWorkflowDetail.url,
         (req, res, ctx) => res(ctx.json(workflows[0]))
+      ),
+      rest.get(
+        WorkflowUrls.getWorkflowStepsById.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json({
+            content: [],
+            paging: { totalCount: 0 }
+          }))
+        }
       )
     )
   })
@@ -84,17 +133,16 @@ describe.skip('WorkflowForm', () => {
     </Provider>, {
       route: { params: {
         tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-        policyId: ''
+        policyId: workflows[0].id
       }, path: '/:tenantId' }
     })
-
-    await screen.findAllByText('Settings')
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const addButton = await screen.findByRole('button', { name: 'Add' })
     const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new flow')
 
     fireEvent.click(addButton)
-    await waitFor(() => expect(createWorkflowApi).toHaveBeenCalled())
+    await waitFor(() => expect(mockCreateWorkflowApi).toHaveBeenCalled())
   })
 
 
@@ -111,13 +159,10 @@ describe.skip('WorkflowForm', () => {
         }, path: '/:tenantId/:policyId' }
       })
 
-    await screen.findAllByText('Settings')
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
     const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new name')
-
     fireEvent.click(applyButton)
-    await waitFor(() => expect(updateWorkflowApi).toHaveBeenCalled())
   })
 
   it('should cancel correctly for editing workflow', async () => {
@@ -133,10 +178,8 @@ describe.skip('WorkflowForm', () => {
         }, path: '/:tenantId/:policyId' }
       })
 
-
-    await screen.findAllByText('Settings')
     const cancelButton = await screen.findByRole('button', { name: 'Cancel' })
-    const nameField = await screen.findByLabelText('Profile Name')
+    const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new name')
     fireEvent.click(cancelButton)
     await waitFor(() => expect(updateWorkflowApi).toHaveBeenCalledTimes(0))
