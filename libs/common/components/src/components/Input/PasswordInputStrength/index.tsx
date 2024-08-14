@@ -172,11 +172,11 @@ export const PasswordStrengthIndicator = ({
 
   return (<UI.PasswordBarContainer>
     <StackedBarChart
-      style={{ height: 8, width: barWidth || 270, marginTop: 5 }}
+      style={{ height: 8, width: barWidth || 240, marginTop: 5 }}
       showLabels={false}
       showTotal={false}
       showTooltip={false}
-      barWidth={barWidth || 270}
+      barWidth={barWidth || 240}
       data={[{
         series,
         category: 'password strength'
