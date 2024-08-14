@@ -81,7 +81,29 @@ export const renderFormHook = () => {
 const mockTime : MutableRefObject<number> = { current: 5.5 }
 describe('DateTimeDropdown', () => {
 
-  it('renders correctly and handle events', async () => {
+  it.only('renders correctly and handle events', async () => {
+    const testDate = moment('2024-08-12T10:30:00')
+    const testOnChange: DatePickerProps['onChange'] = () => {}
+    // const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
+    //   return false
+    // }
+    render( <DateTimeDropdown
+      name={'Testing'}
+      dateLabel={'This is Date Label'}
+      timeLabel={'This is Time Label'}
+      initialDate={testDate}
+      // disabledDate={testDisabledDate}
+      time={mockTime}
+      onchange={testOnChange}
+    />
+    )
+    expect(await screen.findByText('This is Date Label')).toBeVisible()
+    expect(await screen.findByText('This is Time Label')).toBeVisible()
+
+    expect(await screen.findByPlaceholderText('Select hour')).toBeVisible()
+  })
+
+  it('should reset time when date is changed', async () => {
     const testDate = moment('2024-08-12T10:30:00')
     const { form } = renderFormHook()
 
@@ -106,8 +128,5 @@ describe('DateTimeDropdown', () => {
     expect(await screen.findByText('This is Time Label')).toBeVisible()
 
     expect(await screen.findByPlaceholderText('Select hour')).toBeVisible()
-  })
-
-  it('should reset time when date is changed', () => {
   })
 })

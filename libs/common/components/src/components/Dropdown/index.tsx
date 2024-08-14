@@ -70,7 +70,7 @@ interface DateTimeDropdownProps {
   timeLabel: string
   initialDate: Moment
   time: MutableRefObject<number>,
-  disabledDate:((date: moment.Moment) => boolean) | undefined
+  disabledDate?:((date: moment.Moment) => boolean)
   onchange: DatePickerProps['onChange']
 }
 

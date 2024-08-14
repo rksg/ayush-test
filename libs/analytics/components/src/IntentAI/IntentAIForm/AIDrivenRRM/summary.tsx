@@ -33,7 +33,7 @@ export function Summary () {
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Projected interfering links reduction' })}
       </StepsForm.Subtitle>
-      { initialValues
+      {/* { initialValues
           && isDataRetained(initialValues?.dataEndTime)
         ? <>
           <IntentAIRRMGraph
@@ -58,7 +58,7 @@ export function Summary () {
           </StepsForm.Subtitle>
         </>
         : $t(dataRetentionText)
-      }
+      } */}
     </Col>
     <Col span={7} offset={1}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { MutableRefObject, useRef } from 'react'
 
 import { storiesOf }                          from '@storybook/react'
 import { DatePickerProps, Form, Menu, Space } from 'antd'
@@ -98,28 +98,34 @@ storiesOf('Dropdown', module)
     >{() => <Button>Open Overlay</Button>}</Dropdown>
   })
 
-  .add('DateTimeDropdown', () => {
-    const testDate = moment('2024-08-12T10:30:00')
-    const [testForm] = Form.useForm()
-    const testTime = useRef(5.5)
-    testForm.setFieldValue(['Testing', 'date'], testDate)
-    testForm.setFieldValue(['Testing', 'hour'], 7.5)
-    const testOnChange: DatePickerProps['onChange'] = (date) => {
-      testForm.setFieldValue(['Testing', 'date'], date)
-      testForm.setFieldValue(['settings', 'hour'], null)
-    }
+  .add('DateTimeDropdown - No disabled dates', () => {
+    const mockDate = moment('2024-08-12T10:30:00')
+    const testOnChange: DatePickerProps['onChange'] = () => {}
+    const mockTime : MutableRefObject<number> = { current: 5.5 }
+    return (<DateTimeDropdown
+      name={'Testing'}
+      dateLabel={'This is Date Label'}
+      timeLabel={'This is Time Label'}
+      initialDate={mockDate}
+      time={mockTime}
+      onchange={testOnChange}
+    />)
+  })
+
+  .add('DateTimeDropdown - Have disabled dates', () => {
+    const mockDate = moment('2024-08-12T10:30:00')
+    const testOnChange: DatePickerProps['onChange'] = () => {}
+    const mockTime : MutableRefObject<number> = { current: 5.5 }
     const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
       return current && current < dayjs().startOf('day')
     }
-    return <Form>
-      <DateTimeDropdown
-        name={'Testing'}
-        dateLabel={'This is Date Label'}
-        timeLabel={'This is Time Label'}
-        initialDate={testDate}
-        disabledDate={testDisabledDate}
-        time={testTime}
-        onchange={testOnChange}
-      />
-    </Form>
+    return (<DateTimeDropdown
+      name={'Testing'}
+      dateLabel={'This is Date Label'}
+      timeLabel={'This is Time Label'}
+      initialDate={mockDate}
+      disabledDate={testDisabledDate}
+      time={mockTime}
+      onchange={testOnChange}
+    />)
   })
