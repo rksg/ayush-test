@@ -104,10 +104,10 @@ export type AIFeatureProps = {
 
 export const AIFeature = (props: AIFeatureProps): JSX.Element => {
   return (<UI.FeatureIcon>
-    <UI.TooltipContent />
     <Tooltip
       placement='right'
       title={iconTooltips[codes[props.code].aiFeature]}
+      overlayInnerStyle={{ width: '345px' }}
     >
       {icons[codes[props.code].aiFeature]}
     </Tooltip>
