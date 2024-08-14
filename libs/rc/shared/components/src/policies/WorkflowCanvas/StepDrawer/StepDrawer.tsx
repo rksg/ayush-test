@@ -15,7 +15,8 @@ import { useWorkflowStepActions } from './useWorkflowStepActions'
 import {
   AupSettings,
   DataPromptSettings,
-  DisplayMessageSetting
+  DisplayMessageSetting,
+  DpskSettings
 } from './WorkflowActionSettingForm'
 
 
@@ -35,7 +36,7 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
-  [ActionType.DPSK]: DisplayMessageSetting // TODO: update this
+  [ActionType.DPSK]: DpskSettings
 }
 
 export default function StepDrawer (props: StepDrawerProps) {

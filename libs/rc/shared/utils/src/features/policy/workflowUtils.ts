@@ -3,10 +3,10 @@ import { defineMessage, useIntl }         from 'react-intl'
 import { ConnectionLineType, Edge, Node } from 'reactflow'
 
 import {
-  DpskActionTypeIcon,
   AupActionTypeIcon,
   DataPromptActionTypeIcon,
-  DisplayMessageActionTypeIcon
+  DisplayMessageActionTypeIcon,
+  DpskActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -76,14 +76,14 @@ export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
-  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a RUCKUS DPSK' })
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
-  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in RUCKUS WLAN controllers as "External DPSK") or via a RUCKUS WLAN controller.' })
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' })
 }
 
 export const AupActionDefaultValue: {
