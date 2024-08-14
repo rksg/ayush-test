@@ -9,8 +9,8 @@ import { NetworkPath }                    from '@acx-ui/utils'
 import { codes }                             from '../config'
 import { IntentAIFormDto, IntentAIFormSpec } from '../types'
 
-
 import { StateType, StatusTrail, IntentKPIConfig } from './config'
+import { handleScheduledAt }                       from './utils'
 
 export type BasicIntent = {
   id: string;
@@ -113,17 +113,6 @@ function decimalToTimeString (decimalHours: number) {
   return time.format('HH:mm:ss')
 }
 
-function handleScheduledAt (scheduledAt:string) {
-  const originalScheduledAt = moment(scheduledAt)
-  const futureThreshold = moment().add(15, 'minutes')
-  if (originalScheduledAt.isBefore(futureThreshold)) {
-    const newScheduledAt = originalScheduledAt.add(1, 'day')
-    return newScheduledAt.toISOString()
-  } else {
-    return originalScheduledAt.toISOString()
-  }
-}
-
 export function specToDto (
   rec: IntentAIFormSpec
 ): IntentAIFormDto | undefined {
@@ -169,7 +158,6 @@ export function processDtoToPayload (dto: IntentAIFormDto) {
   const scheduledAt = moment.parseZone(
     `${newDate}T${newHour}.000${offset}`).utc().toISOString()
   const newScheduledAt = handleScheduledAt(scheduledAt)
-  console.log(newScheduledAt)
   return {
     id: dto.id,
     status: dto.status,
