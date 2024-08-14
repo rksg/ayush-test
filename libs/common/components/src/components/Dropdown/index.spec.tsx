@@ -81,7 +81,7 @@ export const renderFormHook = () => {
 const mockTime : MutableRefObject<number> = { current: 5.5 }
 describe('DateTimeDropdown', () => {
 
-  it.only('renders correctly and handle events', async () => {
+  it('renders correctly and handle events', async () => {
     const testDate = moment('2024-08-12T10:30:00')
     const { form } = renderFormHook()
 

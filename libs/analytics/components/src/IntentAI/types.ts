@@ -1,17 +1,18 @@
 import { Moment } from 'moment-timezone'
 
-import { EnhancedRecommendation } from './IntentAIForm/services'
+import { EnhancedIntent } from './IntentAIForm/services'
 
-export type IntentAIFormSpec = Pick<EnhancedRecommendation,
+
+export type IntentAIFormSpec = Pick<EnhancedIntent,
 'id' | 'status' | 'preferences' | 'sliceValue' | 'updatedAt'> & {
     metadata: {
         scheduledAt?: string
     }
 }
 
-export type IntentAIFormDto = Pick<EnhancedRecommendation,
+export type IntentAIFormDto = Pick<EnhancedIntent,
 'status' | 'preferences' | 'sliceValue' | 'updatedAt'> & {
-    id?: EnhancedRecommendation['id'],
+    id?: EnhancedIntent['id'],
     settings: {
         date: Moment | null,
         hour: number | null
