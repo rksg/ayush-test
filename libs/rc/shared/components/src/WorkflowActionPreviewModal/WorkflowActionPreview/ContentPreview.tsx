@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { PoweredBy }                               from '@acx-ui/icons'
+import { PoweredBy, WiFi4EuBanner }                from '@acx-ui/icons'
 import { DefaultUIConfiguration, UIConfiguration } from '@acx-ui/rc/utils'
 
 import { StepNavigation } from './StepNavigation'
@@ -21,6 +21,7 @@ interface ContentPreviewProps {
 export function ContentPreview (props: ContentPreviewProps) {
   const { uiConfiguration, title, body, extra, hideNavigation = false, ...rest } = props
   const {
+    wifi4EUNetworkId,
     uiColorSchema,
     uiStyleSchema,
     disablePoweredBy
@@ -30,21 +31,22 @@ export function ContentPreview (props: ContentPreviewProps) {
     <UI.PreviewContainer
       hasBackgroundImage={!!uiConfiguration?.logoImage}
     >
+      {!wifi4EUNetworkId &&
+        <WiFi4EuBanner />
+      }
+
       {uiConfiguration?.logoImage &&
-        <UI.Logo
+        <img
           style={{
             height: 105 * (uiStyleSchema.logoRatio
               ?? DefaultUIConfiguration.uiStyleSchema.logoRatio),
             width: 105 * (uiStyleSchema.logoRatio
-              ?? DefaultUIConfiguration.uiStyleSchema.logoRatio)
+              ?? DefaultUIConfiguration.uiStyleSchema.logoRatio),
+            margin: '24px'
           }}
-        >
-          <img
-            style={{ width: '100%', height: '100%' }}
-            src={uiConfiguration?.logoImage}
-            alt={'logo'}
-          />
-        </UI.Logo>
+          src={uiConfiguration?.logoImage}
+          alt={'logo'}
+        />
       }
       <UI.Title
         style={{

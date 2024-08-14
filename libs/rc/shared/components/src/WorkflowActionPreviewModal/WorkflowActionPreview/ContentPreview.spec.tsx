@@ -5,12 +5,12 @@ import { render, screen } from '@acx-ui/test-utils'
 import { ContentPreview } from './ContentPreview'
 
 jest.mock('./StepNavigation', () => ({
-  StepNavigation: () => <div data-testId={'mockedStepNavigation'}/>
+  StepNavigation: () => <div data-testid={'mockedStepNavigation'}/>
 }))
 
 describe('ContentPreview', () => {
-  const mockedTitle = <div data-testId={'mockedTitle'}>MockedTitle</div>
-  const mockedBody = <div data-testId={'mockedBody'}>MockedBody</div>
+  const mockedTitle = <div data-testid={'mockedTitle'}>MockedTitle</div>
+  const mockedBody = <div data-testid={'mockedBody'}>MockedBody</div>
 
   it('should render content correctly', () => {
     render(<ContentPreview

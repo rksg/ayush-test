@@ -35,15 +35,6 @@ export const PreviewContainer = styled.div<({ hasBackgroundImage: boolean })>`
   }
 `
 
-export const Logo = styled.div`
-  margin: 24px;
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-`
-
 export const Title = styled.div`
   font-weight: 600;
   padding-bottom: 4px;
