@@ -5,7 +5,6 @@ import { IntlShape }       from 'react-intl'
 import { generatePath }    from 'react-router-dom'
 import styled              from 'styled-components/macro'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { showActionModal, showToast, ToastProps, ToastType } from '@acx-ui/components'
 import { RolesEnum }                                         from '@acx-ui/types'
 import { hasRoles }                                          from '@acx-ui/user'

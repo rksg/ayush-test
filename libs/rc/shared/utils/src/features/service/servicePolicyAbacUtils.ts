@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { RadioCardCategory }                               from '@acx-ui/components'
 import { Path }                                            from '@acx-ui/react-router-dom'
 import { EdgeScopes, ScopeKeys, SwitchScopes, WifiScopes } from '@acx-ui/types'

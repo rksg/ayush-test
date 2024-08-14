@@ -1,6 +1,5 @@
 import { IntlShape } from 'react-intl'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { cssStr } from '@acx-ui/components'
 import {
   Amazon,

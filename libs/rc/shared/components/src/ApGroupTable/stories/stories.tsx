@@ -1,10 +1,9 @@
 import React from 'react'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { APExtended } from 'libs/rc/shared/utils/src/types/ap'
-import { uniqueId }   from 'lodash'
+import { uniqueId } from 'lodash'
 
-import { Table, TableProps } from '..'
+import { Table, TableProps } from '@acx-ui/components'
+import { APExtended }        from '@acx-ui/rc/utils'
 
 export type APExtendedGroupedResponse = {
   networks: {

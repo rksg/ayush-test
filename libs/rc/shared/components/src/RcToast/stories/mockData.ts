@@ -1,7 +1,5 @@
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Transaction, TxStatus } from '@acx-ui/rc/utils'
-
-export const mockdata: Transaction = {
+import { TxStatus } from '@acx-ui/rc/utils'
+export const mockdata = {
   requestId: '41fe99be-764d-455f-9df6-e27a40fe73d0',
   tenantId: 'fc47323e64bc4f69aceee96df92bf68f',
   admin: {

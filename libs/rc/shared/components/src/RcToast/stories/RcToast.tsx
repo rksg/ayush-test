@@ -80,14 +80,14 @@ const downloadToast = () => {
 
 const successToast = () => {
   const mockData = mockdata
-  showTxToast(mockData)
+  showTxToast(mockData as Transaction)
 }
 
 const errorToast = () => {
-  const mockData: Transaction = { ...mockdata,
+  const mockData = { ...mockdata,
     status: TxStatus.FAIL,
     requestId: '456',
     descriptionTemplate: 'Network "@@networkName" was not added'
   }
-  showTxToast(mockData)
+  showTxToast(mockData as Transaction)
 }
