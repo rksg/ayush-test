@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { AlgorithmType, CertificateUrls }                                         from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { WifiScopes }                                                             from '@acx-ui/types'
+import { RolesEnum, WifiScopes }                                                  from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
 
 import { certificateList, certificateTemplate } from '../__test__/fixtures'
@@ -159,12 +159,12 @@ describe('CertificateTable', () => {
     expect(within(row[0]).queryByText('Template')).not.toBeInTheDocument()
   })
 
-  it('should render correctly with wifi-u wifi-d permission', async () => {
+  it('should render correctly with prime adimin permission', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
-      isCustomRole: true,
-      scopes: [WifiScopes.UPDATE, WifiScopes.CREATE]
+      isCustomRole: false,
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
     render(<Provider><CertificateTable /></Provider>, {
@@ -181,12 +181,13 @@ describe('CertificateTable', () => {
     expect(await screen.findByRole('button', { name: 'Unrevoke' })).toBeVisible()
   })
 
-  it('should render correctly with wifi-r permission', async () => {
+  it('should render correctly with read only permission', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
       isCustomRole: true,
-      scopes: [WifiScopes.READ]
+      scopes: [WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
 
     render(<Provider><CertificateTable /></Provider>, {
