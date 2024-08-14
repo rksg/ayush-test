@@ -81,29 +81,31 @@ export const renderFormHook = () => {
 const mockTime : MutableRefObject<number> = { current: 5.5 }
 describe('DateTimeDropdown', () => {
 
-  it.only('renders correctly and handle events', async () => {
+  it('renders correctly', async () => {
     const testDate = moment('2024-08-12T10:30:00')
     const testOnChange: DatePickerProps['onChange'] = () => {}
-    // const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
-    //   return false
-    // }
-    render( <DateTimeDropdown
+    render( <Form> <DateTimeDropdown
       name={'Testing'}
       dateLabel={'This is Date Label'}
       timeLabel={'This is Time Label'}
       initialDate={testDate}
-      // disabledDate={testDisabledDate}
       time={mockTime}
       onchange={testOnChange}
     />
+    </Form>
     )
     expect(await screen.findByText('This is Date Label')).toBeVisible()
     expect(await screen.findByText('This is Time Label')).toBeVisible()
 
-    expect(await screen.findByPlaceholderText('Select hour')).toBeVisible()
+    const dateInitialInput = await screen.findByTitle('2024-08-12')
+    expect(dateInitialInput).toBeVisible()
+    expect(dateInitialInput).toHaveValue('2024-08-12')
+
+    expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
+    expect(screen.getByText('05:30 (UTC+00)')).toBeVisible()
   })
 
-  it('should reset time when date is changed', async () => {
+  it('should handle events', async () => {
     const testDate = moment('2024-08-12T10:30:00')
     const { form } = renderFormHook()
 
@@ -114,7 +116,7 @@ describe('DateTimeDropdown', () => {
     const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
       return current && current < dayjs().startOf('day')
     }
-    render( <DateTimeDropdown
+    render( <Form> <DateTimeDropdown
       name={'Testing'}
       dateLabel={'This is Date Label'}
       timeLabel={'This is Time Label'}
@@ -123,10 +125,21 @@ describe('DateTimeDropdown', () => {
       time={mockTime}
       onchange={testOnChange}
     />
+    </Form>
     )
-    expect(await screen.findByText('This is Date Label')).toBeVisible()
-    expect(await screen.findByText('This is Time Label')).toBeVisible()
+    const dateInitialInput = await screen.findByTitle('2024-08-12')
+    expect(dateInitialInput).toBeVisible()
+    expect(dateInitialInput).toHaveValue('2024-08-12')
 
-    expect(await screen.findByPlaceholderText('Select hour')).toBeVisible()
+    expect(screen.queryByText('Mo')).not.toBeInTheDocument()
+    expect(screen.queryByText('17')).not.toBeInTheDocument()
+    await userEvent.click(dateInitialInput)
+    expect(screen.getByText('Mo')).toBeInTheDocument()
+    expect(screen.getByText('17')).toBeInTheDocument()
+
+    const timeInitialInput = await screen.findByPlaceholderText('Select hour')
+    await userEvent.click(timeInitialInput)
+    expect(screen.getByText('05:30 (UTC+00)')).toBeVisible()
+    expect(screen.getByText('23:45 (UTC+00)')).toBeVisible()
   })
 })
