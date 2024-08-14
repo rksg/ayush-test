@@ -78,9 +78,6 @@ export default function StepDrawer (props: StepDrawerProps) {
         const data = { ...result.data, actionId }
         setActionData(data)
         formInstance.setFieldsValue(data)
-        setTimeout(() => {
-          formInstance.setFieldsValue(data)
-        }, 0)
       })
 
   }, [formInstance, actionId, isEdit])

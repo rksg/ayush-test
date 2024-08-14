@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 
-import {Checkbox, ConfigProvider, Form} from 'antd'
-import useFormInstance       from 'antd/es/form/hooks/useFormInstance'
-import { DefaultOptionType } from 'antd/lib/select'
-import { useIntl }           from 'react-intl'
+import { Checkbox, Form } from 'antd'
+import useFormInstance    from 'antd/es/form/hooks/useFormInstance'
+import { useIntl }        from 'react-intl'
 
 import { Card, Select }            from '@acx-ui/components'
 import {
@@ -129,7 +128,6 @@ export function DpskSettings () {
           <Form.Item
             name={'identityId'}
             label={$t({ defaultMessage: 'Choose Identity' })}
-            // initialValue={null}
           >
             <Select options={[
               {
@@ -152,7 +150,9 @@ export function DpskSettings () {
               label={$t({ defaultMessage: 'Supported Networks' })}
             >
               {networkList.map((network, index) => (
-                <b key={index}>{network}</b>
+                <Fragment key={index}>
+                  <b>{network}</b><br/>
+                </Fragment>
               ))}
             </Form.Item>
           </div>

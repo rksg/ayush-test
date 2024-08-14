@@ -86,22 +86,6 @@ export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' })
 }
 
-// FIXME: Deprecated => due to we don't support action template selector anymore.
-export const ActionTypeSelectionTerms: Record<ActionType, MessageDescriptor | undefined> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'Select the existing AUP to use:' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Select the existing data prompt template to use:' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined,
-  [ActionType.DPSK]: undefined
-}
-
-// FIXME: Deprecated => due to we don't support action template selector anymore.
-export const ActionTypeNewTemplateTerms: Record<ActionType, MessageDescriptor | undefined> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'A new AUP created from a standard template.' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'A new prompt created from a standard template.' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined,
-  [ActionType.DPSK]: undefined
-}
-
 export const AupActionDefaultValue: {
   [key in keyof AupActionContext]: MessageDescriptor | string | boolean
 } = {
