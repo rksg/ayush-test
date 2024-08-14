@@ -1,8 +1,6 @@
 import moment from 'moment-timezone'
 
 export function handleScheduledAt (scheduledAt:string) {
-  console.log(moment())
-  console.log(moment(scheduledAt))
   const originalScheduledAt = moment(scheduledAt)
   const futureThreshold = moment().add(15, 'minutes')
   if (originalScheduledAt.isBefore(futureThreshold)) {

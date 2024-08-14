@@ -12,39 +12,6 @@ import { IntentAIFormDto, IntentAIFormSpec } from '../types'
 
 import { kpis }                                                                                                              from './AIDrivenRRM'
 import {  EnhancedIntent, kpiHelper, recApi, roundUpTimeToNearest15Minutes, specToDto, useUpdatePreferenceScheduleMutation } from './services'
-// import { handleScheduledAt }                                                                                                 from './util'
-// import * as utils                                                                                                            from './utils'
-
-// jest.mock('./utils', () => ({
-//   handleScheduledAt: jest.fn(() => 'mocked implementation'),
-// }));
-
-
-// beforeEach(() => {
-// jest.mock('moment-timezone', () => {
-//   const timezone = 'UTC'
-//   const moment = jest.requireActual('moment-timezone')
-//   // console.log(actualMoment)
-//   // moment.tz.guess = () => timezone
-//   return {
-//     __esModule: true,
-//     ...moment,
-//     // tz: {
-//     //   ...moment.tz,
-//     //   guess: () => timezone
-//     // },
-//     default: (date: MomentInput) =>
-//       date === '2024-07-13T07:30:00.000Z'
-//         ? moment(date)
-//         : moment('2024-07-13T07:35:00') // mock current date
-//   }
-// })
-// jest.resetModules()
-// })
-
-// afterEach(() => {
-//   jest.restoreAllMocks()
-// })
 
 describe('intentAI services', () => {
   describe('intent code', () => {
@@ -185,7 +152,6 @@ describe('intentai services', () => {
 
   it('should update preference and schedule correctly if scheduledAt < currentTime + 15',
     async () => {
-      // jest.mock('./utils').mockReturnValue('2024-07-14T07:30:00.000Z')
       const utils = require('./utils')
       jest.spyOn(utils, 'handleScheduledAt').mockImplementation(() => '2024-07-14T07:30:00.000Z')
       const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
@@ -207,27 +173,4 @@ describe('intentai services', () => {
       expect(result.current[1].data)
         .toEqual(resp)
     })
-
-  // it('should update preference and schedule correctly if scheduledAt >= currentTime + 15',
-  //   async () => {
-  //     const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
-  //     mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
-
-  //     const { result } = renderHook(
-  //       () => useUpdatePreferenceScheduleMutation(),
-  //       { wrapper: Provider }
-  //     )
-  //     act(() => {
-  //       result.current[0]({
-  //         ...commonArgs,
-  //         settings: {
-  //           date: moment('2024-09-13'),
-  //           hour: 8.5
-  //         }
-  //       } as IntentAIFormDto)
-  //     })
-  //     await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
-  //     expect(result.current[1].data)
-  //       .toEqual(resp)
-  //   })
 })

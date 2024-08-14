@@ -1,4 +1,6 @@
-import moment from 'moment-timezone'
+import { MomentInput } from 'moment-timezone'
+
+import { handleScheduledAt } from './utils'
 
 
 jest.mock('moment-timezone', () => {
@@ -7,13 +9,23 @@ jest.mock('moment-timezone', () => {
   return {
     __esModule: true,
     ...moment,
-    default: () =>moment('2024-07-13T07:35:00') // mock current date
+    default: (date: MomentInput) =>
+      ( date === '2024-07-13T07:45:00.000Z') ||
+      ( date === '2024-07-13T09:00:00.000Z')
+        ? moment(date)
+        : moment('2024-07-13T07:35:00.000Z') // mock current datetime
   }
 })
 
 describe('roundUpTimeToNearest15Minutes', () => {
-  it('should return if scheduledAt < currentTime + 15', () => {
-    const timeString = '08:30:00'
-    expect(roundUpTimeToNearest15Minutes(timeString)).toEqual(8.5)
+  it('should return correct scheduledAt, if scheduledAt < currentTime + 15', () => {
+    const actualScheduledAt = '2024-07-13T07:45:00.000Z'
+    const expectedScheduledAt = '2024-07-14T07:45:00.000Z'
+    expect(handleScheduledAt(actualScheduledAt)).toEqual(expectedScheduledAt)
+  })
+  it('should return correct scheduledAt, if scheduledAt >= currentTime + 15', () => {
+    const actualScheduledAt = '2024-07-13T09:00:00.000Z'
+    const expectedScheduledAt = actualScheduledAt
+    expect(handleScheduledAt(actualScheduledAt)).toEqual(expectedScheduledAt)
   })
 })
