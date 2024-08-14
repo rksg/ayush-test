@@ -19,18 +19,16 @@ import {
   transformNetwork,
   NetworkRadiusSettings,
   GetApiVersionHeader,
-  ApiVersionEnum,
-  NetworkVenue,
-  NetworkApGroup
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }                                from '../network'
-import { fetchRbacNetworkVenueList }                 from '../networkVenueUtils'
-import { ActionItem, commonQueryFn, comparePayload } from '../servicePolicy.utils'
-import { addNetworkVenueFn }                         from '../servicePolicy.utils/network'
+import { networkApi }                                      from '../network'
+import { fetchRbacNetworkVenueList, updateNetworkVenueFn } from '../networkVenueUtils'
+import { commonQueryFn }                                   from '../servicePolicy.utils'
+import { addNetworkVenueFn }                               from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -297,98 +295,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
-        const { oldPayload, newPayload } = payload as { oldPayload: NetworkVenue, newPayload: NetworkVenue }
-
-        const updateNetworkVenueInfo = {
-          ...createHttpRequest(
-            enableRbac ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : ConfigTemplateUrlsInfo.updateNetworkVenue,
-            params),
-          body: JSON.stringify(newPayload)
-        }
-        const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
-
-        if (enableRbac) {
-          const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
-            return {
-              [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
-            } as ActionItem
-          }
-
-          const newApGroups = newPayload.apGroups as NetworkApGroup[]
-          const oldApGroups = oldPayload.apGroups as NetworkApGroup[]
-
-          const updateApGroups = [] as NetworkApGroup[]
-          const addApGroups = [] as NetworkApGroup[]
-          const deleteApGroups = [] as NetworkApGroup[]
-
-          newApGroups.forEach((newApGroup: NetworkApGroup) => {
-            const apGroupId = newApGroup.apGroupId as string
-            const oldApGroup = find(oldApGroups, { apGroupId })
-            const comparisonResult = comparePayload(
-              newApGroup as unknown as Record<string, unknown>,
-              oldApGroup as unknown as Record<string, unknown>,
-              apGroupId,
-              itemProcessFn
-            )
-            if (!oldApGroup) addApGroups.push(newApGroup)
-            if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
-          })
-
-          oldApGroups.forEach((oldApGroup: NetworkApGroup) => {
-            const apGroupId = oldApGroup.apGroupId as string
-            const newApGroup = find(newApGroups, { apGroupId })
-            if (!newApGroup) deleteApGroups.push(oldApGroup)
-          })
-
-          if (addApGroups.length > 0) {
-            await Promise.all(addApGroups.map(apGroup => {
-              const apGroupSettingReq = {
-                ...createHttpRequest(
-                  ConfigTemplateUrlsInfo.activateVenueApGroupRbac, {
-                    venueId: apGroup.venueId,
-                    networkId: apGroup.networkId,
-                    apGroupId: apGroup.apGroupId
-                  })
-              }
-              return fetchWithBQ(apGroupSettingReq)
-            }))
-          }
-
-          if (updateApGroups.length > 0) {
-            await Promise.all(updateApGroups.map(apGroup => {
-              const apGroupSettingReq = {
-                ...createHttpRequest(
-                  ConfigTemplateUrlsInfo.updateVenueApGroupsRbac, {
-                    venueId: apGroup.venueId,
-                    networkId: apGroup.networkId,
-                    apGroupId: apGroup.apGroupId
-                  }),
-                body: JSON.stringify(apGroup)
-              }
-              return fetchWithBQ(apGroupSettingReq)
-            }))
-          }
-
-          if (deleteApGroups.length > 0) {
-            await Promise.all(deleteApGroups.map(apGroup => {
-              const apGroupSettingReq = {
-                ...createHttpRequest(
-                  ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac, {
-                    venueId: apGroup.venueId,
-                    networkId: apGroup.networkId,
-                    apGroupId: apGroup.apGroupId
-                  })
-              }
-              return fetchWithBQ(apGroupSettingReq)
-            }))
-          }
-        }
-
-        return updateNetworkVenueQuery.data
-          ? { data: updateNetworkVenueQuery.data as CommonResult }
-          : { error: updateNetworkVenueQuery.error as FetchBaseQueryError }
-      },
+      queryFn: updateNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [

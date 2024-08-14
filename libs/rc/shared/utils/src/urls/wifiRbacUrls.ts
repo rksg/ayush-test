@@ -84,7 +84,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     //url: '/networkActivations/:networkVenueId?quickAck=true',
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   // no longer supported after v1, use updateNetworkVenue loop as replacement
