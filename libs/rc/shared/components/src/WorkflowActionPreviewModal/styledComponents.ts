@@ -105,7 +105,6 @@ export const LayoutContent = styled(AntLayout)<{ $isPreview: boolean | undefined
   align-items: center;
   ${props => props.$isPreview ? css`
   height:100%;`: css`height: 608px;`}
-  margin-bottom:10px;
 `
 export const LayoutView = styled(AntLayout)<{ $type: string | null }>`
   ${props => props.$type === 'desk' ? css`

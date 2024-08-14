@@ -201,7 +201,9 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
             </div>
           </div>
         </UI.LayoutHeader>
-        <UI.LayoutContent id={'actiondemocontent'} $isPreview={true} style={{ height: '750px' }}>
+        <UI.LayoutContent id={'actiondemocontent'}
+          $isPreview={true}
+          style={{ height: '750px' }}>
           <UI.LayoutView $type={screen}
             style={{
               backgroundImage: 'url("'+ UIConfig?.backgroundImage+'")',

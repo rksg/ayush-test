@@ -16,7 +16,7 @@ const { Panel } = Collapse
 interface ActionLibraryProps {
   visible: boolean,
   onClose: () => void,
-  onClickAction: (id: string, type: ActionType) => void,
+  onClickAction: (type: ActionType) => void,
 
   relationshipMap: Partial<Record<ActionType, RequiredDependency>>
   existingActionTypes?: Set<ActionType>
@@ -61,7 +61,7 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
 
   const onClick = (type: ActionType) => {
     if(defMap?.get(type)) {
-      onClickAction(defMap?.get(type), type)
+      onClickAction(type)
     }
   }
 

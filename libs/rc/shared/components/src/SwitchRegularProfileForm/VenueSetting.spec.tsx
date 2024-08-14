@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                          from '@acx-ui/components'
-import { switchApi, venueApi }                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
-import { mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { StepsForm }                                                     from '@acx-ui/components'
+import { switchApi, venueApi }                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo }                                from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
+import { mockServer, render, screen, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { familyModels, venues } from './__tests__/fixtures'
 import {
@@ -99,6 +99,7 @@ describe('Wired', () => {
         route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(await within(row).findByRole('checkbox'))
     expect(await screen.findByRole('alert')).toBeInTheDocument()
@@ -136,6 +137,7 @@ describe('Wired', () => {
         route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
       })
 
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /My-Venue/i })
     await userEvent.click(await within(row).findByRole('checkbox'))
     expect(await screen.findByRole('alert')).toBeInTheDocument()

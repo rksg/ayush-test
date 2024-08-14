@@ -43,7 +43,8 @@ import {
   baseEdgeSdLanApi,
   baseConfigTemplateApi,
   baseWorkflowApi,
-  smartZoneApi
+  smartZoneApi,
+  baseEdgeQosProfilesApi as edgeQosProfilesApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -90,7 +91,8 @@ export const store = configureStore({
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer,
-    [smartZoneApi.reducerPath]: smartZoneApi.reducer
+    [smartZoneApi.reducerPath]: smartZoneApi.reducer,
+    [edgeQosProfilesApi.reducerPath]: edgeQosProfilesApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -139,7 +141,8 @@ export const store = configureStore({
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
       baseWorkflowApi.middleware,
-      smartZoneApi.middleware
+      smartZoneApi.middleware,
+      edgeQosProfilesApi.middleware
     ])
   },
 

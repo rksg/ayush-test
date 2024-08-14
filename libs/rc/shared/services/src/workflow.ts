@@ -115,7 +115,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         const req = createHttpRequest(WorkflowUrls.updateWorkflow, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Workflow' }]
@@ -130,10 +130,10 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 
         return {
           ...req,
-          body: {
+          body: JSON.stringify({
             ...Object.assign({}, payload),
             ...transferToNewTablePaginationParams (payload as TableChangePayload)
-          }
+          })
         }
       },
       transformResponse (result: NewAPITableResult<Workflow>) {
@@ -170,10 +170,10 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             params: { ...params, id: id },
             payload: payload as TableChangePayload
           }),
-          body: {
+          body: JSON.stringify({
             ...Object.assign({}, payload),
             ...transferToNewTablePaginationParams (payload as TableChangePayload)
-          }
+          })
           })))
         const responses = await Promise.all(promises)
         responses.forEach(res => {
@@ -215,10 +215,10 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         })
         return {
           ...req,
-          body: {
+          body: JSON.stringify({
             ...Object.assign({}, payload),
             ...transferToNewTablePaginationParams (payload as TableChangePayload)
-          }
+          })
         }
       },
       transformResponse (result: NewAPITableResult<Workflow>) {

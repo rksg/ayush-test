@@ -1,3 +1,4 @@
+import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { useEffect } from 'react'
 
@@ -87,11 +88,16 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       elementsSelectable={isEditMode}
       style={{ background: isEditMode ? 'var(--acx-neutrals-15)' : '' }}
     >
-      {/*<MiniMap position={'bottom-left'} />*/}
       { isEditMode &&
         <>
-          <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />
-          <Background color='#ccc' variant={BackgroundVariant.Dots} />
+          <Controls
+            fitViewOptions={{ maxZoom: 1 }}
+            position={'bottom-right'}
+          />
+          <Background
+            color='#ccc'
+            variant={BackgroundVariant.Dots}
+          />
         </>
       }
 

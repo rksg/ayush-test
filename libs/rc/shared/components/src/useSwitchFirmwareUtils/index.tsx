@@ -4,7 +4,9 @@ import { Tag, Tooltip, Typography } from 'antd'
 import _                            from 'lodash'
 import { IntlShape }                from 'react-intl'
 
+import { cssStr }                   from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { StarSolid }                from '@acx-ui/icons'
 import {
   useGetSwitcDefaultVersionsQuery
 } from '@acx-ui/rc/services'
@@ -27,7 +29,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { Statistic } from './styledComponents'
+import { DowngradeTag, RecommendedTag, Statistic } from './styledComponents'
 
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -65,22 +67,38 @@ export function useSwitchFirmwareUtils () {
     }
     return displayVersion
   }
-
-  const getSwitchVersionLabelV1002 = (intl: IntlShape, version: FirmwareVersion): string => {
-    const transform = firmwareTypeTrans(intl.$t)
-    const versionName = parseSwitchVersion(version?.name)
-    const versionType = transform(version?.category)
-
-    let displayVersion = `${versionName} (${versionType})`
-    if (version.inUse) {
-      // eslint-disable-next-line max-len
-      return `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
-    } else if (version.isNonDowngradable) {
-      // eslint-disable-next-line max-len
-      return `${displayVersion} - ${intl.$t({ defaultMessage: 'The firmware version is already at version 10.0 and cannot be downgraded to version 9.0.' })}`
-    }
-    return displayVersion
+  const getSwitchVersionTagV1002 =
+  (intl: IntlShape, version: FirmwareVersion): React.ReactNode => {
+    return (<>
+      {(version?.category === FirmwareCategory.RECOMMENDED) &&
+        <RecommendedTag>
+          <StarSolid
+            style={{
+              color: cssStr('--acx-semantics-yellow-40'),
+              width: '16px',
+              height: '16px',
+              marginRight: '5px',
+              marginBottom: '-3px'
+            }}
+          />
+          <span>{intl.$t({ defaultMessage: 'Recommended' })}</span>
+        </RecommendedTag>}
+      {(version.isDowngradeVersion || version.isDowngraded10to90) && !version.inUse &&
+        <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+    </>)
   }
+
+  const getSwitchVersionLabelV1002 =
+    (intl: IntlShape, version: FirmwareVersion): string | undefined => {
+      if (version.inUse) {
+        // eslint-disable-next-line max-len
+        return `${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
+      } else if (version.isDowngraded10to90) {
+        // eslint-disable-next-line max-len
+        return `${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
+      }
+      return ''
+    }
 
   const getSwitchNextScheduleTplTooltip =
    (venue: FirmwareSwitchVenue): string | undefined => {
@@ -290,7 +308,8 @@ export function useSwitchFirmwareUtils () {
           inUse: (getParseVersion(v.id) === getParseVersion(inUseVersion)) ? true : v.inUse,
           isDowngradeVersion: isDowngradeVersionV1002(inUseVersion, v.id) ?
             true : v.isDowngradeVersion,
-          isNonDowngradable: isNonDowngradable(inUseVersion, v.id) ? true : v.isNonDowngradable,
+          isDowngraded10to90: getIsDowngraded10to90(inUseVersion, v.id) ?
+            true : v.isDowngraded10to90,
           category
         }
       })
@@ -346,7 +365,7 @@ export function useSwitchFirmwareUtils () {
     return compareSwitchVersion(inUseVersion, version) > 0
   }
 
-  function isNonDowngradable (inUseVersion: string, version: string) {
+  function getIsDowngraded10to90 (inUseVersion: string, version: string) {
     if(inUseVersion?.includes('100') && version?.includes('090')) {
       return true
     }
@@ -428,6 +447,7 @@ export function useSwitchFirmwareUtils () {
     parseSwitchVersion,
     getSwitchVersionLabel,
     getSwitchVersionLabelV1002,
+    getSwitchVersionTagV1002,
     getSwitchNextScheduleTplTooltip,
     getSwitchNextScheduleTplTooltipV1002,
     getSwitchDrawerNextScheduleTpl,

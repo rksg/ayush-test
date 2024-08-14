@@ -35,7 +35,7 @@ export default function BaseStepNode (props: NodeProps
   const onEditClick = () => {
     onPreviewClose()
     onHandleNode(props)
-    stepDrawerState.onOpen(true, 'definitionId', props.type as ActionType)
+    stepDrawerState.onOpen(true, props.type as ActionType)
   }
 
   const onAddClick = () => {

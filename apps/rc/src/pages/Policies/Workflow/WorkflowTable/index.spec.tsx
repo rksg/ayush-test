@@ -14,9 +14,10 @@ const workflows:Workflow[] = [{
 }]
 
 const publishedWorkflows: Workflow[] = [{
-  id: 'id1',
+  id: 'id2',
   name: 'workflow-1',
   publishedDetails: {
+    parentWorkflowId: 'id1',
     status: 'PUBLISHED',
     version: 1,
     publishedDate: '2024-02-01'
@@ -124,11 +125,10 @@ describe('WorkflowTable', () => {
     // // assert link in Table view
     await screen.findByRole('link', { name: workflows[0].name })
 
-    const row = await screen.findByRole('row', { name: workflows[0].name })
+    const row = await screen.findByRole('row', { name: new RegExp(workflows[0].name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
     await screen.findByRole('button', { name: /Edit/i })
-    await screen.findByRole('button', { name: /Clone/i })
     const deleteButton = await screen.findByRole('button', { name: /Delete/i })
     await userEvent.click(deleteButton)
     await waitFor(() => expect(deleteWorkflowApi).toHaveBeenCalled())

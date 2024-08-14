@@ -313,5 +313,10 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PATCH',
     url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
     newApi: true
+  },
+  getEdgeFeatureSets: {
+    method: 'post',
+    url: '/edgeFeatureSets/query',
+    newApi: true
   }
 }
