@@ -56,6 +56,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  delL2AclPolicyRbac: {
+    method: 'delete',
+    url: '/templates/l2AclPolicies/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateL2AclPolicy: {
     method: 'put',
     url: '/templates/l2AclPolicies/:l2AclPolicyId',
@@ -127,6 +136,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  delL3AclPolicyRbac: {
+    method: 'delete',
+    url: '/templates/l3AclPolicies/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateL3AclPolicy: {
@@ -204,6 +222,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  delAppAclPolicyRbac: {
+    method: 'delete',
+    url: '/templates/applicationPolicies/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateAppAclPolicy: {
@@ -334,6 +361,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
+  deleteAccessControlProfileRbac: {
+    method: 'delete',
+    url: '/templates/accessControlProfiles/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   addDevicePolicy: {
     method: 'post',
     url: '/templates/devicePolicies',
@@ -377,6 +413,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  delDevicePolicyRbac: {
+    method: 'delete',
+    url: '/templates/devicePolicies/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateDevicePolicy: {
