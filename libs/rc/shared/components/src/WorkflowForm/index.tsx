@@ -80,7 +80,6 @@ export function WorkflowForm (props: WorkflowFormProps) {
   const handleUpdateWorkflow = async (originData:Workflow|undefined,
     submittedData: Partial<Workflow>, shouldPublish: boolean ) => {
     if (originData === undefined) return
-
     const workflowKeys = ['name'] as const
     const patchData = {}
 
