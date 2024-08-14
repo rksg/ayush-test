@@ -1,11 +1,12 @@
 import { useState } from 'react'
 
-import { Col, Row }  from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Col, Row } from 'antd'
+import { useIntl }  from 'react-intl'
+// import { useParams } from 'react-router-dom'
 
-import { cssNumber }                             from '@acx-ui/components'
-import { useGetEntitlementsAttentionNotesQuery } from '@acx-ui/msp/services'
+import { cssNumber }        from '@acx-ui/components'
+import { InformationSolid } from '@acx-ui/icons'
+// import { useGetEntitlementsAttentionNotesQuery } from '@acx-ui/msp/services'
 
 import { fakeAttentionNotes } from './__tests__/fixtures'
 import * as UI                from './styledComponents'
@@ -38,29 +39,25 @@ function ShowMoreNotesLink (props: ShowMoreNotesLinkProps) {
 
 export const ComplianceBanner = () => {
   const { $t } = useIntl()
-  const params = useParams()
+  //   const params = useParams()
   const [ shownMoreNotesInBanner, setShownMoreNotesInBanner ] = useState(false)
 
-  const notesPayload = {
-    filters: {
-      usageType: 'ASSIGNED'
-    }
-  }
-  const queryData = useGetEntitlementsAttentionNotesQuery(
-    { params, payload: notesPayload }, { skip: true })
+  //   const notesPayload = {
+  //     filters: {
+  //       usageType: 'ASSIGNED'
+  //     }
+  //   }
+  //   const queryData = useGetEntitlementsAttentionNotesQuery(
+  //     { params, payload: notesPayload }, { skip: true })
 
   return (
-    <UI.BannerVersion>
+    <UI.BannerComplianceNotes>
       <Row justify='space-between' gutter={[16, 16]}>
-        <Col style={{ width: '100%' }}>
-          <UI.LatestVersion>
+        <Col>
+          <UI.ComplianceNotesLabel>
+            <InformationSolid />
             {$t({ defaultMessage: 'Attention Notes' })}
-          </UI.LatestVersion>
-          <div>{$t({ defaultMessage: `- On January 1, 2025 RUCKUS One will 
-            stop adding 5% courtesy licenses to the MSP subscriptions.` })}</div>
-          <div>{$t({ defaultMessage: `- On March 1, 2025 RUCKUS One will start enforcing 
-            subscription expiration policy, which may have an impact on your network operation.` })}
-          </div>
+          </UI.ComplianceNotesLabel>
         </Col>
         <Col>
           <ShowMoreNotesLink
@@ -68,9 +65,19 @@ export const ComplianceBanner = () => {
             setShownMoreNotesInBanner={setShownMoreNotesInBanner}
           />
         </Col>
-
       </Row>
-    </UI.BannerVersion>
+      {
+        fakeAttentionNotes.attentionNotes.map((note) => (
+          <div className='note' key={note.summary}>- {note.summary}
+            {shownMoreNotesInBanner && note.details &&
+              note.details.map((detail) => (
+                <div className='detail' key={detail}>{detail}</div>
+              ))
+            }
+          </div>
+        ))
+      }
+    </UI.BannerComplianceNotes>
   )
 }
 
