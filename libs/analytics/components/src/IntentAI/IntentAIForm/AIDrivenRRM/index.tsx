@@ -20,10 +20,10 @@ import { IntentConfig, states, StateType, IntentKPIConfig }                     
 import { useIntentCodeQuery, useIntentDetailsQuery }                                  from '../services'
 import * as UI                                                                        from '../styledComponents'
 
-import { Introduction } from './introduction'
-import { Priority }     from './priority'
-import { Settings }     from './settings'
-import { Summary }      from './summary'
+import { Introduction } from './Introduction'
+import { Priority }     from './Priority'
+import { Settings }     from './Settings'
+import { Summary }      from './Summary'
 
 export const kpis: IntentKPIConfig[] = [{
   key: 'number-of-interfering-links',

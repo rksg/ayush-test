@@ -8,7 +8,7 @@ import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/compone
 import { EnhancedIntent } from '../services'
 import * as UI            from '../styledComponents'
 
-import { IntentPriority, Priority } from './priority'
+import { IntentPriority, Priority } from './Priority'
 
 import { steps, crrmIntent, isOptimized } from '.'
 
