@@ -360,8 +360,8 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
-    getNetworkDeep: build.query<NetworkSaveData | null, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+    getNetworkDeep: build.query<NetworkSaveData | null, RequestPayload<{ isTemplate?: boolean }>>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
@@ -370,7 +370,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         const networkQuery = await fetchWithBQ(
           createHttpRequest(
-            params?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : WifiRbacUrlsInfo.getNetwork,
+            payload?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : WifiRbacUrlsInfo.getNetwork,
             params,
             GetApiVersionHeader(ApiVersionEnum.v1)
           )
