@@ -338,7 +338,7 @@ export const GuestsTable = () => {
       key: 'downloadInformation',
       label: $t({ defaultMessage: 'Download Information' }),
       scopeKey: [WifiScopes.READ],
-      operationRoles,
+      roles: operationRoles,
       onClick: (selectedRows:Guest[]) => {
         guestAction.showDownloadInformation(selectedRows, params.tenantId)
       }
