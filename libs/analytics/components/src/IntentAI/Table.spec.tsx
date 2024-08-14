@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
 import '@testing-library/jest-dom'
 
-import { Tooltip }    from '@acx-ui/components'
-import { get }        from '@acx-ui/config'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import userEvent from '@testing-library/user-event'
+
+import { Tooltip }        from '@acx-ui/components'
+import { get }            from '@acx-ui/config'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM } from './__tests__/fixtures'
 import { aiFeatures }                                                                           from './config'
@@ -26,10 +29,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithRRM)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.RRM]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.RRM]}
         </Tooltip>
@@ -41,10 +44,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithAirFlexAI)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.AirFlexAI]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.AirFlexAI]}
         </Tooltip>
@@ -56,10 +59,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithAIOps)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.AIOps]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.AIOps]}
         </Tooltip>
@@ -71,10 +74,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithEcoFlexAI)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.EcoFlexAI]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.EcoFlexAI]}
         </Tooltip>
@@ -88,10 +91,10 @@ describe('AIFeature component', () => {
   it('should render AIFeature for R1', async () => {
     expect(AIFeature(aiFeatureWithRRM)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.RRM]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.RRM]}
         </Tooltip>
@@ -103,10 +106,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithAirFlexAI)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.AirFlexAI]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.AirFlexAI]}
         </Tooltip>
@@ -118,10 +121,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithAIOps)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.AIOps]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.AIOps]}
         </Tooltip>
@@ -133,10 +136,10 @@ describe('AIFeature component', () => {
 
     expect(AIFeature(aiFeatureWithEcoFlexAI)).toEqual(
       <UI.FeatureIcon>
-        <UI.TooltipContent />
         <Tooltip
           placement='right'
           title={iconTooltips[aiFeatures.EcoFlexAI]}
+          overlayInnerStyle={{ width: '345px' }}
         >
           {icons[aiFeatures.EcoFlexAI]}
         </Tooltip>
@@ -147,4 +150,8 @@ describe('AIFeature component', () => {
     )
   })
 
+  it('should trigger click tooltip for R1', async () => {
+    render(iconTooltips[aiFeatures.RRM])
+    await userEvent.click(await screen.findByTestId('featureTooltip'))
+  })
 })
