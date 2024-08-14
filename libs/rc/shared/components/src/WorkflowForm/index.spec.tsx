@@ -65,24 +65,6 @@ jest.mock('@acx-ui/rc/services', () => ({
   }
 }))
 
-// jest.mock('@acx-ui/rc/services', () => ({
-//   ...jest.requireActual('@acx-ui/rc/services'),
-//   useCreateActionMutation: () => {
-//     return [(req: RequestPayload) => {
-//       return { unwrap: () => new Promise((resolve) => {
-//         mockCreateActionFn()
-
-//         resolve(true)
-
-//         setTimeout(() => {
-//           (req.callback as Function)({ id: 'mocked_id' })
-//         }, 100)})
-//       }
-//     }]
-//   }
-// }))
-
-
 describe('WorkflowForm', () => {
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -146,7 +128,7 @@ describe('WorkflowForm', () => {
   })
 
 
-  it('should render correctly for editing workflow', async () => {
+  it('should render correctly for edit workflow', async () => {
     render(
       <Provider>
         <WorkflowForm
@@ -164,6 +146,27 @@ describe('WorkflowForm', () => {
     await userEvent.type(nameField, 'new name')
     fireEvent.click(applyButton)
   })
+
+  it('should render correctly for publish workflow', async () => {
+    render(
+      <Provider>
+        <WorkflowForm
+          mode={WorkflowFormMode.EDIT}
+        />
+      </Provider>, {
+        route: { params: {
+          tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+          policyId: workflows[0].id
+        }, path: '/:tenantId/:policyId' }
+      })
+
+    const applyButton = await screen.findByRole('button', { name: 'Apply & Publish' })
+    const nameField = await screen.findByLabelText('Workflow Name')
+    await userEvent.type(nameField, 'new name')
+    fireEvent.click(applyButton)
+    await waitFor(() => expect(updateWorkflowApi).toHaveBeenCalled())
+  })
+
 
   it('should cancel correctly for editing workflow', async () => {
     render(

@@ -1,5 +1,6 @@
-import { rest } from 'msw'
-import { Path } from 'react-router-dom'
+import { userEvent } from '@storybook/testing-library'
+import { rest }      from 'msw'
+import { Path }      from 'react-router-dom'
 
 import { useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
 import { ActionType, GenericActionData, StepType, UIConfiguration, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
@@ -106,6 +107,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('../../EnrollmentPortalDesignModal', () => ({
+  ...jest.requireActual('../../EnrollmentPortalDesignModal'),
+  EnrollmentPortalDesignModal: () => <div data-testid='EnrollmentPortalDesignModal' />
+}))
+
 
 
 describe('Workflow Action Preview', () => {
@@ -170,11 +176,12 @@ describe('Workflow Action Preview', () => {
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    await screen.findByText('Portal Design')
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(getDefinitionApi).toHaveBeenCalled())
     await waitFor(() => expect(getStepsApi).toHaveBeenCalled())
+    const modal = await screen.findByText('Portal Design')
+    userEvent.click(modal)
   })
 
   it('should render correctly with step', async () => {
@@ -189,6 +196,8 @@ describe('Workflow Action Preview', () => {
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
     await waitFor(() => expect(getActionApi).toHaveBeenCalled())
+    const modal = await screen.findByText('Portal Design')
+    userEvent.click(modal)
   })
 
   it('should render correctly with action data', async () => {
@@ -202,5 +211,7 @@ describe('Workflow Action Preview', () => {
     await screen.findByText('Portal Design')
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
+    const modal = await screen.findByText('Portal Design')
+    userEvent.click(modal)
   })
 })
