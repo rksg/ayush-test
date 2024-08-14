@@ -1,4 +1,4 @@
-import { useState, Key } from 'react'
+import { useState, Key, useEffect } from 'react'
 
 import { Radio, Space, Typography } from 'antd'
 import _                            from 'lodash'
@@ -35,12 +35,19 @@ export function ConfigProfileModal (props: {
   const [disableButton, setDisableButton] = useState(false)
   const [selectedProfileKeys, setSelectedProfileKeys] = useState('')
   const [selectedCliProfileKeys, setSelectedCliProfileKeys] = useState([] as Key[])
+  const [isCliProfile, setIsCliProfile] = useState(false as boolean)
 
   const { configProfiles, changeModalvisible } = formState
   const selectedProfiles = getProfilesByKeys(configProfiles, formData.profileId)
   const selectedCLIKeys = getProfileKeysByType(selectedProfiles, ProfileTypeEnum.CLI)
   const regularProfiles = getProfilesByType(configProfiles, ProfileTypeEnum.REGULAR)
   const cliProfiles = getProfilesByType(configProfiles, ProfileTypeEnum.CLI)
+
+  useEffect(() => {
+    if (selectedCLIKeys.length > 0) {
+      setIsCliProfile(true)
+    }
+  }, ([configProfiles]))
 
   const onChangeRegular = (e: RadioChangeEvent) => {
     setSelectedProfileKeys(e.target.value)
@@ -51,9 +58,11 @@ export function ConfigProfileModal (props: {
     const switchModels = selected.flatMap(s => s?.venueCliTemplate?.switchModels?.split(','))
     setDisableButton(switchModels.length !== _.uniq(switchModels).length)
     setSelectedCliProfileKeys(selectedRowKeys)
+    setIsCliProfile(selectedRowKeys.length > 0)
   }
 
   const onCancel = () => {
+    setIsCliProfile(selectedCLIKeys.length > 0)
     setFormState({ ...formState, changeModalvisible: false })
   }
 
@@ -119,13 +128,13 @@ export function ConfigProfileModal (props: {
   >
     <Tabs type='line'
       stickyTop={false}
-      defaultActiveKey={formState.cliApplied
+      defaultActiveKey={isCliProfile
         ? ProfileTypeEnum.CLI
         : ProfileTypeEnum.REGULAR}>
       <Tabs.TabPane
         tab={$t({ defaultMessage: 'Regular Profiles' })}
         key={ProfileTypeEnum.REGULAR}
-        disabled={formState.cliApplied}
+        disabled={isCliProfile}
       >
         <Typography.Text>
           {$t({ defaultMessage: 'Select a configuration profile to apply:' })}
