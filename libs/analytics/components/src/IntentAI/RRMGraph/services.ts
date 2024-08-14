@@ -14,7 +14,7 @@ import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
 
-import { EnhancedRecommendation } from '../../../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
 
 const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
@@ -26,7 +26,7 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
       query: (variables) => ({
         document: gql`
           query IntentAIRRMGraph($id: String) {
-            recommendation(id: $id) {
+            intent: recommendation(id: $id) {
               graph: kpi(key: "graph", timeZone: "${moment.tz.guess()}") {
                 current projected previous
               }
@@ -36,11 +36,11 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
         variables
       }),
       transformResponse: (
-        response: { recommendation: { graph: Record<string, CloudRRMGraph | null> } },
+        response: { intent: { graph: Record<string, CloudRRMGraph | null> } },
         _,
         { band }
       ) => {
-        const data = response.recommendation.graph
+        const data = response.intent.graph
         const sortedData = {
           previous: data.previous,
           current: data.current,
@@ -49,16 +49,31 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
         const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
         )(Object.values(sortedData!).filter(v => v !== null), band)
+
+        const kpiGraph = processedGraphs.map(graph => {
+          const affectedAPs = new Set()
+          const interferingLinks = graph.links.filter(link => link.category === 'highlight')
+
+          interferingLinks.forEach(link => {
+            affectedAPs.add(link.source)
+            affectedAPs.add(link.target)
+          })
+
+          graph.affectedAPs = affectedAPs.size
+          graph.interferingLinks = interferingLinks.length * 2
+          return graph
+        })
+
         return {
-          data: trimPairedGraphs(processedGraphs),
-          csv: getCrrmCsvData(processedGraphs, getIntl().$t)
+          data: trimPairedGraphs(kpiGraph),
+          csv: getCrrmCsvData(kpiGraph, getIntl().$t)
         }
       }
     })
   })
 })
 
-export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
+export function useIntentAICRRMQuery (details: EnhancedIntent, band: BandEnum) {
   const queryResult = useIntentAIRRMGraphQuery(
     { id: String(details.id), band }, {
       skip: !Boolean(details.id),

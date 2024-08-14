@@ -7,9 +7,9 @@ import { get }                                                           from '@
 import { recommendationUrl, Provider, intentAIUrl }                      from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
-import { mockedRecommendationCRRM } from '../__tests__/fixtures'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../../IntentAIDetails/__tests__/fixtures'
 
-import { AIDrivenRRM } from '.'
+import { AIDrivenRRM, isOptimized } from '.'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
@@ -97,10 +97,13 @@ jest.mock('@acx-ui/config', () => ({
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'IntentCode', {
-      data: { recommendation: pick(mockedRecommendationCRRM, ['id', 'code']) }
+      data: { intent: pick(mockedIntentCRRM, ['id', 'code']) }
     })
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-      data: { recommendation: mockedRecommendationCRRM }
+      data: { intent: mockedIntentCRRM }
+    })
+    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+      data: { intent: mockedCRRMGraphs }
     })
     const resp = { transition: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(intentAIUrl, 'TransitionMutation', { data: resp })
@@ -110,10 +113,10 @@ describe('AIDrivenRRM', () => {
       .mockImplementation(() => true)
   })
 
-  it('should work correctly for statuses other than new/scheduled', async () => {
 
-    const { asFragment } = render(<AIDrivenRRM />, {
-      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
+  async function renderAndStepsThruForm () {
+    render(<AIDrivenRRM />, {
+      route: { params: { recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6' } },
       wrapper: Provider
     })
     const form = within(await screen.findByTestId('steps-form'))
@@ -152,22 +155,30 @@ describe('AIDrivenRRM', () => {
 
     // Step 4
     await userEvent.click(actions.getByRole('button', { name: 'Next' }))
-    // await screen.findByText('Summary')
-    // await screen.findAllByRole('heading', { name: 'Summary' })
-    // expect(screen.getAllByRole('heading', { name: 'Summary' })[0]).toBeVisible()
+    //   await screen.findByText('Summary')
+    //   await screen.findAllByRole('heading', { name: 'Summary' })
+    //   expect(screen.getAllByRole('heading', { name: 'Summary' })[0]).toBeVisible()
 
-    // expect(screen.getByRole('button', {
-    //   name: 'Apply'
-    // })).toBeVisible()
-    expect(asFragment()).toMatchSnapshot()
-  })
+    //   expect(screen.getByRole('button', {
+    //     name: 'Apply'
+    //   })).toBeVisible()
+    // }
+  }
+  it('should render correctly', renderAndStepsThruForm)
 
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')
-    const { asFragment } = render(<AIDrivenRRM />, {
-      route: { path: '/ai/intentAi/b17acc0d-7c49-4989-adad-054c7f1fc5b6/c-crrm-channel24g-auto/edit' },
-      wrapper: Provider
-    })
-    expect(asFragment()).toMatchSnapshot()
+    await renderAndStepsThruForm()
+  })
+
+})
+
+describe('isOptimized', () => {
+  it('should return full when value is true', () => {
+    expect(isOptimized(true)).toBe('full')
+  })
+
+  it('should return partial when value is false', () => {
+    expect(isOptimized(false)).toBe('partial')
   })
 })

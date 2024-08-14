@@ -21,12 +21,14 @@ import { statuses, displayStates, statusReasons }                     from './st
 type Intent = {
   id: string
   code: string
+  root: string
   status: statuses
   displayStatus: displayStates
   createdAt: string
   updatedAt: string
   sliceType: string
   sliceValue: string
+  sliceId: string
   metadata: object
   path: NetworkPath
   idPath: NetworkPath
@@ -238,7 +240,7 @@ export const api = intentAIApi.injectEndpoints({
         }, [] as Array<IntentListItem>)
         return { intents: items, total: response.intents.total }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_LIST' }]
     }),
     intentWlans: build.query<
       IntentWlan[],
@@ -275,7 +277,7 @@ export const api = intentAIApi.injectEndpoints({
         }
       },
       invalidatesTags: [
-        { type: 'Monitoring', id: 'INTENT_AI_LIST' }
+        { type: 'Intent', id: 'INTENT_AI_LIST' }
       ]
     }),
     intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({
@@ -352,7 +354,7 @@ export const api = intentAIApi.injectEndpoints({
           zones: displayZones
         }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_FILTER_OPTIONS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }]
     }),
     intentHighlight: build.query<
       IntentHighlight,
@@ -388,7 +390,7 @@ export const api = intentAIApi.injectEndpoints({
       }),
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_HIGHLIGHTS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
     })
   })
 })

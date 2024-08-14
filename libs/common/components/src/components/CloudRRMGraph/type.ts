@@ -61,4 +61,6 @@ export interface ProcessedCloudRRMGraph {
   nodes: ProcessedCloudRRMNode[]
   links: ProcessedCloudRRMLink[]
   categories: Array<{ name: CategoryState }>
+  interferingLinks?: number
+  affectedAPs?: number
 }

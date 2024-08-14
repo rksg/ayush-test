@@ -1,8 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useCRRMQuery should return correct data 1`] = `
+exports[`useIntentAICRRMQuery should return correct data 1`] = `
 Array [
   Object {
+    "affectedAPs": 2,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -14,6 +15,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 2,
     "links": Array [
       Object {
         "category": "highlight",
@@ -93,6 +95,7 @@ Array [
     ],
   },
   Object {
+    "affectedAPs": 0,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -104,6 +107,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 0,
     "links": Array [
       Object {
         "category": "normal",
@@ -185,16 +189,17 @@ Array [
 ]
 `;
 
-exports[`useCRRMQuery should return correct data 2`] = `
+exports[`useIntentAICRRMQuery should return correct data 2`] = `
 "AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
 W07-R760-West-FACP,5C:DF:89:0B:FB:40,2.4 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Full
 W10-R760-Doberman,5C:DF:89:0B:FE:E0,2.4 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
 "
 `;
 
-exports[`useCRRMQuery should return correct data for applied status 1`] = `
+exports[`useIntentAICRRMQuery should return correct data for applied status 1`] = `
 Array [
   Object {
+    "affectedAPs": 2,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -206,6 +211,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 2,
     "links": Array [
       Object {
         "category": "highlight",
@@ -291,6 +297,7 @@ Array [
     ],
   },
   Object {
+    "affectedAPs": 0,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -302,6 +309,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 0,
     "links": Array [
       Object {
         "category": "normal",
@@ -389,7 +397,7 @@ Array [
 ]
 `;
 
-exports[`useCRRMQuery should return correct data for applied status 2`] = `
+exports[`useIntentAICRRMQuery should return correct data for applied status 2`] = `
 "AP Name,AP MAC,WiFi Radio Band,Is Changed,[Before] Channel Number,[After] Channel Number,[Before] Bandwidth,[After] Bandwidth,[Before] TxPower,[After] TxPower
 W07-R760-West-FACP,5C:DF:89:0B:FB:40,5 GHz,TRUE,128,149,80 MHz,80 MHz,Full,Full
 W10-R760-Doberman,5C:DF:89:0B:FE:E0,5 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full

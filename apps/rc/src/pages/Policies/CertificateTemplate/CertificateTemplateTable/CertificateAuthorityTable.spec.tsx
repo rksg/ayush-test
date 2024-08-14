@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { CertificateUrls }                                                        from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { WifiScopes }                                                             from '@acx-ui/types'
+import { RolesEnum, WifiScopes }                                                  from '@acx-ui/types'
 import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplateList } from '../__test__/fixtures'
@@ -160,12 +160,12 @@ describe('CertificateAuthorityTable', () => {
     })
   })
 
-  it('should render correctly with wifi-u wifi-d permission', async () => {
+  it('should render correctly with prime admin', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
-      isCustomRole: true,
-      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+      isCustomRole: false,
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
     render(<Provider><CertificateAuthorityTable /></Provider>, {
@@ -182,12 +182,13 @@ describe('CertificateAuthorityTable', () => {
     expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
   })
 
-  it('should render correctly with wifi-r permission', async () => {
+  it('should render correctly with read only permission', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
       isCustomRole: true,
-      scopes: [WifiScopes.READ]
+      scopes: [WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
 
     render(<Provider><CertificateAuthorityTable /></Provider>, {
