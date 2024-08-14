@@ -10,7 +10,7 @@ import type { GuestToken, EmbeddedResponse }                        from '@acx-u
 import { Provider, store, rbacApiURL }                              from '@acx-ui/store'
 import { render, mockServer, act, waitFor }                         from '@acx-ui/test-utils'
 import { RolesEnum as RolesEnumR1 }                                 from '@acx-ui/types'
-import { getUserProfile as getUserProfileR1 }                       from '@acx-ui/user'
+import { CustomRoleType, getUserProfile as getUserProfileR1 }       from '@acx-ui/user'
 import { NetworkPath, useLocaleContext }                            from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
@@ -226,6 +226,31 @@ describe('EmbeddedDashboard', () => {
       profile: {
         scopes: undefined,
         roles: [RolesEnumR1.ADMINISTRATOR]
+      }
+    })
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.OVERVIEW} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render OVERVIEW dashboard for ALTO wihout scopes and custom system role', async () => {
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: undefined,
+        customRoleType: CustomRoleType.SYSTEM,
+        customRoleName: RolesEnumR1.ADMINISTRATOR,
+        roles: ['custom-system-role']
       }
     })
     get.mockReturnValue('')
