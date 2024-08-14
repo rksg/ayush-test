@@ -395,7 +395,7 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
 
-  
+
     await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
 
     await userEvent.click(screen.getByRole('button', {
