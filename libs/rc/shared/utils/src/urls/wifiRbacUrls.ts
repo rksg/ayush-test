@@ -422,6 +422,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  getDefaultApLanPorts: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/lanPortSettings?defaultOnly=true',
+    newApi: true
+  },
   getApLanPorts: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/lanPortSettings',

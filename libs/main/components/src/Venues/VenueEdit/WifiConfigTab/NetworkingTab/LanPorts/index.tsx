@@ -1,16 +1,17 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 
-import { Col, Form, Image, Row, Select, Space } from 'antd'
+import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
 import { isEqual }                              from 'lodash'
 import { useIntl }                              from 'react-intl'
 
-import { AnchorContext, Loader, Tabs }                                  from '@acx-ui/components'
+import { AnchorContext, Button, Loader, Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
   from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
+  useGetDefaultVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
@@ -89,8 +90,12 @@ export function LanPorts () {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
+  const { data: defaultVenueLanPorts } = useGetDefaultVenueLanPortsQuery({ params: { venueId } })
+
+  // custom lan ports
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
     useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
@@ -231,6 +236,16 @@ export function LanPorts () {
     customGuiChagedRef.current = true
   }
 
+  const handleResetDefaultSettings = () => {
+
+    if (!defaultVenueLanPorts || !apModel) {
+      return
+    }
+
+    const defaultLanPorts = defaultVenueLanPorts.filter(lanPort => lanPort.model == apModel)?.[0]
+    form.setFieldsValue(defaultLanPorts)
+  }
+
   return (<Loader states={[{
     isLoading: venueLanPorts.isLoading || isLoadingVenueApCaps,
     isFetching: isUpdatingVenueLanPorts
@@ -256,6 +271,13 @@ export function LanPorts () {
           onGUIChanged={handleGUIChanged}
         />
       </Col>
+      {isLanPortResetEnabled && apModel && <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
+        <Tooltip title={$t({ defaultMessage: 'Reset port settings to default' })} >
+          <Button type='link' onClick={handleResetDefaultSettings}>
+            {$t({ defaultMessage: 'Reset to Default' })}
+          </Button>
+        </Tooltip>
+      </Col>}
     </Row>
     <Row gutter={24}>
       <Col span={24}> {
