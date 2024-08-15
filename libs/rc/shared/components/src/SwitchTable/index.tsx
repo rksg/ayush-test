@@ -171,7 +171,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
-  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
@@ -296,7 +295,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         return searchable ? highlightFn(model) : model
       }
     },
-    ...(enableSwitchAdminPassword ? [{
+    {
       key: 'syncedAdminPassword',
       title: $t({ defaultMessage: 'Admin Password' }),
       dataIndex: 'syncedAdminPassword',
@@ -313,7 +312,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           </div>
           : noDataDisplay
       }
-    }] : []),
+    },
     {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
@@ -460,7 +459,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   },
-  ...(enableSwitchAdminPassword ? [{
+  {
     label: $t({ defaultMessage: 'Match Admin Password to <VenueSingular></VenueSingular>' }),
     scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows: SwitchRow[]) => {
@@ -473,7 +472,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }).length === 0
     },
     onClick: handleClickMatchPassword
-  }] : []),
+  },
   {
     label: $t({ defaultMessage: 'Retry firmware update' }),
     scopeKey: [SwitchScopes.UPDATE],
