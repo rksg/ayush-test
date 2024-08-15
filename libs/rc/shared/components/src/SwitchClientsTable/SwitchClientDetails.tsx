@@ -21,7 +21,6 @@ export function SwitchClientDetails () {
   const params = useParams()
   const [isManaged, setIsManaged] = useState(false)
   const [clientDetails, setClientDetails] = useState({} as SwitchClient)
-  const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -69,11 +68,9 @@ export function SwitchClientDetails () {
     ]
     const ClientCSVNamingMapping: Map<string, string> = new Map<string, string>([
       ['clientMac', $t({ defaultMessage: 'Mac Address' })],
-      (isDhcpClientsEnabled
-        ? ['dhcpClientOsVendorName', $t({ defaultMessage: 'OS' })] : ['', '']),
+      ['dhcpClientOsVendorName', $t({ defaultMessage: 'OS' })],
       ['clientType', $t({ defaultMessage: 'Device Type' })],
-      (isDhcpClientsEnabled
-        ? ['dhcpClientModelName', $t({ defaultMessage: 'Model Name' })] : ['', '']),
+      ['dhcpClientModelName', $t({ defaultMessage: 'Model Name' })],
       ['clientName', $t({ defaultMessage: 'Hostname' })],
       ['switchName', $t({ defaultMessage: 'Switch Name' })],
       ['venueName', $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })],
@@ -126,7 +123,7 @@ export function SwitchClientDetails () {
           to={`/devices/switch/${clientDetails?.switchId}/${clientDetails?.switchSerialNumber}/details/overview`}
         >{clientDetails?.switchName}</TenantLink> : <span>{clientDetails?.clientMac}</span>
     },
-    ...(isDhcpClientsEnabled ? [{
+    {
       title: <span>
         {$t({ defaultMessage: 'OS' })}
       </span>,
@@ -135,7 +132,7 @@ export function SwitchClientDetails () {
         && getOsTypeIcon(clientDetails?.dhcpClientOsVendorName) }
         { clientDetails?.dhcpClientOsVendorName || '--' }
       </UI.OsType>
-    }] : []),
+    },
     {
       title: $t({ defaultMessage: 'Device Type' }),
       value: getDeviceType(clientDetails)
@@ -146,21 +143,21 @@ export function SwitchClientDetails () {
       </span>,
       value: <span>{clientDetails?.clientDesc || '--'}</span>
     },
-    ...(isDhcpClientsEnabled ? [{
+    {
       title: <span>
         {$t({ defaultMessage: 'Model Name' })}
       </span>,
       value: <span>{clientDetails?.dhcpClientModelName || '--'}</span>
-    }] : [])
+    }
   ]
 
   const clientConnection: Client[] = [
-    ...(isDhcpClientsEnabled ? [{
+    {
       title: <span>
         {$t({ defaultMessage: 'IP Address' })}
       </span>,
       value: <span>{getClientIpAddr(clientDetails)}</span>
-    }] : []),
+    },
     {
       title: <span>
         {$t({ defaultMessage: 'Switch' })}
