@@ -87,12 +87,12 @@ describe('SnmpV3AgentDrawer', () => {
         await userEvent.type(await screen.findByTestId('password-input-strength'), '~Aa1@bcdef')
         expect(await screen.findByRole('alert')).toBeInTheDocument()
       })
-      it('Aa1`bcdef - Should fail (contains `)', async () => {
+      it('Aa1`bcdef@ - Should fail (contains `)', async () => {
         const { renderElement } = renderInitState(
           <SnmpV3AgentDrawer visible={true} setVisible={jest.fn} editIndex={-1} />, newEmptySnmpData
         )
         render(renderElement)
-        await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa1`bcdef')
+        await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa1`bcdef@')
         expect(await screen.findByRole('alert')).toBeInTheDocument()
       })
       it('Aa1@bcd$( - Should fail (contains $()', async () => {
