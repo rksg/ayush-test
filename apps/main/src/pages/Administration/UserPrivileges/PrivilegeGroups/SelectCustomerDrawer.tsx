@@ -142,7 +142,8 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
             renderCell (checked, record, index, node) {
               if (record.isUnauthorizedAccess) {
                 return <Tooltip
-                  title='You are not authorized to manage this customer'>{node}</Tooltip>
+                  title={$t({ defaultMessage:
+                    'You are not authorized to manage this customer' })}>{node}</Tooltip>
               }
               return node
             },
