@@ -84,7 +84,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Workflow', id: 'ID' }]
+      invalidatesTags: [{ type: 'Workflow' }]
     }),
     getWorkflowById: build.query<Workflow, RequestPayload>({
       query: ({ params }) => {
@@ -97,7 +97,8 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UPDATE_WORKFLOW',
-            'PUBLISH_WORKFLOW'
+            'INITIATE_PUBLISH_WORKFLOW',
+            'DELETE_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -106,11 +107,13 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           })
         })
       },
+      keepUnusedDataFor: 0,
       providesTags: [
         { type: 'Workflow', id: 'ID' }
       ]
     }),
-    updateWorkflow: build.mutation<Workflow, RequestPayload>({
+    // eslint-disable-next-line max-len
+    updateWorkflow: build.mutation<AsyncResponse, RequestPayload<Workflow> & { callback?: () => void }>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WorkflowUrls.updateWorkflow, params)
         return {
@@ -118,7 +121,21 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Workflow' }]
+      invalidatesTags: [{ type: 'Workflow', id: 'ID' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === 'SUCCESS'
+              && (msg.useCase === 'INITIATE_PUBLISH_WORKFLOW' ||
+                msg.useCase === 'UPDATE_WORKFLOW')) {
+              requestArgs.callback?.()
+            }
+          } catch { }
+        })
+      }
     }),
     searchWorkflowList: build.query<TableResult<Workflow>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -145,7 +162,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'CREATE_WORKFLOW',
             'UPDATE_WORKFLOW',
             'DELETE_WORKFLOW',
-            'PUBLISH_WORKFLOW'
+            'INITIATE_PUBLISH_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -193,7 +210,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'CREATE_WORKFLOW',
             'UPDATE_WORKFLOW',
             'DELETE_WORKFLOW',
-            'PUBLISH_WORKFLOW'
+            'INITIATE_PUBLISH_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
@@ -230,7 +247,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
             'CREATE_WORKFLOW',
             'UPDATE_WORKFLOW',
             'DELETE_WORKFLOW',
-            'PUBLISH_WORKFLOW'
+            'INITIATE_PUBLISH_WORKFLOW'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
