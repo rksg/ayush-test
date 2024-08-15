@@ -177,7 +177,6 @@ export function ManageCustomer () {
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
-  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const navigate = useNavigate()
@@ -1188,7 +1187,7 @@ export function ManageCustomer () {
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
-          <label>{assignedApswLicense}</label>
+          <label>{assignedApswTrialLicense}</label>
         </UI.FieldLabel2>
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
