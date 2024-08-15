@@ -2,6 +2,7 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Space }              from 'antd'
+import _                      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import {
@@ -11,11 +12,13 @@ import {
   Subtitle,
   Table,
   TableProps,
-  Tabs
+  Tabs,
+  Tooltip
 } from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { InformationSolid }          from '@acx-ui/icons'
 import {
   LicenseCompliance,
   PendingActivations,
@@ -99,6 +102,26 @@ const entitlementListPayload = {
   }
 }
 
+const fakeAttentionNotes =
+{
+  attentionNotes: [
+    {
+      // eslint-disable-next-line max-len
+      summary: 'On January 1st, 2025, RUCKUS One will stop adding 5% courtesy licenses to the MSP subscriptions',
+      details: [
+        `As of this date, MSP subscriptions with a starting date before Jan 1st, 
+        2025 will continue to carry their courtesy 5% until their expiration`,
+        `All MSP subscriptions starting on January 1st, 
+        2025 or after will not receive the 5% courtesy licenses`
+      ]
+    },
+    {
+      // eslint-disable-next-line max-len
+      summary: 'On March 1, 2025 RUCKUS One will start enforcing subscription expiration policy, which may have an impact on your network operation.'
+    }
+  ]
+}
+
 export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -106,6 +129,7 @@ export function Subscriptions () {
 
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
+  const [hasAttentionNotes, setHasAttentionNotes] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
@@ -118,7 +142,7 @@ export function Subscriptions () {
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
 
-  const { tenantId } = useParams()
+  const { tenantId, activeTab } = useParams()
   const subscriptionDeviceTypeList = isEntitlementRbacApiEnabled
     ? getEntitlementDeviceTypes()
     : getEntitlementDeviceTypes().filter(o => o.value.startsWith('MSP'))
@@ -126,6 +150,10 @@ export function Subscriptions () {
   const [
     refreshEntitlement
   ] = useRefreshMspEntitlementMutation()
+
+  useEffect(() => {
+    setHasAttentionNotes(!_.isEmpty(fakeAttentionNotes?.attentionNotes))
+  }, [fakeAttentionNotes])
 
   const getCourtesyTooltip = (total: number, courtesy: number) => {
     const purchased = total-courtesy
@@ -486,7 +514,10 @@ export function Subscriptions () {
       visible: isPendingActivationEnabled
     },
     compliance: {
-      title: $t({ defaultMessage: 'Compliance' }),
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'Compliance' })}
+        {hasAttentionNotes && <Tooltip children={<InformationSolid />}
+          title={$t({ defaultMessage: 'New licensing attention notes are available' })} />}
+      </UI.TabWithHint>,
       content: <LicenseCompliance isMsp={true}/>,
       visible: showCompliance
     }
@@ -517,6 +548,7 @@ export function Subscriptions () {
       />
       <Tabs
         defaultActiveKey='mspSubscriptions'
+        activeKey={activeTab}
         onChange={onTabChange}
       >
         {

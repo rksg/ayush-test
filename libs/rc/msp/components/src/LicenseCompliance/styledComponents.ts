@@ -120,6 +120,7 @@ export const BannerComplianceNotes = styled.div`
   padding: 7px 15px 15px 15px;
   .note {
     font-size: 12px;
+    margin-bottom: 10px;
   }
   .detail {
     padding-left: 8px;

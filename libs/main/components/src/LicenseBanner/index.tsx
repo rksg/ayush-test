@@ -26,6 +26,25 @@ import {
 import useViewport from './hooks/useViewport'
 import * as UI     from './styledComponents'
 
+const fakeAttentionNotes =
+{
+  attentionNotes: [
+    {
+      // eslint-disable-next-line max-len
+      summary: 'On January 1st, 2025, RUCKUS One will stop adding 5% courtesy licenses to the MSP subscriptions',
+      details: [
+        `As of this date, MSP subscriptions with a starting date before Jan 1st, 
+        2025 will continue to carry their courtesy 5% until their expiration`,
+        `All MSP subscriptions starting on January 1st, 
+        2025 or after will not receive the 5% courtesy licenses`
+      ]
+    },
+    {
+      // eslint-disable-next-line max-len
+      summary: 'On March 1, 2025 RUCKUS One will start enforcing subscription expiration policy, which may have an impact on your network operation.'
+    }
+  ]
+}
 
 const MAX_VIEWPORT_CHANGE = 1510
 const getBulbIcon = (expireType:LicenseBannerTypeEnum | undefined) => {
@@ -175,6 +194,7 @@ export function LicenseBanner (props: BannerProps) {
     const isCritical = _.some(expireList, (expireInfo)=>{
       return getIsExpired(expireInfo)
     })
+    const attentionNotes = !_.isEmpty(fakeAttentionNotes?.attentionNotes)
     const expandBtn = <UI.LicenseWarningBtn
       data-testid='arrowBtn'
       isCritical={isCritical}
@@ -192,7 +212,9 @@ export function LicenseBanner (props: BannerProps) {
           </UI.LicenseIconWrapper>
           <UI.TipsWrapper>
             <UI.MainTips>
-              {$t({ defaultMessage: 'Subscriptions require your attention' })}
+              {attentionNotes
+                ? $t({ defaultMessage: 'Subscriptions and licensing notes require your attention' })
+                : $t({ defaultMessage: 'Subscriptions require your attention' })}
             </UI.MainTips>
           </UI.TipsWrapper>
         </UI.ContentWrapper>
@@ -222,12 +244,18 @@ export function LicenseBanner (props: BannerProps) {
             { getCardItem(expireInfo) }
           </UI.LicenseGrid>
         })}
+        {attentionNotes &&
+        <UI.LicenseGrid expired={false} isWhiteBorder={false}>
+          { notesRender() }
+        </UI.LicenseGrid>
+        }
       </UI.LicenseContainer>
     </div>
   }
 
   const licenseRender = ()=>{
-    if(expireList && expireList.length===1 && width>MAX_VIEWPORT_CHANGE){
+    if(expireList && expireList.length===1 && width>MAX_VIEWPORT_CHANGE
+      && _.isEmpty(fakeAttentionNotes?.attentionNotes)){
       const expireInfo = _.first(expireList)
 
       const isExpired = expireInfo && getIsExpired(expireInfo)
@@ -238,7 +266,39 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return !_.isEmpty(expireList) && isFFEnabled ? <UI.LicenseWrapper>
-    {licenseRender()}
-  </UI.LicenseWrapper> : <UI.ContentWrapper />
+  const notesRender = ()=>{
+    return <UI.LicenseContainerSingle expired={false}>
+      <UI.LicenseIconWrapper>
+        <UI.LayoutIcon children={<UI.BulbLesserInitial/>} />
+      </UI.LicenseIconWrapper>
+      <UI.TipsWrapper>
+        <UI.MainTips expired={false}
+          children={'RUCKUS One subscription note is available on the Compliance page'}/>
+        <UI.SubTips expired={false} style={{ whiteSpace: 'pre' }}>
+          <FormattedMessage
+            defaultMessage={'<a>See licensing attention note</a>'}
+            values={{
+              b: chunks => chunks,
+              a: (chunks) =>
+                <UI.ActiveBtn onClick={()=>{setLicenseExpanded(false)}}
+                  tenantType={'v'}
+                  to={'mspLicenses/compliance'}>
+                  {chunks}
+                </UI.ActiveBtn>
+            }}
+          />
+        </UI.SubTips>
+      </UI.TipsWrapper>
+    </UI.LicenseContainerSingle>
+  }
+
+  return !_.isEmpty(expireList) && isFFEnabled
+    ? <UI.LicenseWrapper>
+      {licenseRender()}
+    </UI.LicenseWrapper>
+    : !_.isEmpty(fakeAttentionNotes?.attentionNotes)
+      ? <UI.LicenseWrapper>
+        {notesRender()}
+      </UI.LicenseWrapper>
+      : <UI.ContentWrapper />
 }

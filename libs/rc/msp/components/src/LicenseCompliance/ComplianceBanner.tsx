@@ -11,8 +11,6 @@ import { InformationSolid } from '@acx-ui/icons'
 import { fakeAttentionNotes } from './__tests__/fixtures'
 import * as UI                from './styledComponents'
 
-
-
 interface ShowMoreNotesLinkProps {
     shownMoreNotesInBanner: boolean
     setShownMoreNotesInBanner: (shown: boolean) => void
