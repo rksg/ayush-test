@@ -48,7 +48,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
             to={getPolicyDetailsLink({
               type: PolicyType.WORKFLOW,
               oper: PolicyOperation.DETAIL,
-              policyId: workflowMap.get(row.id!)?.id ?? row.id!!,
+              policyId: row.id!!,
               activeTab: WorkflowDetailsTabKey.OVERVIEW
             })}
           >{row.name}</TenantLink>
@@ -130,7 +130,7 @@ export default function WorkflowTable () {
   }
 
   useEffect(() => {
-    if (tableQuery.isLoading) return
+    if (tableQuery.isLoading || tableQuery.isFetching) return
     fetchVersionHistory(tableQuery.data?.data ?? [])
   }, [tableQuery.data])
 
@@ -167,6 +167,12 @@ export default function WorkflowTable () {
         const id = workflowMap.get(data.id!)?.id ?? data.id
         deleteWorkflow({ params: { id } })
           .unwrap()
+          .then(()=> {
+            setWorkflowMap(map => {
+              map.delete(data.id!!)
+              return new Map(map)
+            })
+          })
           .catch((e) => {
             // eslint-disable-next-line no-console
             console.log(e)

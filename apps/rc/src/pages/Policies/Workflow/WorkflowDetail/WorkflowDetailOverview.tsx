@@ -74,7 +74,7 @@ export function WorkflowDetailOverview () {
         />
       </Space>
       <WorkflowPanel
-        workflowId={policyId!}
+        workflowId={data?.id!!}
         mode={PanelMode.View}
       />
     </>

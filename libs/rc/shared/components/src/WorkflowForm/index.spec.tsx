@@ -37,7 +37,7 @@ const mockedTenantPath: Path = {
 }
 
 const mockCreateWorkflowApi = jest.fn()
-const updateWorkflowApi = jest.fn()
+const mockUpdateWorkflowApi = jest.fn()
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -62,6 +62,17 @@ jest.mock('@acx-ui/rc/services', () => ({
         }, 100)})
       }
     }]
+  },
+  useUpdateWorkflowMutation: () => {
+    return [(req: RequestPayload) => {
+      return { unwrap: () => new Promise((resolve) => {
+        mockUpdateWorkflowApi()
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)()
+        }, 100)})
+      }
+    }, { isLoading: false }]
   }
 }))
 
@@ -69,7 +80,7 @@ describe('WorkflowForm', () => {
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockCreateWorkflowApi.mockClear()
-    updateWorkflowApi.mockClear()
+    mockUpdateWorkflowApi.mockClear()
     mockServer.use(
       rest.post(
         replacePagination(WorkflowUrls.searchInProgressWorkflows.url),
@@ -87,7 +98,7 @@ describe('WorkflowForm', () => {
       rest.patch(
         WorkflowUrls.updateWorkflow.url,
         (req, res, ctx) => {
-          updateWorkflowApi()
+          mockUpdateWorkflowApi()
           return res(ctx.json({}))
         }
       ),
@@ -164,7 +175,7 @@ describe('WorkflowForm', () => {
     const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new name')
     fireEvent.click(applyButton)
-    await waitFor(() => expect(updateWorkflowApi).toHaveBeenCalled())
+    await waitFor(() => expect(mockUpdateWorkflowApi).toHaveBeenCalled())
   })
 
 
@@ -185,6 +196,6 @@ describe('WorkflowForm', () => {
     const nameField = await screen.findByLabelText('Workflow Name')
     await userEvent.type(nameField, 'new name')
     fireEvent.click(cancelButton)
-    await waitFor(() => expect(updateWorkflowApi).toHaveBeenCalledTimes(0))
+    await waitFor(() => expect(mockUpdateWorkflowApi).toHaveBeenCalledTimes(0))
   })
 })
