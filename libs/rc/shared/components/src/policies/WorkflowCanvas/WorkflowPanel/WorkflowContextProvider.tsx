@@ -26,9 +26,6 @@ interface StepDrawerState {
 export interface WorkflowContextProps {
   workflowId: string,
 
-  actionDefMap: Map<string, ActionType>,
-  setActionDefMap: (defMap: Map<string, ActionType>) => void,
-
   stepDrawerState: StepDrawerState,
   actionDrawerState: ActionDrawerState,
 
@@ -52,10 +49,6 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
   const [stepDrawerVisible, setStepDrawerVisible] = useState(false)
   const [stepDrawerEditMode, setStepDrawerEditMode] = useState(false)
   const [stepDrawerActionType, setStepDrawerActionType] = useState<ActionType | undefined>()
-
-  // const [selectedActionId, setSelectedActionId] = useState<string | undefined>()
-
-  const [definitionMap, setDefinitionMap] = useState<Map<string, ActionType>>(new Map())
 
 
   const nodes = useNodes()
@@ -91,9 +84,6 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
         existingDependencies: existingDependencies
       },
 
-      actionDefMap: definitionMap,
-      setActionDefMap: setDefinitionMap,
-
       stepDrawerState: {
         visible: stepDrawerVisible,
         isEdit: stepDrawerEditMode,
@@ -108,7 +98,6 @@ export const WorkflowContextProvider = (props: { workflowId: string, children: R
           setStepDrawerEditMode(false)
           setActionDrawerVisible(false)
           setStepDrawerActionType(undefined)
-          // setSelectedActionId(undefined)
         }
       },
 
