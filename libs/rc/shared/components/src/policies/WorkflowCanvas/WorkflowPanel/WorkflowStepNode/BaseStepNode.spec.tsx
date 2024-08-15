@@ -2,9 +2,9 @@ import userEvent                        from '@testing-library/user-event'
 import { rest }                         from 'msw'
 import { NodeProps, ReactFlowProvider } from 'reactflow'
 
-import { WorkflowStep, WorkflowUrls }          from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { ActionType, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Provider }                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }    from '@acx-ui/test-utils'
 
 import { WorkflowContext, WorkflowContextProps, WorkflowContextProvider } from '../WorkflowContextProvider'
 
@@ -14,9 +14,10 @@ const child = <div data-testid={'expectedChild'} />
 
 const mockNodeProps: NodeProps<WorkflowStep> = {
   id: 'mock-step-id',
-  type: 'mockType',
+  type: 'AUP' as ActionType,
   data: {
-    enrollmentActionId: 'mock-enrollment-action-id'
+    enrollmentActionId: 'mock-enrollment-action-id',
+    actionType: ActionType.AUP
   } as WorkflowStep,
   selected: false,
   dragging: false,

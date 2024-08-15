@@ -7,7 +7,7 @@ import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
 import { Button, Loader, showActionModal, Tooltip }                                              from '@acx-ui/components'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
 import { useDeleteWorkflowStepByIdMutation }                                                     from '@acx-ui/rc/services'
-import { ActionType }                                                                            from '@acx-ui/rc/utils'
+import { ActionType, ActionTypeTitle }                                                           from '@acx-ui/rc/utils'
 
 
 import { WorkflowActionPreviewModal } from '../../../../WorkflowActionPreviewModal'
@@ -53,7 +53,8 @@ export default function BaseStepNode (props: NodeProps
       customContent: {
         action: 'DELETE',
         entityName: $t({ defaultMessage: 'Step' }),
-        entityValue: props.name
+        entityValue: $t(ActionTypeTitle[props.type as ActionType])
+          ?? $t({ defaultMessage: 'Step' })
       },
       content:
         $t({ defaultMessage: 'Do you want to delete this step?' }),
