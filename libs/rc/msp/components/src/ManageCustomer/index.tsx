@@ -199,7 +199,6 @@ export function ManageCustomer () {
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
-  const [assignedApswLicense, setApswLicense] = useState(0)
   const [assignedApswTrialLicense, setApswTrialLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -326,7 +325,6 @@ export function ManageCustomer () {
         setSubscriptionEndDate(moment(data?.service_expiration_date))
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
-          setApswLicense(apswLic)
           setApswTrialLicense(apswTrialLic)
         } else {
           setWifiLicense(wLic)
@@ -1106,7 +1104,7 @@ export function ManageCustomer () {
             ? intl.$t({ defaultMessage: 'Device Networking' })
             : intl.$t({ defaultMessage: 'Device Subscription' })
           }</label>
-          <label>{assignedApswLicense}</label>
+          <label>{assignedApswTrialLicense}</label>
         </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -1588,7 +1586,8 @@ export function ManageCustomer () {
         </div>}
 
         {isDeviceAgnosticEnabled && <Form.Item
-          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
+          label={isvSmartEdgeEnabled ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
           <Paragraph>{apswAssigned}</Paragraph>
         </Form.Item>}
