@@ -1,22 +1,25 @@
 import { useEffect } from 'react'
 
-import { Select,Col, Form, Input, Row, Switch } from 'antd'
-import { findIndex, find }                      from 'lodash'
-import { useIntl }                              from 'react-intl'
-import { useParams }                            from 'react-router-dom'
+import { Select,Col, Form, Input, Row, Switch, Space, Typography } from 'antd'
+import { findIndex, find }                                         from 'lodash'
+import { useIntl }                                                 from 'react-intl'
+import { useParams }                                               from 'react-router-dom'
 
-import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { InformationSolid }                        from '@acx-ui/icons'
-import { SpaceWrapper }                            from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext, Loader } from '@acx-ui/components'
+import { InformationSolid }                                from '@acx-ui/icons'
+import { SpaceWrapper }                                    from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterListQuery
+  useGetEdgeClusterListQuery,
+  useGetEdgeFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   servicePolicyNameRegExp,
   useHelpPageLink,
   EdgeMvSdLanFormModel,
-  ClusterHighAvailabilityModeEnum
+  ClusterHighAvailabilityModeEnum,
+  EdgeFeatureEnum
 } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { useEdgeMvSdLanContext } from '../EdgeMvSdLanContextProvider'
 import { messageMappings }       from '../messageMappings'
@@ -51,7 +54,8 @@ export const SettingsForm = () => {
         'clusterId',
         'clusterStatus',
         'hasCorePort',
-        'highAvailabilityMode'
+        'highAvailabilityMode',
+        'firmwareVersion'
       ],
       ...(filterSn.length === 2
         ? { filters: { clusterId: filterSn } }
@@ -70,7 +74,6 @@ export const SettingsForm = () => {
   const clusterOptions = clusterData?.map(item => ({
     label: item.name,
     value: item.clusterId
-
   }))
 
   // prepare venue id
@@ -204,8 +207,9 @@ export const SettingsForm = () => {
                       onChange={onEdgeClusterChange}
                     />
                   </Form.Item>
-
                 </Col>
+                <ClusterFirmwareInfo
+                  fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
               </Row>
             </Col>
           </Row>
@@ -226,11 +230,10 @@ export const SettingsForm = () => {
               </Form.Item>
             </UI.FlexEndCol>
           </Row>
-
-          <Row>
-            <Col span={18}>
-              {isGuestTunnelEnabled
-                ? (<Form.Item
+          {isGuestTunnelEnabled
+            ? (<Row>
+              <Col span={18}>
+                <Form.Item
                   name='guestEdgeClusterId'
                   label={<>
                     { $t({ defaultMessage: 'DMZ Cluster' }) }
@@ -250,8 +253,7 @@ export const SettingsForm = () => {
                       const edgeClusterId = getFieldValue('edgeClusterId')
                       return checkHAModeConsist(edgeClusterId, value, true)
                     }
-                  })
-                  ]}
+                  }) ]}
                 >
                   <Select
                     loading={isClusterOptsLoading}
@@ -260,11 +262,13 @@ export const SettingsForm = () => {
                     disabled={editMode && !!initialValues?.guestEdgeClusterId}
                     onChange={onDmzClusterChange}
                   />
-                </Form.Item>)
-                : null
-              }
-            </Col>
-          </Row>
+                </Form.Item>
+              </Col>
+              <ClusterFirmwareInfo
+                fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion} />
+            </Row>)
+            : null
+          }
         </SpaceWrapper>
       </Col>
       <UI.VerticalSplitLine span={1} />
@@ -275,5 +279,50 @@ export const SettingsForm = () => {
         />
       </Col>
     </UI.Wrapper>
+  )
+}
+
+const sdLanFeatureRequirementPayload = {
+  filters: {
+    featureNames: ['SD-LAN']
+  }
+}
+const ClusterFirmwareInfo = (props: {
+  fwVersion?: string
+}) => {
+  const { $t } = useIntl()
+  const { fwVersion } = props
+
+  const { requiredFw, isLoading } = useGetEdgeFeatureSetsQuery({
+    payload: sdLanFeatureRequirementPayload }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === EdgeFeatureEnum.SD_LAN)?.requiredFw,
+        isLoading
+      }
+    }
+  })
+  return (
+    <Space>
+      <Typography>
+        {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
+          { fwVersion }) }
+      </Typography>
+      <Tooltip
+        title={<Loader states={[{ isLoading }]}>
+          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
+        running firmware version {requiredFw} or higher.
+        You may upgrade your venue firmware
+        from {targetLink}` },
+          {
+            requiredFw,
+            targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
+              {$t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' })}
+            </TenantLink>
+          })}</Loader>}>
+        <InformationSolid />
+      </Tooltip>
+    </Space>
   )
 }

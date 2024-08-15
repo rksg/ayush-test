@@ -1,6 +1,6 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                       from '..'
+import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                      from '..'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
@@ -367,11 +367,51 @@ export interface EdgeCluster {
   }
 }
 
+interface EdgeFeatureRequirement {
+  featureName: string
+  requiredFw: string
+}
 export interface EdgeFeatureSets {
-  featureSets: {
-    featureName: string
-    requiredFw: string
-  }[]
+  featureSets: EdgeFeatureRequirement[]
+}
+
+export interface VenueEdgeCompatibility {
+  venueId: string
+  incompatibleFeatures: {
+    featureRequirement: EdgeFeatureRequirement,
+    incompatibleDevices: {
+        firmware: string
+        count: number
+      }[]
+  }[],
+  total: number
+  incompatible: number
+}
+export interface VenueEdgeCompatibilitiesResponse {
+  compatibilities: VenueEdgeCompatibility[]
+}
+
+export interface EdgeNodeSdLanCompatibility extends Omit<VenueEdgeCompatibility, 'venueId'> {
+  edgeClusterId: string,
+}
+
+export interface ServiceEdgeCompatibility {
+  serviceId: string
+  clusterSdLanEdgeCompatibilities: EdgeNodeSdLanCompatibility[]
+}
+export interface ServiceEdgeCompatibilitiesResponse {
+  compatibilities: ServiceEdgeCompatibility[]
+}
+
+export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
+  venueId: string
+}
+export interface ApEdgeCompatibility {
+  serviceId: string
+  venueSdLanApCompatibilities: VenueSdLanApCompatibility[]
+}
+export interface ApEdgeCompatibilitiesResponse {
+  compatibilities: ApEdgeCompatibility[]
 }
 
 export interface VirtualIpSetting {
@@ -395,6 +435,7 @@ export interface EdgeClusterStatus {
   description?: string
   hasCorePort?: boolean,
   highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+  firmwareVersion?: string
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,
