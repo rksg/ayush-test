@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
-import { cloneDeep, find }                         from 'lodash'
+import { cloneDeep }                               from 'lodash'
 
 import {
   AAAPolicyType,
