@@ -16,9 +16,9 @@ import {
   ServiceType,
   useTableQuery
 }   from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                   from '@acx-ui/react-router-dom'
-import { WifiScopes }                              from '@acx-ui/types'
-import { filterByAccess, hasPermission, hasScope } from '@acx-ui/user'
+import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
@@ -110,7 +110,7 @@ export default function MdnsProxyInstances () {
       render: function (_, row) {
         return <Switch
           checked={true}
-          disabled={!hasScope([WifiScopes.UPDATE])}
+          disabled={!hasPermission({ scopes: [WifiScopes.UPDATE] })}
           onChange={checked => {
             if (checked) return
 
