@@ -31,7 +31,7 @@ export function ContentPreview (props: ContentPreviewProps) {
     <UI.PreviewContainer
       hasBackgroundImage={!!uiConfiguration?.logoImage}
     >
-      {!wifi4EUNetworkId &&
+      {!!wifi4EUNetworkId &&
         <WiFi4EuBanner />
       }
 
