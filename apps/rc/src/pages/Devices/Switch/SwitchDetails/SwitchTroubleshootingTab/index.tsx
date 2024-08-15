@@ -10,6 +10,7 @@ import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 
+import { SwitchCableTestForm }  from './switchCableTestForm'
 import { SwitchIpRouteForm }    from './switchIpRouteForm'
 import { SwitchMacAddressForm } from './switchMacAddressForm'
 import { SwitchPingForm }       from './switchPingForm'
@@ -83,6 +84,9 @@ export function SwitchTroubleshootingTab () {
           <SwitchMacAddressForm />
         </TabPane>
       }
+      <TabPane tab={$t({ defaultMessage: 'Cable Test' })} key='cableTest'>
+        <SwitchCableTestForm/>
+      </TabPane>
     </Tabs>
   )
 }
