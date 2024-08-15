@@ -109,23 +109,17 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
     params: { policyId, pageSize: '1000', page: '0', sort: 'id,ASC' }
   }, { skip: !policyId })
 
-  const { data: actionDefsData, ...defQuery } = useGetWorkflowActionDefinitionListQuery({
-    params: { pageSize: '1000', page: '0', sort: 'name,asc' }
-  })
 
   useEffect(() => {
-    if (!actionDefsData || !stepsData?.content ) return
-
-    const defsMap = actionDefsData?.content
-      ?.reduce((map, def) => map.set(def.id, def.actionType), new Map())
+    if (!stepsData?.content ) return
 
     const {
       nodes: inputNodes,
       edges: inputEdges
-    } = toReactFlowData(stepsData?.content, defsMap)
+    } = toReactFlowData(stepsData?.content)
     setNodes(inputNodes)
     setEdges(inputEdges)
-  }, [stepsData, actionDefsData])
+  }, [stepsData])
 
   const onClickAction = (type: ActionType) => {
     stepDrawerState.onOpen(false, type)
@@ -133,8 +127,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 
   return (
     <Loader states={[
-      stepQuery,
-      defQuery
+      stepQuery
     ]}>
       <WorkflowCanvas
         mode={mode}

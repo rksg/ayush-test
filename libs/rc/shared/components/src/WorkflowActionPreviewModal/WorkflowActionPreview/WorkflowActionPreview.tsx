@@ -8,7 +8,6 @@ import { ListSolid }                        from '@acx-ui/icons'
 import {
   useGetActionByIdQuery,
   useGetUIConfigurationQuery,
-  useGetWorkflowActionDefinitionListQuery,
   useGetWorkflowStepsByIdQuery,
   useLazyGetUIConfigurationBackgroundImageQuery,
   useLazyGetUIConfigurationLogoImageQuery
@@ -96,25 +95,18 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
     }
   }, [configurationQuery])
 
-  const { data: actionDefsData, ...defQuery } = useGetWorkflowActionDefinitionListQuery({
-    params: { pageSize: '1000', page: '0', sort: 'name,asc' }
-  }, { skip: props.step !== undefined || props.actionData !== undefined })
-
-
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
     params: { policyId: workflowId, pageSize: '1000', page: '0', sort: 'id,ASC' }
   }, { skip: props.step !== undefined || props.actionData !== undefined })
 
   useEffect(() => {
-    if (!actionDefsData || !stepsData ) return
+    if (!stepsData ) return
 
-    const defsMap = actionDefsData?.content
-      ?.reduce((map, def) => map.set(def.id, def.actionType), new Map())
-    const { nodes } = toReactFlowData(stepsData?.content, defsMap)
+    const { nodes } = toReactFlowData(stepsData?.content)
     setNodes(nodes as Node<WorkflowStep, ActionType>[])
     setStepMap(new Map<string, WorkflowStep>(stepsData?.content.map(v => [v.id, v])))
     setSelectedStepId(nodes.find(node => node.type !== 'START' as ActionType)?.data.id)
-  }, [stepsData, actionDefsData])
+  }, [stepsData])
 
   useEffect(() => {
     if (step) {
@@ -134,7 +126,7 @@ export function WorkflowActionPreview (props: WorkflowActionPreviewProps) {
   }, [step])
 
   return (
-    <Loader states={[stepQuery, defQuery, configurationQuery]}>
+    <Loader states={[stepQuery, configurationQuery]}>
       <div style={{ width: '100%', minWidth: 1100, height: '100%', minHeight: 800 }}>
         <UI.LayoutHeader>
           <div style={{ display: 'flex' }}>

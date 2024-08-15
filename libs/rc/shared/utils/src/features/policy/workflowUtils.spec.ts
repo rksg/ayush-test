@@ -1,4 +1,3 @@
-
 import { Edge, Node } from 'reactflow'
 
 import { renderHook } from '@acx-ui/test-utils'
@@ -35,38 +34,33 @@ const mockReverseOrderSteps: WorkflowStep[] = [
     id: 'step-1',
     actionDefinitionId: 'definition-id-3',
     enrollmentActionId: 'enrollment-id-1',
-    priorStepId: 'step-2'
+    priorStepId: 'step-2',
+    actionType: ActionType.DATA_PROMPT
   },
   {
     id: 'step-2',
     actionDefinitionId: 'definition-id-2',
     enrollmentActionId: 'enrollment-id-2',
     nextStepId: 'step-1',
-    priorStepId: 'step-3'
+    priorStepId: 'step-3',
+    actionType: ActionType.DISPLAY_MESSAGE
   },
   {
     id: 'step-3',
     actionDefinitionId: 'definition-id-1',
     enrollmentActionId: 'enrollment-id-3',
-    nextStepId: 'step-2'
+    nextStepId: 'step-2',
+    actionType: ActionType.AUP
   }
 ]
 
 describe('WorkflowUtils', () => {
-  const mockDefinitionMap: Map<string, ActionType> = new Map([
-    ['definition-id-1', ActionType.AUP],
-    ['definition-id-2', ActionType.DISPLAY_MESSAGE],
-    ['definition-id-3', ActionType.DATA_PROMPT],
-    ['definition-id-4', ActionType.DPSK]
-  ])
-
-
   it('should handle toStepMap correctly', () => {
     // Make sure empty input with empty output
-    expect(toStepMap([], mockDefinitionMap).size).toBe(0)
+    expect(toStepMap([]).size).toBe(0)
 
     // Make sure function is working
-    const result = toStepMap(mockWorkflowSteps, mockDefinitionMap)
+    const result = toStepMap(mockWorkflowSteps)
     expect(result.size).toBe(mockWorkflowSteps.length)
 
     mockWorkflowSteps.forEach(step => {
@@ -119,7 +113,7 @@ describe('WorkflowUtils', () => {
     const targetEdges: Edge[] = []
     composeNext(
       findFirstStep(mockReverseOrderSteps)?.id!,
-      toStepMap(mockReverseOrderSteps, mockDefinitionMap),
+      toStepMap(mockReverseOrderSteps),
       targetNodes, targetEdges, 0, 0
     )
 
@@ -146,12 +140,12 @@ describe('WorkflowUtils', () => {
   })
 
   it('should handle toReactFlowData with empty input correctly', () => {
-    expect(toReactFlowData([], mockDefinitionMap)).toStrictEqual({ nodes: [], edges: [] })
+    expect(toReactFlowData([])).toStrictEqual({ nodes: [], edges: [] })
   })
 
   it('should handle toReactFlowData correctly', () => {
     const expectedNodesOrders = mockReverseOrderSteps.map(s => s.id)
-    const result = toReactFlowData(mockReverseOrderSteps, mockDefinitionMap)
+    const result = toReactFlowData(mockReverseOrderSteps)
 
     expect(result.nodes).toHaveLength(3)
     // Make sure the ordering of Nodes

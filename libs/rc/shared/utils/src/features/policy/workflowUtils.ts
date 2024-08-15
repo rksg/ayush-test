@@ -41,16 +41,13 @@ export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep | undefined =
   )
 }
 
-export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
+export const toStepMap = (steps: WorkflowStep[])
   : Map<string, WorkflowStep> =>
 {
   const map = new Map<string, WorkflowStep>()
 
   steps.forEach(step => {
-    map.set(step.id, {
-      ...step,
-      actionType: definitionMap.get(step?.actionDefinitionId ?? '') ?? step.actionType
-    })
+    map.set(step.id, step)
   })
 
   return map
@@ -189,7 +186,7 @@ export const composeNext = (
 }
 
 
-export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
+export function toReactFlowData (steps: WorkflowStep[])
   : { nodes: Node[], edges: Edge[] } {
   const nodes: Node<WorkflowStep, ActionType>[] = []
   const edges: Edge[] = []
@@ -201,7 +198,7 @@ export function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<strin
   }
 
   const firstStep = findFirstStep(steps)
-  const stepMap = toStepMap(steps, definitionMap)
+  const stepMap = toStepMap(steps)
 
   if (firstStep) {
     composeNext(firstStep.id, stepMap, nodes, edges,
