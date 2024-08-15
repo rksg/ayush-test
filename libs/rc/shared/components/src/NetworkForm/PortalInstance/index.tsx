@@ -47,6 +47,7 @@ const PortalInstance = (props: {
   const { useWatch } = Form
   const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [getPortal] = useLazyGetPortalQuery()
   const [getPortalTemplate] = useLazyGetPortalTemplateQuery()
   const [getPortalLang] = useGetPortalLangMutation()
@@ -72,14 +73,15 @@ const PortalInstance = (props: {
   const portalServiceID = useWatch('portalServiceProfileId')
   const defaultPayload = {
     fields: ['id', 'name'],
-    filters: {},
+    filters:
+      (isUseWifiRbacApi && networkData?.id) ? { wifiNetworkIds: [ networkData?.id ] } : {},
     pageSize: 256
   }
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>({
     useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
     payload: { ...defaultPayload },
-    enableRbac: isEnabledRbacService
+    enableRbac: (isEnabledRbacService || isUseWifiRbacApi)
   })
 
   const [demoValue, setDemoValue] = useState({} as Demo)
