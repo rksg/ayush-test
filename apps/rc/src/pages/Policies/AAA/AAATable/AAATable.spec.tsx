@@ -7,6 +7,7 @@ import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
+  IdentityProviderUrls,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -77,7 +78,12 @@ describe('AAATable', () => {
         (_, res, ctx) => res(ctx.json({
           data: [],
           totalCount: 0
-        })))
+        }))
+      ),
+      rest.post(
+        IdentityProviderUrls.getIdentityProviderList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
