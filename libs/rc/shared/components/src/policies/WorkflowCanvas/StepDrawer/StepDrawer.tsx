@@ -89,16 +89,10 @@ export default function StepDrawer (props: StepDrawerProps) {
       isEdit
         ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
         : await new Promise((resolve) => {
-          let stuckTimer: NodeJS.Timeout
-
           const onFinish = () => {
             onClose()
-            clearTimeout(stuckTimer)
             resolve(true)
           }
-
-          // to prevent the save button stuck in progress
-          stuckTimer = setTimeout(onFinish, 10_000)
 
           createStep(policyId, actionType, formContent, priorNode?.id, onFinish)
         })
