@@ -247,7 +247,6 @@ describe('Guest Table', () => {
 
     await userEvent.click(await screen.findByText('test3'))
     await screen.findByText('Guest Details')
-
     await userEvent.click(await screen.findByText(/actions/i))
     await userEvent.click(await screen.findByText(/delete guest/i))
     const content = await screen.findByText(/are you sure you want to delete this guest\?/i)
@@ -302,6 +301,7 @@ describe('Guest Table', () => {
 
     const table = await screen.findByRole('table')
     await userEvent.click(await within(table).findByText('test1'))
+    expect(await screen.findByText('Download Information')).toBeVisible()
     expect(await screen.findByText('Guest Details')).toBeVisible()
     const dialog = await screen.findByRole('dialog')
     const closeButton = await within(dialog).findByTestId('CloseSymbol')
