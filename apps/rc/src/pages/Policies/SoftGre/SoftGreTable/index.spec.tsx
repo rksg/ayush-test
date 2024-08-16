@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { softGreApi }                                                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PolicyOperation, PolicyType, SoftGreUrls, TunnelProfileUrls, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Path, useNavigate, useTenantLink }                                                                   from '@acx-ui/react-router-dom'
+import { CommonUrlsInfo, PolicyOperation, PolicyType, SoftGreUrls, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Path }                                                                                               from '@acx-ui/react-router-dom'
 import { Provider, store }                                                                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                        from '@acx-ui/test-utils'
 
-import { mockSoftGreTable, mockVenueNamMap, mockedVenueQueryData } from '../__tests__/fixtures'
+import { mockSoftGreTable, mockedVenueQueryData } from '../__tests__/fixtures'
 
 import SoftGreTable from '.'
 
@@ -30,6 +30,7 @@ const policyId = '0d89c0f5596c4689900fb7f5f53a0859'
 const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 }
+
 describe('SoftGreTable', () => {
   
   const mockedSingleDeleteApi = jest.fn()
@@ -72,6 +73,7 @@ describe('SoftGreTable', () => {
     const row = await screen.findAllByRole('row', { name: /softGreProfileName/i })
     expect(row.length).toBe(3)
   })
+  
   it('should navigate to SoftGreDetailView Page correctly', async () => {
     render(
       <Provider>

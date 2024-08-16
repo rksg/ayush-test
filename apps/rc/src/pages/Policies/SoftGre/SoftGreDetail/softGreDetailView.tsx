@@ -35,7 +35,6 @@ export default function SoftGreDetailView () {
       }
     }
   )
-
   // mock
   // const softGreDetail = mockSoftGreTable?.data.data[2] as SoftGreViewData
 
