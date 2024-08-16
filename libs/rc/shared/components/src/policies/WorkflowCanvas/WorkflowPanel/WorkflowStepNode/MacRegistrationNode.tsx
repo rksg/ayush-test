@@ -18,7 +18,8 @@ export function MacRegistrationNode (props: NodeProps<WorkflowStep>) {
   const { data } = useGetActionByIdQuery({ params: { actionId: props.data.enrollmentActionId } })
 
   const { data: macRegData } =
-    useGetMacRegPoolQuery({ params: { policyId: data?.macRegListId } }, { skip: !data?.macRegListId })
+    useGetMacRegPoolQuery({ params: { policyId: data?.macRegListId } }
+      , { skip: !data?.macRegListId })
   const { data: identityGroupData } =
     useGetPersonaGroupByIdQuery(
       { params: { groupId: data?.identityGroupId } }, { skip: !data?.identityGroupId })
