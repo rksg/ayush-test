@@ -13,9 +13,9 @@ import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IntentConfig, states, StateType, IntentKPIConfig }                                         from '../config'
-import { useIntentCodeQuery, useIntentDetailsQuery, useUpdatePreferenceScheduleMutation,specToDto } from '../services'
-import * as UI                                                                                      from '../styledComponents'
+import { IntentConfig, states, StateType, IntentKPIConfig }                               from '../config'
+import { useIntentCodeQuery, useIntentDetailsQuery, useUpdatePreferenceScheduleMutation } from '../services'
+import * as UI                                                                            from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'

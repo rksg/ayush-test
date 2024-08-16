@@ -7,11 +7,35 @@ import { act, mockGraphqlMutation, mockGraphqlQuery, renderHook, waitFor } from 
 import {
   mockedIntentCRRM
 } from '../IntentAIDetails/__tests__/fixtures'
-import { IntentAIFormDto, IntentAIFormSpec } from '../types'
 
 
-import { kpis }                                                                                                              from './AIDrivenRRM'
-import {  EnhancedIntent, kpiHelper, recApi, roundUpTimeToNearest15Minutes, specToDto, useUpdatePreferenceScheduleMutation } from './services'
+import { kpis }                                                                                                                  from './AIDrivenRRM'
+import {  EnhancedIntent, IntentDetails, kpiHelper, recApi, roundUpTimeToNearest15Minutes, useUpdatePreferenceScheduleMutation } from './services'
+
+const commonArgs = {
+  appliedOnce: true,
+  dataEndTime: '2023-06-26T00:00:25.772Z',
+  code: 'c-crrm-channel24g-auto',
+  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
+  metadata: {},
+  path: [
+    { name: 'vsz34', type: 'system' },
+    { name: '21_US_Beta_Samsung', type: 'domain' },
+    { name: '21_US_Beta_Samsung', type: 'zone' }
+  ],
+  updatedAt: '06/26/2023 06:04',
+  sliceType: 'zone',
+  sliceValue: '21_US_Beta_Samsung',
+  status: 'applyscheduled',
+  kpi_number_of_interfering_links: {
+    current: 2,
+    previous: null,
+    projected: 0
+  },
+  statusTrail: mockedIntentCRRM.statusTrail,
+  preferences: undefined
+
+} as unknown as IntentDetails
 
 describe('intentAI services', () => {
   describe('intent code', () => {
@@ -29,6 +53,14 @@ describe('intentAI services', () => {
   })
 
   describe('intent details', () => {
+    const expectedResult = {
+      ...commonArgs,
+      appliedOnce: true,
+      settings: {
+        date: null,
+        hour: null
+      }
+    } as unknown as EnhancedIntent
     it('should return correct value', async () => {
       mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
         data: { intent: mockedIntentCRRM }
@@ -44,29 +76,7 @@ describe('intentAI services', () => {
         'priority',
         'summary'
       ])
-      expect(removedMsgs).toStrictEqual<EnhancedIntent>({
-        appliedOnce: true,
-        dataEndTime: '2023-06-26T00:00:25.772Z',
-        code: 'c-crrm-channel24g-auto',
-        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
-        metadata: {},
-        path: [
-          { name: 'vsz34', type: 'system' },
-          { name: '21_US_Beta_Samsung', type: 'domain' },
-          { name: '21_US_Beta_Samsung', type: 'zone' }
-        ],
-        updatedAt: '06/26/2023 06:04',
-        sliceType: 'zone',
-        sliceValue: '21_US_Beta_Samsung',
-        status: 'applyscheduled',
-        kpi_number_of_interfering_links: {
-          current: 2,
-          previous: null,
-          projected: 0
-        },
-        statusTrail: mockedIntentCRRM.statusTrail,
-        preferences: undefined
-      } as unknown as EnhancedIntent)
+      expect(removedMsgs).toStrictEqual<EnhancedIntent>(expectedResult)
     })
   })
 })
@@ -86,71 +96,17 @@ describe('roundUpTimeToNearest15Minutes', () => {
   })
 })
 
-describe('specToDto', () => {
-  const scheduledAt = '2024-07-13T07:30:00.000Z'
-  const commonSpec = {
-    id: 'test',
-    status: 'new',
-    sliceValue: 'test',
-    updatedAt: 'test',
-    preferences: { crrmFullOptimization: false }
-  } as IntentAIFormSpec
-  it('should process spec with scheduledAt',
-    async () => {
-      const spec ={
-        ...commonSpec,
-        metadata: {
-          scheduledAt: scheduledAt
-        }
-      }
-      const dto = {
-        id: 'test',
-        status: 'new',
-        sliceValue: 'test',
-        updatedAt: 'test',
-        preferences: { crrmFullOptimization: false },
-        settings: {
-          date: moment.utc(scheduledAt).local(),
-          hour: 7.5
-        }
-      } as IntentAIFormDto
-      expect(specToDto(spec)).toEqual(dto)
-    })
-  it('should process spec without scheduledAt',
-    async () => {
-      const spec ={
-        ...commonSpec,
-        metadata: {
-        }
-      }
-      const dto = {
-        id: 'test',
-        status: 'new',
-        sliceValue: 'test',
-        updatedAt: 'test',
-        preferences: { crrmFullOptimization: false },
-        settings: {
-          date: null,
-          hour: null
-        }
-      } as IntentAIFormDto
-      expect(specToDto(spec)).toEqual(dto)
-
-    })
-
-})
-
 describe('intentai services', () => {
-  const commonArgs = {
-    id: 'test',
-    status: 'new',
-    sliceValue: 'test',
-    updatedAt: '',
-    preferences: { crrmFullOptimization: false }
+  const args = {
+    ...commonArgs,
+    appliedOnce: true,
+    settings: {
+      date: moment('2024-07-13'),
+      hour: 1.75
+    }
   }
 
-
-  it('should update preference and schedule correctly if scheduledAt < currentTime + 15',
+  it('should update preference and schedule correctly',
     async () => {
       const utils = require('./utils')
       jest.spyOn(utils, 'handleScheduledAt').mockImplementation(() => '2024-07-14T07:30:00.000Z')
@@ -161,16 +117,11 @@ describe('intentai services', () => {
         { wrapper: Provider }
       )
       act(() => {
-        result.current[0]({
-          ...commonArgs,
-          settings: {
-            date: moment('2024-07-13'),
-            hour: 7.5
-          }
-        } as IntentAIFormDto)
+        result.current[0](args as EnhancedIntent)
       })
       await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
       expect(result.current[1].data)
         .toEqual(resp)
     })
 })
+

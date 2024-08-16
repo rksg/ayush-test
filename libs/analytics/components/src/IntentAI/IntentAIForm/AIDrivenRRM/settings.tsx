@@ -9,9 +9,8 @@ import { defineMessage, useIntl }            from 'react-intl'
 
 import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { IntentAIFormDto } from '../../types'
-import { EnhancedIntent }  from '../services'
-import * as UI             from '../styledComponents'
+import { EnhancedIntent } from '../services'
+import * as UI            from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
 
@@ -74,7 +73,7 @@ export function getAvailableActions (status: string,
 
 export function Settings () {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<IntentAIFormDto>()
+  const { form } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
   const scheduleSettings = form.getFieldValue('settings')

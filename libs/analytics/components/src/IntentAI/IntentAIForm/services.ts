@@ -6,8 +6,7 @@ import { kpiDelta }                       from '@acx-ui/analytics/utils'
 import { intentAIApi, recommendationApi } from '@acx-ui/store'
 import { NetworkPath }                    from '@acx-ui/utils'
 
-import { codes }           from '../config'
-import { IntentAIFormDto } from '../types'
+import { codes } from '../config'
 
 import { StateType, StatusTrail, IntentKPIConfig } from './config'
 import { handleScheduledAt }                       from './utils'
@@ -132,51 +131,53 @@ function decimalToTimeString (decimalHours: number) {
   return time.format('HH:mm:ss')
 }
 
-export function specToDto (
-  rec: EnhancedIntent
-): IntentAIFormDto | undefined {
-  let dto = {
-    id: rec.id,
-    // status: rec.status,
-    status: 'new',
-    preferences: rec.preferences,
-    sliceValue: rec.sliceValue,
-    updatedAt: rec.updatedAt
-  } as IntentAIFormDto
+// export function specToDto (
+//   rec: EnhancedIntent
+// ): IntentAIFormDto | undefined {
+//   let dto = {
+//     id: rec.id,
+//     // status: rec.status,
+//     status: 'new',
+//     preferences: rec.preferences,
+//     sliceValue: rec.sliceValue,
+//     updatedAt: rec.updatedAt
+//   } as IntentAIFormDto
 
-  let date: Moment | null = null
-  let hour: number | null = null
-  if (rec.metadata) {
-    if (rec.metadata.scheduledAt) {
-      const localScheduledAt =moment.utc(rec.metadata.scheduledAt).local()
-      date=localScheduledAt
-      hour=roundUpTimeToNearest15Minutes(
-        localScheduledAt.format('HH:mm:ss')
-      )
-    }
-  }
+//   let date: Moment | null = null
+//   let hour: number | null = null
+//   if (rec.metadata) {
+//     if (rec.metadata.scheduledAt) {
+//       const localScheduledAt =moment.utc(rec.metadata.scheduledAt).local()
+//       date=localScheduledAt
+//       hour=roundUpTimeToNearest15Minutes(
+//         localScheduledAt.format('HH:mm:ss')
+//       )
+//     }
+//   }
 
 
-  // let date: Moment | null = moment()
-  // let hour: number | null = 7.5
+//   // let date: Moment | null = moment()
+//   // let hour: number | null = 7.5
 
-  dto = {
-    ...rec,
-    settings: {
-      date: date,
-      hour: hour
-    }
-  } as IntentAIFormDto
-  return dto
-}
+//   dto = {
+//     ...rec,
+//     settings: {
+//       date: date,
+//       hour: hour
+//     }
+//   } as IntentAIFormDto
+//   return dto
+// }
 
-export function processDtoToPayload (dto: IntentAIFormDto) {
+export function processDtoToPayload (dto: EnhancedIntent) {
+  console.log(dto)
   const newDate = dto!.settings!.date!.format('YYYY-MM-DD')
   const newHour = decimalToTimeString(dto.settings!.hour!)
   const offset = moment().format('Z')
   const scheduledAt = moment.parseZone(
     `${newDate}T${newHour}.000${offset}`).utc().toISOString()
   const newScheduledAt = handleScheduledAt(scheduledAt)
+  console.log(newScheduledAt)
   return {
     id: dto.id,
     status: dto.status,
@@ -225,7 +226,7 @@ export const intentApi = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     updatePreferenceSchedule: build.mutation<
       UpdatePreferenceScheduleMutationResponse,
-      IntentAIFormDto
+      EnhancedIntent
     >({
       query: (variables) => ({
         document: gql`
