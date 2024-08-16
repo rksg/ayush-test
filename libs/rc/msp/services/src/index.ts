@@ -83,7 +83,7 @@ export function useCheckDelegateAdmin (isRbacEnabled: boolean) {
 export function useDelegateToMspEcPath () {
   const delegateToMspEcPath = async (ecTenantId: string) => {
     try {
-      window.location.href = `/${ecTenantId}/t/dashboard`
+      window.location.href = `/${ecTenantId}/t/`
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
