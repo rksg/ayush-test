@@ -1,7 +1,9 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import _                       from 'lodash'
-import moment                  from 'moment-timezone'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
+import { ResultType }                              from 'antd/lib/result'
+import _                                           from 'lodash'
+import moment                                      from 'moment-timezone'
+import { useIntl }                                 from 'react-intl'
 
 import {
   showActionModal
@@ -907,10 +909,26 @@ export const mspApi = baseMspApi.injectEndpoints({
           ecTenantId.push(item.id)
         })
 
+        const invalidCustomers: string[] = []
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allEcVenues:any = await Promise.all(ecTenantId.map(id =>
-          fetchWithBQ(genVenuePayload(arg, id))
+        const allEcVenues:any = await Promise.all(ecTenantId.map(id => {
+          // eslint-disable-next-line max-len
+          const venuesQuery = fetchWithBQ(genVenuePayload(arg,id)) as PromiseLike<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
+          return venuesQuery.then((value) => {
+            if (value.error) {
+              invalidCustomers.push(id)
+              return { ...value, data: {}, error: undefined }
+            }
+            return value
+          })
+        }
         ))
+        list.data.forEach((item) => {
+          if (invalidCustomers.includes(item.id)) {
+            item.isUnauthorizedAccess = true
+          }
+        })
         ecTenantId.forEach((id:string, index:number) => {
           ecVenues[id] = allEcVenues[index]?.data.data
         })
