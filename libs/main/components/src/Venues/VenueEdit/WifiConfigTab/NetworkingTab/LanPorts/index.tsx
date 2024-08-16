@@ -237,13 +237,19 @@ export function LanPorts () {
   }
 
   const handleResetDefaultSettings = () => {
-
     if (!defaultVenueLanPorts || !apModel) {
       return
     }
 
-    const defaultLanPorts = defaultVenueLanPorts.filter(lanPort => lanPort.model == apModel)?.[0]
-    form.setFieldsValue(defaultLanPorts)
+    const defaultLanPorts = defaultVenueLanPorts.filter(lanPort => lanPort.model === apModel)?.[0]
+    setSelectedModel(defaultLanPorts)
+    form?.setFieldsValue({
+      ...defaultLanPorts,
+      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPorts?.poeOut),
+      lan: defaultLanPorts?.lanPorts
+    })
+
+    customGuiChagedRef.current = true
   }
 
   return (<Loader states={[{
