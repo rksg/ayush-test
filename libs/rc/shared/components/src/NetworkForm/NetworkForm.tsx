@@ -690,7 +690,9 @@ export function NetworkForm (props:{
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
-      await updateRadiusServer(saveState, data, networkId)
+      if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
+        await updateRadiusServer(saveState, data, networkId)
+      }
       await updateWifiCallingActivation(networkId, saveState)
       await updateAccessControl(saveState, data)
       // eslint-disable-next-line max-len
@@ -794,7 +796,12 @@ export function NetworkForm (props:{
         await activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id)
       }
       await updateHotspot20NetworkActivations(formData)
-      await updateRadiusServer(formData, data, payload.id)
+      if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
+        // HS 20 Network:
+        // The Radius service is binding on the Identity provider profile
+        // So it doesn't need to do the network and radius service binding
+        await updateRadiusServer(formData, data, payload.id)
+      }
       await updateWifiCallingActivation(payload.id, formData)
 
       // eslint-disable-next-line max-len
