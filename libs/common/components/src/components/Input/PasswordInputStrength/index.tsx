@@ -125,9 +125,9 @@ export const PasswordStrengthIndicator = ({
 
   const PASSWORD_STRENGTH_CODE = [
     $t({ defaultMessage: 'Insecure' }),
+    $t({ defaultMessage: 'Very Weak' }),
     $t({ defaultMessage: 'Weak' }),
     $t({ defaultMessage: 'Fair' }),
-    $t({ defaultMessage: 'Good' }),
     $t({ defaultMessage: 'Strong' })
   ]
 
@@ -172,11 +172,11 @@ export const PasswordStrengthIndicator = ({
 
   return (<UI.PasswordBarContainer>
     <StackedBarChart
-      style={{ height: 8, width: barWidth || 270, marginTop: 5 }}
+      style={{ height: 8, width: barWidth || 240, marginTop: 5 }}
       showLabels={false}
       showTotal={false}
       showTooltip={false}
-      barWidth={barWidth || 270}
+      barWidth={barWidth || 240}
       data={[{
         series,
         category: 'password strength'
