@@ -21,7 +21,8 @@ import {
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
-  useLazyGetDHCPProfileListViewModelQuery
+  useLazyGetDHCPProfileListViewModelQuery,
+  useGetDefaultApLanPortsQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -70,6 +71,7 @@ export function LanPorts () {
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isResetLanPortEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
 
   const {
     editContextData,
@@ -91,6 +93,9 @@ export function LanPorts () {
   const { data: apLanPortsData, isLoading: isApLanPortsLoading } = useGetApLanPortsQuery({
     params: { tenantId, serialNumber, venueId },
     enableRbac: isUseWifiRbacApi
+  })
+  const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
+    params: { venueId, serialNumber }
   })
 
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
@@ -264,6 +269,24 @@ export function LanPorts () {
     })
   }
 
+  const handleResetDefaultLanPorts = () => {
+    if (apCaps && defaultLanPorts && !isDefaultPortsLoading) {
+      const poeOutFormData = ConvertPoeOutToFormData(defaultLanPorts, apCaps.lanPorts)
+      const defaultLanPortsFormData = {
+        ...defaultLanPorts,
+        ...(poeOutFormData && { poeOut: poeOutFormData })
+      }
+
+      setSelectedModel(defaultLanPortsFormData)
+      formRef?.current?.setFieldsValue({
+        ...defaultLanPortsFormData,
+        lan: defaultLanPortsFormData?.lanPorts,
+        useVenueSettings: useVenueSettings
+      })
+      updateEditContext(formRef?.current as StepsFormLegacyInstance)
+    }
+  }
+
   const navigateToVenue = (venueId: string | undefined) => {
     navigate(`../venues/${venueId}/venue-details/overview`)
   }
@@ -280,7 +303,8 @@ export function LanPorts () {
         <StepsFormLegacy.StepForm
           initialValues={{ lan: selectedModel?.lanPorts }}
         >
-          <Row gutter={24}>
+          <Row gutter={24}
+            style={{ marginLeft: '182px', marginRight: '-38px', marginTop: '-55px' }}>
             <Col span={10}>
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
@@ -360,7 +384,7 @@ export function LanPorts () {
 
   function SettingMessage ({ showButton }: { showButton: boolean }) {
     return <Space
-      style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}
+      style={{ display: 'flex', fontSize: '12px' }}
     >
       {useVenueSettings
         ? <FormattedMessage
@@ -375,8 +399,12 @@ export function LanPorts () {
               {venueData?.name}
             </Button>
           }} />
-        : $t({ defaultMessage: 'Custom settings' })
+        : (isResetLanPortEnabled ? <>{$t({ defaultMessage: 'Custom settings' })}
+          <Button type='link' size='small' onClick={handleResetDefaultLanPorts}>
+            {$t({ defaultMessage: 'Reset to default' })}
+          </Button></> : $t({ defaultMessage: 'Custom settings' }) )
       }
+      {showButton && isResetLanPortEnabled && <div>|</div>}
       {showButton && <Button type='link'
         size='small'
         disabled={useVenueSettings ? !isAllowUpdate : !isAllowReset}

@@ -25,7 +25,8 @@ import {
   LanPort,
   useConfigTemplate,
   VenueLanPorts,
-  VenueSettings
+  VenueSettings,
+  WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -277,10 +278,11 @@ export function LanPorts () {
           onGUIChanged={handleGUIChanged}
         />
       </Col>
-      {isLanPortResetEnabled && apModel && <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
-        <Tooltip title={$t({ defaultMessage: 'Reset port settings to default' })} >
+      {!isTemplate && isLanPortResetEnabled && apModel &&
+      <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
+        <Tooltip title={$t(WifiNetworkMessages.LAN_PORTS_RESET_TOOLTIP)} >
           <Button type='link' onClick={handleResetDefaultSettings}>
-            {$t({ defaultMessage: 'Reset to Default' })}
+            {$t({ defaultMessage: 'Reset to default' })}
           </Button>
         </Tooltip>
       </Col>}

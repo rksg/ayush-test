@@ -823,6 +823,16 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
+    getDefaultApLanPorts: build.query<WifiApSetting, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getDefaultApLanPorts, params, apiCustomHeader)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     getApLanPorts: build.query<WifiApSetting, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1364,6 +1374,7 @@ export const {
   useGetPacketCaptureStateQuery,
   useStopPacketCaptureMutation,
   useStartPacketCaptureMutation,
+  useGetDefaultApLanPortsQuery,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,

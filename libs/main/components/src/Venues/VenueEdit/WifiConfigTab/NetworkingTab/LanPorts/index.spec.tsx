@@ -148,7 +148,7 @@ describe('LanPortsForm', () => {
     expect(within(tabPanel).getByLabelText(/VLAN member/)).toHaveValue('2')
   })
 
-  it('should display Reset to Default link button after selected model', async () => {
+  it('should display Reset to default link button after selected model', async () => {
     render(
       <Provider>
         {mockLanPorts}
@@ -163,7 +163,7 @@ describe('LanPortsForm', () => {
     const option = screen.getByText('T750')
     await userEvent.click(option)
 
-    const resetBtn = await screen.findByRole('button', { name: 'Reset to Default' })
+    const resetBtn = await screen.findByRole('button', { name: 'Reset to default' })
     expect(resetBtn).toBeVisible()
     fireEvent.mouseOver(resetBtn)
     await waitFor(async () => {
