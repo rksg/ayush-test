@@ -38,8 +38,7 @@ const defaultPayload = {
   ],
   searchString: '',
   filters: {},
-  sortField: 'name',
-  sortOrder: 'ASC'
+  searchTargetFields: ['name']
 }
 
 export default function SoftGreTable () {
@@ -49,24 +48,17 @@ export default function SoftGreTable () {
 
   const settingsId = 'policies-softgre-table'
 
-  const tableQuery = useTableQuery({
+  const tableQuery = useTableQuery<SoftGreViewData>({
     useQuery: useGetSoftGreViewDataListQuery,
     defaultPayload,
-    sorter: {
-      sortField: 'name',
-      sortOrder: 'ASC'
-    },
-    search: {
-      searchTargetFields: ['name']
-    },
     pagination: { settingsId }
   })
 
   // TODO: mock data
   // const tableQuery = { ...mockSoftGreTable, isFetching: false, isLoading: false, pagination: {} }
-
+  
   const [ deleteSoftGreFn ] = useDeleteSoftGreMutation()
-
+  
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE],

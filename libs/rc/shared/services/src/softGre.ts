@@ -12,7 +12,9 @@ import { CommonResult,
   ApiVersionEnum,
   Network,
   VenueTableUsageBySoftGre,
-  VenueDetail
+  VenueDetail,
+  onSocketActivityChanged,
+  onActivityMessageReceived
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -39,6 +41,22 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SoftGre', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddSoftGreProfile',
+            'UpdateSoftGreProfile',
+            'DeleteSoftGreProfile',
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              softGreApi.util.invalidateTags([
+                { type: 'SoftGre', id: 'LIST' }
+              ])
+            )
+          })
+        })
+      },
       extraOptions: { maxRetries: 5 }
     }),
     deleteSoftGre: build.mutation<CommonResult, RequestPayload>({

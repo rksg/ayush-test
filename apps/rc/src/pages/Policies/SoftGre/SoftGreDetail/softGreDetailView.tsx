@@ -23,11 +23,9 @@ export default function SoftGreDetailView () {
   const [ softGreData, setSoftGreData ] = useState<SoftGreViewData>()
   const [ activationInfos, setActivationInfos ] = useState<SoftGreActivationInformation[]>()
 
-
+  const defaultPayload = {filters: { id: [params.policyId] } }
   const { softGreDetail, isLoading } = useGetSoftGreViewDataListQuery(
-    { payload: {
-      filters: { id: [params.policyId] } }
-    },
+    { payload: defaultPayload },
     {
       selectFromResult: ( { data, isLoading } ) => {
         return {
@@ -37,6 +35,7 @@ export default function SoftGreDetailView () {
       }
     }
   )
+
   // mock
   // const softGreDetail = mockSoftGreTable?.data.data[2] as SoftGreViewData
 

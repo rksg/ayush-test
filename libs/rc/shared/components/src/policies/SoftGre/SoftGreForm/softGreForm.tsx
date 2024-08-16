@@ -6,7 +6,7 @@ import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, StepsForm }                                                      from '@acx-ui/components'
-import { useCreateSoftGreMutation, useGetSoftGreByIdQuery, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
+import { useCreateSoftGreMutation, useGetSoftGreByIdQuery, useGetSoftGreViewDataListQuery, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
 import {
   LocationExtended,
   PolicyOperation,
@@ -60,19 +60,19 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
   }
-
-  const { softGreData } = useGetSoftGreByIdQuery(
-    { params },
+  const defaultPayload = {filters: { id: [params.policyId] } }
+  const { softGreData } = useGetSoftGreViewDataListQuery(
+    { params, payload: defaultPayload },
     {
       skip: !editMode,
       selectFromResult: ({ data }) => {
-        return { softGreData: (data ?? {}) as SoftGreViewData }
+        return { softGreData: (data?.data[0] ?? {}) as SoftGreViewData }
       }
     }
   )
   // TODO: mock data
   // const softGreData = mockSoftGreDetail?.data[0]
-
+  
   useEffect(() => {
     if (softGreData && editMode) {
       form.setFieldsValue(softGreData)
