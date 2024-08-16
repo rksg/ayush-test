@@ -18,7 +18,9 @@ export function useGetNetwork () {
   const rbacNetworkResult = useGetNetworkDeepQuery({ params, enableRbac: isWifiRbacEnabled }, { skip: isTemplate || !isWifiRbacEnabled })
   const rbacNetworkResultTemplate = useGetNetworkDeepTemplateQuery({ params, enableRbac: isConfigTemplateRbacEnabled }, { skip: !isTemplate })
 
-  return isTemplate ? rbacNetworkResultTemplate : (isWifiRbacEnabled ? rbacNetworkResult: networkResult)
+  return isTemplate
+    ? rbacNetworkResultTemplate
+    : (isWifiRbacEnabled ? rbacNetworkResult : networkResult)
 }
 
 export function extractSSIDFilter (network: ReturnType<typeof useGetNetworkQuery>) {
