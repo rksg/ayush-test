@@ -79,10 +79,10 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return response?.data[0]
       }
     }),
-    bindPortalTemplate: build.mutation<CommonResult, RequestPayload>({
+    activatePortalTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          ServicesConfigTemplateRbacUrlsInfo.bindPortal,
+          ServicesConfigTemplateRbacUrlsInfo.activatePortal,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1))
         return {
@@ -388,7 +388,7 @@ export const {
   useDeleteWifiCallingServiceTemplateMutation,
   useActivateWifiCallingServiceTemplateMutation,
   useDeactivateWifiCallingServiceTemplateMutation,
-  useBindPortalTemplateMutation
+  useActivatePortalTemplateMutation
 } = servicesConfigTemplateApi
 
 

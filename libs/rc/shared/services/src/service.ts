@@ -978,10 +978,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    bindPortal: build.mutation<CommonResult, RequestPayload>({
+    activatePortal: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          PortalRbacUrlsInfo.bindPortal,
+          PortalRbacUrlsInfo.activatePortal,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1))
         return {
@@ -1101,7 +1101,7 @@ export const {
   useUpdatePortalMutation,
   useUploadBgImageMutation,
   useUploadLogoMutation,
-  useBindPortalMutation,
+  useActivatePortalMutation,
   useUploadPhotoMutation,
   useUploadPoweredImgMutation,
   useUploadURLMutation,

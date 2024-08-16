@@ -36,8 +36,10 @@ import {
   useDeleteNetworkVenueTemplateMutation,
   useGetNetworkDeepQuery,
   useUpdateNetworkVenueMutation,
-  useBindPortalMutation,
-  useBindPortalTemplateMutation
+  useActivatePortalMutation,
+  useActivatePortalTemplateMutation,
+  useGetEnhancedPortalProfileListQuery,
+  useGetEnhancedPortalTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -145,7 +147,7 @@ export function NetworkForm (props:{
   defaultActiveVenues?: string[]
 }) {
 
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseWifiRbacApi = true
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
@@ -193,7 +195,7 @@ export function NetworkForm (props:{
 
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const activateDpskPool = useDpskServiceActivation()
-  const bindingPortal = useRbacProfileServiceActivation()
+  const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
@@ -255,6 +257,21 @@ export function NetworkForm (props:{
     extraParams: { networkId: data?.id }
   })
 
+  const { data: portalService } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEnhancedPortalProfileListQuery,
+    useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
+    // eslint-disable-next-line max-len
+    skip: !isUseWifiRbacApi || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.CAPTIVEPORTAL),
+    payload: {
+      fields: ['id', 'name'],
+      filters: {
+        wifiNetworkIds: [data?.id]
+      },
+      pageSize: 1
+    },
+    enableRbac: isUseWifiRbacApi
+  })
+
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
@@ -287,10 +304,12 @@ export function NetworkForm (props:{
       updateSaveData({
         ...resolvedData,
         certificateTemplateId,
-        ...(dpskService && { dpskServiceProfileId: dpskService.id })
+        ...(dpskService && { dpskServiceProfileId: dpskService.id }),
+        ...(isUseWifiRbacApi && portalService?.data?.[0]?.id &&
+          { portalServiceProfileId: portalService.data[0].id })
       })
     }
-  }, [data, certificateTemplateId, dpskService])
+  }, [data, certificateTemplateId, dpskService, portalService])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0) return
@@ -416,14 +435,6 @@ export function NetworkForm (props:{
       }
     }
     return data
-  }
-
-  const handleWifiRbacOn = (data: NetworkSaveData) => {
-    const serviceId = data.portalServiceProfileId
-    if(isUseWifiRbacApi){
-      delete data.portalServiceProfileId
-    }
-    return { wifiRbacOnData: data, serviceId }
   }
 
   const handleUserConnection = (data: GuestMore) => {
@@ -676,10 +687,9 @@ export function NetworkForm (props:{
     const dataConnection = handleUserConnection(data)
     const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
     const saveData = handleGuestMoreSetting(dataWlan)
-    const { wifiRbacOnData, serviceId } = handleWifiRbacOn(saveData)
     const payload = updateClientIsolationAllowlist(
       // omit id to handle clone
-      omit(wifiRbacOnData,
+      omit(saveData,
         ['id',
           'networkSecurity',
           'enableOwe',
@@ -691,19 +701,20 @@ export function NetworkForm (props:{
           'hotspot20Settings.originalOperator',
           'hotspot20Settings.identityProviders',
           'hotspot20Settings.originalProviders',
-          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
+          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
+          ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
         ]))
-    return { payload, serviceId }
+    return payload
   }
   const handleAddNetwork = async (formData: NetworkSaveData) => {
     try {
-      const { payload, serviceId } = processAddData(saveState)
+      const payload = processAddData(saveState)
 
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       const networkId = networkResponse?.response?.id
       if (isUseWifiRbacApi) {
-        await bindingPortal(networkId, serviceId)
+        await activatePortal(networkId, formData.portalServiceProfileId)
       }
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
@@ -748,8 +759,7 @@ export function NetworkForm (props:{
 
     const dataConnection = handleUserConnection(data)
     const dataWlan = handleWlanAdvanced3MLO(dataConnection, wifi7Mlo3LinkFlag)
-    const { wifiRbacOnData, serviceId } = handleWifiRbacOn(dataWlan)
-    const dataMore = handleGuestMoreSetting(wifiRbacOnData)
+    const dataMore = handleGuestMoreSetting(dataWlan)
 
     if(isPortalWebRender(dataMore)){
       handlePortalWebPage(dataMore)
@@ -784,7 +794,8 @@ export function NetworkForm (props:{
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
-            'hotspot20Settings.originalProviders'
+            'hotspot20Settings.originalProviders',
+            ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
       }else{
@@ -796,12 +807,12 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
-            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
+            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
+            ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
       }
     }
-    return serviceId
   }
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
@@ -811,7 +822,7 @@ export function NetworkForm (props:{
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       if (isUseWifiRbacApi) {
-        await bindingPortal(payload.id, serviceId)
+        await activatePortal(payload.id, formData.portalServiceProfileId)
       }
       if (enableServiceRbac) {
         await activateDpskPool(formData.dpskServiceProfileId, payload.id)
@@ -1083,7 +1094,7 @@ function useUpdateInstance () {
 }
 
 function useGetInstance (isEdit: boolean) {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseWifiRbacApi = true
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
@@ -1144,8 +1155,8 @@ function useDpskServiceActivation () {
 
 function useRbacProfileServiceActivation () {
   const [activate] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useBindPortalMutation,
-    useTemplateMutationFn: useBindPortalTemplateMutation
+    useMutationFn: useActivatePortalMutation,
+    useTemplateMutationFn: useActivatePortalTemplateMutation
   })
   return async (networkId?: string, serviceId?: string) => {
     if (networkId && serviceId) {
