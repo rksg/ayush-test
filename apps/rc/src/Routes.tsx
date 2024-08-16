@@ -33,7 +33,8 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  SoftGreForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -107,6 +108,8 @@ import SelectPolicyForm                                                 from './
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
+import SoftGreDetailView                                                from './pages/Policies/SoftGre/SoftGreDetail/softGreDetailView'
+import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -1200,6 +1203,30 @@ function PolicyRoutes () {
         />
       </>
       }
+      {/* // TODO jean {isSoftGreEnabled && <> */}
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <SoftGreForm editMode={false} />
+          </AuthRoute>
+        } />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })}
+        element={<SoftGreTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.DETAIL })}
+        element={<SoftGreDetailView />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT })}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <SoftGreForm editMode={true} />
+          </AuthRoute>}
+      />
+      {/* </>} */}
     </Route>
   )
 }
