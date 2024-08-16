@@ -79,7 +79,7 @@ describe('NetworkMoreSettingsForm', () => {
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))),
       rest.post(NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (_, res, ctx) => res(ctx.json({}))
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
