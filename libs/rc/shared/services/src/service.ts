@@ -55,7 +55,9 @@ import {
   GetApiVersionHeader,
   convertMdnsProxyViewModelToMdnsProxyFormData,
   APExtended,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  MacRegListUrlsInfo,
+  MacRegistrationPool
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
@@ -1025,6 +1027,20 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getMacRegPool: build.query<MacRegistrationPool, RequestPayload>({
+      query: ({ params, payload }) => {
+        const getMacRegPoolReq = createDpskHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params,
+          {
+            'Content-Type': 'application/vnd.ruckus.v1+json',
+            'Accept': 'application/vnd.ruckus.v1+json'
+          })
+        return {
+          ...getMacRegPoolReq,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'MacRegPool', id: 'DETAIL' }]
     })
   })
 })
@@ -1092,7 +1108,9 @@ export const {
   useUploadPoweredImgMutation,
   useUploadURLMutation,
   useGetDHCPProfileListViewModelQuery,
-  useLazyGetDHCPProfileListViewModelQuery
+  useLazyGetDHCPProfileListViewModelQuery,
+  useGetMacRegPoolQuery,
+  useLazyGetMacRegPoolQuery
 } = serviceApi
 
 export function createDpskHttpRequest (

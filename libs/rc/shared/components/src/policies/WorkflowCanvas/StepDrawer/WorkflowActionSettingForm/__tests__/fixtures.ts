@@ -1,5 +1,6 @@
 import {
   DpskSaveData,
+  MacRegistrationPool,
   NewTablePageable,
   NewTableResult,
   PassphraseFormatEnum,
@@ -90,6 +91,18 @@ export const mockPersonaTableResult: NewTableResult<Persona> = {
       revoked: false
     }
   ]
+}
+
+export const mockMacRegList: MacRegistrationPool = {
+  id: 'mac-list-1',
+  name: 'mac-list-1',
+  networkIds: [
+    'c9d5f4c771c34ad2898f7078cebbb191'
+  ],
+  autoCleanup: false,
+  enabled: false,
+  registrationCount: 0,
+  defaultAccess: ''
 }
 
 export const mockDpskPool: DpskSaveData = {
