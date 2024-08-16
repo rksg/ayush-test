@@ -9,6 +9,8 @@ import {
   ApGroupConfigTemplateUrlsInfo,
   CommonUrlsInfo,
   RadioTypeEnum,
+  VlanPoolRbacUrls,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
@@ -54,11 +56,19 @@ describe('NetworkApGroupDialog', () => {
         (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
       ),
       rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+      ),
+      rest.post(
         ApGroupConfigTemplateUrlsInfo.getApGroupsList.url,
         (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
       ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (req, res, ctx) => res(ctx.json(vlanPoolList))
       ),
       rest.post(
@@ -69,6 +79,13 @@ describe('NetworkApGroupDialog', () => {
   })
 
   it('should render correctly', async () => {
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.networkActivations.url,
+        (req, res, ctx) => res(ctx.json({ data: [networkVenue_apgroup] }))
+      )
+    )
+
     const props = {
       formName: 'networkApGroupForm',
       venueName: venueName,

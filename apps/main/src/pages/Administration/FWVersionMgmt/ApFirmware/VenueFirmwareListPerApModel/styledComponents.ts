@@ -1,11 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { Modal } from '@acx-ui/components'
-
-export const ScheduleTooltipText = styled.span`
-  font-size: 12px;
-`
-
 export const WithTooltip = styled.span`
   cursor: default;
 `
@@ -34,15 +28,6 @@ export const DateContainer = styled.div`
   }
   .ant-picker-input > input {
     font-size: 12px;
-  }
-`
-
-export const ScheduleModal = styled(Modal)`
-  .ant-modal-body{
-    overflow: initial;
-  }
-  .ant-modal-content{
-    max-height: initial;
   }
 `
 export const Ul = styled.ul`

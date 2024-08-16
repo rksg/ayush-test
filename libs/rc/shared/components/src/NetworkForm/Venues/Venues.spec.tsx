@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { networkApi }      from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { networkApi }             from '@acx-ui/rc/services'
 import {
   BasicServiceSetPriorityEnum,
   CommonUrlsInfo,
@@ -19,9 +19,9 @@ import {
 import { Provider, store }                                                        from '@acx-ui/store'
 import { act, findTBody, fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { useSdLanScopedNetworkVenues }                              from '../../EdgeSdLan/useEdgeSdLanActions'
-import { list, network, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
-import NetworkFormContext                                           from '../NetworkFormContext'
+import { useSdLanScopedNetworkVenues }                     from '../../EdgeSdLan/useEdgeSdLanActions'
+import { list, networkVenue_allAps, networkVenue_apgroup } from '../__tests__/fixtures'
+import NetworkFormContext                                  from '../NetworkFormContext'
 
 import { Venues } from './Venues'
 
@@ -87,10 +87,6 @@ describe('Create Network: Venues Step', () => {
       rest.post(
         CommonUrlsInfo.venueNetworkApGroup.url,
         (req, res, ctx) => res(ctx.json({ response: [networkVenue_allAps, networkVenue_apgroup] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
-        (req, res, ctx) => res(ctx.json({ response: [network] }))
       )
     )
   })
@@ -312,7 +308,8 @@ describe('Create Network: Venues Step', () => {
   })
 
   it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGE_SD_LAN_MV_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
       sdLansVenueMap: {},
       networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],

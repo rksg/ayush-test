@@ -7,8 +7,7 @@ import {
   Form,
   Select,
   Space,
-  Input,
-  Button
+  Input
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -23,8 +22,8 @@ import {
   domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { validationMessages }    from '@acx-ui/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
+import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
@@ -38,6 +37,7 @@ import GoogleSetting                             from './GoogleSetting'
 import LinkedInSetting                           from './LinkedInSetting'
 import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
+import { SMSTokenCheckbox, isSMSTokenAvailable } from './SharedComponent/SMSToken/SMSTokenCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 import TwitterSetting                            from './TwitterSetting'
 
@@ -97,13 +97,14 @@ export function SelfSignInForm () {
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
-  const isSMSTokenAvailable = isSmsProviderEnabled ?
-    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
-     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
-    : true
-  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
+  const provider = smsUsage?.data?.provider ?? SmsProviderType.RUCKUS_ONE
+  const usedSMS = smsUsage?.data?.ruckusOneUsed ?? 0
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable(usedSMS, provider, {
+    isSmsProviderEnabled, isGracePeriodEnabled
+  })
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -131,72 +132,6 @@ export function SelfSignInForm () {
     setAllowedSignValue(allowedSignValueTemp)
   }
 
-  const displaySMSTokenToolTips = () => {
-    const provider = smsUsage?.data?.provider
-    const usedPools = smsUsage?.data?.ruckusOneUsed ?? 0
-    // eslint-disable-next-line max-len
-    const defaultMessage = $t({ defaultMessage: 'Captive Portal Self-sign-in via SMS One-time Passcode.' })
-
-    // when FF is off
-    if (!isSmsProviderEnabled) {
-      // eslint-disable-next-line max-len
-      return $t({ defaultMessage: 'Self-service signup using one time token sent to a mobile number' })
-    }
-
-    // when provider is not ruckus one, no needs to consider used pools at this condition
-    if (provider !== SmsProviderType.RUCKUS_ONE) {
-      return defaultMessage
-    }
-    // when provider is ruckus one but there's pool still remains
-    if(usedPools < 100) {
-      return (
-        <FormattedMessage
-          defaultMessage={
-            `{defaultMessage}<br></br>
-              You have {poolCount} messages remaining in the RUCKUS-provided pool. 
-              To ensure uninterrupted service, kindly set up an SMS provider on the 
-              <SMSLink></SMSLink> page.`}
-          values={{
-            defaultMessage: defaultMessage,
-            poolCount: 100 - usedPools,
-            br: () => <br/>,
-            SMSLink: () => {
-              return (<TenantLink to='/administration/accountSettings'>
-                <Button
-                  data-testid='button-has-pool'
-                  type='link'
-                  style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
-                  { $t({ defaultMessage: 'Administration > Settings' }) }
-                </Button>
-              </TenantLink>)}
-          }}
-        />
-      )
-    } else {
-      // when provider is ruckus one, no pool remains
-      return (
-        <FormattedMessage
-          defaultMessage={
-            `{defaultMessage}<br></br>
-              To activate the SMS option, configure an SMS provider 
-              on the <SMSLink></SMSLink> page.`}
-          values={{
-            defaultMessage,
-            br: () => <br/>,
-            SMSLink: () => {
-              return (<TenantLink to='/administration/accountSettings'>
-                <Button
-                  data-testid='button-no-pool'
-                  type='link'
-                  style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
-                  { $t({ defaultMessage: 'Administration > Settings' }) }
-                </Button>
-              </TenantLink>)}
-          }}
-        />
-      )
-    }
-  }
   const checkSocial = (value: string | string[]) => {
     if (!value || value.length < 1) {
       return Promise.reject($t({ defaultMessage: 'Please configure sign-in option' }))
@@ -278,25 +213,7 @@ export function SelfSignInForm () {
             {$t({ defaultMessage: 'Allow Sign-In Using: (At least one option must be selected)' })}
           </>}
         ><>
-            <Form.Item name={['guestPortal', 'enableSmsLogin']}
-              initialValue={false}
-              style={SelfSignInAppStyle}>
-              <>
-                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
-                  ['guestPortal', 'enableSmsLogin'])}
-                checked={enableSmsLogin}
-                disabled={!editMode && !isSMSTokenAvailable}
-                >
-                  <UI.SMSToken />
-                  {$t({ defaultMessage: 'SMS Token' })}
-                </UI.Checkbox>
-                <Tooltip
-                  title={displaySMSTokenToolTips()}
-                  placement='bottom'>
-                  <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-                </Tooltip>
-              </>
-            </Form.Item>
+            <SMSTokenCheckbox SMSUsage={smsUsage.data} onChange={updateAllowSign} />
             { isEnabledEmailOTP && <Form.Item name={['guestPortal', 'enableEmailLogin']}
               initialValue={false}
               style={SelfSignInAppStyle}>

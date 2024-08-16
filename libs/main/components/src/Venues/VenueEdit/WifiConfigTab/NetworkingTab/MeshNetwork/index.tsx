@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, Form, Input, Radio, RadioChangeEvent, Space, Switch } from 'antd'
 import { useIntl }                                                     from 'react-intl'
@@ -7,15 +7,20 @@ import { useParams }                                                   from 'rea
 
 import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { SupportRadioChannelsContext, ApRadioTypeEnum }                     from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
   useUpdateVenueMeshMutation,
   useGetVenueTemplateSettingsQuery,
-  useUpdateVenueTemplateMeshMutation
+  useUpdateVenueTemplateMeshMutation,
+  useGetVenueMeshQuery,
+  useGetDHCPProfileListQuery,
+  useGetDhcpTemplateListQuery,
+  useGetVenueTemplateMeshQuery
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
-import { validationMessages }                                          from '@acx-ui/utils'
+import { APMeshRole, DHCPSaveData, Mesh, VenueSettings, generateAlphanumericString, useConfigTemplate } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                           from '@acx-ui/utils'
 
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }                                                                from '../../../index'
@@ -34,11 +39,75 @@ const MeshInfoIcon = () => {
   />
 }
 
+const Mesh6GhzInfoIcon = () => {
+  const { $t } = useIntl()
+
+  return <Tooltip.Info iconStyle={{
+    position: 'absolute',
+    bottom: '0px'
+  }}
+  isFilled
+  title={
+    $t({ defaultMessage: 'When selecting the 6GHz radio to link other mesh APs, 2R APs and 3R APs will form mesh networks independently, with 2R APs forming on the 5GHz band and 3R APs (2/5/6) forming on the 6GHz band.' })
+  }
+  />
+}
+
+const useVenueWifiSettings = (venueId: string | undefined): VenueSettings | undefined => {
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? enableTemplateRbac : isWifiRbacEnabled
+  const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
+
+  const { data: venueSettings } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: resolvedRbacEnabled
+  })
+
+  const queryPayload = {
+    fields: ['id', 'venueIds'],
+    filters: { venueIds: [venueId] }
+  }
+  const { data: dhcpList } = useVenueConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery,
+    skip: !resolvedRbacEnabled,
+    payload: queryPayload,
+    templatePayload: queryPayload,
+    enableRbac: resolvedRbacEnabled
+  })
+
+  const { data: venueMeshSettings } = useVenueConfigTemplateQueryFnSwitcher<Mesh>({
+    useQueryFn: useGetVenueMeshQuery,
+    useTemplateQueryFn: useGetVenueTemplateMeshQuery,
+    skip: !resolvedRbacEnabled,
+    extraQueryArgs: { isWifiMeshIndependents56GEnable }
+  })
+
+  const rbacVerData = useMemo(() => {
+    return {
+      dhcpServiceSetting: { enabled: !!dhcpList?.[0] },
+      mesh: venueMeshSettings
+    } as VenueSettings
+  }, [venueMeshSettings, dhcpList])
+
+  return resolvedRbacEnabled
+    ? ((venueMeshSettings && dhcpList)
+      ? rbacVerData
+      : undefined)
+    : venueSettings
+}
+
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+  const isWifiMeshIndependents56GEnable = useIsSplitOn(Features.WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY)
   const {
     editContextData,
     setEditContextData,
@@ -46,6 +115,8 @@ export function MeshNetwork () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+
+  const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
 
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
@@ -68,7 +139,8 @@ export function MeshNetwork () {
   const [isPassphraseEditMode, setIsPassphraseEditMode] = useState(false)
   const [passphraseError, setPassphraseError] = useState<string>()
 
-  const [meshRadioType, setMeshRadioType] = useState<string>('5-GHz')
+  const [meshRadioType, setMeshRadioType] = useState<string>(
+    (isWifiMeshIndependents56GEnable ? '5-6-GHz' : '5-GHz'))
   const [meshZeroTouchEnabled, setMeshZeroTouchEnabled] = useState(false)
 
   const origSsid = useRef<string>()
@@ -77,14 +149,12 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+  const wifiSettingsData = useVenueWifiSettings(params.venueId)
+  const isSupport6GRadio = bandwidthRadioOptions ? bandwidthRadioOptions[ApRadioTypeEnum.Radio6G]?.length > 0 : false
 
   useEffect(() => {
-    if (data) {
-      const { mesh, dhcpServiceSetting } = data
+    if (wifiSettingsData) {
+      const { mesh, dhcpServiceSetting } = wifiSettingsData
       const { enabled = false, ssid, passphrase, radioType, zeroTouchEnabled = false } = mesh || {}
       setMeshEnabled(enabled)
       setIsReadOnly(enabled)
@@ -112,7 +182,7 @@ export function MeshNetwork () {
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Mesh-Network')))])
     }
-  }, [data])
+  }, [wifiSettingsData])
 
   const checkMeshAPs = async () => {
     const payload = {
@@ -124,7 +194,7 @@ export function MeshNetwork () {
       },
       pageSize: 1
     }
-    const { data } = await apList({ params, payload }, true)
+    const { data } = await apList({ params, payload, enableRbac: isWifiRbacEnabled }, true)
     setHasMeshAPs(!!(data?.totalCount && data.totalCount > 0))
   }
 
@@ -286,7 +356,7 @@ export function MeshNetwork () {
         }
       }
 
-      await updateVenueMesh({ params, payload: meshData, enableRbac: isWifiRbacEnabled })
+      await updateVenueMesh({ params, payload: meshData, enableRbac: resolvedRbacEnabled, isWifiMeshIndependents56GEnable })
 
       setIsSsidEditMode(false)
       setIsPassphraseEditMode(false)
@@ -306,7 +376,7 @@ export function MeshNetwork () {
   }
 
   return (<Loader states={[{
-    isLoading: !data || meshToolTipDisabledText === defaultToolTip,
+    isLoading: !wifiSettingsData || meshToolTipDisabledText === defaultToolTip,
     isFetching: isUpdatingVenueMesh
   }]}>
     <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
@@ -424,10 +494,41 @@ export function MeshNetwork () {
             disabled={isReadOnly}
             value={meshRadioType}
             onChange={handleRadioTypeChanged}>
-            <Space direction='vertical'>
-              <Radio value='5-GHz'>{$t({ defaultMessage: '5 & 6 GHz' })}</Radio>
-              <Radio value='2.4-GHz'>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
-            </Space>
+            { isWifiMeshIndependents56GEnable ? (
+              <Space direction='vertical'>
+                <Radio value='5-6-GHz' data-testid='radio56'>
+                  {$t({ defaultMessage: '5 & 6 GHz' })}
+                </Radio>
+                <Radio value='5-GHz' data-testid='radio5'>
+                  {$t({ defaultMessage: '5 GHz' })}
+                </Radio>
+                {
+                  isSupport6GRadio ? (
+                    <Radio value='6-GHz' data-testid='radio6'>
+                      {$t({ defaultMessage: '6 GHz' })}<Mesh6GhzInfoIcon/>
+                    </Radio>
+                  ) : (
+                    <Tooltip
+                      title={$t({
+                        defaultMessage: 'Mesh radio with 6GHz is not supported in the current country.'
+                      })}
+                    >
+                      <Radio disabled={true} value='6-GHz' data-testid='radio6'>
+                        {$t({ defaultMessage: '6 GHz' })}
+                      </Radio>
+                    </Tooltip>
+                  )
+                }
+                <Radio value='2.4-GHz' data-testid='radio24'>
+                  {$t({ defaultMessage: '2.4 GHz' })}
+                </Radio>
+              </Space>
+            ) : (
+              <Space direction='vertical'>
+                <Radio value='5-GHz'>{$t({ defaultMessage: '5 & 6 GHz' })}</Radio>
+                <Radio value='2.4-GHz'>{$t({ defaultMessage: '2.4 GHz' })}</Radio>
+              </Space>
+            )}
           </Radio.Group>
         </Form.Item>
       </StepsFormLegacy.FieldLabel>

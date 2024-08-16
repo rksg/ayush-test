@@ -24,8 +24,7 @@ import {
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
-  useGetNetworkApGroupsQuery,
-  useGetNetworkApGroupsV2Query,
+  useGetNetworkApGroupsV2Query, useGetRbacNetworkApGroupsQuery,
   useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -87,7 +86,7 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
 
@@ -117,29 +116,34 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
-  const networkApGroupsQuery = useGetNetworkApGroupsQuery({ params: { tenantId },
-    payload: [{
-      networkId: networkVenue?.networkId,
-      ssids: [wlan?.ssid],
-      venueId: networkVenue?.venueId
-    }]
-  }, { skip: isUseWifiApiV2 || !networkVenue || !wlan })
+  const networkApGroupsQuery = useNetworkApGroupsInstance()
 
-  const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
-    payload: [{
-      networkId: networkVenue?.networkId,
-      venueId: networkVenue?.venueId,
-      isTemplate: isTemplate
-    }],
-    enableRbac: isWifiRbacEnabled
-  }, { skip: !isUseWifiApiV2 || !networkVenue || !wlan })
+  function useNetworkApGroupsInstance () {
+    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
+
+    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
+
+    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
+  }
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    const networkApGroupsData = (isUseWifiApiV2)? networkApGroupsV2Query.data : networkApGroupsQuery.data
+    const networkApGroupsData = networkApGroupsQuery.data
 
     let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
@@ -155,7 +159,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsQuery.data, networkApGroupsV2Query.data])
+  }, [networkVenue, networkApGroupsQuery.data])
 
   useEffect(() => {
     form.setFieldsValue(formInitData)
@@ -285,6 +289,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                   if (form.getFieldsValue().apgroups[name].selected && _.isEmpty(value)) {
                     return Promise.reject($t({ defaultMessage: 'Please enter Radio Band' }))
                   }
+                  return Promise.resolve()
+                }
+              },
+              {
+                validator: (obj, value) => {
+                  if (form.getFieldsValue().apgroups[name].selected)
+                    return validateRadioBandForDsaeNetwork(value)
+
                   return Promise.resolve()
                 }
               }

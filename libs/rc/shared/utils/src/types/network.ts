@@ -1,4 +1,4 @@
-import { MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
+import { EdgeMvSdLanViewData, MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -42,28 +42,42 @@ export interface BaseNetwork {
   ssid: string
   vlan: number
   aps: number
-  clients: number
+  clients?: number  // non-RBAC only
   venues: { count: number, names: string[], ids: string[] }
   captiveType?: GuestNetworkTypeEnum
-  deepNetwork?: NetworkDetail
-  vlanPool?: { name: string }
+  deepNetwork?: NetworkDetail // non-RBAC only
+  vlanPool?: { name: string } // non-RBAC only
   activated?: { isActivated: boolean, isDisabled?: boolean, errors?: string[] }
   allApDisabled?: boolean,
   incompatible?: number
 }
+
+export type DsaeOnboardNetwork = {
+  id: string
+  name: string
+  description: string
+  nwSubType: string
+  ssid: string
+  vlan: number
+  vlanPool?: { name: string, vlanMembers: string[] }
+  securityProtocol?: string
+}
+
 export interface Network extends BaseNetwork{
   children?: BaseNetwork[]
-  dsaeOnboardNetwork?: BaseNetwork
+  dsaeOnboardNetwork?: DsaeOnboardNetwork
   securityProtocol?: string
   isOnBoarded?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string,
-  incompatible?: number
   certificateTemplateId?: string
+  apSerialNumbers?: string[]
 }
 
 export interface WifiNetwork extends Network{
-  venueApGroups: VenueApGroup[]
+  clientCount: number,  // RBAC API only: replace the client field
+  venueApGroups: VenueApGroup[], // RBAC API only: replace the venues field
+  tunnelWlanEnable?: boolean
 }
 
 export interface NetworkExtended extends Network {
@@ -114,6 +128,7 @@ export interface NetworkSaveData {
   authRadiusId?: string | null
   accountingRadiusId?: string
   enableDhcp?: boolean
+  enableDeviceOs?: boolean
   wlan?: {
     ssid?: string
     vlanId?: number
@@ -158,6 +173,7 @@ export interface NetworkSaveData {
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
   accountingInterimUpdates?: number
+  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[]
 }
 
 export enum MaxRateEnum {
@@ -228,4 +244,13 @@ export interface NetworkRadiusSettings {
   enableAccountingProxy?: boolean
   enableAuthProxy?: boolean
   macAuthMacFormat?: MacAuthMacFormatEnum
+}
+
+export interface NetworkTunnelSdLanAction {
+  serviceId: string,
+  venueId: string,
+  networkId: string,
+  guestEnabled: boolean, // forward guest traffic
+  enabled: boolean,      // is local breakout
+  venueSdLanInfo?: EdgeMvSdLanViewData
 }

@@ -15,6 +15,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
@@ -34,12 +35,13 @@ import {
   defaultSort,
   L2AclPolicy,
   MacAddressFilterRegExp,
-  sortProp, TableResult,
+  sortProp, TableResult, useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 
 import { AddModeProps, editModeProps }                            from './AccessControlForm'
@@ -91,6 +93,7 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
 export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const {
     inputName = [],
     onlyViewMode = {} as { id: string, viewText: string },
@@ -117,6 +120,10 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [contentForm] = Form.useForm()
   const MAC_ADDRESS_LIMIT = 128
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : enableRbac
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const [
@@ -141,14 +148,16 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     useTemplateMutationFn: useUpdateL2AclPolicyTemplateMutation
   })
 
-  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(editMode.isEdit)
+  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(
+    editMode.isEdit, resolvedRbacEnabled
+  )
 
   const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetL2AclPolicyQuery,
     useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
     skip: skipFetch,
-    payload: {},
-    extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
+    extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId },
+    enableRbac: resolvedRbacEnabled
   })
 
   const isViewMode = () => {
@@ -420,7 +429,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       if (!edit) {
         const l2AclRes: CommonResult = await createL2AclPolicy({
           params: params,
-          payload: convertToPayload()
+          payload: convertToPayload(),
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
         // let responseData = l2AclRes.response as {
         //   [key: string]: string
@@ -432,7 +442,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       } else {
         await updateL2AclPolicy({
           params: { ...params, l2AclPolicyId: queryPolicyId },
-          payload: convertToPayload(queryPolicyId)
+          payload: convertToPayload(queryPolicyId),
+          enableRbac: resolvedRbacEnabled
         }).unwrap()
       }
     } catch (error) {
@@ -606,6 +617,9 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       </Button>
     }
 
+    // eslint-disable-next-line max-len
+    if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
+
     return <GridRow style={{ width: '350px' }}>
       <GridCol col={{ span: 12 }}>
         <Form.Item
@@ -628,28 +642,32 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || !l2AclPolicyId}
-          onClick={() => {
-            if (l2AclPolicyId) {
-              setDrawerVisible(true)
-              setQueryPolicyId(l2AclPolicyId)
-              setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          <Button type='link'
+            disabled={visible || !l2AclPolicyId}
+            onClick={() => {
+              if (l2AclPolicyId) {
+                setDrawerVisible(true)
+                setQueryPolicyId(l2AclPolicyId)
+                setLocalEdiMode({ id: l2AclPolicyId, isEdit: true })
+              }
             }
-          }
-          }>
-          {$t({ defaultMessage: 'Edit Details' })}
-        </Button>
+            }>
+            {$t({ defaultMessage: 'Edit Details' })}
+          </Button>
+        }
       </AclGridCol>
       <AclGridCol>
-        <Button type='link'
-          disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
-          onClick={() => {
-            setDrawerVisible(true)
-            setQueryPolicyId('')
-          }}>
-          {$t({ defaultMessage: 'Add New' })}
-        </Button>
+        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+          <Button type='link'
+            disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
+            onClick={() => {
+              setDrawerVisible(true)
+              setQueryPolicyId('')
+            }}>
+            {$t({ defaultMessage: 'Add New' })}
+          </Button>
+        }
       </AclGridCol>
     </GridRow>
   }
@@ -730,14 +748,15 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   )
 }
 
-const useGetL2AclPolicyListInstance = (isEdit: boolean): {
+const useGetL2AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   layer2SelectOptions: JSX.Element[], layer2List: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>({
     useQueryFn: useGetEnhancedL2AclProfileListQuery,
     useTemplateQueryFn: useGetL2AclPolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {

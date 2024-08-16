@@ -12,17 +12,14 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
   useUpdateNetworkVenueMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenuesMutation,
-  useNetworkVenueListQuery,
-  useNetworkVenueTableQuery,
   useNetworkVenueTableV2Query,
-  useNetworkVenueListV2Query,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
@@ -31,7 +28,8 @@ import {
   useAddNetworkVenueTemplatesMutation,
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
-  useGetVLANPoolPolicyViewModelListQuery
+  useGetVLANPoolPolicyViewModelListQuery,
+  useNewNetworkVenueTableQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -45,17 +43,21 @@ import {
   IsNetworkSupport6g,
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
-  KeyValue, VLANPoolViewModelType
+  KeyValue, VLANPoolViewModelType, EdgeSdLanViewDataP2, EdgeMvSdLanViewData
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
-import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
-import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { isSdLanGuestUtilizedOnDiffVenue, useGetNetworkTunnelInfo }                                   from '../../EdgeSdLan/edgeSdLanUtils'
+import { showSdLanGuestFwdConflictModal }                                                             from '../../EdgeSdLan/SdLanGuestFwdConflictModal'
+import { useEdgeMvSdLanActions,useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton } from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                                   from '../../NetworkTunnelActionModal/types'
+import { useUpdateNetworkTunnelAction }                                                     from '../../NetworkTunnelActionModal/utils'
 import {
   NetworkVenueScheduleDialog
 } from '../../NetworkVenueScheduleDialog'
@@ -97,6 +99,74 @@ const defaultPayload = {
   searchTargetFields: ['name']
 }
 
+const defaultRbacPayload = {
+  searchString: '',
+  fields: [
+    'name',
+    'id',
+    'description',
+    'city',
+    'country',
+    'networks',
+    'aggregatedApStatus',
+    'radios',
+    'aps',
+    'activated',
+    'vlan',
+    'scheduling',
+    'switches',
+    'switchClients',
+    'latitude',
+    'longitude',
+    'mesh',
+    'status',
+    'isOweMaster',
+    'owePairNetworkId',
+    'venueApGroups',
+    'incompatible'
+  ],
+  searchTargetFields: ['name']
+}
+
+const useNetworkVenueList = (props: { settingsId: string, networkId?: string } ) => {
+  const { settingsId, networkId } = props
+  const { isTemplate } = useConfigTemplate()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+
+  const nonRbacTableQuery = useTableQuery({
+    // eslint-disable-next-line max-len
+    useQuery: useNetworkVenueTableV2Query,
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    },
+    search: {
+      searchTargetFields: defaultPayload.searchTargetFields as string[]
+    },
+    pagination: { settingsId },
+    option: { skip: resolvedRbacEnabled }
+  })
+
+  const rbacTableQuery = useTableQuery({
+    useQuery: useNewNetworkVenueTableQuery,
+    apiParams: { networkId: networkId! },
+    defaultPayload: {
+      ...defaultRbacPayload,
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled: isConfigTemplateRbacEnabled
+    },
+    search: {
+      searchTargetFields: defaultRbacPayload.searchTargetFields as string[]
+    },
+    pagination: { settingsId },
+    option: { skip: !resolvedRbacEnabled || !networkId }
+  })
+
+  return resolvedRbacEnabled ? rbacTableQuery : nonRbacTableQuery
+}
+
 const defaultArray: Venue[] = []
 /* eslint-disable max-len */
 const notificationMessage = defineMessage({
@@ -109,25 +179,20 @@ interface schedule {
 
 export function NetworkVenuesTab () {
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
-  const { $t } = useIntl()
+  const params = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isMapEnabled = useIsSplitOn(Features.G_MAP)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const { $t } = useIntl()
+  const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
   const settingsId = 'network-venues-table'
-  const tableQuery = useTableQuery({
-    useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
-      : (isApCompatibleCheckEnabled ? useNetworkVenueTableQuery : useNetworkVenueListQuery),
-    defaultPayload: {
-      ...defaultPayload,
-      isTemplate: isTemplate
-    },
-    search: {
-      searchTargetFields: defaultPayload.searchTargetFields as string[]
-    },
-    pagination: { settingsId }
-  })
 
+  const tableQuery = useNetworkVenueList({ settingsId, networkId })
   const { cityFilterOptions } = useGetVenueCityList()
 
   const [tableData, setTableData] = useState(defaultArray)
@@ -137,18 +202,13 @@ export function NetworkVenuesTab () {
   const [scheduleModalState, setScheduleModalState] = useState<SchedulingModalState>({
     visible: false
   })
+  const [tunnelModalState, setTunnelModalState] = useState<NetworkTunnelActionModalProps>({
+    visible: false
+  } as NetworkTunnelActionModalProps)
   const [systemNetwork, setSystemNetwork] = useState(false)
 
-  const params = useParams()
-  const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
-    useMutationFn: useUpdateNetworkVenueMutation,
-    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
-  })
-  const networkId = params.networkId
-
   const networkQuery = useGetNetwork()
+
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
@@ -164,6 +224,12 @@ export function NetworkVenuesTab () {
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
 
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+
+  // RBAC API doesn't support
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddNetworkVenuesMutation,
     useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
@@ -172,8 +238,11 @@ export function NetworkVenuesTab () {
     useMutationFn: useDeleteNetworkVenuesMutation,
     useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
   })
+
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
+  const updateNetworkTunnel = useUpdateNetworkTunnelAction()
+  const { toggleNetwork } = useEdgeMvSdLanActions()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
@@ -237,8 +306,10 @@ export function NetworkVenuesTab () {
     //     manageAPGroups(row);
     //   }
     // }
+    const venueId = row.id
     const network = networkQuery.data
-    const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
+    const networkId = (network && network?.id) ? network.id : ''
+    const newNetworkVenue = generateDefaultNetworkVenue(venueId, networkId)
 
     if (IsNetworkSupport6g(network)) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
@@ -255,7 +326,15 @@ export function NetworkVenuesTab () {
 
     if (!row.allApDisabled || !checked) {
       if (checked) { // activate
-        addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+        addNetworkVenue({
+          params: {
+            tenantId: params.tenantId,
+            venueId,
+            networkId
+          },
+          payload: newNetworkVenue,
+          enableRbac: resolvedRbacEnabled
+        })
       } else { // deactivate
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, [row.id], () => {
           if (!deactivateNetworkVenueId) {
@@ -267,25 +346,56 @@ export function NetworkVenuesTab () {
           }
           deleteNetworkVenue({
             params: {
-              tenantId: params.tenantId, networkVenueId: deactivateNetworkVenueId
-            }
+              tenantId: params.tenantId,
+              networkVenueId: deactivateNetworkVenueId,
+              venueId: newNetworkVenue.venueId,
+              networkId
+            },
+            enableRbac: resolvedRbacEnabled
           })
         })
       }
     }
   }
 
-  const handleAddNetworkVenues = (networkVenues: NetworkVenue[], clearSelection: () => void) => {
+  const handleAddNetworkVenues = async (networkVenues: NetworkVenue[], clearSelection: () => void) => {
     if (networkVenues.length > 0) {
-      addNetworkVenues({ payload: networkVenues }).then(clearSelection)
+      if (resolvedRbacEnabled) {
+        const addNetworkVenueReqs = networkVenues.map((networkVenue) => {
+          const params = {
+            venueId: networkVenue.venueId,
+            networkId: networkVenue.networkId
+          }
+          return addNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+        })
+
+        await Promise.allSettled(addNetworkVenueReqs).then(clearSelection)
+
+      } else {
+        await addNetworkVenues({ payload: networkVenues }).then(clearSelection)
+      }
     } else {
       clearSelection()
     }
   }
 
-  const handleDeleteNetworkVenues = (networkVenueIds: string[], clearSelection: () => void) => {
+  const handleDeleteNetworkVenues = async (networkVenueIds: string[], clearSelection: () => void) => {
     if (networkVenueIds.length > 0) {
-      deleteNetworkVenues({ payload: networkVenueIds }).then(clearSelection)
+      if (resolvedRbacEnabled) {
+        const network = networkQuery.data
+        const networkId = (network && network?.id) ? network.id : ''
+        const deleteNetworkVenueReqs = networkVenueIds.map((networkVenueId) => {
+          const curParams = {
+            venueId: networkVenueId,
+            networkId: networkId
+          }
+          return deleteNetworkVenue({ params: curParams, enableRbac: true })
+        })
+
+        await Promise.allSettled(deleteNetworkVenueReqs).then(clearSelection)
+      } else {
+        deleteNetworkVenues({ payload: networkVenueIds }).then(clearSelection)
+      }
     } else {
       clearSelection()
     }
@@ -342,9 +452,11 @@ export function NetworkVenuesTab () {
     deActivatingVenues.forEach(venue => {
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
       if (alreadyActivatedVenue && !venue.disabledActivation && !venue.allApDisabled) {
-        const { id } = alreadyActivatedVenue
-        if (!venue.activated.isDisabled && id && venue.activated.isActivated === true) {
-          selectedVenuesIds.push(id)
+        const { id, venueId } = alreadyActivatedVenue
+        const selectVenueId = id ?? venueId
+        const { isDisabled, isActivated } = venue.activated || {}
+        if (!isDisabled && selectVenueId && isActivated === true) {
+          selectedVenuesIds.push(selectVenueId)
         }
       }
     })
@@ -423,12 +535,12 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
-    ...(isEdgeSdLanHaReady ? [{
+    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady) ? [{
       key: 'tunneled',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',
       render: function (_: ReactNode, row: Venue) {
-        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id]
+        const destinationsInfo = sdLanScopedNetworkVenues?.sdLansVenueMap[row.id] as EdgeSdLanViewDataP2[]
         if (Boolean(row.activated?.isActivated)) {
           return getNetworkTunnelInfo(networkId!, destinationsInfo?.[0])
         } else {
@@ -518,7 +630,33 @@ export function NetworkVenuesTab () {
           (e) => handleClickScheduling(row, e),
           (!hasUpdatePermission || systemNetwork))
       }
-    }
+    },
+    ...(isEdgeMvSdLanReady ? [{
+      key: 'tunneledInfo',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneledInfo',
+      render: function (_: ReactNode, row: Venue) {
+        const currentNetwork = networkQuery.data
+
+        return <NetworkTunnelInfoButton
+          network={currentNetwork}
+          currentVenue={row}
+          venueSdLan={sdLanScopedNetworkVenues.sdLansVenueMap[row.id]?.[0]}
+          onClick={() => {
+            // show modal
+            setTunnelModalState({
+              visible: true,
+              network: {
+                id: networkId,
+                type: currentNetwork?.type,
+                venueId: row.id,
+                venueName: row.name
+              }
+            } as NetworkTunnelActionModalProps)
+          }}
+        />
+      }
+    }]: [])
   ]
 
   const handleClickScheduling = (row: Venue, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -549,16 +687,27 @@ export function NetworkVenuesTab () {
     })
   }
 
+  const handleCloseTunnelModal = () =>
+    setTunnelModalState({ visible: false } as NetworkTunnelActionModalProps)
 
   const handleFormFinish = (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
       let oldData = _.cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
 
-      updateNetworkVenue({ params: {
-        tenantId: params.tenantId,
-        networkVenueId: payload.id
-      }, payload: payload }).then(()=>{
+      updateNetworkVenue({
+        params: {
+          tenantId: params.tenantId,
+          networkVenueId: payload.id,
+          venueId: payload.venueId,
+          networkId: payload.networkId
+        },
+        payload: {
+          ...payload,
+          isTemplate: isTemplate
+        },
+        enableRbac: resolvedRbacEnabled
+      }).then(()=>{
         setApGroupModalState({
           visible: false
         })
@@ -600,14 +749,68 @@ export function NetworkVenuesTab () {
 
     const payload = _.assign(data, { scheduler: tmpScheduleList })
 
-    updateNetworkVenue({ params: {
-      tenantId: params.tenantId,
-      networkVenueId: payload.id
-    }, payload: payload }).then(()=>{
+    updateNetworkVenue({
+      params: {
+        tenantId: params.tenantId,
+        networkVenueId: payload.id,
+        venueId: payload.venueId,
+        networkId: payload.networkId
+      },
+      payload: {
+        ...payload,
+        isTemplate: isTemplate
+      },
+      enableRbac: resolvedRbacEnabled
+    }).then(()=>{
       setScheduleModalState({
         visible: false
       })
     })
+  }
+
+  const handleNetworkTunnelActionFinish = async (
+    formValues: NetworkTunnelActionForm,
+    otherData: {
+      network: NetworkTunnelActionModalProps['network'],
+      venueSdLan?: EdgeMvSdLanViewData
+    }
+  ) => {
+    const { network, venueSdLan } = otherData
+    // eslint-disable-next-line max-len
+    const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
+     && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
+
+    if (needSdLanConfigConflictCheck) {
+      await new Promise<void>((resolve) => {
+        showSdLanGuestFwdConflictModal({
+          currentNetworkVenueId: network?.venueId!,
+          currentNetworkId: network?.id!,
+          currentNetworkName: '',
+          activatedGuest: formValues.sdLan.isGuestTunnelEnabled,
+          tunneledWlans: venueSdLan!.tunneledWlans,
+          tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+          onOk: async (impactVenueIds: string[]) => {
+            if (impactVenueIds.length) {
+              // has conflict and confirmed
+
+              const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
+              actions.push(...impactVenueIds.map(impactVenueId =>
+                toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
+              await Promise.all(actions)
+            } else {
+              await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+            }
+
+            resolve()
+            handleCloseTunnelModal()
+          },
+          onCancel: () => resolve()
+        })
+      })
+    } else {
+      await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+      handleCloseTunnelModal()
+    }
   }
 
   return (
@@ -656,6 +859,13 @@ export function NetworkVenuesTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
+      {isEdgeMvSdLanReady && tunnelModalState.visible &&
+        <NetworkTunnelActionModal
+          {...tunnelModalState}
+          onFinish={handleNetworkTunnelActionFinish}
+          onClose={handleCloseTunnelModal}
+        />
+      }
     </Loader>
   )
 }
@@ -664,8 +874,12 @@ function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
-  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
+  const venueCityListTemplate = useGetVenueTemplateCityListQuery({
+    params,
+    enableRbac: isConfigTemplateRbacEnabled
+  }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
     }),

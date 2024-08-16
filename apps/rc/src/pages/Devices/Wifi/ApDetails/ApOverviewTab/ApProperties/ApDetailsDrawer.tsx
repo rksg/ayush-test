@@ -1,14 +1,28 @@
 /* eslint-disable max-len */
-import { Divider }              from 'antd'
-import { capitalize, includes } from 'lodash'
-import { useIntl }              from 'react-intl'
+import { useEffect, useState } from 'react'
+
+import { Button, Divider, Tooltip } from 'antd'
+import { capitalize, includes }     from 'lodash'
+import { useIntl }                  from 'react-intl'
 
 import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
+import { get }                                 from '@acx-ui/config'
 import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import {
+  EditPortDrawer,
+  getInactiveTooltip,
+  isLAGMemberPort,
+  SwitchLagModal,
+  SwitchLagParams,
+  isOperationalSwitchPort,
+  isStackPort
+} from '@acx-ui/rc/components'
 import {
   useGetVenueQuery,
   useGetVenueSettingsQuery,
-  useGetApValidChannelQuery
+  useGetApValidChannelQuery,
+  useLazySwitchPortlistQuery,
+  useLazyGetLagListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDetails,
@@ -16,9 +30,14 @@ import {
   ApViewModel,
   DeviceGps,
   gpsToFixed,
-  APPropertiesAFCPowerStateRender } from '@acx-ui/rc/utils'
-import { TenantLink }            from '@acx-ui/react-router-dom'
-import { useUserProfileContext } from '@acx-ui/user'
+  APPropertiesAFCPowerStateRender,
+  Lag,
+  SwitchPortViewModelQueryFields,
+  SwitchPortViewModel,
+  SwitchPortStatus } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                from '@acx-ui/react-router-dom'
+import { SwitchScopes }                         from '@acx-ui/types'
+import { useUserProfileContext, hasPermission } from '@acx-ui/user'
 
 import { useGetApCapabilities } from '../../../hooks'
 
@@ -34,12 +53,25 @@ interface ApDetailsDrawerProps {
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
+  const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
 
   const { $t } = useIntl()
+  const routeParams = useParams()
+
   const { data: userProfile } = useUserProfileContext()
+  const [switchPortlist] = useLazySwitchPortlistQuery()
+  const [ getLagList ] = useLazyGetLagListQuery()
 
   const { visible, setVisible, currentAP, apDetails } = props
+  const [switchPort, setSwitchPort] = useState<React.ReactNode>(currentAP?.switchPort)
+  const [editLag, setEditLag] = useState([] as Lag[])
+  const [editLagModalVisible, setEditLagModalVisible] = useState(false)
+  const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
+  const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
 
@@ -50,6 +82,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   const { data: apValidChannels } = useGetApValidChannelQuery({ params, enableRbac: isUseRbacApi },
     { skip: !params.venueId })
 
+
   const { data: apCapabilities } = useGetApCapabilities({
     params,
     modelName: currentAP?.model,
@@ -57,8 +90,78 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
 
+  // TODO: wait for BE support RBAC API to get `apPassword`
   const { data: venueSettings } = useGetVenueSettingsQuery({ params, enableRbac: isUseRbacApi },
     { skip: !currentAP?.venueId })
+
+  const fetchSwitchDetails = async () => {
+    if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
+      return
+    }
+
+    const { data: switchPortsData } = await switchPortlist({
+      params: { tenantId: routeParams.tenantId },
+      payload: {
+        filters: { switchId: [currentAP.switchId] },
+        sortField: 'portIdentifierFormatted',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10000,
+        fields: SwitchPortViewModelQueryFields
+      },
+      enableRbac: isSwitchRbacEnabled
+    })
+    const portData = switchPortsData?.data.filter((item: SwitchPortViewModel) => item.portIdentifier === currentAP?.switchPort)[0]
+    const disablePortEdit = portData && (!isOperationalSwitchPort(portData) || isStackPort(portData))
+
+    if (disablePortEdit) {
+      const tooltip = portData ? getInactiveTooltip(portData) :
+        $t({
+          defaultMessage:
+              'The port cannot be edited since it is on a switch that is not operational'
+        })
+
+      setSwitchPort(<Tooltip title={tooltip}> {currentAP?.switchPort} </Tooltip>)
+    }else if(portData){
+      const onEditLag = async () => {
+        const { data: lagList } = await getLagList({
+          params: {
+            ...routeParams,
+            switchId: portData.switchMac,
+            venueId: portData.venueId
+          },
+          enableRbac: isSwitchRbacEnabled
+        })
+        const lagData = lagList?.find((item: Lag) =>
+          item.lagId?.toString() === portData.lagId) as Lag
+
+        setLagDrawerParams({
+          switchMac: portData.switchMac,
+          serialNumber: portData.switchSerial
+        })
+        setEditLag([lagData])
+        setEditPortDrawerVisible(false)
+        setEditLagModalVisible(true)
+      }
+
+      const onEditPort = () => {
+        setSelectedPorts([portData])
+        setEditLagModalVisible(false)
+        setEditPortDrawerVisible(true)
+      }
+
+      const onClickHandler = isLAGMemberPort(portData) ? onEditLag : onEditPort
+
+      setSwitchPort(<Button type='link' onClick={onClickHandler} data-testid='portButton'>
+        {currentAP?.switchPort} </Button>)
+    }
+  }
+
+  useEffect(() => {
+    if (currentAP?.switchId) {
+      fetchSwitchDetails()
+    }
+  }, [currentAP])
 
   const onClose = () => {
     setVisible(false)
@@ -84,7 +187,6 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
     return null
   }
-
 
   const PropertiesTab = () => {
     return (<>
@@ -257,6 +359,18 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         )
       }
       {
+        isSwitchAPPortLinkEnabled && switchPort &&
+        <>
+          <Divider/>
+          <Descriptions labelWidthPercent={50}>
+            <Descriptions.Item
+              label={$t({ defaultMessage: 'Switch Port' })}
+              children={switchPort}
+            />
+          </Descriptions>
+        </>
+      }
+      {
         currentAP.deviceStatusSeverity === ApVenueStatusEnum.OPERATIONAL &&
         <>
           <Divider/>
@@ -295,13 +409,32 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
   }
 
   return (
-    <Drawer
+    <><Drawer
       title={$t({ defaultMessage: 'AP Properties' })}
       visible={visible}
       onClose={onClose}
       children={<PropertiesTab />}
       width={'400px'}
     />
+    {editLagModalVisible && <SwitchLagModal
+      isEditMode={true}
+      editData={editLag}
+      visible={editLagModalVisible}
+      setVisible={setEditLagModalVisible}
+      params={lagDrawerParams}
+      type='drawer'
+    />}
+    {editPortDrawerVisible && <EditPortDrawer
+      key='edit-port'
+      visible={editPortDrawerVisible}
+      setDrawerVisible={setEditPortDrawerVisible}
+      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+      isMultipleEdit={selectedPorts?.length > 1}
+      isVenueLevel={false}
+      selectedPorts={selectedPorts}
+    />
+    }
+    </>
   )
 }
 

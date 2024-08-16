@@ -128,8 +128,9 @@ export const VenueFirmwareTable = (
       sorter: { compare: sortProp(isSwitchRbacEnabled ? 'venueName' : 'name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return isSwitchRbacEnabled ? row.venueName : row.name
+      render: function (_, row, __, highlightFn) {
+        const name = isSwitchRbacEnabled ? row.venueName : row.name
+        return highlightFn(name)
       }
     },
     {
@@ -287,6 +288,9 @@ export const VenueFirmwareTable = (
     scopes: [SwitchScopes.UPDATE]
   })
 
+  const isPreferencesVisible
+    = hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole
+
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -301,11 +305,11 @@ export const VenueFirmwareTable = (
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
-        actions={(hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole) ? [{
+        actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
         }] : []}
-        style={{ marginTop: isCustomRole ? '25px' : '' }}
+        style={{ marginTop: isPreferencesVisible ? '' : '25px' }}
       />
 
       <SwitchUpgradeWizard

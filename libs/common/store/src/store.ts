@@ -29,6 +29,7 @@ import {
   dataApi,
   dataApiSearch,
   recommendationApi,
+  intentAIApi,
   serviceGuardApi,
   reportsApi,
   rbacApi,
@@ -41,7 +42,8 @@ import {
   notificationApi,
   baseEdgeSdLanApi,
   baseConfigTemplateApi,
-  smartZoneApi
+  smartZoneApi,
+  baseEdgeQosProfilesApi as edgeQosProfilesApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -58,6 +60,7 @@ export const store = configureStore({
     [reportsApi.reducerPath]: reportsApi.reducer,
     [rbacApi.reducerPath]: rbacApi.reducer,
     [recommendationApi.reducerPath]: recommendationApi.reducer,
+    [intentAIApi.reducerPath]: intentAIApi.reducer,
     [apApi.reducerPath]: apApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [dhcpApi.reducerPath]: dhcpApi.reducer,
@@ -86,7 +89,8 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
-    [smartZoneApi.reducerPath]: smartZoneApi.reducer
+    [smartZoneApi.reducerPath]: smartZoneApi.reducer,
+    [edgeQosProfilesApi.reducerPath]: edgeQosProfilesApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -102,6 +106,7 @@ export const store = configureStore({
       timelineApi.middleware,
       dataApi.middleware,
       recommendationApi.middleware,
+      intentAIApi.middleware,
       dataApiSearch.middleware,
       apApi.middleware,
       rbacApi.middleware,
@@ -133,7 +138,8 @@ export const store = configureStore({
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
-      smartZoneApi.middleware
+      smartZoneApi.middleware,
+      edgeQosProfilesApi.middleware
     ])
   },
 

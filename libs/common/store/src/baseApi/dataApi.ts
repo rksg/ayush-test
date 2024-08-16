@@ -16,11 +16,14 @@ const getApiUrls = () => {
     dataApiSearchURL: isRa ? raApiSearchURL : r1ApiSearchURL,
     recommendationUrl: isRa
       ? `${window.location.origin}/analytics/api/rsa-data-api/graphql/configRecommendation`
-      : `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/configRecommendation`
+      : `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/configRecommendation`,
+    intentAIUrl: isRa
+      ? `${window.location.origin}/analytics/api/rsa-data-api/graphql/intentAI`
+      : `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/intentAI`
   }
 }
 
-export const { dataApiURL, dataApiSearchURL, recommendationUrl } = getApiUrls()
+export const { dataApiURL, dataApiSearchURL, recommendationUrl, intentAIUrl } = getApiUrls()
 
 export const dataApi = createApi({
   baseQuery: graphqlRequestBaseQuery({
@@ -48,7 +51,22 @@ export const recommendationApi = createApi({
   }),
   reducerPath: 'analytics-data-api-recommendation',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Monitoring'],
+  tagTypes: ['Monitoring', 'Intent'],
+  endpoints: () => ({ })
+})
+
+export const intentAIApi = createApi({
+  baseQuery: graphqlRequestBaseQuery({
+    url: intentAIUrl,
+    prepareHeaders: (headers) => {
+      Object.entries(getJwtHeaders())
+        .forEach(([header, value]) => headers.set(header, value))
+      return headers
+    }
+  }),
+  reducerPath: 'analytics-data-api-intentai',
+  refetchOnMountOrArgChange: true,
+  tagTypes: ['Intent'],
   endpoints: () => ({ })
 })
 

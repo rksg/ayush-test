@@ -311,11 +311,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/capabilities',
     newApi: true
   },
-  getDpskPassphraseByQuery: {
-    method: 'post',
-    url: '/dpskPassphrasePools/query',
-    newApi: true
-  },
   getApLanPorts: {
     method: 'get',
     url: '/venues/aps/:serialNumber/lanPortSettings',
@@ -583,5 +578,41 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
     newApi: true
+  },
+  activateDpskService: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/dpskServices/:dpskServiceId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateMacRegistrationPool: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/macRegistrationPools/:macRegistrationPoolId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  queryDpskService: {
+    method: 'GET',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/dpskServices',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  queryCertificateTemplate: {
+    method: 'GET',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/certificateTemplates',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

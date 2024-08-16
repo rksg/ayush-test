@@ -13,7 +13,8 @@ import {
   FirmwareType,
   Schedule,
   LatestEdgeFirmwareVersion,
-  EolApFirmware
+  EolApFirmware,
+  FirmwareSwitchVenueV1002
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -158,28 +159,39 @@ export const getNextScheduleTpl = (intl: IntlShape, venue: FirmwareSwitchVenue) 
   }
 }
 
-// eslint-disable-next-line max-len
-const scheduleTypeIsApFunc = (value: Schedule) => value?.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE
-
-const getApSchedule = (venue: { nextSchedules?: Schedule[] }): Schedule | undefined => {
-  const apSchedules = venue.nextSchedules?.filter(scheduleTypeIsApFunc)
-  return apSchedules && apSchedules.length > 0 ? apSchedules[0] : undefined
+export const getNextScheduleTplV1002 = (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
+  const schedule = venue.nextSchedule
+  if (schedule?.timeSlot?.startDateTime) {
+    let endTime = moment(schedule.timeSlot.startDateTime).add(2, 'hours')
+    // eslint-disable-next-line max-len
+    return getDateByFormat(schedule.timeSlot.startDateTime, SCHEDULE_START_TIME_FORMAT) + ' - ' + endTime.format(SCHEDULE_END_TIME_FORMAT)
+  } else {
+    return intl.$t({ defaultMessage: 'Not scheduled' })
+  }
 }
 
 // eslint-disable-next-line max-len
-const getLastSkippedApVersion = (venue: { lastSkippedVersions?: FirmwareVenueVersion[] }): string | undefined => {
-  const version = venue.lastSkippedVersions?.filter(typeIsApFunc)
+const scheduleTypeIsApFunc = (value: Schedule) => value?.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE
+
+// eslint-disable-next-line max-len
+const getLastSkippedApVersion = (lastSkippedVersions?: FirmwareVenueVersion[]): string | undefined => {
+  const version = lastSkippedVersions?.filter(typeIsApFunc)
   return version && version.length > 0 ? version[0].version : undefined
 }
 
 // eslint-disable-next-line max-len
-const getApAvailableVersions = (venue: { availableVersions?: FirmwareVenueVersion[] }): FirmwareVenueVersion[] => {
-  return venue.availableVersions?.filter(typeIsApFunc) ?? []
+const getApAvailableVersions = (availableVersions?: FirmwareVenueVersion[]): FirmwareVenueVersion[] => {
+  return availableVersions?.filter(typeIsApFunc) ?? []
 }
 
-export const getApSchedules = (venue: { nextSchedules?: Schedule[] }): Schedule[] => {
-  const apSchedules = venue.nextSchedules?.filter(scheduleTypeIsApFunc)
+export const getApSchedules = (nextSchedules?: Schedule[]): Schedule[] => {
+  const apSchedules = nextSchedules?.filter(scheduleTypeIsApFunc)
   return apSchedules && apSchedules.length > 0 ? apSchedules : []
+}
+
+const getApSchedule = (nextSchedules?: Schedule[]): Schedule | undefined => {
+  const apSchedules = getApSchedules(nextSchedules)
+  return apSchedules[0]
 }
 
 interface getApNextScheduleTplProps {
@@ -187,28 +199,30 @@ interface getApNextScheduleTplProps {
   availableVersions?: FirmwareVenueVersion[]
   lastSkippedVersions?: FirmwareVenueVersion[]
 }
-export const getApNextScheduleTpl = (venue: getApNextScheduleTplProps) => {
+export const getApNextScheduleTpl = (versionInfo: getApNextScheduleTplProps) => {
   const { $t } = getIntl()
-  const schedule = getApSchedule(venue)
+  const { nextSchedules, availableVersions, lastSkippedVersions } = versionInfo
+  const schedule = getApSchedule(nextSchedules)
 
   if (schedule) {
     let endTime = moment(schedule.startDateTime).add(2, 'hours')
     // eslint-disable-next-line max-len
     return getDateByFormat(schedule.startDateTime, SCHEDULE_START_TIME_FORMAT) + ' - ' + endTime.format(SCHEDULE_END_TIME_FORMAT)
   } else {
-    const lastSkippedVersion = getLastSkippedApVersion(venue)
+    const lastSkippedVersion = getLastSkippedApVersion(lastSkippedVersions)
     // eslint-disable-next-line max-len
-    const isVersionSkipped = getApAvailableVersions(venue).some(version => version.version === lastSkippedVersion)
+    const isVersionSkipped = getApAvailableVersions(availableVersions).some(version => version.version === lastSkippedVersion)
     // eslint-disable-next-line max-len
     return isVersionSkipped ? $t({ defaultMessage: 'Not scheduled (Skipped)' }) : $t({ defaultMessage: 'Not scheduled' })
   }
 }
 
 // eslint-disable-next-line max-len
-export const getNextSchedulesTooltip = (venue: { nextSchedules?: Schedule[] }): string | undefined => {
+export const getNextSchedulesTooltip = (nextSchedules?: Schedule[]): string | undefined => {
   const { $t } = getIntl()
   const transform = firmwareTypeTrans($t)
-  const schedules = getApSchedules(venue)
+  // eslint-disable-next-line max-len
+  const schedules = getApSchedules(nextSchedules).sort((a, b) => -compareVersions(a.versionInfo.version, b.versionInfo.version))
   const content: string[] = []
 
   schedules.forEach((schedule: Schedule) => {

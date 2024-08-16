@@ -250,7 +250,7 @@ export type GuestResponse = {
   requestId: string,
   response: Guest | { data: Guest[], downloadUrl: string } }
 
-export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
+export function GuestFields ({ withBasicFields = true, from }: { withBasicFields?: boolean, from?: string }) {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
@@ -455,7 +455,8 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         options={numberOfDevicesOptions}
       />}
     />
-    {isGuestManualPasswordEnabled &&
+    {/* Only display Guest Pass when render from AddGuestDrawer*/}
+    {isGuestManualPasswordEnabled && (from === 'add') &&
     <Form.Item
       label={$t({ defaultMessage: 'Guest Pass' })}
       valuePropName={'checked'}
@@ -564,7 +565,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     if(form.getFieldValue('deliveryMethods').length === 0){
       showNoSendConfirm(()=>{
         addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
-        setVisible(false)
+        onClose()
       })
     } else{
       addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
@@ -577,9 +578,8 @@ export function AddGuestDrawer (props: AddGuestProps) {
             handleGuestPassResponse(res.data)
           }
         })
-      setVisible(false)
+      onClose()
     }
-    form.resetFields()
   }
 
 
@@ -587,7 +587,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
     <Button
       data-testid='saveBtn'
       key='saveBtn'
-      onClick={() => form.submit()}
+      onClick={form.submit}
       type='primary'>
       {$t({ defaultMessage: 'Add' })}
     </Button>,
@@ -607,7 +607,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
       destroyOnClose={true}
       children={
         <Form layout='vertical' form={form} onFinish={onSave} data-testid='guest-form'>
-          <GuestFields />
+          <GuestFields from={'add'} />
         </Form>
       }
       footer={<FooterDiv>{footer}</FooterDiv>}
@@ -628,7 +628,7 @@ export function showNoSendConfirm (callback: ()=>void) {
       action: 'CUSTOM_BUTTONS',
       buttons: [{
         text: $t({ defaultMessage: 'Cancel' }),
-        type: 'link', // TODO: will change after DS update
+        type: 'default',
         key: 'cancel',
         closeAfterAction: true
       }, {

@@ -176,6 +176,7 @@ export function ManageCustomer () {
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -196,7 +197,6 @@ export function ManageCustomer () {
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
-  const [assignedApswLicense, setApswLicense] = useState(0)
   const [assignedApswTrialLicense, setApswTrialLicense] = useState(0)
   const [customDate, setCustomeDate] = useState(true)
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -323,7 +323,6 @@ export function ManageCustomer () {
         setSubscriptionEndDate(moment(data?.service_expiration_date))
         setSubscriptionOrigEndDate(moment(data?.service_expiration_date))
         if (isDeviceAgnosticEnabled) {
-          setApswLicense(apswLic)
           setApswTrialLicense(apswTrialLic)
         } else {
           setWifiLicense(wLic)
@@ -527,7 +526,8 @@ export function ManageCustomer () {
       }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer,
+      await addCustomer({ params: { tenantId: tenantId },
+        payload: isRbacEnabled ? { data: [customer] } : customer,
         enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
@@ -1000,7 +1000,10 @@ export function ManageCustomer () {
   const ApswSubscription = () => {
     return <div >
       <UI.FieldLabelSubs width='275px'>
-        <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Device Networking' })
+          : intl.$t({ defaultMessage: 'Device Subscription' })
+        }</label>
         <Form.Item
           name='apswLicense'
           label=''
@@ -1013,8 +1016,12 @@ export function ManageCustomer () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
-            availableApswLicense: availableApswLicense })}
+          {isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+            : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+          }
           {assignedApswTrialLicense > 0 &&
           <span style={{ marginLeft: 10 }}>
             {intl.$t({ defaultMessage: '(active trial license : {apswTrial})' },
@@ -1091,8 +1098,11 @@ export function ManageCustomer () {
           </UI.FieldLabel2>
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
-          <label>{assignedApswLicense}</label>
+          <label>{isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscription' })
+          }</label>
+          <label>{assignedApswTrialLicense}</label>
         </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -1208,8 +1218,14 @@ export function ManageCustomer () {
           </UI.FieldLabel2>}
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
-          <label>{intl.$t({ defaultMessage: '50 devices' })}</label>
+          <label>{isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscription' })
+          }</label>
+          <label>{isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: '50 trial licenses' })
+            : intl.$t({ defaultMessage: '50 devices' })
+          }</label>
         </UI.FieldLabel2>}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '20px' }}>
@@ -1353,7 +1369,8 @@ export function ManageCustomer () {
         </div>}
 
         {isDeviceAgnosticEnabled && <Form.Item
-          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
+          label={isvSmartEdgeEnabled ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
           <Paragraph>{apswAssigned}</Paragraph>
         </Form.Item>}

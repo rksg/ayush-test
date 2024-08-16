@@ -5,7 +5,7 @@ export {
   columnState as activityTableColumnState,
   useActivityTableQuery
 } from './ActivityTable'
-export { AlarmWidget, AlarmWidgetV2 } from './AlarmWidget'
+export { AlarmWidgetV2 } from './AlarmWidget'
 export { ApInfoWidget } from './ApInfoWidget'
 export { ApTable, APStatus, defaultApPayload } from './ApTable'
 export type { ApTableRefType } from './ApTable'
@@ -22,16 +22,17 @@ export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
-export { ClientsWidget, ClientsWidgetV2 } from './ClientsWidget'
+export { ClientsWidgetV2 } from './ClientsWidget'
 export { CodeMirrorWidget } from './CodeMirrorWidget'
 export {
   ConnectedClientsTable,
   defaultClientPayload,
+  defaultRbacClientPayload,
   networkDisplayTransformer,
   isEqualCaptivePortal
 } from './ConnectedClientsTable'
 export { DefaultVlanDrawer } from './DefaultVlanDrawer'
-export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
+export { DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
 export { EdgesTable, EdgeStatusLight, defaultEdgeTablePayload } from './EdgesTable'
@@ -66,10 +67,10 @@ export { LanPortPoeSettings } from './LanPortPoeSettings'
 export { LanPortSettings, ConvertPoeOutToFormData } from './LanPortSettings'
 export { NetworkApGroupDialog } from './NetworkApGroupDialog'
 export { NetworkVenueScheduleDialog } from './NetworkVenueScheduleDialog'
-export { NetworkTable, defaultNetworkPayload } from './NetworkTable'
+export { NetworkTable, defaultNetworkPayload, defaultRbacNetworkPayload } from './NetworkTable'
 export { NetworkTabContext } from './NetworkTable/context'
 export { AAAInstance } from './NetworkForm/AAAInstance'
-export { MapWidget, MapWidgetV2 } from './MapWidget'
+export { MapWidgetV2 } from './MapWidget'
 export { RadioSettingsChannels } from './RadioSettingsChannels'
 export {
   RadioSettingsChannels320Mhz
@@ -103,7 +104,7 @@ export { useSwitchActions } from './useSwitchActions'
 export { useSwitchFirmwareUtils } from './useSwitchFirmwareUtils'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
 export { VenueAlarmWidget } from './VenueAlarmWidget'
-export { VenuesDashboardWidget, VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
+export { VenuesDashboardWidgetV2 } from './VenuesDashboardWidget'
 export { WifiSignal } from './WifiSignal'
 export { AlarmsDrawer } from './AlarmsDrawer'
 export { ApSelector } from './ApSelector'
@@ -141,6 +142,12 @@ export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase
 export { EdgeEditContext }
 export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
 export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
+export { EdgeHaSettingsForm } from './EdgeFormItem/EdgeHaSettingsForm'
+export type { EdgeHaSettingsFormType } from './EdgeFormItem/EdgeHaSettingsForm'
+export {
+  transformEdgeHaSettingsToFormType,
+  transformEdgeHaSettingsFormToApiPayload
+} from './EdgeFormItem/EdgeHaSettingsForm/utils'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
@@ -191,14 +198,25 @@ export {
 export type { ActivatedNetworksTableP2Props }
   from './EdgeSdLan/SdLanNetworkTable/SdLanP2NetworkTable'
 export {
+  useEdgeMvSdLanActions,
   useEdgeSdLanActions,
   useGetEdgeSdLanByEdgeOrClusterId,
   useSdLanScopedVenueNetworks,
   useSdLanScopedNetworkVenues,
   checkSdLanScopedNetworkDeactivateAction
 } from './EdgeSdLan/useEdgeSdLanActions'
+export type {
+  SdLanScopedNetworkVenuesData
+} from './EdgeSdLan/useEdgeSdLanActions'
 export { SdLanTopologyDiagram } from './EdgeSdLan/SdLanTopologyDiagram'
-export { useGetNetworkTunnelInfo } from './EdgeSdLan/edgeSdLanUtils'
+export {
+  useGetNetworkTunnelInfo,
+  edgeSdLanFormRequestPreProcess,
+  tansformSdLanScopedVenueMap,
+  isSdLanGuestUtilizedOnDiffVenue
+} from './EdgeSdLan/edgeSdLanUtils'
+export * from './NetworkTunnelActionModal'
+export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'
 export {
   ApCompatibilityType,
   ApCompatibilityQueryTypes,
@@ -253,3 +271,5 @@ export * from './SwitchCliTemplateForm'
 export {
   useRwgActions
 } from './useRwgActions'
+export * from './SwitchLagDrawer/SwitchLagModal'
+export { isOperationalSwitchPort, isStackPort } from './SwitchPortTable'

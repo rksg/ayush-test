@@ -23,8 +23,10 @@ import {
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
   NetworkDevicePosition, NetworkDeviceType, TypeWiseNetworkDevices
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }  from '@acx-ui/user'
+import { TenantLink }                          from '@acx-ui/react-router-dom'
+import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission, hasRoles }             from '@acx-ui/user'
+import { TABLE_QUERY_POLLING_INTERVAL }        from '@acx-ui/utils'
 
 import AddEditFloorplanModal from './FloorPlanModal'
 import GalleryView           from './GalleryView/GalleryView'
@@ -70,6 +72,7 @@ export function FloorPlan () {
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const defaultDevices = {
     ap: [],
@@ -96,17 +99,23 @@ export function FloorPlan () {
 
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
   const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const getNetworkDevices = useGetAllDevicesQuery({ params: { ...params,
-    showRwgDevice: '' + showRwgDevice
+    showRwgDevice: '' + (showRwgDevice && rwgHasPermission)
   },
-  payload: networkDevicePayload })
+  payload: networkDevicePayload },
+  {
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL
+  })
 
   const { data: apsList } = useApListQuery({
     params, payload: {
       fields: ['serialNumber', 'meshRole'],
       filters: { venueId: [params.venueId] }
-    }
-  }, { skip: !isApMeshTopologyFFOn })
+    },
+    enableRbac: isUseWifiRbacApi
+  }, { skip: !isApMeshTopologyFFOn,
+    pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   // Set mesh role for unplaced AP
   useEffect(() => {
@@ -366,6 +375,7 @@ export function FloorPlan () {
         break
       case NetworkDeviceType.switch:
         updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
+          enableRbac: isSwitchRbacEnabled,
           payload: clear ? clearDevicePositionValues : device.position })
         break
       case NetworkDeviceType.rwg:
@@ -415,13 +425,15 @@ export function FloorPlan () {
               showIcon
               action={
                 <Space direction='horizontal'>
-                  { hasAccess() && <TenantLink to='devices/wifi/add'>
+                  { hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+                  <TenantLink to='devices/wifi/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add AP' })}
                     </Button>
                   </TenantLink>
                   }
-                  { hasAccess() && <TenantLink to='devices/switch/add'>
+                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) &&
+                  <TenantLink to='devices/switch/add'>
                     <Button size='small' type='primary'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </Button>
@@ -462,24 +474,30 @@ export function FloorPlan () {
                   {showRogueAp ? $t({ defaultMessage: 'Hide Rogue APs' })
                     : $t({ defaultMessage: 'View Rogue APs' })}
                 </UI.RogueApButton> }
-                { hasAccess() && <><AddEditFloorplanModal
-                  buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
-                  onAddEditFloorPlan={onAddEditFloorPlan}
-                  isEditMode={false}/>
-                <Dropdown trigger={['click']}
-                  onVisibleChange={onVisibleChange}
-                  visible={closeOverlay}
-                  disabled={
-                    (!showGalleryView && unplacedDevicesCount && !showRogueAp) ? false : true}
-                  overlay={
-                    <UnplacedDevices {..._props} closeDropdown={closeDropdown}/>}>
-                  <Button
-                    size='small'
-                    type='link'>
-                    {$t({ defaultMessage: 'Unplaced Devices ({unplacedDevicesCount})' },
-                      { unplacedDevicesCount })}
-                  </Button>
-                </Dropdown> </>}
+                {
+                  hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+                  <AddEditFloorplanModal
+                    buttonTitle={$t({ defaultMessage: '+ Add Floor Plan' })}
+                    onAddEditFloorPlan={onAddEditFloorPlan}
+                    isEditMode={false}/>
+                }
+                {
+                  hasPermission({ scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE] }) &&
+                  <Dropdown trigger={['click']}
+                    onVisibleChange={onVisibleChange}
+                    visible={closeOverlay}
+                    disabled={
+                      (!showGalleryView && unplacedDevicesCount && !showRogueAp) ? false : true}
+                    overlay={
+                      <UnplacedDevices {..._props} closeDropdown={closeDropdown}/>}>
+                    <Button
+                      size='small'
+                      type='link'>
+                      {$t({ defaultMessage: 'Unplaced Devices ({unplacedDevicesCount})' },
+                        { unplacedDevicesCount })}
+                    </Button>
+                  </Dropdown>
+                }
               </UI.StyledSpace>
               }
             </UI.FloorPlanContainer>
@@ -496,7 +514,7 @@ export function FloorPlan () {
               })}
             </Space>}>
           </Empty>
-          { hasAccess() && <AddEditFloorplanModal
+          { hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && <AddEditFloorplanModal
             buttonTitle={$t({ defaultMessage: 'Add Floor Plan' })}
             onAddEditFloorPlan={onAddEditFloorPlan}
             isEditMode={false}/>

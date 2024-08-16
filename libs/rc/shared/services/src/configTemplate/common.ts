@@ -1,4 +1,8 @@
 /* eslint-disable max-len */
+import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/query/react'
+import { cloneDeep }                               from 'lodash'
+
 import {
   AAAPolicyType,
   AAAViewModalType,
@@ -9,15 +13,22 @@ import {
   Network,
   NetworkSaveData,
   TableResult,
+  WifiNetwork,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  transformNetwork
+  transformNetwork,
+  NetworkRadiusSettings,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }    from '../network'
-import { commonQueryFn } from '../servicePolicy.utils'
+import { networkApi }                                      from '../network'
+import { fetchRbacNetworkVenueList, updateNetworkVenueFn } from '../networkVenueUtils'
+import { commonQueryFn }                                   from '../servicePolicy.utils'
+import { addNetworkVenueFn }                               from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -27,7 +38,10 @@ import {
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getConfigTemplateList: build.query<TableResult<ConfigTemplate>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getConfigTemplates),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getConfigTemplates,
+        ConfigTemplateUrlsInfo.getConfigTemplatesRbac
+      ),
       providesTags: [{ type: 'ConfigTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -40,35 +54,107 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.applyConfigTemplate,
+        ConfigTemplateUrlsInfo.applyConfigTemplateRbac
+      ),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
     addNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.addNetworkTemplate,
+        ConfigTemplateUrlsInfo.addNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     updateNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.updateNetworkTemplate,
+        ConfigTemplateUrlsInfo.updateNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.getNetworkTemplate,
+        ConfigTemplateUrlsInfo.getNetworkTemplateRbac
+      ),
       providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
+    getNetworkDeepTemplate: build.query<NetworkSaveData | null, RequestPayload>({
+      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+        if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
+          null,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta
+        >)
+
+        const networkQuery = await fetchWithBQ(
+          createHttpRequest(
+            ConfigTemplateUrlsInfo.getNetworkTemplateRbac,
+            params,
+            GetApiVersionHeader(ApiVersionEnum.v1)
+          )
+        )
+        const networkDeepData = networkQuery.data as NetworkSaveData
+
+        if (networkDeepData) {
+          const arg = {
+            params,
+            payload: { isTemplate: true }
+          }
+
+          const {
+            error: networkVenuesListQueryError,
+            networkDeep
+          } = await fetchRbacNetworkVenueList(arg, fetchWithBQ)
+
+          if (networkVenuesListQueryError)
+            return { error: networkVenuesListQueryError }
+
+          if (networkDeep?.venues) {
+            networkDeepData.venues = cloneDeep(networkDeep.venues)
+          }
+        }
+
+        return networkQuery as QueryReturnValue<NetworkSaveData,
+          FetchBaseQueryError,
+          FetchBaseQueryMeta>
+      }
+    }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.deleteNetworkTemplate,
+        ConfigTemplateUrlsInfo.deleteNetworkTemplateRbac
+      ),
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
     getNetworkTemplateList: build.query<TableResult<Network>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getNetworkTemplateList),
+      query: (queryArgs: RequestPayload<{ fields?: string[] }>) => {
+        const query = commonQueryFn(
+          ConfigTemplateUrlsInfo.getNetworkTemplateList,
+          ConfigTemplateUrlsInfo.getNetworkTemplateListRbac
+        )
+
+        const { payload, enableRbac = false } = queryArgs
+        if (enableRbac && payload?.fields?.includes('venues')) {
+          return query({
+            ...queryArgs,
+            payload: {
+              ...payload,
+              fields: [...payload.fields, 'venueApGroups']
+            }
+          })
+        }
+
+        return query(queryArgs)
+      },
       providesTags: [{ type: 'NetworkTemplate', id: 'LIST' }],
-      transformResponse (result: TableResult<Network>) {
-        result.data = result.data.map(item => ({
-          ...transformNetwork(item)
-        })) as Network[]
+      transformResponse (result: TableResult<Network | WifiNetwork>) {
+        result.data = result.data.map(item => transformNetwork(item)) as Network[]
         return result
       },
       keepUnusedDataFor: 0,
@@ -84,23 +170,23 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     addAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate, ConfigTemplateUrlsInfo.addAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplate: build.query<AAAPolicyType, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplate, ConfigTemplateUrlsInfo.getAAAPolicyTemplateRbac),
       providesTags: [{ type: 'AAATemplate', id: 'DETAIL' }]
     }),
     deleteAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteAAAPolicyTemplate, ConfigTemplateUrlsInfo.deleteAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     updateAAAPolicyTemplate: build.mutation<AAAPolicyType, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateAAAPolicyTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.updateAAAPolicyTemplate, ConfigTemplateUrlsInfo.updateAAAPolicyTemplateRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),
     getAAAPolicyTemplateList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getAAAPolicyTemplateList, ConfigTemplateUrlsInfo.queryAAAPolicyTemplateList),
       providesTags: [{ type: 'AAATemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -112,12 +198,46 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    activateRadiusServerTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.activateRadiusServer, params)
+        }
+      },
+      invalidatesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }, { type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
+    deactivateRadiusServerTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.deactivateRadiusServer, params)
+        }
+      },
+      invalidatesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }, { type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
+    updateRadiusServerTemplateSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.updateRadiusServerSettings, params),
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }, { type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
+    getRadiusServerTemplateSettings: build.query<NetworkRadiusSettings, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(ConfigTemplateUrlsInfo.getRadiusServerSettings, params)
+        }
+      },
+      providesTags: [{ type: 'NetworkRadiusServerTemplate', id: 'DETAIL' }]
+    }),
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenueTemplate),
+      queryFn: addNetworkVenueFn(),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'AddNetworkVenueTemplate'
+            'AddNetworkVenueTemplate',
+            'UpdateVenueWifiNetworkTemplateSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
@@ -133,11 +253,12 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenueTemplate, ConfigTemplateUrlsInfo.deleteNetworkVenueTemplateRbac),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'DeleteNetworkVenueTemplate'
+            'DeleteNetworkVenueTemplate',
+            'DeactivateWifiNetworkTemplateOnVenue'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(networkApi.util.invalidateTags([
@@ -174,7 +295,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
+      queryFn: updateNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -220,6 +341,7 @@ export const {
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
   useGetNetworkTemplateQuery,
+  useGetNetworkDeepTemplateQuery,
   useDeleteNetworkTemplateMutation,
   useGetNetworkTemplateListQuery,
   useLazyGetNetworkTemplateListQuery,
@@ -229,6 +351,10 @@ export const {
   useLazyGetAAAPolicyTemplateQuery,
   useUpdateAAAPolicyTemplateMutation,
   useGetAAAPolicyTemplateListQuery,
+  useActivateRadiusServerTemplateMutation,
+  useDeactivateRadiusServerTemplateMutation,
+  useGetRadiusServerTemplateSettingsQuery,
+  useUpdateRadiusServerTemplateSettingsMutation,
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,

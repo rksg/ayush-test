@@ -17,7 +17,8 @@ import {
   dropRight,
   uniq,
   flatten,
-  cloneDeep
+  cloneDeep,
+  set
 } from 'lodash'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
@@ -26,6 +27,7 @@ import {
   AnchorContext, Loader, showActionModal, StepsFormLegacy,
   StepsFormLegacyInstance, Tabs, Tooltip
 } from '@acx-ui/components'
+import { get }                                                    from '@acx-ui/config'
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
 import {
@@ -56,7 +58,9 @@ import {
   useGetVenueTemplateDefaultRadioCustomizationQuery,
   useGetVenueTemplateRadioCustomizationQuery,
   useUpdateVenueTemplateRadioCustomizationMutation,
-  useUpdateVenueTemplateTripleBandRadioSettingsMutation
+  useUpdateVenueTemplateTripleBandRadioSettingsMutation,
+  useGetVenueTemplateApModelBandModeSettingsQuery,
+  useUpdateVenueTemplateApModelBandModeSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -123,7 +127,7 @@ export function RadioSettings () {
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
   const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
-  const afcFeatureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const afcFeatureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { isTemplate } = useConfigTemplate()
@@ -160,7 +164,8 @@ export function RadioSettings () {
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
-      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery,
+      skip: resolvedRbacEnabled
     })
 
   // available channels from this venue country code
@@ -207,10 +212,17 @@ export function RadioSettings () {
   )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
-    useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })
+    useVenueConfigTemplateQueryFnSwitcher<VenueApModelBandModeSettings[], void>({
+      useQueryFn: useGetVenueApModelBandModeSettingsQuery,
+      useTemplateQueryFn: useGetVenueTemplateApModelBandModeSettingsQuery,
+      skip: !isWifiSwitchableRfEnabled
+    })
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
-    useUpdateVenueApModelBandModeSettingsMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueApModelBandModeSettingsMutation,
+      useUpdateVenueTemplateApModelBandModeSettingsMutation
+    )
 
   const [ apList ] = useLazyApListQuery()
 
@@ -311,14 +323,15 @@ export function RadioSettings () {
     }
 
     if (apList) {
-      apList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res || {}
-        if (data) {
-          const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
-            .map((ap: APExtended) => ap.model)
-          setVenueTriBandApModels(uniq(venueTriBandApModels))
-        }
-      })
+      apList({ params: { tenantId }, payload, enableRbac: isUseRbacApi }, true).unwrap()
+        .then((res)=>{
+          const { data } = res || {}
+          if (data) {
+            const venueTriBandApModels = data.filter((ap: APExtended) => ap.venueId === venueId)
+              .map((ap: APExtended) => ap.model)
+            setVenueTriBandApModels(uniq(venueTriBandApModels))
+          }
+        })
     }
   }, [triBandApModels])
 
@@ -379,6 +392,13 @@ export function RadioSettings () {
     }
 
     const setRadioFormData = (data: VenueRadioCustomization) => {
+      // set EditRadioContext enableAfc false if AFC is not enable
+      // Otherwise the data could be true and it will case backend throw error
+      const isAFCEnabled = supportChannelsData?.afcEnabled
+      if (!isAFCEnabled) {
+        set(data, 'radioParams6G.enableAfc', false)
+      }
+
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
 

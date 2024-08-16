@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   IdentityProviderUrls,
@@ -30,7 +30,9 @@ import { MLOContext } from '../NetworkForm'
 
 import { Hotspot20SettingsForm } from './Hotspot20SettingsForm'
 
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+//jest.mocked(useIsSplitOn).mockReturnValue(true)
+// eslint-disable-next-line max-len
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
 
 describe('Hotspot20SettingsForm', () => {
   beforeEach(() => {
@@ -50,8 +52,6 @@ describe('Hotspot20SettingsForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.post(IdentityProviderUrls.getIdentityProviderList.url,
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))),
       rest.post(WifiOperatorUrls.getWifiOperatorList.url,

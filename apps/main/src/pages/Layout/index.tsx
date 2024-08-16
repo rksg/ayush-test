@@ -46,6 +46,7 @@ function Layout () {
   const location = useLocation()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const logo = useLogo(tenantId)
 
@@ -53,7 +54,8 @@ function Layout () {
   const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
   const { data: mspEcProfile } = useGetMspEcProfileQuery({ params })
   const isMspEc = MSPUtils().isMspEc(mspEcProfile)
-  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isMspEc })
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params, enableRbac: isRbacEnabled },
+    { skip: !isMspEc })
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
@@ -84,8 +86,7 @@ function Layout () {
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
-  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
-    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
+  const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const userProfileBasePath = useTenantLink('/userprofile')
@@ -158,7 +159,7 @@ function Layout () {
       }
       leftHeaderContent={<>
         { showHomeButton && (
-          <a href={`/${getJwtTokenPayload().tenantId}/v/dashboard`}>
+          <a href={`/${getJwtTokenPayload().tenantId}/v/`}>
             <UI.Home>
               <LayoutUI.Icon children={<HomeSolid />} />
               {isSupportDelegation

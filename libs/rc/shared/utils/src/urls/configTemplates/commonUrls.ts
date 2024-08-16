@@ -6,35 +6,97 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/query',
     newApi: true
   },
+  getConfigTemplatesRbac: {
+    method: 'post',
+    url: '/templates/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   applyConfigTemplate: {
     method: 'post',
     url: '/templates/:templateId/tenant/:tenantId',
     newApi: true
+  },
+  applyConfigTemplateRbac: {
+    method: 'post',
+    url: '/templates/:templateId/tenant/:tenantId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addNetworkTemplate: {
     method: 'post',
     url: '/templates/networks',
     newApi: true
   },
+  addNetworkTemplateRbac: {
+    method: 'post',
+    url: '/templates/wifiNetworks',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   updateNetworkTemplate: {
     method: 'put',
     url: '/templates/networks/:networkId',
     newApi: true
+  },
+  updateNetworkTemplateRbac: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getNetworkTemplate: {
     method: 'get',
     url: '/templates/networks/:networkId',
     newApi: true
   },
+  getNetworkTemplateRbac: {
+    method: 'get',
+    url: '/templates/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
+  },
   deleteNetworkTemplate: {
     method: 'delete',
     url: '/templates/networks/:templateId',
     newApi: true
   },
+  deleteNetworkTemplateRbac: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getNetworkTemplateList: {
     method: 'post',
     url: '/templates/networks/query',
     newApi: true
+  },
+  getNetworkTemplateListRbac: {
+    method: 'post',
+    url: '/templates/wifiNetworks/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueNetworkTemplateList: {
     method: 'post',
@@ -46,25 +108,106 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/radiusServerProfiles',
     newApi: true
   },
+  addAAAPolicyTemplateRbac: {
+    method: 'post',
+    url: '/templates/radiusServerProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getAAAPolicyTemplate: {
     method: 'get',
     url: '/templates/radiusServerProfiles/:policyId',
     newApi: true
+  },
+  getAAAPolicyTemplateRbac: {
+    method: 'get',
+    url: '/templates/radiusServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   deleteAAAPolicyTemplate: {
     method: 'delete',
     url: '/templates/radiusServerProfiles/:templateId',
     newApi: true
   },
+  deleteAAAPolicyTemplateRbac: {
+    method: 'delete',
+    url: '/templates/radiusServerProfiles/:templateId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateAAAPolicyTemplate: {
     method: 'put',
     url: '/templates/radiusServerProfiles/:policyId',
     newApi: true
   },
+  updateAAAPolicyTemplateRbac: {
+    method: 'put',
+    url: '/templates/radiusServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getAAAPolicyTemplateList: {
     method: 'post',
     url: '/templates/radiusServerProfiles/query',
     newApi: true
+  },
+  queryAAAPolicyTemplateList: {
+    method: 'post',
+    url: '/templates/radiusServerProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateRadiusServer: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  deactivateRadiusServer: {
+    method: 'delete',
+    url: '/templates/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateRadiusServerSettings: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getRadiusServerSettings: {
+    method: 'get',
+    url: '/templates/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenuesTemplateList: {
     method: 'post',
@@ -85,10 +228,28 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networkActivations',
     newApi: true
   },
+  addNetworkVenueTemplateRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   deleteNetworkVenueTemplate: {
     method: 'delete',
     url: '/templates/networkActivations/:networkVenueId',
     newApi: true
+  },
+  deleteNetworkVenueTemplateRbac: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteNetworkVenuesTemplate: {
     method: 'delete',
@@ -100,6 +261,40 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networkActivations/:networkVenueId?quickAck=true',
     newApi: true
   },
+  updateNetworkVenueTemplateRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  activateVenueApGroupRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
+  deactivateVenueApGroupRbac: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
+  getVenueApGroupsRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
+  },
+  updateVenueApGroupsRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
+  },
+  getNetworkVenueTemplateRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
+    newApi: true
+  },
   addNetworkVenuesTemplate: {
     method: 'post',
     url: '/templates/networkActivations/mappings',
@@ -108,6 +303,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenuesTemplate: {
     method: 'put',
     url: '/templates/networkActivations/mappings',
+    newApi: true
+  },
+  getVLANPoolPolicyListTemplate: {
+    method: 'post',
+    url: '/templates/vlanPoolProfiles/query',
     newApi: true
   }
 }

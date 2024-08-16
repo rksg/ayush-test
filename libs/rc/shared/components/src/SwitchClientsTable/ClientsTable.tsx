@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
+import type { TableHighlightFnArgs }                              from '@acx-ui/components'
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
 import {
@@ -61,7 +62,6 @@ export function ClientsTable (props: {
   const params = useParams()
   const { searchable, filterableKeys, settingsId = 'switch-clients-table' } = props
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
-  const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -102,8 +102,6 @@ export function ClientsTable (props: {
   }
 
   function getCols (intl: ReturnType<typeof useIntl>) {
-    const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
-
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -136,8 +134,9 @@ export function ClientsTable (props: {
       sorter: true,
       disable: true,
       searchable: searchable,
-      render: (_, { clientMac }) => {
-        return clientMac || '--'
+      render: (_, { clientMac }, __, highlightFn) => {
+        const mac = searchable ? highlightFn(clientMac) : clientMac
+        return mac || '--'
       }
     }, {
       key: 'clientIpv4Addr',
@@ -145,15 +144,19 @@ export function ClientsTable (props: {
       dataIndex: 'clientIpv4Addr',
       sorter: true,
       searchable: searchable,
-      render: (_, row) => getClientIpAddr(row)
+      render: (_, row, __, highlightFn) => {
+        const clientIpAddr = getClientIpAddr(row)
+        return searchable ? highlightFn(clientIpAddr) : clientIpAddr
+      }
     }, {
       key: 'clientDesc',
       title: intl.$t({ defaultMessage: 'Description' }),
       dataIndex: 'clientDesc',
       sorter: true,
       searchable: searchable,
-      render: (_, { clientDesc }) => {
-        return clientDesc || '--'
+      render: (_, { clientDesc }, __, highlightFn) => {
+        const desc = searchable ? highlightFn(clientDesc) : clientDesc
+        return desc || '--'
       }
     },
     ...(params.switchId || params.venueId ? [] : [{
@@ -167,10 +170,13 @@ export function ClientsTable (props: {
       filterSearchable: true,
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
       coordinatedKeys: ['switchId'],
-      render: (_: React.ReactNode, row: SwitchClient) => {
+      render: (
+        _: React.ReactNode, row: SwitchClient, __: number, highlightFn: TableHighlightFnArgs
+      ) => {
         const name = row.venueName ? row.venueName : '--'
+        const venueName = searchable ? highlightFn(name) : name
         // eslint-disable-next-line max-len
-        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{name}</TenantLink>
+        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>{venueName}</TenantLink>
       }
     }]),
     ...(params.switchId ? [] : [{
@@ -183,12 +189,15 @@ export function ClientsTable (props: {
       filterMultiple: false,
       filterSearchable: true,
       filterable: filterableKeys ? filterableKeys['switchId'] : false,
-      render: (_: React.ReactNode, row: SwitchClient) => {
+      render: (
+        _: React.ReactNode, row: SwitchClient, __: number, highlightFn: TableHighlightFnArgs
+      ) => {
         const name = row.switchName ? row.switchName : '--'
+        const switchName = searchable ? highlightFn(name) : name
         const link = `/devices/switch/${row.switchId}/${row.switchSerialNumber}/details/overview`
         return (row.switchId && row.switchName) ?
-          <TenantLink to={link}>{name}</TenantLink> :
-          <span>{name}</span>
+          <TenantLink to={link}>{switchName}</TenantLink> :
+          <span>{switchName}</span>
       }
     }]),
     {
@@ -255,10 +264,11 @@ export function ClientsTable (props: {
       sorter: true,
       align: 'center',
       searchable: searchable,
-      render: (_, row) => {
+      render: (_, row, __, highlightFn) => {
+        const clientVlan = searchable ? highlightFn(row.clientVlan) : row.clientVlan
         return row.vlanName === 'DEFAULT-VLAN'
-          ? `${row.clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
-          : (row.clientVlan ?? '--')
+          ? `${clientVlan} (${intl.$t({ defaultMessage: 'Default VLAN' })})`
+          : (clientVlan ?? '--')
       }
     },
     ...(networkSegmentationSwitchEnabled ? [{
@@ -266,7 +276,12 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'VNI' }),
       dataIndex: 'vni',
       sorter: true,
-      searchable: searchable
+      searchable: searchable,
+      render: (
+        _: React.ReactNode, { vni }: SwitchClient, __: number, highlightFn: TableHighlightFnArgs
+      ) => {
+        return searchable && vni ? highlightFn(vni) : vni
+      }
     }]: []),
     {
       key: 'clientType',
@@ -289,13 +304,9 @@ export function ClientsTable (props: {
         }
         const deviceType = convertType(type)
 
-        if (isDhcpClientsEnabled) {
-          return <UI.IconContainer>
-            <Tooltip title={deviceType}>{ getDeviceTypeIcon(deviceType as string) }</Tooltip>
-          </UI.IconContainer>
-        } else {
-          return deviceType
-        }
+        return <UI.IconContainer>
+          <Tooltip title={deviceType}>{ getDeviceTypeIcon(deviceType as string) }</Tooltip>
+        </UI.IconContainer>
       }
     }, {
       key: 'dhcpClientModelName',
@@ -307,9 +318,7 @@ export function ClientsTable (props: {
       }
     }]
 
-    return columns.filter(({ key }) => {
-      return isDhcpClientsEnabled ? key : !dhcpClientsColumns.includes(key)
-    })
+    return columns
   }
 
   return (

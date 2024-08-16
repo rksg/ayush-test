@@ -2,18 +2,14 @@ import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
 import {
-  ClientUrlsInfo,
   CommonUrlsInfo,
   ConfigTemplateUrlsInfo,
-  VenueConfigTemplateUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                       from '@acx-ui/store'
 import { mockServer, render, screen }     from '@acx-ui/test-utils'
 import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
-
-import { venuesResponse } from '../NetworkForm/__tests__/fixtures'
 
 import { networkDetailHeaderData } from './__tests__/fixtures'
 import { NetworkDetails }          from './NetworkDetails'
@@ -36,6 +32,10 @@ jest.mock('./NetworkIncidentsTab', () => ({
   NetworkIncidentsTab: () => <div data-testid='rc-NetworkIncidentsTab'>incidents</div>
 }))
 jest.mock('./NetworkOverviewTab', () => ({ NetworkOverviewTab: () => <div>overview</div> }))
+
+jest.mock('./NetworkVenuesTab', () => ({ NetworkVenuesTab: () => <div>venues</div> }))
+
+jest.mock('./NetworkClientsTab', () => ({ NetworkClientsTab: () => <div>clients</div> }))
 
 const network = {
   type: 'aaa',
@@ -76,7 +76,12 @@ describe('NetworkDetails', () => {
         WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
-      rest.get(ConfigTemplateUrlsInfo.getNetworkTemplate.url,
+      rest.get(
+        ConfigTemplateUrlsInfo.getNetworkTemplate.url,
+        (_, res, ctx) => res(ctx.json(network))
+      ),
+      rest.get(
+        ConfigTemplateUrlsInfo.getNetworkTemplateRbac.url,
         (_, res, ctx) => res(ctx.json(network))
       ),
       rest.get(
@@ -86,33 +91,6 @@ describe('NetworkDetails', () => {
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json(mockedVenuesResult))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientList.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => res(ctx.json({ data: [] }))
-      ),
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] }))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
-        (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(
-        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
-        (req, res, ctx) => res(ctx.json(venuesResponse))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenueCityList.url,
-        (req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.post(
-        VenueConfigTemplateUrlsInfo.getVenueCityList.url,
-        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -129,22 +107,6 @@ describe('NetworkDetails', () => {
 
     expect(await screen.findByText('overview')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(6)
-  })
-
-  it('renders a tab with MSP account', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
-    const params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
-      activeTab: 'venues'
-    }
-    render(<Provider><NetworkDetails /></Provider>, {
-      route: { params, path: '/:tenantId/:networkId/:activeTab' }
-    })
-
-    expect(await screen.findByText('Configuration Templates')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 
   it('renders another tab', async () => {
@@ -189,5 +151,20 @@ describe('NetworkDetails', () => {
 
     expect((await screen.findAllByRole('tab', { selected: true })).at(0)?.textContent)
       .toEqual('Clients (1)')
+  })
+
+  it('renders a tab with MSP account', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const params = {
+      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
+      activeTab: 'venues'
+    }
+    render(<Provider><NetworkDetails /></Provider>, {
+      route: { params, path: '/:tenantId/:networkId/:activeTab' }
+    })
+
+    expect(await screen.findByText('Configuration Templates')).toBeVisible()
+    expect(screen.getAllByRole('tab')).toHaveLength(1)
   })
 })

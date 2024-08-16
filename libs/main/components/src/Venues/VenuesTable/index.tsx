@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import _           from 'lodash'
+import { isEmpty } from 'lodash'
 import { useIntl } from 'react-intl'
 
 import {
@@ -13,27 +13,23 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { useIsEdgeReady }            from '@acx-ui/rc/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
-  useVenuesListQuery,
   useVenuesTableQuery,
   useDeleteVenueMutation,
-  useGetVenueCityListQuery,
-  useGetVenueTemplateCityListQuery
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  usePollingTableQuery, useConfigTemplate
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                              from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum } from '@acx-ui/types'
-import { filterByAccess, hasPermission, hasRoles }                         from '@acx-ui/user'
+import { filterByAccess, hasPermission, hasRoles, isCustomAdmin }          from '@acx-ui/user'
 import { transformToCityListOptions }                                      from '@acx-ui/utils'
-
-import { usePropertyManagementEnabled } from '../VenueEdit/VenueEditTabs'
 
 function useColumns (
   searchable?: boolean,
@@ -41,7 +37,6 @@ function useColumns (
 ) {
   const { $t } = useIntl()
   const isEdgeEnabled = useIsEdgeReady()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
     {
@@ -121,7 +116,7 @@ function useColumns (
               to={`/venues/${row.id}/venue-details/devices`}
               children={count ? count : 0}
             />
-            {isApCompatibleCheckEnabled && row?.incompatible && row.incompatible > 0 ?
+            {row?.incompatible && row.incompatible > 0 ?
               <Tooltip.Info isFilled
                 title={$t({ defaultMessage: 'Some access points may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
                 placement='right'
@@ -248,7 +243,6 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
-  const enablePropertyManagement = usePropertyManagementEnabled()
   const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
@@ -260,22 +254,12 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
-      let path = `${selectedRows[0].id}/edit/`
-      if(hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) {
-        path = path + 'details'
-      } else if(hasPermission({ scopes: [WifiScopes.UPDATE] })) {
-        path = path + 'wifi'
-      } else if(hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
-        path = path + 'switch'
-      } else if(enablePropertyManagement) {
-        path = path + 'property'
-      }
-      navigate(path, { replace: false })
+      navigate(`${selectedRows[0].id}/edit/`, { replace: false })
     }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]),
+    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && !isCustomAdmin(),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -324,11 +308,10 @@ export const VenueTable = ({ settingsId = 'venues-table',
 export function VenuesTable () {
   const { $t } = useIntl()
   const venuePayload = useDefaultVenuePayload()
-  const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   const settingsId = 'venues-table'
   const tableQuery = usePollingTableQuery<Venue>({
-    useQuery: isApCompatibleCheckEnabled ? useVenuesTableQuery: useVenuesListQuery,
+    useQuery: useVenuesTableQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
@@ -345,7 +328,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && [
+        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && !isCustomAdmin() && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
@@ -362,22 +345,14 @@ export function VenuesTable () {
 
 function shouldShowConfirmation (selectedVenues: Venue[]) {
   const venues = selectedVenues.filter(v => {
-    return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !_.isEmpty(v['aggregatedApStatus'])
+    return v['status'] !== ApVenueStatusEnum.IN_SETUP_PHASE || !isEmpty(v['aggregatedApStatus'])
   })
   return venues.length > 0
 }
 
 function useGetVenueCityList () {
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
-  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: transformToCityListOptions(data)
-    }),
-    skip: !isTemplate
-  })
 
   const venueCityList = useGetVenueCityListQuery({
     params,
@@ -385,9 +360,8 @@ function useGetVenueCityList () {
   }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
-    }),
-    skip: isTemplate
+    })
   })
 
-  return isTemplate ? venueCityListTemplate : venueCityList
+  return venueCityList
 }

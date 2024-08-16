@@ -8,6 +8,7 @@ import {
   SwitchScopes,
   WifiScopes }               from '@acx-ui/types'
 
+import { CustomRoleType, type RaiPermissions } from './types'
 import {
   AuthRoute,
   filterByAccess,
@@ -19,10 +20,10 @@ import {
   setRaiPermissions,
   setUserProfile,
   WrapIfAccessible,
-  hasRaiPermission
+  hasRaiPermission,
+  isCustomAdmin
 } from './userProfile'
 
-import type { RaiPermissions } from './types'
 
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
   scopes?:ScopeKeys) {
@@ -113,6 +114,64 @@ describe('hasRoles', () => {
       RolesEnum.GUEST_MANAGER,
       RolesEnum.READ_ONLY
     ])).toBe(false)
+  })
+
+  it('check roles with enable abac', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      profile: {
+        ...profile.profile,
+        roles: ['NEW_USER'],
+        customRoleType: CustomRoleType.SYSTEM,
+        customRoleName: 'PRIME_ADMIN'
+      },
+      allowedOperations: ['GET:/networks', 'GET:/switches'],
+      accountTier: '',
+      betaEnabled: false,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: []
+    })
+
+
+    expect(hasRoles([
+      RolesEnum.PRIME_ADMIN,
+      RolesEnum.ADMINISTRATOR,
+      RolesEnum.DPSK_ADMIN
+    ])).toBe(true)
+
+    expect(hasRoles([
+      RolesEnum.READ_ONLY
+    ])).toBe(false)
+
+
+  })
+})
+
+describe('isCustomAdmin', () => {
+  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  it('check system admin', () => {
+    expect(isCustomAdmin()).toBe(false)
+  })
+  it('check custom admin', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      profile: {
+        ...profile.profile,
+        roles: ['NEW_USER'],
+        customRoleType: CustomRoleType.SYSTEM,
+        customRoleName: RolesEnum.ADMINISTRATOR
+      },
+      allowedOperations: ['GET:/networks', 'GET:/switches'],
+      accountTier: '',
+      betaEnabled: false,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: []
+    })
+    expect(isCustomAdmin()).toBe(true)
   })
 })
 

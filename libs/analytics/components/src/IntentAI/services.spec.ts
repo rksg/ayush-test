@@ -1,0 +1,449 @@
+/* eslint-disable max-len */
+import '@testing-library/jest-dom'
+
+import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
+import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
+import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
+import { DateRange, PathFilter }                                           from '@acx-ui/utils'
+
+import {
+  intentHighlights,
+  intentListResult,
+  intentListWithAllStatus,
+  filterOptions
+} from './__tests__/fixtures'
+import { IntentListItem, api, useIntentAITableQuery, OptimizeAllMutationResponse } from './services'
+
+
+import type { TableCurrentDataSource } from 'antd/lib/table/interface'
+
+describe('Intent services', () => {
+  const props = {
+    startDate: '2023-06-10T00:00:00+08:00',
+    endDate: '2023-06-17T00:00:00+08:00',
+    range: DateRange.last24Hours,
+    path: defaultNetworkPath
+  } as PathFilter
+
+  beforeEach(() => {
+    store.dispatch(api.util.resetApiState())
+  })
+
+  describe('useIntentAITableQuery', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    const expectedResult = [
+      {
+        ...intentListResult.intents.data[0],
+        aiFeature: 'AI-Driven RRM',
+        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz611 (SZ Cluster)
+> zone-1 (Venue)`,
+        status: 'Active',
+        statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
+      },
+      {
+        ...intentListResult.intents.data[1],
+        aiFeature: 'AI Operations',
+        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz34 (SZ Cluster)
+> 01-US-CA-D1-Test-Home (Domain)
+> 01-Alethea-WiCheck Test (Venue)`,
+        status: 'No Recommendation, Not Enough License',
+        statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue 01-Alethea-WiCheck Test.'
+      },
+      {
+        ...intentListResult.intents.data[2],
+        aiFeature: 'AI Operations',
+        intent: 'Dynamic vs Static Channel capability on 2.4 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz34 (SZ Cluster)
+> 25-US-CA-D25-SandeepKour-home (Domain)
+> 25-US-CA-D25-SandeepKour-home (Venue)`,
+        status: 'No Recommendation, No APs',
+        statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue 25-US-CA-D25-SandeepKour-home.'
+      }
+    ]
+    const filterOptionsResult = {
+      aiFeatures: [
+        { value: 'AI Operations', key: 'AI Operations' },
+        { value: 'AI-Driven RRM', key: 'AI-Driven RRM' }
+      ],
+      categories: [
+        { value: 'Infrastructure', key: 'Infrastructure' },
+        { value: 'Wi-Fi Experience', key: 'Wi-Fi Experience' }
+      ],
+      statuses: [
+        { value: 'New', key: 'new' },
+        { value: 'No Recommendation, No APs', key: 'na-no-aps' },
+        { value: 'Paused', key: 'paused-from-active+paused-by-default' }
+      ],
+      zones: [
+        {
+          value: '01-Alethea-WiCheck Test',
+          key: '01-Alethea-WiCheck Test'
+        }, {
+          key: 'zone',
+          value: 'zone'
+        }
+      ]
+    }
+    it('should fetch data correctly', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, {
+        wrapper: Provider,
+        route: { params: { tenantId: '1' } }
+      })
+      await waitFor(() => expect(result.current.tableQuery.isSuccess).toBe(true))
+      expect(result.current.tableQuery.data).toEqual({
+        intents: expectedResult,
+        total: 3
+      })
+      expect(result.current.filterOptions.data).toEqual(filterOptionsResult)
+    })
+
+    it('handlePageChange should update pagination', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const customPagination = { current: 1, pageSize: 10 }
+      act(() => {
+        result.current.onPageChange(
+          customPagination,
+          { filter: null },
+          [],
+          [] as unknown as TableCurrentDataSource<IntentListItem>
+        )
+      })
+      expect(result.current.pagination).toEqual({
+        defaultPageSize: 10,
+        page: 1,
+        pageSize: 10,
+        total: 0
+      })
+    })
+    it('handleFilterChange should update filter', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const customFilter = {
+        sliceValue: ['1'],
+        category: ['Wi-Fi Experience'],
+        aiFeature: ['AI-Driven RRM'],
+        status: ['new', 'na-no-aps', 'paused-from-active+paused-by-default']
+      }
+      act(() => {
+        result.current.onFilterChange(customFilter, {})
+      })
+      expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([
+        { col: '"sliceId"', values: [ '1' ] },
+        {
+          col: 'code',
+          values: [
+            'c-bgscan24g-enable',
+            'c-bgscan5g-enable',
+            'c-bgscan24g-timer',
+            'c-bgscan5g-timer',
+            'c-bgscan6g-timer',
+            'c-dfschannels-enable',
+            'c-dfschannels-disable',
+            'c-bandbalancing-enable',
+            'c-bandbalancing-enable-below-61',
+            'c-bandbalancing-proactive',
+            'c-aclb-enable',
+            'c-txpower-same',
+            'c-crrm-channel24g-auto',
+            'c-crrm-channel5g-auto',
+            'c-crrm-channel6g-auto',
+            'c-probeflex-24g',
+            'c-probeflex-5g',
+            'c-probeflex-6g',
+            'eco-flex-code'
+          ]
+        },
+        {
+          col: 'code',
+          values: [
+            'c-crrm-channel24g-auto',
+            'c-crrm-channel5g-auto',
+            'c-crrm-channel6g-auto'
+          ]
+        },
+        {
+          col: 'concat_ws(\'-\', status, "statusReason")',
+          values: [ 'new', 'na-no-aps', 'paused-from-active', 'paused-by-default' ]
+        }
+      ])
+
+    })
+    it('handleFilterChange should handle no filter case', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const customFilter = {
+        sliceValue: null,
+        category: null,
+        aiFeature: null,
+        status: null
+      }
+      act(() => {
+        result.current.onFilterChange(customFilter, {})
+      })
+      expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
+    })
+
+    it('should mutation OptimizeAll', async () => {
+      const resp = { data: { success: true, errorMsg: '' , errorCode: '' } } as OptimizeAllMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.optimizeAllIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          optimizeList: [{ id: '11', metadata: {
+            scheduledAt: '2023-11-17T11:45:00.000Z',
+            wlans: [{ name: 'n1', ssid: 's1' }],
+            preferences: {
+              crrmFullOptimization: true
+            }
+          } }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
+  })
+
+  describe('status tooltips', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+    const props = {
+      startDate: '2023-06-10T00:00:00+08:00',
+      endDate: '2023-06-17T00:00:00+08:00',
+      range: DateRange.last24Hours,
+      path: defaultNetworkPath,
+      filterBy: {},
+      page: 1,
+      pageSize: 10
+    }
+
+    it('should return corresponding tooltips according to different statuses', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListWithAllStatus
+      })
+
+      const { status, data, error } = await store.dispatch(
+        api.endpoints.intentAIList.initiate({ ...props })
+      )
+
+      const expectedCommonResult = {
+        aiFeature: 'AI-Driven RRM',
+        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        category: 'Wi-Fi Experience',
+        scope: `vsz611 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`
+      }
+
+      const expectedResult = [
+        {
+          ...intentListWithAllStatus.intents.data[0],
+          ...expectedCommonResult,
+          status: 'New',
+          statusTooltip: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[1],
+          ...expectedCommonResult,
+          status: 'Scheduled',
+          statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[2],
+          ...expectedCommonResult,
+          status: 'Scheduled',
+          statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[3],
+          ...expectedCommonResult,
+          status: 'Scheduled',
+          statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[4],
+          ...expectedCommonResult,
+          status: 'Apply In Progress',
+          statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[5],
+          ...expectedCommonResult,
+          status: 'Active',
+          statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[6],
+          ...expectedCommonResult,
+          status: 'Paused, Applied Failed',
+          statusTooltip: 'IntentAI recommended changes failed to apply to the Venue zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[7],
+          ...expectedCommonResult,
+          status: 'Revert Scheduled',
+          statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[8],
+          ...expectedCommonResult,
+          status: 'Revert In Progress',
+          statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[9],
+          ...expectedCommonResult,
+          status: 'Paused, Revert Failed',
+          statusTooltip: 'The Revert action on the IntentAI recommended change, failed due to the following reason: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[10],
+          ...expectedCommonResult,
+          status: 'Paused, Revert Success',
+          statusTooltip: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[11],
+          ...expectedCommonResult,
+          status: 'Paused',
+          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[12],
+          ...expectedCommonResult,
+          status: 'Paused',
+          statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[13],
+          ...expectedCommonResult,
+          status: 'Paused',
+          statusTooltip: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[14],
+          ...expectedCommonResult,
+          status: 'No Recommendation, Conflicting Configuration',
+          statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the Venue.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[15],
+          ...expectedCommonResult,
+          status: 'No Recommendation, No APs',
+          statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[16],
+          ...expectedCommonResult,
+          status: 'No Recommendation, Not Enough License',
+          statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[17],
+          ...expectedCommonResult,
+          status: 'No Recommendation, Not Enough Data',
+          statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the Venue zone-1.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[18],
+          ...expectedCommonResult,
+          status: 'Verified',
+          statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
+        },
+        {
+          ...intentListWithAllStatus.intents.data[19],
+          ...expectedCommonResult,
+          status: 'No Recommendation',
+          statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
+        }
+      ]
+      expect(error).toBe(undefined)
+      expect(status).toBe('fulfilled')
+      expect(data?.intents).toEqual(expectedResult)
+    })
+
+  })
+
+  it('should return intentHighlight', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
+      data: intentHighlights
+    })
+
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentHighlight.initiate(props)
+    )
+
+    const expectedResult = {
+      rrm: {
+        new: 4,
+        active: 8
+      },
+      airflex: {
+        new: 5,
+        active: 10
+      },
+      ops: {
+        new: 6,
+        active: 12
+      }
+    }
+
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(expectedResult)
+  })
+
+  it('returns wlans', async () => {
+    const wlans = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(intentAIUrl, 'Wlans', { data: { intent: { wlans } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentWlans.initiate({ code: 'c1', root: 'r1', sliceId: 's1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(wlans)
+  })
+})

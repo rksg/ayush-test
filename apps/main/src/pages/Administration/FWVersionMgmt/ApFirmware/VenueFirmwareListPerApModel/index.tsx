@@ -7,11 +7,12 @@ import { useParams } from 'react-router-dom'
 import { Loader, Table, TableProps, Tooltip, showActionModal }                                                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                         from '@acx-ui/feature-toggle'
 import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenuePerApModel, Schedule, dateSort, defaultSort, sortProp, useTableQuery }                from '@acx-ui/rc/utils'
+import { FirmwareType, FirmwareVenuePerApModel, useTableQuery }                                                           from '@acx-ui/rc/utils'
 import { WifiScopes }                                                                                                     from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                                                                  from '@acx-ui/user'
-import { noDataDisplay }                                                                                                  from '@acx-ui/utils'
+import { getIntl, noDataDisplay }                                                                                         from '@acx-ui/utils'
 
+import { isApFirmwareUpToDate }                                                                       from '../..'
 import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
 import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
 import * as UI                                                                                        from '../../styledComponents'
@@ -25,7 +26,13 @@ export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
   const tableQuery = useTableQuery<FirmwareVenuePerApModel>({
     useQuery: useGetVenueApModelFirmwareListQuery,
-    defaultPayload: {}
+    defaultPayload: {
+      // eslint-disable-next-line max-len
+      fields: ['name', 'id', 'isApFirmwareUpToDate', 'currentApFirmwares', 'lastApFirmwareUpdate', 'nextApFirmwareSchedules']
+    },
+    search: {
+      searchTargetFields: ['name']
+    }
   })
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
@@ -68,25 +75,25 @@ export function VenueFirmwareListPerApModel () {
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE],
-      visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
+      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
-        setSelectedRows(rows.filter(row => !row.isFirmwareUpToDate))
+        setSelectedRows(rows)
         setUpdateNowVisible(true)
       }
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
+      visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
-        setSelectedRows(rows.filter(row => !row.isFirmwareUpToDate))
+        setSelectedRows(rows)
         setChangeScheduleVisible(true)
       }
     },
     {
       scopeKey: [WifiScopes.UPDATE],
-      visible: (rows) => rows.every(row => hasApSchedule(row)),
+      visible: (rows) => rows.every(row => hasApSchedule(row.nextApFirmwareSchedules)),
       label: $t({ defaultMessage: 'Skip Update' }),
       onClick: (rows, clearSelection) => {
         doSkipSchedules(rows, clearSelection)
@@ -155,7 +162,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
+      sorter: true,
       defaultSortOrder: 'ascend',
       searchable: true
     },
@@ -165,47 +172,48 @@ function useColumns () {
       dataIndex: 'currentApFirmwares',
       filterable: versionFilterOptions ?? false,
       filterMultiple: false,
+      filterKey: 'currentApFirmwares.firmware',
       render: function (data, row) {
-        return row.currentApFirmwares
+        return row.currentApFirmwares && row.currentApFirmwares.length > 0
           ? renderCurrentFirmwaresColumn(row.currentApFirmwares)
           : noDataDisplay
       }
     },
     {
       title: $t({ defaultMessage: 'Last Update' }),
-      key: 'lastScheduleUpdate',
-      dataIndex: 'lastScheduleUpdate',
-      sorter: { compare: sortProp('lastScheduleUpdate', dateSort) },
+      key: 'lastApFirmwareUpdate',
+      dataIndex: 'lastApFirmwareUpdate',
+      sorter: true,
       render: function (_, row) {
-        return toUserDate(row.lastScheduleUpdate || noDataDisplay)
+        return toUserDate(row.lastApFirmwareUpdate || noDataDisplay)
       }
     },
     {
       title: $t({ defaultMessage: 'Status' }),
-      key: 'isFirmwareUpToDate',
-      dataIndex: 'isFirmwareUpToDate',
-      sorter: { compare: sortProp('isFirmwareUpToDate', defaultSort) },
+      key: 'isApFirmwareUpToDate',
+      dataIndex: 'isApFirmwareUpToDate',
+      sorter: true,
       render: function (_, row) {
-        return row.isFirmwareUpToDate
-          ? $t({ defaultMessage: 'Up to date' })
-          : $t({ defaultMessage: 'Update available' })
+        return getApFirmwareStatusDescription(row)
       }
     },
     {
       title: $t({ defaultMessage: 'Next Update Schedule' }),
-      key: 'nextSchedules',
-      dataIndex: 'nextSchedules',
-      sorter: { compare: sortProp('nextSchedules[0].startDateTime', dateSort) },
+      key: 'nextApFirmwareSchedules',
+      dataIndex: 'nextApFirmwareSchedules',
+      sorter: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        const schedules = getApSchedules(row)
+        const schedules = getApSchedules(row.nextApFirmwareSchedules)
 
         return schedules.length === 0
-          ? getApNextScheduleTpl(row)
+          ? getApNextScheduleTpl({ nextSchedules: schedules })
           : <Tooltip
-            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(row)}</UI.ScheduleTooltipText>}
+            // eslint-disable-next-line max-len
+            title={getNextSchedulesTooltip(schedules)}
             overlayStyle={{ minWidth: '285px' }}
-          ><UI.WithTooltip>{getApNextScheduleTpl(row)}</UI.WithTooltip></Tooltip>
+          // eslint-disable-next-line max-len
+          ><UI.WithTooltip>{getApNextScheduleTpl({ nextSchedules: schedules })}</UI.WithTooltip></Tooltip>
       }
     }
   ]
@@ -230,8 +238,23 @@ function useVersionFilterOptions () {
   return versionFilterOptions
 }
 
-function hasApSchedule (venue: { nextSchedules?: Schedule[] }): boolean {
-  return !!venue.nextSchedules &&
+// eslint-disable-next-line max-len
+function hasApSchedule (nextSchedules: FirmwareVenuePerApModel['nextApFirmwareSchedules']): boolean {
+  return !!nextSchedules &&
     // eslint-disable-next-line max-len
-    venue.nextSchedules.some(schedule => schedule?.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE)
+    nextSchedules.some(schedule => schedule?.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE)
+}
+
+export function getApFirmwareStatusDescription (
+  data: Pick<FirmwareVenuePerApModel, 'isApFirmwareUpToDate' | 'currentApFirmwares'>
+): string {
+  const { $t } = getIntl()
+  // eslint-disable-next-line max-len
+  if (data.isApFirmwareUpToDate === undefined || (data.currentApFirmwares ?? []).length === 0) {
+    return noDataDisplay
+  }
+
+  return data.isApFirmwareUpToDate
+    ? $t({ defaultMessage: 'Up to date' })
+    : $t({ defaultMessage: 'Update available' })
 }

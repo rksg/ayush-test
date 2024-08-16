@@ -20,7 +20,8 @@ import {
   useLazyGetVenueSettingsQuery,
   useGetApLanPortsQuery,
   useUpdateApLanPortsMutation,
-  useResetApLanPortsMutation
+  useResetApLanPortsMutation,
+  useLazyGetDHCPProfileListViewModelQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -35,10 +36,40 @@ import {
 
 import { ApDataContext, ApEditContext } from '../..'
 
+const useFetchIsVenueDhcpEnabled = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
+  const [getDhcpList] = useLazyGetDHCPProfileListViewModelQuery()
+
+  return async (venueId: string) => {
+    let isDhcpEnabled: boolean = false
+
+    if (isWifiRbacEnabled) {
+      const dhcpList = await getDhcpList({
+        payload: {
+          fields: ['id', 'venueIds'],
+          filters: { venueIds: [venueId] }
+        }
+      }).unwrap()
+
+      isDhcpEnabled = !!dhcpList?.data[0]
+    } else {
+      const venueSettings = (await getVenueSettings({
+        params: { venueId } }, true).unwrap())
+
+      isDhcpEnabled = venueSettings?.dhcpServiceSetting?.enabled ?? false
+    }
+
+    return isDhcpEnabled
+  }
+}
+
 export function LanPorts () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
   const navigate = useNavigate()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -51,17 +82,19 @@ export function LanPorts () {
     apData: apDetails,
     apCapabilities: apCaps,
     venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apLanPortsData, isLoading: isApLanPortsLoading }
-    = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading } = useGetApLanPortsQuery({
+    params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
-  const [getVenueSettings] = useLazyGetVenueSettingsQuery()
-
+  const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
 
   const [updateApCustomization, {
     isLoading: isApLanPortsUpdating }] = useUpdateApLanPortsMutation()
@@ -78,7 +111,6 @@ export function LanPorts () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const venueId = venueData?.id
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -98,11 +130,11 @@ export function LanPorts () {
 
       const setData = async () => {
         const venueLanPortsData = (await getVenueLanPorts({
-          params: { tenantId, venueId }
+          params: { tenantId, venueId },
+          enableRbac: isUseWifiRbacApi
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
 
-        const venueSettings = (await getVenueSettings({
-          params: { tenantId, venueId } }, true).unwrap())
+        const isDhcpEnabled = await getDhcpEnabled(venueId!)
 
         const apLanPortsCap = apCaps.lanPorts
         const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
@@ -114,7 +146,7 @@ export function LanPorts () {
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
-        setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
+        setIsDhcpEnabled(isDhcpEnabled)
         setLanData(lanPorts?.lanPorts as LanPort[])
         setFormInitializing(false)
 
@@ -159,24 +191,36 @@ export function LanPorts () {
       })
       setUseVenueSettings(values?.useVenueSettings)
 
-      if (values?.useVenueSettings) {
-        await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
-      } else {
-        //const { lan, poeOut, poeMode } = values
-        const { lan, poeOut } = values
+      const { lan, poeOut, useVenueSettings } = values
+
+      if (isUseWifiRbacApi) {
         const payload: WifiApSetting = {
           ...apLanPorts,
           lanPorts: lan,
-          //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
           ...(poeOut && isObject(poeOut) &&
               { poeOut: Object.values(poeOut).some(item => item === true) }),
-          useVenueSettings: false
+          useVenueSettings
         }
-
-        //console.log('values: ', values)
-        //console.log('payload: ', payload)
-
-        await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await updateApCustomization({
+          params: { tenantId, serialNumber, venueId },
+          payload,
+          enableRbac: true
+        }).unwrap()
+      } else {
+        if (values?.useVenueSettings) {
+          await resetApCustomization({ params: { tenantId, serialNumber } }).unwrap()
+        } else {
+          const { lan, poeOut } = values
+          const payload: WifiApSetting = {
+            ...apLanPorts,
+            lanPorts: lan,
+            //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
+            ...(poeOut && isObject(poeOut) &&
+                { poeOut: Object.values(poeOut).some(item => item === true) }),
+            useVenueSettings: false
+          }
+          await updateApCustomization({ params: { tenantId, serialNumber }, payload }).unwrap()
+        }
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

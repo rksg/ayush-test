@@ -1,7 +1,9 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import _                       from 'lodash'
-import moment                  from 'moment-timezone'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
+import { ResultType }                              from 'antd/lib/result'
+import _                                           from 'lodash'
+import moment                                      from 'moment-timezone'
+import { useIntl }                                 from 'react-intl'
 
 import {
   showActionModal
@@ -30,7 +32,8 @@ import {
   RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
-  MspRbacUrlsInfo
+  MspRbacUrlsInfo,
+  MspCompliances
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -41,7 +44,8 @@ import {
   MspEntitlement,
   downloadFile,
   Venue,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  UploadUrlResponse
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -392,9 +396,8 @@ export const mspApi = baseMspApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const mspUrlsInfo = getMspUrls(enableRbac)
-        const req = createHttpRequest(mspUrlsInfo.getMspEcProfile, params)
+      query: ({ params }) => {
+        const req = createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
         return {
           ...req
         }
@@ -714,9 +717,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getParentLogoUrl: build.query<ParentLogoUrl, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req = createHttpRequest(
-          MspUrlsInfo.getParentLogoUrl,
+          mspUrlsInfo.getParentLogoUrl,
           params
         )
         return {
@@ -725,9 +729,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     getBrandingData: build.query<MspProfile, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const req =
-          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+          createHttpRequest(mspUrlsInfo.getBrandingData, params)
         return {
           ...req
         }
@@ -904,10 +909,26 @@ export const mspApi = baseMspApi.injectEndpoints({
           ecTenantId.push(item.id)
         })
 
+        const invalidCustomers: string[] = []
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allEcVenues:any = await Promise.all(ecTenantId.map(id =>
-          fetchWithBQ(genVenuePayload(arg, id))
+        const allEcVenues:any = await Promise.all(ecTenantId.map(id => {
+          // eslint-disable-next-line max-len
+          const venuesQuery = fetchWithBQ(genVenuePayload(arg,id)) as PromiseLike<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
+          return venuesQuery.then((value) => {
+            if (value.error) {
+              invalidCustomers.push(id)
+              return { ...value, data: {}, error: undefined }
+            }
+            return value
+          })
+        }
         ))
+        list.data.forEach((item) => {
+          if (invalidCustomers.includes(item.id)) {
+            item.isUnauthorizedAccess = true
+          }
+        })
         ecTenantId.forEach((id:string, index:number) => {
           ecVenues[id] = allEcVenues[index]?.data.data
         })
@@ -936,6 +957,25 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const request = createHttpRequest(mspUrlsInfo.getUploadURL, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
+    getEntitlementsCompliances: build.query<MspCompliances, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsCompliances, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
     })
   })
 })
@@ -1047,7 +1087,9 @@ export const {
   useAssignMspEcToIntegrator_v1Mutation,
   useGetMspEcWithVenuesListQuery,
   useAddBrandCustomersMutation,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useGetMspUploadURLMutation,
+  useGetEntitlementsCompliancesQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

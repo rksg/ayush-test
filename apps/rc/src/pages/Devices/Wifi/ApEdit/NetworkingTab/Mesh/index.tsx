@@ -97,7 +97,7 @@ function SettingMessage () {
 export function ApMesh () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -149,8 +149,11 @@ export function ApMesh () {
       const setData = async () => {
         // get mesh uplink APs
         const params = { tenantId, serialNumber }
+        const fields = enableRbac
+          ? ['name', 'status', 'meshStatus.neighbors', 'healthStatus', 'venueId', 'serialNumber']
+          : ['name', 'deviceStatus', 'neighbors', 'venueId', 'serialNumber']
         const payload = {
-          fields: ['name', 'deviceStatus', 'neighbors'],
+          fields: fields,
           filters: {
             venueId: [venueId],
             serialNumber: [serialNumber]
@@ -159,7 +162,7 @@ export function ApMesh () {
           page: 1
         }
 
-        const uplinkAp = (await getMeshUplinkAps({ params, payload }, true).unwrap())
+        const uplinkAp = (await getMeshUplinkAps({ params, payload, enableRbac }, true).unwrap())
         setMeshUplinkAps(uplinkAp.neighbors)
 
         updateStates(meshData)
@@ -203,11 +206,7 @@ export function ApMesh () {
         }
       }
 
-      await updateApMesh({
-        params: { venueId, serialNumber },
-        payload,
-        enableRbac: isWifiRbacEnabled
-      }).unwrap()
+      await updateApMesh({ params: { venueId, serialNumber }, payload, enableRbac }).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

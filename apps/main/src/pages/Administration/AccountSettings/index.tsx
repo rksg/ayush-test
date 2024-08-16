@@ -47,7 +47,6 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isDogfood = userProfileData?.dogfood
 
   const isPrimeAdminUser = isPrimeAdmin()
-  const isI18n = useIsSplitOn(Features.I18N_TOGGLE)
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
@@ -73,10 +72,10 @@ const AccountSettings = (props : AccountSettingsProps) => {
         layout='horizontal'
         labelAlign='left'
       >
-        <StepsForm.DescriptionWrapper>
+        <StepsForm.TextContent>
           <RecoveryPassphraseFormItem recoveryPassphraseData={recoveryPassphraseData?.data} />
 
-          { (isPrimeAdminUser && isI18n) && (
+          { (isPrimeAdminUser) && (
             <>
               <Divider />
               <DefaultSystemLanguageFormItem />
@@ -145,7 +144,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
               />
             </>
           )}
-        </StepsForm.DescriptionWrapper>
+        </StepsForm.TextContent>
       </Form>
     </Loader>
   )

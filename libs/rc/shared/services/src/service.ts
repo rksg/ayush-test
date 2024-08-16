@@ -52,13 +52,17 @@ import {
   ApplicationPolicy,
   DHCP_LIMIT_NUMBER,
   ApiVersionEnum,
-  GetApiVersionHeader
+  GetApiVersionHeader,
+  convertMdnsProxyViewModelToMdnsProxyFormData,
+  APExtended,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { getDhcpProfileFn } from './servicePolicy.utils'
+import { commonQueryFn, getDhcpProfileFn, createWifiCallingFn, getWifiCallingFn, queryWifiCallingFn, updateWifiCallingFn } from './servicePolicy.utils'
+import { addDpskFn, updateDpskFn }                                                                                         from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -77,7 +81,9 @@ const mDnsProxyMutationUseCases = [
   'DeleteMulticastDnsProxyServiceProfiles',
   'UpdateMulticastDnsProxyServiceProfile',
   'ActivateMulticastDnsProxyServiceProfileAps',
-  'DeactivateMulticastDnsProxyServiceProfileAps'
+  'DeactivateMulticastDnsProxyServiceProfileAps',
+  'ActivateMulticastDnsProxyProfile',
+  'DeactivateMulticastDnsProxyProfile'
 ]
 
 const defaultDpskVersioningHeaders = {
@@ -99,12 +105,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfiles
         const req = createHttpRequest(url, params)
+        const resolvedPayload = enableRbac
+          ? { body: JSON.stringify({ ...(payload as {} ?? {}), pageSize: DHCP_LIMIT_NUMBER }) }
+          : {}
         return {
           ...req,
-          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
+          ...resolvedPayload
         }
       },
       transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
@@ -186,27 +195,59 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxy
+        const req = createHttpRequest(apiInfo, params)
+
+        if (enableRbac) {
+          const payload = {
+            fields: ['id', 'name', 'rules', 'activations'],
+            page: 1,
+            pageSize: 10,
+            filters: { id: [params?.serviceId] }
+          }
+
+          const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
+
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+          const response = (res.data as TableResult<MdnsProxyViewModel>).data
+
+          return (response && response.length > 0)
+            ? { data: convertMdnsProxyViewModelToMdnsProxyFormData(response[0] as MdnsProxyViewModel) }
+            : { error: { status: 404, data: 'Not found' } as FetchBaseQueryError }
+        } else {
+          const res = await fetchWithBQ({ ...req })
+          return res.data
+            ? { data: convertApiPayloadToMdnsProxyFormData(res.data as MdnsProxyGetApiResponse) }
+            : { error: res.error as FetchBaseQueryError }
         }
-      },
-      transformResponse (response: MdnsProxyGetApiResponse) {
-        return convertApiPayloadToMdnsProxyFormData(response)
       },
       providesTags: [{ type: 'MdnsProxy', id: 'DETAIL' }]
     }),
     getMdnsProxyList: build.query<MdnsProxyFormData[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyList, params)
+      query: ({ params, enableRbac }) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxyList
+        const req = createHttpRequest(apiInfo, params)
+        const queryPayload = {
+          fields: [ 'id','name', 'rules', 'activations'],
+          page: 1,
+          pageSize: 1000
+        }
         return {
-          ...req
+          ...req,
+          body: enableRbac ? JSON.stringify(queryPayload) : undefined
         }
       },
-      transformResponse (response: MdnsProxyGetApiResponse[]) {
-        return response.map(result => convertApiPayloadToMdnsProxyFormData(result))
+      transformResponse (response: MdnsProxyGetApiResponse[] | TableResult<MdnsProxyViewModel>, _meta, arg) {
+        if (arg.enableRbac) {
+          const data = (response as TableResult<MdnsProxyViewModel>).data
+          return data.map(result => convertMdnsProxyViewModelToMdnsProxyFormData(result))
+        } else {
+          const data = response as MdnsProxyGetApiResponse[]
+          return data.map(result => convertApiPayloadToMdnsProxyFormData(result))
+        }
       },
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -221,12 +262,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getEnhancedMdnsProxyList: build.query<TableResult<MdnsProxyViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getEnhancedMdnsProxyList, params)
-        return {
-          ...req,
-          body: payload
-        }
+      query: commonQueryFn(MdnsProxyUrls.getEnhancedMdnsProxyList, MdnsProxyUrls.queryMdnsProxy),
+      transformResponse: (result: TableResult<MdnsProxyViewModel>, _meta, arg) => {
+        return arg.enableRbac
+          ? {
+            ...result,
+            data: result.data?.map(profile => ({
+              ...profile,
+              venueIds: profile.activations?.map(activation => activation.venueId) ?? []
+            }))
+          }
+          : result
       },
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -240,24 +286,55 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
-        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
-        return {
+    updateMdnsProxy: build.mutation<CommonResult, RequestPayload<MdnsProxyFormData>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.updateMdnsProxyRbac : MdnsProxyUrls.updateMdnsProxy
+        const req = createHttpRequest(apiInfo, params)
+        const res = await fetchWithBQ({
           ...req,
-          body: convertedPayload
+          body: JSON.stringify(convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData))
+        })
+
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
         }
+
+        if (enableRbac) {
+          const activateApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+          const deactivateApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
+
+          const oldScope = payload?.oldScope?.flatMap(s =>
+            s.aps.map(ap => (s.venueId + '/' + ap.serialNumber))
+          )
+          const newScope = payload?.scope?.flatMap(s =>
+            s.aps.map(ap => (s.venueId + '/' + ap.serialNumber))
+          )
+
+          const activateRequests = (newScope || [])
+            .filter(s => !oldScope?.includes(s))
+            .map(scope => {
+              const pair = scope.split('/')
+              return { params: { ...params, venueId: pair[0], apSerialNumber: pair[1] } }
+            })
+          const deactivateRequests = (oldScope || [])
+            .filter(s => !newScope?.includes(s))
+            .map(scope => {
+              const pair = scope.split('/')
+              return { params: { ...params, venueId: pair[0], apSerialNumber: pair[1] } }
+            })
+
+          await Promise.all([
+            batchApi(activateApiInfo, activateRequests, fetchWithBQ),
+            batchApi(deactivateApiInfo, deactivateRequests, fetchWithBQ)
+          ])
+        }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxy, params)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(MdnsProxyUrls.deleteMdnsProxy, MdnsProxyUrls.deleteMdnsProxyRbac),
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
@@ -269,70 +346,167 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
-    addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
-        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
-
-        return {
+    addMdnsProxy: build.mutation<CommonResult, RequestPayload<MdnsProxyFormData>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyRbac : MdnsProxyUrls.addMdnsProxy
+        const req = createHttpRequest(apiInfo, params)
+        const res = await fetchWithBQ({
           ...req,
-          body: convertedPayload
+          body: JSON.stringify(convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData))
+        })
+
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
         }
+
+        if (enableRbac) {
+          const { response } = res.data as CommonResult
+          const activateApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+          const serviceId = response?.id
+
+          if (serviceId) {
+            const requests: { params: Params<string> }[] = []
+
+            payload?.scope?.forEach(scope => {
+              const venueId = scope.venueId
+              scope.aps.forEach(ap => {
+                requests.push({
+                  params: { serviceId, venueId, apSerialNumber: ap.serialNumber }
+                })
+              })
+            })
+
+            await batchApi(activateApiInfo, requests, fetchWithBQ)
+          }
+        }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
-    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxyAps, params)
-        return {
-          ...req,
-          body: payload
+    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyApsRbac : MdnsProxyUrls.addMdnsProxyAps
+
+        if (enableRbac) {
+          const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
+          await batchApi(apiInfo, requests, fetchWithBQ)
+
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(apiInfo, params),
+            body: payload
+          })
+
+          return res.data
+            ? { data: res.data as CommonResult }
+            : { error: res.error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
-    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyAps, params)
-        return {
-          ...req,
-          body: payload
+    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.deleteMdnsProxyApsRbac : MdnsProxyUrls.deleteMdnsProxyAps
+
+        if (enableRbac) {
+          const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
+          await batchApi(apiInfo, requests, fetchWithBQ)
+
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(apiInfo, params),
+            body: payload
+          })
+
+          return res.data
+            ? { data: res.data as CommonResult }
+            : { error: res.error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
     getMdnsProxyAps: build.query<TableResult<MdnsProxyAp>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyApsByVenue, params)
-        return {
-          ...req
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxyApsByVenue
+        const req = createHttpRequest(apiInfo, params)
+        const queryPayload = {
+          fields: ['id', 'name', 'rules', 'activations'],
+          page: 1,
+          pageSize: 1000,
+          filters: { venueIds: [params?.venueId] }
         }
-      },
-      transformResponse (response: MdnsProxyAp[]) {
-        return {
-          data: response,
-          page: 0,
-          totalCount: response.length
+        const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(queryPayload) : undefined })
+
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
+        }
+
+        if (enableRbac) {
+          const queryApPayload = {
+            fields: ['serialNumber', 'name', 'venueName'],
+            page: 1,
+            pageSize: 1000,
+            ...(params?.venueIa ? {
+              filters: {
+                venueId: [params.venueId]
+              }
+            } : {})
+          }
+          const apReq = createHttpRequest(CommonRbacUrlsInfo.getApsList)
+          const apResult = await fetchWithBQ({ ...apReq, body: JSON.stringify(queryApPayload) })
+          const apMap = new Map<string, APExtended>()
+          if (apResult.data) {
+            const apData = apResult.data as TableResult<APExtended>
+            apData.data.forEach(ap => apMap.set(ap.serialNumber, ap))
+          }
+          const result = (res.data ?? []) as TableResult<MdnsProxyViewModel>
+
+          const mdnsProxyApList = result.data.flatMap(profile => {
+            const activation = profile.activations?.find(a => a.venueId === params?.venueId)
+            if (!activation) return []
+            return activation.apSerialNumbers.map(serialNumber => {
+              const ap = apMap.get(serialNumber)
+              return {
+                serialNumber,
+                apName: ap?.name ?? serialNumber,
+                venueId: params?.venueId,
+                venueName: ap?.venueName ?? params?.venueId ?? '',
+                serviceId: profile.id,
+                serviceName: profile.name,
+                rules: profile.rules
+              } as MdnsProxyAp
+            })
+          })
+
+          return {
+            data: {
+              data: mdnsProxyApList,
+              page: 0,
+              totalCount: mdnsProxyApList.length
+            }
+          }
+        } else {
+          const result = (res.data ?? []) as MdnsProxyAp[]
+          return {
+            data: {
+              data: result,
+              page: 0,
+              totalCount: result.length
+            }
+          }
         }
       },
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-
-    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
-    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
+    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload<string[]>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
-          const requests = (payload as string[]).map(serviceId => ({ params: { serviceId } }))
-          await batchApi(WifiCallingUrls.deleteWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
+          const requests = payload?.map(serviceId => ({ params: { serviceId } })) ?? []
+          await batchApi(WifiCallingUrls.deleteWifiCallingRbac, requests, fetchWithBQ)
 
           return { data: {} as CommonResult }
         } else {
@@ -347,62 +521,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
-      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
-        const req = createHttpRequest( WifiCallingUrls.getWifiCalling, params, headers)
-        const resPromise = fetchWithBQ(req)
-
-        if (enableRbac) {
-          const payload = { filters: { id: [params?.serviceId] } }
-          const viewmodelHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-          const viewmodelReq = createHttpRequest(WifiCallingUrls.queryWifiCalling, params, viewmodelHeaders)
-
-          const [res, viewmodelRes] = await Promise.all([
-            resPromise,
-            fetchWithBQ({ ...viewmodelReq, body: JSON.stringify(payload) })
-          ])
-
-
-          if (res.error || viewmodelRes.error) {
-            return { error: res.error || viewmodelRes.error as FetchBaseQueryError }
-          }
-
-          const wifiNetworkIds = (viewmodelRes.data as TableResult<WifiCallingFormContextType>)?.data?.[0].wifiNetworkIds
-          return { data: {
-            ...res.data as WifiCallingFormContextType,
-            networkIds: wifiNetworkIds ?? []
-          } as WifiCallingFormContextType }
-        } else {
-          const res = await resPromise
-
-          return res.data
-            ? { data: res.data as WifiCallingFormContextType }
-            : { error: res.error as FetchBaseQueryError }
-        }
-      },
+      queryFn: getWifiCallingFn(),
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const apiInfo = enableRbac ? WifiCallingUrls.queryWifiCalling : WifiCallingUrls.getEnhancedWifiCallingList
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-
-        const wifiCallingServiceListReq = createHttpRequest(apiInfo, params, headers)
-
-        return {
-          ...wifiCallingServiceListReq,
-          body: JSON.stringify(payload)
-        }
-      },
-      transformResponse: (result: TableResult<WifiCallingSetting>, _meta, arg) => {
-        return arg.enableRbac
-          ? {
-            ...result,
-            data: result.data?.map(profile => ({ ...profile, networkIds: profile.wifiNetworkIds }))
-          }
-          : result
-      },
+      queryFn: queryWifiCallingFn(),
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -424,145 +548,32 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     createWifiCallingService: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const createWifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.addWifiCalling,
-          params,
-          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
-        )
-
-        const res = await fetchWithBQ({
-          ...createWifiCallingServiceReq,
-          body: JSON.stringify(payload)
-        })
-
-        if (enableRbac && payload?.networkIds && payload?.networkIds.length > 0) {
-          const { response } = res.data as CommonResult
-          if (response?.id) {
-            const requests = payload.networkIds.map(networkId => ({
-              params: { serviceId: response?.id, networkId }
-            }))
-            await batchApi(WifiCallingUrls.activateWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
-          }
-        }
-
-        return { data: res.data as CommonResult }
-      },
+      queryFn: createWifiCallingFn(),
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     updateWifiCallingService: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { networkIds, oldNetworkIds, ...restPayload } = payload ?? {}
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
-
-        const res = await fetchWithBQ({
-          ...createHttpRequest(WifiCallingUrls.updateWifiCalling, params, headers),
-          body: JSON.stringify({
-            ...restPayload,
-            networkIds: enableRbac ? undefined : networkIds
-          })
-        })
-
-        if (enableRbac) {
-          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-          const activateRequests = (networkIds || [])
-            .filter(networkId => !oldNetworkIds?.includes(networkId))
-            .map(networkId => ({ params: { networkId, serviceId: params?.serviceId } }))
-          const deactivateRequests = (oldNetworkIds || [])
-            .filter(networkId => !networkIds?.includes(networkId))
-            .map(networkId => ({ params: { networkId, serviceId: params?.serviceId } }))
-
-          await Promise.all([
-            batchApi(WifiCallingUrls.activateWifiCalling, activateRequests, fetchWithBQ, customHeaders),
-            batchApi(WifiCallingUrls.deactivateWifiCalling, deactivateRequests, fetchWithBQ, customHeaders)
-          ])
-        }
-
-        return { data: res.data as CommonResult }
-      },
+      queryFn: updateWifiCallingFn(),
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     activateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(WifiCallingUrls.activateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
-      }
+        return createHttpRequest(WifiCallingUrls.activateWifiCalling, params)
+      },
+      invalidatesTags: [{ type: 'WifiCalling' }]
     }),
     deactivateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(WifiCallingUrls.deactivateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
-      }
+        return createHttpRequest(WifiCallingUrls.deactivateWifiCalling, params)
+      },
+      invalidatesTags: [{ type: 'WifiCalling' }]
     }),
 
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const res = await fetchWithBQ({
-            // eslint-disable-next-line max-len
-            ...createHttpRequest(DpskUrls.addDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
-            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
-          })
-          // Ensure the return type is QueryReturnValue
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-          const { id } = res.data as DpskMutationResult
-
-          if (enableRbac && payload!.policySetId) {
-            await fetchWithBQ({
-              ...createHttpRequest(DpskUrls.updateDpskPolicySet, {
-                serviceId: id,
-                policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
-            })
-          }
-
-          return { data: res.data as DpskMutationResult }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: addDpskFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const res = await fetchWithBQ({
-            ...createHttpRequest(DpskUrls.updateDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
-            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
-          })
-          // Ensure the return type is QueryReturnValue
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-
-          if (enableRbac) {
-            // Get the current Dpsk Service data
-            const getDpskRes = await fetchWithBQ({
-              ...createHttpRequest(DpskUrls.getDpsk, params)
-            })
-
-            if (getDpskRes.error) {
-              return { error: getDpskRes.error as FetchBaseQueryError }
-            }
-
-            const currentDpsk = getDpskRes.data as DpskSaveData
-            if (payload!.policySetId !== currentDpsk.policySetId) {
-              if (payload!.policySetId) {
-                await fetchWithBQ({
-                  ...createHttpRequest(DpskUrls.updateDpskPolicySet, { ...params, policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
-                })
-              } else {
-                await fetchWithBQ({
-                  ...createHttpRequest(DpskUrls.deleteDpskPolicySet, { ...params, policySetId: currentDpsk.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
-                })
-              }
-            }
-          }
-
-          return { data: res.data as DpskMutationResult }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: updateDpskFn(),
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
@@ -1033,12 +1044,11 @@ export const {
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
-  useDeleteMdnsProxyListMutation,
+  // useDeleteMdnsProxyListMutation, no use and no support for RBAC
   useAddMdnsProxyApsMutation,
   useDeleteMdnsProxyApsMutation,
   useGetMdnsProxyApsQuery,
   useDeleteWifiCallingServicesMutation,
-  useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
@@ -1081,7 +1091,8 @@ export const {
   useUploadPhotoMutation,
   useUploadPoweredImgMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery
+  useGetDHCPProfileListViewModelQuery,
+  useLazyGetDHCPProfileListViewModelQuery
 } = serviceApi
 
 export function createDpskHttpRequest (

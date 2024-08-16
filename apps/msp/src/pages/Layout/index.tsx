@@ -57,10 +57,10 @@ function Layout () {
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
-  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
-    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
+  const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const {
     state
@@ -74,7 +74,8 @@ function Layout () {
 
   const isTechPartner =
     tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
-  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isTechPartner })
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params, enableRbac: isRbacEnabled },
+    { skip: !isTechPartner })
 
   const indexPath = isGuestManager
     ? '/users/guestsManager'

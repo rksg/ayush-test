@@ -20,6 +20,7 @@ import {
   ApAntennaTypeEnum,
   CapabilitiesApModel,
   ExternalAntenna,
+  useConfigTemplate,
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -55,7 +56,10 @@ export function ExternalAntennaSection () {
   const [antennaTypeModels, setAntennaTypeModels] = useState([] as VeuneApAntennaTypeSettings[])
   const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VeuneApAntennaTypeSettings | null)
 
+  const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } =
     useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>({
@@ -82,7 +86,7 @@ export function ExternalAntennaSection () {
       await updateVenueExternalAntenna({
         params,
         payload: [ ...data ],
-        enableRbac: isUseRbacApi
+        enableRbac: resolvedRbacEnabled
       })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

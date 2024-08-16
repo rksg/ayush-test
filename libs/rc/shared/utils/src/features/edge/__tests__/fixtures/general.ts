@@ -132,6 +132,40 @@ export const mockEdgeData = {
   clusterId: 'clusterId_1'
 }
 
+export const mockHaAaFeatureRequirement = {
+  featureSets: [
+    {
+      featureName: 'HA-AA',
+      requiredFw: '2.1.0.500'
+    }
+  ]
+}
+
+export const mockedVenueFirmwareList = [
+  {
+    id: 'mock_venue_1',
+    name: 'Mock Venue 1',
+    versions: [
+      {
+        name: '1.0.0.1709',
+        id: '1.0.0.1709',
+        category: 'RECOMMENDED'
+      }
+    ]
+  },
+  {
+    id: 'mock_venue_2',
+    name: 'Mock Venue 2',
+    versions: [
+      {
+        name: '2.1.0.600',
+        id: '2.1.0.600',
+        category: 'RECOMMENDED'
+      }
+    ]
+  }
+]
+
 
 export const mockEdgeDnsServersData = {
   primary: '1.1.1.1',
@@ -172,6 +206,7 @@ export const mockEdgeClusterList = {
       venueName: 'venue_1',
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
+      hasCorePort: true,
       edgeList: [
         {
           name: 'Smart Edge 1',
@@ -203,7 +238,7 @@ export const mockEdgeClusterList = {
           venueId: 'mock_venue_1',
           tags: ['Tag1', 'Tag2'],
           clusterNodeStatus: ClusterNodeStatusEnum.CLUSTER_NODE_READY,
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
           cpuCores: 2,
           cpuUsedPercentage: 25,
           memoryUsedKb: 4626208,
@@ -220,6 +255,7 @@ export const mockEdgeClusterList = {
       venueName: 'venue_2',
       clusterStatus: 'test',
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      hasCorePort: true,
       edgeList: [
         {
           name: 'Smart Edge 4',
@@ -320,6 +356,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000005',
       venueName: 'venue_5',
       clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
+      hasCorePort: true,
       edgeList: [
         {
           name: 'Smart Edge 8',
@@ -453,7 +490,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '1.1.1.1',
       corePortEnabled: false,
-      interfaceName: 'port1'
+      interfaceName: 'port1',
+      maxSpeedCapa: 0.0
     },
     {
       id: 'port_id_1',
@@ -467,7 +505,8 @@ export const mockedHaNetworkSettings = {
       subnet: '255.255.255.0',
       gateway: '2.2.2.1',
       corePortEnabled: true,
-      interfaceName: 'port2'
+      interfaceName: 'port2',
+      maxSpeedCapa: 0.0
     }]
   }, {
     serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,

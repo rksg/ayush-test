@@ -66,21 +66,25 @@ export function useMenuConfig () {
     permission: 'READ_INCIDENTS',
     uri: '/incidents',
     label: $t({ defaultMessage: 'Incidents' })
-  }, {
-    permission: 'READ_AI_DRIVEN_RRM',
-    uri: '/recommendations/crrm',
-    label: $t({ defaultMessage: 'AI-Driven RRM' })
-  }, {
-    permission: 'READ_AI_OPERATIONS',
-    uri: '/recommendations/aiOps',
-    label: $t({ defaultMessage: 'AI Operations' })
   }] as Item[]
   if (isIntentAIEnabled) {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/intentAI',
-      label: $t({ defaultMessage: 'Intent AI' })
+      label: $t({ defaultMessage: 'IntentAI' }),
+      superscript: $t({ defaultMessage: 'beta' })
     })
+  } else {
+    aiAnalyticsMenu
+      .push({
+        permission: 'READ_AI_DRIVEN_RRM',
+        uri: '/recommendations/crrm',
+        label: $t({ defaultMessage: 'AI-Driven RRM' })
+      }, {
+        permission: 'READ_AI_OPERATIONS',
+        uri: '/recommendations/aiOps',
+        label: $t({ defaultMessage: 'AI Operations' })
+      })
   }
   return buildMenu([{
     uri: '/dashboard',

@@ -4,7 +4,7 @@ import { rest }   from 'msw'
 import { showToast }                                                               from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { mspApi }                                                                  from '@acx-ui/msp/services'
-import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
+import { MspRbacUrlsInfo, MspUrlsInfo }                                            from '@acx-ui/msp/utils'
 import { administrationApi }                                                       from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }                                                  from '@acx-ui/rc/utils'
 import { Provider, store }                                                         from '@acx-ui/store'
@@ -28,7 +28,9 @@ jest.mock('./SubscriptionHeader', () => ({
   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
 
-const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE]
+const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE,
+  Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE
+]
 
 describe('Subscriptions', () => {
   let params: { tenantId: string }
@@ -73,6 +75,14 @@ describe('Subscriptions', () => {
       ),
       rest.get(
         MspUrlsInfo.getMspProfile.url,
+        (_req, res, ctx) => res(ctx.json({
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: '',
+          msp_tenant_name: ''
+        }))
+      ),
+      rest.get(
+        MspRbacUrlsInfo.getMspProfile.url,
         (_req, res, ctx) => res(ctx.json({
           msp_external_id: '0000A000001234YFFOO',
           msp_label: '',

@@ -1,14 +1,15 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgeSdLanViewDataListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
-  useNetworkListQuery
+  useNetworkListQuery,
+  useWifiNetworkListQuery
 }                                    from '@acx-ui/rc/services'
 import { getPolicyDetailsLink,
   getPolicyListRoutePath,
@@ -27,6 +28,8 @@ import { filterByAccess, hasPermission }                from '@acx-ui/user'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
@@ -60,7 +63,9 @@ const TunnelProfileTable = () => {
         : []
     })
   })
-  const { networkOptions } = useNetworkListQuery({
+
+  const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
+  const { networkOptions } = getNetworkListQuery({
     payload: {
       fields: ['name', 'id'],
       sortField: 'name',
@@ -208,6 +213,7 @@ const TunnelProfileTable = () => {
     },
     {
       scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE],
+      visible: (selectedRows) => !selectedRows.some(row => isDefaultTunnelProfile(row)),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({

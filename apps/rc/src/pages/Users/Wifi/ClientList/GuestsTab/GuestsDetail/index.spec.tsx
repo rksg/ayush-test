@@ -1,24 +1,23 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
+import { act }   from 'react-dom/test-utils'
 
-import { useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { clientApi, networkApi }                         from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { clientApi, networkApi, switchApi }                                  from '@acx-ui/rc/services'
+import { ClientUrlsInfo, CommonUrlsInfo, GuestFixtures, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
-  act,
   mockServer,
   render,
   screen,
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { WifiScopes }                     from '@acx-ui/types'
+import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
-  VenueList,
   GuestClients,
   RegenerateGuestPassword
 } from '../../../__tests__/fixtures'
@@ -90,19 +89,17 @@ describe('Guest Generate New Password Modal', () => {
     act(() => {
       store.dispatch(clientApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(switchApi.util.resetApiState())
     })
 
     setUserProfile({
       ...userProfile,
+      profile: {
+        ...userProfile.profile,
+        customRoleName: RolesEnum.GUEST_MANAGER
+      },
       abacEnabled: false,
-      isCustomRole: false,
-      allowedOperations: [
-        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
-        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
-        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
-        'POST:/wifiNetworks',
-        'POST:/guestUsers'
-      ]
+      isCustomRole: false
     })
 
     mockServer.use(
@@ -111,12 +108,8 @@ describe('Guest Generate New Password Modal', () => {
         (_, res, ctx) => res(ctx.json(GuestList))
       ),
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
-      ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (_, res, ctx) => res(ctx.json(VenueList))
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
@@ -142,6 +135,10 @@ describe('Guest Generate New Password Modal', () => {
           mockedPatchReq()
           return res(ctx.json(RegenerateGuestPassword))
         }
+      ),
+      rest.post(
+        SwitchRbacUrlsInfo.getSwitchClientList.url,
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
       )
     )
   })
@@ -168,7 +165,30 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should click "generate new password" with mail and phone number', async () => {
+  it('should generate new password correctly from the action bar (Unlimit)', async () => {
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    const table = await screen.findByRole('table')
+    await userEvent.click(await within(table).findByText('+12015550322'))
+    expect(await screen.findByRole('button', { name: 'Generate New Password' })).toBeVisible()
+    await openGuestDetailsAndClickAction('test6')
+    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
+    const dialog = await screen.findByTestId('generate-password-modal')
+    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
+    expect(await within(dialog).findByText('Send to Email')).toBeVisible()
+    const cancelButton = within(dialog).getByRole('button', { name: 'Cancel' })
+    await userEvent.click(cancelButton)
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should click "generate new password" with mail and phone number (Offline)', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -190,7 +210,7 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
-  it('should click "generate new password" validation 1', async () => {
+  it('should click "generate new password" validation 1  (Online)', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -274,59 +294,6 @@ describe('Guest Generate New Password Modal', () => {
       expect(spyLog).toHaveBeenLastCalledWith(expect.objectContaining({
         status: 404
       }))
-    })
-  })
-
-  describe('ABAC permission', () => {
-    it('should dispaly with custom scopeKeys', async () => {
-      setUserProfile({
-        profile: {
-          ...getUserProfile().profile
-        },
-        allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers'],
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [WifiScopes.CREATE]
-      })
-
-      render(
-        <Provider>
-          <GuestTabContext.Provider value={{ setGuestCount }}>
-            <GuestsTable />
-          </GuestTabContext.Provider>
-        </Provider>, {
-          route: { params, path: '/:tenantId/t/users/wifi/guests' }
-        })
-
-      expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
-      const table = await screen.findByRole('table')
-      expect(await within(table).findByText('test1')).toBeVisible()
-      await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
-      const dialog = await screen.findByRole('dialog')
-      await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(dialog).not.toBeVisible())
-    })
-
-    it('should correctly hide with custom scopeKeys', async () => {
-      setUserProfile({
-        profile: {
-          ...getUserProfile().profile
-        },
-        allowedOperations: [],
-        abacEnabled: true,
-        isCustomRole: true,
-        scopes: [WifiScopes.DELETE]
-      })
-
-      render(
-        <Provider>
-          <GuestTabContext.Provider value={{ setGuestCount }}>
-            <GuestsTable />
-          </GuestTabContext.Provider>
-        </Provider>, {
-          route: { params, path: '/:tenantId/t/users/wifi/guests' }
-        })
-      expect(screen.queryByRole('button', { name: 'Add Guest' })).toBeNull()
     })
   })
 })

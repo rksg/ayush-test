@@ -51,12 +51,16 @@ import { ConnectionMeteringSettingForm } from '../ConnectionMeteringSettingForm'
 function AccessPointLanPortSelector (props: { venueId: string }) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venueId } = props
   const form = Form.useFormInstance()
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const accessAp = Form.useWatch('accessAp')
 
-  const { data: venueLanPorts } = useGetVenueLanPortsQuery({ params: { tenantId, venueId } })
+  const { data: venueLanPorts } = useGetVenueLanPortsQuery({
+    params: { tenantId, venueId },
+    enableRbac: isWifiRbacEnabled
+  })
 
   const apListQueryDefaultPayload = {
     fields: ['name', 'serialNumber', 'model', 'apMac'],
@@ -71,7 +75,8 @@ function AccessPointLanPortSelector (props: { venueId: string }) {
     payload: {
       ...apListQueryDefaultPayload,
       filters: { venueId: venueId ? [venueId] : [] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   useEffect(() => {

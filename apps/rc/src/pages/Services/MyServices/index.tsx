@@ -52,7 +52,7 @@ export default function MyServices () {
       type: ServiceType.MDNS_PROXY,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedMdnsProxyListQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
       }).data?.totalCount
     },
     {
@@ -160,7 +160,7 @@ export default function MyServices () {
         ])}
       />
       <GridRow>
-        {services.filter(s => isServicePolicyCardEnabled(s, 'read')).map(service => {
+        {services.filter(s => isServicePolicyCardEnabled<ServiceType>(s, 'read')).map(service => {
           return (
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard

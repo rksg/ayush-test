@@ -6,9 +6,9 @@ import { get }                 from 'lodash'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { PasswordInput, Tooltip }               from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { AAAViewModalType, AaaServerOrderEnum } from '@acx-ui/rc/utils'
+import { PasswordInput, Tooltip }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { AAAViewModalType, AaaServerOrderEnum, useConfigTemplate } from '@acx-ui/rc/utils'
 
 
 import AAAPolicyModal           from '../../../NetworkForm/AAAInstance/AAAPolicyModal'
@@ -48,7 +48,10 @@ export const AaaInstance = (props: AaaInstanceProps) => {
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   // eslint-disable-next-line max-len
   const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isServicePolicyRbacEnabled
 
   useEffect(()=>{
     if (aaaListQuery?.data) {

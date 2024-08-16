@@ -55,6 +55,8 @@ export function ApFloorplan (props: {
   const [imageUrl, setImageUrl] = useState('')
   const { $t } = useIntl()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   // eslint-disable-next-line max-len
   const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
 
@@ -62,10 +64,12 @@ export function ApFloorplan (props: {
     params, payload: {
       pageSize: 10000,
       page: 1,
+      fields: ['serialNumber','name', 'deviceStatus', 'rogueCategory', 'xPercent', 'yPercent'],
       filters: {
         floorplanId: [apPosition?.floorplanId]
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   const { data: rogueApDevices } = useGetRogueApLocationQuery({ params: {
@@ -92,7 +96,7 @@ export function ApFloorplan (props: {
         }
         return true
       })
-      .map(apDevice => {
+      .forEach(apDevice => {
         let rogueApLocationInfo = {}
         if (rogueApMac && detectingNodes) {
           rogueApLocationInfo = {

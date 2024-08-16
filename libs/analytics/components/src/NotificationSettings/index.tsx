@@ -10,14 +10,15 @@ import {
   useGetPreferencesQuery,
   useSetNotificationMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile }            from '@acx-ui/analytics/utils'
-import { Select, showToast, Loader } from '@acx-ui/components'
-import * as config                   from '@acx-ui/config'
-import { hasRaiPermission }          from '@acx-ui/user'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
+import { Select, showToast, Loader, Tooltip } from '@acx-ui/components'
+import * as config                            from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { hasRaiPermission }                   from '@acx-ui/user'
 
 const getApplyMsg = (success?: boolean) => {
   return success
-    ? defineMessage({ defaultMessage: 'Incident notifications updated succesfully.' })
+    ? defineMessage({ defaultMessage: 'Notifications updated succesfully.' })
     : defineMessage({ defaultMessage: 'Update failed, please try again later.' })
 }
 
@@ -46,6 +47,9 @@ function OptionsList ({ preferences, setState, type }: {
       '60D': defineMessage({ defaultMessage: 'Licenses expiring in 60 days' }),
       '30D': defineMessage({ defaultMessage: 'Licenses expiring in 30 days' }),
       '7D': defineMessage({ defaultMessage: 'Licenses expiring in 7 days' })
+    },
+    intentAI: {
+      all: defineMessage({ defaultMessage: 'Intent status change' })
     }
   }
   return <>{Object.entries(labels[type]).map(([key, label]) => <div key={key}>
@@ -85,6 +89,12 @@ export const NotificationSettings = ({ tenantId, apply }: {
   const [preferences, setState] = useState<AnalyticsPreferences>({})
   const [updatePrefrences] = useSetNotificationMutation()
   const { email } = getUserProfile()
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
+  const showIntentAI = hasRaiPermission('READ_INTENT_AI') && isIntentAIEnabled
+  const showConfigRec = hasRaiPermission('READ_AI_OPERATIONS') && !isIntentAIEnabled
   useEffect(() => { setState(query.data!) }, [query.data])
   apply.current = async (): Promise<boolean | void> => {
     if (preferences.recipients?.length === 0) {
@@ -111,7 +121,20 @@ export const NotificationSettings = ({ tenantId, apply }: {
         <OptionsList preferences={preferences} setState={setState} type='incident' />
       </Form.Item>
     }
-    {hasRaiPermission('READ_AI_OPERATIONS') &&
+    {showIntentAI && <Form.Item
+      label={<>
+        {$t({ defaultMessage: 'IntentAI' })}
+        <Tooltip.Question
+          // eslint-disable-next-line max-len
+          title={$t({ defaultMessage: 'AI-Driven RRM, other FlexAI features and all AIOps Recommendations are available under IntentAI' })}
+          placement='right'
+        />
+      </>}
+    >
+      <OptionsList preferences={preferences} setState={setState} type='intentAI' />
+    </Form.Item>
+    }
+    {showConfigRec &&
       <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
         <OptionsList preferences={preferences} setState={setState} type='configRecommendation' />
       </Form.Item>

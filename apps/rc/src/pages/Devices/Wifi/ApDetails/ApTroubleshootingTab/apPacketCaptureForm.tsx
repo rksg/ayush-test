@@ -62,7 +62,10 @@ export function ApPacketCaptureForm () {
     enableRbac: isUseWifiRbacApi
   })
 
-  const getApLanPorts = useGetApLanPortsQuery({ params })
+  const getApLanPorts = useGetApLanPortsQuery({
+    params: { serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi
+  })
   const getApRadioCustomization =
     useGetApRadioCustomizationQuery({ params, enableRbac: isUseWifiRbacApi })
 
@@ -244,7 +247,8 @@ export function ApPacketCaptureForm () {
             {
               text: 'Start',
               type: 'primary',
-              key: 'cancel',
+              key: 'start',
+              closeAfterAction: true,
               handler: async () => {
                 try{
                   const formValue = packetCaptureForm.getFieldsValue()

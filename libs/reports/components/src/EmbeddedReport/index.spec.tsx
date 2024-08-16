@@ -1,15 +1,17 @@
 import { rest } from 'msw'
 
-import { getUserProfile, Roles as RolesEnumRA } from '@acx-ui/analytics/utils'
-import { RadioBand }                            from '@acx-ui/components'
-import { showActionModal }                      from '@acx-ui/components'
-import * as config                              from '@acx-ui/config'
-import { useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import {  ReportUrlsInfo, reportsApi }          from '@acx-ui/reports/services'
-import type { GuestToken, EmbeddedResponse }    from '@acx-ui/reports/services'
-import { Provider, store, rbacApiURL }          from '@acx-ui/store'
-import { render, mockServer, act, waitFor }     from '@acx-ui/test-utils'
-import { NetworkPath, useLocaleContext }        from '@acx-ui/utils'
+import { getUserProfile as getUserProfileRA, Roles as RolesEnumRA } from '@acx-ui/analytics/utils'
+import { RadioBand }                                                from '@acx-ui/components'
+import { showActionModal }                                          from '@acx-ui/components'
+import * as config                                                  from '@acx-ui/config'
+import { useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import {  ReportUrlsInfo, reportsApi }                              from '@acx-ui/reports/services'
+import type { GuestToken, EmbeddedResponse }                        from '@acx-ui/reports/services'
+import { Provider, store, rbacApiURL }                              from '@acx-ui/store'
+import { render, mockServer, act, waitFor }                         from '@acx-ui/test-utils'
+import { RolesEnum as RolesEnumR1 }                                 from '@acx-ui/types'
+import { CustomRoleType, getUserProfile as getUserProfileR1 }       from '@acx-ui/user'
+import { NetworkPath, useLocaleContext }                            from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
@@ -61,7 +63,13 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn()
 }))
-const userProfile = getUserProfile as jest.Mock
+const userProfileRA = getUserProfileRA as jest.Mock
+
+jest.mock('@acx-ui/user', () => ({
+  ...jest.requireActual('@acx-ui/user'),
+  getUserProfile: jest.fn()
+}))
+const userProfileR1 = getUserProfileR1 as jest.Mock
 
 const guestTokenReponse = {
   token: 'some token'
@@ -127,6 +135,20 @@ describe('EmbeddedDashboard', () => {
       rest.get(`${rbacApiURL}/systems`,
         (_req, res, ctx) => res(ctx.json(systems)))
     )
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: [
+          'wifi-u',
+          'switch-u'
+        ],
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'n9bKZ@example.com',
+        roles: [RolesEnumRA.PRIME_ADMINISTRATOR],
+        externalId: '1234',
+        tenantId: '1234'
+      }
+    })
   })
   afterEach(() => {
     process.env = oldEnv
@@ -140,7 +162,7 @@ describe('EmbeddedDashboard', () => {
     RolesEnumRA.PRIME_ADMINISTRATOR, RolesEnumRA.ADMINISTRATOR, RolesEnumRA.READ_ONLY
   ])('should render the dashboard for SA', async (role) => {
     get.mockReturnValue('true')
-    userProfile.mockReturnValue({
+    userProfileRA.mockReturnValue({
       accountId: 'account-id',
       tenants: [],
       invitations: [],
@@ -165,7 +187,7 @@ describe('EmbeddedDashboard', () => {
     await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
   })
 
-  it('should render the dashboard for ALTO', async () => {
+  it('should render AP dashboard for ALTO with custom scopes', async () => {
     get.mockReturnValue('')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     localeContext.mockReturnValue({
@@ -177,6 +199,71 @@ describe('EmbeddedDashboard', () => {
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render SWITCH dashboard for ALTO with custom scopes', async () => {
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.SWITCH} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render OVERVIEW dashboard for ALTO wihout custom scopes', async () => {
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: undefined,
+        roles: [RolesEnumR1.ADMINISTRATOR]
+      }
+    })
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.OVERVIEW} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render OVERVIEW dashboard for ALTO wihout scopes and custom system role', async () => {
+    userProfileR1.mockReturnValue({
+      profile: {
+        scopes: undefined,
+        customRoleType: CustomRoleType.SYSTEM,
+        customRoleName: RolesEnumR1.ADMINISTRATOR,
+        roles: ['custom-system-role']
+      }
+    })
+    get.mockReturnValue('')
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.OVERVIEW} />
     </Provider>, { route: { params } })
 
     await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
@@ -261,7 +348,7 @@ describe('EmbeddedDashboard', () => {
     it('should call showExpiredSessionModal when event type is unauthorized', () => {
       render(<Provider>
         <EmbeddedReport
-          reportName={ReportType.AP_DETAIL}
+          reportName={ReportType.OVERVIEW}
           rlsClause='venue filter'/>
       </Provider>, { route: { params } })
 

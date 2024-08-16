@@ -121,7 +121,47 @@ export interface FirmwareVersion {
   onboardDate?: string;
   releaseDate?: string;
   inUse?: boolean;
+  isDowngraded10to90?: boolean;
   isDowngradeVersion?: boolean;
+}
+
+export enum SwitchFirmwareModelGroup {
+  ICX71 = 'ICX71',
+  ICX7X = 'ICX7X',
+  ICX82 = 'ICX82'
+}
+
+export const SwitchModelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+  [SwitchFirmwareModelGroup.ICX71]: '(7150)' ,
+  [SwitchFirmwareModelGroup.ICX7X]: '(7550-7850)',
+  [SwitchFirmwareModelGroup.ICX82]: '(8200)'
+}
+
+export const SwitchModelGroupDisplayTextValue: { [key in SwitchFirmwareModelGroup]: string } = {
+  [SwitchFirmwareModelGroup.ICX71]: 'ICX 7150' ,
+  [SwitchFirmwareModelGroup.ICX7X]: 'ICX 7550-7850',
+  [SwitchFirmwareModelGroup.ICX82]: 'ICX 8200'
+}
+
+export interface SwitchVersion1002 {
+  id: string;
+  name: string;
+  category: FirmwareCategory;
+  createdDate?: string;
+  inUse?: boolean;
+  isDowngradeVersion?: boolean;
+  isDowngraded10to90?: boolean;
+}
+
+export interface FirmwareVersion1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  versions: string[];
+}
+
+export interface SwitchFirmwareVersion1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  versions: SwitchVersion1002[];
+  switchCount?: number;
 }
 
 export interface ABFVersion {
@@ -212,11 +252,29 @@ export interface switchSchedule {
     id: string;
     name: string;
     category: FirmwareCategory;
-  }
+  };
   versionAboveTen?: {
     name: string;
     category: FirmwareCategory;
   }
+}
+
+export interface SwitchScheduleV1002 {
+  timeSlot: {
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
+  };
+  version: string;
+}
+
+export interface SwitchScheduleV1002 {
+  timeSlot: {
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
+  };
+  supportModelGroupVersions: FirmwareSwitchVenueVersionsV1002[];
 }
 
 export interface FirmwareSwitchVenue {
@@ -238,6 +296,33 @@ export interface FirmwareSwitchVenue {
   status: SwitchFirmwareStatusType;
   scheduleCount: number;
 }
+
+export interface FirmwareSwitchVenueVersionsV1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  version: string;
+}
+export interface FirmwareSwitchVenueSwitchCountsV1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  count: number;
+}
+
+export interface FirmwareSwitchVenueV1002 {
+  venueId: string;
+  venueName: string;
+  preDownload: boolean;
+  versions:FirmwareSwitchVenueVersionsV1002[];
+  nextSchedule?: SwitchScheduleV1002;
+  lastScheduleUpdateTime: string;
+  switchCounts: FirmwareSwitchVenueSwitchCountsV1002[];
+  status: SwitchFirmwareStatusType;
+  scheduleCount: number;
+}
+
+export interface FirmwareSwitchV1002 {
+  versions:FirmwareSwitchVenueVersionsV1002[];
+  switchCounts: FirmwareSwitchVenueSwitchCountsV1002[];
+}
+
 
 export enum SwitchFirmwareStatusType {
   NONE = 'NONE',
@@ -261,6 +346,24 @@ export interface SwitchFirmware {
   updatedAdvice?: VenueUpdateAdvice;
   availableVersions: switchVersion[];
   switchNextSchedule: switchSchedule;
+  venueNextSchedule: switchSchedule;
+}
+
+export interface SwitchFirmwareV1002 {
+  switchId: string;
+  id: string;
+  switchName: string;
+  isStack: boolean;
+  venueId: string;
+  model: string;
+  venueName: string;
+  preDownload: boolean;
+  isSwitchLevelSchedule: boolean;
+  currentFirmware: string;
+  availableVersion: switchVersion;
+  updatedAdvice?: VenueUpdateAdvice;
+  availableVersions: switchVersion[];
+  switchNextSchedule: SwitchScheduleV1002;
   venueNextSchedule: switchSchedule;
 }
 
@@ -288,6 +391,11 @@ export interface SwitchFirmwareStatus {
 export interface CurrentVersions {
   currentVersions: string[];
   currentVersionsAboveTen: string[];
+  generalVersions: string[];
+}
+
+export interface CurrentVersionsV1002 {
+  currentVersions: FirmwareVersion1002[];
   generalVersions: string[];
 }
 
@@ -341,10 +449,10 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
 export interface FirmwareVenuePerApModel {
   id: string;
   name: string;
-  isFirmwareUpToDate: boolean;
+  isApFirmwareUpToDate?: boolean;
   currentApFirmwares?: { apModel: string, firmware: string }[];
-  lastScheduleUpdate?: string;
-  nextSchedules?: Schedule[];
+  lastApFirmwareUpdate?: string;
+  nextApFirmwareSchedules?: Schedule[];
 }
 
 export interface ApModelFirmware {
@@ -362,6 +470,21 @@ export interface UpdateFirmwarePerApModelPayload {
 }
 
 export interface UpdateFirmwareSchedulePerApModelPayload extends UpdateFirmwarePerApModelPayload {
-  date: string;
-  time: string;
+  schedule: {
+    date: string;
+    time: string;
+  }
+}
+
+export enum ApFirmwareBatchOperationType {
+  UPDATE_NOW = 'UPDATE_NOW',
+  SKIP_SCHEDULE = 'SKIP_SCHEDULE',
+  CHANGE_SCHEDULE = 'CHANGE_SCHEDULE'
+}
+
+export interface ApFirmwareStartBatchOperationResult {
+  requestId: string
+  response: {
+    batchId: string
+  }
 }

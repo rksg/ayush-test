@@ -469,7 +469,12 @@ function Table <RecordType extends Record<string, any>> ({
           ? col.width
           : colWidth[col.key as keyof typeof colWidth] || col.width,
         onHeaderCell: (column: TableColumn<RecordType, 'text'>) => ({
-          onResize: (width: number) => setColWidth({ ...colWidth, [column.key]: width }),
+          onResize: (width: number) => setColWidth({
+            ...colWidth,
+            [column.key]: width >
+              (typeof column.minWidth === 'number' ? column.minWidth : 0)
+              ? width : (column.minWidth || 0)
+          }),
           width: colWidth[column.key],
           ...(enableResizableColumn ? { definedWidth: col.width } : {})
         })

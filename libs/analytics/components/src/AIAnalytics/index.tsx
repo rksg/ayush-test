@@ -9,6 +9,7 @@ import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
+import { IntentAITabContent }       from '../IntentAI'
 import { RecommendationTabContent } from '../Recommendations'
 
 export enum AIAnalyticsTabEnum {
@@ -47,13 +48,13 @@ const useTabs = () : Tab[] => {
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
   }
 
-  const intenAITab = {
+  const intentAITab = {
     key: AIAnalyticsTabEnum.INTENTAI,
-    title: $t({ defaultMessage: 'Intent AI' }),
-    component: <div data-testid='intentAI' />,
+    title: $t({ defaultMessage: 'IntentAI' }),
+    component: <IntentAITabContent />,
     headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
-  let displayIntentAI = false
+
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
     if (get('IS_MLISA_SA')) { // RAI
@@ -63,15 +64,20 @@ const useTabs = () : Tab[] => {
       if (hasPermission({ permission: 'READ_AI_OPERATIONS' })) {
         recommendationTabs.push(aiOpsTab as Tab)
       }
-      if (hasPermission({ permission: 'READ_INTENT_AI' })) {
-        displayIntentAI = true
-      }
     } else { // R1
       recommendationTabs.push(crrmTab as Tab)
       recommendationTabs.push(aiOpsTab as Tab)
-      displayIntentAI = true
     }
     return recommendationTabs
+  }
+  const getIntentAItab = () => {
+    const intentTab = []
+    if (get('IS_MLISA_SA')) { // RAI
+      hasPermission({ permission: 'READ_INTENT_AI' }) && intentTab.push(intentAITab as Tab)
+    } else { // R1
+      intentTab.push(intentAITab as Tab)
+    }
+    return intentTab
   }
   const isIntentAIEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
@@ -80,8 +86,7 @@ const useTabs = () : Tab[] => {
 
   return [
     incidentsTab,
-    ...getRecommendationTabs(),
-    ...(isIntentAIEnabled && displayIntentAI ? [intenAITab] : [])
+    ...(isIntentAIEnabled ? getIntentAItab() : getRecommendationTabs())
   ]
 }
 

@@ -19,11 +19,12 @@ import {
   useEmbeddedIdMutation,
   EmbeddedResponse
 } from '@acx-ui/reports/services'
-import { useReportsFilter }                                                 from '@acx-ui/reports/utils'
-import { REPORT_BASE_RELATIVE_URL }                                         from '@acx-ui/store'
-import { RolesEnum as RolesEnumR1 }                                         from '@acx-ui/types'
-import { getUserProfile as getUserProfileR1, UserProfile as UserProfileR1 } from '@acx-ui/user'
-import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext }        from '@acx-ui/utils'
+import { useReportsFilter }                      from '@acx-ui/reports/utils'
+import { REPORT_BASE_RELATIVE_URL }              from '@acx-ui/store'
+import { RolesEnum as RolesEnumR1 }              from '@acx-ui/types'
+import { getUserProfile as getUserProfileR1,
+  UserProfile as UserProfileR1, CustomRoleType }                            from '@acx-ui/user'
+import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext } from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
@@ -41,7 +42,8 @@ interface ReportProps {
 
 type CommonUserProfile = Pick<UserProfileRA,
   'firstName' | 'lastName' | 'email' | 'userId' | 'selectedTenant'>
-  & Pick<UserProfileR1, 'externalId' | 'tenantId' | 'roles'>
+  & Pick<UserProfileR1, 'externalId' | 'tenantId' | 'roles' | 'scopes'
+    | 'customRoleType' | 'customRoleName'>
 
 export function convertDateTimeToSqlFormat (dateTime: string): string {
   return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
@@ -227,6 +229,12 @@ export const getRLSClauseForSA = (
   }
 }
 
+const scopeRegexMapping = {
+  both: /^((switch|wifi)-(c|d|u))$/,
+  ap: /^((wifi)-(c|d|u))$/,
+  switch: /^((switch)-(c|d|u))$/
+}
+
 export function EmbeddedReport (props: ReportProps) {
   const { reportName, rlsClause, hideHeader } = props
 
@@ -243,12 +251,12 @@ export function EmbeddedReport (props: ReportProps) {
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
 
   const {
-    firstName, lastName, email,  // Common
-    externalId, tenantId, roles, // R1
-    userId, selectedTenant       // RA
+    firstName, lastName, email,                                           // Common
+    externalId, tenantId, roles, scopes, customRoleType, customRoleName,  // R1
+    userId, selectedTenant                                                // RA
   } = isRA
     ? getUserProfileRA() as unknown as CommonUserProfile
-    : getUserProfileR1().profile as unknown as CommonUserProfile
+    : getUserProfileR1()?.profile as unknown as CommonUserProfile || {}
 
   const defaultLocale = 'en'
   const localeContext = useLocaleContext()
@@ -273,7 +281,7 @@ export function EmbeddedReport (props: ReportProps) {
       : window.location.origin // Production
 
   /**
-   * Show expired session modal if session is expired, triggered from sueprset
+   * Show expired session modal if session is expired, triggered from Superset
    */
   useEffect(() => {
     const eventHandler = (event: MessageEvent) => {
@@ -371,6 +379,21 @@ export function EmbeddedReport (props: ReportProps) {
     return await guestToken({ payload: guestTokenPayload }).unwrap()
   }
 
+  const isRoleReadOnly = () => {
+    const { isApReport, isSwitchReport } = getReportType(reportName)
+    const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
+    const systemRolesWithWritePermissions = [RolesEnumR1.PRIME_ADMIN, RolesEnumR1.ADMINISTRATOR]
+
+    if (scopes) {
+      const hasWriteScope = scopes.some(scope => regex.test(scope))
+      return !hasWriteScope
+    } else if (customRoleType === CustomRoleType.SYSTEM) {
+      return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
+    }
+
+    return !systemRolesWithWritePermissions.some(role => roles.includes(role))
+  }
+
   useEffect(() => {
     if (!dashboardEmbeddedId || (isRA && systems.status === 'pending')) return
 
@@ -395,7 +418,7 @@ export function EmbeddedReport (props: ReportProps) {
       isReadOnly: isRA
         ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
             || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
-        : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
+        : isRoleReadOnly(),
       locale // i18n locale from R1
     })
     embeddedObj.then(async (embObj) => {

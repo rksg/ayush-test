@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { AaaUrls, CommonUrlsInfo, DpskUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, render, screen }                      from '@acx-ui/test-utils'
@@ -38,8 +38,6 @@ describe('DpskSettingsForm', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
       rest.get(DpskUrls.getDpskList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(dpskListResponse))),
       rest.get('/v2/dpskServices',
@@ -166,7 +164,8 @@ describe('DpskSettingsForm', () => {
   })
 
   it('should render proxy service', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
     render(
       <Provider>
         <NetworkFormContext.Provider value={{

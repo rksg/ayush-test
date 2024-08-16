@@ -95,15 +95,26 @@ import {
   WifiDhcpPoolUsages,
   RWG,
   NetworkDevice,
-  NetworkDeviceType
+  NetworkDeviceType,
+  NetworkDevicePosition,
+  RbacAPMesh
 } from '@acx-ui/rc/utils'
-import { baseVenueApi }                        from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseVenueApi }                                  from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                                                                          from './utils'
+import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'
+import { fetchRbacAllApGroupNetworkVenueList }                     from './networkVenueUtils'
 import {
+  getVenueDHCPProfileFn,
+  getVenueRoguePolicyFn,
+  transformGetVenueDHCPPoolsResponse,
+  updateVenueRoguePolicyFn
+} from './servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
+import {
+  convertToApMeshDataList,
+  convertToMeshTopologyDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
 }   from './venue.utils'
@@ -163,7 +174,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venuesData = venueList.data as Venue[]
+        const venuesData = venueList?.data as Venue[]
         const venueIds = venuesData?.filter(v => {
           if (v.aggregatedApStatus) {
             return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
@@ -281,7 +292,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const USE_CASES = [
             'AddNetworkVenue',
-            'DeleteNetworkVenue'
+            'DeleteNetworkVenue',
+            'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
             'DeleteNetworkVenueTemplate',
@@ -332,10 +347,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    // only exist in v1(RBAC version)
     getVenueMesh: build.query<Mesh, RequestPayload>({
-      query: ({ params }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      query: ({ params, isWifiMeshIndependents56GEnable }) => {
+        const customHeaders = GetApiVersionHeader(isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1)
         const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
         return {
           ...req
@@ -354,9 +368,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, isWifiMeshIndependents56GEnable }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const customHeaders = GetApiVersionHeader(
+          enableRbac ? (isWifiMeshIndependents56GEnable? ApiVersionEnum.v1_1 :ApiVersionEnum.v1) : undefined)
         const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
           ...req,
@@ -380,10 +395,38 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     meshAps: build.query<TableResult<APMesh>, RequestPayload>({
       query: ({ params, payload }) => {
-        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        const req = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+
         return {
-          ...venueMeshReq,
+          ...req,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    rbacMeshAps: build.query<TableResult<APMesh>, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const rbacApMeshReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const rbacApMeshListRes = await fetchWithBQ({
+          ...rbacApMeshReq,
+          body: JSON.stringify(payload)
+        })
+
+        const rbacApMeshData = rbacApMeshListRes.data as TableResult<RbacAPMesh>
+        const apMeshData = [] as APMesh[]
+
+
+        rbacApMeshData.data?.forEach((rbacApMesh) => {
+          const { root, members=[] } = rbacApMesh
+          const newApMesh = convertToApMeshDataList([root], members) as APMesh[]
+
+          apMeshData.push(newApMesh[0])
+        })
+
+        const meshAps = { data: apMeshData, totalCount: rbacApMeshData.totalCount } as TableResult<APMesh>
+        return {
+          data: meshAps
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }],
@@ -395,6 +438,34 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return {
           ...venueMeshReq,
           body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    getRbacFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const newPayload = JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+
+        const apListReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const apListRes = await fetchWithBQ({ ...apListReq, body: newPayload })
+        const rbacApListData = apListRes.data as TableResult<RbacAPMesh>
+        const apMeshData = [] as FloorPlanMeshAP[]
+
+        rbacApListData.data?.forEach((rbacApMesh) => {
+          const { root, members=[] } = rbacApMesh
+          const newApMesh = convertToMeshTopologyDataList([root], members) as FloorPlanMeshAP[]
+
+          apMeshData.push(newApMesh[0])
+        })
+
+        const apListData = { data: apMeshData, totalCount: rbacApListData.totalCount } as TableResult<FloorPlanMeshAP>
+        // fetch ap position data
+        if (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent')) {
+          await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
+        }
+
+        return {
+          data: apListData
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -429,7 +500,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
 
         const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
@@ -454,8 +525,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
               ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
-              : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
-            body: apGroupPayload
+              : WifiUrlsInfo.getApGroupsList, params),
+            body: JSON.stringify(apGroupPayload)
           }
 
           const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
@@ -532,6 +603,125 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return networkVenuesApGroupQuery.data
           ? { data: aggregatedList }
           : { error: networkVenuesApGroupQuery.error as FetchBaseQueryError }
+      }
+    }),
+    getRbacNetworkApGroups: build.query<NetworkVenue[], RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const filters = payloadData.map(item => ({
+          venueId: item.venueId,
+          networkId: item.networkId
+        }))
+
+        const venueIds = uniq(filters.map(item => item.venueId))
+        let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+        let networkVenuesApGroupList = [] as NetworkVenue[]
+
+        for (let venueId of venueIds) {
+          // get apGroup list filter by venueId
+          const apGroupPayload = {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: { venueId: [venueId] }
+          }
+
+          const apGroupListInfo = {
+            ...createHttpRequest(payloadData[0].isTemplate
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
+              : WifiRbacUrlsInfo.getApGroupsList, params),
+            body: JSON.stringify(apGroupPayload)
+          }
+
+          const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
+          const apGroupListData = apGroupsQuery.data as {
+            data: {
+              id: string,
+              name: string
+            }[]
+          }
+
+          const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+            return {
+              apGroupId: d.id,
+              ...(d.name && { apGroupName: d.name }),
+              isDefault: !d.name,
+              radio: 'Both',
+              radioTypes: ['2.4-GHz', '5-GHz'],
+              validationError: false,
+              validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+              validationErrorReachedMaxConnectedNetworksLimit: false,
+              validationErrorSsidAlreadyActivated: false
+            } as NetworkApGroup
+          })
+
+          venueApgroupMap.set(venueId, apgroupsDefaultValue)
+        }
+
+        const paramsVenueId = payloadData[0].venueId
+        const paramsNetworkId = payloadData[0].networkId
+        const paramsIsTemplate = payloadData[0].isTemplate
+
+        const {
+          error: apGroupNetworkListQueryError,
+          networkList,
+          networkDeepListList
+        } = await fetchRbacAllApGroupNetworkVenueList({
+          params: {
+            ...params,
+            venueId: paramsVenueId
+          },
+          payload: {
+            isTemplate: paramsIsTemplate,
+            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+          }
+        }, fetchWithBQ)
+
+        networkVenuesApGroupList = networkDeepListList.response
+          .flatMap(networkInfo => networkInfo.venues)
+          .filter(networkVenue => networkVenue.networkId === paramsNetworkId) as NetworkVenue[]
+
+        let aggregatedList: NetworkVenue[] | undefined
+
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+          const venueId = filters[0].venueId
+          const networkVenueData = networkVenuesApGroupList[0]
+          const networkVenue = omit(networkVenueData, ['networkId', 'id'])
+
+          aggregatedList = [{
+            ...networkVenue,
+            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+          }]
+
+        } else {
+          aggregatedList = networkVenuesApGroupList.map(networkVenue => {
+            const { venueId, apGroups=[] } = networkVenue
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+
+            const newApgroups = cloneDeep(apGroups)
+
+            currentApGroupsDefaultValue?.forEach(apGroup => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroup.apGroupId)
+              if (!customApGroup) {
+                newApgroups.push(cloneDeep(apGroup))
+              } else {
+                newApgroups[customApGroupIndex] = { ...customApGroup, ...apGroup }
+              }
+            })
+
+            return {
+              ...networkVenue,
+              apGroups: newApgroups
+            }
+          })
+        }
+
+        return networkList.data
+          ? { data: aggregatedList }
+          : { error: apGroupNetworkListQueryError as FetchBaseQueryError }
       }
     }),
     getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
@@ -684,12 +874,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateSwitchPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateSwitchPosition, params)
+    updateSwitchPosition: build.mutation<CommonResult, RequestPayload<NetworkDevicePosition>>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const req = createHttpRequest(urlsInfo.UpdateSwitchPosition, params)
+        const body = JSON.parse(JSON.stringify(payload))
+        if(enableRbac) {
+          body.floorPlanId = payload?.floorplanId
+          delete body.floorplanId
+        }
         return {
           ...req,
-          body: payload
+          body
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -789,19 +985,25 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
     }),
     getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueLanPorts, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueLanPorts, params, apiCustomHeader)
         return{
           ...req
         }
       }
     }),
     updateVenueLanPorts: build.mutation<VenueLanPorts[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueLanPorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.updateVenueLanPorts, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1587,13 +1789,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
-    deletePropertyUnits: build.mutation<PropertyUnit, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PropertyUrlsInfo.deletePropertyUnits, params)
-        return {
-          ...req,
-          body: payload
+    deletePropertyUnits: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload?.map(unitId => ({ params: { ...params, unitId } })) ?? []
+        const result = await batchApi(PropertyUrlsInfo.deletePropertyUnit, requests, fetchWithBQ)
+
+        if (result.error) {
+          return { error: result.error as FetchBaseQueryError }
         }
+
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
@@ -1783,10 +1988,13 @@ export const {
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,
+  useRbacMeshApsQuery,
   useGetFloorPlanMeshApsQuery,
+  useGetRbacFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
+  useGetRbacNetworkApGroupsQuery,
   useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
@@ -1901,7 +2109,7 @@ export const {
 export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>,
   apCompatibilities: { [key:string]: number }) => {
   const data:Venue[] = []
-  venueList.data.forEach(item=>{
+  venueList?.data.forEach(item=>{
     item.incompatible = apCompatibilities[item.id]
     data.push(item)
   })

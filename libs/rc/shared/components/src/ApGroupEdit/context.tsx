@@ -1,9 +1,9 @@
 import { createContext, useState } from 'react'
 
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { useApGroupsListQuery, useGetApGroupsTemplateListQuery }           from '@acx-ui/rc/services'
-import { ApGroupViewModel, TableResult, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { useApGroupsListQuery, useGetApGroupsTemplateListQuery }                              from '@acx-ui/rc/services'
+import { ApGroupViewModel, TableResult, useConfigTemplate, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { useParams }                                                                          from '@acx-ui/react-router-dom'
 
 export type ApGroupEditContextType = {
   tabTitle: string
@@ -16,7 +16,7 @@ export type ApGroupEditContextType = {
 
 export const ApGroupEditContext = createContext({} as {
   isApGroupTableFlag: boolean
-  isWifiRbacEnabled: boolean
+  isRbacEnabled: boolean,
   isEditMode: boolean
   editContextData: ApGroupEditContextType
   setEditContextData:(data: ApGroupEditContextType) => void
@@ -28,8 +28,11 @@ export const ApGroupEditContext = createContext({} as {
 export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
   const isApGroupTableFlag = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
   const { apGroupId, action } = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const resolvedRbacEnabled = isTemplate ? isTemplateRbacEnabled : isWifiRbacEnabled
   const isEditMode = action === 'edit'
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as ApGroupEditContextType)
@@ -43,14 +46,14 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
       pageSize: 1
     },
     skip: !apGroupId,
-    enableRbac: isWifiRbacEnabled
+    enableRbac: resolvedRbacEnabled
   })
 
   return (
     <ApGroupEditContext.Provider value={{
       isEditMode,
       isApGroupTableFlag,
-      isWifiRbacEnabled,
+      isRbacEnabled: resolvedRbacEnabled,
       previousPath, setPreviousPath,
       editContextData, setEditContextData,
       venueId: apGroupInfo?.data?.data?.[0]?.venueId

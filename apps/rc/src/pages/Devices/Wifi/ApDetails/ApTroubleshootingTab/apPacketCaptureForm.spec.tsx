@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { venueApi }                                      from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo, WifiUrlsInfo }                from '@acx-ui/rc/utils'
 import { Provider, store }                               from '@acx-ui/store'
 import { within, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -65,6 +65,8 @@ describe('ApPacketCaptureForm', () => {
       rest.get(WifiUrlsInfo.getApRadioCustomization.url,
         (req, res, ctx) => res(ctx.json(apRadio))),
       rest.get(WifiUrlsInfo.getApLanPorts.url,
+        (req, res, ctx) => res(ctx.json(apLanPort))),
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPort))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(r650ap))),
@@ -264,6 +266,8 @@ describe('ApPacketCaptureForm - validation', () => {
       rest.get(WifiUrlsInfo.getApRadioCustomization.url,
         (req, res, ctx) => res(ctx.json(apRadio))),
       rest.get(WifiUrlsInfo.getApLanPorts.url,
+        (req, res, ctx) => res(ctx.json(apLanPort))),
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPort))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (req, res, ctx) => res(ctx.json(r650ap))),

@@ -229,8 +229,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     rebootSwitch: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.reboot, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.reboot, params)
         return {
           ...req,
           body: payload
@@ -1336,9 +1337,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
 
         const getDhcpLeasesQuery = await pollingDhcpLease()
         const leaseResult = getDhcpLeasesQuery.data as TroubleshootingResult
+        const dhcpServerLeaseList = leaseResult?.response?.dhcpServerLeaseList ||
+          _.get(leaseResult, 'dhcpServerLeaseList')
 
-        return leaseResult?.response?.dhcpServerLeaseList
-          ? { data: leaseResult.response.dhcpServerLeaseList }
+        return dhcpServerLeaseList ? { data: dhcpServerLeaseList }
           : { error: getDhcpLeasesQuery.error as FetchBaseQueryError }
       }
     }),
@@ -1791,6 +1793,7 @@ export const {
   useAddAclMutation,
   useAddVlanMutation,
   useGetSwitchConfigProfileQuery,
+  useLazyGetSwitchConfigProfileQuery,
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,

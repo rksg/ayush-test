@@ -39,8 +39,7 @@ export function BssColoring () {
 
   /* eslint-disable-next-line max-len */
   const tooltipInfo = $t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })
-  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
-  const isTemplate = useConfigTemplate()
+  const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
@@ -107,7 +106,7 @@ export function BssColoring () {
           <div style={{ margin: '2px' }}></div>
           <ApCompatibilityToolTip
             title={tooltipInfo}
-            visible={supportApCompatibleCheck}
+            visible={true}
             placement='bottom'
             onClick={() => setDrawerVisible(true)}
           />
@@ -119,15 +118,13 @@ export function BssColoring () {
             }}
             style={{ marginLeft: '20px' }}
           />
-          {supportApCompatibleCheck &&
-            <ApCompatibilityDrawer
-              visible={drawerVisible}
-              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
-              venueId={venueId}
-              featureName={InCompatibilityFeatures.BSS_COLORING}
-              onClose={() => setDrawerVisible(false)}
-            />
-          }
+          <ApCompatibilityDrawer
+            visible={drawerVisible}
+            type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.BSS_COLORING}
+            onClose={() => setDrawerVisible(false)}
+          />
         </StepsFormLegacy.FieldLabel>
       </Space>
     </Loader>

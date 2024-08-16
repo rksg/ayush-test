@@ -4,13 +4,12 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }                        from '@acx-ui/components'
+import { Loader, StepsFormLegacy }                from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
-  useGetApGroupQuery, useGetApGroupTemplateQuery,
   useGetVLANPoolPolicyViewModelListQuery,
-  useLazyApGroupNetworkListQuery,
   useLazyApGroupNetworkListV2Query,
+  useLazyNewApGroupNetworkListQuery,
   useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation,
   useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
@@ -18,19 +17,16 @@ import {
   KeyValue,
   Network,
   NetworkVenue, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
   VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 
-import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
-import { usePathBasedOnConfigTemplate }                  from '../../configTemplates'
-import { ApGroupEditContext }                            from '../context'
+import { defaultApGroupNetworkPayload, defaultNewApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
+import { usePathBasedOnConfigTemplate }                                                   from '../../configTemplates'
+import { ApGroupEditContext }                                                             from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'
 
-
-const defaultTableData: Network[] = []
 const defaultDrawerStatus: ApGroupVlanRadioDrawerState = {
   visible: false,
   editData: {} as Network
@@ -39,7 +35,7 @@ const defaultDrawerStatus: ApGroupVlanRadioDrawerState = {
 export const ApGroupVlanRadioContext = createContext({} as {
   apGroupId: string
   venueId: string
-  tableData: Network[]
+  tableData: Network[] | undefined
   setTableData: (data: Network[]) => void
   drawerStatus: ApGroupVlanRadioDrawerState
   setDrawerStatus: (data: ApGroupVlanRadioDrawerState) => void
@@ -48,17 +44,15 @@ export const ApGroupVlanRadioContext = createContext({} as {
 
 export type VlanPoolNameMapType = { vlanPoolingNameMap: KeyValue<string, string>[] }
 
-
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+
   const {
-    isEditMode,
     isApGroupTableFlag,
-    isWifiRbacEnabled,
+    isRbacEnabled,
     setEditContextData,
-    venueId: contextVenueId
+    venueId
   } = useContext(ApGroupEditContext)
 
   const { tenantId, apGroupId = '' } = useParams()
@@ -71,73 +65,72 @@ export function ApGroupVlanRadioTab () {
     ? `${basePath.pathname}/wifi/apgroups`
     : `${basePath.pathname}/wifi`)
 
-  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
-    useQueryFn: useGetApGroupQuery,
-    useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !(isApGroupTableFlag && isEditMode) || (isWifiRbacEnabled && !contextVenueId),
-    payload: null,
-    extraParams: { tenantId, apGroupId, venueId: contextVenueId },
-    enableRbac: isWifiRbacEnabled
-  })
-
-  const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
+  const [getRbacApGroupNetworkList] = useLazyNewApGroupNetworkListQuery()
   const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenuesMutation,
     useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
   })
 
-  const [venueId, setVenueId] = useState('')
-  const [tableData, setTableData] = useState(defaultTableData)
+  const [tableData, setTableData] = useState<Network[] | undefined>(undefined)
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   // eslint-disable-next-line max-len
-  const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(!tableData.length)
+  const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(!(tableData?.length))
 
   useEffect(() => {
-    if (apGroupData && !isApGroupDataLoading) {
-      const payload = cloneDeep({
-        ...defaultApGroupNetworkPayload,
-        isTemplate: isTemplate,
-        filters: { isAllApGroups: [false] }
-      })
+    const payload = cloneDeep({
+      ...defaultApGroupNetworkPayload,
+      isTemplate: isTemplate,
+      filters: { isAllApGroups: [false] }
+    })
 
-      const getApGroupNetworkData = async (isUseWifiApiV2: boolean, venueId: string) => {
-        if (isUseWifiApiV2) {
-          const { data } = await getApGroupNetworkListV2({
-            params: { tenantId, venueId, apGroupId },
-            payload
+    const getApGroupNetworkData = async (venueId: string) => {
+      if (isRbacEnabled) {
+        const { data } = await getRbacApGroupNetworkList({
+          params: { venueId },
+          payload: cloneDeep({
+            ...defaultNewApGroupNetworkPayload,
+            isTemplate: isTemplate,
+            isTemplateRbacEnabled: isRbacEnabled,
+            filters: {
+              'venueApGroups.apGroupIds': [apGroupId],
+              'venueApGroups.isAllApGroups': [false]
+            }
           })
+        })
 
-          return data
-        }
-        const { data } = await getApGroupNetworkList({
+        return data
+      } else {
+        const { data } = await getApGroupNetworkListV2({
           params: { tenantId, venueId, apGroupId },
           payload
         })
+
         return data
       }
-
-      const getInitTableData = async () => {
-        const venueId = apGroupData.venueId
-        const data = await getApGroupNetworkData(isUseWifiApiV2, venueId)
-
-        setVenueId(venueId)
-        const initData = data?.data || [] as Network[]
-        setTableData(cloneDeep(initData))
-      }
-
-      getInitTableData()
     }
-  }, [apGroupData, isApGroupDataLoading,
-    isUseWifiApiV2, getApGroupNetworkList, getApGroupNetworkListV2,
-    tenantId, apGroupId])
+
+    const getInitTableData = async () => {
+      const data = await getApGroupNetworkData(venueId!)
+
+      const initData = data?.data || [] as Network[]
+      setTableData(cloneDeep(initData))
+    }
+
+    if (venueId)
+      getInitTableData()
+  }, [getApGroupNetworkListV2,
+    tenantId, apGroupId, getRbacApGroupNetworkList, venueId])
 
   const handleUpdateAllApGroupVlanRadio = async () => {
     const updateData = updateDataRef.current
 
     if (updateData.length > 0) {
-      await updateNetworkVenues({ payload: updateData }).unwrap()
+      await updateNetworkVenues({
+        payload: updateData,
+        enableRbac: isRbacEnabled
+      }).unwrap()
     }
 
     setEditContextData({
@@ -148,7 +141,7 @@ export function ApGroupVlanRadioTab () {
   }
 
   const handleUpdateApGroupVlanRadio = (editData: Network) => {
-    const editNetworkVenue = cloneDeep(getCurrentVenue(editData, venueId)!)
+    const editNetworkVenue = cloneDeep(getCurrentVenue(editData, venueId!)!)
     const updateData = cloneDeep(updateDataRef.current)
 
     const findIdx = updateData.findIndex(d => (d.id === editNetworkVenue.id))
@@ -158,10 +151,9 @@ export function ApGroupVlanRadioTab () {
       updateData.splice(findIdx, 1, editNetworkVenue)
     }
     updateDataRef.current = updateData
-    //console.log('updateData', updateDataRef.current)
 
     setTableData(
-      tableData.map(data => {
+      tableData?.map(data => {
         return (editData.id === data.id) ? editData : data
       })
     )
@@ -187,7 +179,6 @@ export function ApGroupVlanRadioTab () {
     })
   }
 
-
   return (
     <StepsFormLegacy
       onFinish={handleUpdateAllApGroupVlanRadio}
@@ -201,14 +192,16 @@ export function ApGroupVlanRadioTab () {
           // eslint-disable-next-line max-len
           defaultMessage: 'Configure the VLAN & Radio settings for the following networks which are applied to this AP group:'
         })}
-        <ApGroupVlanRadioContext.Provider value={{
-          venueId, apGroupId,
-          tableData, setTableData,
-          drawerStatus, setDrawerStatus,
-          vlanPoolingNameMap }} >
-          <ApGroupVlanRadioTable />
-          <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio} />
-        </ApGroupVlanRadioContext.Provider>
+        <Loader states={[{ isLoading: !tableData || !venueId }]}>
+          <ApGroupVlanRadioContext.Provider value={{
+            venueId: venueId!, apGroupId,
+            tableData, setTableData,
+            drawerStatus, setDrawerStatus,
+            vlanPoolingNameMap }} >
+            <ApGroupVlanRadioTable />
+            <ApGroupVlanRadioDrawer updateData={handleUpdateApGroupVlanRadio} />
+          </ApGroupVlanRadioContext.Provider>
+        </Loader>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

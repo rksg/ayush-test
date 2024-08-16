@@ -4,7 +4,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { policyApi, venueApi }                                                       from '@acx-ui/rc/services'
-import { ApSnmpUrls }                                                                from '@acx-ui/rc/utils'
+import { ApSnmpRbacUrls, ApSnmpUrls }                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -48,7 +48,16 @@ describe('Ap Snmp', () => {
       rest.get(ApSnmpUrls.getVenueApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfGetVenueApSnmpAgentSettings))
       }),
+      rest.get(ApSnmpRbacUrls.getApSnmpFromViewModel.url, (req, res, ctx) => {
+        return res(ctx.json(resultOfGetVenueApSnmpAgentSettings))
+      }),
       rest.post(ApSnmpUrls.updateVenueApSnmpSettings.url, (req, res, ctx) => {
+        return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
+      }),
+      rest.post(ApSnmpRbacUrls.updateVenueApSnmpSettings.url, (req, res, ctx) => {
+        return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
+      }),
+      rest.post(ApSnmpRbacUrls.resetVenueApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
       })
     )

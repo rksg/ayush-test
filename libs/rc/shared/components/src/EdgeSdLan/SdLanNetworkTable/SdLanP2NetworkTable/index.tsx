@@ -1,31 +1,32 @@
+/* eslint-disable max-len */
 import { useMemo, useState } from 'react'
 
 import { Space }                  from 'antd'
 import { isNil, merge, find }     from 'lodash'
-import _                          from 'lodash'
 import { AlignType }              from 'rc-table/lib/interface'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features }                                               from '@acx-ui/feature-toggle'
 import { useVenueNetworkActivationsViewModelListQuery }           from '@acx-ui/rc/services'
 import {
   defaultSort,
   sortProp,
   isOweTransitionNetwork,
-  isDsaeOnboardingNetwork,
   NetworkTypeEnum,
   useTableQuery,
   Network,
-  NetworkType
-} from '@acx-ui/rc/utils'
+  NetworkType } from '@acx-ui/rc/utils'
 import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
-import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
+import { AddNetworkModal }       from '../../../NetworkForm/AddNetworkModal'
+import { useIsEdgeFeatureReady } from '../../../useEdgeActions'
 
 import { ActivateNetworkSwitchButtonP2, ActivateNetworkSwitchButtonP2Props } from './ActivateNetworkSwitchButton'
 import ForwardGuestTrafficDiagramVertical                                    from './assets/images/edge-sd-lan-forward-guest-traffic.png'
+import MvForwardGuestTrafficDiagramVertical                                  from './assets/images/edge-sd-lan-mv-forward-guest-traffic.svg'
 import * as UI                                                               from './styledComponents'
 
 const dmzTunnelColumnHeaderTooltip = defineMessage({
@@ -34,7 +35,9 @@ const dmzTunnelColumnHeaderTooltip = defineMessage({
     'When \'Forward guest traffic to DMZ\' is activated, the \'Enable tunnel\' toggle turns on automatically. {detailLink}'
 })
 
+// the state of 'Forward the guest traffic to DMZ' (ON/OFF) on the same network at different venues needs to be same
 const getRowDisabledInfo = (
+  venueId: string,
   row: Network,
   isForGuestTraffic: boolean,
   dsaeOnboardNetworkIds?: string[]
@@ -49,15 +52,14 @@ const getRowDisabledInfo = (
     disabled = true
     // eslint-disable-next-line max-len
     tooltip = $t({ defaultMessage: 'This is OWE transition network, cannot be SD-LAN traffic network.' })
-    //TODO: need to refactor after wifi team data migration done.
-  } else if (dsaeOnboardNetworkIds?.includes(row.id) || isDsaeOnboardingNetwork(row)) {
+  } else if (dsaeOnboardNetworkIds?.includes(row.id)) {
     disabled = true
     // eslint-disable-next-line max-len
     tooltip = $t({ defaultMessage: 'This is an onboarding network for WPA3-DPSK3 for DPSK, cannot be SD-LAN traffic network.' })
   } else if (isGuestnetwork && isForGuestTraffic && isVlanPooling) {
     disabled = true
     tooltip = $t({ defaultMessage: 'Cannot tunnel vlan pooling network to DMZ cluster.' })
-  } else {}
+  }
 
   return { disabled, tooltip }
 }
@@ -69,7 +71,7 @@ export interface ActivatedNetworksTableP2Props {
   activated?: string[],
   activatedGuest?: string[],
   disabled?: boolean,
-  tooltip?: string,
+  toggleButtonTooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
   isUpdating?: boolean
 }
@@ -82,7 +84,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     activated,
     activatedGuest,
     disabled,
-    tooltip,
+    toggleButtonTooltip,
     onActivateChange,
     isUpdating
   } = props
@@ -93,7 +95,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
   const tableQuery = useTableQuery<Network>({
     useQuery: useVenueNetworkActivationsViewModelListQuery,
-    apiParams: { venueId },
     defaultPayload: {
       sortField: 'name',
       sortOrder: 'ASC',
@@ -101,7 +102,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
       fields: [
         'id',
         'name',
-        'type'
+        'type',
+        'vlanPool'
       ]
     },
     option: {
@@ -111,7 +113,7 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
 
   const dsaeOnboardNetworkIds = (tableQuery.data?.data
     .map(item => item.dsaeOnboardNetwork?.id)
-    .filter(i => !_.isNil(i)) ?? []) as string[]
+    .filter(i => !isNil(i)) ?? []) as string[]
 
   const showMoreDetails = () => {
     setDetailDrawerOpenVisible(true)
@@ -145,14 +147,14 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 80,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, false, dsaeOnboardNetworkIds)
+      const disabledInfo = getRowDisabledInfo(venueId, row, false, dsaeOnboardNetworkIds)
 
       return <ActivateNetworkSwitchButtonP2
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
         disabled={disabled || disabledInfo.disabled}
-        tooltip={tooltip || disabledInfo.tooltip}
+        tooltip={toggleButtonTooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
@@ -168,7 +170,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     align: 'center' as AlignType,
     width: 120,
     render: (_: unknown, row: Network) => {
-      const disabledInfo = getRowDisabledInfo(row, true, dsaeOnboardNetworkIds)
+      // eslint-disable-next-line max-len
+      const disabledInfo = getRowDisabledInfo(venueId, row, true, dsaeOnboardNetworkIds)
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
         ? <ActivateNetworkSwitchButtonP2
@@ -176,13 +179,14 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           row={row}
           activated={activatedGuest ?? []}
           disabled={disabled || disabledInfo.disabled}
-          tooltip={tooltip || disabledInfo.tooltip}
+          tooltip={toggleButtonTooltip || disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
     }
   }] : [])
   ]), [
+    venueId,
     activated,
     activatedGuest,
     isGuestTunnelEnabled,
@@ -214,8 +218,6 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           actions={filterByAccess(actions)}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          // TODO: confirm is need?
-          // onFilterChange={tableQuery.handleFilterChange}
         />
       </Loader>
       <AddNetworkModal
@@ -231,8 +233,9 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   )
 }
 
-const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean) => void }) => {
+export const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean) => void }) => {
   const { $t } = useIntl()
+  const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   return <Drawer
     title={$t({ defaultMessage: 'Forward Guest Traffic to DMZ' })}
@@ -243,10 +246,13 @@ const MoreDetailsDrawer = (props: { visible: boolean, setVisible: (open: boolean
     <Space direction='vertical' size={40}>
       <UI.DiagramContainer>
         <img
-          src={ForwardGuestTrafficDiagramVertical}
+          src={isEdgeSdLanMvEnabled
+            ? MvForwardGuestTrafficDiagramVertical
+            : ForwardGuestTrafficDiagramVertical
+          }
           alt={$t({ defaultMessage: 'SD-LAN forward guest traffic' })}
         />
-        <UI.FrameOverDiagram />
+        {!isEdgeSdLanMvEnabled && <UI.FrameOverDiagram />}
       </UI.DiagramContainer>
       <UI.StyledParagraph>
         {

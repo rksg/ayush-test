@@ -88,6 +88,7 @@ export interface EdgePort {
   natEnabled: boolean
   corePortEnabled: boolean
   interfaceName?: string
+  maxSpeedCapa: number
 }
 
 export interface EdgePortWithStatus extends EdgePort {
@@ -364,6 +365,13 @@ export interface EdgeCluster {
   virtualIpSettings: {
       virtualIps: VirtualIpSetting[]
   }
+}
+
+export interface EdgeFeatureSets {
+  featureSets: {
+    featureName: string
+    requiredFw: string
+  }[]
 }
 
 export interface VirtualIpSetting {

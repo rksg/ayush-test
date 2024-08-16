@@ -123,7 +123,7 @@ export interface TenantDetails {
     mfaStatus: string
   }
   accountTier?: AccountTier;
-  subscribes?: NotificationPreference;
+  subscribes?: string;
 }
 
 export enum AdministrationDelegationType {
@@ -374,7 +374,8 @@ export enum SmsProviderType {
   RUCKUS_ONE = 'RUCKUS_ONE',
   TWILIO = 'TWILIO',
   ESENDEX = 'ESENDEX',
-  OTHERS = 'OTHERS'
+  OTHERS = 'OTHERS',
+  SMSProvider_UNSET = 'SMSProvider_UNSET'
 }
 
 export interface NotificationSmsUsage

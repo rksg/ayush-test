@@ -23,6 +23,26 @@ export interface IpSettings {
   secondaryDnsServer?: string
 }
 
+interface NewApNetworkStatus {
+  ipAddress: string
+  externalIpAddress: string
+  ipAddressType: string
+  netmask: string
+  gateway: string
+  primaryDnsServer: string
+  secondaryDnsServer: string
+  managementTrafficVlan: number
+}
+
+interface NewApRadioProperties {
+    id: number
+    band: string
+    transmitterPower: string
+    channel: number
+    channelBandwidth: string
+    rssi: number
+}
+
 export interface APSystem extends IpSettings {
   uptime?: number
   secureBootEnabled?: boolean
@@ -67,9 +87,17 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number,
+  downlinkCount?: number,
   apRadioDeploy?: string,
-  powerSavingStatus?: string
+  powerSavingStatus?: string,
+  lbsStatus?: {
+    managementConnected?: boolean,
+    serverConnected?: boolean
+  }
+  switchId?: string,
+  switchName?: string,
+  switchPort?: string,
+  switchSerialNumber?: string
 }
 
 export interface NewAPModel {
@@ -88,30 +116,18 @@ export interface NewAPModel {
   statusSeverity?: ApVenueStatusEnum
   status?: ApDeviceStatusEnum
   meshRole?: string
-  networkStatus?: {
-    ipAddress: string
-    externalIpAddress: string
-    ipAddressType: string
-    netmask: string
-    gateway: string
-    primaryDnsServer: string
-    secondaryDnsServer: string
-    managementTrafficVlan: number
-  }
+  clientCount?: number
+  networkStatus?: NewApNetworkStatus
   lanPortStatuses?: {
     id: string
     physicalLink: string
   }[]
-  radioStatuses?: {
-    id: number
-    band: string
-    transmitterPower: string
-    channel: number
-    channelBandwidth: string
-    rssi: number
-  }[]
+  radioStatuses?: NewApRadioProperties[]
+  cellularStatus?: NewCelluarInfo
   afcStatus?: NewAFCInfo
   floorplanId?: string
+  powerSavingStatus?: string
+  meshStatus?: MeshStatus
 }
 
 export interface ApViewModel extends AP {
@@ -151,6 +167,7 @@ export interface NewAPModelExtended extends NewAPModel {
   venueName?: string
   poePort?: string
   apGroupName?: string
+  deviceModelType?: ApModelTypeEnum
   channel24?: string | number
   channel50?: string | number
   channelL50?: string | number
@@ -172,6 +189,50 @@ export interface NewAPModelExtended extends NewAPModel {
   switchName?: string
   rogueCategory?: { [key: string]: number }
   incompatible?: number
+}
+export interface NewCelluarInfo {
+  activeSim: string,
+  imei: string,
+  lteFirmware: string,
+  country: string,
+  operator: string,
+  connectionStatus: string,
+  connectionChannel: number,
+  rfBand: string,
+  wanInterface: string,
+  ipAddress: string,
+  netmask: string,
+  gateway: string,
+  roamingStatus: string,
+  radioUptime: number,
+  uplinkBandwidth: string,
+  downlinkBandwidth: string,
+  signalStrength: string,
+  ecio: number,
+  rscp: number,
+  rsrp: number,
+  rsrq: number,
+  sinr: number,
+  primarySimStatus: {
+    iccid: string,
+    imsi: string,
+    txBytes: number,
+    rxBytes: number,
+    cardRemovalCount: number,
+    dhcpTimeoutCount: number,
+    networkLostCount: number,
+    switchCount: number,
+  },
+  secondarySimStatus: {
+    iccid: string,
+    imsi: string,
+    txBytes: number,
+    rxBytes: number,
+    cardRemovalCount: number,
+    dhcpTimeoutCount: number,
+    networkLostCount: number,
+    switchCount: number,
+  }
 }
 
 export interface CelluarInfo {
@@ -330,6 +391,18 @@ export interface ApStatusDetails {
   name: string,
   serialNumber: string
 }
+
+export interface MeshLinkStatus {
+  macAddress: string,
+  rssi: number
+}
+export interface MeshStatus {
+  hopCount: number,
+  uplinks?: MeshLinkStatus[],
+  downlinks?: MeshLinkStatus[],
+  neighbors?: MeshLinkStatus[],
+  radios?: MeshRadioStatus[]
+}
 export interface APMesh {
   IP?: string
   apMac?: string
@@ -337,6 +410,7 @@ export interface APMesh {
     APRadio?: Array<RadioProperties>
   },
   clients?: CountAndNames,
+  clientCount?: number
   deviceGroupId?: string,
   deviceGroupName?: string,
   deviceStatus?: string,
@@ -361,9 +435,22 @@ export interface APMesh {
   type?: number,
   upMac?: string,
   downlinkCount?: number,
+  meshBand?: string
 }
+
+export interface RbacAPMesh {
+  root: NewAPModel,
+  members: NewAPModel[]
+}
+
+export interface MeshRadioStatus {
+  band: string
+}
+
 export interface FloorPlanMeshAP extends APMesh {
   floorplanId?: string;
+  xPercent?: number;
+  yPercent?: number;
 }
 export interface Uplink{
   txFrames: string,
@@ -390,6 +477,10 @@ export interface LanPort {
   vni: number
 }
 
+export enum ApModelTypeEnum {
+  INDOOR = 'indoor',
+  OUTDOOR = 'outdoor'
+}
 export interface CapabilitiesApModel {
   allowDfsCountry: string[],
   canSupportCellular: boolean,
@@ -592,6 +683,8 @@ export interface APExtendedGrouped extends APExtended {
   id?: number | string
 }
 export interface NewAPExtendedGrouped extends NewAPModelExtended {
+  groupedField: string
+  groupedValue: string
   members: number
   incidents: number
   model: string
@@ -599,6 +692,8 @@ export interface NewAPExtendedGrouped extends NewAPModelExtended {
   aps: NewAPModelExtended[],
   children?: NewAPModelExtended[],
   id?: number | string
+  deviceGroupName?: string // For the legacy usage of editing/deleting apGroup
+  deviceGroupId?: string // For the legacy usage of editing/deleting apGroup
 }
 export type ImportErrorRes = {
   errors: {
@@ -638,8 +733,8 @@ export type MeshApNeighbor = {
 
 export type MeshUplinkAp = {
   name: string,
-  deviceStatus: string,
-  healthStatus: string,
+  deviceStatus?: string,
+  healthStatus?: string,
   neighbors: MeshApNeighbor[]
 }
 

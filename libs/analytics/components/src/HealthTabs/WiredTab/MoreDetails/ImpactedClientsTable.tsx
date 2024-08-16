@@ -6,12 +6,13 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                  from '@acx-ui/config'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult,
-  showTopResult, topImpactedSwitchesLimit,
+  showTopNTableResult, topImpactedSwitchesLimit,
   ImpactedClientsResult, ImpactedClients
 } from './config'
 import {
@@ -81,7 +82,10 @@ export const ImpactedClientsTable = ({
       dataIndex: 'switchName',
       key: 'switchName',
       render: (_, row: ImpactedClients) => (
-        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/reports`}>
+        <TenantLink
+          to={`/devices/switch/${row.switchId?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
+            ? 'reports': 'overview'}`
+          }>
           {row.switchName}
         </TenantLink>
       ),
@@ -94,8 +98,16 @@ export const ImpactedClientsTable = ({
       dataIndex: 'localPortName',
       key: 'localPortName',
       fixed: 'left',
+      width: 160,
       disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Switch MAC' }),
+      dataIndex: 'switchId',
+      key: 'switchId',
+      show: false,
+      sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Name' }),
@@ -113,6 +125,7 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
       key: 'devicePort',
+      width: 160,
       show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
@@ -148,13 +161,13 @@ export const ImpactedClientsTable = ({
             other {Uplink Ports}
           }`}
           values={{
-            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
           }}
         />
       </ChartTitle>
-      <Table
+      <Table<ImpactedClients>
         settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={data}

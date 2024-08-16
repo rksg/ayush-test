@@ -2,7 +2,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -59,6 +58,7 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const mspServices = require('@acx-ui/msp/services')
 const services = require('@acx-ui/rc/services')
 
 describe('Privilege Group Table', () => {
@@ -75,19 +75,20 @@ describe('Privilege Group Table', () => {
       mockReqAdminsData()
       return { data: fakedPrivilegeGroupList }
     })
+    mspServices.useGetMspProfileQuery = jest.fn().mockImplementation(() => {
+      return {
+        data: {
+          msp_external_id: '0000A000001234YFFOO',
+          msp_label: 'msp-eleu',
+          msp_tenant_name: ''
+        }
+      }
+    })
 
     mockServer.use(
       rest.delete(
         AdministrationUrlsInfo.deletePrivilegeGroup.url,
         (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        MspUrlsInfo.getMspProfile.url,
-        (req, res, ctx) => res(ctx.json({
-          msp_external_id: '0000A000001234YFFOO',
-          msp_label: 'msp-eleu',
-          msp_tenant_name: ''
-        }))
       )
     )
   })
@@ -216,7 +217,7 @@ describe('Privilege Group Table', () => {
       pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/edit/99bb7b958a5544898cd0b938fa800a5a`,
       hash: '',
       search: ''
-    }, { state: true })
+    }, { state: { isOnboardedMsp: true, name: 'wi-fi privilege group' } })
   })
   it('should clone selected row', async () => {
     render(
@@ -244,7 +245,7 @@ describe('Privilege Group Table', () => {
       pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/clone/99bb7b958a5544898cd0b938fa800a5a`,
       hash: '',
       search: ''
-    }, { state: true })
+    }, { state: { isOnboardedMsp: true } })
   })
 })
 

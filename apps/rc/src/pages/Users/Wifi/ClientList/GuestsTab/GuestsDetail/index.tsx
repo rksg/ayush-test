@@ -6,7 +6,6 @@ import { Divider,
   Space } from 'antd'
 import { useIntl } from 'react-intl'
 
-
 import {
   Dropdown,
   CaretDownSolidIcon,
@@ -19,9 +18,10 @@ import {
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
 import {
+  ClientInfo,
+  getClientHealthClass,
   getOsTypeIcon,
   Guest,
-  GuestClient,
   GuestStatusEnum,
   GuestTypesEnum,
   transformDisplayText
@@ -29,11 +29,13 @@ import {
 import { TenantLink, useParams }                 from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload, WifiScopes } from '@acx-ui/types'
 import { hasRoles, hasPermission }               from '@acx-ui/user'
+import { noDataDisplay }                         from '@acx-ui/utils'
 
 import {
   renderAllowedNetwork,
   renderExpires,
-  renderGuestType
+  renderGuestType,
+  operationRoles
 } from '../GuestsTable'
 import * as UI from '../styledComponents'
 
@@ -44,6 +46,19 @@ interface GuestDetailsDrawerProps {
   currentGuest: Guest,
   triggerClose: () => void,
   queryPayload?: RequestPayload
+}
+
+export const isEnabledGeneratePassword = (guestDetail:Guest) => {
+  // self-sign in & host approval should to use forget password
+  const isValidType = guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
+  guestDetail.guestType !== GuestTypesEnum.HOST_GUEST
+  const isOnline = guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1
+  const isOffline = guestDetail.guestStatus === GuestStatusEnum.OFFLINE &&
+  guestDetail.wifiNetworkId
+  const isUnlimit = guestDetail.maxNumberOfClients === -1 &&
+  guestDetail.guestStatus !== GuestStatusEnum.EXPIRED &&
+  (!guestDetail.emailAddress || !guestDetail.mobilePhoneNumber)
+  return Boolean(isValidType && (isOnline || isOffline || isUnlimit))
 }
 
 export const defaultGuestPayload = {
@@ -110,7 +125,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
     return value ? (value === -1) ? $t({ defaultMessage: 'Unlimited' }) : value : '0'
   }
 
-  const columns: TableProps<GuestClient>['columns'] = [
+  const columns: TableProps<ClientInfo>['columns'] = [
     {
       key: 'osType',
       title: $t({ defaultMessage: 'OS' }),
@@ -121,59 +136,70 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         return <UI.IconContainer>{getOsTypeIcon(osType as string)}</UI.IconContainer>
       }
     }, {
-      key: 'healthCheckStatus',
+      key: 'signalStatus.health',
       title: $t({ defaultMessage: 'Health' }),
-      dataIndex: 'healthCheckStatus',
+      dataIndex: 'signalStatus.health',
       sorter: false,
       defaultSortOrder: 'ascend',
       render: (_, row) => {
-        return row.healthCheckStatus ? <ClientHealthIcon type={row.healthCheckStatus} /> : '--'
+        const health = row.signalStatus?.health
+        const healthClass = getClientHealthClass(health)
+        return health ? <ClientHealthIcon type={healthClass} /> : '--'
       }
     }, {
-      key: 'clientMac',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Address' }),
-      dataIndex: 'clientMac',
+      dataIndex: 'macAddress',
       sorter: false,
       defaultSortOrder: 'ascend'
     }, {
-      key: 'venueId',
+      key: 'venueInformation.id',
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      dataIndex: 'venueId',
+      dataIndex: 'venueInformation.name',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-          {row.venueName}
+      render: function (_, { venueInformation }) {
+        return <TenantLink to={`/venues/${venueInformation.id}/venue-details/overview`}>
+          {venueInformation.name}
         </TenantLink>
       }
     }, {
-      key: 'serialNumber',
+      key: 'apInformation.serialNumber',
       title: $t({ defaultMessage: 'AP' }),
-      dataIndex: 'serialNumber',
+      dataIndex: 'apInformation.name',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return <TenantLink to={`/devices/wifi/${row.serialNumber}/details/overview`}>
-          {row.apName}
+      render: function (_, { apInformation }) {
+        return <TenantLink to={`/devices/wifi/${apInformation.serialNumber}/details/overview`}>
+          {apInformation.name}
         </TenantLink>
       }
     }, {
-      key: 'switchSerialNumber',
+      key: 'switchInformation.serialNumber',
       title: $t({ defaultMessage: 'Switch' }),
-      dataIndex: 'switchSerialNumber',
+      dataIndex: 'switchInformation.name',
       sorter: false,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
-        return transformDisplayText(row.switchSerialNumber)
+      render: function (_, { switchInformation }) {
+        const { name, id, serialNumber } = switchInformation || {}
+        if (!name) {
+          return noDataDisplay
+        } else {
+          return (
+            <TenantLink to={`/devices/switch/${id}/${serialNumber}/details/overview`}>
+              {name}
+            </TenantLink>
+          )
+        }
       }
     }, {
-      key: 'connectSince',
+      key: 'connectedTime',
       title: $t({ defaultMessage: 'Time Connected' }),
-      dataIndex: 'connectSince',
+      dataIndex: 'connectedTime',
       sorter: false,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return formatter(DateFormatEnum.DateTimeFormat)(row.connectSince)
+        return row.connectedTimeString
       }
     }
   ]
@@ -212,31 +238,30 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label: $t({ defaultMessage: 'Generate New Password' }),
         key: 'generatePassword',
         scopeKey: [WifiScopes.UPDATE],
-        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Download Information' }),
         key: 'downloadInformation',
         scopeKey: [WifiScopes.READ],
-        allowedOperationUrl: 'POST:/guestUsers'
+        roles: operationRoles
       },
       {
         label: $t({ defaultMessage: 'Disable Guest' }),
         key: 'disableGuest',
         scopeKey: [WifiScopes.UPDATE],
-        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Enable Guest' }),
         key: 'enableGuest',
         scopeKey: [WifiScopes.UPDATE],
-        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Delete Guest' }),
         key: 'deleteGuest',
         scopeKey: [WifiScopes.DELETE],
-        allowedOperationUrl: 'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }].filter((item) => {
-        if (!hasRoles([RolesEnum.GUEST_MANAGER]) &&
-        !hasPermission({ scopes: item.scopeKey, allowedOperations: item.allowedOperationUrl })){
+        if (!hasPermission({ scopes: item.scopeKey, roles: item.roles })) {
           return false
         }
         if (item.key === 'enableGuest' &&
@@ -251,11 +276,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         }
 
         if (item.key === 'generatePassword') {
-          return guestDetail.guestType !== GuestTypesEnum.SELF_SIGN_IN &&
-          guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
-        ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
-        ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.wifiNetworkId ))
+          return isEnabledGeneratePassword(guestDetail)
         }
 
         return true
@@ -327,7 +348,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
     {guestDetail.clients &&
       <Table
-        rowKey='clientMac'
+        rowKey='macAddress'
         columns={columns}
         dataSource={guestDetail.clients}
       />}

@@ -50,9 +50,7 @@ describe('CaptiveNetworkForm-Cloudpath', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(wisprRes))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
-        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
-      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
     )
   })
 

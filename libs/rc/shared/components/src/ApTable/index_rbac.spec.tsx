@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { get }                                                                         from '@acx-ui/config'
 import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { apApi, networkApi, venueApi }                                                 from '@acx-ui/rc/services'
 import { APGeneralFixtures, CommonUrlsInfo, DHCPUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
@@ -60,11 +61,20 @@ jest.mock('../ImportFileDrawer', () => ({
       }}>Cancel</button>
     </div>
 }))
-
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 const mockFileSaver = jest.fn()
 jest.mock('file-saver', () => (data: string, fileName: string) => {
   mockFileSaver(data, fileName)
 })
+
+jest.mock('./useFilters', () => ({
+  useFilters: () => ({
+    filters: {},
+    isNetworkLoading: false
+  })
+}))
 
 describe('Aps', () => {
   afterEach(() => {
@@ -73,6 +83,7 @@ describe('Aps', () => {
   })
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
+    jest.mocked(get).mockReturnValue('false')
     act(() => {
       store.dispatch(apApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
@@ -312,7 +323,7 @@ describe('Aps', () => {
 
     mockServer.use(
       rest.post(
-        WifiRbacUrlsInfo.addAp.url,
+        WifiRbacUrlsInfo.addApWithDefaultGroup.url,
         (req, res, ctx) => {
           importAPSpy()
           return res(ctx.status(202))

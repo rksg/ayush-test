@@ -21,12 +21,11 @@ import {
 import {
   AssociatedResource,
   EditPropertyConfigMessages,
+  hasCloudpathAccess,
   PropertyConfigs,
   PropertyConfigStatus,
   ResidentPortalType
 } from '@acx-ui/rc/utils'
-import { WifiScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
 import { TemplateSelector }                       from '../TemplateSelector'
@@ -319,14 +318,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
     setResidentPortalModalVisible(false)
   }
 
-  const hasRolePermission = () => {
-    return propertyNotFound
-      ? hasPermission({ scopes: [WifiScopes.CREATE] })
-      : isPropertyEnable
-        ? hasPermission({ scopes: [WifiScopes.UPDATE] })
-        : hasPermission({ scopes: [WifiScopes.DELETE] })
-  }
-
   return (
     <Loader
       states={[
@@ -344,9 +335,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
             checked={isPropertyEnable}
             onChange={handlePropertyEnable}
             style={{ marginLeft: '20px' }}
-            disabled={propertyNotFound
-              ? !hasPermission({ scopes: [WifiScopes.CREATE] })
-              : !hasPermission({ scopes: [WifiScopes.DELETE] })}
+            disabled={!hasCloudpathAccess()}
           />
           <Tooltip.Question
             title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
@@ -361,7 +350,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         onCancel={onCancel}
         buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
         initialValues={initialValues}
-        disabled={!hasRolePermission()}
+        disabled={!hasCloudpathAccess()}
       >
         <StepsForm.StepForm>
           {isPropertyEnable &&

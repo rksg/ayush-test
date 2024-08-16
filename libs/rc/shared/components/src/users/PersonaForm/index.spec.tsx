@@ -30,27 +30,19 @@ const mockPersonaGroup = {
 }
 
 describe('Persona Form', () => {
-  const metaRequestSpy = jest.fn()
   it('should add devices', async () => {
     mockServer.use(
       rest.post(
-        ClientUrlsInfo.getClientList.url,
+        ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json({ data: [{
           osType: 'Windows',
-          clientMac: '28:B3:71:28:78:50',
+          macAddress: '28:B3:71:28:78:50',
           ipAddress: '10.206.1.93',
-          Username: '24418cc316df',
+          username: '24418cc316df',
           hostname: 'LP-XXXXX',
-          venueName: 'UI-TEST-VENUE',
-          apName: 'UI team ONLY'
+          venueInformation: { name: 'UI-TEST-VENUE' },
+          apInformation: { name: 'UI team ONLY' }
         }] }))
-      ),
-      rest.post(
-        ClientUrlsInfo.getClientMeta.url,
-        (req, res, ctx) => {
-          metaRequestSpy()
-          return res(ctx.json({ data: [] }))
-        }
       )
     )
     render(
@@ -63,8 +55,6 @@ describe('Persona Form', () => {
         />
       </Provider>
     )
-
-    await waitFor(() => expect(metaRequestSpy).toHaveBeenCalledTimes(1))
 
     const mode = await screen.findByRole('radio', { name: /Add manually/i })
     fireEvent.click(mode)
