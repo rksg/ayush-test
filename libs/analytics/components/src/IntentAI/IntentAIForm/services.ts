@@ -6,8 +6,8 @@ import { kpiDelta }                       from '@acx-ui/analytics/utils'
 import { intentAIApi, recommendationApi } from '@acx-ui/store'
 import { NetworkPath }                    from '@acx-ui/utils'
 
-import { codes }                             from '../config'
-import { IntentAIFormDto, IntentAIFormSpec } from '../types'
+import { codes }           from '../config'
+import { IntentAIFormDto } from '../types'
 
 import { StateType, StatusTrail, IntentKPIConfig } from './config'
 import { handleScheduledAt }                       from './utils'
@@ -47,6 +47,10 @@ export type IntentDetails = {
 
 export type EnhancedIntent = IntentDetails & {
   appliedOnce: boolean;
+  settings: {
+    date: Moment | null,
+    hour: number | null
+}
 }
 
 export function extractBeforeAfter (value: IntentKpi[string]) {
@@ -57,10 +61,25 @@ export function extractBeforeAfter (value: IntentKpi[string]) {
 }
 
 export const transformDetailsResponse = (details: IntentDetails) => {
+  let date: Moment | null = null
+  let hour: number | null = null
+  if (details.metadata) {
+    if (details.metadata.scheduledAt) {
+      const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
+      date=localScheduledAt
+      hour=roundUpTimeToNearest15Minutes(
+        localScheduledAt.format('HH:mm:ss')
+      )
+    }
+  }
   return {
     ...details,
     appliedOnce: Boolean(details.statusTrail.find(t => t.status === 'applied')),
-    preferences: details.preferences || undefined // prevent _.merge({ x: {} }, { x: null })
+    preferences: details.preferences || undefined, // prevent _.merge({ x: {} }, { x: null })
+    settings: {
+      date: date,
+      hour: hour
+    }
   } as EnhancedIntent
 }
 
@@ -114,7 +133,7 @@ function decimalToTimeString (decimalHours: number) {
 }
 
 export function specToDto (
-  rec: IntentAIFormSpec
+  rec: EnhancedIntent
 ): IntentAIFormDto | undefined {
   let dto = {
     id: rec.id,
@@ -142,7 +161,7 @@ export function specToDto (
   // let hour: number | null = 7.5
 
   dto = {
-    ...dto,
+    ...rec,
     settings: {
       date: date,
       hour: hour

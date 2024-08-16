@@ -148,7 +148,7 @@ export function AIDrivenRRM () {
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
-        initialValues={specToDto(_.merge(defaultValue, details))}
+        initialValues={_.merge(defaultValue, details)}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}

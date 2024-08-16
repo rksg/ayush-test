@@ -8,9 +8,9 @@ import { useIntl, defineMessage }     from 'react-intl'
 import { StepsForm, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 import { get }                                             from '@acx-ui/config'
 
-import { TradeOff }        from '../../../TradeOff'
-import { IntentAIFormDto } from '../../types'
-import * as UI             from '../styledComponents'
+import { TradeOff }       from '../../../TradeOff'
+import { EnhancedIntent } from '../services'
+import * as UI            from '../styledComponents'
 
 import { steps } from '.'
 
@@ -24,7 +24,7 @@ export enum IntentPriority {
 
 export function Priority () {
   const { $t } = useIntl()
-  const { initialValues } = useStepFormContext<IntentAIFormDto>()
+  const { initialValues } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const { sliceValue } = initialValues!
   const priority = [

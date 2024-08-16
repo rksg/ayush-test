@@ -10,6 +10,7 @@ import { defineMessage, useIntl }            from 'react-intl'
 import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
 import { IntentAIFormDto } from '../../types'
+import { EnhancedIntent }  from '../services'
 import * as UI             from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
@@ -24,7 +25,7 @@ function DateTimeSetting ({
   scheduledTime
 }: DateTimeSettingProps) {
   const initialTime = useRef(scheduledTime)
-  const { form } = useStepFormContext<IntentAIFormDto>()
+  const { form } = useStepFormContext<EnhancedIntent>()
   const disabledDate : RangePickerProps['disabledDate']= (current) => {
     return current && current < dayjs().startOf('day')
   }

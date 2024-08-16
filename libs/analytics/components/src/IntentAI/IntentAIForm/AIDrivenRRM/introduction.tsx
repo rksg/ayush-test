@@ -9,15 +9,15 @@ import { get }                                                           from '@
 import { DateFormatEnum, formatter }                                     from '@acx-ui/formatter'
 import { LinkDocumentIcon, LinkVideoIcon }                               from '@acx-ui/icons'
 
-import { IntentAIFormDto } from '../../types'
-import { states }          from '../config'
-import * as UI             from '../styledComponents'
+import { states }         from '../config'
+import { EnhancedIntent } from '../services'
+import * as UI            from '../styledComponents'
 
 import { steps, crrmIntent, statusTrailMsgs } from '.'
 
 export function Introduction () {
   const { $t } = useIntl()
-  const { initialValues } = useStepFormContext<IntentAIFormDto>()
+  const { initialValues } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const { status, sliceValue, updatedAt } = initialValues!
 
