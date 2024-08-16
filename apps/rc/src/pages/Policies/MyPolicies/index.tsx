@@ -20,7 +20,6 @@ import {
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
   useSyslogPolicyListQuery,
-  useGetLbsServerProfileListQuery,
   useGetSoftGreViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
