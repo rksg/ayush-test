@@ -62,6 +62,9 @@ export function extractBeforeAfter (value: IntentKpi[string]) {
 export const transformDetailsResponse = (details: IntentDetails) => {
   let date: Moment | null = null
   let hour: number | null = null
+
+  // date= moment('2024-07-13')
+  // hour= 1.75
   if (details.metadata) {
     if (details.metadata.scheduledAt) {
       const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
@@ -73,6 +76,7 @@ export const transformDetailsResponse = (details: IntentDetails) => {
   }
   return {
     ...details,
+    // status: 'new',
     appliedOnce: Boolean(details.statusTrail.find(t => t.status === 'applied')),
     preferences: details.preferences || undefined, // prevent _.merge({ x: {} }, { x: null })
     settings: {
@@ -131,51 +135,16 @@ function decimalToTimeString (decimalHours: number) {
   return time.format('HH:mm:ss')
 }
 
-// export function specToDto (
-//   rec: EnhancedIntent
-// ): IntentAIFormDto | undefined {
-//   let dto = {
-//     id: rec.id,
-//     // status: rec.status,
-//     status: 'new',
-//     preferences: rec.preferences,
-//     sliceValue: rec.sliceValue,
-//     updatedAt: rec.updatedAt
-//   } as IntentAIFormDto
-
-//   let date: Moment | null = null
-//   let hour: number | null = null
-//   if (rec.metadata) {
-//     if (rec.metadata.scheduledAt) {
-//       const localScheduledAt =moment.utc(rec.metadata.scheduledAt).local()
-//       date=localScheduledAt
-//       hour=roundUpTimeToNearest15Minutes(
-//         localScheduledAt.format('HH:mm:ss')
-//       )
-//     }
-//   }
-
-
-//   // let date: Moment | null = moment()
-//   // let hour: number | null = 7.5
-
-//   dto = {
-//     ...rec,
-//     settings: {
-//       date: date,
-//       hour: hour
-//     }
-//   } as IntentAIFormDto
-//   return dto
-// }
-
-export function processDtoToPayload (dto: EnhancedIntent) {
-  console.log(dto)
-  const newDate = dto!.settings!.date!.format('YYYY-MM-DD')
-  const newHour = decimalToTimeString(dto.settings!.hour!)
+export function getLocalScheduledAt (date: Moment, hour: number) {
+  const newDate = date.format('YYYY-MM-DD')
+  const newHour = decimalToTimeString(hour)
   const offset = moment().format('Z')
-  const scheduledAt = moment.parseZone(
-    `${newDate}T${newHour}.000${offset}`).utc().toISOString()
+  return `${newDate}T${newHour}.000${offset}`
+}
+
+export function processDtoToPayload (dto: EnhancedIntent) { // this function handle tz diff, checking of etl buffer done in summary
+  const localScheduledAt = getLocalScheduledAt(dto!.settings!.date!, dto.settings!.hour!)
+  const scheduledAt = moment.parseZone(localScheduledAt).utc().toISOString()
   const newScheduledAt = handleScheduledAt(scheduledAt)
   console.log(newScheduledAt)
   return {

@@ -119,3 +119,16 @@ export function Settings () {
 
 Settings.fieldName = name
 Settings.label = label
+Settings.FieldSummary = function ScheduleFieldSummary () {
+  const { $t } = useIntl()
+  // when this  summary is rendered, it have yet to transform the timings yet
+
+  return <Form.Item
+    name={name}
+    label={$t(label)}
+    // children={<StepsForm.FieldSummary<> convert={(value) => {
+    //   switch (value!.frequency) {
+
+    // }}/>}
+  />
+}

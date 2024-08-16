@@ -12,6 +12,7 @@ import { EnhancedIntent, getGraphKPIs }      from '../services'
 import * as UI                               from '../styledComponents'
 
 import { IntentPriority, Priority } from './priority'
+import { Settings }                 from './settings'
 
 import { steps, crrmIntent, isOptimized, kpis } from '.'
 
@@ -55,6 +56,9 @@ export function Summary () {
           <StepsForm.Subtitle>
             {$t({ defaultMessage: 'Schedule' })}
           </StepsForm.Subtitle>
+          <StepsForm.TextContent>
+            <Settings.FieldSummary />
+          </StepsForm.TextContent>
         </>
         : $t(dataRetentionText)
       }
