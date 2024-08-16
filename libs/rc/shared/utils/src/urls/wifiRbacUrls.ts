@@ -45,6 +45,21 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
     newApi: true
   },
+  updateVenueApGroups: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
+  },
+  activateVenueApGroup: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
+  deactivateVenueApGroup: {
+    method: 'delete',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
   getNetworkVenue: {
     method: 'get',
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',
@@ -69,7 +84,11 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     //url: '/networkActivations/:networkVenueId?quickAck=true',
     url: '/venues/:venueId/wifiNetworks/:networkId/settings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   // no longer supported after v1, use updateNetworkVenue loop as replacement
