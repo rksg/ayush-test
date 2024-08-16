@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { softGreApi }                                                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo, PolicyOperation, PolicyType, SoftGreUrls, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, PolicyOperation, PolicyType, SoftGreUrls, TunnelProfileUrls, getPolicyDetailsLink, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink }                                                                   from '@acx-ui/react-router-dom'
 import { Provider, store }                                                                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within }                                                        from '@acx-ui/test-utils'
 
-import { mockSoftGreTable, mockVenueNamMap } from '../__tests__/fixtures'
+import { mockSoftGreTable, mockVenueNamMap, mockedVenueQueryData } from '../__tests__/fixtures'
 
 import SoftGreTable from '.'
 
@@ -27,10 +27,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })
 const policyId = '0d89c0f5596c4689900fb7f5f53a0859'
+const params = {
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+}
 describe('SoftGreTable', () => {
-  const params = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
-  }
+  
   const mockedSingleDeleteApi = jest.fn()
 
   beforeEach(async () => {
@@ -50,12 +51,27 @@ describe('SoftGreTable', () => {
         }
       ),
       rest.post(
-        CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueNamMap))
-      )
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueQueryData))
+      ),
     )
   })
 
+  it('should render Breadcrumb and SoftGreTable correctly', async () => {
+    render(
+      <Provider>
+        <SoftGreTable />
+      </Provider>,
+      { route: { params, path: tablePath } }
+    )
+    expect(await screen.findByText('Network Control')).toBeVisible()
+    expect(screen.getByRole('link', {
+      name: 'Policies & Profiles'
+    })).toBeVisible()
+
+    const row = await screen.findAllByRole('row', { name: /softGreProfileName/i })
+    expect(row.length).toBe(3)
+  })
   it('should navigate to SoftGreDetailView Page correctly', async () => {
     render(
       <Provider>
@@ -63,7 +79,7 @@ describe('SoftGreTable', () => {
       </Provider>,
       { route: { params, path: tablePath } }
     )
-
+    
     const softGreProfileLink = await screen.findByRole('link',
       { name: 'softGreProfileName1' }) as HTMLAnchorElement
     expect(softGreProfileLink.href).toContain(`/${params.tenantId}/t/${getPolicyDetailsLink({

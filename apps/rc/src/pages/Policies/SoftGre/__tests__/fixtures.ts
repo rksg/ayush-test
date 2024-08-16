@@ -1,8 +1,6 @@
 import { MtuTypeEnum, SoftGreViewData  } from '@acx-ui/rc/utils'
 
 export const mockSoftGreTable = {
-  data: {
-    fields: null,
     totalCount: 2,
     page: 1,
     data: [
@@ -55,13 +53,8 @@ export const mockSoftGreTable = {
         ]
       }
     ] as SoftGreViewData[]
-  },
-  isFetching: false,
-  handleTableChange: () => {},
-  handleFilterChange: () => {}
-}
-
-// [x]softGreTable.spec.tsx
+  }
+  
 export const mockVenueNamMap = {
   fields: ['name', 'id'],
   totalCount: 3,
@@ -72,7 +65,6 @@ export const mockVenueNamMap = {
   ]
 }
 
-// [x] detailView, [x]detailContent [x]venueDetail(omit activationnInformations)
 export const mockSoftGreDetail = {
   id: '0d89c0f5596c4689900fb7f5f53a0859',
   name: 'softGreProfileName1',
@@ -105,7 +97,6 @@ export const mockSoftGreDetail = {
   ]
 }
 
-
 export const mockedNetworkQueryData = {
   fields: [
     'name',
@@ -133,7 +124,6 @@ export const mockedNetworkQueryData = {
   ]
 }
 
-
 export const mockedVenueQueryData = {
   fields: [
     'name',
@@ -155,3 +145,4 @@ export const mockedVenueQueryData = {
     }
   ]
 }
+
