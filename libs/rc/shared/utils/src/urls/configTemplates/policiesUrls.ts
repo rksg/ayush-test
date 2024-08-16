@@ -620,7 +620,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteVlanPoolPolicyRbac: {
     method: 'delete',
-    url: '/templates/vlanPoolProfiles/:policyId',
+    url: '/templates/vlanPoolProfiles/:templateId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
