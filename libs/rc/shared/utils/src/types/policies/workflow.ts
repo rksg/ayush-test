@@ -104,11 +104,11 @@ export interface WorkflowActionDefinition {
   name: string,
   category: string
   isSplit: boolean,
+  localizationDescriptionId: string,
+  hasEndActions: boolean,
 
   actionType: ActionType,
   description?: string,
   terminationType?: 'NONE' | 'OPTIONAL' | 'REQUIRED',
   dependencyType?: 'NONE' | 'ONE_OF' | 'ALL',
 }
-
-export interface WorkflowActionDef extends Pick<WorkflowActionDefinition, 'id' | 'actionType'> {}

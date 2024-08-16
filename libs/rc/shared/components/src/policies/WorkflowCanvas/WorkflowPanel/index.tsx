@@ -1,4 +1,3 @@
-import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { useEffect, useState } from 'react'
 
@@ -57,8 +56,8 @@ const useRequiredDependency = () => {
   const [data, setData] = useState<Partial<Record<ActionType, RequiredDependency>>>({})
 
   useEffect(() => {
-    if (isLoading || !actionDefsData) return
-    const gen = async () => {
+    if (isLoading || !actionDefsData?.content) return
+    const fetchAllRequiredDependencies = async () => {
       for (const def of actionDefsData?.content) {
         if (def.dependencyType === 'NONE') {
           requiredDependency[def.actionType] = {
@@ -81,7 +80,7 @@ const useRequiredDependency = () => {
       }
     }
 
-    gen().then(() => {
+    fetchAllRequiredDependencies().then(() => {
       setData(requiredDependency)
     })
 
@@ -104,39 +103,31 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const [nodes, setNodes] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
 
-  const requiredDependency = useRequiredDependency()
-  // console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
+  const { requiredDependency } = useRequiredDependency()
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
     params: { policyId, pageSize: '1000', page: '0', sort: 'id,ASC' }
   }, { skip: !policyId })
 
-  const { data: actionDefsData, ...defQuery } = useGetWorkflowActionDefinitionListQuery({
-    params: { pageSize: '1000', page: '0', sort: 'name,asc' }
-  })
 
   useEffect(() => {
-    if (!actionDefsData || !stepsData ) return
-
-    const defsMap = actionDefsData?.content
-      ?.reduce((map, def) => map.set(def.id, def.actionType), new Map())
+    if (!stepsData?.content ) return
 
     const {
       nodes: inputNodes,
       edges: inputEdges
-    } = toReactFlowData(stepsData?.content, defsMap)
+    } = toReactFlowData(stepsData?.content)
     setNodes(inputNodes)
     setEdges(inputEdges)
-  }, [stepsData, actionDefsData])
+  }, [stepsData])
 
-  const onClickAction = (definitionId: string, type: ActionType) => {
-    stepDrawerState.onOpen(false, definitionId, type)
+  const onClickAction = (type: ActionType) => {
+    stepDrawerState.onOpen(false, type)
   }
 
   return (
     <Loader states={[
-      stepQuery,
-      defQuery
+      stepQuery
     ]}>
       <WorkflowCanvas
         mode={mode}
@@ -151,17 +142,16 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
           onClose={actionDrawerState.onClose}
           onClickAction={onClickAction}
           existingActionTypes={nodeState.existingDependencies}
-          relationshipMap={requiredDependency.requiredDependency}
+          relationshipMap={requiredDependency}
         />
       }
       {
-        (stepDrawerState.visible && stepDrawerState?.selectedActionDef?.actionType) &&
+        (stepDrawerState.visible && stepDrawerState?.selectedActionType) &&
         <StepDrawer
           isEdit={stepDrawerState.isEdit}
           workflowId={policyId}
           actionId={nodeState.interactedNode?.data?.enrollmentActionId}
-          actionType={stepDrawerState.selectedActionDef.actionType}
-          selectedActionDef={stepDrawerState.selectedActionDef}
+          actionType={stepDrawerState.selectedActionType}
           visible={stepDrawerState.visible}
           onClose={() => {
             stepDrawerState.onClose()

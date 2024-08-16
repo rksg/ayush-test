@@ -30,7 +30,6 @@ import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
   venuesResponse,
-  venueListResponse,
   networksResponse,
   successResponse,
   networkDeepResponse,
@@ -64,7 +63,9 @@ describe('NetworkForm', () => {
       store.dispatch(venueApi.util.resetApiState())
     })
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => (
+      ff !== Features.RBAC_SERVICE_POLICY_TOGGLE && ff !== Features.WIFI_RBAC_API
+    ))
 
     networkDeepResponse.name = 'open network test'
     mockServer.use(
@@ -74,14 +75,10 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.post(CommonUrlsInfo.getVenuesList.url,
-        (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,

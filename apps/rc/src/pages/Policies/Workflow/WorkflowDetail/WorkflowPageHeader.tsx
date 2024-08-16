@@ -1,17 +1,18 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader }          from '@acx-ui/components'
-import { EnrollmentPortalDesignModal } from '@acx-ui/rc/components'
-import { useGetWorkflowByIdQuery }     from '@acx-ui/rc/services'
+import { Button, PageHeader }                                              from '@acx-ui/components'
+import { WorkflowActionPreviewModal }                                      from '@acx-ui/rc/components'
+import { useGetWorkflowByIdQuery, useLazySearchWorkflowsVersionListQuery } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
   getPolicyDetailsLink,
   PolicyOperation,
   PolicyType,
-  getPolicyRoutePath
+  getPolicyRoutePath,
+  Workflow
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -25,6 +26,31 @@ function WorkflowPageHeader () {
   const { policyId } = useParams()
   const { data } = useGetWorkflowByIdQuery({ params: { id: policyId } })
   const [visible, setVisible] = useState(false)
+  const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
+  const [published, setPublished] = useState<Workflow>()
+
+  const fetchVersionHistory = async (id: string) => {
+    try {
+      const result = await searchVersionedWorkflows(
+        { params: { excludeContent: 'false' }, payload: [id] }
+      ).unwrap()
+      if (result) {
+        result.forEach(v => {
+          if (v.publishedDetails?.status === 'PUBLISHED') {
+            setPublished(v)
+          }
+        })
+      }
+    } catch (e) {}
+  }
+
+  useEffect(() => {
+    if (!data) return
+    fetchVersionHistory(data.id!!)
+  }, [data])
+
+
+
   return (
     <>
       <PageHeader
@@ -55,10 +81,9 @@ function WorkflowPageHeader () {
           ])}
       />
       {visible &&
-       <EnrollmentPortalDesignModal
-         id={policyId!}
-         onFinish={()=>setVisible(false)}/>
-      }
+      <WorkflowActionPreviewModal
+        workflowId={published?.id ?? data?.id!!}
+        onClose={()=>setVisible(false)}/>}
     </>
   )
 }

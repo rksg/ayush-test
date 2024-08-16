@@ -78,9 +78,8 @@ export function WorkflowForm (props: WorkflowFormProps) {
   }
 
   const handleUpdateWorkflow = async (originData:Workflow|undefined,
-    submittedData: Partial<Workflow>, shouldPublish: boolean ) => {
+    submittedData: Partial<Workflow>, shouldPublish: boolean, callback?: ()=>void ) => {
     if (originData === undefined) return
-
     const workflowKeys = ['name'] as const
     const patchData = {}
 
@@ -94,8 +93,11 @@ export function WorkflowForm (props: WorkflowFormProps) {
       Object.assign(patchData, { publishedDetails: { status: 'PUBLISHED' as PublishStatus } } )
     }
 
-    if (Object.keys(patchData).length === 0) return
-    return updateWorkflow({ params: { id: originData.id }, payload: patchData }).unwrap()
+    if (Object.keys(patchData).length === 0) {
+      callback?.()
+    }
+    return updateWorkflow({ params: { id: originData.id },
+      payload: patchData as Workflow, callback: callback }).unwrap()
   }
 
 
@@ -142,8 +144,8 @@ export function WorkflowForm (props: WorkflowFormProps) {
 
   const onSubmit = async (shouldPublish: boolean) => {
     try {
-      await handleUpdateWorkflow(originData.current, form.getFieldsValue(), shouldPublish)
-      navigate(linkToPolicies, { replace: true })
+      // eslint-disable-next-line max-len
+      await handleUpdateWorkflow(originData.current, form.getFieldsValue(), shouldPublish, () => navigate(linkToPolicies, { replace: true }))
     } catch (error) {}
   }
 

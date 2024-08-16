@@ -1,5 +1,8 @@
 
 // Mapping the enum based on enrollment-actions definitions:
+
+import { MessageDescriptor } from 'react-intl'
+
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
 import { UIConfiguration } from './workflow'
 
@@ -46,20 +49,22 @@ export interface DpskAction extends ActionBase {
 }
 
 export interface DataPromptAction extends ActionBase {
-  backButtonText: string, // max = 20
-  continueButtonText: string, // max = 20
-
-  title?: string,
-  messageHtml?: string,
+  title?: string, // max:100
+  displayTitle: boolean,
+  messageHtml?: string, // max = 1000
+  displayMessageHtml: boolean
   variables?: DataPromptVariable[],
-
   bottomLabel?: string // max = 1000
+  backButtonText: string,
+  continueButtonText: string,
+  displayBackButton: boolean,
+  displayContinueButton: boolean
 }
 
 export interface DataPromptVariable {
-  label: string,
+  type: string,
+  label?: string | MessageDescriptor,
   regex?: string,
-  name?: string
 }
 
 export interface DisplayMessageAction extends ActionBase {

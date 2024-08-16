@@ -90,7 +90,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
   const [value, setValue] = useState<UIConfiguration>(DefaultUIConfiguration)
   const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
     ['logo', value.uiStyleSchema.logoImageFileName !== undefined],
-    ['poweredBy', value.disablePoweredBy],
+    ['poweredBy', !value.disablePoweredBy],
     ['wifi4eu', value.wifi4EUNetworkId !== undefined]
   ]))
 
@@ -157,53 +157,51 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
       data.logoImage = undefined
       data.uiStyleSchema = {
         ...data.uiStyleSchema,
-        logoRatio: 1,
         logoImageFileName: undefined
       }
-    } else {
-      if (data.logoImage === original.current.logoImage) {
-        data.logoImage = undefined
-      } else if (!data.logoImage && original.current.uiStyleSchema.logoImageFileName) {
-        data.uiStyleSchema = {
-          ...data.uiStyleSchema,
-          logoRatio: 1,
-          logoImageFileName: undefined
-        }
+    } else if (!data.logoImage && original.current.uiStyleSchema.logoImageFileName) {
+      data.uiStyleSchema = {
+        ...data.uiStyleSchema,
+        logoImageFileName: undefined
       }
-    }
-
-    if (data.backgroundImage === original.current.backgroundImage) {
-      data.backgroundImage = undefined
-    } else if (!data.backgroundImage && original.current.backgroundImage) {
-      data.backgroundImage = undefined
     }
 
     if (!display.get('poweredBy')) {
       data.disablePoweredBy = true
     }
-    data.welcomeName = 'name'
-    data.welcomeTitle ='welcome'
-    data.uiColorSchema = {
-      ...data.uiColorSchema
-    }
-    const formData = new FormData()
-    // eslint-disable-next-line max-len
-    const blob = new Blob([JSON.stringify(_.omit(data, ['backgroundImage', 'logoImage']))], { type: 'application/json' })
-    formData.append('uiConfiguration', blob )
-    if (data.backgroundImage && data.backgroundImageFile) {
-      formData.append('backgroundImage', data.backgroundImageFile)
-    }
 
-    if (data.logoImage && data.logoFile) {
-      formData.append('logoImage', data.logoFile)
-    }
+    if (!_.isEqual(data, original.current)) {
+      if (data.backgroundImage === original.current.backgroundImage) {
+        data.backgroundImage = undefined
+      } else if (!data.backgroundImage && original.current.backgroundImage) {
+        data.backgroundImage = undefined
+      }
 
-    await updateConfiguration({ params: { id: id }, payload: formData })
-      .unwrap()
-      .catch((e)=> {
-        // eslint-disable-next-line no-console
-        console.log(e)
-      })
+      if (data.logoImage === original.current.logoImage) {
+        data.logoImage = undefined
+      }
+
+      data.welcomeName = 'name'
+      data.welcomeTitle ='welcome'
+      const formData = new FormData()
+      // eslint-disable-next-line max-len
+      const blob = new Blob([JSON.stringify(_.omit(data, ['backgroundImage', 'logoImage']))], { type: 'application/json' })
+      formData.append('uiConfiguration', blob )
+      if (data.backgroundImage && data.backgroundImageFile) {
+        formData.append('backgroundImage', data.backgroundImageFile)
+      }
+
+      if (data.logoImage && data.logoFile) {
+        formData.append('logoImage', data.logoFile)
+      }
+
+      await updateConfiguration({ params: { id: id }, payload: formData })
+        .unwrap()
+        .catch((e)=> {
+          // eslint-disable-next-line no-console
+          console.log(e)
+        })
+    }
   }
 
   useImperativeHandle(ref, ()=> ({
@@ -215,7 +213,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
 
   return (
     <Loader states={[configurationQuery]}>
-      <div style={{ width: '100%', minWidth: 1100, height: '100%' }}>
+      <div style={{ width: '100%', minWidth: 1100, height: '100%', minHeight: 800 }}>
         <UI.PopoverStyle />
         <UI.LayoutHeader>
           <div style={{ display: 'flex' }}>
@@ -276,7 +274,9 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
             </div>
           </div>
         </UI.LayoutHeader>
-        <UI.LayoutContent id={'democontent'} $isPreview={true}>
+        <UI.LayoutContent id={'democontent'}
+          $isPreview={true}
+          style={{ minHeight: 750, height: '100%' }}>
           {<BackgroundContent
             $isDesk={marked.desk}
             value={value}
@@ -298,7 +298,7 @@ const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
               backgroundColor: value.uiColorSchema.backgroundColor }}>
             <div>
               <UI.LayoutViewContent
-                isbg={value?.backgroundImage !== undefined ? true : false}
+                $isbg={value?.backgroundImage !== undefined ? true : false}
                 style={display.get('logo') || display.get('wifi4eu') ? {}: { paddingTop: '15' }}
               >
                 {display.get('wifi4eu') && <UI.Img src={Wifi4eu} alt={'Wifi4eu'} height={120}/> }

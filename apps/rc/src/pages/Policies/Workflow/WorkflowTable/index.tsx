@@ -8,7 +8,7 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import { EnrollmentPortalLink }            from '@acx-ui/rc/components'
+import { EnrollmentPortalLink, WorkflowActionPreviewModal } from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowMutation,
   useSearchInProgressWorkflowListQuery,
@@ -48,7 +48,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
             to={getPolicyDetailsLink({
               type: PolicyType.WORKFLOW,
               oper: PolicyOperation.DETAIL,
-              policyId: row.id!,
+              policyId: row.id!!,
               activeTab: WorkflowDetailsTabKey.OVERVIEW
             })}
           >{row.name}</TenantLink>
@@ -105,6 +105,8 @@ export default function WorkflowTable () {
   ] = useDeleteWorkflowMutation()
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const settingsId = 'workflow-table'
+  const [previewVisible, setPreviewVisible] = useState(false)
+  const [previewId, setPreviewId] = useState<string>()
   const tableQuery = useTableQuery( {
     useQuery: useSearchInProgressWorkflowListQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
@@ -125,27 +127,10 @@ export default function WorkflowTable () {
         })
       }
     } catch (e) {}
-
-
-    // for (let i = 0; i < workflows.length; i++) {
-    //   if (workflowMap.has(workflows[i].id!!)) continue
-    //   // try {
-    //   //   const result = await searchVersionedWorkflows(
-    //   //     { params: { excludeContent: 'false' }, payload:  }
-    //   //   ).unwrap()
-    //   //   if (result) {
-    //   //     result.data.forEach(v => {
-    //   //       if (v.publishedDetails?.status === 'PUBLISHED') {
-    //   //         setWorkflowMap(map => new Map(map.set(workflows[i].id!!, v)))
-    //   //       }
-    //   //     })
-    //   //   }
-    //   // } catch (e) {}
-    // }
   }
 
   useEffect(() => {
-    if (tableQuery.isLoading) return
+    if (tableQuery.isLoading || tableQuery.isFetching) return
     fetchVersionHistory(tableQuery.data?.data ?? [])
   }, [tableQuery.data])
 
@@ -159,17 +144,9 @@ export default function WorkflowTable () {
           pathname: `${tenantBasePath.pathname}/` + getPolicyDetailsLink({
             type: PolicyType.WORKFLOW,
             oper: PolicyOperation.EDIT,
-            policyId: data.id!!
+            policyId: data.id !!
           })
         })
-        clearSelection()
-      },
-      disabled: (selectedItems => selectedItems.length > 1)
-    },
-    {
-      label: $t({ defaultMessage: 'Clone' }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      onClick: ([data], clearSelection) => {
         clearSelection()
       },
       disabled: (selectedItems => selectedItems.length > 1)
@@ -178,6 +155,8 @@ export default function WorkflowTable () {
       label: $t({ defaultMessage: 'Preview' }),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: ([data], clearSelection) => {
+        setPreviewId(workflowMap.get(data.id!)?.id ?? data.id)
+        setPreviewVisible(true)
         clearSelection()
       },
       disabled: (selectedItems => selectedItems.length > 1)
@@ -185,9 +164,15 @@ export default function WorkflowTable () {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([data], clearSelection) => {
-        const id = data.id
+        const id = workflowMap.get(data.id!)?.id ?? data.id
         deleteWorkflow({ params: { id } })
           .unwrap()
+          .then(()=> {
+            setWorkflowMap(map => {
+              map.delete(data.id!!)
+              return new Map(map)
+            })
+          })
           .catch((e) => {
             // eslint-disable-next-line no-console
             console.log(e)
@@ -250,6 +235,13 @@ export default function WorkflowTable () {
         rowKey='id'
         rowSelection={{ type: 'checkbox' }}
       />
+      {previewVisible && previewId &&
+      <WorkflowActionPreviewModal
+        workflowId={previewId}
+        onClose={()=>{
+          setPreviewVisible(false)
+          setPreviewId(undefined)
+        }}/>}
     </Loader>
   )
 }

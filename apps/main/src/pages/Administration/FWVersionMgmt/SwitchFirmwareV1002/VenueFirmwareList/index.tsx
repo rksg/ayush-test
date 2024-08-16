@@ -146,7 +146,7 @@ export function VenueFirmwareList () {
       searchable: true,
       width: 120,
       defaultSortOrder: 'ascend',
-      render: function (_, row) {
+      render: function (_, row, __, highlightFn) {
 
         const modelGroups = [
           SwitchFirmwareModelGroup.ICX71,
@@ -162,7 +162,8 @@ export function VenueFirmwareList () {
         const hasOutdatedVersion = modelGroups.some(modelGroup => {
           const recommendedVersion = getRecommendedVersion(modelGroup)
           const currentVersion = row.versions.find(v => v.modelGroup === modelGroup)?.version
-          return compareSwitchVersion(recommendedVersion, currentVersion)
+          const commpareSwitchVersionRes = compareSwitchVersion(recommendedVersion, currentVersion)
+          return commpareSwitchVersionRes > 0
         })
 
         const outdatedVersionSign = hasOutdatedVersion ?
@@ -177,7 +178,7 @@ export function VenueFirmwareList () {
           children={<div style={{
             overflow: 'hidden',
             textOverflow: 'ellipsis'
-          }}>{row.venueName} </div>}
+          }}>{highlightFn(row.venueName)} </div>}
           title={row.venueName}></Tooltip>{outdatedVersionSign}</div>
       }
     },

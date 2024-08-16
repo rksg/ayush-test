@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react'
 import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useVenuesListQuery }                 from '@acx-ui/rc/services'
-import { TenantLink }                         from '@acx-ui/react-router-dom'
+import { Loader, Table, TableProps, Tooltip }   from '@acx-ui/components'
+import { useVenuesListQuery }                   from '@acx-ui/rc/services'
+import { sortProp, defaultSort, arraySizeSort } from '@acx-ui/rc/utils'
+import { TenantLink }                           from '@acx-ui/react-router-dom'
 
 interface VenueTableProps {
   sdLanVenueData: VenueTableDataType[]
@@ -57,7 +58,7 @@ export const VenueTable = (props: VenueTableProps) => {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
-      sorter: true,
+      sorter: { compare: sortProp('venueName', defaultSort) },
       defaultSortOrder: 'ascend',
       render: (_, row) => (
         <TenantLink
@@ -69,24 +70,22 @@ export const VenueTable = (props: VenueTableProps) => {
     {
       title: $t({ defaultMessage: 'Address' }),
       key: 'address',
-      dataIndex: 'address'
+      dataIndex: 'address',
+      sorter: { compare: sortProp('address', defaultSort) }
+
     },
     {
       title: $t({ defaultMessage: 'APs' }),
       key: 'apCount',
       dataIndex: 'apCount',
-      render: (_, row) => (
-        <TenantLink
-          to={`/venues/${row.venueId}/venue-details/devices`}
-          children={row.apCount ?? 0}
-        />
-      )
+      sorter: { compare: sortProp('apCount', defaultSort) },
+      render: (_, row) => (row.apCount ?? 0)
     },
     {
       title: $t({ defaultMessage: 'Selected Networks' }),
       key: 'selectedNetworks',
       dataIndex: 'selectedNetworks',
-      sorter: true,
+      sorter: { compare: sortProp('selectedNetworks', arraySizeSort) },
       render: (_, row) => (
         row.selectedNetworks?.length ?
           <Tooltip

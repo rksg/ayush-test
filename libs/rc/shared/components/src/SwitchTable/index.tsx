@@ -15,7 +15,8 @@ import {
   PasswordInput,
   showToast
 } from '@acx-ui/components'
-import { showActionModal, Tooltip } from '@acx-ui/components'
+import { showActionModal, Tooltip }  from '@acx-ui/components'
+import type { TableHighlightFnArgs } from '@acx-ui/components'
 import {
   Features,
   useIsSplitOn
@@ -138,9 +139,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
-  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
-    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = `assets/templates/${isHospitality}switches_import_template.csv`
 
   useImperativeHandle(ref, () => ({
@@ -172,7 +171,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
 
   const { exportCsv, disabled } = useExportCsv<SwitchRow>(tableQuery as TableQuery<SwitchRow, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
-  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
 
@@ -263,15 +261,16 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterValueNullable: false,
       filterable: filterableKeys ? switchFilterOptions : false,
-      render: (_, row) => {
+      render: (_, row, __, highlightFn) => {
+        const name = getSwitchName(row)
         return row.isFirstLevel ?
           <TenantLink
             to={`/devices/switch/${row.id || row.serialNumber}/${row.serialNumber}/details/overview`}
             style={{ lineHeight: '20px' }}
           >
-            {getSwitchName(row)}
+            {searchable ? highlightFn(name) : name}
           </TenantLink> :
-          `${getSwitchName(row)} (${getStackMemberStatus(row.unitStatus || '', true)})`
+          `${name} (${getStackMemberStatus(row.unitStatus || '', true)})`
       }
     }, {
       key: 'deviceStatus',
@@ -291,11 +290,12 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       searchable: searchable,
       groupable: filterableKeys && getGroupableConfig()?.modelGroupableOptions,
-      render: (_, row) => {
-        return row.model || getSwitchModel(row.serialNumber)
+      render: (_, row, __, highlightFn) => {
+        const model = row.model || getSwitchModel(row.serialNumber) || ''
+        return searchable ? highlightFn(model) : model
       }
     },
-    ...(enableSwitchAdminPassword ? [{
+    {
       key: 'syncedAdminPassword',
       title: $t({ defaultMessage: 'Admin Password' }),
       dataIndex: 'syncedAdminPassword',
@@ -312,27 +312,37 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
           </div>
           : noDataDisplay
       }
-    }] : []),
+    },
     {
       key: 'activeSerial',
       title: $t({ defaultMessage: 'Serial Number' }),
       dataIndex: 'activeSerial',
       sorter: true,
       show: !!showAllColumns,
-      searchable: searchable
+      searchable: searchable,
+      render: (_, { activeSerial }, __, highlightFn) => {
+        return searchable ? highlightFn(activeSerial) : activeSerial
+      }
     }, {
       key: 'switchMac',
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'switchMac',
       sorter: true,
       searchable: searchable,
-      render: (_, { switchMac }) => typeof switchMac === 'string' && switchMac.toUpperCase()
+      render: (_, { switchMac }, __, highlightFn) => {
+        const mac = (typeof switchMac === 'string' && switchMac.toUpperCase()) || ''
+        return searchable ? highlightFn(mac) : mac
+      }
     }, {
       key: 'ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'ipAddress',
       sorter: true,
-      searchable: searchable
+      searchable: searchable,
+      render: (_: string, { ipAddress }, __, highlightFn) => {
+        const address = ipAddress || ''
+        return searchable ? highlightFn(address) : address
+      }
     }, {
       key: 'firmware',
       title: $t({ defaultMessage: 'Firmware' }),
@@ -376,8 +386,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       searchable: searchable,
       show: false,
-      render: (_: React.ReactNode, row: SwitchRow) => {
-        return row.isFirstLevel ? row.extIp || noDataDisplay : ''
+      render: (_: React.ReactNode, row: SwitchRow, __: number, highlightFn: TableHighlightFnArgs) => {
+        const extIp = row.isFirstLevel ? row.extIp || noDataDisplay : ''
+        return searchable ? highlightFn(extIp) : extIp
       }
     }] : [])
     ] as TableProps<SwitchRow>['columns']
@@ -448,7 +459,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       navigate(`${linkToEditSwitch.pathname}/stack/${selectedRows?.[0]?.venueId}/${selectedRows.map(row => row.serialNumber).join('_')}/add`)
     }
   },
-  ...(enableSwitchAdminPassword ? [{
+  {
     label: $t({ defaultMessage: 'Match Admin Password to <VenueSingular></VenueSingular>' }),
     scopeKey: [SwitchScopes.UPDATE],
     disabled: (rows: SwitchRow[]) => {
@@ -461,7 +472,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       }).length === 0
     },
     onClick: handleClickMatchPassword
-  }] : []),
+  },
   {
     label: $t({ defaultMessage: 'Retry firmware update' }),
     scopeKey: [SwitchScopes.UPDATE],

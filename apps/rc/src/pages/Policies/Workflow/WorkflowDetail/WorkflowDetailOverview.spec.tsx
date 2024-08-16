@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 import { Path } from 'react-router-dom'
 
-import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { NewAPITableResult, Workflow, WorkflowUrls }                      from '@acx-ui/rc/utils'
-import { Provider }                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                            from '@acx-ui/feature-toggle'
+import { ActionType, NewAPITableResult, StepType, Workflow, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                     from '@acx-ui/test-utils'
 
 import { WorkflowDetailOverview } from './WorkflowDetailOverview'
 
@@ -20,18 +20,15 @@ const publishedWorkflows: Workflow[] = [{
     status: 'PUBLISHED',
     version: 1,
     publishedDate: '2024-02-01'
-  }
+  },
+  links: [
+    {
+      rel: 'enrollmentPortal',
+      href: '/url'
+    }
+  ]
 }]
 
-
-const list: NewAPITableResult<Workflow> = {
-  content: workflows,
-  paging: {
-    page: 0,
-    pageSize: 10,
-    totalCount: 1
-  }
-}
 
 const publishedList: NewAPITableResult<Workflow> = {
   content: publishedWorkflows,
@@ -42,9 +39,55 @@ const publishedList: NewAPITableResult<Workflow> = {
   }
 }
 
+const actionDefinitions: WorkflowActionDefinition[] = [
+  {
+    actionType: ActionType.AUP,
+    id: 'actionId1',
+    name: 'action1',
+    category: '',
+    isSplit: false
+  },
+  {
+    actionType: ActionType.DATA_PROMPT,
+    id: 'actionId2',
+    name: 'action2',
+    category: '',
+    isSplit: false
+  },
+  {
+    actionType: ActionType.DISPLAY_MESSAGE,
+    id: 'actionId3',
+    name: 'action3',
+    category: '',
+    isSplit: false
+  }
+]
 
-const paginationPattern = '?size=:pageSize&page=:page&sort=:sort&excludeContent=:excludeContent'
-export const replacePagination = (url: string) => url.replace(paginationPattern, '')
+const steps: WorkflowStep[] = [
+  {
+    id: 'id1',
+    type: StepType.Basic,
+    enrollmentActionId: 'id',
+    actionDefinitionId: 'actionId1',
+    actionType: ActionType.AUP
+  },
+  {
+    id: 'id2',
+    type: StepType.Basic,
+    enrollmentActionId: '',
+    actionDefinitionId: 'actionId2',
+    actionType: ActionType.DATA_PROMPT
+  },
+  {
+    id: 'id1',
+    type: StepType.Basic,
+    enrollmentActionId: '',
+    actionDefinitionId: 'actionId3',
+    actionType: ActionType.DISPLAY_MESSAGE
+  }
+]
+
+
 // eslint-disable-next-line max-len
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -60,26 +103,44 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 
-describe('WorkflowOverviewTab', () => {
-  const searchInProgressWorkflowApi = jest.fn()
+describe('WorkflowDetailOverview', () => {
+  const getWorkflowApi = jest.fn()
   const searchVersionApi = jest.fn()
   jest.mocked(useIsSplitOn).mockReturnValue(true)
-  const params = { tenantId: 't1', policyId: workflows[0].id, activeTab: 'overview' }
+  const params = { tenantId: 't1', policyId: workflows[0].id }
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.post(
-        replacePagination(WorkflowUrls.searchInProgressWorkflows.url),
+      rest.get(
+        WorkflowUrls.getWorkflowDetail.url,
         (req, res, ctx) => {
-          searchInProgressWorkflowApi()
-          return res(ctx.json(list))
+          getWorkflowApi()
+          return res(ctx.json(workflows[0]))
         }
       ),
       rest.post(
-        replacePagination(WorkflowUrls.searchWorkflows.url),
+        WorkflowUrls.searchWorkflows.url.split('?')[0],
         (req, res, ctx) => {
           searchVersionApi()
-          res(ctx.json(publishedList))
+          return res(ctx.json(publishedList))
+        }
+      ),
+      rest.get(
+        WorkflowUrls.getWorkflowActionDefinitions.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json({ content: actionDefinitions }))
+        }
+      ),
+      rest.get(
+        WorkflowUrls.getWorkflowStepsById.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json({ content: steps }))
+        }
+      ),
+      rest.get(
+        WorkflowUrls.getWorkflowActionRequiredDefinitions.url,
+        (req, res, ctx) => {
+          return res(ctx.json({ content: actionDefinitions }))
         }
       )
     )
@@ -91,13 +152,9 @@ describe('WorkflowOverviewTab', () => {
     </Provider>, {
       route: { params }
     })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByText('URL')
     await screen.findByText('Status')
-    await screen.findByText('Active Version')
-    await screen.findByText('Identity Group')
-    await screen.findByText('Preview')
-    await waitFor(() => expect(searchInProgressWorkflowApi).toHaveBeenCalled())
+    await waitFor(() => expect(getWorkflowApi).toHaveBeenCalled())
     await waitFor(() => expect(searchVersionApi).toHaveBeenCalled())
   })
 })

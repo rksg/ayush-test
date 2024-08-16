@@ -78,7 +78,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
-        setSelectedRows(rows.filter(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)))
+        setSelectedRows(rows)
         setUpdateNowVisible(true)
       }
     },
@@ -87,7 +87,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
-        setSelectedRows(rows.filter(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)))
+        setSelectedRows(rows)
         setChangeScheduleVisible(true)
       }
     },
@@ -210,7 +210,7 @@ function useColumns () {
           ? getApNextScheduleTpl({ nextSchedules: schedules })
           : <Tooltip
             // eslint-disable-next-line max-len
-            title={<UI.ScheduleTooltipText>{getNextSchedulesTooltip(schedules)}</UI.ScheduleTooltipText>}
+            title={getNextSchedulesTooltip(schedules)}
             overlayStyle={{ minWidth: '285px' }}
           // eslint-disable-next-line max-len
           ><UI.WithTooltip>{getApNextScheduleTpl({ nextSchedules: schedules })}</UI.WithTooltip></Tooltip>

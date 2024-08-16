@@ -6,10 +6,8 @@ import { useParams } from 'react-router-dom'
 import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                          from '@acx-ui/components'
 import { caTypeShortLabel }                                                                                                                       from '@acx-ui/rc/components'
 import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath }                                          from '@acx-ui/rc/utils'
+import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess }                      from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                             from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                                                                             from '@acx-ui/types'
-import { filterByAccess }                                                                                                                         from '@acx-ui/user'
 import { noDataDisplay }                                                                                                                          from '@acx-ui/utils'
 
 import CertificateTable from '../CertificateTemplateTable/CertificateTable'
@@ -99,18 +97,17 @@ export default function CertificateTemplateDetail () {
             oper: PolicyOperation.LIST
           })
         }]}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() &&[
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.CERTIFICATE_TEMPLATE,
               oper: PolicyOperation.EDIT,
               policyId: params.policyId!
             })}
-            scopeKey={[WifiScopes.UPDATE]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <Section>
         <SummaryCard data={summaryInfo} />

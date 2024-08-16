@@ -1,9 +1,9 @@
-import { transform } from 'lodash'
+import { isNil, transform } from 'lodash'
 
-import { Features }                                                                            from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                          from '@acx-ui/react-router-dom'
-import { getIntl }                                                                             from '@acx-ui/utils'
+import { Features }                                                                                                 from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                               from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                  from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -62,4 +62,46 @@ export const edgeSdLanFormRequestPreProcess = (formData: EdgeMvSdLanFormModel) =
   }
 
   return payload
+}
+
+export const isGuestTunnelUtilized = (
+  venueSdLanInfo?: EdgeMvSdLanViewData,
+  networkId?: string,
+  networkVenueId?: string
+): boolean => {
+  return !!venueSdLanInfo?.isGuestTunnelEnabled
+        && Boolean(venueSdLanInfo?.tunneledGuestWlans?.find(wlan =>
+          wlan.networkId === networkId && wlan.venueId === networkVenueId))
+        && !!networkId && !!networkVenueId
+}
+
+export const isSdLanGuestUtilizedOnDiffVenue = (
+  venueSdLanInfo: EdgeMvSdLanViewData,
+  networkId: string,
+  networkVenueId: string
+): boolean => {
+  if (venueSdLanInfo?.isGuestTunnelEnabled) {
+
+    // should reference `tunneledWlans` since we need to consider both activate and deactivate scenario
+    const otherGuestTunnel = venueSdLanInfo?.tunneledWlans?.find(wlan =>
+      wlan.venueId !== networkVenueId && wlan.networkId === networkId)
+
+    return Boolean(otherGuestTunnel)
+  }
+  return false
+}
+
+// eslint-disable-next-line max-len
+export const tansformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Record<string, EdgeMvSdLanViewData> => {
+  const resultMap:Record<string, EdgeMvSdLanViewData> = {}
+
+  sdLans?.forEach(sdlan => {
+    sdlan.tunneledWlans?.forEach(wlan => {
+      if (isNil(resultMap[wlan.venueId])) {
+        resultMap[wlan.venueId] = sdlan
+      }
+    })
+  })
+
+  return resultMap
 }

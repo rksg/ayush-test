@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 
 import { Checkbox, Form, Input } from 'antd'
 import useFormInstance           from 'antd/es/form/hooks/useFormInstance'
@@ -134,7 +134,6 @@ export function DpskSettings () {
           <Form.Item
             name={'identityId'}
             label={$t({ defaultMessage: 'Choose Identity' })}
-            // initialValue={null}
           >
             <Select options={[
               {
@@ -157,7 +156,9 @@ export function DpskSettings () {
               label={$t({ defaultMessage: 'Supported Networks' })}
             >
               {networkList.map((network, index) => (
-                <b key={index}>{network}</b>
+                <Fragment key={index}>
+                  <b>{network}</b><br/>
+                </Fragment>
               ))}
             </Form.Item>
           </div>

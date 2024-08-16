@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 
 import { Col, Form, Row } from 'antd'
 import { useIntl }        from 'react-intl'
 import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                                            from '@acx-ui/components'
-import { EyeOpenSolid }                                                                                      from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                                        from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
+import { Button, Drawer, Loader }                                                         from '@acx-ui/components'
+import { EyeOpenSolid }                                                                   from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery }                                                     from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, GenericActionData, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
 import { WorkflowActionPreviewModal } from '../../../WorkflowActionPreviewModal'
 
-import { useWorkflowStepActions } from './useWorkflowStepAction'
+import { useWorkflowStepActions } from './useWorkflowStepActions'
 import {
   AupSettings,
   DataPromptSettings,
@@ -28,13 +28,11 @@ export interface StepDrawerProps {
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-  selectedActionDef?: WorkflowActionDef
 
   priorNode?: NodeProps
 }
 
-// FIXME: Use enum to make sure new ActionType to be added into this Map
-const actionFormMap = {
+const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
@@ -80,12 +78,9 @@ export default function StepDrawer (props: StepDrawerProps) {
         const data = { ...result.data, actionId }
         setActionData(data)
         formInstance.setFieldsValue(data)
-        setTimeout(() => {
-          formInstance.setFieldsValue(data)
-        }, 0)
       })
 
-  }, [actionId, isEdit])
+  }, [formInstance, actionId, isEdit])
 
   const onSave = async () => {
     try {
@@ -94,16 +89,10 @@ export default function StepDrawer (props: StepDrawerProps) {
       isEdit
         ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
         : await new Promise((resolve) => {
-          let stuckTimer: NodeJS.Timeout
-
           const onFinish = () => {
             onClose()
-            clearTimeout(stuckTimer)
             resolve(true)
           }
-
-          // to prevent the save button stuck in progress
-          stuckTimer = setTimeout(onFinish, 10_000)
 
           createStep(policyId, actionType, formContent, priorNode?.id, onFinish)
         })
@@ -127,7 +116,6 @@ export default function StepDrawer (props: StepDrawerProps) {
         >
           <Form<GenericActionData>
             disabled={isActionError}
-            preserve={false}
             form={formInstance}
             layout={'vertical'}
           >

@@ -64,6 +64,10 @@ describe('Firmware Venues Table Per AP Model', () => {
       rest.post(
         FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
         (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.startFirmwareBatchOperation.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '12345', response: { batchId: 'BAT12345' } }))
       )
     )
   })
@@ -94,7 +98,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     const updateFn = jest.fn()
 
     mockServer.use(
-      rest.patch(
+      rest.put(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           updateFn(req.body)
@@ -147,7 +151,7 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     const changeScheduleFn = jest.fn()
     mockServer.use(
-      rest.post(
+      rest.put(
         FirmwareUrlsInfo.updateVenueSchedulesPerApModel.url,
         (req, res, ctx) => {
           changeScheduleFn(req.body)
@@ -199,8 +203,10 @@ describe('Firmware Venues Table Per AP Model', () => {
     await userEvent.click(saveButton)
 
     await waitFor(() => expect(changeScheduleFn).toHaveBeenCalledWith({
-      date: '2024-04-21',
-      time: '00:00-02:00',
+      schedule: {
+        date: '2024-04-21',
+        time: '00:00-02:00'
+      },
       targetFirmwares: [
         {
           apModel: 'R720',
@@ -263,7 +269,7 @@ describe('Firmware Venues Table Per AP Model', () => {
     const downgradeFn = jest.fn()
 
     mockServer.use(
-      rest.patch(
+      rest.put(
         FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
         (req, res, ctx) => {
           downgradeFn(req.body)
@@ -304,6 +310,46 @@ describe('Firmware Venues Table Per AP Model', () => {
     await waitFor(() => expect(downgradeFn).toHaveBeenCalled())
 
     await userEvent.click(await within(dialog).findByRole('button', { name: /Close/i }))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  // eslint-disable-next-line max-len
+  it('should display the correct AP firmware in the UpdateFirmwarePerApModelIndividualPanel', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareListPerApModel />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // eslint-disable-next-line max-len
+    const targetVenueName1 = mockedFirmwareVenuesPerApModel.data.find(d => d.name === 'venueBBB-upToDate')?.name ?? ''
+    const targetRow1 = screen.getByRole('row', { name: new RegExp(targetVenueName1) })
+    await userEvent.click(within(targetRow1).getByRole('checkbox'))
+
+    // eslint-disable-next-line max-len
+    const targetVenueName2 = mockedFirmwareVenuesPerApModel.data.find(d => d.name === 'venueCCC-oneApOutdated')?.name ?? ''
+    const targetRow2 = screen.getByRole('row', { name: new RegExp(targetVenueName2) })
+    await userEvent.click(within(targetRow2).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    const updateFirmwareByApModelToggle = within(dialog).getByRole('switch')
+    await userEvent.click(updateFirmwareByApModelToggle)
+
+    // eslint-disable-next-line max-len
+    const availableFWCheckbox = await within(dialog).findByRole('checkbox', { name: /Show APs with available firmware only/ })
+    await userEvent.click(availableFWCheckbox)
+
+    const targetElement = await within(dialog).findByText(/The AP is up-to-date/i)
+    expect(within(targetElement).getByText('7.0.0.104.1242')).toBeVisible()
+
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
