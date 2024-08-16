@@ -229,10 +229,10 @@ describe('Network More settings - Network Control Tab', () => {
       </Provider>,
       { route: { params } })
 
+    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
     const view = screen.getByText(/client isolation/i)
     await userEvent.click(within(view).getByRole('switch'))
 
-    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
     expect(screen.getByText(/automatic support for vrrp\/hsrp/i)).toBeVisible()
     expect(screen.getByText(/client isolation allowlist by venue/i)).toBeVisible()
   })
