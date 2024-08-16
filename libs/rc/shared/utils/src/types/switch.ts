@@ -51,7 +51,7 @@ export const SwitchPortViewModelQueryFields = [
   'switchSerial',
   'switchUnitId',
   'syncedSwitchConfig',
-  'tag',
+  'tags',
   'unTaggedVlan',
   'unitState',
   'unitStatus',

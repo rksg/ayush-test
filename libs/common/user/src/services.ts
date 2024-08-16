@@ -190,7 +190,7 @@ export const UserRbacUrlsInfo = {
   },
   toggleBetaStatus: {
     method: 'PATCH',
-    url: '/tenants/settings',
+    url: '/tenants/self',
     oldUrl: '/tenants/betaStatus/:enable',
     newApi: true
   }

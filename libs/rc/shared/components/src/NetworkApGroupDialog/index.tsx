@@ -24,7 +24,7 @@ import {
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetEnhancedVlanPoolPolicyTemplateListQuery,
-  useGetNetworkApGroupsV2Query,
+  useGetNetworkApGroupsV2Query, useGetRbacNetworkApGroupsQuery,
   useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -116,21 +116,34 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const defaultVlanString = getVlanString(wlan?.advancedCustomization?.vlanPool, wlan?.vlanId)
 
-  const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
-    payload: [{
-      networkId: networkVenue?.networkId,
-      venueId: networkVenue?.venueId,
-      isTemplate: isTemplate
-    }],
-    enableRbac: isWifiRbacEnabled
-  }, { skip: !networkVenue || !wlan })
+  const networkApGroupsQuery = useNetworkApGroupsInstance()
+
+  function useNetworkApGroupsInstance () {
+    const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: isWifiRbacEnabled || !networkVenue || !wlan })
+
+    const networkApGroupsRbacQuery = useGetRbacNetworkApGroupsQuery({ params: { tenantId },
+      payload: [{
+        networkId: networkVenue?.networkId,
+        venueId: networkVenue?.venueId,
+        isTemplate: isTemplate
+      }]
+    }, { skip: !isWifiRbacEnabled || !networkVenue || !wlan })
+
+    return isWifiRbacEnabled ? networkApGroupsRbacQuery : networkApGroupsV2Query
+  }
 
   const formInitData = useMemo(() => {
     // if specific AP groups were selected or the  All APs option is disabled,
     // then the "select specific AP group" option should be selected
     const isAllAps = networkVenue?.isAllApGroups !== false && !isDisableAllAPs(networkVenue?.apGroups)
 
-    const networkApGroupsData = networkApGroupsV2Query.data
+    const networkApGroupsData = networkApGroupsQuery.data
 
     let allApGroups: NetworkApGroupWithSelected[] = (networkApGroupsData || [])
       .map(nv => nv.apGroups || []).flat()
@@ -146,7 +159,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       apgroups: allApGroups,
       apTags: []
     }
-  }, [networkVenue, networkApGroupsV2Query.data])
+  }, [networkVenue, networkApGroupsQuery.data])
 
   useEffect(() => {
     form.setFieldsValue(formInitData)
