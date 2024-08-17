@@ -112,13 +112,14 @@ export function AIDrivenRRM () {
     { id: codeQuery.data?.id!, kpis },
     { skip: !Boolean(codeQuery.data?.id) }
   )
+  console.log(detailsQuery)
   const details = detailsQuery.data!
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
     { text: $t({ defaultMessage: 'AI Analytics' }) },
     { text: $t({ defaultMessage: 'IntentAI' }), link: '/analytics/intentAI' }
   ]
-  const initialValues = {
+  const defaultValues = {
     ...mockedIntentCRRM,
     appliedOnce: true,
     preferences: {
@@ -128,7 +129,8 @@ export function AIDrivenRRM () {
       date: moment(),
       hour: 5.5
     }
-  }as EnhancedIntent
+  } as EnhancedIntent
+  console.log(defaultValues)
 
   const [submit] = useUpdatePreferenceScheduleMutation()
 
@@ -156,7 +158,7 @@ export function AIDrivenRRM () {
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
-        initialValues={initialValues}
+        initialValues={details ?? defaultValues}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}
