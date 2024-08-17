@@ -9,8 +9,9 @@ import { defineMessage, useIntl }            from 'react-intl'
 
 import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
-import { EnhancedIntent } from '../services'
-import * as UI            from '../styledComponents'
+import { EnhancedIntent, getLocalScheduledAt, SettingsType } from '../services'
+import * as UI                                               from '../styledComponents'
+import { handleScheduledAt }                                 from '../utils'
 
 import { IntentPriority, Priority } from './priority'
 
@@ -120,15 +121,12 @@ export function Settings () {
 Settings.fieldName = name
 Settings.label = label
 Settings.FieldSummary = function ScheduleFieldSummary () {
-  const { $t } = useIntl()
-  // when this  summary is rendered, it have yet to transform the timings yet
-
   return <Form.Item
     name={name}
-    label={$t(label)}
-    // children={<StepsForm.FieldSummary<> convert={(value) => {
-    //   switch (value!.frequency) {
-
-    // }}/>}
+    children={<StepsForm.FieldSummary<SettingsType> convert={(value) => {
+      const localScheduledAt = getLocalScheduledAt(value!.date!, value!.hour!)
+      const newScheduledAt = handleScheduledAt(localScheduledAt)
+      return newScheduledAt
+    }}/>}
   />
 }

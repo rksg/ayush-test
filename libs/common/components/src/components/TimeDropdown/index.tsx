@@ -24,6 +24,7 @@ function timeMap () {
   const timeMap = new Map<number, string>()
   const times = [...Array.from(Array(96), (_, i) => {
     const designator = moment().format('UTCZ').replace(':00', '')
+    console.log(designator)
     return moment().hour(0).minute(0).add(i * 15, 'minute').format(`HH:mm (${designator})`)
   })]
   times.forEach((time, i) => timeMap.set(i / 4, time))

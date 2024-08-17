@@ -46,10 +46,12 @@ export type IntentDetails = {
 
 export type EnhancedIntent = IntentDetails & {
   appliedOnce: boolean;
-  settings: {
-    date: Moment | null,
-    hour: number | null
+  settings: SettingsType
 }
+
+export type SettingsType = {
+  date: Moment | null,
+  hour: number | null
 }
 
 export function extractBeforeAfter (value: IntentKpi[string]) {
@@ -63,8 +65,8 @@ export const transformDetailsResponse = (details: IntentDetails) => {
   let date: Moment | null = null
   let hour: number | null = null
 
-  // date= moment('2024-07-13')
-  // hour= 1.75
+  date= moment('2024-07-13')
+  hour= 1.75
   if (details.metadata) {
     if (details.metadata.scheduledAt) {
       const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
@@ -138,20 +140,21 @@ function decimalToTimeString (decimalHours: number) {
 export function getLocalScheduledAt (date: Moment, hour: number) {
   const newDate = date.format('YYYY-MM-DD')
   const newHour = decimalToTimeString(hour)
-  const offset = moment().format('Z')
-  return `${newDate}T${newHour}.000${offset}`
+  const offset = moment().format('Z').replace(':00', '')
+  return `${newDate}T${newHour}${offset}`
 }
 
 export function processDtoToPayload (dto: EnhancedIntent) { // this function handle tz diff, checking of etl buffer done in summary
+  console.log(dto)
   const localScheduledAt = getLocalScheduledAt(dto!.settings!.date!, dto.settings!.hour!)
-  const scheduledAt = moment.parseZone(localScheduledAt).utc().toISOString()
-  const newScheduledAt = handleScheduledAt(scheduledAt)
-  console.log(newScheduledAt)
+  const newScheduledAt = handleScheduledAt(localScheduledAt)
+  const utcScheduledAt = moment.parseZone(newScheduledAt).utc().toISOString()
+  // const newScheduledAt = handleScheduledAt(scheduledAt)
   return {
     id: dto.id,
     status: dto.status,
     metadata: {
-      scheduledAt: newScheduledAt,
+      scheduledAt: utcScheduledAt,
       preferences: dto.preferences
     }
   }

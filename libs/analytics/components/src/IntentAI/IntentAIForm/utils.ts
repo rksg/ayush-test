@@ -5,8 +5,8 @@ export function handleScheduledAt (scheduledAt:string) {
   const futureThreshold = moment().add(15, 'minutes')
   if (originalScheduledAt.isBefore(futureThreshold)) {
     const newScheduledAt = originalScheduledAt.add(1, 'day')
-    return newScheduledAt.toISOString()
+    return newScheduledAt.format()
   } else {
-    return originalScheduledAt.toISOString()
+    return originalScheduledAt.format()
   }
 }
