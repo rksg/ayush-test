@@ -78,6 +78,8 @@ export function Settings () {
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
   const scheduleSettings = form.getFieldValue('settings')
+  console.log(scheduleSettings)
+  console.log('\n\n\n\n')
   const status = form.getFieldValue('status')
 
   const calendarText = defineMessage({ defaultMessage: `This recommendation will be

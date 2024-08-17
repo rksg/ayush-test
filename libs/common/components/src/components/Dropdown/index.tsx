@@ -113,6 +113,7 @@ export const DateTimeDropdown = (
         rules={[{ required: true, message: $t({ defaultMessage: 'Please enter date' }) }]}
         children={
           <DatePicker
+            data-testid='selectDate'
             style={{ width: '100%' }}
             picker='date'
             value={date}

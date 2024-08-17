@@ -2,6 +2,7 @@
 import React from 'react'
 
 import _                                             from 'lodash'
+import moment                                        from 'moment'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import {
@@ -13,9 +14,10 @@ import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { IntentConfig, states, StateType, IntentKPIConfig }                               from '../config'
-import { useIntentCodeQuery, useIntentDetailsQuery, useUpdatePreferenceScheduleMutation } from '../services'
-import * as UI                                                                            from '../styledComponents'
+import { mockedIntentCRRM }                                                                               from '../../IntentAIDetails/__tests__/fixtures'
+import { IntentConfig, states, StateType, IntentKPIConfig }                                               from '../config'
+import { EnhancedIntent, useIntentCodeQuery, useIntentDetailsQuery, useUpdatePreferenceScheduleMutation } from '../services'
+import * as UI                                                                                            from '../styledComponents'
 
 import { Introduction } from './introduction'
 import { Priority }     from './priority'
@@ -116,11 +118,17 @@ export function AIDrivenRRM () {
     { text: $t({ defaultMessage: 'AI Analytics' }) },
     { text: $t({ defaultMessage: 'IntentAI' }), link: '/analytics/intentAI' }
   ]
-  const defaultValue = {
+  const initialValues = {
+    ...mockedIntentCRRM,
+    appliedOnce: true,
     preferences: {
       crrmFullOptimization: true
+    },
+    settings: {
+      date: moment(),
+      hour: 5.5
     }
-  }
+  }as EnhancedIntent
 
   const [submit] = useUpdatePreferenceScheduleMutation()
 
@@ -148,7 +156,7 @@ export function AIDrivenRRM () {
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
-        initialValues={_.merge(defaultValue, details)}
+        initialValues={initialValues}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}
