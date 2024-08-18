@@ -136,7 +136,7 @@ const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
         <IncidentsCountBySeverities filters={filters} />
       </div>
       {isIntentAIEnabled
-        ? <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end', minHeight: '450px' }}>
+        ? <div style={{ gridArea: 'b2-start/ b2-start/ c2-end / c2-end' }}>
           <IntentAIWidget
             pathFilters={getFiltersForRecommendationWidgets(pathFilters)}
           />

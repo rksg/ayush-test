@@ -203,13 +203,13 @@ export function VarCustomers () {
       sorter: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return (!isSupportToMspDashboardAllowed) ? {
+        return (!isSupportToMspDashboardAllowed && isAdmin) ? {
           onClick: () => { delegateToMspEcPath(data.tenantId) }
         } : {}
       },
       render: function (_, { tenantName }, __, highlightFn) {
         return (
-          (!isSupportToMspDashboardAllowed)
+          (!isSupportToMspDashboardAllowed && isAdmin)
             ? <Link to=''>{highlightFn(tenantName)}</Link> : tenantName
         )
       }

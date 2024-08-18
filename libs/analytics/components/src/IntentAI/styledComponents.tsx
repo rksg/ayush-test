@@ -52,9 +52,3 @@ export const FeatureTooltip = styled.div`
     margin-bottom: 0.5em; 
   }
 `
-
-export const TooltipContent = createGlobalStyle`
-  .ant-tooltip-inner {
-    width: 345px;
-  }
-`

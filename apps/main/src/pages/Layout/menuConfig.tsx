@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                              from '@acx-ui/components'
+import { LayoutProps, ItemType }                    from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
@@ -33,9 +33,9 @@ import {
   getServiceListRoutePath,
   hasAdministratorTab
 } from '@acx-ui/rc/utils'
-import { RolesEnum }                       from '@acx-ui/types'
-import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { useTenantId }                     from '@acx-ui/utils'
+import { RolesEnum }                                      from '@acx-ui/types'
+import { hasRoles, useUserProfileContext, RaiPermission } from '@acx-ui/user'
+import { useTenantId }                                    from '@acx-ui/utils'
 
 export function useMenuConfig () {
   const { $t } = useIntl()
@@ -61,25 +61,35 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
 
+  type Item = ItemType & {
+    permission?: RaiPermission
+    hidden?: boolean
+    children?: Item[]
+  }
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
     uri: '/analytics/incidents',
     label: $t({ defaultMessage: 'Incidents' })
-  }, {
-    permission: 'READ_AI_DRIVEN_RRM',
-    uri: '/analytics/recommendations/crrm',
-    label: $t({ defaultMessage: 'AI-Driven RRM' })
-  }, {
-    permission: 'READ_AI_OPERATIONS',
-    uri: '/analytics/recommendations/aiOps',
-    label: $t({ defaultMessage: 'AI Operations' })
-  }, ...(isIntentAIEnabled ? [{
-    permission: 'READ_INTENT_AI',
-    uri: '/analytics/intentAI',
-    label: $t({ defaultMessage: 'IntentAI' }),
-    superscript: $t({ defaultMessage: 'beta' })
-  }] : [])
-  ]
+  }] as Item[]
+  if (isIntentAIEnabled) {
+    aiAnalyticsMenu.push({
+      permission: 'READ_INTENT_AI',
+      uri: '/analytics/intentAI',
+      label: $t({ defaultMessage: 'IntentAI' }),
+      superscript: $t({ defaultMessage: 'beta' })
+    })
+  } else {
+    aiAnalyticsMenu
+      .push({
+        permission: 'READ_AI_DRIVEN_RRM',
+        uri: '/analytics/recommendations/crrm',
+        label: $t({ defaultMessage: 'AI-Driven RRM' })
+      }, {
+        permission: 'READ_AI_OPERATIONS',
+        uri: '/analytics/recommendations/aiOps',
+        label: $t({ defaultMessage: 'AI Operations' })
+      })
+  }
 
   const config: LayoutProps['menuConfig'] = [
     {
