@@ -267,7 +267,9 @@ export function useIntentAIActions () {
       data: rows.map(item =>
         ({ id: item.id,
           displayStatus: item.displayStatus,
-          statusTrail: item.statusTrail
+          updatedAt: item.updatedAt,
+          statusTrail: item.statusTrail,
+          metadata: item.metadata
         } as TransitionIntentItem))
     })
     handleResponse(rows, (response as { data: TransitionMutationResponse }).data)

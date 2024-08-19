@@ -482,18 +482,22 @@ describe('useIntentAIActions', () => {
       })
       const { handleTransitionIntent } = result.current
       act(() => {
-        handleTransitionIntent(Actions.Stop, selectedRows, mockOK)
+        handleTransitionIntent(Actions.Pause, selectedRows, mockOK)
       })
       expect(mockedTransitionIntent).toHaveBeenCalledWith({
-        action: Actions.Stop,
+        action: Actions.Pause,
         data: [{
           id: '15',
           displayStatus: 'active',
-          statusTrail
+          statusTrail,
+          metadata: { algorithmData: { isCrrmFullOptimization: false } },
+          updatedAt: '2023-06-16T06:05:02.839Z'
         },{
           id: '17',
           displayStatus: 'active',
-          statusTrail
+          statusTrail,
+          metadata: {},
+          updatedAt: '2023-06-16T06:05:02.839Z'
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))

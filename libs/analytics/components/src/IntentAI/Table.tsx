@@ -140,7 +140,7 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
           displayStates.revertScheduled,
           displayStates.pausedRevertFailed].includes(row.displayStatus)
       )
-    case Actions.Stop:
+    case Actions.Pause:
       return !rows.some(row =>
         ![displayStates.new, displayStates.scheduled,
           displayStates.scheduledOneClick,displayStates.applyScheduled,
@@ -208,7 +208,8 @@ export function IntentAITable (
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Optimize),
-      label: $t({ defaultMessage: 'Optimize' }),
+      label: selectedRows?.[0]?.displayStatus === displayStates.new ?
+        $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
       visible: rows => isVisibledByAction(rows, Actions.Optimize),
       onClick: (rows) => {
         const row = rows[0]
@@ -228,11 +229,11 @@ export function IntentAITable (
       onClick: () => {}
     },
     {
-      key: getShowWithoutRbacCheckKey(Actions.Stop),
-      label: $t({ defaultMessage: 'Stop' }),
-      visible: rows => isVisibledByAction(rows, Actions.Stop),
+      key: getShowWithoutRbacCheckKey(Actions.Pause),
+      label: $t({ defaultMessage: 'Pause' }),
+      visible: rows => isVisibledByAction(rows, Actions.Pause),
       onClick: (rows) =>
-        intentActions.handleTransitionIntent(Actions.Stop, rows, () => clearSelection())
+        intentActions.handleTransitionIntent(Actions.Pause, rows, () => clearSelection())
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Cancel),

@@ -61,14 +61,14 @@ describe('IntentAI utils', () => {
       )).toEqual({ status: statuses.revertScheduled, statusReason: null })
     })
 
-    it('should handle (Actions.Stop)', () => {
+    it('should handle (Actions.Pause)', () => {
       expect(getTransitionStatus(
-        Actions.Stop,
+        Actions.Pause,
         displayStates.applyScheduled
       )).toEqual({ status: statuses.paused, statusReason: statusReasons.fromActive })
 
       expect(getTransitionStatus(
-        Actions.Stop,
+        Actions.Pause,
         displayStates.naWaitingForEtl
       )).toEqual({ status: statuses.paused, statusReason: statusReasons.fromInactive })
     })
@@ -84,9 +84,24 @@ describe('IntentAI utils', () => {
         displayStates.revertScheduled,
         [
           { status: statuses.revertScheduled },
-          { status: statuses.paused, statusReason: statusReasons.applyFailed }
-        ]
-      )).toEqual({ status: statuses.paused, statusReason: statusReasons.applyFailed })
+          { status: statuses.applyScheduled }
+        ],
+        { scheduledAt: '2024-07-19T04:01:00.000Z',
+          applyScheduledAt: '2024-07-19T04:01:00.000Z'
+        }
+      )).toEqual({ status: statuses.active, statusReason: null })
+
+      expect(getTransitionStatus(
+        Actions.Cancel,
+        displayStates.revertScheduled,
+        [
+          { status: statuses.revertScheduled },
+          { status: statuses.applyScheduled }
+        ],
+        { scheduledAt: '2024-07-21T04:01:00.000Z',
+          applyScheduledAt: '2024-07-21T04:01:00.000Z'
+        }
+      )).toEqual( { status: statuses.applyScheduled, statusReason: null })
 
       expect(getTransitionStatus(
         Actions.Cancel,
@@ -110,16 +125,105 @@ describe('IntentAI utils', () => {
     it('should handle (Actions.Resume)', () => {
       expect(getTransitionStatus(
         Actions.Resume,
-        displayStates.pausedApplyFailed
+        displayStates.pausedApplyFailed,
+        [
+          { status: statuses.paused, statusReason: statusReasons.applyFailed },
+          { status: statuses.revertScheduled }
+        ]
       )).toEqual(
         { status: statuses.active, statusReason: null }
       )
 
       expect(getTransitionStatus(
         Actions.Resume,
-        displayStates.pausedReverted
+        displayStates.pausedFromActive,
+        [
+          { status: statuses.paused, statusReason: statusReasons.fromActive },
+          { status: statuses.applyScheduled }
+        ],
+        {
+          scheduledAt: '2024-07-19T04:01:00.000Z',
+          applyScheduledAt: '2024-07-19T04:01:00.000Z'
+        }
+      )).toEqual(
+        { status: statuses.active, statusReason: null }
+      )
+
+      expect(getTransitionStatus(
+        Actions.Resume,
+        displayStates.pausedFromActive,
+        [
+          { status: statuses.paused, statusReason: statusReasons.fromActive },
+          { status: statuses.applyScheduled }
+        ],
+        {
+          scheduledAt: '2024-07-21T04:01:00.000Z',
+          applyScheduledAt: '2024-07-21T04:01:00.000Z'
+        }
+      )).toEqual(
+        { status: statuses.applyScheduled, statusReason: null }
+      )
+
+      expect(getTransitionStatus(
+        Actions.Resume,
+        displayStates.pausedReverted,
+        [
+          { status: statuses.paused, statusReason: statusReasons.reverted },
+          { status: statuses.revertScheduled }
+        ]
       )).toEqual(
         { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+      )
+
+      expect(getTransitionStatus(
+        Actions.Resume,
+        displayStates.pausedRevertFailed,
+        [
+          { status: statuses.paused, statusReason: statusReasons.revertFailed },
+          { status: statuses.revertScheduled }
+        ]
+      )).toEqual(
+        { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+      )
+
+      expect(getTransitionStatus(
+        Actions.Resume,
+        displayStates.pausedFromInactive,
+        [
+          { status: statuses.paused, statusReason: statusReasons.fromInactive },
+          { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+        ]
+      )).toEqual(
+        { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+      )
+
+      expect(getTransitionStatus(
+        Actions.Resume,
+        displayStates.pausedFromInactive,
+        [
+          { status: statuses.paused, statusReason: statusReasons.fromInactive },
+          { status: statuses.na, statusReason: statusReasons.verified }
+        ],
+        {
+          scheduledAt: '2024-07-21T04:01:00.000Z'
+        },
+        '2024-07-20T02:01:00.000Z'
+      )).toEqual(
+        { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+      )
+      expect(getTransitionStatus(
+        Actions.Resume,
+        displayStates.pausedFromInactive,
+        [
+          { status: statuses.paused, statusReason: statusReasons.fromInactive },
+          { status: statuses.na, statusReason: statusReasons.verified }
+        ],
+        {
+          scheduledAt: '2024-07-21T04:01:00.000Z'
+        },
+        '2024-07-19T02:01:00.000Z'
+      )).toEqual(
+        { status: statuses.na, statusReason: statusReasons.verified }
       )
     })
   })

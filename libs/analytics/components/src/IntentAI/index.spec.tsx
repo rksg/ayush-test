@@ -162,7 +162,7 @@ describe('IntentAITabContent', () => {
     expect(screen.getByTestId('intentAI')).toBeVisible()
   })
 
-  it('should render One_Click_Optimize/Optimize/Stop', async () => {
+  it('should render One_Click_Optimize/Optimize/Pause', async () => {
     const extractItem = {
       root: 'root',
       sliceId: 'sliceId',
@@ -191,7 +191,7 @@ describe('IntentAITabContent', () => {
     expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
     await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
     expect(await screen.findByRole('button', { name: 'Optimize' })).toBeVisible()
-    expect(await screen.findByRole('button', { name: 'Stop' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Pause' })).toBeVisible()
     expect(await screen.findByRole('button', { name: '1-Click Optimize' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: '1-Click Optimize' }))
     expect(mockedShowOneClickOptimize).toBeCalledTimes(1)

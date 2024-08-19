@@ -26,6 +26,7 @@ export type IntentWlan = {
 
 type TransitionIntentMetadata = {
   scheduledAt: string
+  applyScheduledAt?: string
   wlans?: IntentWlan[]
   preferences?: {
     crrmFullOptimization: boolean
@@ -35,7 +36,8 @@ type TransitionIntentMetadata = {
 export type TransitionIntentItem = {
   id: string
   displayStatus: displayStates
-  statusTrail: StatusTrail
+  updatedAt?: string
+  statusTrail?: StatusTrail
   metadata?: TransitionIntentMetadata
 }
 
@@ -43,44 +45,61 @@ export enum Actions {
   One_Click_Optimize = '1-click-optimize',
   Optimize = 'optimize',
   Revert = 'revert',
-  Stop = 'stop',
+  Pause = 'pause',
   Cancel = 'cancel',
   Resume = 'resume'
 }
 
-const getPreStatusTrail = (statusTrail?: StatusTrail) => {
-  if (statusTrail && statusTrail.length > 1) {
-    return statusTrail[1]
-  }
-  return { status: null, statusReason: null }
-}
-
 const getCancelTransitionStatus = (
   displayStatus: displayStates,
-  statusTrail?: StatusTrail) => {
-  const {
-    status: preStatus,
-    statusReason: preStatusReason } = getPreStatusTrail(statusTrail)
+  statusTrail?: StatusTrail,
+  metadata?:TransitionIntentMetadata) => {
   if ([displayStates.scheduled, displayStates.scheduledOneClick].includes(displayStatus)) {
     return { status: statuses.new, statusReason: null }
-  } else {
-    switch (preStatus) {
-      case statuses.paused:
-        return (preStatusReason === statusReasons.applyFailed) ?
-          { status: statuses.paused, statusReason: statusReasons.applyFailed } :
-          { status: statuses.paused, statusReason: statusReasons.revertFailed }
-      case statuses.active:
-        return { status: statuses.active, statusReason: null }
-      default:
-        throw new Error(`Invalid lastStatus:${preStatus}`)
-    }
   }
+  const preStatusTrail = statusTrail?.[1]
+  if (preStatusTrail) {
+    return preStatusTrail?.status === statuses.applyScheduled &&
+   moment().isAfter(moment(metadata?.applyScheduledAt)) ?
+      { status: statuses.active, statusReason: null } :
+      { status: preStatusTrail.status, statusReason: preStatusTrail.statusReason ?? null }
+  }
+  throw new Error('Invalid statusTrail(Cancel)')
+
+}
+
+const getResumeTransitionStatus = (
+  displayStatus: displayStates,
+  updatedAt?: string,
+  statusTrail?: StatusTrail,
+  metadata?:TransitionIntentMetadata) => {
+  const preStatusTrail = statusTrail?.[1]
+  if (!preStatusTrail) throw new Error('Invalid statusTrail(Resume)')
+
+  if (displayStatus === displayStates.pausedApplyFailed) {
+    return { status: statuses.active, statusReason: null }
+  } else if (displayStatus === displayStates.pausedFromActive) {
+    return preStatusTrail.status === statuses.applyScheduled &&
+      moment().isAfter(moment(metadata?.scheduledAt)) ?
+      { status: statuses.active, statusReason: null } :
+      { status: preStatusTrail.status, statusReason: preStatusTrail.statusReason ?? null }
+
+  } else if (
+    [displayStates.pausedRevertFailed, displayStates.pausedReverted].includes(displayStatus) ||
+    preStatusTrail?.statusReason === statusReasons.waitingForEtl ||
+    moment(updatedAt).isAfter(moment().add(-1, 'd'))) {
+    return { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+  }
+  return { status: preStatusTrail.status, statusReason: preStatusTrail.statusReason ?? null }
+
 }
 
 export const getTransitionStatus =(
   action: Actions,
   displayStatus: displayStates,
-  statusTrail?: StatusTrail
+  statusTrail?: StatusTrail,
+  metadata?: TransitionIntentMetadata,
+  updatedAt?: string
 ):
 { status: string; statusReason: string | null } => {
   switch (action) {
@@ -92,18 +111,14 @@ export const getTransitionStatus =(
         { status: statuses.scheduled, statusReason: null }
     case Actions.Revert:
       return { status: statuses.revertScheduled, statusReason: null }
-    case Actions.Stop:
+    case Actions.Pause:
       return [displayStates.applyScheduled, displayStates.active].includes(displayStatus) ?
         { status: statuses.paused, statusReason: statusReasons.fromActive } :
         { status: statuses.paused, statusReason: statusReasons.fromInactive }
     case Actions.Cancel:
-      return getCancelTransitionStatus(displayStatus, statusTrail)
+      return getCancelTransitionStatus(displayStatus, statusTrail, metadata)
     case Actions.Resume:
-      return [
-        displayStates.pausedApplyFailed, displayStates.pausedFromActive
-      ].includes(displayStatus) ?
-        { status: statuses.active, statusReason: null } :
-        { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+      return getResumeTransitionStatus(displayStatus, updatedAt, statusTrail, metadata)
     default:
       throw new Error(`Invalid action:${action}`)
   }
@@ -159,8 +174,13 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
   const includeMetadata = action === Actions.Revert
   data.forEach((item, index) => {
     const currentIndex = index + 1
-    const { id, displayStatus, statusTrail, metadata } = item
-    const { status, statusReason } = getTransitionStatus(action, displayStatus, statusTrail)
+    const { id, displayStatus, updatedAt, statusTrail, metadata } = item
+    const { status, statusReason } = getTransitionStatus(
+      action,
+      displayStatus,
+      statusTrail,
+      metadata,
+      updatedAt)
     paramsGQL.push(
       `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, \n
