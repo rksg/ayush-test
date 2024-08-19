@@ -78,9 +78,9 @@ import {
   Network,
   TxStatus
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }               from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { basePolicyApi }                                 from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
@@ -2441,7 +2441,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const rbacApSnmpViewModels = tableResult.data
           const rbacPolicies: Promise<RbacApSnmpPolicy>[] = rbacApSnmpViewModels.map(async (profile) => {
             // eslint-disable-next-line max-len
-            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy, { profileId: profile.id }, apiCustomHeader)
+            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy,
+              { profileId: profile.id },
+              {
+                ...ignoreErrorModal,
+                ...apiCustomHeader
+              })
             const res = await fetchWithBQ(req)
             return res.data as RbacApSnmpPolicy
           })

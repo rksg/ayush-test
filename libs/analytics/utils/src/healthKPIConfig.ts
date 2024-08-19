@@ -755,9 +755,6 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
       kpis: [
         'switchPortUtilization',
         'switchUplinkPortUtilization'
-        // TODO: revisit these kpis: https://jira.ruckuswireless.com/browse/RSA-6826
-        // 'switchInterfaceAnomalies'
-
       ]
     },
     infrastructure: {
@@ -772,6 +769,7 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
     }
   }
   if (is10010eKPIsEnabled) {
+    kpis.performance.kpis.push('switchInterfaceAnomalies')
     kpis.performance.kpis.push('switchStormControl')
     kpis.connection.kpis.push('switchDhcp')
   }
