@@ -109,11 +109,14 @@ export const IntentAIRRMGraph = ({
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
   return <UI.Wrapper>
     <Card>
-      <UI.GraphWrapper children={
-        useGraph(
-          crrmData, details, detailsZoomScale,
-          false, summaryUrlBefore, summaryUrlAfter)
-      } />
+      <UI.GraphWrapper
+        key={'graph-details'}
+        children={
+          useGraph(
+            crrmData, details, detailsZoomScale,
+            false, summaryUrlBefore, summaryUrlAfter)
+        }
+      />
       <UI.GraphBeforeTextWrapper>
         <UI.GraphTitleText>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleText>
         <UI.GraphSubTitleText>

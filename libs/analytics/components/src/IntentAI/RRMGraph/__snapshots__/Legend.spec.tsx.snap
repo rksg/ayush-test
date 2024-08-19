@@ -61,6 +61,7 @@ exports[`Legend should render properly 1`] = `
 
 <div
     class="c0"
+    style="padding-top: 0px;"
   >
     <span>
       <div
