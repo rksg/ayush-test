@@ -65,20 +65,20 @@ export const transformDetailsResponse = (details: IntentDetails) => {
   let date: Moment | null = null
   let hour: number | null = null
 
-  date= moment('2024-08-13')
-  hour= 1.75
-  // if (details.metadata) {
-  //   if (details.metadata.scheduledAt) {
-  //     const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
-  //     date=localScheduledAt
-  //     hour=roundUpTimeToNearest15Minutes(
-  //       localScheduledAt.format('HH:mm:ss')
-  //     )
-  //   }
-  // }
+  // date= moment('2024-08-13')
+  // hour= 1.75
+  if (details.metadata) {
+    if (details.metadata.scheduledAt) {
+      const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
+      date=localScheduledAt
+      hour=roundUpTimeToNearest15Minutes(
+        localScheduledAt.format('HH:mm:ss')
+      )
+    }
+  }
   return {
     ...details,
-    status: 'new',
+    // status: 'new',
     appliedOnce: Boolean(details.statusTrail.find(t => t.status === 'applied')),
     preferences: details.preferences || undefined, // prevent _.merge({ x: {} }, { x: null })
     settings: {

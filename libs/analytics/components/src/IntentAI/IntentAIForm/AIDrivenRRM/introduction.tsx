@@ -18,6 +18,7 @@ import { steps, crrmIntent, statusTrailMsgs } from '.'
 export function Introduction () {
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedIntent>()
+  console.log(initialValues)
   const { pageHeaderY } = useLayoutContext()
   const { status, sliceValue, updatedAt } = initialValues!
 

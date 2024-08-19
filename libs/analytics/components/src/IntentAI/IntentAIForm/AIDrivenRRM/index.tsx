@@ -120,14 +120,13 @@ export function AIDrivenRRM () {
     { text: $t({ defaultMessage: 'IntentAI' }), link: '/analytics/intentAI' }
   ]
   const defaultValues = {
-    ...mockedIntentCRRM,
-    appliedOnce: true,
+    ...( details ?? {} ),
     preferences: {
       crrmFullOptimization: true
     },
     settings: {
       date: moment(),
-      hour: 5.5
+      hour: null
     }
   } as EnhancedIntent
   console.log(defaultValues)
@@ -155,10 +154,12 @@ export function AIDrivenRRM () {
       />
       <StepsForm
         onFinish={async (values) => { await submit(values).unwrap() }}
+        onFieldsChange={(fields) => console.log(fields)}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
         initialValues={details ?? defaultValues}
+        // initialValues={_.merge(defaultValues, details)}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}

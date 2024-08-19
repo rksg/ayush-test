@@ -9,33 +9,8 @@ import {
 } from '../IntentAIDetails/__tests__/fixtures'
 
 
-import { kpis }                                                                                                                  from './AIDrivenRRM'
-import {  EnhancedIntent, IntentDetails, kpiHelper, recApi, roundUpTimeToNearest15Minutes, useUpdatePreferenceScheduleMutation } from './services'
-
-const commonArgs = {
-  appliedOnce: true,
-  dataEndTime: '2023-06-26T00:00:25.772Z',
-  code: 'c-crrm-channel24g-auto',
-  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
-  metadata: {},
-  path: [
-    { name: 'vsz34', type: 'system' },
-    { name: '21_US_Beta_Samsung', type: 'domain' },
-    { name: '21_US_Beta_Samsung', type: 'zone' }
-  ],
-  updatedAt: '06/26/2023 06:04',
-  sliceType: 'zone',
-  sliceValue: '21_US_Beta_Samsung',
-  status: 'applyscheduled',
-  kpi_number_of_interfering_links: {
-    current: 2,
-    previous: null,
-    projected: 0
-  },
-  statusTrail: mockedIntentCRRM.statusTrail,
-  preferences: undefined
-
-} as unknown as IntentDetails
+import { kpis }                                                                                                   from './AIDrivenRRM'
+import {  EnhancedIntent, kpiHelper, recApi, roundUpTimeToNearest15Minutes, useUpdatePreferenceScheduleMutation } from './services'
 
 describe('intentAI services', () => {
   describe('intent code', () => {
@@ -54,12 +29,13 @@ describe('intentAI services', () => {
 
   describe('intent details', () => {
     const expectedResult = {
-      ...commonArgs,
+      ...mockedIntentCRRM,
       appliedOnce: true,
       settings: {
-        date: null,
-        hour: null
-      }
+        date: moment.parseZone('2023-07-15T14:15:00.000Z').local(),
+        hour: 14.25
+      },
+      preferences: undefined
     } as unknown as EnhancedIntent
     it('should return correct value', async () => {
       mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
@@ -98,11 +74,11 @@ describe('roundUpTimeToNearest15Minutes', () => {
 
 describe('intentai services', () => {
   const args = {
-    ...commonArgs,
+    ...mockedIntentCRRM,
     appliedOnce: true,
     settings: {
-      date: moment('2024-07-13'),
-      hour: 1.75
+      date: moment('2024-07-14'),
+      hour: 7.5
     }
   }
 

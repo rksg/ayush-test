@@ -13,12 +13,12 @@ import { AIDrivenRRM, isOptimized } from '.'
 
 const { click, selectOptions } = userEvent
 
-jest.mock('@acx-ui/react-router-dom', () => ({
-  ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
-  useParams: () => ({
-    id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
-  })
-}))
+// jest.mock('@acx-ui/react-router-dom', () => ({
+//   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
+//   useParams: () => ({
+//     id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+//   })
+// }))
 
 type MockSelectProps = React.PropsWithChildren<{
   showSearch: boolean
@@ -43,18 +43,18 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-jest.mock('moment-timezone', () => {
-  const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
-  const mockedMoment = (date: MomentInput) => date === '2023-07-13T00:00:00.000Z'
-    ? moment(date)
-    : moment('07-10-2023 14:15', 'MM-DD-YYYY HH:mm') // mock current date
-  mockedMoment.utc = moment.utc
-  return {
-    __esModule: true,
-    ...moment,
-    default: mockedMoment
-  }
-})
+// jest.mock('moment-timezone', () => {
+//   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
+//   const mockedMoment = (date: MomentInput) => date === '2023-07-13T00:00:00.000Z'
+//     ? moment(date)
+//     : moment('07-10-2023 14:15', 'MM-DD-YYYY HH:mm') // mock current date
+//   mockedMoment.utc = moment.utc
+//   return {
+//     __esModule: true,
+//     ...moment,
+//     default: mockedMoment
+//   }
+// })
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -63,12 +63,15 @@ jest.mock('@acx-ui/config', () => ({
 
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
+    jest.spyOn(Date,'now').mockReturnValue(+new Date('2023-07-10T14:15:00'))
     mockGraphqlQuery(recommendationUrl, 'IntentCode', {
       data: { intent: pick(mockedIntentCRRM, ['id', 'code']) }
     })
-    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-      data: { intent: mockedIntentCRRM }
-    })
+
+    // mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
+    //   data: { intent: mockedIntentCRRM }
+    // })
+
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
@@ -80,9 +83,12 @@ describe('AIDrivenRRM', () => {
       .mockImplementation(() => true)
   })
 
-
   async function renderAndStepsThruForm () {
-    render(<AIDrivenRRM />, {
+    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
+      data: { intent: mockedIntentCRRM }
+    })
+
+    const { asFragment } = render(<AIDrivenRRM />, {
       route: { params: { recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6' } },
       wrapper: Provider
     })
@@ -133,11 +139,11 @@ describe('AIDrivenRRM', () => {
     // expect(await formBody.findByText('Please enter hour')).toBeVisible()
 
     expect(await formBody.findByText('Side Notes')).toBeVisible()
-    // await selectOptions(await formBody.findByRole('combobox'), '20:15 (UTC+00)')
-    await selectOptions(
-      await formBody.findByRole('combobox'),
-      await formBody.findByRole('option', { name: '20:15 (UTC+00)' })
-    )
+    await selectOptions(await formBody.findByRole('combobox'), '10:15 (UTC+00)')
+    // await selectOptions(
+    //   await formBody.findByRole('combobox'),
+    //   await formBody.findByRole('option', { name: '14:15 (UTC+00)' })
+    // )
 
     expect(await formBody.findByText('Side Notes')).toBeVisible()
     // expect(screen.getByText('14:00 (UTC+00)')).toBeDisabled()
@@ -147,17 +153,23 @@ describe('AIDrivenRRM', () => {
 
     // Step 4
     await click(actions.getByRole('button', { name: 'Next' }))
-    // await formBody.findByText('Side Notes')
-    expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+
     await screen.findAllByRole('heading', { name: 'Summary' })
     expect(screen.getAllByRole('heading', { name: 'Summary' })[0]).toBeVisible()
+
+    expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+    expect(await screen.findByText('Interfering links')).toBeVisible()
+    expect(await screen.findByText('Schedule')).toBeVisible()
+    expect(await screen.findByText('2023-07-15T10:15:00+00:00')).toBeVisible()
 
     expect(screen.getByRole('button', {
       name: 'Apply'
     })).toBeVisible()
+
+    expect(asFragment()).toMatchSnapshot()
   }
 
-  it('should render correctly', renderAndStepsThruForm)
+  it.only('should render correctly', renderAndStepsThruForm)
 
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')

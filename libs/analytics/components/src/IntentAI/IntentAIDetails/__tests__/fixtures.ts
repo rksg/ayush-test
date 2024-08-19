@@ -6,7 +6,7 @@ export const mockedIntentCRRM = {
   status: 'applyscheduled',
   dataEndTime: '2023-06-26T00:00:25.772Z',
   updatedAt: '06/26/2023 06:04',
-  metadata: {},
+  metadata: { scheduledAt: '2023-07-15T14:15:00.000Z' },
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
   path: [

@@ -128,6 +128,8 @@ Settings.FieldSummary = function ScheduleFieldSummary () {
     children={<StepsForm.FieldSummary<SettingsType> convert={(value) => {
       const localScheduledAt = getLocalScheduledAt(value!.date!, value!.hour!)
       const newScheduledAt = handleScheduledAt(localScheduledAt)
+      console.log(value)
+      console.log(newScheduledAt)
       return newScheduledAt
     }}/>}
   />
