@@ -3,7 +3,8 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { displayStates, statuses as stateType, statusReasons } from './states'
 
-export type StatusTrail = Array<{ status: stateType, statusReason?:statusReasons, createdAt?: string }>
+export type StatusTrailItem = { status: stateType, statusReason?:statusReasons, createdAt?: string }
+export type StatusTrail = Array<StatusTrailItem>
 
 export enum aiFeatures {
   RRM = 'AI-Driven RRM',

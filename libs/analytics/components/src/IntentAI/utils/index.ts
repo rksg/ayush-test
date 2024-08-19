@@ -3,7 +3,7 @@ import { defineMessage } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { StatusTrail }                            from '../config'
+import { StatusTrail, StatusTrailItem }           from '../config'
 import { displayStates, statuses, statusReasons } from '../states'
 
 export const isDataRetained = (time?: string) => {
@@ -53,16 +53,15 @@ export enum Actions {
 const getCancelTransitionStatus = (
   displayStatus: displayStates,
   statusTrail?: StatusTrail,
-  metadata?:TransitionIntentMetadata) => {
+  metadata?:TransitionIntentMetadata):StatusTrailItem => {
   if ([displayStates.scheduled, displayStates.scheduledOneClick].includes(displayStatus)) {
-    return { status: statuses.new, statusReason: null }
+    return { status: statuses.new }
   }
   const preStatusTrail = statusTrail?.[1]
   if (preStatusTrail) {
     return preStatusTrail?.status === statuses.applyScheduled &&
    moment().isAfter(moment(metadata?.applyScheduledAt)) ?
-      { status: statuses.active, statusReason: null } :
-      { status: preStatusTrail.status, statusReason: preStatusTrail.statusReason ?? null }
+      { status: statuses.active } : preStatusTrail
   }
   throw new Error('Invalid statusTrail(Cancel)')
 
@@ -72,17 +71,16 @@ const getResumeTransitionStatus = (
   displayStatus: displayStates,
   updatedAt?: string,
   statusTrail?: StatusTrail,
-  metadata?:TransitionIntentMetadata) => {
+  metadata?:TransitionIntentMetadata):StatusTrailItem => {
   const preStatusTrail = statusTrail?.[1]
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Resume)')
 
   if (displayStatus === displayStates.pausedApplyFailed) {
-    return { status: statuses.active, statusReason: null }
+    return { status: statuses.active }
   } else if (displayStatus === displayStates.pausedFromActive) {
     return preStatusTrail.status === statuses.applyScheduled &&
       moment().isAfter(moment(metadata?.scheduledAt)) ?
-      { status: statuses.active, statusReason: null } :
-      { status: preStatusTrail.status, statusReason: preStatusTrail.statusReason ?? null }
+      { status: statuses.active } : preStatusTrail
 
   } else if (
     [displayStates.pausedRevertFailed, displayStates.pausedReverted].includes(displayStatus) ||
@@ -90,8 +88,7 @@ const getResumeTransitionStatus = (
     moment(updatedAt).isAfter(moment().add(-1, 'd'))) {
     return { status: statuses.na, statusReason: statusReasons.waitingForEtl }
   }
-  return { status: preStatusTrail.status, statusReason: preStatusTrail.statusReason ?? null }
-
+  return preStatusTrail
 }
 
 export const getTransitionStatus =(
@@ -100,17 +97,16 @@ export const getTransitionStatus =(
   statusTrail?: StatusTrail,
   metadata?: TransitionIntentMetadata,
   updatedAt?: string
-):
-{ status: string; statusReason: string | null } => {
+):StatusTrailItem => {
   switch (action) {
     case Actions.One_Click_Optimize:
       return { status: statuses.scheduled, statusReason: statusReasons.oneClick }
     case Actions.Optimize:
       return [displayStates.applyScheduled, displayStates.active].includes(displayStatus) ?
-        { status: statuses.active, statusReason: null } :
-        { status: statuses.scheduled, statusReason: null }
+        { status: statuses.active } :
+        { status: statuses.scheduled }
     case Actions.Revert:
-      return { status: statuses.revertScheduled, statusReason: null }
+      return { status: statuses.revertScheduled }
     case Actions.Pause:
       return [displayStates.applyScheduled, displayStates.active].includes(displayStatus) ?
         { status: statuses.paused, statusReason: statusReasons.fromActive } :
@@ -158,7 +154,7 @@ export const parseTransitionGQLByOneClick = (optimizeList:OptimizeAllItemMutatio
     transitionsGQLs.push(buildTransitionGQL(currentIndex, true))
     variables[`id${currentIndex}`] = id
     variables[`status${currentIndex}`] = status
-    variables[`statusReason${currentIndex}`] = statusReason
+    variables[`statusReason${currentIndex}`] = statusReason ?? null
     variables[`metadata${currentIndex}`] = metadata
   })
   return { paramsGQL,transitionsGQLs, variables } as {
@@ -189,7 +185,7 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
     transitionsGQLs.push(buildTransitionGQL(currentIndex, includeMetadata))
     variables[`id${currentIndex}`] = id
     variables[`status${currentIndex}`] = status
-    variables[`statusReason${currentIndex}`] = statusReason
+    variables[`statusReason${currentIndex}`] = statusReason ?? null
     if (includeMetadata) variables[`metadata${currentIndex}`] = metadata ?? null
   })
   return { paramsGQL,transitionsGQLs, variables } as {
