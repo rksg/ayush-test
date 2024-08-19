@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 
+import { FixedAutoSizer }                        from '../../../DescriptionSection/styledComponents'
 import { AIDrivenRRMHeader, AIDrivenRRMIcon }    from '../../IntentAIDetails/styledComponents'
 import { SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                  from '../RRMGraph/services'
@@ -13,7 +14,6 @@ import { CrrmGraph }       from './CrrmGraph'
 import { CrrmValuesExtra } from './CrrmValuesExtra'
 import { Overview }        from './Overview'
 import { StatusTrail }     from './StatusTrail'
-import { FixedAutoSizer } from '../../../DescriptionSection/styledComponents'
 
 export const IntentAIDetails = () => {
   const { $t } = useIntl()
