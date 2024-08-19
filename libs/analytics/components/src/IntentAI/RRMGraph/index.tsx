@@ -12,13 +12,11 @@ import {
   Drawer,
   DrawerTypes,
   Graph as BasicGraph,
-  ProcessedCloudRRMGraph,
-  bandwidthMapping
+  ProcessedCloudRRMGraph
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { intentBandMapping } from '../config'
-import { EnhancedIntent }    from '../IntentAIForm/services'
+import { EnhancedIntent } from '../IntentAIForm/services'
 
 import { Legend } from './Legend'
 import * as UI    from './styledComponents'
@@ -26,7 +24,6 @@ import * as UI    from './styledComponents'
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
   intent: EnhancedIntent,
-  legend: string[],
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean,
   summaryUrlBefore?: string,
@@ -77,11 +74,11 @@ function useGraph (
 
   return (graphs?.length)
     ? [ isDrawer ? beforeGraph : beforeImage,
-      <div key='crrm-arrow' style={{ display: 'flex', alignItems: 'center' }}>
+      <UI.CrrmArrow>
         <UI.RightArrow/>
-      </div>,
+      </UI.CrrmArrow>,
       isDrawer ? afterGraph : afterImage,
-      ...(legend?.length ? [<Legend key='crrm-graph-legend' bandwidths={legend}/>] : [])
+      <Legend key='crrm-graph-legend' isDrawer={isDrawer}/>
     ]
     : null
 }
@@ -107,7 +104,6 @@ export const IntentAIRRMGraph = ({
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
 
-  const band = intentBandMapping[details.code as keyof typeof intentBandMapping]
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
@@ -115,8 +111,8 @@ export const IntentAIRRMGraph = ({
     <Card>
       <UI.GraphWrapper children={
         useGraph(
-          crrmData, details, bandwidthMapping[band],
-          detailsZoomScale, false, summaryUrlBefore, summaryUrlAfter)
+          crrmData, details, detailsZoomScale,
+          false, summaryUrlBefore, summaryUrlAfter)
       } />
       <UI.GraphBeforeTextWrapper>
         <UI.GraphTitleText>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleText>
@@ -141,7 +137,6 @@ export const IntentAIRRMGraph = ({
           {useGraph(
             crrmData,
             details,
-            bandwidthMapping[band],
             drawerZoomScale,
             true
           )}

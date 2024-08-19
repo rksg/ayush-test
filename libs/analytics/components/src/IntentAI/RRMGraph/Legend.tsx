@@ -1,15 +1,14 @@
 import React from 'react'
 
-import PropTypes   from 'prop-types'
 import { useIntl } from 'react-intl'
 
 import { categoryStyles } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
 
-export const Legend = () => {
+export const Legend = ({ isDrawer }: { isDrawer: boolean }) => {
   const { $t } = useIntl()
-  return <UI.LegendsWrapper>
+  return <UI.LegendsWrapper style={{ paddingTop: isDrawer ? 20 : 0 }}>
     <span>
       <UI.LegendTitle>{$t({ defaultMessage: 'Legend' })}</UI.LegendTitle>
       <UI.LegendWrapper>
@@ -21,5 +20,3 @@ export const Legend = () => {
     </span>
   </UI.LegendsWrapper>
 }
-
-Legend.propTypes = { bandwidths: PropTypes.arrayOf(PropTypes.string) }

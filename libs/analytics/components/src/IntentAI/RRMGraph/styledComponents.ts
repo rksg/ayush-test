@@ -88,7 +88,15 @@ export const Square = styled.span<{ $color: string }>`
   margin-top: 4px;
 `
 
-export const RightArrow = styled(ArrowChevronRight)``
+export const CrrmArrow = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+`
+
+export const RightArrow = styled(ArrowChevronRight)`
+  transform: scale(1.8);
+`
 
 export const ViewMoreButton = styled(Button).attrs({ size: 'small', type: 'link' })`
   position: absolute;
@@ -109,7 +117,7 @@ export const GraphBeforeTextWrapper = styled.div`
 export const GraphAfterTextWrapper = styled.div`
   position: absolute;
   top: 4%;
-  right: 43%;
+  right: 35%;
   color: var(--acx-primary-black);
   font-size: var(--acx-body-3-font-size);
   line-height: var(--acx-body-5-line-height);
