@@ -120,6 +120,18 @@ describe('IntentAI utils', () => {
           { status: statuses.active }
         ]
       )).toEqual({ status: statuses.active })
+
+      expect(() => {
+        try{
+          getTransitionStatus(
+            Actions.Cancel,
+            displayStates.revertScheduled,
+            []
+          )
+        } catch (error) {
+          throw error
+        }
+      }).toThrow('Invalid statusTrail(Cancel)')
     })
 
     it('should handle (Actions.Resume)', () => {
@@ -225,6 +237,23 @@ describe('IntentAI utils', () => {
       )).toEqual(
         { status: statuses.na, statusReason: statusReasons.verified }
       )
+
+      expect(() => {
+        try{
+          getTransitionStatus(
+            Actions.Resume,
+            displayStates.pausedFromInactive,
+            [],
+            {
+              scheduledAt: '2024-07-21T04:01:00.000Z'
+            },
+            '2024-07-19T02:01:00.000Z'
+          )
+        } catch (error) {
+          throw error
+        }
+      }).toThrow('Invalid statusTrail(Resume)')
+
     })
   })
 })

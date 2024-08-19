@@ -3,11 +3,11 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import moment    from 'moment-timezone'
-import { act }   from 'react-dom/test-utils'
 
 import { get }                   from '@acx-ui/config'
 import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { Provider, intentAIUrl } from '@acx-ui/store'
+import { act }                   from '@acx-ui/test-utils'
 import {
   mockGraphqlMutation,
   screen,
@@ -19,10 +19,10 @@ import {
 
 import { mockAIDrivenRow, mockAirflexRows }           from './__tests__/fixtures'
 import { IntentListItem, TransitionMutationResponse } from './services'
+import { displayStates }                              from './states'
 import { useIntentAIActions  }                        from './useIntentAIActions'
 import { Actions }                                    from './utils'
 
-const mockedOptimizeAllIntent = jest.fn()
 const mockedTransitionIntent = jest.fn()
 const mockedIntentWlansQuery = jest.fn()
 const mockedVenueRadioActiveNetworksQuery = jest.fn()
@@ -40,7 +40,6 @@ const r1Wlans = [
 jest.mock('./services', () => ({
   ...jest.requireActual<typeof import('./services')>('./services'),
   useLazyIntentWlansQuery: () => [mockedIntentWlansQuery],
-  useOptimizeAllIntentMutation: () => [mockedOptimizeAllIntent],
   useTransitionIntentMutation: () => [mockedTransitionIntent]
 }))
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -73,11 +72,10 @@ describe('useIntentAIActions', () => {
   const now = new Date('2024-07-20T04:01:00.000Z').getTime()
   beforeEach(() => {
     const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
-    mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
+    mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
     mockedIntentWlansQuery.mockReturnValue({ unwrap: () => Promise.resolve(raiWlans) })
     mockedVenueRadioActiveNetworksQuery.mockReturnValue({ unwrap: () => Promise.resolve(r1Wlans) })
     mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
-    mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
     mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.spyOn(Date, 'now').mockReturnValue(now)
   })
@@ -122,9 +120,11 @@ describe('useIntentAIActions', () => {
         await userEvent.click(checkMin[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
-        expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          optimizeList: [{
+        expect(mockedTransitionIntent).toHaveBeenCalledWith({
+          action: Actions.One_Click_Optimize,
+          data: [{
             id: '15',
+            displayStatus: displayStates.new,
             metadata: {
               scheduledAt: '2024-07-21T00:45:00.000Z' ,
               preferences: {
@@ -158,9 +158,11 @@ describe('useIntentAIActions', () => {
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
-        expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          optimizeList: [{
+        expect(mockedTransitionIntent).toHaveBeenCalledWith({
+          action: Actions.One_Click_Optimize,
+          data: [{
             id: '15',
+            displayStatus: displayStates.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               preferences: {
@@ -196,9 +198,11 @@ describe('useIntentAIActions', () => {
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findByText('Yes, Optimize!')))
-        expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          optimizeList: [{
+        expect(mockedTransitionIntent).toHaveBeenCalledWith({
+          action: Actions.One_Click_Optimize,
+          data: [{
             id: '16',
+            displayStatus: displayStates.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -289,9 +293,11 @@ describe('useIntentAIActions', () => {
       await userEvent.click(checkHour[0])
       await userEvent.click((await screen.findAllByText('Apply'))[0])
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
-      expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-        optimizeList: [{
+      expect(mockedTransitionIntent).toHaveBeenCalledWith({
+        action: Actions.One_Click_Optimize,
+        data: [{
           id: '15',
+          displayStatus: displayStates.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
             preferences: {
@@ -300,6 +306,7 @@ describe('useIntentAIActions', () => {
           }
         },{
           id: '17',
+          displayStatus: displayStates.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
             wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -341,9 +348,11 @@ describe('useIntentAIActions', () => {
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
-        expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          optimizeList: [{
+        expect(mockedTransitionIntent).toHaveBeenCalledWith({
+          action: Actions.One_Click_Optimize,
+          data: [{
             id: '15',
+            displayStatus: displayStates.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               preferences: {
@@ -379,9 +388,11 @@ describe('useIntentAIActions', () => {
         await userEvent.click(checkHour[0])
         await userEvent.click((await screen.findAllByText('Apply'))[0])
         await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
-        expect(mockedOptimizeAllIntent).toHaveBeenCalledWith({
-          optimizeList: [{
+        expect(mockedTransitionIntent).toHaveBeenCalledWith({
+          action: Actions.One_Click_Optimize,
+          data: [{
             id: '16',
+            displayStatus: displayStates.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
@@ -436,8 +447,8 @@ describe('useIntentAIActions', () => {
         t1: { success: false, errorMsg: 'mutation fail' , errorCode: '' },
         t2: { success: true, errorMsg: '' , errorCode: '' }
       } as TransitionMutationResponse
-      mockedOptimizeAllIntent.mockReturnValue(Promise.resolve({ data: resp }))
-      mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
+      mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const selectedRow = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -459,7 +470,7 @@ describe('useIntentAIActions', () => {
       await userEvent.click(checkHour[0])
       await userEvent.click((await screen.findAllByText('Apply'))[0])
       await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
-      await waitFor(() => expect(mockedOptimizeAllIntent).toBeCalledTimes(1))
+      await waitFor(() => expect(mockedTransitionIntent).toBeCalledTimes(1))
       expect(await screen.findByText(/mutation fail/)).toBeVisible()
     })
   })
@@ -474,8 +485,8 @@ describe('useIntentAIActions', () => {
     it('should handle handleTransitionIntent', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: 'active', statusTrail },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: 'active', statusTrail }
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: displayStates.active, statusTrail },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: displayStates.active, statusTrail }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -488,13 +499,13 @@ describe('useIntentAIActions', () => {
         action: Actions.Pause,
         data: [{
           id: '15',
-          displayStatus: 'active',
+          displayStatus: displayStates.active,
           statusTrail,
           metadata: { algorithmData: { isCrrmFullOptimization: false } },
           updatedAt: '2023-06-16T06:05:02.839Z'
         },{
           id: '17',
-          displayStatus: 'active',
+          displayStatus: displayStates.active,
           statusTrail,
           metadata: {},
           updatedAt: '2023-06-16T06:05:02.839Z'
@@ -506,8 +517,8 @@ describe('useIntentAIActions', () => {
     it('should handle revert', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: 'active', statusTrail },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: 'active', statusTrail }
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: displayStates.active, statusTrail },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: displayStates.active, statusTrail }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -520,15 +531,33 @@ describe('useIntentAIActions', () => {
         action: Actions.Revert,
         data: [{
           id: '15',
-          displayStatus: 'active',
+          displayStatus: displayStates.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
         },{
           id: '17',
-          displayStatus: 'active',
+          displayStatus: displayStates.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))
+    })
+
+    it('should show error toast when revert fail - single', async () => {
+      const resp = {
+        t1: { success: false, errorMsg: 'revert fail' , errorCode: '' },
+        t2: { success: true, errorMsg: '' , errorCode: '' }
+      } as TransitionMutationResponse
+      mockedTransitionIntent.mockReturnValue(Promise.resolve({ data: resp }))
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const selectedRows = [{ ...mockAirflexRows[0], aiFeature: 'AirFlexAI', ...extractItem }] as IntentListItem[]
+      const { result } = renderHook(() => useIntentAIActions(), {
+        wrapper: ({ children }) => <Provider children={children} />
+      })
+      const { revert } = result.current
+      act(() => {
+        revert(moment('2020-07-21T04:45:00.000Z'), selectedRows, mockOK)
+      })
+      expect(await screen.findByText(/Revert Scheduled time cannot be before/)).toBeVisible()
     })
   })
 })

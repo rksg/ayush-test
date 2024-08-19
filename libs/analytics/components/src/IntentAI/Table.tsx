@@ -158,9 +158,6 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
           displayStates.pausedReverted,displayStates.pausedFromInactive,
           displayStates.pausedByDefault, displayStates.pausedFromActive].includes(row.displayStatus)
       )
-
-    default:
-      return false
   }
 }
 

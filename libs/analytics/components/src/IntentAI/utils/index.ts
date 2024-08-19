@@ -24,7 +24,7 @@ export type IntentWlan = {
   ssid: string
 }
 
-type TransitionIntentMetadata = {
+export type TransitionIntentMetadata = {
   scheduledAt: string
   applyScheduledAt?: string
   wlans?: IntentWlan[]
@@ -58,13 +58,11 @@ const getCancelTransitionStatus = (
     return { status: statuses.new }
   }
   const preStatusTrail = statusTrail?.[1]
-  if (preStatusTrail) {
-    return preStatusTrail?.status === statuses.applyScheduled &&
-   moment().isAfter(moment(metadata?.applyScheduledAt)) ?
-      { status: statuses.active } : preStatusTrail
-  }
-  throw new Error('Invalid statusTrail(Cancel)')
+  if (!preStatusTrail) throw new Error('Invalid statusTrail(Cancel)')
 
+  return preStatusTrail?.status === statuses.applyScheduled &&
+   moment().isAfter(moment(metadata?.applyScheduledAt)) ?
+    { status: statuses.active } : preStatusTrail
 }
 
 const getResumeTransitionStatus = (
@@ -115,14 +113,7 @@ export const getTransitionStatus =(
       return getCancelTransitionStatus(displayStatus, statusTrail, metadata)
     case Actions.Resume:
       return getResumeTransitionStatus(displayStatus, updatedAt, statusTrail, metadata)
-    default:
-      throw new Error(`Invalid action:${action}`)
   }
-}
-
-export type OptimizeAllItemMutationPayload = {
-  id: string
-  metadata: TransitionIntentMetadata
 }
 
 export type TransitionMutationPayload = {
@@ -137,31 +128,6 @@ const buildTransitionGQL = (index:number, includeMetadata:boolean) => `t${index}
     errorMsg
     errorCode
   }`
-
-export const parseTransitionGQLByOneClick = (optimizeList:OptimizeAllItemMutationPayload[]) => {
-  const { status, statusReason } =
-  getTransitionStatus(Actions.One_Click_Optimize, displayStates.new)
-  const paramsGQL:string[] = []
-  const transitionsGQLs:string[] = []
-  const variables:Record<string, string|TransitionIntentMetadata|null> = {}
-  optimizeList.forEach((item, index) => {
-    const currentIndex = index + 1
-    const { id, metadata } = item
-    paramsGQL.push(
-      `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
-      $statusReason${currentIndex}:String, $metadata${currentIndex}:JSON`
-    )
-    transitionsGQLs.push(buildTransitionGQL(currentIndex, true))
-    variables[`id${currentIndex}`] = id
-    variables[`status${currentIndex}`] = status
-    variables[`statusReason${currentIndex}`] = statusReason ?? null
-    variables[`metadata${currentIndex}`] = metadata
-  })
-  return { paramsGQL,transitionsGQLs, variables } as {
-    paramsGQL:string[],
-    transitionsGQLs:string[],
-    variables: Record<string, string|TransitionIntentMetadata> }
-}
 
 export const parseTransitionGQLByAction = (action: Actions, data: TransitionIntentItem[]) => {
   const paramsGQL:string[] = []
@@ -180,13 +146,13 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
     paramsGQL.push(
       `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, \n
-      ${includeMetadata? '$metadata'+currentIndex+':JSON': ''}`
+      ${includeMetadata && metadata? '$metadata'+currentIndex+':JSON': ''}`
     )
     transitionsGQLs.push(buildTransitionGQL(currentIndex, includeMetadata))
     variables[`id${currentIndex}`] = id
     variables[`status${currentIndex}`] = status
     variables[`statusReason${currentIndex}`] = statusReason ?? null
-    if (includeMetadata) variables[`metadata${currentIndex}`] = metadata ?? null
+    if (includeMetadata && metadata) variables[`metadata${currentIndex}`] = metadata
   })
   return { paramsGQL,transitionsGQLs, variables } as {
     paramsGQL:string[],

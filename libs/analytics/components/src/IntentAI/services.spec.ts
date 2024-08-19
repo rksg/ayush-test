@@ -218,31 +218,7 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
-    it('should mutation OptimizeAll', async () => {
-      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
-      mockGraphqlMutation(intentAIUrl, 'OptimizeAll', { data: resp })
-      const { result } = renderHook(() =>
-        api.endpoints.optimizeAllIntent.useMutation(),
-      { wrapper: Provider }
-      )
-      act(() => {
-        result.current[0]({
-          optimizeList: [{ id: '11', metadata: {
-            scheduledAt: '2023-11-17T11:45:00.000Z',
-            wlans: [{ name: 'n1', ssid: 's1' }],
-            preferences: {
-              crrmFullOptimization: true
-            }
-          } }]
-        }).unwrap()
-      })
-
-      await waitFor(() => {
-        expect(result.current[1].data).toStrictEqual(resp)
-      })
-    })
-
-    it('should mutation TransitionIntent(Actions.Cancel)', async () => {
+    it('should mutation TransitionIntent(Actions.One_Click_Optimize)', async () => {
       const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
@@ -251,15 +227,43 @@ describe('Intent services', () => {
       )
       act(() => {
         result.current[0]({
-          action: Actions.Cancel,
-          data: [{
-            id: '11',
-            displayStatus: displayStates.pausedApplyFailed,
-            statusTrail: [
-              { status: statuses.revertScheduled },
-              { status: statuses.paused, statusReason: statusReasons.applyFailed }
+          action: Actions.One_Click_Optimize,
+          data: [{ id: '11',
+            displayStatus: displayStates.new,
+            metadata: {
+              scheduledAt: '2023-11-17T11:45:00.000Z',
+              wlans: [{ name: 'n1', ssid: 's1' }],
+              preferences: {
+                crrmFullOptimization: true
+              }
+            } }]
+        }).unwrap()
+      })
 
-            ] }]
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
+    it('should mutation TransitionIntent(Actions.Optimize)', async () => {
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.transitionIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          action: Actions.Optimize,
+          data: [{ id: '11',
+            displayStatus: displayStates.scheduled,
+            metadata: {
+              scheduledAt: '2023-11-17T11:45:00.000Z',
+              wlans: [{ name: 'n1', ssid: 's1' }],
+              preferences: {
+                crrmFullOptimization: true
+              }
+            } }]
         }).unwrap()
       })
 
@@ -284,7 +288,6 @@ describe('Intent services', () => {
             statusTrail: [
               { status: statuses.revertScheduled },
               { status: statuses.active }
-
             ],
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z'
@@ -297,6 +300,157 @@ describe('Intent services', () => {
       })
     })
 
+    it('should mutation TransitionIntent(Actions.Pause)', async () => {
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.transitionIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          action: Actions.Pause,
+          data: [{
+            id: '11',
+            displayStatus: displayStates.applyScheduled,
+            statusTrail: [
+              { status: statuses.applyScheduled },
+              { status: statuses.paused, statusReason: statusReasons.fromActive }
+            ] },
+          {
+            id: '12',
+            displayStatus: displayStates.naWaitingForEtl,
+            statusTrail: [
+              { status: statuses.na, statusReason: statusReasons.waitingForEtl },
+              { status: statuses.paused, statusReason: statusReasons.fromInactive }
+            ] }]
+        }).unwrap()
+      })
+    })
+
+    it('should mutation TransitionIntent(Actions.Cancel)', async () => {
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.transitionIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          action: Actions.Cancel,
+          data: [{
+            id: '11',
+            displayStatus: displayStates.scheduled,
+            statusTrail: [
+              { status: statuses.scheduled },
+              { status: statuses.new }
+            ]
+          },{
+            id: '12',
+            displayStatus: displayStates.revertScheduled,
+            statusTrail: [
+              { status: statuses.revertScheduled },
+              { status: statuses.applyScheduled }
+            ],
+            metadata: {
+              scheduledAt: '2024-07-19T04:01:00.000Z',
+              applyScheduledAt: '2024-07-19T04:01:00.000Z'
+            }
+          },{
+            id: '13',
+            displayStatus: displayStates.revertScheduled,
+            statusTrail: [
+              { status: statuses.revertScheduled },
+              { status: statuses.applyScheduled }
+            ],
+            metadata: {
+              scheduledAt: '2024-07-21T04:01:00.000Z',
+              applyScheduledAt: '2024-07-21T04:01:00.000Z'
+            }
+          },{
+            id: '14',
+            displayStatus: displayStates.revertScheduled,
+            statusTrail: [
+              { status: statuses.revertScheduled },
+              { status: statuses.paused, statusReason: statusReasons.revertFailed }
+            ]
+          },{
+            id: '15',
+            displayStatus: displayStates.revertScheduled,
+            statusTrail: [
+              { status: statuses.revertScheduled },
+              { status: statuses.active }
+            ] }]
+        }).unwrap()
+      })
+
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
+
+    it('should mutation TransitionIntent(Actions.Resume)', async () => {
+      const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
+      mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+      const { result } = renderHook(() =>
+        api.endpoints.transitionIntent.useMutation(),
+      { wrapper: Provider }
+      )
+      act(() => {
+        result.current[0]({
+          action: Actions.Resume,
+          data: [{
+            id: '11',
+            displayStatus: displayStates.pausedReverted,
+            statusTrail: [
+              { status: statuses.paused, statusReason: statusReasons.reverted },
+              { status: statuses.revertScheduled }
+            ]
+          },{
+            id: '12',
+            displayStatus: displayStates.pausedReverted,
+            statusTrail: [
+              { status: statuses.paused, statusReason: statusReasons.revertFailed },
+              { status: statuses.revertScheduled }
+            ]
+          },{
+            id: '13',
+            displayStatus: displayStates.pausedFromInactive,
+            statusTrail: [
+              { status: statuses.paused, statusReason: statusReasons.fromInactive },
+              { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+            ]
+          } ,{
+            id: '14',
+            displayStatus: displayStates.pausedFromInactive,
+            statusTrail: [
+              { status: statuses.paused, statusReason: statusReasons.fromInactive },
+              { status: statuses.na, statusReason: statusReasons.verified }
+            ],
+            metadata: {
+              scheduledAt: '2024-07-21T04:01:00.000Z',
+              applyScheduledAt: '2024-07-21T04:01:00.000Z'
+            },
+            updatedAt: '2024-07-20T02:01:00.000Z'
+          },{
+            id: '15',
+            displayStatus: displayStates.pausedFromInactive,
+            statusTrail: [
+              { status: statuses.paused, statusReason: statusReasons.fromInactive },
+              { status: statuses.na, statusReason: statusReasons.verified }
+            ],
+            metadata: {
+              scheduledAt: '2024-07-21T04:01:00.000Z',
+              applyScheduledAt: '2024-07-21T04:01:00.000Z'
+            },
+            updatedAt: '2024-07-19T02:01:00.000Z'
+          }]
+        }).unwrap()
+      })
+      await waitFor(() => {
+        expect(result.current[1].data).toStrictEqual(resp)
+      })
+    })
   })
 
   describe('status tooltips', () => {

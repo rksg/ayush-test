@@ -17,14 +17,13 @@ import {
   IntentListItem,
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
-  useOptimizeAllIntentMutation,
   useTransitionIntentMutation
 } from './services'
 import * as UI     from './styledComponents'
 import {
   Actions,
-  OptimizeAllItemMutationPayload,
   TransitionIntentItem,
+  TransitionIntentMetadata,
   getDefaultTime
 } from './utils'
 interface IntentAIDateTimePickerProps {
@@ -121,7 +120,6 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
-  const [optimizeAllIntent] = useOptimizeAllIntentMutation()
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [transitionIntent] = useTransitionIntentMutation()
@@ -156,22 +154,22 @@ export function useIntentAIActions () {
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
     const optimizeList = await Promise.all(rows.map(async (row) => {
-      const { code, preferences } = row
-      const item: OptimizeAllItemMutationPayload = {
-        id: row.id,
-        metadata: { scheduledAt }
-      }
-
+      const { code, preferences, displayStatus } = row
+      const metadata = { scheduledAt } as TransitionIntentMetadata
       if (code.startsWith('c-probeflex-')) { // AirflexAI c-probeflex-*
-        item.metadata.wlans = await fetchWlans(row)
+        metadata.wlans = await fetchWlans(row)
 
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
-        item.metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
+        metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
-      return item
+      return { id: row.id, displayStatus, metadata } as TransitionIntentItem
     }))
 
-    const response = await optimizeAllIntent({ optimizeList })
+    const response = await transitionIntent(
+      {
+        action: Actions.One_Click_Optimize,
+        data: optimizeList
+      })
     handleResponse(rows, (response as { data: TransitionMutationResponse }).data )
   }
 
@@ -240,14 +238,15 @@ export function useIntentAIActions () {
       const response = await transitionIntent({
         action: Actions.Revert,
         data: rows.map(item =>(
-          {
-            id: item.id,
-            displayStatus: item.displayStatus,
-            metadata: { scheduledAt }
-          } as TransitionIntentItem))
+            {
+              id: item.id,
+              displayStatus: item.displayStatus,
+              metadata: { scheduledAt }
+            } as TransitionIntentItem))
       })
       handleResponse(rows, (response as { data: TransitionMutationResponse }).data)
       onOk()
+
     } else {
       showToast({
         type: 'error',

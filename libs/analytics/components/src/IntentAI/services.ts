@@ -20,9 +20,7 @@ import { statuses, displayStates }                                    from './st
 import {
   Actions,
   IntentWlan,
-  OptimizeAllItemMutationPayload,
   parseTransitionGQLByAction,
-  parseTransitionGQLByOneClick,
   TransitionIntentItem } from './utils'
 
 type Intent = {
@@ -91,10 +89,6 @@ const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Me
 }
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
-
-interface OptimizeAllMutationPayload {
-  optimizeList: OptimizeAllItemMutationPayload[]
-}
 
 interface TransitionMutationPayload {
   action: Actions
@@ -223,25 +217,6 @@ export const api = intentAIApi.injectEndpoints({
       }),
       transformResponse: (response: { intent: { wlans: IntentWlan[] } }) =>
         response.intent.wlans
-    }),
-    optimizeAllIntent: build.mutation<TransitionMutationResponse, OptimizeAllMutationPayload>({
-      query: ({ optimizeList }) => {
-        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQLByOneClick(optimizeList)
-        return {
-          document: gql`
-          mutation OptimizeAll(
-            ${paramsGQL.join(',')}
-          ) {
-            ${transitionsGQLs.join('\n')}
-          }
-        `,
-          variables
-        }
-      },
-      invalidatesTags: [
-        { type: 'Intent', id: 'INTENT_AI_LIST' },
-        { type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }
-      ]
     }),
     transitionIntent: build.mutation<TransitionMutationResponse, TransitionMutationPayload>({
       query: ({ action, data }) => {
@@ -485,7 +460,6 @@ export function useIntentAITableQuery (filter: PathFilter) {
 export const {
   useIntentAIListQuery,
   useLazyIntentWlansQuery,
-  useOptimizeAllIntentMutation,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery
