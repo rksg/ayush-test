@@ -1,7 +1,7 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { ApIncompatibleFeature, CompatibilityDeviceEnum, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
+import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -21,7 +21,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
     {isMultiple &&
       <Form.Item>
         <UI.StyledFeatureName>
-          {getCompatibilityFeatureDisplayName(data.featureName)}
+          {getCompatibilityFeatureDisplayName(data.featureName as IncompatibilityFeatures)}
         </UI.StyledFeatureName>
       </Form.Item>
     }

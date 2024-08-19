@@ -10,14 +10,58 @@ import {
 }   from '@acx-ui/rc/services'
 import {
   ApCompatibility,
-  // EdgeFeatureSets,
   EdgeSdLanApCompatibilitiesResponse,
   EdgeSdLanCompatibilitiesResponse,
   IncompatibilityFeatures,
   isApRelatedEdgeFeature,
-  CompatibilityDeviceEnum
-  // ApFeatureSet
+  CompatibilityDeviceEnum,
+  EdgeSdLanApCompatibility,
+  EdgeSdLanCompatibility
 } from '@acx-ui/rc/utils'
+
+// eslint-disable-next-line max-len
+export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  // eslint-disable-next-line max-len
+  const [data, setData] = useState<Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
+
+  const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
+  const [getSdLanApCompatibilities] = useLazyGetSdLanApCompatibilitiesQuery()
+
+  const fetchEdgeCompatibilities = async (ids: string[]) => {
+    try {
+      const result = await Promise.allSettled([
+        getSdLanEdgeCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap(),
+        getSdLanApCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()
+      ])
+
+      // eslint-disable-next-line max-len
+      const deviceTypeResultMap: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> = {}
+      result.forEach((resultItem, index) => {
+        if (resultItem.status === 'fulfilled') {
+          if(index === 0) {
+            // eslint-disable-next-line max-len
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities
+          } else {
+            // eslint-disable-next-line max-len
+            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
+          }
+        }
+      })
+
+      setData(deviceTypeResultMap)
+    } catch(e) {
+      // eslint-disable-next-line no-console
+      console.error('EdgeCompatibilityDrawer api error:', e)
+    }
+  }
+
+  useEffect(() => {
+    if (!skip)
+      fetchEdgeCompatibilities(serviceIds)
+  }, [serviceIds, skip])
+
+  return data
+}
 
 // eslint-disable-next-line max-len
 export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: boolean = false) => {

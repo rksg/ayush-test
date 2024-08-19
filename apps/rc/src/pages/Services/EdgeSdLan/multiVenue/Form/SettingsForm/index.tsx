@@ -6,6 +6,7 @@ import { useIntl }                                                 from 'react-i
 import { useParams }                                               from 'react-router-dom'
 
 import {  StepsForm, Tooltip, useStepFormContext, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { InformationSolid }                                from '@acx-ui/icons'
 import { SpaceWrapper, CompatibilityWarningCircleIcon }    from '@acx-ui/rc/components'
 import {
@@ -19,7 +20,8 @@ import {
   ClusterHighAvailabilityModeEnum,
   EdgeFeatureEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }      from '@acx-ui/react-router-dom'
+import { compareVersions } from '@acx-ui/utils'
 
 import { useEdgeMvSdLanContext } from '../EdgeMvSdLanContextProvider'
 import { messageMappings }       from '../messageMappings'
@@ -292,9 +294,11 @@ const ClusterFirmwareInfo = (props: {
 }) => {
   const { $t } = useIntl()
   const { fwVersion } = props
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const { requiredFw, isLoading } = useGetEdgeFeatureSetsQuery({
     payload: sdLanFeatureRequirementPayload }, {
+    skip: !isEdgeCompatibilityEnabled,
     selectFromResult: ({ data, isLoading }) => {
       return {
         requiredFw: data?.featureSets
@@ -303,13 +307,16 @@ const ClusterFirmwareInfo = (props: {
       }
     }
   })
-  return (
-    <Space align='center'>
+
+  const isLower = compareVersions(fwVersion, requiredFw) < 0
+
+  return isEdgeCompatibilityEnabled
+    ? ( <Space align='center' size='small'>
       <Typography>
         {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
           { fwVersion }) }
       </Typography>
-      <Tooltip
+      {isLower && <Tooltip
         title={<Loader states={[{ isLoading }]}>
           {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
         running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware
@@ -325,6 +332,7 @@ const ClusterFirmwareInfo = (props: {
         }>
         <CompatibilityWarningCircleIcon />
       </Tooltip>
-    </Space>
-  )
+      }
+    </Space>)
+    : null
 }

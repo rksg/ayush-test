@@ -85,7 +85,7 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
       }).unwrap()
 
     } else if (ApCompatibilityType.VENUE === type) {
-      const queryfeatures = [featureName].concat(requiredFeatures ?? [])
+      const queryfeatures = (featureName ? [featureName] : []).concat(requiredFeatures ?? [])
       const reqs = queryfeatures.map(fName => getApCompatibilitiesVenue({
         params: { venueId },
         payload: {

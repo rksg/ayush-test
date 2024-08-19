@@ -178,6 +178,11 @@ export {
   useIsEdgeFeatureReady,
   useIsEdgeReady
 } from './useEdgeActions'
+export {
+  useEdgeSdLanCompatibilityData,
+  useEdgeCompatibilityRequirementData,
+  useEdgeSdLanDetailsCompatibilitiesData
+} from './useEdgeActions/compatibility'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
@@ -228,9 +233,7 @@ export {
 export {
   ApGeneralCompatibilityDrawer,
   EdgeCompatibilityDrawer,
-  IncompatibilityFeatures,
-  CompatibilityWarningCircleIcon,
-  edgeSdLanRequiredFeatures
+  CompatibilityWarningCircleIcon
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
