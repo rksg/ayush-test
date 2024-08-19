@@ -360,7 +360,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         const networkQuery = await fetchWithBQ(
           createHttpRequest(
-            params?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : WifiRbacUrlsInfo.getNetwork,
+            WifiRbacUrlsInfo.getNetwork,
             params,
             GetApiVersionHeader(ApiVersionEnum.v1)
           )
