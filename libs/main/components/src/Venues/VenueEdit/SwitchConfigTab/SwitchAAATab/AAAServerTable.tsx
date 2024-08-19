@@ -28,7 +28,6 @@ import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayTex
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD) && !isTemplate
 
   const radiusColumns: TableProps<RadiusServer & TacacsServer & LocalUser>['columns'] = [
     {
@@ -137,7 +136,7 @@ function useColumns (type: AAAServerTypeEnum) {
         </div>
       }
     },
-    ...( enableSwitchAdminPassword ? [{
+    ...( !isTemplate ? [{
       title: $t({ defaultMessage: 'Use In' }),
       key: 'syncedPasswordSwitchCount',
       dataIndex: 'syncedPasswordSwitchCount',

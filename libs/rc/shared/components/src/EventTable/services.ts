@@ -51,6 +51,7 @@ const defaultPayload = {
     'ipAddress',
     'detailedDescription',
     'Persona-ID',
+    'duration',
     'remoteEdgeId'
   ]
 }
