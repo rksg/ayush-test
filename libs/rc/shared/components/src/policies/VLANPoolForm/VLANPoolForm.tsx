@@ -21,7 +21,8 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -41,11 +42,15 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const params = useParams()
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
+  const { isTemplate } = useConfigTemplate()
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const enableRbac = isTemplate ? isConfigTemplateRbacEnabled : isPolicyRbacEnabled
+
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVLANPoolPolicyDetailQuery,
     useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
-    enableRbac: isPolicyRbacEnabled,
+    enableRbac,
     skip: !isEdit
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
@@ -75,13 +80,13 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
 
     try {
       if (!isEdit) {
-        await createInstance({ params, payload, enableRbac: isPolicyRbacEnabled }
+        await createInstance({ params, payload, enableRbac }
         ).unwrap()
           .then(res => {
             formData.id = res.response?.id
           })
       } else {
-        await updateInstance({ params, payload, enableRbac: isPolicyRbacEnabled })
+        await updateInstance({ params, payload, enableRbac })
           .unwrap()
       }
       networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
