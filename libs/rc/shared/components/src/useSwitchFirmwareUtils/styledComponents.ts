@@ -1,5 +1,5 @@
-import { Statistic as AntStatistic, Tag } from 'antd'
-import styled                             from 'styled-components/macro'
+import { Statistic as AntStatistic, Space, Tag } from 'antd'
+import styled                                    from 'styled-components/macro'
 
 export const Statistic = styled(AntStatistic) <{
   width: number,
@@ -32,4 +32,12 @@ export const RecommendedTag = styled(Tag)`
     border-radius: 10px;
     font-size: 12px;
     height: 20px;
+`
+
+export const TypeSpace = styled(Space)`
+    gap: 0px !important;
+  .ant-divider-vertical{
+    color: inherit;
+    background-color: currentColor;
+  }
 `

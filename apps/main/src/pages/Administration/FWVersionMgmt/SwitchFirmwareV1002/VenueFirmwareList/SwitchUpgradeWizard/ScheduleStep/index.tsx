@@ -44,11 +44,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const intl = useIntl()
   const { form, current } = useStepFormContext()
-  const {
-    getSwitchVersionLabelV1002,
-    parseSwitchVersion,
-    getSwitchVersionTagV1002
-  } = useSwitchFirmwareUtils()
+  const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -232,21 +228,9 @@ export function ScheduleStep (props: ScheduleStepProps) {
               <Space direction={'vertical'}>
                 { getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
-                      <span style={{ marginRight: '5px' }}>
-                        {parseSwitchVersion(v?.name)}
-                      </span>
-                      {getSwitchVersionTagV1002(intl, v)}
-                      <br />
-                      <div style={{
-                        marginTop: '5px',
-                        fontSize: 'var(--acx-body-4-font-size)',
-                        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
-                      }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
-                      </div>
-                    </span>
-                  </Radio>)}
+                    {getVersionOptionV1002(intl, v)}
+                  </Radio>)
+                }
                 <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
@@ -267,20 +251,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
               <Space direction={'vertical'}>
                 {getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
-                      <span style={{ marginRight: '5px' }}>
-                        {parseSwitchVersion(v?.name)}
-                      </span>
-                      {getSwitchVersionTagV1002(intl, v)}
-                      <br/>
-                      <div style={{
-                        marginTop: '5px',
-                        fontSize: 'var(--acx-body-4-font-size)',
-                        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
-                      }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
-                      </div>
-                    </span>
+                    {getVersionOptionV1002(intl, v)}
                   </Radio>)}
                 <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
@@ -303,26 +274,14 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 { // eslint-disable-next-line max-len
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
-                        <span style={{ marginRight: '5px' }}>
-                          {parseSwitchVersion(v?.name)}
-                        </span>
-                        {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') &&
+                      {getVersionOptionV1002(intl, v,
+                        (icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') ?
                           <NoteButton
                             size='small'
                             ghost={true}
                             onClick={scrollToTarget} >
                             {'[1]'}
-                          </NoteButton>}
-                        {getSwitchVersionTagV1002(intl, v)}
-                        <div style={{
-                          marginTop: '5px',
-                          fontSize: 'var(--acx-body-4-font-size)',
-                          color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
-                        }}>
-                          {getSwitchVersionLabelV1002(intl, v)}
-                        </div>
-                      </span>
+                          </NoteButton> : null))}
                     </Radio>)}
                 <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
