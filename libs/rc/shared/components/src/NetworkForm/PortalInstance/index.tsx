@@ -73,8 +73,7 @@ const PortalInstance = (props: {
   const portalServiceID = useWatch('portalServiceProfileId')
   const defaultPayload = {
     fields: ['id', 'name'],
-    filters:
-      (isUseWifiRbacApi && networkData?.id) ? { wifiNetworkIds: [ networkData?.id ] } : {},
+    filters: {},
     pageSize: 256
   }
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>({
