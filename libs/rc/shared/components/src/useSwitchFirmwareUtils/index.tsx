@@ -69,7 +69,8 @@ export function useSwitchFirmwareUtils () {
           <div>
             {parseSwitchVersion(v.name)} {note}
           </div>
-          {v.createdDate && formatter(DateFormatEnum.DateFormat)(v.createdDate)}
+          {!isNaN(Date.parse(v.createdDate || '')) &&
+            formatter(DateFormatEnum.DateFormat)(v.createdDate)}
         </TypeSpace>}
       </span>
       {getSwitchVersionTagV1002(intl, v)}
