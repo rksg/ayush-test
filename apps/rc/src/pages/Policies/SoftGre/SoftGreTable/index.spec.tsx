@@ -11,7 +11,6 @@ import { mockSoftGreTable, mockedVenueQueryData } from '../__tests__/fixtures'
 
 import SoftGreTable from '.'
 
-
 const mockedUsedNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: '/ecc2d7cf9d2342fdb31ae0e24958fcac/t',
@@ -24,15 +23,17 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
-
-const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })
+// eslint-disable-next-line max-len
+const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ 
+  type: PolicyType.SOFTGRE, 
+  oper: PolicyOperation.LIST 
+})
 const policyId = '0d89c0f5596c4689900fb7f5f53a0859'
 const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 }
 
 describe('SoftGreTable', () => {
-  
   const mockedSingleDeleteApi = jest.fn()
 
   beforeEach(async () => {
@@ -54,7 +55,7 @@ describe('SoftGreTable', () => {
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json(mockedVenueQueryData))
-      ),
+      )
     )
   })
 
@@ -73,7 +74,7 @@ describe('SoftGreTable', () => {
     const row = await screen.findAllByRole('row', { name: /softGreProfileName/i })
     expect(row.length).toBe(3)
   })
-  
+
   it('should navigate to SoftGreDetailView Page correctly', async () => {
     render(
       <Provider>
@@ -81,7 +82,7 @@ describe('SoftGreTable', () => {
       </Provider>,
       { route: { params, path: tablePath } }
     )
-    
+
     const softGreProfileLink = await screen.findByRole('link',
       { name: 'softGreProfileName1' }) as HTMLAnchorElement
     expect(softGreProfileLink.href).toContain(`/${params.tenantId}/t/${getPolicyDetailsLink({

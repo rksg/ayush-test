@@ -3,13 +3,12 @@ import { rest } from 'msw'
 import { CommonUrlsInfo, PolicyOperation, PolicyType,
   SoftGreUrls,
   getPolicyRoutePath
-  // TunnelProfileUrls as SoftGreUrls
 } from '@acx-ui/rc/utils'
-import { Path }                                                           from '@acx-ui/react-router-dom'
-import { Provider }                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { Path }                       from '@acx-ui/react-router-dom'
+import { Provider }                   from '@acx-ui/store'
+import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedNetworkQueryData, mockSoftGreDetail, mockSoftGreTable } from '../__tests__/fixtures'
+import { mockedNetworkQueryData, mockedVenueQueryData, mockSoftGreDetailFromListQueryById } from '../__tests__/fixtures'
 
 import SoftGreDetailView from './softGreDetailView'
 
@@ -28,8 +27,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 let params: { tenantId: string, policyId: string }
 params = {
-  tenantId: 'tenantId',
-  policyId: 'test-policyId'
+  tenantId: '__tenantId__',
+  policyId: 'a983a74d1791406a9dfb17c6796676d4'
 }
 
 const detailPath = '/:tenantId/t' + getPolicyRoutePath({
@@ -43,25 +42,27 @@ describe('SoftGre Detail Page', () => {
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
         (_req, res, ctx) => {
-          return res(ctx.json(mockSoftGreTable))
+          return res(ctx.json(mockSoftGreDetailFromListQueryById))
         }
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockedNetworkQueryData))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueQueryData))
       )
     )
   })
 
-  it('should render Breadcrumb and Title correctly', async () => {
+  it('should render Breadcrumb correctly', async () => {
     render(
       <Provider>
         <SoftGreDetailView />
       </Provider>,
       { route: { params, path: detailPath } }
     )
-    await screen.findByText('softGreProfileName1')
-
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'SoftGRE' })).toBeVisible()

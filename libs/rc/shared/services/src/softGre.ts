@@ -3,8 +3,8 @@ import _ from 'lodash'
 import { CommonResult,
   SoftGreViewData,
   TableResult,
-  TunnelProfileUrls as SoftGreUrls,
-  // SoftGreUrls,
+  // TunnelProfileUrls as SoftGreUrls,
+  SoftGreUrls,
   SoftGre,
   CommonUrlsInfo,
   SoftGreActivationInformation,
@@ -46,7 +46,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           const activities = [
             'AddSoftGreProfile',
             'UpdateSoftGreProfile',
-            'DeleteSoftGreProfile',
+            'DeleteSoftGreProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(
@@ -111,7 +111,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           pageSize: 10_000
         }
         // eslint-disable-next-line max-len
-        const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
         // eslint-disable-next-line max-len
         const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
         if (networkRes.error) return defaultRes
@@ -133,7 +133,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           sortOrder: 'DESC'
         }
         // eslint-disable-next-line max-len
-        const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params)
         const venueRes = await fetchWithBQ({ ...venueReq, body: JSON.stringify(venueQueryPayload) })
         if (venueRes.error) return defaultRes
         const venueData = venueRes?.data as TableResult<VenueDetail>
@@ -153,7 +153,8 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         }
         return { data: result as unknown as TableResult<VenueTableUsageBySoftGre> }
       },
-      providesTags: [{ type: 'SoftGre', id: 'LIST' }]
+      providesTags: [{ type: 'SoftGre', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })

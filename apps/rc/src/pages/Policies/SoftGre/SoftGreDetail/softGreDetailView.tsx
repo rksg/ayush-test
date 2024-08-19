@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import _ from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -11,8 +11,6 @@ import { TenantLink }                                                           
 import { WifiScopes }                                                                                          from '@acx-ui/types'
 import { filterByAccess }                                                                                      from '@acx-ui/user'
 
-import { mockSoftGreTable } from '../__tests__/fixtures'
-
 import SoftGreDetailContent from './softGreDetailContent'
 import SoftGreVenueDetail   from './softGreVenueDetail'
 
@@ -21,29 +19,25 @@ export default function SoftGreDetailView () {
   const params = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SOFTGRE)
   const [ softGreData, setSoftGreData ] = useState<SoftGreViewData>()
-  const [ activationInfos, setActivationInfos ] = useState<SoftGreActivationInformation[]>()
+  const defaultPayload = { filters: { id: [params.policyId] } }
 
-  const defaultPayload = {filters: { id: [params.policyId] } }
   const { softGreDetail, isLoading } = useGetSoftGreViewDataListQuery(
     { payload: defaultPayload },
     {
       selectFromResult: ( { data, isLoading } ) => {
         return {
-          softGreDetail: data?.data?.[0] || {} as SoftGreViewData,
+          softGreDetail: data?.data[0] || {} as SoftGreViewData,
           isLoading
         }
       }
     }
   )
-  // mock
-  // const softGreDetail = mockSoftGreTable?.data.data[2] as SoftGreViewData
 
   useEffect(() => {
-    if (softGreDetail) {
+    if (softGreDetail && !_.isEqual(softGreDetail, softGreData)) {
       setSoftGreData(softGreDetail)
-      setActivationInfos((softGreDetail?.activationInformations ?? []) as SoftGreActivationInformation[])
     }
-  }, [])
+  }, [softGreDetail])
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -72,7 +66,9 @@ export default function SoftGreDetailView () {
           <SoftGreDetailContent data={softGreData}/>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <SoftGreVenueDetail activationInformations={activationInfos ?? []} />
+          <SoftGreVenueDetail activationInformations={
+            (softGreData?.activationInformations || []) as SoftGreActivationInformation[]}
+          />
         </GridCol>
       </GridRow>
     </Loader>

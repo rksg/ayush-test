@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
 import {
   useDeleteSoftGreMutation,
@@ -21,8 +20,6 @@ import {
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, WifiScopes }                                  from '@acx-ui/types'
 import { filterByAccess, hasPermission }                           from '@acx-ui/user'
-
-import { mockSoftGreTable } from '../__tests__/fixtures'
 
 const defaultPayload = {
   fields: [
@@ -47,6 +44,7 @@ export default function SoftGreTable () {
   const basePath: Path = useTenantLink('')
 
   const settingsId = 'policies-softgre-table'
+  const [ deleteSoftGreFn ] = useDeleteSoftGreMutation()
 
   const tableQuery = useTableQuery<SoftGreViewData>({
     useQuery: useGetSoftGreViewDataListQuery,
@@ -54,11 +52,7 @@ export default function SoftGreTable () {
     pagination: { settingsId }
   })
 
-  // TODO: mock data
-  // const tableQuery = { ...mockSoftGreTable, isFetching: false, isLoading: false, pagination: {} }
-  
-  const [ deleteSoftGreFn ] = useDeleteSoftGreMutation()
-  
+
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE],
@@ -162,7 +156,8 @@ function useColumns () {
   }, {
     selectFromResult: ({ data }) => {
       return {
-        venueNameMap: data?.data?.map(venue => ({ key: venue.id, value: venue.name })) ?? emptyVenues
+        venueNameMap: data?.data?.map(venue =>
+          ({ key: venue.id, value: venue.name })) ?? emptyVenues
       }
     }
   })
@@ -244,6 +239,7 @@ function useColumns () {
         if (!row?.activationInformations || row?.activationInformations?.length === 0) return 0
         // eslint-disable-next-line max-len
         const tooltipItems = venueNameMap?.filter(v => row?.activationInformations?.map(venue => venue?.venueId)!.includes(v.key)).map(v => v.value)
+        // eslint-disable-next-line max-len
         return <SimpleListTooltip items={tooltipItems} displayText={row?.activationInformations?.length} />
       }
     }

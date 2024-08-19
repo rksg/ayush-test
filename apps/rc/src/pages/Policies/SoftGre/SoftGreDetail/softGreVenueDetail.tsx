@@ -1,18 +1,17 @@
 
+import { useEffect, useState } from 'react'
+
 import { useIntl } from 'react-intl'
 
-import { Card,  Table, TableProps }                                              from '@acx-ui/components'
+import { Card,  Loader,  Table, TableProps }                                     from '@acx-ui/components'
 import { SimpleListTooltip }                                                     from '@acx-ui/rc/components'
 import { useGetVenuesSoftGrePolicyQuery }                                        from '@acx-ui/rc/services'
 import { SoftGreActivationInformation, VenueTableUsageBySoftGre, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                                            from '@acx-ui/react-router-dom'
 
+
 const defaultVenuePayload = {
-  fields: [
-    'id',
-    'name',
-    'addressLine'
-  ],
+  fields: ['id', 'name', 'addressLine'],
   search: {
     searchTargetFields: ['name']
   },
@@ -30,6 +29,7 @@ interface SoftGreVenueDetailProps {
 const SoftGreVenueDetail = (props: SoftGreVenueDetailProps) => {
   const { activationInformations } = props
   const { $t } = useIntl()
+  const [ basicData, setBasicData ] = useState<VenueTableUsageBySoftGre[]>()
 
   const tableQuery = useTableQuery({
     useQuery: useGetVenuesSoftGrePolicyQuery,
@@ -44,23 +44,30 @@ const SoftGreVenueDetail = (props: SoftGreVenueDetailProps) => {
       searchTargetFields: ['name']
     }
   })
+  // const basicData = tableQuery.data?.data
 
-  const basicData = tableQuery.data?.data
+  useEffect(() => {
+    if (tableQuery?.data?.data) {
+      setBasicData(tableQuery?.data?.data)
+    }
+  }, [tableQuery])
 
   return (
-    <Card title={`${$t({ defaultMessage: 'Instances' })} (${basicData?.length ?? 0})`}>
-      <div style={{ width: '100%' }}>
-        <Table<VenueTableUsageBySoftGre>
-          enableApiFilter={true}
-          columns={useColumns()}
-          dataSource={basicData}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
-          rowKey='id'
-        />
-      </div>
-    </Card>
+    <Loader states={[ { isLoading: tableQuery.isLoading }]}>
+      <Card title={`${$t({ defaultMessage: 'Instances' })} (${basicData?.length ?? 0})`}>
+        <div style={{ width: '100%' }}>
+          <Table<VenueTableUsageBySoftGre>
+            enableApiFilter={true}
+            columns={useColumns()}
+            dataSource={tableQuery?.data?.data}
+            pagination={tableQuery.pagination}
+            onChange={tableQuery.handleTableChange}
+            onFilterChange={tableQuery.handleFilterChange}
+            rowKey='id'
+          />
+        </div>
+      </Card>
+    </Loader>
   )
 }
 

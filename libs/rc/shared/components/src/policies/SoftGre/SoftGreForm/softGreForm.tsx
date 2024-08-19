@@ -5,7 +5,7 @@ import { Col, Form, Row }                      from 'antd'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }                                                      from '@acx-ui/components'
+import { PageHeader, StepsForm }                                                              from '@acx-ui/components'
 import { useCreateSoftGreMutation, useGetSoftGreViewDataListQuery, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
 import {
   LocationExtended,
@@ -19,9 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { mockSoftGreDetail }  from './__tests__/fixtures'
 import { SoftGreSettingForm } from './softGreSettingForm'
-
 
 interface SoftGreFormProps {
   editMode: boolean
@@ -60,7 +58,7 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
   }
-  const defaultPayload = {filters: { id: [params.policyId] } }
+  const defaultPayload = { filters: { id: [params.policyId] } }
   const { softGreData } = useGetSoftGreViewDataListQuery(
     { params, payload: defaultPayload },
     {
@@ -70,20 +68,18 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
       }
     }
   )
-  // TODO: mock data
-  // const softGreData = mockSoftGreDetail?.data[0]
 
   useEffect(() => {
-    if (softGreData && editMode) {
-      form.setFieldsValue(softGreData)
+    if (!editMode || !softGreData) return
 
-      if (softGreData?.activationInformations?.length !== 0) {
-        softGreData?.activationInformations?.map(venue => {
-          if ( venue.aaaAffinityEnabled === true ) {
-            setIsSwitchsDisabled(true)
-          }
-        })
-      }
+    form.setFieldsValue(softGreData)
+
+    if (softGreData?.activationInformations?.length !== 0) {
+      softGreData?.activationInformations?.map(venue => {
+        if ( venue.aaaAffinityEnabled === true ) {
+          setIsSwitchsDisabled(true)
+        }
+      })
     }
   }, [softGreData, form, editMode])
 

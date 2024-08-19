@@ -1,16 +1,14 @@
-import _        from 'lodash'
 import { rest } from 'msw'
 
 import { softGreApi }                                                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { Path }                                                            from '@acx-ui/react-router-dom'
 import { Provider, store }                                                 from '@acx-ui/store'
-import { mockServer, render, within, screen, waitForElementToBeRemoved }   from '@acx-ui/test-utils'
+import { mockServer, render, within, screen }                              from '@acx-ui/test-utils'
 
 import {  mockedNetworkQueryData, mockedVenueQueryData, mockSoftGreDetail } from '../__tests__/fixtures'
 
 import SoftGreVenueDetail from './softGreVenueDetail'
-
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

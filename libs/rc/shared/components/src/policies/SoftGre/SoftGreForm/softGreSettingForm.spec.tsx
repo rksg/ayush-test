@@ -48,7 +48,7 @@ describe('SoftGreSettingForm', () => {
     )
   })
 
-  xit('should show error message while SoftGre Name is duplicated', async () => {
+  it('should show error message while SoftGre Name is duplicated', async () => {
     const { result: formRef } = renderHook(() => {
       return Form.useForm()[0]
     })
@@ -61,12 +61,12 @@ describe('SoftGreSettingForm', () => {
     )
 
     const policyNameField = await screen.findByLabelText(/Profile Name/i)
-    fireEvent.change(policyNameField, { target: { value: '5555' } })
+    fireEvent.change(policyNameField, { target: { value: 'softGreProfileName2' } })
     fireEvent.blur(policyNameField)
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 
-    expect(await screen.findByText('SoftGRE with that name already exists')).toBeInTheDocument()
+    expect(await screen.findByText('SoftGRE with that name already exists')).toBeVisible()
   })
 
   it('should validate gateway address successfully', async () => {
