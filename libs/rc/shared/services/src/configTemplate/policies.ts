@@ -440,7 +440,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     delVlanPoolPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       // eslint-disable-next-line max-len
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicyRbac),
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     getVlanPoolTemplateVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
