@@ -1211,7 +1211,7 @@ export function ManageCustomer () {
         >{intl.$t({ defaultMessage: 'Start Subscription' })}
         </Button>
         <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
-          <label>{intl.$t({ defaultMessage: 'Device Subscription' })}</label>
+          <label>{intl.$t({ defaultMessage: 'Device Networking' })}</label>
           <label>{assignedApswTrialLicense}</label>
         </UI.FieldLabel2>
 
