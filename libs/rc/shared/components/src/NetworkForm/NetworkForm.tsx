@@ -1094,7 +1094,7 @@ function useUpdateInstance () {
 }
 
 function useGetInstance (isEdit: boolean) {
-  const isUseWifiRbacApi = true
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
