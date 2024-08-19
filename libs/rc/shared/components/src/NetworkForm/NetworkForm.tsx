@@ -11,11 +11,9 @@ import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
-  useGetNetworkQuery,
   useUpdateNetworkMutation,
   useUpdateNetworkVenuesMutation,
   useAddNetworkTemplateMutation,
-  useGetNetworkTemplateQuery,
   useUpdateNetworkTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useActivateWifiOperatorOnWifiNetworkMutation,
@@ -34,12 +32,11 @@ import {
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useGetNetworkDeepQuery,
-  useUpdateNetworkVenueMutation,
   useActivatePortalMutation,
   useActivatePortalTemplateMutation,
   useGetEnhancedPortalProfileListQuery,
-  useGetEnhancedPortalTemplateListQuery
+  useGetEnhancedPortalTemplateListQuery,
+  useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -63,6 +60,7 @@ import {
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
+import { useGetNetwork }                from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
@@ -241,7 +239,7 @@ export function NetworkForm (props:{
     updateSaveState({ ...saveState, ...newSavedata })
   }
 
-  const { data } = useGetInstance(editMode)
+  const { data } = useGetNetwork()
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -1091,30 +1089,6 @@ function useUpdateInstance () {
   const [ updateNetworkTemplate ] = useUpdateNetworkTemplateMutation()
 
   return isTemplate ? updateNetworkTemplate : updateNetwork
-}
-
-function useGetInstance (isEdit: boolean) {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const networkResult = useGetNetworkQuery({
-    params,
-    enableRbac: isUseWifiRbacApi
-  }, { skip: isTemplate || isUseWifiRbacApi })
-
-
-  const rbacNetworkResult = useGetNetworkDeepQuery({
-    params,
-    enableRbac: isUseWifiRbacApi
-  }, { skip: isTemplate || !isUseWifiRbacApi })
-
-  const networkTemplateResult = useGetNetworkTemplateQuery({
-    params,
-    enableRbac: isConfigTemplateRbacEnabled
-  }, { skip: !isEdit || !isTemplate })
-
-  return isTemplate ? networkTemplateResult : (isUseWifiRbacApi? rbacNetworkResult : networkResult)
 }
 
 function useCertificateTemplateActivation () {
