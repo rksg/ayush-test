@@ -12,3 +12,9 @@ export const detailStyle = { fontSize: '13px',
   lineHeight: '13px',
   minHeight: '13px'
 }
+
+export const StyledWrapper = styled.div`
+  .ApCompatibilityDrawerFormItem .ant-form-item-control-input {
+    min-height: 13px;
+  }
+`

@@ -1,31 +1,27 @@
 import { Form }    from 'antd'
-import { isNil }   from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { ApCompatibility, ApIncompatibleFeature } from '@acx-ui/rc/utils'
-
-import { CompatibilityType } from '../../ApCompatibility/constants'
-import { StyledWrapper }     from '../../ApCompatibility/styledComponents'
+import { ApIncompatibleFeature, CompatibilityDeviceEnum, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
-interface CompatibilityRequiredItemProps {
+export interface FeatureItemProps {
   isMultiple?: boolean
-  type: CompatibilityType
+  deviceType: CompatibilityDeviceEnum
   data: ApIncompatibleFeature
-  incompatible: ApCompatibility['incompatible']
-  total: ApCompatibility['total']
+  incompatible: number
+  total: number
 }
 
-export const CompatibilityRequiredItem = (props: CompatibilityRequiredItemProps) => {
+export const FeatureItem = (props: FeatureItemProps) => {
   const { $t } = useIntl()
-  const { isMultiple = false, type, data, incompatible, total } = props
+  const { isMultiple = false, deviceType, data, incompatible, total } = props
 
-  return <StyledWrapper>
+  return <UI.StyledWrapper>
     {isMultiple &&
       <Form.Item>
         <UI.StyledFeatureName>
-          {data.featureName}
+          {getCompatibilityFeatureDisplayName(data.featureName)}
         </UI.StyledFeatureName>
       </Form.Item>
     }
@@ -47,9 +43,9 @@ export const CompatibilityRequiredItem = (props: CompatibilityRequiredItemProps)
         {data.supportedModelFamilies?.join(', ')}
       </Form.Item>
     }
-    {isNil(incompatible) && isNil(total) && type !== CompatibilityType.VENUE &&
+    {(Boolean(incompatible) && Boolean(total)) &&
       <Form.Item
-        label={type === CompatibilityType.AP
+        label={deviceType === CompatibilityDeviceEnum.AP
           ? $t({
             defaultMessage: 'Incompatible Access Points (Currently)'
           })
@@ -62,5 +58,5 @@ export const CompatibilityRequiredItem = (props: CompatibilityRequiredItemProps)
         {`${incompatible} / ${total}`}
       </Form.Item>
     }
-  </StyledWrapper>
+  </UI.StyledWrapper>
 }

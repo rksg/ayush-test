@@ -225,6 +225,13 @@ export {
   ApCompatibilityFeature,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibility'
+export {
+  ApGeneralCompatibilityDrawer,
+  EdgeCompatibilityDrawer,
+  IncompatibilityFeatures,
+  CompatibilityWarningCircleIcon,
+  edgeSdLanRequiredFeatures
+} from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
 export { usePersonaListQuery } from './usePersonaListQuery'

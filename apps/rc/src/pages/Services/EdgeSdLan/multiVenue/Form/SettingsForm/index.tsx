@@ -7,7 +7,7 @@ import { useParams }                                               from 'react-r
 
 import {  StepsForm, Tooltip, useStepFormContext, Loader } from '@acx-ui/components'
 import { InformationSolid }                                from '@acx-ui/icons'
-import { SpaceWrapper }                                    from '@acx-ui/rc/components'
+import { SpaceWrapper, CompatibilityWarningCircleIcon }    from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeFeatureSetsQuery
@@ -304,7 +304,7 @@ const ClusterFirmwareInfo = (props: {
     }
   })
   return (
-    <Space>
+    <Space align='center'>
       <Typography>
         {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
           { fwVersion }) }
@@ -312,16 +312,18 @@ const ClusterFirmwareInfo = (props: {
       <Tooltip
         title={<Loader states={[{ isLoading }]}>
           {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
-        running firmware version {requiredFw} or higher.
-        You may upgrade your venue firmware
+        running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware
         from {targetLink}` },
           {
+            b: (txt) => <b>{txt}</b>,
             requiredFw,
             targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
               {$t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' })}
             </TenantLink>
-          })}</Loader>}>
-        <InformationSolid />
+          })}
+        </Loader>
+        }>
+        <CompatibilityWarningCircleIcon />
       </Tooltip>
     </Space>
   )

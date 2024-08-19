@@ -1,20 +1,21 @@
-/* eslint-disable max-len */
 import { useState, useEffect } from 'react'
 
-import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Loader, Tabs }  from '@acx-ui/components'
 import {
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
-import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature } from '@acx-ui/rc/utils'
+import {
+  ApCompatibility,
+  ApCompatibilityResponse,
+  ApIncompatibleFeature,
+  isPromiseSettledFulfilled,
+  CompatibilityType, IncompatibilityFeatures
+} from '@acx-ui/rc/utils'
 
-import { CompatibilityItem }                                                   from '../CompatibilityItem'
-import { InCompatibilityFeatures, CompatibilityDeviceEnum, CompatibilityType } from '../constants'
-import { getDeviceTypeDisplayName, compatibilityDataGroupByDeviceType }        from '../utils'
+import { CompatibilityDrawer } from '../CompatibilityDrawer'
 
 export enum ApCompatibilityType {
   NETWORK = 'Network',
@@ -22,53 +23,39 @@ export enum ApCompatibilityType {
   ALONE = 'ALONE',
 }
 
-export type ApCompatibilityDrawerProps = {
+/**
+ * featureName: when specified on a feature
+ * requiredFeatures: when `featureName` has other dependency features
+ */
+export type ApGeneralCompatibilityDrawerProps = {
   visible: boolean,
   type?: ApCompatibilityType,
   isMultiple?: boolean,
+  isFeatureEnabledRegardless?: boolean,
   venueId?: string,
   venueName?: string,
   networkId?: string,
   apName?: string,
-  featureName?: InCompatibilityFeatures,
-  networkIds?: string[],
-  apIds?: string[],
-  venueIds?: string[],
+  featureName?: IncompatibilityFeatures,
+  requiredFeatures?: IncompatibilityFeatures[],
+  apId?: string,
   data?: ApCompatibility[],
   onClose: () => void
 }
 
-/*
-Sample 1: Open drawer and then fetch data
-  <ApCompatibilityDrawer
-    visible={drawerVisible}
-    type={ApCompatibilityType.VENUE}
-    venueId={venueId}
-    featureName={InCompatibilityFeatures.BETA_DPSK3}
-    venueName={venueData?.name ?? ''}
-    queryType={ApCompatibilityQueryTypes.CHECK_VENUE_WITH_FEATURE}
-    onClose={() => setDrawerVisible(false)}
-  />
-
-Sample 2: Display data on drawer
-  <ApCompatibilityDrawer
-    isMultiple
-    type={ApCompatibilityType.VENUE}
-    visible={drawerVisible}
-    data={apCompatibility}
-    onClose={() => setDrawerVisible(false)}
-  />
-*/
-export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
+export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawerProps) => {
   const { $t } = useIntl()
   const {
     visible,
-    type=ApCompatibilityType.VENUE,
-    isMultiple=false,
+    type = ApCompatibilityType.VENUE,
+    isMultiple = false,
+    featureName,
+    requiredFeatures,
     venueId, venueName,
     networkId,
-    featureName,
-    apName, apIds=[], networkIds=[], venueIds=[], data=[] } = props
+    apName, apId,
+    data = []
+  } = props
 
   const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
@@ -82,23 +69,51 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
     ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
     : $t({ defaultMessage: 'Compatibility Requirement' })
 
-  const getApCompatibilities = async () => {
-    const feature = featureName ?? ''
+  const isFeatureEnabledRegardless = Boolean(apId || networkId)
 
+  const getApCompatibilities = async () => {
     if (ApCompatibilityType.NETWORK === type) {
       return getApCompatibilitiesNetwork({
         params: { networkId },
-        payload: { filters: { apIds, venueIds }, feature }
+        payload: {
+          filters: {
+            ...(apId ? { apIds: [apId] } : undefined),
+            ...(venueId ? { venueIds: [venueId] } : undefined)
+          },
+          featureName
+        }
       }).unwrap()
+
     } else if (ApCompatibilityType.VENUE === type) {
-      return getApCompatibilitiesVenue({
+      const queryfeatures = [featureName].concat(requiredFeatures ?? [])
+      const reqs = queryfeatures.map(fName => getApCompatibilitiesVenue({
         params: { venueId },
-        payload: { filters: { apIds, networkIds }, feature }
-      }).unwrap()
+        payload: {
+          filters: {
+            ...(apId ? { apIds: [apId] } : undefined),
+            ...(networkId ? { networkIds: [networkId] } : undefined)
+          },
+          ...(isFeatureEnabledRegardless ? { featureName: fName } : undefined)
+        }
+      }).unwrap())
+
+      const reqResults = await Promise.allSettled(reqs)
+      // eslint-disable-next-line max-len
+      const results: ApCompatibilityResponse[] = reqResults.filter(isPromiseSettledFulfilled)
+        .map(res => res.value as ApCompatibilityResponse)
+
+      return reqs.length > 1
+        // eslint-disable-next-line max-len
+        ? { apCompatibilities: filterResultByRequiredFeatures(results, queryfeatures) } as ApCompatibilityResponse
+        : results[0]
     }
+
+    // feature min requirement info
     const apFeatureSets = await getApFeatureSets({
-      params: { featureName: encodeURI(feature) }
+      params: { featureName: encodeURI(featureName ?? '') }
     }).unwrap()
+
+    // eslint-disable-next-line max-len
     const apIncompatibleFeature = { ...apFeatureSets, incompatibleDevices: [] } as ApIncompatibleFeature
     const apCompatibility = {
       id: 'ApFeatureSet',
@@ -106,6 +121,7 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
       incompatible: 0,
       total: 0
     } as ApCompatibility
+
     return { apCompatibilities: [apCompatibility] } as ApCompatibilityResponse
   }
 
@@ -114,7 +130,7 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
       const fetchApCompatibilities = async () => {
         try {
           const apCompatibilitiesResponse = await getApCompatibilities()
-          setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities)
+          setApCompatibilities(apCompatibilitiesResponse?.apCompatibilities ?? [])
           setIsInitializing(false)
         } catch (e) {
           // eslint-disable-next-line no-console
@@ -132,64 +148,38 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
     }
   }, [data])
 
-  const getContent = (items: ApCompatibility[]) => {
-    return <Loader states={[ { isLoading: isInitializing } ]}>
-      <Form layout='vertical' data-testid='apCompatibility-form'>
-        {items.map(item => {
-          const compatibilityData = compatibilityDataGroupByDeviceType(item)
-          const deviceTypes = Object.keys(compatibilityData)
-          const isCrossDevice = deviceTypes.length > 1
-
-          return isCrossDevice
-            ? <Tabs defaultActiveKey={deviceTypes[0]}>
-              {deviceTypes.map((deviceType) => <Tabs.TabPane
-                key={deviceType}
-                tab={$t(getDeviceTypeDisplayName(deviceType as CompatibilityDeviceEnum))}
-              >
-                <CompatibilityItem
-                  type={getCompatibilityType(type)}
-                  data={compatibilityData[deviceType]}
-                  totalDevices={item.total}
-                  venueId={venueId}
-                  venueName={venueName}
-                  featureName={featureName}
-                />
-              </Tabs.TabPane>)}
-            </Tabs>
-            : <CompatibilityItem
-              type={getCompatibilityType(type)}
-              data={compatibilityData[deviceTypes[0]]}
-              totalDevices={item.total}
-              venueId={venueId}
-              venueName={venueName}
-              featureName={featureName}
-            />
-        })}
-      </Form>
-    </Loader>
-  }
-
   return (
-    <Drawer
+    <CompatibilityDrawer
       data-testid={'ap-compatibility-drawer'}
-      title={title}
       visible={visible}
-      closable={true}
+      title={title}
+      compatibilityType={apId
+        ? CompatibilityType.DEVICE
+        : (featureName ? CompatibilityType.FEATURE : CompatibilityType.VENUE)
+      }
+      data={apCompatibilities}
       onClose={props.onClose}
-      children={getContent(apCompatibilities)}
-      destroyOnClose={true}
-      width={'500px'}
+      isLoading={isInitializing}
+
+      venueId={venueId}
+      venueName={venueName}
+      featureName={featureName}
     />
   )
 }
 
-const getCompatibilityType = (type: ApCompatibilityType): CompatibilityType => {
-  switch(type) {
-    case ApCompatibilityType.VENUE:
-      return CompatibilityType.VENUE
-    case ApCompatibilityType.ALONE:
-      return CompatibilityType.ALONE
-    default:
-      return CompatibilityType.AP
-  }
+// eslint-disable-next-line max-len
+const filterResultByRequiredFeatures = (results: ApCompatibilityResponse[], requiredFeatures: IncompatibilityFeatures[]) => {
+  const merged: ApCompatibility[] = []
+
+  results.forEach(result => {
+    merged.push(...result.apCompatibilities.map(item => ({
+      ...item,
+      incompatibleFeatures: item.incompatibleFeatures
+        ?.filter(feature =>
+          requiredFeatures.includes(feature.featureName as IncompatibilityFeatures))
+    })))
+  })
+
+  return merged
 }

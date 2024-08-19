@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                      from '..'
-import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                                   from '..'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -375,8 +375,9 @@ export interface EdgeFeatureSets {
   featureSets: EdgeFeatureRequirement[]
 }
 
-export interface VenueEdgeCompatibility {
-  venueId: string
+export interface EntityCompatibility {
+  identityType: CompatibilityEntityTypeEnum
+  id: string
   incompatibleFeatures: {
     featureRequirement: EdgeFeatureRequirement,
     incompatibleDevices: {
@@ -388,30 +389,26 @@ export interface VenueEdgeCompatibility {
   incompatible: number
 }
 export interface VenueEdgeCompatibilitiesResponse {
-  compatibilities: VenueEdgeCompatibility[]
+  compatibilities: EntityCompatibility[]
 }
 
-export interface EdgeNodeSdLanCompatibility extends Omit<VenueEdgeCompatibility, 'venueId'> {
-  edgeClusterId: string,
-}
-
-export interface ServiceEdgeCompatibility {
+export interface EdgeSdLanCompatibilities {
   serviceId: string
-  clusterSdLanEdgeCompatibilities: EdgeNodeSdLanCompatibility[]
+  clusterEdgeCompatibilities: EntityCompatibility[]
 }
-export interface ServiceEdgeCompatibilitiesResponse {
-  compatibilities: ServiceEdgeCompatibility[]
+export interface EdgeSdLanCompatibilitiesResponse {
+  compatibilities: EdgeSdLanCompatibilities[]
 }
 
 export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
   venueId: string
 }
-export interface ApEdgeCompatibility {
+export interface EdgeSdLanApCompatibility {
   serviceId: string
   venueSdLanApCompatibilities: VenueSdLanApCompatibility[]
 }
-export interface ApEdgeCompatibilitiesResponse {
-  compatibilities: ApEdgeCompatibility[]
+export interface EdgeSdLanApCompatibilitiesResponse {
+  compatibilities: EdgeSdLanApCompatibility[]
 }
 
 export interface VirtualIpSetting {

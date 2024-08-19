@@ -18,7 +18,8 @@ import { filterByAccess } from '@acx-ui/user'
 
 import { useEdgeMvSdLanContext } from '../../EdgeMvSdLanContextProvider'
 
-import { NetworksDrawer } from './NetworksDrawer'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import { NetworksDrawer }     from './NetworksDrawer'
 
 export interface VenueNetworksTableProps {
   value?: EdgeMvSdLanFormNetwork,
@@ -31,6 +32,7 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
   const { allSdLans } = useEdgeMvSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
+
   const serviceId = formRef.getFieldValue('id')
 
   const tableQuery = useTableQuery<Venue>({
@@ -51,7 +53,13 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
     fixed: 'left',
-    sorter: true
+    sorter: true,
+    render: (_, row) => {
+      return <Space size='large'>
+        {row.name}
+        <CompatibilityCheck venueId={row.id} venueName={row.name} />
+      </Space>
+    }
   }, {
     title: $t({ defaultMessage: 'Address' }),
     width: Infinity,

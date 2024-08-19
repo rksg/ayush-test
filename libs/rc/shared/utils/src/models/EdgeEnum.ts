@@ -116,3 +116,9 @@ export enum EdgeFeatureEnum {
   TUNNEL_PROFILE = 'Tunnel Profile',
   HA_AA = 'HA-AA'
 }
+
+export enum CompatibilityEntityTypeEnum {
+  VENUE = 'venue',
+  CLUSTER = 'cluster',
+  DEVICE = 'device'
+}

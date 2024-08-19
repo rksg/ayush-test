@@ -5,7 +5,7 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
-  ApEdgeCompatibilitiesResponse,
+  EdgeSdLanApCompatibilitiesResponse,
   ClusterNetworkSettings,
   CommonResult,
   EdgeAllPortTrafficData,
@@ -40,7 +40,7 @@ import {
   PingEdge,
   SEARCH,
   SORTER,
-  ServiceEdgeCompatibilitiesResponse,
+  EdgeSdLanCompatibilitiesResponse,
   TableResult,
   TraceRouteEdge,
   VenueEdgeCompatibilitiesResponse,
@@ -887,7 +887,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
     }),
-    getSdLanEdgeCompatibilities: build.query<ServiceEdgeCompatibilitiesResponse, RequestPayload>({
+    getSdLanEdgeCompatibilities: build.query<EdgeSdLanCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilities, params)
         return {
@@ -897,7 +897,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
     }),
-    getSdLanApCompatibilities: build.query<ApEdgeCompatibilitiesResponse, RequestPayload>({
+    getSdLanApCompatibilities: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params)
         return {

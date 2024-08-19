@@ -1,20 +1,21 @@
 import { useState, useEffect, useMemo } from 'react'
 
-import { Form }                   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { Drawer, Loader, Tabs }           from '@acx-ui/components'
 import {
   useLazyGetEdgeFeatureSetsQuery,
-  useLazyGetVenueEdgeCompatibilitiesQuery,
-  useLazyGetSdLanEdgeCompatibilitiesQuery,
-  useLazyGetSdLanApCompatibilitiesQuery
-}   from '@acx-ui/rc/services'
-import { ApCompatibility, ApEdgeCompatibilitiesResponse, ApIncompatibleDevice, ApIncompatibleFeature, ServiceEdgeCompatibilitiesResponse, VenueEdgeCompatibility } from '@acx-ui/rc/utils'
+  useLazyGetVenueEdgeCompatibilitiesQuery }   from '@acx-ui/rc/services'
+import {
+  ApCompatibility,
+  ApIncompatibleDevice,
+  ApIncompatibleFeature,
+  EntityCompatibility,
+  IncompatibilityFeatures, CompatibilityType, CompatibilityDeviceEnum
+} from '@acx-ui/rc/utils'
 
-import { CompatibilityItem }                                                   from '../../Compatibility/CompatibilityItem'
-import { InCompatibilityFeatures, CompatibilityDeviceEnum, CompatibilityType } from '../constants'
-import { compatibilityDataGroupByDeviceType }                                  from '../utils'
+import { useEdgeCompatibilityRequirementData, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
+import { CompatibilityDrawer }                                                         from '../CompatibilityDrawer'
+import { EdgeSdLanDetailCompatibilityDrawer }                                          from '../EdgeSdLanDetailCompatibilityDrawer'
 
 export enum EdgeCompatibilityType {
   SD_LAN = 'SD-LAN',
@@ -29,10 +30,10 @@ export type EdgeCompatibilityDrawerProps = {
   type?: EdgeCompatibilityType,
   venueId?: string,
   venueName?: string,
-  featureName?: InCompatibilityFeatures,
-  edgeIds?: string[],
-  serviceIds?: string[],
-  data?: VenueEdgeCompatibility[],
+  featureName?: IncompatibilityFeatures,
+  edgeId?: string,
+  serviceId?: string,
+  data?: EntityCompatibility[],
 }
 
 export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => {
@@ -42,118 +43,89 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
     title,
     type = EdgeCompatibilityType.VENUE,
     venueId, venueName,
-    featureName
+    edgeId,
+    featureName,
+    onClose
   } = props
 
-  const { edgeCompatibilities, isLoading } = useCompatibilitiesData(props)
+  const skipFetchCompatibilities = type !== EdgeCompatibilityType.VENUE
+  const {
+    edgeCompatibilities, isLoading
+  } = useVenueEdgeCompatibilitiesData(props, skipFetchCompatibilities)
 
-  const getContent = (items: ApCompatibility[]) => {
-    return <Loader states={[ { isLoading } ]}>
-      <Form layout='vertical' data-testid='edgeCompatibility-form'>
-        {items.map(item => {
-          const compatibilityData = compatibilityDataGroupByDeviceType(item)
-          const deviceTypes = Object.keys(compatibilityData)
-          const isCrossDevice = deviceTypes.length > 1
-          const isVenueLevel = type === EdgeCompatibilityType.VENUE
+  // eslint-disable-next-line max-len
+  const skipFetchSdLanDetailCompatibilities = type !== EdgeCompatibilityType.SD_LAN || !props.serviceId
+  const {
+    sdLanCompatibilities,
+    isLoading: isDetailCompatibilitiesLoading
+  } = useEdgeSdLanDetailsCompatibilitiesData(props.serviceId!, skipFetchSdLanDetailCompatibilities)
 
-          return isCrossDevice
-            ? isVenueLevel
-              ? <Tabs defaultActiveKey={deviceTypes[0]}>
-                {deviceTypes.map((deviceType) => <Tabs.TabPane
-                  key={deviceType}
-                  tab={$t(getDeviceTypeDisplayName(deviceType as CompatibilityDeviceEnum))}
-                >
-                  <CompatibilityItem
-                    type={getCompatibilityType(type)}
-                    data={compatibilityData[deviceType]}
-                    totalDevices={item.total}
-                    venueId={venueId}
-                    venueName={venueName}
-                    featureName={featureName}
-                  />
-                </Tabs.TabPane>)}
-              </Tabs>
-              : deviceTypes.map((deviceType, index) => {
-                return <><CompatibilityItem
-                  type={getCompatibilityType(type)}
-                  data={compatibilityData[deviceType]}
-                  totalDevices={item.total}
-                  venueId={venueId}
-                  venueName={venueName}
-                  featureName={featureName}
-                />
-                {index < deviceTypes.length - 1 && <hr />}
-                </>
-              })
-            : <CompatibilityItem
-              type={getCompatibilityType(type)}
-              data={compatibilityData[deviceTypes[0]]}
-              totalDevices={item.total}
-              venueId={venueId}
-              venueName={venueName}
-              featureName={featureName}
-            />
-        })}
-      </Form>
-    </Loader>
-  }
+  const skipFetchFeatureInfo = type !== EdgeCompatibilityType.ALONE || !featureName
+  const {
+    featureInfos,
+    isLoading: isFeatureInfoLoading
+  } = useEdgeCompatibilityRequirementData(featureName!, skipFetchFeatureInfo)
 
-  return (
-    <Drawer
-      data-testid={'edge-compatibility-drawer'}
-      title={title}
-      visible={visible}
-      closable={true}
-      onClose={props.onClose}
-      children={getContent(edgeCompatibilities)}
-      destroyOnClose={true}
-      width={'500px'}
+  return (type === EdgeCompatibilityType.SD_LAN || type === EdgeCompatibilityType.ALONE)
+    ? <EdgeSdLanDetailCompatibilityDrawer
+      visible={true}
+      title={type === EdgeCompatibilityType.ALONE
+        ? $t({ defaultMessage: 'Compatibility Requirement' })
+        : $t({ defaultMessage: 'Incompatibility Details' })
+      }
+      isLoading={type === EdgeCompatibilityType.ALONE
+        ? isFeatureInfoLoading
+        : isDetailCompatibilitiesLoading
+      }
+      data={type === EdgeCompatibilityType.ALONE
+        ? featureInfos
+        : sdLanCompatibilities
+      }
+      onClose={onClose}
     />
-  )
+    : <CompatibilityDrawer
+      data-testid={'edge-compatibility-drawer'}
+      visible={visible}
+      title={title}
+      compatibilityType={edgeId
+        ? CompatibilityType.DEVICE
+        : (featureName ? CompatibilityType.FEATURE : CompatibilityType.VENUE)
+      }
+      data={edgeCompatibilities}
+      onClose={onClose}
+      isLoading={isLoading}
+      deviceType={CompatibilityDeviceEnum.EDGE}
+
+      venueId={venueId}
+      venueName={venueName}
+      featureName={featureName}
+    />
 }
 
-const useCompatibilitiesData = (props: EdgeCompatibilityDrawerProps) => {
-  const { data, type, featureName, venueId, serviceIds } = props
+// eslint-disable-next-line max-len
+const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, skip: boolean = false) => {
+  const { data, type = EdgeCompatibilityType.VENUE, featureName, venueId, edgeId } = props
   const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
   const [ edgeCompatibilities, setEdgeCompatibilities ] = useState<ApCompatibility[]>([])
 
   const [getEdgeFeatureSets] = useLazyGetEdgeFeatureSetsQuery()
   const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
-  const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
-  const [getSdLanApCompatibilities] = useLazyGetSdLanApCompatibilitiesQuery()
 
   const fetchEdgeCompatibilities = async () => {
     try {
       const featureNames = [featureName] ?? []
-
       let edgeCompatibilitiesResponse: ApCompatibility[] = []
 
       if (type === EdgeCompatibilityType.VENUE) {
-        const venueEdgeCompatibilities = await getVenueEdgeCompatibilities({
-          payload: { filters: { venueIds: [venueId] } }
+        const venueEdgeCompatibilities = await getVenueEdgeCompatibilities({ payload: {
+          filters: {
+            ...(venueId ? { venueIds: [venueId] } : undefined),
+            ...(edgeId ? { edgeIds: [edgeId] } : undefined)
+          } }
         }).unwrap()
         // eslint-disable-next-line max-len
-        edgeCompatibilitiesResponse = transformCompatibilityData(venueEdgeCompatibilities.compatibilities)
-      } else if (type === EdgeCompatibilityType.SD_LAN) {
-        const result = await Promise.allSettled([
-          getSdLanEdgeCompatibilities({ payload: { filters: { serviceIds } } }).unwrap(),
-          getSdLanApCompatibilities({ payload: { filters: { serviceIds } } }).unwrap()
-        ])
-
-        edgeCompatibilitiesResponse = []
-        result.forEach((resultItem, index) => {
-          if (resultItem.status === 'fulfilled') {
-            const _data = index === 0
-              // eslint-disable-next-line max-len
-              ? transformCompatibilityData((resultItem.value as ServiceEdgeCompatibilitiesResponse).compatibilities[0].venueSdLanEdgeCompatibilities)
-              // eslint-disable-next-line max-len
-              : (resultItem.value as ApEdgeCompatibilitiesResponse).compatibilities[0].venueSdLanApCompatibilities
-
-            edgeCompatibilitiesResponse.push(...(_data as ApCompatibility[]))
-          }
-        })
-
-      } else {
+        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
+      } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
           payload: { filters: { featureNames } }
         }).unwrap()
@@ -180,16 +152,18 @@ const useCompatibilitiesData = (props: EdgeCompatibilityDrawerProps) => {
   }
 
   useEffect(() => {
-    fetchEdgeCompatibilities()
-  }, [])
+    if (!skip)
+      fetchEdgeCompatibilities()
+  }, [skip])
 
   return useMemo(() => ({ edgeCompatibilities, isLoading: isInitializing }),
     [edgeCompatibilities, isInitializing])
 }
 
-const transformCompatibilityData = (data: VenueEdgeCompatibility[]): ApCompatibility[] => {
+// eslint-disable-next-line max-len
+const sdLanToApCompatibilityData = (data: EntityCompatibility[]): ApCompatibility[] => {
   return data.map(item => ({
-    id: item.venueId,
+    id: item.id,
     total: item.total,
     incompatible: item.incompatible,
     incompatibleFeatures: item.incompatibleFeatures?.map(incompatibleFeature => ({
@@ -198,22 +172,4 @@ const transformCompatibilityData = (data: VenueEdgeCompatibility[]): ApCompatibi
       incompatibleDevices: incompatibleFeature.incompatibleDevices as ApIncompatibleDevice[]
     } as ApIncompatibleFeature))
   } as ApCompatibility))
-}
-
-
-const getDeviceTypeDisplayName = (deviceType: CompatibilityDeviceEnum) => {
-  return deviceType === CompatibilityDeviceEnum.EDGE
-    ? defineMessage({ defaultMessage: 'SmartEdge' })
-    : defineMessage({ defaultMessage: 'Wi-Fi' })
-}
-
-const getCompatibilityType = (type: EdgeCompatibilityType): CompatibilityType => {
-  switch(type) {
-    case EdgeCompatibilityType.VENUE:
-      return CompatibilityType.VENUE
-    case EdgeCompatibilityType.ALONE:
-      return CompatibilityType.ALONE
-    default:
-      return CompatibilityType.EDGE
-  }
 }
