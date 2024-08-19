@@ -174,7 +174,8 @@ const parseDpskSettingDataToSave = (data: NetworkSaveData, editMode: boolean) =>
           advancedCustomization: new DpskWlanAdvancedCustomization()
         })
       }
-    }
+    },
+    useDpskService: !!data.dpskServiceProfileId
   }
 
   if (data.dpskServiceProfileId === '') {
