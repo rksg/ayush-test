@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
-import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 
@@ -14,6 +13,7 @@ import { CrrmGraph }       from './CrrmGraph'
 import { CrrmValuesExtra } from './CrrmValuesExtra'
 import { Overview }        from './Overview'
 import { StatusTrail }     from './StatusTrail'
+import { FixedAutoSizer } from '../../../DescriptionSection/styledComponents'
 
 export const IntentAIDetails = () => {
   const { $t } = useIntl()
@@ -29,7 +29,7 @@ export const IntentAIDetails = () => {
       title={$t({ defaultMessage: 'Intent Details' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
-        // TODO: question: should have AI Analytics in the breadcrumb?
+        { text: $t({ defaultMessage: 'AI Analytics' }) },
         { text: $t({ defaultMessage: 'Intent AI' }),
           link: 'analytics/intentAI' }
       ]}
@@ -40,7 +40,7 @@ export const IntentAIDetails = () => {
     />}
     <GridRow>
       <GridCol col={{ span: 6, xxl: 4 }}>
-        <AutoSizer>
+        <FixedAutoSizer>
           {({ width }) => (<div style={{ width }}>
             <GridRow>
               <AIDrivenRRMHeader>
@@ -54,7 +54,7 @@ export const IntentAIDetails = () => {
               </GridCol>
             </GridRow>
           </div>)}
-        </AutoSizer>
+        </FixedAutoSizer>
       </GridCol>
       <div hidden>
         <SummaryGraphBefore
