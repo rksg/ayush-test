@@ -481,7 +481,9 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          const status = selectedRows[0].accountType === MspEcAccountType.TRIAL ? 'Trial' : 'Paid'
+          const accType = selectedRows[0].accountType
+          const status = accType === MspEcAccountType.TRIAL ? 'Trial'
+            : (accType === MspEcAccountType.EXTENDED_TRIAL ? 'ExtendedTrial': 'Paid')
           navigate({
             ...basePath,
             pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`

@@ -228,6 +228,7 @@ export function ManageCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
+  const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
 
   const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
@@ -1030,15 +1031,16 @@ export function ManageCustomer () {
           rules={[
             { required: true },
             { validator: (_, value) =>
-              fieldValidator(value, serviceTypeSelected === ServiceType.EXTENDED_TRIAL
-                ? availableApswTrialLicense : availableApswLicense) }
+              fieldValidator(value,
+                serviceTypeSelected === ServiceType.EXTENDED_TRIAL || isExtendedTrialEditMode
+                  ? availableApswTrialLicense : availableApswLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
         <label>
           {isvSmartEdgeEnabled
-            ? (serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? (serviceTypeSelected === ServiceType.EXTENDED_TRIAL || isExtendedTrialEditMode
               ? intl.$t({ defaultMessage: 'licenses out of {availableLicense} available' }, {
                 availableLicense: availableApswTrialLicense })
               : intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
@@ -1224,7 +1226,7 @@ export function ManageCustomer () {
       }
 
       {!isTrialMode && <div>
-        <Form.Item
+        {isTrialEditMode && <Form.Item
           name='startSubscriptionMode'
           initialValue={ServiceType.PAID}
         >
@@ -1246,10 +1248,10 @@ export function ManageCustomer () {
               </Radio>
             </Space>
           </Radio.Group>
-        </Form.Item>
+        </Form.Item>}
 
         <Subtitle level={3}>
-          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL || isExtendedTrialEditMode
             ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
             : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
         {!isDeviceAgnosticEnabled && <div>
