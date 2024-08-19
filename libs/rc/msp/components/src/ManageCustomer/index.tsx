@@ -105,6 +105,12 @@ interface EcFormData {
     tier: MspEcTierEnum
 }
 
+enum ServiceType {
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL',
+  PAID = 'PAID'
+}
+
 export const retrieveCityState = (addressComponents: Array<AddressComponent>, country: string) => {
   // array reverse applied since search should be done from general to specific, google provides from vice-versa
   const reversedAddrComponents = addressComponents.reverse()
@@ -186,6 +192,7 @@ export function ManageCustomer () {
 
   const [isTrialMode, setTrialMode] = useState(false)
   const [isTrialActive, setTrialActive] = useState(false)
+  const [serviceTypeSelected, setServiceType] = useState(ServiceType.PAID)
   const [trialSelected, setTrialSelected] = useState(true)
   const [ecSupportEnabled, setEcSupport] = useState(false)
   const [mspAdmins, setAdministrator] = useState([] as MspAdministrator[])
@@ -195,6 +202,7 @@ export function ManageCustomer () {
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
   const [availableSwitchLicense, setAvailableSwitchLicense] = useState(0)
   const [availableApswLicense, setAvailableApswLicense] = useState(0)
+  const [availableApswTrialLicense, setAvailableApswTrialLicense] = useState(0)
   const [assignedLicense, setAssignedLicense] = useState([] as MspAssignmentHistory[])
   const [assignedWifiLicense, setWifiLicense] = useState(0)
   const [assignedSwitchLicense, setSwitchLicense] = useState(0)
@@ -244,7 +252,7 @@ export function ManageCustomer () {
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
       useGetMspEcSupportQuery({
-        params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: action !== 'edit' })
+        params: { mspEcTenantId }, enableRbac: false }, { skip: action !== 'edit' })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {
@@ -304,7 +312,7 @@ export function ManageCustomer () {
           apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
         isTrialEditMode ? checkAvailableLicense(licenseSummary)
-          : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic)
+          : checkAvailableLicense(licenseSummary, wLic, sLic, apswLic, apswTrialLic)
 
         formRef.current?.setFieldsValue({
           name: data?.name,
@@ -427,7 +435,7 @@ export function ManageCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: false })
         .then(() => {
           showToast({
             type: 'success',
@@ -436,7 +444,7 @@ export function ManageCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: false })
         .then(() => {
           showToast({
             type: 'success',
@@ -468,7 +476,7 @@ export function ManageCustomer () {
           ? { assignments: [{
             quantity: quantityApsw,
             action: AssignActionEnum.ADD,
-            isTrial: false,
+            isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
             deviceType: EntitlementDeviceType.MSP_APSW
           }] }
           : { assignments: [{
@@ -556,7 +564,7 @@ export function ManageCustomer () {
         licAssignment.push({
           quantity: quantityWifi,
           action: AssignActionEnum.ADD,
-          isTrial: false,
+          isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
           deviceType: EntitlementDeviceType.MSP_WIFI
         })
         const quantitySwitch = _.isString(ecFormData.switchLicense)
@@ -746,7 +754,8 @@ export function ManageCustomer () {
   }
 
   const checkAvailableLicense =
-  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number) => {
+  (entitlements: MspAssignmentSummary[], wLic?: number, swLic?: number, apswLic?: number,
+    apswTrialLic?: number ) => {
     const wifiLicenses = entitlements.filter(p =>
       p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_WIFI)
     let remainingWifi = 0
@@ -770,8 +779,17 @@ export function ManageCustomer () {
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices
     })
+    const apswTrialLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === true)
+    let remainingApswTrial = 0
+    apswTrialLicenses.forEach( (lic: MspAssignmentSummary) => {
+      remainingApswTrial += lic.remainingDevices
+    })
+
     apswLic ? setAvailableApswLicense(remainingApsw+apswLic)
       : setAvailableApswLicense(remainingApsw)
+    apswTrialLic ? setAvailableApswTrialLicense(remainingApswTrial+apswTrialLic)
+      : setAvailableApswTrialLicense(remainingApswTrial)
   }
 
   const getAssignmentId = (deviceType: string) => {
@@ -1011,15 +1029,20 @@ export function ManageCustomer () {
           initialValue={0}
           rules={[
             { required: true },
-            { validator: (_, value) => fieldValidator(value, availableApswLicense) }
+            { validator: (_, value) =>
+              fieldValidator(value, serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+                ? availableApswTrialLicense : availableApswLicense) }
           ]}
           children={<Input type='number'/>}
           style={{ paddingRight: '20px' }}
         />
         <label>
           {isvSmartEdgeEnabled
-            ? intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
-              availableApswLicense: availableApswLicense })
+            ? (serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+              ? intl.$t({ defaultMessage: 'licenses out of {availableLicense} available' }, {
+                availableLicense: availableApswTrialLicense })
+              : intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
+                availableApswLicense: availableApswLicense }))
             : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
               availableApswLicense: availableApswLicense })
           }
@@ -1203,25 +1226,21 @@ export function ManageCustomer () {
       {!isTrialMode && <div>
         <Form.Item
           name='startSubscriptionMode'
-          initialValue={true}
+          initialValue={ServiceType.PAID}
         >
           <Radio.Group onChange={(e: RadioChangeEvent) => {
-            if (e.target.value) {
-            //   setSubscriptionStartDate(moment())
-            //   setSubscriptionEndDate(moment().add(30,'days'))
-            }
-            // setTrialSelected(e.target.value)
+            setServiceType(e.target.value)
           }}>
             <Space direction='vertical'>
               <Radio
                 style={{ marginTop: '2px' }}
-                value={'test2'}
+                value={ServiceType.EXTENDED_TRIAL}
                 disabled={false}>
                 { intl.$t({ defaultMessage: 'Extended Trial Mode' }) }
               </Radio>
               <Radio
                 style={{ marginTop: '2px' }}
-                value={'test3'}
+                value={ServiceType.PAID}
                 disabled={false}>
                 { intl.$t({ defaultMessage: 'Paid Subscription' }) }
               </Radio>
@@ -1230,7 +1249,9 @@ export function ManageCustomer () {
         </Form.Item>
 
         <Subtitle level={3}>
-          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
+            : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
         {!isDeviceAgnosticEnabled && <div>
           <WifiSubscription />
           <SwitchSubscription />
@@ -1409,30 +1430,31 @@ export function ManageCustomer () {
       <Subtitle level={3}>{intl.$t({ defaultMessage: 'Start service in' })}</Subtitle>
       <Form.Item
         name='trialMode'
-        initialValue={true}
+        initialValue={ServiceType.TRIAL}
       >
         <Radio.Group onChange={(e: RadioChangeEvent) => {
-          if (e.target.value) {
+          if (e.target.value === ServiceType.TRIAL) {
             setSubscriptionStartDate(moment())
             setSubscriptionEndDate(moment().add(30,'days'))
           }
-          setTrialSelected(e.target.value)
+          setTrialSelected(e.target.value === ServiceType.TRIAL)
+          setServiceType(e.target.value)
         }}>
           <Space direction='vertical'>
             <Radio
-              value={'test1'}
+              value={ServiceType.TRIAL}
               disabled={false}>
               { intl.$t({ defaultMessage: 'Trial Mode' }) }
             </Radio>
             <Radio
               style={{ marginTop: '2px' }}
-              value={'test2'}
+              value={ServiceType.EXTENDED_TRIAL}
               disabled={false}>
               { intl.$t({ defaultMessage: 'Extended Trial Mode' }) }
             </Radio>
             <Radio
               style={{ marginTop: '2px', marginBottom: '50px' }}
-              value={'test3'}
+              value={ServiceType.PAID}
               disabled={false}>
               { intl.$t({ defaultMessage: 'Paid Subscription' }) }
             </Radio>
@@ -1460,7 +1482,9 @@ export function ManageCustomer () {
 
       {!trialSelected && <div>
         <Subtitle level={4}>
-          { intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
+          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
+            : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
         <ApswSubscription />
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>

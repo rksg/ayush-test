@@ -402,8 +402,8 @@ export function Subscriptions () {
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
-              const showUtilBar = summary &&
-                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+              const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
+                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive))
               if (isvSmartEdgeEnabled) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }
