@@ -66,8 +66,6 @@ export const codes = {
   }
 } as Record<string, IntentConfig>
 
-export const isOptimized = (value: boolean) => value ? 'full' : 'partial'
-
 export function IntentAIForm () {
   const { intent } = useIntentContext()
   const { $t } = useIntl()

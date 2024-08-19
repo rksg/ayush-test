@@ -9,7 +9,7 @@ import { transformDetailsResponse }           from '../../IntentAIForm/services'
 import { useIntentContext }                   from '../../IntentContext'
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../IntentAIDetails/__tests__/fixtures'
 
-import { IntentAIForm, isOptimized } from '.'
+import { IntentAIForm } from '.'
 
 class ResizeObserver {
   observe () {}
@@ -70,15 +70,5 @@ describe('AIDrivenRRM', () => {
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')
     await renderAndStepsThruForm()
-  })
-})
-
-describe('isOptimized', () => {
-  it('should return full when value is true', () => {
-    expect(isOptimized(true)).toBe('full')
-  })
-
-  it('should return partial when value is false', () => {
-    expect(isOptimized(false)).toBe('partial')
   })
 })
