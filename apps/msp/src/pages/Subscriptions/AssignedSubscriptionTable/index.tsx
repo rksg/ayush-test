@@ -37,7 +37,8 @@ export function AssignedSubscriptionTable () {
 
   const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Subscription' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Services' })
+        : $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
       key: 'name',
       sorter: { compare: sortProp('name', defaultSort) }
@@ -170,7 +171,8 @@ export function AssignedSubscriptionTable () {
         }
       })
       : queryResults.data?.map(response => {
-        const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
+        const type = isvSmartEdgeEnabled ? $t({ defaultMessage: 'Device Networking' })
+          : EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
         return {
           ...response,
           name: isDeviceAgnosticEnabled ? (response?.trialAssignment

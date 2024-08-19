@@ -1221,8 +1221,8 @@ export function ManageCustomer () {
         </div>}
         {isDeviceAgnosticEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
           <label>{isvSmartEdgeEnabled
-            ? intl.$t({ defaultMessage: 'Device Subscription' })
-            : intl.$t({ defaultMessage: 'Device Networking' })
+            ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscription' })
           }</label>
           <label>{isvSmartEdgeEnabled
             ? intl.$t({ defaultMessage: '50 trial licenses' })
@@ -1371,7 +1371,8 @@ export function ManageCustomer () {
         </div>}
 
         {isDeviceAgnosticEnabled && <Form.Item
-          label={intl.$t({ defaultMessage: 'Device Subscriptions' })}
+          label={isvSmartEdgeEnabled ? intl.$t({ defaultMessage: 'Device Networking' })
+            : intl.$t({ defaultMessage: 'Device Subscriptions' })}
         >
           <Paragraph>{apswAssigned}</Paragraph>
         </Form.Item>}

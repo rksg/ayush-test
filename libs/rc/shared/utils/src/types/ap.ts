@@ -94,6 +94,10 @@ export interface AP {
     managementConnected?: boolean,
     serverConnected?: boolean
   }
+  switchId?: string,
+  switchName?: string,
+  switchPort?: string,
+  switchSerialNumber?: string
 }
 
 export interface NewAPModel {

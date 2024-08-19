@@ -4,12 +4,11 @@ import { Modal as AntModal, Form }  from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                       from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                    from '@acx-ui/rc/services'
-import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                                                                                                                      from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                                                   from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                                                                                                                          from '@acx-ui/utils'
+import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                                           from '@acx-ui/components'
+import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                                        from '@acx-ui/rc/services'
+import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, SEARCH, hasCloudpathAccess, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                                                                                                                                      from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                                                                                                                                                              from '@acx-ui/utils'
 
 import CertificateSettings from '../CertificateForm/CertificateSettings'
 import { issuedByLabel }   from '../contentsMap'
@@ -191,8 +190,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
             payload: { revocationReason }
           }).then(clearSelection)
         })
-      },
-      scopeKey: [WifiScopes.UPDATE]
+      }
     },
     {
       label: $t({ defaultMessage: 'Unrevoke' }),
@@ -203,8 +201,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
           params: { templateId: selectedRow.certificateTemplateId, certificateId: selectedRow.id },
           payload: { revocationReason: null }
         }).then(clearSelection)
-      },
-      scopeKey: [WifiScopes.UPDATE]
+      }
     }
   ]
 
@@ -221,12 +218,11 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
   }
 
   const actionButtons = [
-    ...(templateData && showGenerateCert ? [{
+    ...(templateData && showGenerateCert && hasCloudpathAccess() ? [{
       label: $t({ defaultMessage: 'Generate Certificate' }),
       onClick: () => {
         setCertificateDrawerOpen(true)
-      },
-      scopeKey: [WifiScopes.CREATE]
+      }
     }] : [])
   ]
 
@@ -242,7 +238,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
           rowActions={filterByAccess(rowActions)}
           actions={filterByAccess(actionButtons)}
           rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'radio' }}
+            hasCloudpathAccess() && { type: 'radio' }}
           rowKey='id'
           onFilterChange={handleFilterChange}
           enableApiFilter={true}
