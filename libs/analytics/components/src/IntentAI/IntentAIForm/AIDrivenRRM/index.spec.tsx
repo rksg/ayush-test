@@ -4,7 +4,7 @@ import { pick }  from 'lodash'
 import moment    from 'moment-timezone'
 
 import { get }                                                                       from '@acx-ui/config'
-import { recommendationUrl, Provider, intentAIUrl }                                  from '@acx-ui/store'
+import { recommendationUrl, Provider, intentAIUrl, recommendationApi, store }        from '@acx-ui/store'
 import {  fireEvent, mockGraphqlMutation, mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../../IntentAIDetails/__tests__/fixtures'
@@ -56,6 +56,7 @@ jest.mock('@acx-ui/config', () => ({
 
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
+    store.dispatch(recommendationApi.util.resetApiState())
     jest.spyOn(Date,'now').mockReturnValue(+new Date('2023-07-10T14:15:00'))
     mockGraphqlQuery(recommendationUrl, 'IntentCode', {
       data: { intent: pick(mockedIntentCRRM, ['id', 'code']) }
@@ -180,8 +181,6 @@ describe('AIDrivenRRM', () => {
     } else {
       await renderSettingsAndSummaryForActiveStates()
     }
-
-    // expect(asFragment()).toMatchSnapshot()
   }
 
   it('should render correctly for new/scheduled states', async () => {
