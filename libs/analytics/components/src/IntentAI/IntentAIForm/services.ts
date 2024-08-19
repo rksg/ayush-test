@@ -145,7 +145,6 @@ export function getLocalScheduledAt (date: Moment, hour: number) {
 }
 
 export function processDtoToPayload (dto: EnhancedIntent) { // this function handle tz diff, checking of etl buffer done in summary
-  console.log(dto)
   const localScheduledAt = getLocalScheduledAt(dto!.settings!.date!, dto.settings!.hour!)
   const newScheduledAt = handleScheduledAt(localScheduledAt)
   const utcScheduledAt = moment.parseZone(newScheduledAt).utc().toISOString()

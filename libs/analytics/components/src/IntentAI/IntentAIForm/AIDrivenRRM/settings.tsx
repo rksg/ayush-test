@@ -39,11 +39,10 @@ function DateTimeSetting ({
       name={name as string}
       dateLabel={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
       timeLabel={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
-      initialDate={scheduledDate} // initial date from scheduledAt if  any
+      initialDate={scheduledDate} // initial date from scheduledAt if any
       time={initialTime}
       disabledDate={disabledDate} // disable all date before current
       onchange={onChange}
-      // form={form}
     />
   )}
 
@@ -78,8 +77,6 @@ export function Settings () {
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
   const scheduleSettings = form.getFieldValue('settings')
-  console.log(scheduleSettings)
-  console.log('\n\n\n\n')
   const status = form.getFieldValue('status')
 
   const calendarText = defineMessage({ defaultMessage: `This recommendation will be
@@ -128,8 +125,6 @@ Settings.FieldSummary = function ScheduleFieldSummary () {
     children={<StepsForm.FieldSummary<SettingsType> convert={(value) => {
       const localScheduledAt = getLocalScheduledAt(value!.date!, value!.hour!)
       const newScheduledAt = handleScheduledAt(localScheduledAt)
-      console.log(value)
-      console.log(newScheduledAt)
       return newScheduledAt
     }}/>}
   />

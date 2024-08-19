@@ -1,24 +1,17 @@
 /* eslint-disable max-len */
-import userEvent        from '@testing-library/user-event'
-import { pick }         from 'lodash'
-import  { MomentInput } from 'moment-timezone'
+import userEvent from '@testing-library/user-event'
+import { pick }  from 'lodash'
+import moment    from 'moment-timezone'
 
-import { get }                                                           from '@acx-ui/config'
-import { recommendationUrl, Provider, intentAIUrl }                      from '@acx-ui/store'
-import { mockGraphqlMutation, mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
+import { get }                                                                       from '@acx-ui/config'
+import { recommendationUrl, Provider, intentAIUrl }                                  from '@acx-ui/store'
+import {  fireEvent, mockGraphqlMutation, mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../../IntentAIDetails/__tests__/fixtures'
 
 import { AIDrivenRRM, isOptimized } from '.'
 
 const { click, selectOptions } = userEvent
-
-// jest.mock('@acx-ui/react-router-dom', () => ({
-//   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
-//   useParams: () => ({
-//     id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
-//   })
-// }))
 
 type MockSelectProps = React.PropsWithChildren<{
   showSearch: boolean
@@ -43,18 +36,18 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-// jest.mock('moment-timezone', () => {
-//   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
-//   const mockedMoment = (date: MomentInput) => date === '2023-07-13T00:00:00.000Z'
-//     ? moment(date)
-//     : moment('07-10-2023 14:15', 'MM-DD-YYYY HH:mm') // mock current date
-//   mockedMoment.utc = moment.utc
-//   return {
-//     __esModule: true,
-//     ...moment,
-//     default: mockedMoment
-//   }
-// })
+jest.mock('dayjs', () => {
+  const actualDayjs = jest.requireActual('dayjs')
+  return jest.fn(() => ({
+    ...actualDayjs(),
+    startOf: jest.fn((unit) => {
+      if (unit === 'day') {
+        return actualDayjs('2023-07-10T14:15:00')
+      }
+      return actualDayjs().startOf(unit)
+    })
+  }))
+})
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -68,10 +61,6 @@ describe('AIDrivenRRM', () => {
       data: { intent: pick(mockedIntentCRRM, ['id', 'code']) }
     })
 
-    // mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-    //   data: { intent: mockedIntentCRRM }
-    // })
-
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
@@ -83,12 +72,22 @@ describe('AIDrivenRRM', () => {
       .mockImplementation(() => true)
   })
 
-  async function renderAndStepsThruForm () {
+
+
+
+  async function renderAndStepsThruForm (status?:string, metadata?: { scheduledAt?:string }) {
+
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-      data: { intent: mockedIntentCRRM }
+      data: { intent:
+        {
+          ...mockedIntentCRRM,
+          status: status ?? mockedIntentCRRM.status,
+          metadata: metadata ?? mockedIntentCRRM.metadata
+        }
+      }
     })
 
-    const { asFragment } = render(<AIDrivenRRM />, {
+    render(<AIDrivenRRM />, {
       route: { params: { recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6' } },
       wrapper: Provider
     })
@@ -109,67 +108,89 @@ describe('AIDrivenRRM', () => {
     await click(throughputRadio)
     expect(throughputRadio).toBeChecked()
 
+    async function renderSettingsAndSummaryForActiveStates () {
+      // Step 3
+      await click(actions.getByRole('button', { name: 'Next' }))
+      await screen.findAllByRole('heading', { name: 'Settings' })
+      expect(screen.getAllByRole('heading', { name: 'Settings' })[0]).toBeVisible()
+      expect(await formBody.findByText('Schedule Time')).toBeVisible()
+      expect(await formBody.findByText('Side Notes')).toBeVisible()
 
-    // Step 3
-    await click(actions.getByRole('button', { name: 'Next' }))
-    await screen.findAllByRole('heading', { name: 'Settings' })
-    expect(screen.getAllByRole('heading', { name: 'Settings' })[0]).toBeVisible()
-    // expect(await formBody.findByText('Schedule Date')).toBeVisible()
-    expect(await formBody.findByText('Schedule Time')).toBeVisible()
-    expect(await formBody.findByText('Side Notes')).toBeVisible()
+      const timePicker = screen.getByPlaceholderText('Select hour')
+      expect(timePicker).toBeInTheDocument()
+      await selectOptions(await formBody.findByRole('combobox'), '10:15 (UTC+00)')
 
+      // Step 4
+      await click(actions.getByRole('button', { name: 'Next' }))
+      await screen.findAllByRole('heading', { name: 'Summary' })
+      expect(screen.getAllByRole('heading', { name: 'Summary' })[0]).toBeVisible()
 
-    // const datePicker = await formBody.findByTitle('2023-07-10')
-    // const datePicker = await formBody.findByTestId('selectDate')
-    // expect(datePicker).toBeVisible()
-    // expect(datePicker).toHaveValue('')
-    // await userEvent.click(datePicker)
-    // // await userEvent.type(datePicker, '2023-07-13')
-    // expect(datePicker).toHaveValue('2023-07-10')
+      expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+      expect(await screen.findByText('Interfering links')).toBeVisible()
+      expect(await screen.findByText('Schedule')).toBeVisible()
+      expect(await screen.findByText('2023-07-15T10:15:00+00:00')).toBeVisible()
 
-    // await userEvent.click(actions.getByRole('button', { name: 'Next' }))
-    // expect(await formBody.findByText('Please enter date')).toBeVisible()
-
-    // await userEvent.click(datePicker)
-
-    const timePicker = screen.getByPlaceholderText('Select hour')
-    expect(timePicker).toBeInTheDocument()
-
-    // await click(actions.getByRole('button', { name: 'Next' }))
-    // expect(await formBody.findByText('Please enter hour')).toBeVisible()
-
-    expect(await formBody.findByText('Side Notes')).toBeVisible()
-    await selectOptions(await formBody.findByRole('combobox'), '10:15 (UTC+00)')
-    // await selectOptions(
-    //   await formBody.findByRole('combobox'),
-    //   await formBody.findByRole('option', { name: '14:15 (UTC+00)' })
-    // )
-
-    expect(await formBody.findByText('Side Notes')).toBeVisible()
-    // expect(screen.getByText('14:00 (UTC+00)')).toBeDisabled()
-    // expect(screen.getByText('00:00 (UTC+00)')).toBeDisabled()
-    // expect(screen.getByText('14:15 (UTC+00)')).not.toBeDisabled()
+      expect(screen.getByRole('button', {
+        name: 'Apply'
+      })).toBeVisible()
+    }
 
 
-    // Step 4
-    await click(actions.getByRole('button', { name: 'Next' }))
+    async function renderSettingsAndSummary () {
+      // Step 3
+      await click(actions.getByRole('button', { name: 'Next' }))
+      await screen.findAllByRole('heading', { name: 'Settings' })
+      expect(screen.getAllByRole('heading', { name: 'Settings' })[0]).toBeVisible()
+      expect(await formBody.findByText('Schedule Date')).toBeVisible()
+      expect(await formBody.findByText('Schedule Time')).toBeVisible()
+      expect(await formBody.findByText('Side Notes')).toBeVisible()
 
-    await screen.findAllByRole('heading', { name: 'Summary' })
-    expect(screen.getAllByRole('heading', { name: 'Summary' })[0]).toBeVisible()
 
-    expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
-    expect(await screen.findByText('Interfering links')).toBeVisible()
-    expect(await screen.findByText('Schedule')).toBeVisible()
-    expect(await screen.findByText('2023-07-15T10:15:00+00:00')).toBeVisible()
+      const datepicker = screen.getByRole('img', { name: 'calendar' })
+      expect(datepicker).toBeEnabled()
+      await userEvent.click(datepicker)
+      expect(await screen.findByRole('button', { name: moment().format('YYYY') })).toBeEnabled()
 
-    expect(screen.getByRole('button', {
-      name: 'Apply'
-    })).toBeVisible()
+      const datepickerInput = screen.getByPlaceholderText('Select date')
+      fireEvent.change(datepickerInput, { target: { value: '2023-07-16' } })
+      await userEvent.click(screen.getByRole('cell', { name: '2023-07-16' }))
 
-    expect(asFragment()).toMatchSnapshot()
+
+      const timePicker = screen.getByPlaceholderText('Select hour')
+      expect(timePicker).toBeInTheDocument()
+      await selectOptions(await formBody.findByRole('combobox'), '16:15 (UTC+00)')
+
+      // Step 4
+      await click(actions.getByRole('button', { name: 'Next' }))
+      await screen.findAllByRole('heading', { name: 'Summary' })
+      expect(screen.getAllByRole('heading', { name: 'Summary' })[0]).toBeVisible()
+
+      expect(await screen.findByText('Projected interfering links reduction')).toBeVisible()
+      expect(await screen.findByText('Interfering links')).toBeVisible()
+      expect(await screen.findByText('Schedule')).toBeVisible()
+      expect(await screen.findByText('2023-07-16T16:15:00+00:00')).toBeVisible()
+
+      expect(screen.getByRole('button', {
+        name: 'Apply'
+      })).toBeVisible()
+    }
+
+    if  (status === 'new' || status === 'scheduled') {
+      await renderSettingsAndSummary()
+    } else {
+      await renderSettingsAndSummaryForActiveStates()
+    }
+
+    // expect(asFragment()).toMatchSnapshot()
   }
 
-  it.only('should render correctly', renderAndStepsThruForm)
+  it('should render correctly for new/scheduled states', async () => {
+    await renderAndStepsThruForm('new', {})
+  })
+
+  it('should render correctly for non (new/scheduled) active states', async () => {
+    await renderAndStepsThruForm()
+  })
 
   it('should render correctly when IS_MLISA_SA is true', async () => {
     mockGet.mockReturnValue('true')

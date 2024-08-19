@@ -1,8 +1,4 @@
 /* eslint-disable max-len */
-import React from 'react'
-
-import _                                             from 'lodash'
-import moment                                        from 'moment'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import {
@@ -14,7 +10,6 @@ import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { mockedIntentCRRM }                                                                               from '../../IntentAIDetails/__tests__/fixtures'
 import { IntentConfig, states, StateType, IntentKPIConfig }                                               from '../config'
 import { EnhancedIntent, useIntentCodeQuery, useIntentDetailsQuery, useUpdatePreferenceScheduleMutation } from '../services'
 import * as UI                                                                                            from '../styledComponents'
@@ -112,7 +107,6 @@ export function AIDrivenRRM () {
     { id: codeQuery.data?.id!, kpis },
     { skip: !Boolean(codeQuery.data?.id) }
   )
-  console.log(detailsQuery)
   const details = detailsQuery.data!
   const breadcrumb = [
     { text: $t({ defaultMessage: 'AI Assurance' }) },
@@ -125,11 +119,10 @@ export function AIDrivenRRM () {
       crrmFullOptimization: true
     },
     settings: {
-      date: moment(),
+      date: null,
       hour: null
     }
   } as EnhancedIntent
-  console.log(defaultValues)
 
   const [submit] = useUpdatePreferenceScheduleMutation()
 
@@ -154,12 +147,10 @@ export function AIDrivenRRM () {
       />
       <StepsForm
         onFinish={async (values) => { await submit(values).unwrap() }}
-        onFieldsChange={(fields) => console.log(fields)}
         buttonLabel={{
           submit: $t({ defaultMessage: 'Apply' })
         }}
         initialValues={details ?? defaultValues}
-        // initialValues={_.merge(defaultValues, details)}
       >
         <StepsForm.StepForm
           title={$t(steps.title.introduction)}
