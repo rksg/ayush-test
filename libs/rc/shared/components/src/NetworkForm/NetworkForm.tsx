@@ -147,7 +147,7 @@ export function NetworkForm (props:{
   defaultActiveVenues?: string[]
 }) {
 
-  const isUseWifiRbacApi = true
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseWifiRbacApi
