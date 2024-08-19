@@ -96,7 +96,7 @@ export function LanPorts () {
   })
   const { data: defaultLanPorts, isLoading: isDefaultPortsLoading } = useGetDefaultApLanPortsQuery({
     params: { venueId, serialNumber }
-  })
+  }, { skip: !isResetLanPortEnabled })
 
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const getDhcpEnabled = useFetchIsVenueDhcpEnabled()
@@ -304,7 +304,8 @@ export function LanPorts () {
           initialValues={{ lan: selectedModel?.lanPorts }}
         >
           <Row gutter={24}
-            style={{ marginLeft: '182px', marginRight: '-38px', marginTop: '-55px' }}>
+            style={isResetLanPortEnabled ?
+              { marginLeft: '182px', marginRight: '-38px', marginTop: '-55px' } : {}}>
             <Col span={10}>
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
@@ -384,8 +385,8 @@ export function LanPorts () {
 
   function SettingMessage ({ showButton }: { showButton: boolean }) {
     return <Space
-      style={{ display: 'flex', fontSize: '12px' }}
-    >
+      style={isResetLanPortEnabled ? { display: 'flex', fontSize: '12px' } :
+        { display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
       {useVenueSettings
         ? <FormattedMessage
           defaultMessage={

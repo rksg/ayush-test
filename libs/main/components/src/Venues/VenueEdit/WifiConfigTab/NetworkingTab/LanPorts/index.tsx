@@ -95,7 +95,7 @@ export function LanPorts () {
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
   const { data: defaultVenueLanPorts, isLoading: isDefaultPortsLoading } =
-    useGetDefaultVenueLanPortsQuery({ params: { venueId } })
+    useGetDefaultVenueLanPortsQuery({ params: { venueId } }, { skip: !isLanPortResetEnabled })
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
