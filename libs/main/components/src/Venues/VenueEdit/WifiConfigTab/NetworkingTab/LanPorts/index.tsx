@@ -94,9 +94,9 @@ export function LanPorts () {
   const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
-  const { data: defaultVenueLanPorts } = useGetDefaultVenueLanPortsQuery({ params: { venueId } })
+  const { data: defaultVenueLanPorts, isLoading: isDefaultPortsLoading } =
+    useGetDefaultVenueLanPortsQuery({ params: { venueId } })
 
-  // custom lan ports
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
     useTemplateQueryFn: useGetVenueTemplateLanPortsQuery,
@@ -238,7 +238,7 @@ export function LanPorts () {
   }
 
   const handleResetDefaultSettings = () => {
-    if (!defaultVenueLanPorts || !apModel) {
+    if (!defaultVenueLanPorts || !apModel || isDefaultPortsLoading) {
       return
     }
 
