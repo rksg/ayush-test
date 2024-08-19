@@ -1,18 +1,20 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
-import _                         from 'lodash'
-import { useIntl }               from 'react-intl'
-import { useParams }             from 'react-router-dom'
+import { Row, Col, Form, Tooltip } from 'antd'
+import { DefaultOptionType }       from 'antd/lib/select'
+import _                           from 'lodash'
+import { useIntl }                 from 'react-intl'
+import { useParams }               from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }         from '@acx-ui/formatter'
+import { Button, Loader, Select, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  usePingMutation }                             from '@acx-ui/rc/services'
-import { TroubleshootingType } from '@acx-ui/rc/utils'
-import { getIntl }             from '@acx-ui/utils'
+  usePingMutation,
+  useSwitchPortlistQuery }                             from '@acx-ui/rc/services'
+import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction } from '@acx-ui/rc/utils'
+import { getIntl }                                                               from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
 
@@ -35,13 +37,14 @@ export const parseResult = function (response: string) {
 
 export function SwitchCableTestForm () {
   const { $t } = useIntl()
-  const { tenantId, switchId } = useParams()
+  const { tenantId, switchId, serialNumber } = useParams()
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const [pingForm] = Form.useForm()
 
   const [isValid, setIsValid] = useState(false)
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
@@ -61,6 +64,20 @@ export function SwitchCableTestForm () {
     }, {
       skip: !switchDetailsContextData.switchDetailHeader?.venueId
     })
+
+  const portPayload = {
+    page: 1,
+    pageSize: 10000,
+    filters: { switchId: [serialNumber] },
+    sortField: 'portIdentifierFormatted',
+    sortOrder: 'ASC',
+    fields: SwitchPortViewModelQueryFields
+  }
+  const portList = useSwitchPortlistQuery({
+    params: { tenantId },
+    payload: portPayload,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const refetchResult = function () {
     setTimeout(() => {
@@ -90,6 +107,24 @@ export function SwitchCableTestForm () {
     }
 
   }, [getTroubleshooting])
+
+  useEffect(() => {
+    if (!portList.isLoading) {
+      setPortOptions([
+        { label: $t({ defaultMessage: 'Select Port...' }), value: null },
+        ...(portList?.data?.data?.map(port => ({
+          id: port.portIdentifier,
+          label: port.portIdentifier,
+          disabled: port.portSpeed === 'AUTO'
+        }))
+          .sort(sortPortFunction)
+          .map(item => ({
+            label: item.label, value: item.id, disabled: true
+          }))
+      ?? [])
+      ])
+    }
+  }, [portList])
 
   const onSubmit = async () => {
     setIsLoading(true)
@@ -190,7 +225,28 @@ export function SwitchCableTestForm () {
           rules={[
             { required: true }
           ]}
-          children={<Input disabled={isLoading}/>}
+          children={<Select
+            defaultValue={null}
+            showSearch
+            // onChange={onPortChange}
+            dropdownMatchSelectWidth={false}
+            allowClear>
+            {
+              portOptions.map(({ label, value, disabled }) =>
+                (<Select.Option value={value}
+                  key={value}
+                  disabled={disabled}
+                  children={
+                    <>{
+                      disabled ? <Tooltip
+                        // eslint-disable-next-line max-len
+                        title={$t({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' })}>
+                        <span>{label}</span></Tooltip> : <>{label}</>
+                    }</>}
+                />))
+            }
+          </Select>
+          }
         />
         {!_.isEmpty(lasySyncTime) &&
           <Form.Item
