@@ -8,12 +8,14 @@ import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { getIntentStatus }       from '../../common/getIntentStatus'
+import { codes }                 from '../../config'
 import { useIntentContext }      from '../../IntentContext'
 import { DownloadRRMComparison } from '../RRMGraph/DownloadRRMComparison'
 
 export const Overview = () => {
   const { $t } = useIntl()
-  const { intent: { sliceValue, status, updatedAt } } = useIntentContext()
+  const { intent: { sliceValue, status, updatedAt, code } } = useIntentContext()
+  const contents = codes[code]
   return <>
     <Typography.Paragraph children={$t({
       defaultMessage: 'Choose between a network with maximum throughput, ' +
@@ -23,11 +25,11 @@ export const Overview = () => {
     <Descriptions noSpace>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Intent' })}
-        children={$t({ defaultMessage: 'Client density vs Client throughput' })}
+        children={$t(contents.intent)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Category' })}
-        children={$t({ defaultMessage: 'Wi-Fi Experience' })}
+        children={$t(contents.category)}
       />
       <Descriptions.Item
         label={get('IS_MLISA_SA')
