@@ -2,6 +2,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 export { kpis } from './common'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useFormSteps = () => {
   const { $t } = useIntl()
   return [{
