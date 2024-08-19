@@ -531,8 +531,7 @@ export function MspCustomers () {
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
             (selectedRows[0].status === 'Active' &&
-              selectedRows[0].accountType !== MspEcAccountType.TRIAL &&
-              selectedRows[0].accountType !== MspEcAccountType.EXTENDED_TRIAL)) {
+              selectedRows[0].accountType !== MspEcAccountType.TRIAL )) {
             return true
           }
           return false
@@ -563,8 +562,7 @@ export function MspCustomers () {
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
             (selectedRows[0].status === 'Active' ||
-              selectedRows[0].accountType === MspEcAccountType.TRIAL ||
-              selectedRows[0].accountType === MspEcAccountType.EXTENDED_TRIAL))) {
+              selectedRows[0].accountType === MspEcAccountType.TRIAL))) {
             return false
           }
           return true
