@@ -1,21 +1,11 @@
 import { useState } from 'react'
 
-import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
-import { useParams }                            from '@acx-ui/react-router-dom'
 
-import { AIDrivenRRMHeader, AIDrivenRRMIcon } from '../../IntentAIDetails/styledComponents'
-import {
-  useIntentCodeQuery,
-  useIntentDetailsQuery
-} from '../../IntentAIForm/services'
-import { intentBandMapping } from '../config'
-// TODO
-// move kpis into common
-import { kpis }                                  from '../IntentAIForm'
+import { AIDrivenRRMHeader, AIDrivenRRMIcon }    from '../../IntentAIDetails/styledComponents'
 import { SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                  from '../RRMGraph/services'
 
@@ -25,30 +15,21 @@ import { CrrmValuesExtra } from './CrrmValuesExtra'
 import { Overview }        from './Overview'
 import { StatusTrail }     from './StatusTrail'
 
-export const CrrmDetails = () => {
+export const IntentAIDetails = () => {
   const { $t } = useIntl()
-  const params = useParams()
-  const id = get(params, 'recommendationId', undefined) as string
-
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useIntentDetailsQuery(
-    { id: codeQuery.data?.id!, kpis },
-    { skip: !Boolean(codeQuery.data?.id) }
-  )
-  const details = detailsQuery.data!
-
-  const band = intentBandMapping[details?.code as keyof typeof intentBandMapping]
-  const queryResult = useIntentAICRRMQuery(details?.id, band)
+  // TODO: refactor: move query into IntentAIRRMGraph?
+  const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
 
-  return <Loader states={[codeQuery, detailsQuery, queryResult]}>
-    {details && <PageHeader
+  return <Loader states={[queryResult]}>
+    {<PageHeader
       title={$t({ defaultMessage: 'Intent Details' })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'AI Assurance' }) },
+        // TODO: question: should have AI Analytics in the breadcrumb?
         { text: $t({ defaultMessage: 'Intent AI' }),
           link: 'analytics/intentAI' }
       ]}
@@ -69,7 +50,7 @@ export const CrrmDetails = () => {
             </GridRow>
             <GridRow>
               <GridCol col={{ span: 24 }}>
-                <Overview details={details} />
+                <Overview />
               </GridCol>
             </GridRow>
           </div>)}
@@ -88,15 +69,14 @@ export const CrrmDetails = () => {
         />
       </div>
       <GridCol col={{ span: 18, xxl: 20 }}>
-        <CrrmBenefits details={details}/>
+        <CrrmBenefits />
         <CrrmGraph
-          details={details}
           summaryUrlBefore={summaryUrlBefore}
           summaryUrlAfter={summaryUrlAfter}
           crrmData={crrmData}
         />
-        <CrrmValuesExtra details={details}/>
-        <StatusTrail details={details}/>
+        <CrrmValuesExtra />
+        <StatusTrail />
       </GridCol>
     </GridRow>
   </Loader>

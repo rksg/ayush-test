@@ -1,37 +1,33 @@
-// TODO
-// this file seems to be common for all cases?
-import { snakeCase } from 'lodash'
+// TODO: refactor: change filename to useValuesText later
+import _ from 'lodash'
 
 import { productNames } from '@acx-ui/analytics/utils'
 import { get }          from '@acx-ui/config'
 import { getIntl }      from '@acx-ui/utils'
 
-import { EnhancedIntent, extractBeforeAfter, IntentKpi } from '../../IntentAIForm/services'
-import { isDataRetained }                                from '../../utils'
-// TODO
-// move kpis into common
-import { codes, kpis } from '../IntentAIForm'
+import { EnhancedIntent, extractBeforeAfter, IntentKpi, IntentKPIConfig } from '../../IntentAIForm/services'
+import { useIntentContext }                                               from '../../IntentContext'
+import { isDataRetained }                                                 from '../../utils'
+import { codes }                                                          from '../IntentAIForm'
 
-export const kpiBeforeAfter = (intent: EnhancedIntent, key: string) => {
-  const config = kpis.find(kpi => kpi.key === key)!
-  const prop = `kpi_${snakeCase(key)}`
+export const kpiBeforeAfter = (intent: EnhancedIntent, config: IntentKPIConfig) => {
+  const prop = `kpi_${_.snakeCase(config.key)}`
   const [before, after] = extractBeforeAfter(intent[prop] as IntentKpi[string])
     .map(value => config.format(value))
   return { before, after }
 }
 
-export const getValuesText = (
-  details: EnhancedIntent,
-  isFullOptimization = true
-) => {
+export const useValuesText = () => {
   const { $t } = getIntl()
+  const { intent, kpis } = useIntentContext()
+  const isFullOptimization = !!_.get(intent, 'metadata.algorithmData.isCrrmFullOptimization', true)
   const {
     appliedOnce,
     code,
     status,
     dataEndTime,
     metadata
-  } = details
+  } = intent
 
   const {
     appliedReasonText,
@@ -48,7 +44,7 @@ export const getValuesText = (
   }
   parameters = {
     ...parameters,
-    ...kpiBeforeAfter(details, 'number-of-interfering-links'),
+    ...kpiBeforeAfter(intent, kpis.find(kpi => kpi.key === 'number-of-interfering-links')!),
     isDataRetained: isDataRetained(dataEndTime),
     dataNotRetainedMsg: $t({
       defaultMessage: `The initial optimization graph is no longer available below

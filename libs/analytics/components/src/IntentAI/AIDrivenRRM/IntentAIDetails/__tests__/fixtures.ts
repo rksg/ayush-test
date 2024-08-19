@@ -1,11 +1,11 @@
-import { IntentDetails } from '../../IntentAIForm/services'
+import { IntentDetails } from '../../../IntentAIForm/services'
 
 export const mockedIntentCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
   dataEndTime: '2023-06-26T00:00:25.772Z',
-  updatedAt: '06/26/2023 06:04',
+  updatedAt: '2023-06-26T06:04:00.000Z',
   metadata: {},
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',

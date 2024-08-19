@@ -1,7 +1,6 @@
 import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { intentBandMapping }                                                                    from '../config'
 import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedIntentCRRM, mockedIntentCRRMApplied } from '../IntentAIDetails/__tests__/fixtures'
 
 import { useIntentAICRRMQuery } from './services'
@@ -12,11 +11,11 @@ describe('useIntentAICRRMQuery', () => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
-    const band = intentBandMapping[mockedIntentCRRM.code as keyof typeof intentBandMapping]
-    const { result } = renderHook(() => useIntentAICRRMQuery(
-      mockedIntentCRRM.id,
-      band
-    ), { wrapper: Provider })
+    const params = {
+      recommendationId: mockedIntentCRRM.id,
+      code: mockedIntentCRRM.code
+    }
+    const { result } = renderHook(useIntentAICRRMQuery, { route: { params }, wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toMatchSnapshot()
     expect(result.current.csv).toMatchSnapshot()
@@ -25,11 +24,11 @@ describe('useIntentAICRRMQuery', () => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphsApplied }
     })
-    const band = intentBandMapping[mockedIntentCRRMApplied.code as keyof typeof intentBandMapping]
-    const { result } = renderHook(() => useIntentAICRRMQuery(
-      mockedIntentCRRMApplied.id,
-      band
-    ), { wrapper: Provider })
+    const params = {
+      recommendationId: mockedIntentCRRMApplied.id,
+      code: mockedIntentCRRMApplied.code
+    }
+    const { result } = renderHook(useIntentAICRRMQuery, { route: { params }, wrapper: Provider })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data).toMatchSnapshot()
     expect(result.current.csv).toMatchSnapshot()

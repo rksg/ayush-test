@@ -1,5 +1,9 @@
 /* eslint-disable max-len */
+import React from 'react'
+
 import { defineMessage, MessageDescriptor } from 'react-intl'
+
+import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
 
 import { displayStates, statuses as stateType } from './states'
 
@@ -201,32 +205,32 @@ export const codes = {
   },
   'c-crrm-channel24g-auto': {
     aiFeature: aiFeatures.RRM,
-    intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 2.4 GHz radio' }),
+    intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel5g-auto': {
     aiFeature: aiFeatures.RRM,
-    intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 5 GHz radio' }),
+    intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel6g-auto': {
     aiFeature: aiFeatures.RRM,
-    intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 6 GHz radio' }),
+    intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-24g': {
     aiFeature: aiFeatures.AirFlexAI,
-    intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 2.4 GHz' }),
+    intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-5g': {
     aiFeature: aiFeatures.AirFlexAI,
-    intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 5 GHz' }),
+    intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 5 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-6g': {
     aiFeature: aiFeatures.AirFlexAI,
-    intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 6 GHz' }),
+    intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'eco-flex-code': {
@@ -236,3 +240,10 @@ export const codes = {
     category: categories['Wi-Fi Experience']
   }
 } as Record<string, CodeInfo>
+
+export const icons = {
+  [aiFeatures.RRM]: React.createElement(AIDrivenRRM),
+  [aiFeatures.AirFlexAI]: React.createElement(AirFlexAI),
+  [aiFeatures.AIOps]: React.createElement(AIOperation),
+  [aiFeatures.EcoFlexAI]: React.createElement(EcoFlexAI)
+}

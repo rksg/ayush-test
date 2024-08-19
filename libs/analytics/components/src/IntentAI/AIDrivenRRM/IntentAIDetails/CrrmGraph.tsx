@@ -2,34 +2,30 @@ import { useIntl } from 'react-intl'
 
 import { ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import {
-  DetailsHeader,
-  DetailsWrapper,
-  Wrapper
-} from '../../IntentAIDetails/styledComponents'
-import { EnhancedIntent }                    from '../../IntentAIForm/services'
+import { DetailsSection }                    from '../../common/DetailsSection'
+import { useIntentContext }                  from '../../IntentContext'
 import { dataRetentionText, isDataRetained } from '../../utils'
 import { IntentAIRRMGraph }                  from '../RRMGraph'
 
-export const CrrmGraph = ({ details, summaryUrlBefore, summaryUrlAfter, crrmData }:
-  {
-    details: EnhancedIntent,
-    summaryUrlBefore: string,
-    summaryUrlAfter: string,
-    crrmData: ProcessedCloudRRMGraph[]
-  }) => {
+export const CrrmGraph = ({ summaryUrlBefore, summaryUrlAfter, crrmData }: {
+  summaryUrlBefore: string,
+  summaryUrlAfter: string,
+  crrmData: ProcessedCloudRRMGraph[]
+}) => {
   const { $t } = useIntl()
-  return <Wrapper>
-    <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indications' })}</DetailsHeader>
-    <DetailsWrapper>
-      { details && isDataRetained(details.dataEndTime)
-        ? <IntentAIRRMGraph
-          details={details as EnhancedIntent}
-          crrmData={crrmData}
-          summaryUrlBefore={summaryUrlBefore}
-          summaryUrlAfter={summaryUrlAfter}
-        />
-        : $t(dataRetentionText)}
-    </DetailsWrapper>
-  </Wrapper>
+  const { intent } = useIntentContext()
+
+  const children = isDataRetained(intent.dataEndTime)
+    ? <IntentAIRRMGraph
+      details={intent}
+      crrmData={crrmData}
+      summaryUrlBefore={summaryUrlBefore}
+      summaryUrlAfter={summaryUrlAfter}
+    />
+    : $t(dataRetentionText)
+
+  return <DetailsSection
+    title={$t({ defaultMessage: 'Key Performance Indications' })}
+    children={children}
+  />
 }

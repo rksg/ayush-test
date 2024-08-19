@@ -1,19 +1,24 @@
 import { gql }                  from 'graphql-request'
 import { get, snakeCase, pick } from 'lodash'
 import moment                   from 'moment-timezone'
+import { MessageDescriptor }    from 'react-intl'
 
 import { kpiDelta }          from '@acx-ui/analytics/utils'
+import { formatter }         from '@acx-ui/formatter'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
 import { codes } from '../config'
 
-import { StatusTrail, IntentKPIConfig } from './config'
-
-export type BasicIntent = {
-  id: string;
-  code: string;
-  status: string;
+export type IntentKPIConfig = {
+  key: string;
+  label: MessageDescriptor;
+  format: ReturnType<typeof formatter>;
+  deltaSign: '+' | '-' | 'none';
+  valueAccessor?: (value: number[]) => number;
+  valueFormatter?: ReturnType<typeof formatter>;
+  showAps?: boolean;
+  filter?: CallableFunction
 }
 
 export type IntentWlan = {
@@ -35,7 +40,10 @@ export type IntentDetails = {
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
-  statusTrail: StatusTrail;
+  statusTrail: Array<{
+    status: string
+    createdAt?: string
+  }>;
   updatedAt: string;
   dataEndTime: string;
   preferences?: {
@@ -91,16 +99,6 @@ export function getGraphKPIs (
 
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    intentCode: build.query<BasicIntent, Pick<BasicIntent, 'id'>>({
-      query: (variables) => ({
-        variables,
-        document: gql`query IntentCode($id: String) {
-          intent: recommendation(id: $id) { id code status }
-        }`
-      }),
-      transformResponse: (response: { intent: BasicIntent }) => response.intent,
-      providesTags: [{ type: 'Intent', id: 'INTENT_CODE' }]
-    }),
     intentDetails: build.query<EnhancedIntent, { id: string; kpis: IntentKPIConfig[] }>({
       query: ({ id, kpis }) => ({
         document: gql`
@@ -124,6 +122,5 @@ export const api = recommendationApi.injectEndpoints({
 })
 
 export const {
-  useIntentCodeQuery,
   useIntentDetailsQuery
 } = api

@@ -1,20 +1,23 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
-import { pick }  from 'lodash'
 
 import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedIntentCRRM } from '../../IntentAIDetails/__tests__/fixtures'
+import { transformDetailsResponse }           from '../../IntentAIForm/services'
+import { useIntentContext }                   from '../../IntentContext'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../IntentAIDetails/__tests__/fixtures'
 
-import { AIDrivenRRM, isOptimized } from '.'
+import { IntentAIForm, isOptimized } from '.'
 
 class ResizeObserver {
   observe () {}
   unobserve () {}
   disconnect () {}
 }
+
+jest.mock('../../IntentContext')
 
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
@@ -23,25 +26,19 @@ jest.mock('@acx-ui/config', () => ({
 
 describe('AIDrivenRRM', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'IntentCode', {
-      data: { intent: pick(mockedIntentCRRM, ['id', 'code']) }
-    })
-    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-      data: { intent: mockedIntentCRRM }
-    })
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
+    jest.mocked(useIntentContext)
+      .mockReturnValue({ intent: transformDetailsResponse(mockedIntentCRRM), kpis: [] })
   })
   window.ResizeObserver = ResizeObserver
 
   async function renderAndStepsThruForm () {
-    render(<AIDrivenRRM />, {
-      route: { params: { recommendationId: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6' } },
-      wrapper: Provider
-    })
+    const params = { recommendationId: mockedIntentCRRM.id, code: mockedIntentCRRM.code }
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 

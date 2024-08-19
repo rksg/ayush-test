@@ -4,19 +4,11 @@ import React, { useState } from 'react'
 import _                                             from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import {
-  PageHeader,
-  StepsForm,
-  Loader
-} from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import { get }       from '@acx-ui/config'
-import { formatter } from '@acx-ui/formatter'
-import { useParams } from '@acx-ui/react-router-dom'
 
-import { IntentKPIConfig }                                                            from '../../IntentAIForm/config'
-import { useIntentCodeQuery, useIntentDetailsQuery }                                  from '../../IntentAIForm/services'
-import * as UI                                                                        from '../../IntentAIForm/styledComponents'
-import { IntentConfig, StateType, intentBandMapping, states }                         from '../config'
+import { IntentWizardHeader }                                                         from '../../common/IntentWizardHeader'
+import { useIntentContext }                                                           from '../../IntentContext'
 import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                                                       from '../RRMGraph/services'
 
@@ -25,17 +17,19 @@ import { Priority }     from './Priority'
 import { Settings }     from './Settings'
 import { Summary }      from './Summary'
 
-export const kpis: IntentKPIConfig[] = [{
-  key: 'number-of-interfering-links',
-  label: defineMessage({ defaultMessage: 'Interfering links' }),
-  format: formatter('countFormat'),
-  deltaSign: '-'
-}]
+export type IntentConfig = {
+  reasonText: MessageDescriptor
+  tradeoffText: MessageDescriptor
+  appliedReasonText?: MessageDescriptor
+  partialOptimizationAppliedReasonText?: MessageDescriptor
+  partialOptimizedTradeoffText?: MessageDescriptor
+}
 
 const reasonText = defineMessage({ defaultMessage: 'Based on our AI Analytics, enabling AI-Driven Cloud RRM will decrease the number of interfering links from {before} to {after}.' })
 const appliedReasonText = defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan, bandwidth and AP transmit power when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' })
 const partialOptimizationAppliedReasonText = defineMessage({ defaultMessage: 'AI-Driven Cloud RRM will constantly monitor the network, and adjust the channel plan when necessary to minimize co-channel interference. These changes, if any, will be indicated by the Key Performance Indicators. The number of interfering links may also fluctuate, depending on any changes in the network, configurations and/or rogue AP activities.' })
 
+// TODO: refactor: Find a way to configure this in another way
 export const codes = {
   'c-crrm-channel24g-auto': {
     reasonText,
@@ -72,118 +66,56 @@ export const codes = {
   }
 } as Record<string, IntentConfig>
 
-export const statusTrailMsgs = Object.entries(states).reduce((acc, [key, val]) => {
-  acc[key as StateType] = val.text
-  return acc
-}, {} as Record<StateType, MessageDescriptor>)
-
-export const steps = {
-  title: {
-    introduction: defineMessage({ defaultMessage: 'Introduction' }),
-    priority: defineMessage({ defaultMessage: 'Intent Priority' }),
-    settings: defineMessage({ defaultMessage: 'Settings' }),
-    summary: defineMessage({ defaultMessage: 'Summary' })
-  },
-  intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
-  category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' })
-}
-
-export const crrmIntent = {
-  full: {
-    value: defineMessage({ defaultMessage: 'Client Density' }),
-    title: defineMessage({ defaultMessage: 'High number of clients in a dense network' }),
-    content: defineMessage({ defaultMessage: 'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })
-  },
-  partial: {
-    value: defineMessage({ defaultMessage: 'Client Throughput' }),
-    title: defineMessage({ defaultMessage: 'High client throughput in sparse network' }),
-    content: defineMessage({ defaultMessage: 'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })
-  }
-}
-
 export const isOptimized = (value: boolean) => value ? 'full' : 'partial'
 
-export function AIDrivenRRM () {
+export function IntentAIForm () {
+  const { intent } = useIntentContext()
   const { $t } = useIntl()
-  const params = useParams()
-  const id = params?.recommendationId!
 
+  const queryResult = useIntentAICRRMQuery()
+  const crrmData = queryResult.data!
   const [sliderUrlBefore, setSliderUrlBefore] = useState<string>('')
   const [sliderUrlAfter, setSliderUrlAfter] = useState<string>('')
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-  const codeQuery = useIntentCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useIntentDetailsQuery(
-    { id: codeQuery.data?.id!, kpis },
-    { skip: !Boolean(codeQuery.data?.id) }
-  )
-  const details = detailsQuery.data!
-
-  const band = intentBandMapping[details?.code as keyof typeof intentBandMapping]
-  const queryResult = useIntentAICRRMQuery(details?.id, band)
-  const crrmData = queryResult.data!
-
-  const breadcrumb = [
-    { text: $t({ defaultMessage: 'AI Assurance' }) },
-    { text: $t({ defaultMessage: 'AI Analytics' }) },
-    { text: $t({ defaultMessage: 'IntentAI' }), link: '/analytics/intentAI' }
-  ]
   const defaultValue = {
     preferences: {
       crrmFullOptimization: true
     }
   }
 
-  return (
-    <Loader states={[codeQuery, detailsQuery]}>
-      <PageHeader
-        breadcrumb={breadcrumb}
-        titlePrefix={<UI.AIDrivenRRMIcon />}
-        title={$t({ defaultMessage: 'AI-Driven RRM' })}
-        subTitle={[
-          {
-            label: $t({ defaultMessage: 'Intent' }),
-            value: [$t(steps.intent) as string]
-          },
-          {
-            label: get('IS_MLISA_SA')
-              ? $t({ defaultMessage: 'Zone' })
-              : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-            value: [details?.sliceValue]
-          }
-        ]}
+  return (<>
+    <IntentWizardHeader />
+    {/* hide the graph, only rendering the graph image for the slider & summary */}
+    {crrmData && <div hidden data-testid='hidden-graph'>
+      <SliderGraphBefore crrmData={crrmData} setUrl={setSliderUrlBefore} />
+      <SliderGraphAfter crrmData={crrmData} setUrl={setSliderUrlAfter} />
+      <SummaryGraphBefore crrmData={crrmData} setUrl={setSummaryUrlBefore} />
+      <SummaryGraphAfter crrmData={crrmData} setUrl={setSummaryUrlAfter} />
+    </div>}
+    <StepsForm
+      buttonLabel={{
+        submit: $t({ defaultMessage: 'Apply' })
+      }}
+      initialValues={_.merge(defaultValue, intent)}
+    >
+      <StepsForm.StepForm
+        title={$t({ defaultMessage: 'Introduction' })}
+        children={<Introduction sliderUrlBefore={sliderUrlBefore} sliderUrlAfter={sliderUrlAfter} queryResult={queryResult} />}
       />
-      {/* hide the graph, only rendering the graph image for the slider & summary */}
-      {crrmData && <div hidden data-testid='hidden-graph'>
-        <SliderGraphBefore crrmData={crrmData} setUrl={setSliderUrlBefore} />
-        <SliderGraphAfter crrmData={crrmData} setUrl={setSliderUrlAfter} />
-        <SummaryGraphBefore crrmData={crrmData} setUrl={setSummaryUrlBefore} />
-        <SummaryGraphAfter crrmData={crrmData} setUrl={setSummaryUrlAfter} />
-      </div>}
-      <StepsForm
-        buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply' })
-        }}
-        initialValues={_.merge(defaultValue, details)}
-      >
-        <StepsForm.StepForm
-          title={$t(steps.title.introduction)}
-          children={<Introduction sliderUrlBefore={sliderUrlBefore} sliderUrlAfter={sliderUrlAfter} queryResult={queryResult} />}
-        />
-        <StepsForm.StepForm
-          title={$t(steps.title.priority)}
-          children={<Priority />}
-        />
-        <StepsForm.StepForm
-          title={$t(steps.title.settings)}
-          children={<Settings />}
-        />
-        <StepsForm.StepForm
-          title={$t(steps.title.summary)}
-          children={<Summary summaryUrlBefore={summaryUrlBefore} summaryUrlAfter={summaryUrlAfter} crrmData={crrmData} />}
-        />
-      </StepsForm>
-    </Loader>
-  )
+      <StepsForm.StepForm
+        title={$t({ defaultMessage: 'Intent Priority' })}
+        children={<Priority />}
+      />
+      <StepsForm.StepForm
+        title={$t({ defaultMessage: 'Settings' })}
+        children={<Settings />}
+      />
+      <StepsForm.StepForm
+        title={$t({ defaultMessage: 'Summary' })}
+        children={<Summary summaryUrlBefore={summaryUrlBefore} summaryUrlAfter={summaryUrlAfter} crrmData={crrmData} />}
+      />
+    </StepsForm>
+  </>)
 }

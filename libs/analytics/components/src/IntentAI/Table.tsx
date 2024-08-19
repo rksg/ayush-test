@@ -11,17 +11,10 @@ import { TenantLink }                                                from '@acx-
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
-import { aiFeatures, codes }                     from './config'
+import { aiFeatures, codes, icons }              from './config'
 import { useIntentAITableQuery, IntentListItem } from './services'
 import * as UI                                   from './styledComponents'
 import { useIntentAIActions }                    from './useIntentAIActions'
-
-export const icons = {
-  [aiFeatures.RRM]: <AIDrivenRRM />,
-  [aiFeatures.AirFlexAI]: <AirFlexAI />,
-  [aiFeatures.AIOps]: <AIOperation />,
-  [aiFeatures.EcoFlexAI]: <EcoFlexAI />
-}
 
 type IconTooltipProps = {
   title: MessageDescriptor

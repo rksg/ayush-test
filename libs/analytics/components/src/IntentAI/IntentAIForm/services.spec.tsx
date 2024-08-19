@@ -1,30 +1,14 @@
-import { omit, pick } from 'lodash'
+import { omit } from 'lodash'
 
 import { recommendationUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery }         from '@acx-ui/test-utils'
 
-import {
-  mockedIntentCRRM
-} from '../IntentAIDetails/__tests__/fixtures'
+import { kpis }             from '../AIDrivenRRM'
+import { mockedIntentCRRM } from '../AIDrivenRRM/IntentAIDetails/__tests__/fixtures'
 
-import { kpis }                           from './AIDrivenRRM'
-import { api, EnhancedIntent, kpiHelper } from './services'
+import { api, kpiHelper } from './services'
 
 describe('intentAI services', () => {
-  describe('intent code', () => {
-    it('should return correct value', async () => {
-      mockGraphqlQuery(recommendationUrl, 'IntentCode', {
-        data: { intent: pick(mockedIntentCRRM, ['id', 'code', 'status']) }
-      })
-      const { status, data, error } = await store.dispatch(
-        api.endpoints.intentCode.initiate({ id: mockedIntentCRRM.id })
-      )
-      expect(status).toBe('fulfilled')
-      expect(error).toBeUndefined()
-      expect(data).toEqual(pick(mockedIntentCRRM, ['id', 'code', 'status']))
-    })
-  })
-
   describe('intent details', () => {
     it('should return correct value', async () => {
       mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
@@ -41,7 +25,7 @@ describe('intentAI services', () => {
         'priority',
         'summary'
       ])
-      expect(removedMsgs).toStrictEqual<EnhancedIntent>({
+      expect(removedMsgs).toStrictEqual({
         appliedOnce: true,
         dataEndTime: '2023-06-26T00:00:25.772Z',
         code: 'c-crrm-channel24g-auto',
@@ -52,7 +36,7 @@ describe('intentAI services', () => {
           { name: '21_US_Beta_Samsung', type: 'domain' },
           { name: '21_US_Beta_Samsung', type: 'zone' }
         ],
-        updatedAt: '06/26/2023 06:04',
+        updatedAt: '2023-06-26T06:04:00.000Z',
         sliceType: 'zone',
         sliceValue: '21_US_Beta_Samsung',
         status: 'applyscheduled',
@@ -63,7 +47,7 @@ describe('intentAI services', () => {
         },
         statusTrail: mockedIntentCRRM.statusTrail,
         preferences: undefined
-      } as unknown as EnhancedIntent)
+      })
     })
   })
 })

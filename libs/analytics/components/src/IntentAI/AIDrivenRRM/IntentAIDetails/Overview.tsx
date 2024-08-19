@@ -3,24 +3,18 @@ import { Typography } from 'antd'
 import moment         from 'moment-timezone'
 import { useIntl }    from 'react-intl'
 
-import { Descriptions, Loader }      from '@acx-ui/components'
+import { Descriptions }              from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { EnhancedIntent } from '../../IntentAIForm/services'
-// TODO
-// move kpis into common
-import { statusTrailMsgs }       from '../IntentAIForm'
+import { getIntentStatus }       from '../../common/getIntentStatus'
+import { useIntentContext }      from '../../IntentContext'
 import { DownloadRRMComparison } from '../RRMGraph/DownloadRRMComparison'
 
-export const Overview = ({ details }: { details: EnhancedIntent }) => {
+export const Overview = () => {
   const { $t } = useIntl()
-  const {
-    sliceValue,
-    status,
-    updatedAt
-  } = details
-  return <Loader>
+  const { intent: { sliceValue, status, updatedAt } } = useIntentContext()
+  return <>
     <Typography.Paragraph children={$t({
       defaultMessage: 'Choose between a network with maximum throughput, ' +
         'allowing some interference, or one with minimal interference, ' +
@@ -43,8 +37,7 @@ export const Overview = ({ details }: { details: EnhancedIntent }) => {
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
-        // TODO: fix below to do without keyof typeof
-        children={$t(statusTrailMsgs[status as keyof typeof statusTrailMsgs])}
+        children={getIntentStatus(status)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Date' })}
@@ -52,6 +45,6 @@ export const Overview = ({ details }: { details: EnhancedIntent }) => {
       />
     </Descriptions>
     <br />
-    <DownloadRRMComparison details={details} title={$t({ defaultMessage: 'RRM comparison' })} />
-  </Loader>
+    <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+  </>
 }

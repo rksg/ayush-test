@@ -12,11 +12,10 @@ import {
 import { formatter }        from '@acx-ui/formatter'
 import { DownloadOutlined } from '@acx-ui/icons'
 
-import { EnhancedIntent }    from '../../IntentAIForm/services'
-import { intentBandMapping } from '../config'
+import { useIntentContext } from '../../IntentContext'
 
-import { useIntentAICRRMQuery } from './services'
-import { DownloadWrapper }      from './styledComponents'
+import { intentBandMapping, useIntentAICRRMQuery } from './services'
+import { DownloadWrapper }                         from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -31,18 +30,18 @@ const useDownloadUrl = (data: unknown, type: string) => {
   return url
 }
 
-export function DownloadRRMComparison (props: {
-  details: EnhancedIntent,
-  title?: string
-}) {
+export function DownloadRRMComparison (props: { title?: string }) {
   const { $t } = useIntl()
-  const band = intentBandMapping[props.details.code as keyof typeof intentBandMapping]
-  const queryResult = useIntentAICRRMQuery(props.details?.id, band)
+  const { intent } = useIntentContext()
+
+  // TODO: refactor: possible to move band into result of useIntentAICRRMQuery?
+  const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
+  const queryResult = useIntentAICRRMQuery()
   const url = useDownloadUrl(queryResult.csv, 'text/csv')
 
   const filename = sanitize([
     'rrm-comparison',
-    kebabCase(props.details.sliceValue),
+    kebabCase(intent.sliceValue),
     kebabCase(formatter('radioFormat')(band).toLowerCase())
   ].join('-') + '.csv')
 

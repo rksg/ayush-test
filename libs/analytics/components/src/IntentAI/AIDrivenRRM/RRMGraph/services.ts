@@ -1,6 +1,7 @@
-import { gql }  from 'graphql-request'
-import { flow } from 'lodash'
-import moment   from 'moment-timezone'
+import { gql }       from 'graphql-request'
+import { flow }      from 'lodash'
+import moment        from 'moment-timezone'
+import { useParams } from 'react-router-dom'
 
 import {
   CloudRRMGraph,
@@ -13,6 +14,12 @@ import {
 import { BandEnum }          from '@acx-ui/components'
 import { recommendationApi } from '@acx-ui/store'
 import { getIntl }           from '@acx-ui/utils'
+
+export const intentBandMapping = {
+  'c-crrm-channel24g-auto': BandEnum._2_4_GHz,
+  'c-crrm-channel5g-auto': BandEnum._5_GHz,
+  'c-crrm-channel6g-auto': BandEnum._6_GHz
+}
 
 const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -70,14 +77,17 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
   })
 })
 
-export function useIntentAICRRMQuery (id: string, band: BandEnum) {
-  const queryResult = useIntentAIRRMGraphQuery(
-    { id: String(id), band }, {
-      skip: !id,
-      selectFromResult: result => {
-        const { data = [], csv = '' } = result.data ?? {}
-        return { ...result, data, csv }
-      }
-    })
+export function useIntentAICRRMQuery () {
+  const { recommendationId: id, code } = useParams() as {
+    recommendationId: string
+    code: keyof typeof intentBandMapping
+  }
+  const band = intentBandMapping[code]
+  const queryResult = useIntentAIRRMGraphQuery({ id, band }, {
+    selectFromResult: result => {
+      const { data = [], csv = '' } = result.data ?? {}
+      return { ...result, data, csv }
+    }
+  })
   return queryResult
 }

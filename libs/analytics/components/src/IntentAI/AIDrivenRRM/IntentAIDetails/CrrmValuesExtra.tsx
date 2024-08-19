@@ -1,31 +1,24 @@
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
 
-import { DetailsHeader, Wrapper } from '../../IntentAIDetails/styledComponents'
-import { EnhancedIntent }         from '../../IntentAIForm/services'
+import { DetailsSection } from '../../common/DetailsSection'
 
-import { getValuesText } from './Values'
+import { useValuesText } from './Values'
 
-export const CrrmValuesExtra = ({ details }: { details: EnhancedIntent }) => {
+export const CrrmValuesExtra = () => {
   const { $t } = useIntl()
-  const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
-  const valuesText = getValuesText(details, isFullOptimization)
-  return <Wrapper>
-    <GridRow>
-      <GridCol col={{ span: 12 }}>
-        <DetailsHeader>{$t({ defaultMessage: 'Why this recommendation?' })}</DetailsHeader>
-        <Card type='default'>
-          {valuesText.reasonText}
-        </Card>
-      </GridCol>
-      <GridCol col={{ span: 12 }}>
-        <DetailsHeader>{$t({ defaultMessage: 'Potential trade-off' })}</DetailsHeader>
-        <Card type='default'>
-          {valuesText.tradeoffText}
-        </Card>
-      </GridCol>
-    </GridRow>
-  </Wrapper>
+  const valuesText = useValuesText()
+  return <GridRow>
+    <GridCol col={{ span: 12 }}>
+      <DetailsSection title={$t({ defaultMessage: 'Why this recommendation?' })}>
+        <Card>{valuesText.reasonText}</Card>
+      </DetailsSection>
+    </GridCol>
+    <GridCol col={{ span: 12 }}>
+      <DetailsSection title={$t({ defaultMessage: 'Potential trade-off' })}>
+        <Card>{valuesText.tradeoffText}</Card>
+      </DetailsSection>
+    </GridCol>
+  </GridRow>
 }

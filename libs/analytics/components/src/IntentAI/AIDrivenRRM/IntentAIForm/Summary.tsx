@@ -1,49 +1,42 @@
 import React from 'react'
 
-import { Row, Col, Typography }   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { TrendTypeEnum }                                                                      from '@acx-ui/analytics/utils'
-import { StepsForm, useLayoutContext, useStepFormContext, TrendPill, ProcessedCloudRRMGraph } from '@acx-ui/components'
+import { TrendTypeEnum }                                from '@acx-ui/analytics/utils'
+import { StepsForm, TrendPill, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { EnhancedIntent, getGraphKPIs }      from '../../IntentAIForm/services'
+import { getGraphKPIs }                      from '../../IntentAIForm/services'
 import * as UI                               from '../../IntentAIForm/styledComponents'
+import { useIntentContext }                  from '../../IntentContext'
 import { dataRetentionText, isDataRetained } from '../../utils'
 import { IntentAIRRMGraph }                  from '../RRMGraph'
 
-import { IntentPriority, Priority } from './Priority'
 
-import { steps, crrmIntent, isOptimized, kpis } from '.'
+import * as SideNotes from './SideNotes'
 
 export function Summary (
   { summaryUrlBefore, summaryUrlAfter, crrmData } :
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
-  const { form, initialValues } = useStepFormContext<EnhancedIntent>()
-  const { pageHeaderY } = useLayoutContext()
-  const intentPriority = form.getFieldValue(Priority.fieldName)
-  const details = initialValues as EnhancedIntent
-
-  const sideNotes = {
-    title: defineMessage({ defaultMessage: 'Side Notes' })
-  }
+  const { intent, kpis } = useIntentContext()
 
   return <Row gutter={20}>
     <Col span={16}>
-      <StepsForm.Title children={$t(steps.title.summary)} />
+      <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Projected interfering links reduction' })}
       </StepsForm.Subtitle>
-      { initialValues
-          && isDataRetained(initialValues?.dataEndTime)
+      {isDataRetained(intent.dataEndTime)
         ? <>
           <IntentAIRRMGraph
-            details={initialValues as EnhancedIntent}
+            details={intent}
             crrmData={crrmData}
             summaryUrlBefore={summaryUrlBefore}
             summaryUrlAfter={summaryUrlAfter}
           />
-          {getGraphKPIs(details, kpis).map(kpi => (
+          {/* TODO: refactor: move Kpis into component like KpiCard */}
+          {getGraphKPIs(intent, kpis).map(kpi => (
             <React.Fragment key={kpi.key}>
               <StepsForm.Subtitle children={$t(kpi.label)} />
               <StepsForm.Subtitle>
@@ -65,19 +58,7 @@ export function Summary (
       }
     </Col>
     <Col span={7} offset={1}>
-      <UI.SideNotes $pageHeaderY={pageHeaderY}>
-        <Typography.Title level={4}>
-          {$t(sideNotes.title)}
-        </Typography.Title>
-        <StepsForm.Subtitle>
-          {$t(crrmIntent[isOptimized(intentPriority) as IntentPriority]?.title)}
-        </StepsForm.Subtitle>
-        <StepsForm.TextContent>
-          <Typography.Paragraph>
-            {$t(crrmIntent[isOptimized(intentPriority) as IntentPriority]?.content)}
-          </Typography.Paragraph>
-        </StepsForm.TextContent>
-      </UI.SideNotes>
+      <SideNotes.Summary />
     </Col>
   </Row>
 }

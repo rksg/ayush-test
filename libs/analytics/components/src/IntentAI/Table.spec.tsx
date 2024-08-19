@@ -9,14 +9,14 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM } from './__tests__/fixtures'
-import { aiFeatures }                                                                           from './config'
+import { aiFeatures, icons }                                                                    from './config'
 import * as UI                                                                                  from './styledComponents'
-import { AIFeature, icons, iconTooltips }                                                       from './Table'
+import { AIFeature, iconTooltips }                                                              from './Table'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
-const mockGet = get as jest.Mock
+const mockGet = jest.mocked(get)
 
 describe('AIFeature component', () => {
 
