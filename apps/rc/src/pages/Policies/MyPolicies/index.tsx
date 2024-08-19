@@ -106,7 +106,8 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
-  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  // const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const isSoftGreEnabled = true
 
   return [
     {
@@ -261,11 +262,10 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       type: PolicyType.SOFTGRE,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      // totalCount: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !isSoftGreEnabled }).data?.totalCount,
-      totalCount: useGetSoftGreViewDataListQuery({ params, payload: {} }).data?.totalCount,
+      totalCount: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !isSoftGreEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })),
-      disabled: false // !isSoftGreEnabled
+      disabled: !isSoftGreEnabled
     }
   ]
 }

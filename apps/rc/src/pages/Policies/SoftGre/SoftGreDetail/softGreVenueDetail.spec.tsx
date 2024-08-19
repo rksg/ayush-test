@@ -41,11 +41,11 @@ describe('SoftGreVenueDetail', () => {
     mockServer.use(
       rest.post(
         CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json(mockedVenueQueryData))
+        (_, res, ctx) => res(ctx.json(mockedVenueQueryData))
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkQueryData))
+        (_, res, ctx) => res(ctx.json(mockedNetworkQueryData))
       )
     )
   })

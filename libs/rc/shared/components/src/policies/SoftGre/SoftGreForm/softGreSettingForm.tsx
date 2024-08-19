@@ -19,17 +19,17 @@ interface SoftGreSettingFormProps {
 export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const { editMode, isSwitchDisabled } = props
   const { $t } = useIntl()
-  const mtuType = useWatch('mtuType')
   const params = useParams()
   const form = Form.useFormInstance()
+  const mtuType = useWatch('mtuType')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
 
   const listPayload = {
-    searchString: '',
     fields: ['name', 'id'],
+    searchString: '',
     searchTargetFields: ['name'],
     filters: {},
-    pageSize: 10000
+    pageSize: 10_000
   }
 
   const nameValidator = async (value: string) => {

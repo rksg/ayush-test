@@ -6,7 +6,7 @@ import { MtuTypeEnum,  SoftGreViewData } from '@acx-ui/rc/utils'
 interface SoftGreDetailContentProps {
   data: SoftGreViewData | undefined
 }
-const SoftGreDetailContent = (props: SoftGreDetailContentProps) => {
+export default function SoftGreDetailContent (props: SoftGreDetailContentProps) {
   const { data } = props
   const { $t } = useIntl()
 
@@ -42,11 +42,5 @@ const SoftGreDetailContent = (props: SoftGreDetailContentProps) => {
     }
   ]
 
-  return (
-    <>
-      {data && <SummaryCard data={softGreInfo} colPerRow={6} />}
-    </>
-  )
+  return data ? <SummaryCard data={softGreInfo} colPerRow={6} /> : null
 }
-
-export default SoftGreDetailContent

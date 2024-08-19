@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import _ from 'lodash'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -19,14 +19,12 @@ export default function SoftGreDetailView () {
   const params = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SOFTGRE)
   const [ softGreData, setSoftGreData ] = useState<SoftGreViewData>()
-  const defaultPayload = { filters: { id: [params.policyId] } }
-
   const { softGreDetail, isLoading } = useGetSoftGreViewDataListQuery(
-    { payload: defaultPayload },
+    { payload: { filters: { id: [params.policyId] } } },
     {
       selectFromResult: ( { data, isLoading } ) => {
         return {
-          softGreDetail: data?.data[0] || {} as SoftGreViewData,
+          softGreDetail: data?.data?.[0] || {} as SoftGreViewData,
           isLoading
         }
       }
@@ -34,10 +32,10 @@ export default function SoftGreDetailView () {
   )
 
   useEffect(() => {
-    if (softGreDetail && !_.isEqual(softGreDetail, softGreData)) {
+    if (softGreDetail && !softGreData) {
       setSoftGreData(softGreDetail)
     }
-  }, [softGreDetail])
+  }, [softGreDetail, softGreData])
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -67,7 +65,7 @@ export default function SoftGreDetailView () {
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <SoftGreVenueDetail activationInformations={
-            (softGreData?.activationInformations || []) as SoftGreActivationInformation[]}
+            (softGreData?.activationInformations ?? []) as SoftGreActivationInformation[]}
           />
         </GridCol>
       </GridRow>

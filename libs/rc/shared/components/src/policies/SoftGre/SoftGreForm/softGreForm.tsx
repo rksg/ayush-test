@@ -45,6 +45,16 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   const [ updateSoftGre ] = useUpdateSoftGreMutation()
   const [ createSoftGre ] = useCreateSoftGreMutation()
 
+  const { softGreData } = useGetSoftGreViewDataListQuery(
+    { params, payload: { filters: { id: [params.policyId] } } },
+    {
+      skip: !editMode,
+      selectFromResult: ({ data }) => {
+        return { softGreData: (data?.data?.[0] ?? {}) as SoftGreViewData }
+      }
+    }
+  )
+
   const handleFinish = async (data: SoftGre) => {
     try {
       if (editMode) {
@@ -58,28 +68,16 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
       console.log(error) // eslint-disable-line no-console
     }
   }
-  const defaultPayload = { filters: { id: [params.policyId] } }
-  const { softGreData } = useGetSoftGreViewDataListQuery(
-    { params, payload: defaultPayload },
-    {
-      skip: !editMode,
-      selectFromResult: ({ data }) => {
-        return { softGreData: (data?.data[0] ?? {}) as SoftGreViewData }
-      }
-    }
-  )
 
   useEffect(() => {
     if (!editMode || !softGreData) return
 
     form.setFieldsValue(softGreData)
 
-    if (softGreData?.activationInformations?.length !== 0) {
-      softGreData?.activationInformations?.map(venue => {
-        if ( venue.aaaAffinityEnabled === true ) {
-          setIsSwitchsDisabled(true)
-        }
-      })
+    if (softGreData?.activationInformations?.length > 0) {
+      const isSwitchsDisabled =
+        softGreData?.activationInformations?.some(venue => venue.aaaAffinityEnabled === true)
+      setIsSwitchsDisabled(isSwitchsDisabled)
     }
   }, [softGreData, form, editMode])
 

@@ -8,8 +8,6 @@ import { CommonResult,
   SoftGre,
   CommonUrlsInfo,
   SoftGreActivationInformation,
-  GetApiVersionHeader,
-  ApiVersionEnum,
   Network,
   VenueTableUsageBySoftGre,
   VenueDetail,
@@ -27,7 +25,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const req = createHttpRequest(SoftGreUrls.createSoftGre)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
@@ -37,7 +35,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const req = createHttpRequest(SoftGreUrls.getSoftGreViewDataList, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'SoftGre', id: 'LIST' }],
@@ -82,7 +80,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const req = createHttpRequest(SoftGreUrls.updateSoftGre, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
@@ -91,7 +89,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
         // eslint-disable-next-line max-len
         const activationInformations = _.get(payload,'activationInformations') as SoftGreActivationInformation[]
-        const defaultRes = { data: { totalCount: 0 } as TableResult<VenueTableUsageBySoftGre> }
+        const emptyResponse = { data: { totalCount: 0 } as TableResult<VenueTableUsageBySoftGre> }
         const venueNetworksMap:{ [key:string]: string[] } = {}
         let networkIds: string[] = []
 
@@ -103,7 +101,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const networkIdsSet = Array.from(new Set(networkIds))
 
         // query network name with networkId
-        if (networkIds.length <= 0) return defaultRes
+        if (networkIds.length === 0) return emptyResponse
         const networkQueryPayload = {
           fields: ['name', 'id'],
           filters: { id: networkIdsSet },
@@ -114,7 +112,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
         // eslint-disable-next-line max-len
         const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
-        if (networkRes.error) return defaultRes
+        if (networkRes.error) return emptyResponse
 
         const networkData =networkRes.data as TableResult<Network>
         let networkMapping:{ [key:string]: string } = {}
@@ -125,21 +123,17 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         // query venue name and address by venueId
         const venueIds = Object.keys(venueNetworksMap)
         const venueQueryPayload = {
-          fields: ['name', 'id', 'addressLine'],
-          filters: { id: venueIds },
-          page: 1,
-          pageSize: 10_000,
-          sortField: 'name',
-          sortOrder: 'DESC'
+          ...(_.omit(payload as RequestPayload, ['activationInformations'])),
+          filters: { id: venueIds }
         }
         // eslint-disable-next-line max-len
         const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params)
         const venueRes = await fetchWithBQ({ ...venueReq, body: JSON.stringify(venueQueryPayload) })
-        if (venueRes.error) return defaultRes
-        const venueData = venueRes?.data as TableResult<VenueDetail>
+        if (venueRes.error) return emptyResponse
+        const { data: venueData } = venueRes?.data as TableResult<VenueDetail>
 
         // process data
-        const venueResult = venueData.data.map(venue =>{
+        const venueResult = venueData.map(venue =>{
           const networIDs = venueNetworksMap[venue.id]
           const networkNames = networIDs.map(id => (networkMapping[id]))
           // eslint-disable-next-line max-len
@@ -150,8 +144,8 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           data: venueResult,
           page: 1,
           totalCount: venueResult.length
-        }
-        return { data: result as unknown as TableResult<VenueTableUsageBySoftGre> }
+        } as TableResult<VenueTableUsageBySoftGre>
+        return { data: result }
       },
       providesTags: [{ type: 'SoftGre', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }

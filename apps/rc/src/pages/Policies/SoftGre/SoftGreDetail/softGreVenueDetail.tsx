@@ -1,6 +1,3 @@
-
-import { useEffect, useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { Card,  Loader,  Table, TableProps }                                     from '@acx-ui/components'
@@ -18,7 +15,7 @@ const defaultVenuePayload = {
   sortField: 'name',
   sortOrder: 'ASC',
   page: 1,
-  pageSize: 10000,
+  pageSize: 10_000,
   filters: {
     id: [] as string[]
   }
@@ -26,10 +23,10 @@ const defaultVenuePayload = {
 interface SoftGreVenueDetailProps {
   activationInformations: SoftGreActivationInformation[]
 }
-const SoftGreVenueDetail = (props: SoftGreVenueDetailProps) => {
+export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
   const { activationInformations } = props
   const { $t } = useIntl()
-  const [ basicData, setBasicData ] = useState<VenueTableUsageBySoftGre[]>()
+  // const [ basicData, setBasicData ] = useState<VenueTableUsageBySoftGre[]>()
 
   const tableQuery = useTableQuery({
     useQuery: useGetVenuesSoftGrePolicyQuery,
@@ -38,7 +35,7 @@ const SoftGreVenueDetail = (props: SoftGreVenueDetailProps) => {
       activationInformations
     },
     option: {
-      skip: !activationInformations?.length
+      skip: !activationInformations || activationInformations.length === 0
     },
     search: {
       searchTargetFields: ['name']
@@ -46,20 +43,20 @@ const SoftGreVenueDetail = (props: SoftGreVenueDetailProps) => {
   })
   // const basicData = tableQuery.data?.data
 
-  useEffect(() => {
-    if (tableQuery?.data?.data) {
-      setBasicData(tableQuery?.data?.data)
-    }
-  }, [tableQuery])
+  // useEffect(() => {
+  //   if (tableQuery?.data?.data) {
+  //     setBasicData(tableQuery?.data?.data)
+  //   }
+  // }, [tableQuery])
 
   return (
-    <Loader states={[ { isLoading: tableQuery.isLoading }]}>
-      <Card title={`${$t({ defaultMessage: 'Instances' })} (${basicData?.length ?? 0})`}>
+    <Loader states={[tableQuery]}>
+      <Card title={`${$t({ defaultMessage: 'Instances' })} (${tableQuery.data?.totalCount ?? 0})`}>
         <div style={{ width: '100%' }}>
           <Table<VenueTableUsageBySoftGre>
             enableApiFilter={true}
             columns={useColumns()}
-            dataSource={tableQuery?.data?.data}
+            dataSource={tableQuery.data?.data}
             pagination={tableQuery.pagination}
             onChange={tableQuery.handleTableChange}
             onFilterChange={tableQuery.handleFilterChange}
@@ -79,7 +76,6 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       key: 'name',
-      // searchable: true,
       sorter: true,
       fixed: 'left',
       render: (_, row) => {
@@ -110,5 +106,3 @@ function useColumns () {
   ]
   return columns
 }
-
-export default SoftGreVenueDetail

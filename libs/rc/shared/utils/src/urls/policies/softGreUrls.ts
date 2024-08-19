@@ -4,46 +4,82 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
   createSoftGre: {
     method: 'post',
     url: '/softGreProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getSoftGreViewDataList: {
     method: 'post',
     url: '/softGreProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteSoftGre: {
     method: 'delete',
     url: '/softGreProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getSoftGre: {
     method: 'get',
     url: '/softGreProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateSoftGre: {
     method: 'put',
     url: '/softGreProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateSoftGre: {
     method: 'put',
     url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   dectivateSoftGre: {
     method: 'put',
     url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateSoftGreOnVenueAndNetwork: { // aaaAffinityEnable
     method: 'put',
     url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId/settings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getSoftGreOnVenueAndNetwork: {
     method: 'get',
     url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId/settings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

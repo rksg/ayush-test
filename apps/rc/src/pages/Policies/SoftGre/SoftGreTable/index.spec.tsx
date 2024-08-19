@@ -24,9 +24,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 // eslint-disable-next-line max-len
-const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ 
-  type: PolicyType.SOFTGRE, 
-  oper: PolicyOperation.LIST 
+const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
+  type: PolicyType.SOFTGRE,
+  oper: PolicyOperation.LIST
 })
 const policyId = '0d89c0f5596c4689900fb7f5f53a0859'
 const params = {
@@ -43,18 +43,18 @@ describe('SoftGreTable', () => {
     mockServer.use(
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockSoftGreTable))
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable))
       ),
       rest.delete(
         SoftGreUrls.deleteSoftGre.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           mockedSingleDeleteApi()
           return res(ctx.status(202))
         }
       ),
       rest.post(
         CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json(mockedVenueQueryData))
+        (_, res, ctx) => res(ctx.json(mockedVenueQueryData))
       )
     )
   })

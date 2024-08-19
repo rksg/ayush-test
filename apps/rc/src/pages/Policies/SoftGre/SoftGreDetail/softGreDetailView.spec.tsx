@@ -41,17 +41,17 @@ describe('SoftGre Detail Page', () => {
     mockServer.use(
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
-        (_req, res, ctx) => {
+        (_, res, ctx) => {
           return res(ctx.json(mockSoftGreDetailFromListQueryById))
         }
       ),
       rest.post(
         CommonUrlsInfo.getWifiNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkQueryData))
+        (_, res, ctx) => res(ctx.json(mockedNetworkQueryData))
       ),
       rest.post(
         CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json(mockedVenueQueryData))
+        (_, res, ctx) => res(ctx.json(mockedVenueQueryData))
       )
     )
   })
