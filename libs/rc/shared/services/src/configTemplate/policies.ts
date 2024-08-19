@@ -108,7 +108,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delL2AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delL2AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.delL2AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.delL2AclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateL2AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
@@ -178,7 +181,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delL3AclPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delL3AclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.delL3AclPolicy,
+        PoliciesConfigTemplateUrlsInfo.delL3AclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateL3AclTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
@@ -232,7 +238,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     deleteAccessControlProfileTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteAccessControlProfile),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deleteAccessControlProfile,
+        PoliciesConfigTemplateUrlsInfo.deleteAccessControlProfileRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
@@ -292,7 +301,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delDevicePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delDevicePolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.delDevicePolicy,
+        PoliciesConfigTemplateUrlsInfo.delDevicePolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     activateDeviceTemplateOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
@@ -362,7 +374,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     delAppPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delAppAclPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.delAppAclPolicy,
+        PoliciesConfigTemplateUrlsInfo.delAppAclPolicyRbac
+      ),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
@@ -425,7 +440,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     delVlanPoolPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       // eslint-disable-next-line max-len
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.updateVlanPoolPolicyRbac),
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicy, PoliciesConfigTemplateUrlsInfo.deleteVlanPoolPolicyRbac),
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     getVlanPoolTemplateVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
