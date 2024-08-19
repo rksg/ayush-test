@@ -960,7 +960,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
           </span>
         </div>}
         children={<ContentSwitcher
-          defaultValue={(layer3PolicyInfo &&
+          formInitValue={(layer3PolicyInfo &&
             (isViewMode() || editMode.isEdit || localEditMode.isEdit))
             ? layer3PolicyInfo.defaultAccess
             : AccessStatus.ALLOW}
