@@ -261,6 +261,7 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       filterMultiple: false,
       filterValueNullable: false,
       filterable: filterableKeys ? switchFilterOptions : false,
+      isBetaFeature: true,
       render: (_, row, __, highlightFn) => {
         const name = getSwitchName(row)
         return row.isFirstLevel ?

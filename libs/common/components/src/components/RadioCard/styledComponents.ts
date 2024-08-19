@@ -1,9 +1,17 @@
-import { Card as AntCard, Radio as AntRadio } from 'antd'
-import styled                                 from 'styled-components/macro'
+import { Card as AntCard, Radio as AntRadio, Space } from 'antd'
+import styled                                        from 'styled-components/macro'
 
 import { Button as DefaultButton } from '../Button'
 
 export type RadioCardType = 'default' | 'radio' | 'button' | 'disabled'
+
+export const Title = styled.div`
+  padding-right: 20px;
+  padding-bottom: 3px;
+  font-size: var(--acx-subtitle-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-subtitle-4-font-weight);
+`
 
 export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   position: relative;
@@ -18,7 +26,12 @@ export const Card = styled(AntCard)<{ $cardType: RadioCardType }>`
   }`:''}
 
   ${props => props.$cardType === 'default'
-    ?'cursor: pointer;':''}
+    ? `cursor: pointer;
+    ${Title} {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 0;
+    }` :'' }
 
   ${props => props.$cardType === 'disabled'
     ? `opacity : 50%;
@@ -117,10 +130,8 @@ export const Description = styled.div`
   padding-bottom: 30px;
 `
 
-export const Title = styled.div`
-  padding-right: 20px;
-  padding-bottom: 3px;
-  font-size: var(--acx-subtitle-4-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  font-weight: var(--acx-subtitle-4-font-weight);
+export const Indicator = styled(Space)`
+  img {
+    margin: 0 !important;
+  }
 `

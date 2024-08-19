@@ -1,6 +1,8 @@
 import { RadioProps }                                from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
+import { BetaIcon } from '@acx-ui/icons'
+
 import {
   Button,
   Radio,
@@ -9,6 +11,7 @@ import {
   Description,
   Category,
   CategoryWrapper,
+  Indicator,
   RadioCardType
 } from './styledComponents'
 
@@ -26,6 +29,7 @@ export type RadioCardProps = RadioProps & {
   categories?: RadioCardCategory[]
   buttonText?: MessageDescriptor,
   onClick?: () => void
+  isBetaFeature?: boolean
 }
 
 const categoryMapping = {
@@ -44,11 +48,15 @@ const categoryMapping = {
 }
 
 export function RadioCard ({
-  type = 'default', title, description, value, categories = [], buttonText, onClick, ...rest
+  type = 'default', title, description, value, categories = [],
+  buttonText, onClick, isBetaFeature, ...rest
 }: RadioCardProps){
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
-    <Title>{title}</Title>
+    <Title>
+      {title}
+      { isBetaFeature ? <Indicator><BetaIcon /></Indicator> : null }
+    </Title>
     <Description>{description}</Description>
     { categories.length > 0 &&
       <CategoryWrapper>{categories.map(category=> {

@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import Beta from './icons/Beta.png'
+
 export { ReactComponent as AccessPointOutlined } from './icons/AccessPointOutlined.svg'
 export { ReactComponent as AccessPointSolid } from './icons/AccessPointSolid.svg'
 export { ReactComponent as AccessPointWifi } from './icons/AccessPointWifi.svg'
@@ -404,3 +406,7 @@ export { ReactComponent as Xerox } from './icons/Xerox.svg'
 export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
 
 export * from './styledComponents'
+
+export function BetaIcon () {
+  return <img src={Beta} alt='beta' width='16' height='16' style={{ margin: '0 0 4px 4px' }} />
+}

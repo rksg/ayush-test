@@ -84,6 +84,7 @@ export default function MyPolicies () {
                   onClick={() => {
                     policy.listViewPath && navigate(policy.listViewPath)
                   }}
+                  isBetaFeature={policy.isBetaFeature}
                 />
               </GridCol>
             )
@@ -151,7 +152,8 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       }, { skip: !supportHotspot20R1 }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
-      disabled: !supportHotspot20R1
+      disabled: !supportHotspot20R1,
+      isBetaFeature: true
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,

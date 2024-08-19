@@ -12,8 +12,8 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv }     from '@acx-ui/config'
-import { ArrowChevronRight } from '@acx-ui/icons'
+import { get as getEnv }               from '@acx-ui/config'
+import { ArrowChevronRight, BetaIcon } from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -53,6 +53,7 @@ type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavPr
 type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
   label: string
   children?: ItemType[]
+  isBetaFeature?: boolean
 }
 
 export type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
@@ -118,7 +119,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       return {
         ...item,
         key: key,
-        label: item.label,
+        label: <>{ item.label }{ item?.isBetaFeature ? <BetaIcon /> : null }</>,
         children: item.children?.map(child => getMenuItem(child, key))
       }
     }
