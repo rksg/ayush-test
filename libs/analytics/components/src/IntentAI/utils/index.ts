@@ -85,7 +85,7 @@ const getResumeTransitionStatus = (
   } else if (
     [displayStates.pausedRevertFailed, displayStates.pausedReverted].includes(displayStatus) ||
     preStatusTrail?.statusReason === statusReasons.waitingForEtl ||
-    moment(updatedAt).isAfter(moment().add(-1, 'd'))) {
+    moment(updatedAt).isAfter(moment().subtract(1, 'day'))) {
     return { status: statuses.na, statusReason: statusReasons.waitingForEtl }
   }
   return preStatusTrail

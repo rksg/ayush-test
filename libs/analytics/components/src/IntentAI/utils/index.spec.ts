@@ -46,19 +46,19 @@ describe('IntentAI utils', () => {
       expect(getTransitionStatus(
         Actions.Optimize,
         displayStates.new
-      )).toEqual({ status: statuses.scheduled, statusReason: null })
+      )).toEqual({ status: statuses.scheduled })
 
       expect(getTransitionStatus(
         Actions.Optimize,
         displayStates.applyScheduled
-      )).toEqual({ status: statuses.active, statusReason: null })
+      )).toEqual({ status: statuses.active })
     })
 
     it('should handle (Actions.Revert)', () => {
       expect(getTransitionStatus(
         Actions.Revert,
         displayStates.active
-      )).toEqual({ status: statuses.revertScheduled, statusReason: null })
+      )).toEqual({ status: statuses.revertScheduled })
     })
 
     it('should handle (Actions.Pause)', () => {
@@ -77,7 +77,7 @@ describe('IntentAI utils', () => {
       expect(getTransitionStatus(
         Actions.Cancel,
         displayStates.scheduled
-      )).toEqual({ status: statuses.new, statusReason: null })
+      )).toEqual({ status: statuses.new })
 
       expect(getTransitionStatus(
         Actions.Cancel,
@@ -89,7 +89,7 @@ describe('IntentAI utils', () => {
         { scheduledAt: '2024-07-19T04:01:00.000Z',
           applyScheduledAt: '2024-07-19T04:01:00.000Z'
         }
-      )).toEqual({ status: statuses.active, statusReason: null })
+      )).toEqual({ status: statuses.active })
 
       expect(getTransitionStatus(
         Actions.Cancel,
@@ -101,7 +101,7 @@ describe('IntentAI utils', () => {
         { scheduledAt: '2024-07-21T04:01:00.000Z',
           applyScheduledAt: '2024-07-21T04:01:00.000Z'
         }
-      )).toEqual( { status: statuses.applyScheduled, statusReason: null })
+      )).toEqual( { status: statuses.applyScheduled })
 
       expect(getTransitionStatus(
         Actions.Cancel,
@@ -119,7 +119,7 @@ describe('IntentAI utils', () => {
           { status: statuses.revertScheduled },
           { status: statuses.active }
         ]
-      )).toEqual({ status: statuses.active, statusReason: null })
+      )).toEqual({ status: statuses.active })
     })
 
     it('should handle (Actions.Resume)', () => {
@@ -131,7 +131,7 @@ describe('IntentAI utils', () => {
           { status: statuses.revertScheduled }
         ]
       )).toEqual(
-        { status: statuses.active, statusReason: null }
+        { status: statuses.active }
       )
 
       expect(getTransitionStatus(
@@ -146,7 +146,7 @@ describe('IntentAI utils', () => {
           applyScheduledAt: '2024-07-19T04:01:00.000Z'
         }
       )).toEqual(
-        { status: statuses.active, statusReason: null }
+        { status: statuses.active }
       )
 
       expect(getTransitionStatus(
@@ -161,7 +161,7 @@ describe('IntentAI utils', () => {
           applyScheduledAt: '2024-07-21T04:01:00.000Z'
         }
       )).toEqual(
-        { status: statuses.applyScheduled, statusReason: null }
+        { status: statuses.applyScheduled }
       )
 
       expect(getTransitionStatus(

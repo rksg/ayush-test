@@ -127,11 +127,10 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
       return !rows.some(row => row.displayStatus !== displayStates.new)
     case Actions.Optimize:
       return rows.length === 1 &&
-        !rows.some(row =>
-          ![displayStates.new, displayStates.scheduled,
-            displayStates.scheduledOneClick,displayStates.applyScheduled,
-            displayStates.active].includes(row.displayStatus)
-        )
+        [displayStates.new, displayStates.scheduled,
+          displayStates.scheduledOneClick,displayStates.applyScheduled,
+          displayStates.active].includes(rows[0].displayStatus)
+
     case Actions.Revert:
       return !rows.some(row =>
         ![displayStates.applyScheduled,
