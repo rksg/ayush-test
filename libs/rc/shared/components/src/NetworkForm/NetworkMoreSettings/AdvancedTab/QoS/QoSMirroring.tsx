@@ -106,7 +106,7 @@ function QoSMirroring ({ wlanData }: { wlanData: NetworkSaveData | null }) {
 
       <ApCompatibilityDrawer
         visible={drawerVisible}
-        type={params.networkId?ApCompatibilityType.NETWORK:ApCompatibilityType.ALONE}
+        type={ApCompatibilityType.ALONE}
         networkId={params.networkId}
         featureName={InCompatibilityFeatures.QOS_MIRRORING}
         onClose={() => setDrawerVisible(false)}
