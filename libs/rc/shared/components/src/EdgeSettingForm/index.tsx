@@ -5,13 +5,20 @@ import { useWatch }                      from 'antd/lib/form/Form'
 import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 
-import { Alert, Loader, useStepFormContext }                                      from '@acx-ui/components'
-import { Features }                                                               from '@acx-ui/feature-toggle'
-import { useGetEdgeClusterListQuery, useVenuesListQuery }                         from '@acx-ui/rc/services'
+import { Alert, Loader, useStepFormContext } from '@acx-ui/components'
+import { Features }                          from '@acx-ui/feature-toggle'
+import {
+  useGetEdgeClusterListQuery,
+  useGetEdgeFeatureSetsQuery,
+  useGetVenueEdgeFirmwareListQuery,
+  useVenuesListQuery
+} from '@acx-ui/rc/services'
 import { EdgeGeneralSetting, edgeSerialNumberValidator, isOtpEnrollmentRequired } from '@acx-ui/rc/utils'
 import { useParams }                                                              from '@acx-ui/react-router-dom'
+import { compareVersions }                                                        from '@acx-ui/utils'
 
-import { useIsEdgeFeatureReady } from '../useEdgeActions'
+import { FwDescription, FwVersion } from '../EdgeFormItem/EdgeClusterSettingForm/styledComponents'
+import { useIsEdgeFeatureReady }    from '../useEdgeActions'
 
 
 interface EdgeSettingFormProps {
@@ -39,6 +46,11 @@ const clusterOptionsDefaultPayload = {
   sortOrder: 'ASC',
   pageSize: 10000
 }
+const haAaFeatureRequirementPayload = {
+  filters: {
+    featureNames: ['HA-AA']
+  }
+}
 
 export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
@@ -50,7 +62,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   // const [addClusterDrawerVisible, setAddClusterDrawerVisible] = useState(false)
   const { form } = useStepFormContext<EdgeGeneralSetting>()
   const serialNumber = useWatch('serialNumber', form)
-  // const venueId = useWatch('venueId', form)
+  const venueId = useWatch('venueId', form) as string
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({ params:
     { tenantId: params.tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -60,6 +72,15 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
       }
     }
   })
+  const { requiredFw } = useGetEdgeFeatureSetsQuery({
+    params: { tenantId: params.tenantId }, payload: haAaFeatureRequirementPayload }, {
+    selectFromResult: ({ data }) => {
+      return {
+        requiredFw: data?.featureSets?.find(item => item.featureName === 'HA-AA')?.requiredFw
+      }
+    }
+  })
+  const { data: venueFirmwareList } = useGetVenueEdgeFirmwareListQuery({})
   const { clusterOptions, isLoading: isClusterListLoading } = useGetEdgeClusterListQuery(
     { payload: clusterOptionsDefaultPayload },
     {
@@ -71,6 +92,15 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         }
       }
     })
+
+  const getVenueFirmware = (venueId: string) => {
+    return venueFirmwareList?.find(item => item.id === venueId)?.versions?.[0]?.id
+  }
+
+  const isAaSupportedByVenue = () => {
+    let venueVersion = getVenueFirmware(venueId)
+    return Boolean(requiredFw && venueVersion && compareVersions(venueVersion, requiredFw) >= 0)
+  }
 
   useEffect(() => {
     setShowOtpMessage(isOtpEnrollmentRequired(serialNumber ?? '') && !!!props.isEdit)
@@ -89,6 +119,15 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
             rules={[{
               required: true
             }]}
+            extra={
+              <div>
+                <FwDescription>
+                  {$t({ defaultMessage:
+                    '<VenueSingular></VenueSingular> firmware version for SmartEdge:'
+                  })}
+                </FwDescription> <FwVersion>{getVenueFirmware(venueId)}</FwVersion>
+              </div>
+            }
           >
             <Select options={venueOptions} disabled={props.isEdit}/>
           </Form.Item>
@@ -102,8 +141,14 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
                 name='clusterId'
                 label={$t({ defaultMessage: 'Cluster' })}
                 extra={isEdgeHaAaEnabled ?
-                  // eslint-disable-next-line max-len
-                  $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up an active-active HA mode cluster using SmartEdge’s name by default.' }) :
+                  $t({
+                    // eslint-disable-next-line max-len
+                    defaultMessage: 'If no cluster is chosen, it automatically sets up an {haMode} HA mode cluster using SmartEdge’s name by default. HA mode defaults are based on the <venueSingular></venueSingular>\'s firmware version.'
+                  }, {
+                    haMode: isAaSupportedByVenue() ?
+                      <b>{$t({ defaultMessage: 'active-active' })}</b> :
+                      <b>{$t({ defaultMessage: 'active-standby' })}</b>
+                  }) :
                   // eslint-disable-next-line max-len
                   $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using SmartEdge’s name by default.' })
                 }
