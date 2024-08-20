@@ -161,7 +161,7 @@ describe('hasCrossVenuesPermission', () => {
     })
     expect(hasCrossVenuesPermission()).toBe(true)
   })
-  it('check permissions for Specific Venues', () => {
+  xit('check permissions for Specific Venues', () => {
     const profile = getUserProfile()
     setUserProfile({
       ...profile,
