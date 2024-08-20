@@ -249,7 +249,7 @@ export function MspCustomers () {
         sorter: true,
         width: 80,
         render: function (_, row) {
-          return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
+          return $t(mspUtils.getStatus(row))
         }
       },
       {

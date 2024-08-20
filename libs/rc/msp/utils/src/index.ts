@@ -1,4 +1,5 @@
-import moment from 'moment'
+import moment            from 'moment'
+import { defineMessage } from 'react-intl'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
@@ -112,13 +113,13 @@ export const MSPUtils = () => {
     if (row.status === 'Active') {
       switch(row.accountType) {
         case MspEcAccountType.TRIAL:
-          return 'Trial'
+          return defineMessage({ defaultMessage: 'Trial' })
         case MspEcAccountType.EXTENDED_TRIAL:
-          return 'Extended Trial'
+          return defineMessage({ defaultMessage: 'Extended Trial' })
       }
-      return row.status
+      return defineMessage({ defaultMessage: 'Active' })
     } else {
-      return 'Inactive'
+      return defineMessage({ defaultMessage: 'Inactive' })
     }
   }
 
