@@ -9,11 +9,6 @@ import { TenantLink }                                                           
 
 const defaultVenuePayload = {
   fields: ['id', 'name', 'addressLine'],
-  search: {
-    searchTargetFields: ['name']
-  },
-  sortField: 'name',
-  sortOrder: 'ASC',
   page: 1,
   pageSize: 10_000,
   filters: {
@@ -35,9 +30,6 @@ export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
     },
     option: {
       skip: !activationInformations || activationInformations.length === 0
-    },
-    search: {
-      searchTargetFields: ['name']
     }
   })
 

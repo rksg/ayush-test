@@ -34,13 +34,13 @@ export default function SoftGreDetailView () {
         title={softGreDetail?.name}
         breadcrumb={breadcrumb}
         extra={
-          filterByAccess([
+          params.policyId && filterByAccess([
             <TenantLink
               scopeKey={[WifiScopes.UPDATE]}
               to={getPolicyDetailsLink({
                 type: PolicyType.SOFTGRE,
                 oper: PolicyOperation.EDIT,
-                policyId: params.policyId as string
+                policyId: params.policyId
               })}
             >
               <Button key={'configure'} type={'primary'}>

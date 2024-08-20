@@ -67,12 +67,10 @@ describe('SoftGreTable', () => {
       { route: { params, path: tablePath } }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'Policies & Profiles'
-    })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
 
-    const row = await screen.findAllByRole('row', { name: /softGreProfileName/i })
-    expect(row.length).toBe(3)
+    const rows = await screen.findAllByRole('row', { name: /softGreProfileName/i })
+    expect(rows).toHaveLength(3)
   })
 
   it('should navigate to SoftGreDetailView Page correctly', async () => {

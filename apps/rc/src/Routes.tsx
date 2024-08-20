@@ -1203,7 +1203,6 @@ function PolicyRoutes () {
         />
       </>
       }
-      {/* // TODO jean {isSoftGreEnabled && <> */}
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
         element={

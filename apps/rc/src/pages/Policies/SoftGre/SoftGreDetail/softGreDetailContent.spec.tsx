@@ -1,6 +1,5 @@
-import { softGreApi }                                      from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                 from '@acx-ui/store'
+import { Provider }                                        from '@acx-ui/store'
 import { render, screen }                                  from '@acx-ui/test-utils'
 
 import { mockSoftGreDetail } from '../__tests__/fixtures'
@@ -20,7 +19,6 @@ const detailPath = '/:tenantId/t' + getPolicyRoutePath({
 })
 
 describe('SoftGre Detail Content Component', () => {
-  store.dispatch(softGreApi.util.resetApiState())
   it('should render SoftGreDetailContent component successfully', async () => {
     render(
       <Provider>

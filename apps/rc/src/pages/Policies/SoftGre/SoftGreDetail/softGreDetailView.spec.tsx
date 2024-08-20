@@ -1,11 +1,12 @@
 import { rest } from 'msw'
 
+import { softGreApi }  from '@acx-ui/rc/services'
 import { CommonUrlsInfo, PolicyOperation, PolicyType,
   SoftGreUrls,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
 import { Path }                       from '@acx-ui/react-router-dom'
-import { Provider }                   from '@acx-ui/store'
+import { Provider, store }            from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedNetworkQueryData, mockedVenueQueryData, mockSoftGreDetailFromListQueryById } from '../__tests__/fixtures'
@@ -37,7 +38,8 @@ const detailPath = '/:tenantId/t' + getPolicyRoutePath({
 })
 
 describe('SoftGre Detail Page', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
+    store.dispatch(softGreApi.util.resetApiState())
     mockServer.use(
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
@@ -64,7 +66,7 @@ describe('SoftGre Detail Page', () => {
       { route: { params, path: detailPath } }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-    expect(screen.getByRole('link', { name: 'SoftGRE' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
+    expect(await screen.findByRole('link', { name: 'SoftGRE' })).toBeVisible()
   })
 })

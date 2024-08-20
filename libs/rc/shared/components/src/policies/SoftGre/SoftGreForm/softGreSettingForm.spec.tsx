@@ -28,8 +28,7 @@ jest.mock('react-router-dom', () => ({
 const editViewPath = '/:tenantId/t/policies/SoftGre/:policyId/edit'
 const createViewPath = '/:tenantId/t/policies/SoftGre/create'
 
-let params: { tenantId: string, policyId: string }
-params = {
+const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
   policyId: '0d89c0f5596c4689900fb7f5f53a0859'
 }

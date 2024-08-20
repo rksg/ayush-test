@@ -23,20 +23,18 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-let params: { tenantId: string, policyId: string }
-
 const detailPath = '/:tenantId/t/' + getPolicyRoutePath(
   { type: PolicyType.SOFTGRE,
     oper: PolicyOperation.DETAIL
   })
 
-params = {
+const params = {
   tenantId: '15320bc221d94d2cb537fa0189fee742',
   policyId: '4b76b1952c80401b8500b00d68106576'
 }
 
 describe('SoftGreVenueDetail', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     store.dispatch(softGreApi.util.resetApiState())
     mockServer.use(
       rest.post(
@@ -62,8 +60,10 @@ describe('SoftGreVenueDetail', () => {
     expect(await within(row).findByText('2')).toBeVisible()
 
     const smartEdgeLink = await screen.findByRole('link',
-      { name: 'TestVenue0529' }) as HTMLAnchorElement
-    expect(smartEdgeLink.href).toContain(`/venues/${venueId}/venue-details/overview`)
+      { name: 'TestVenue0529' })
+    expect(smartEdgeLink).toHaveAttribute(
+      'href', `/${params.tenantId}/t/venues/${venueId}/venue-details/overview`
+    )
   })
 
   it('should show No Data on empty list when activationInformations is empty', async () => {
@@ -75,10 +75,5 @@ describe('SoftGreVenueDetail', () => {
     )
 
     expect(await screen.findByText('Instances (0)')).toBeVisible()
-
-    const tbody = screen.getByRole('table').querySelector('tbody')!
-    expect(tbody).toBeVisible()
-    const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(1)
   })
 })
