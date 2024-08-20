@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority } from '@acx-ui/rc/utils'
+import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority } from '../../models/EdgeQosProfilesEnum'
 
 export const trafficClassToDisplay = (trafficClass?: string | EdgeQosTrafficClass) => {
   const trafficClassEnum = EdgeQosTrafficClass[trafficClass as keyof typeof EdgeQosTrafficClass]
