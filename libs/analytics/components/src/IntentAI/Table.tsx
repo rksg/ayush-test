@@ -10,12 +10,12 @@ import { useNavigate, useTenantLink, TenantLink }                    from '@acx-
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
-import { aiFeatures, codes }                          from './config'
-import { useIntentAITableQuery, IntentListItem }      from './services'
-import { displayStates }                              from './states'
-import * as UI                                        from './styledComponents'
-import { IntentAIDateTimePicker, useIntentAIActions } from './useIntentAIActions'
-import { Actions, getDefaultTime }                    from './utils'
+import { aiFeatures, codes, IntentListItem }           from './config'
+import { useIntentAITableQuery }                       from './services'
+import { displayStates }                               from './states'
+import * as UI                                         from './styledComponents'
+import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
+import { Actions, getDefaultTime, isVisibledByAction } from './utils'
 
 export const icons = {
   [aiFeatures.RRM]: <AIDrivenRRM />,
@@ -119,46 +119,6 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       <span>{props.aiFeature}</span>
     </TenantLink>
   </UI.FeatureIcon>)
-}
-
-export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
-  switch (action) {
-    case Actions.One_Click_Optimize:
-      return !rows.some(row => row.displayStatus !== displayStates.new)
-    case Actions.Optimize:
-      return rows.length === 1 &&
-        [displayStates.new, displayStates.scheduled,
-          displayStates.scheduledOneClick,displayStates.applyScheduled,
-          displayStates.active].includes(rows[0].displayStatus)
-
-    case Actions.Revert:
-      return !rows.some(row =>
-        ![displayStates.applyScheduled,
-          displayStates.pausedApplyFailed,
-          displayStates.active,
-          displayStates.revertScheduled,
-          displayStates.pausedRevertFailed].includes(row.displayStatus)
-      )
-    case Actions.Pause:
-      return !rows.some(row =>
-        ![displayStates.new, displayStates.scheduled,
-          displayStates.scheduledOneClick,displayStates.applyScheduled,
-          displayStates.active, displayStates.naVerified,
-          displayStates.naNoAps, displayStates.naWaitingForEtl].includes(row.displayStatus)
-      )
-    case Actions.Cancel:
-      return !rows.some(row =>
-        ![displayStates.scheduled,
-          displayStates.scheduledOneClick,
-          displayStates.revertScheduled].includes(row.displayStatus)
-      )
-    case Actions.Resume:
-      return !rows.some(row =>
-        ![displayStates.pausedApplyFailed, displayStates.pausedRevertFailed,
-          displayStates.pausedReverted,displayStates.pausedFromInactive,
-          displayStates.pausedByDefault, displayStates.pausedFromActive].includes(row.displayStatus)
-      )
-  }
 }
 
 export function IntentAITable (

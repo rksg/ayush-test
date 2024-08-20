@@ -3,8 +3,8 @@ import { defineMessage } from 'react-intl'
 
 import { get } from '@acx-ui/config'
 
-import { StatusTrail, StatusTrailItem }           from '../config'
-import { displayStates, statuses, statusReasons } from '../states'
+import { IntentListItem, StatusTrail, StatusTrailItem } from '../config'
+import { displayStates, statuses, statusReasons }       from '../states'
 
 export const isDataRetained = (time?: string) => {
   const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
@@ -36,7 +36,7 @@ export type TransitionIntentMetadata = {
 export type TransitionIntentItem = {
   id: string
   displayStatus: displayStates
-  updatedAt?: string
+  status: statuses
   statusTrail?: StatusTrail
   metadata?: TransitionIntentMetadata
 }
@@ -50,40 +50,70 @@ export enum Actions {
   Resume = 'resume'
 }
 
-const getCancelTransitionStatus = (
-  displayStatus: displayStates,
-  statusTrail?: StatusTrail,
-  metadata?:TransitionIntentMetadata):StatusTrailItem => {
-  if ([displayStates.scheduled, displayStates.scheduledOneClick].includes(displayStatus)) {
+export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
+  switch (action) {
+    case Actions.One_Click_Optimize:
+      return !rows.some(row => row.displayStatus !== displayStates.new)
+    case Actions.Optimize:
+      return rows.length === 1 &&
+        [displayStates.new, displayStates.scheduled,
+          displayStates.scheduledOneClick,displayStates.applyScheduled,
+          displayStates.active].includes(rows[0].displayStatus)
+
+    case Actions.Revert:
+      return !rows.some(row =>
+        ![displayStates.applyScheduled,
+          displayStates.pausedApplyFailed,
+          displayStates.active,
+          displayStates.revertScheduled,
+          displayStates.pausedRevertFailed].includes(row.displayStatus)
+      )
+    case Actions.Pause:
+      return !rows.some(row =>
+        ![displayStates.new, displayStates.scheduled,
+          displayStates.scheduledOneClick,displayStates.applyScheduled,
+          displayStates.active, displayStates.naVerified,
+          displayStates.naNoAps, displayStates.naWaitingForEtl].includes(row.displayStatus)
+      )
+    case Actions.Cancel:
+      return !rows.some(row =>
+        ![displayStates.scheduled,
+          displayStates.scheduledOneClick,
+          displayStates.revertScheduled].includes(row.displayStatus)
+      )
+    case Actions.Resume:
+      return !rows.some(row =>
+        ![displayStates.pausedApplyFailed, displayStates.pausedRevertFailed,
+          displayStates.pausedReverted,displayStates.pausedFromInactive,
+          displayStates.pausedByDefault, displayStates.pausedFromActive].includes(row.displayStatus)
+      )
+  }
+}
+
+const getCancelTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+  if ([displayStates.scheduled, displayStates.scheduledOneClick].includes(item.displayStatus)) {
     return { status: statuses.new }
   }
-  const preStatusTrail = statusTrail?.[1]
+  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Cancel)')
 
   return preStatusTrail?.status === statuses.applyScheduled &&
-   moment().isAfter(moment(metadata?.applyScheduledAt)) ?
+   moment().isAfter(moment(item.metadata?.applyScheduledAt)) ?
     { status: statuses.active } : preStatusTrail
 }
 
-const getResumeTransitionStatus = (
-  displayStatus: displayStates,
-  updatedAt?: string,
-  statusTrail?: StatusTrail,
-  metadata?:TransitionIntentMetadata):StatusTrailItem => {
-  const preStatusTrail = statusTrail?.[1]
+const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
   if (!preStatusTrail) throw new Error('Invalid statusTrail(Resume)')
 
-  if (displayStatus === displayStates.pausedApplyFailed) {
+  if (item.displayStatus === displayStates.pausedApplyFailed) {
     return { status: statuses.active }
-  } else if (displayStatus === displayStates.pausedFromActive) {
+  } else if (item.displayStatus === displayStates.pausedFromActive) {
     return preStatusTrail.status === statuses.applyScheduled &&
-      moment().isAfter(moment(metadata?.scheduledAt)) ?
+      moment().isBefore(moment(item.metadata?.scheduledAt)) ?
       { status: statuses.active } : preStatusTrail
-
   } else if (
-    [displayStates.pausedRevertFailed, displayStates.pausedReverted].includes(displayStatus) ||
-    preStatusTrail?.statusReason === statusReasons.waitingForEtl ||
-    moment(updatedAt).isAfter(moment().subtract(1, 'day'))) {
+    [displayStates.pausedRevertFailed, displayStates.pausedReverted].includes(item.displayStatus)) {
     return { status: statuses.na, statusReason: statusReasons.waitingForEtl }
   }
   return preStatusTrail
@@ -91,11 +121,9 @@ const getResumeTransitionStatus = (
 
 export const getTransitionStatus =(
   action: Actions,
-  displayStatus: displayStates,
-  statusTrail?: StatusTrail,
-  metadata?: TransitionIntentMetadata,
-  updatedAt?: string
+  item: TransitionIntentItem
 ):StatusTrailItem => {
+  const { displayStatus } = item
   switch (action) {
     case Actions.One_Click_Optimize:
       return { status: statuses.scheduled, statusReason: statusReasons.oneClick }
@@ -110,9 +138,9 @@ export const getTransitionStatus =(
         { status: statuses.paused, statusReason: statusReasons.fromActive } :
         { status: statuses.paused, statusReason: statusReasons.fromInactive }
     case Actions.Cancel:
-      return getCancelTransitionStatus(displayStatus, statusTrail, metadata)
+      return getCancelTransitionStatus(item)
     case Actions.Resume:
-      return getResumeTransitionStatus(displayStatus, updatedAt, statusTrail, metadata)
+      return getResumeTransitionStatus(item)
   }
 }
 
@@ -133,16 +161,11 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
   const variables:Record<string, string|TransitionIntentMetadata|null> = {}
-  const includeMetadata = action === Actions.Revert
+  const includeMetadata = [Actions.Revert, Actions.One_Click_Optimize].includes(action)
   data.forEach((item, index) => {
     const currentIndex = index + 1
-    const { id, displayStatus, updatedAt, statusTrail, metadata } = item
-    const { status, statusReason } = getTransitionStatus(
-      action,
-      displayStatus,
-      statusTrail,
-      metadata,
-      updatedAt)
+    const { id, metadata } = item
+    const { status, statusReason } = getTransitionStatus(action, item)
     paramsGQL.push(
       `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
       $statusReason${currentIndex}:String, \n

@@ -17,11 +17,12 @@ import {
   renderHook
 }                                                               from '@acx-ui/test-utils'
 
-import { mockAIDrivenRow, mockAirflexRows }           from './__tests__/fixtures'
-import { IntentListItem, TransitionMutationResponse } from './services'
-import { displayStates }                              from './states'
-import { useIntentAIActions  }                        from './useIntentAIActions'
-import { Actions }                                    from './utils'
+import { mockAIDrivenRow, mockAirflexRows } from './__tests__/fixtures'
+import { IntentListItem }                   from './config'
+import { TransitionMutationResponse }       from './services'
+import { displayStates }                    from './states'
+import { useIntentAIActions  }              from './useIntentAIActions'
+import { Actions }                          from './utils'
 
 const mockedTransitionIntent = jest.fn()
 const mockedIntentWlansQuery = jest.fn()
@@ -64,7 +65,8 @@ const extractItem = {
   category: 'Wi-Fi Experience',
   scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-  status: 'Active',
+  status: 'active',
+  statusLabel: 'Active',
   statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
 }
 
@@ -501,14 +503,12 @@ describe('useIntentAIActions', () => {
           id: '15',
           displayStatus: displayStates.active,
           statusTrail,
-          metadata: { algorithmData: { isCrrmFullOptimization: false } },
-          updatedAt: '2023-06-16T06:05:02.839Z'
+          metadata: { algorithmData: { isCrrmFullOptimization: false } }
         },{
           id: '17',
           displayStatus: displayStates.active,
           statusTrail,
-          metadata: {},
-          updatedAt: '2023-06-16T06:05:02.839Z'
+          metadata: {}
         }]
       })
       await waitFor(() => expect(mockOK).toBeCalledTimes(1))

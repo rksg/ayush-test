@@ -12,8 +12,8 @@ import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiF
 import { aiFeatures }                                                                                            from './config'
 import { displayStates, statuses }                                                                               from './states'
 import * as UI                                                                                                   from './styledComponents'
-import { AIFeature, icons, iconTooltips, isVisibledByAction }                                                    from './Table'
-import { Actions }                                                                                               from './utils'
+import { AIFeature, icons, iconTooltips }                                                                        from './Table'
+import { Actions, isVisibledByAction }                                                                           from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -162,6 +162,7 @@ describe('AIFeature component', () => {
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
       status: statuses.new,
+      statusLabel: 'New',
       statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
       statusTrail: []
     }

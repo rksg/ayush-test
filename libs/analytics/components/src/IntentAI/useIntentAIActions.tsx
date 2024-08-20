@@ -13,8 +13,8 @@ import {
 import { RadioTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }       from '@acx-ui/utils'
 
+import { IntentListItem }       from './config'
 import {
-  IntentListItem,
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
   useTransitionIntentMutation
@@ -266,7 +266,6 @@ export function useIntentAIActions () {
       data: rows.map(item =>
         ({ id: item.id,
           displayStatus: item.displayStatus,
-          updatedAt: item.updatedAt,
           statusTrail: item.statusTrail,
           metadata: item.metadata
         } as TransitionIntentItem))

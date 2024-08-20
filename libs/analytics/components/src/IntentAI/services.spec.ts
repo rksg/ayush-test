@@ -12,9 +12,10 @@ import {
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { IntentListItem, api, useIntentAITableQuery, TransitionMutationResponse } from './services'
-import { displayStates, statuses, statusReasons }                                 from './states'
-import { Actions }                                                                from './utils'
+import { IntentListItem }                                         from './config'
+import { api, useIntentAITableQuery, TransitionMutationResponse } from './services'
+import { displayStates, statuses, statusReasons }                 from './states'
+import { Actions }                                                from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
@@ -230,6 +231,7 @@ describe('Intent services', () => {
           action: Actions.One_Click_Optimize,
           data: [{ id: '11',
             displayStatus: displayStates.new,
+            status: statuses.new,
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z',
               wlans: [{ name: 'n1', ssid: 's1' }],
@@ -257,6 +259,7 @@ describe('Intent services', () => {
           action: Actions.Optimize,
           data: [{ id: '11',
             displayStatus: displayStates.scheduled,
+            status: statuses.scheduled,
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z',
               wlans: [{ name: 'n1', ssid: 's1' }],
@@ -284,10 +287,11 @@ describe('Intent services', () => {
           action: Actions.Revert,
           data: [{
             id: '12',
+            status: statuses.active,
             displayStatus: displayStates.active,
             statusTrail: [
-              { status: statuses.revertScheduled },
-              { status: statuses.active }
+              { status: statuses.active },
+              { status: statuses.revertScheduled }
             ],
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z'
@@ -312,6 +316,7 @@ describe('Intent services', () => {
           action: Actions.Pause,
           data: [{
             id: '11',
+            status: statuses.applyScheduled,
             displayStatus: displayStates.applyScheduled,
             statusTrail: [
               { status: statuses.applyScheduled },
@@ -319,6 +324,7 @@ describe('Intent services', () => {
             ] },
           {
             id: '12',
+            status: statuses.na,
             displayStatus: displayStates.naWaitingForEtl,
             statusTrail: [
               { status: statuses.na, statusReason: statusReasons.waitingForEtl },
@@ -340,6 +346,7 @@ describe('Intent services', () => {
           action: Actions.Cancel,
           data: [{
             id: '11',
+            status: statuses.scheduled,
             displayStatus: displayStates.scheduled,
             statusTrail: [
               { status: statuses.scheduled },
@@ -347,6 +354,7 @@ describe('Intent services', () => {
             ]
           },{
             id: '12',
+            status: statuses.revertScheduled,
             displayStatus: displayStates.revertScheduled,
             statusTrail: [
               { status: statuses.revertScheduled },
@@ -358,6 +366,7 @@ describe('Intent services', () => {
             }
           },{
             id: '13',
+            status: statuses.revertScheduled,
             displayStatus: displayStates.revertScheduled,
             statusTrail: [
               { status: statuses.revertScheduled },
@@ -369,6 +378,7 @@ describe('Intent services', () => {
             }
           },{
             id: '14',
+            status: statuses.revertScheduled,
             displayStatus: displayStates.revertScheduled,
             statusTrail: [
               { status: statuses.revertScheduled },
@@ -376,6 +386,7 @@ describe('Intent services', () => {
             ]
           },{
             id: '15',
+            status: statuses.revertScheduled,
             displayStatus: displayStates.revertScheduled,
             statusTrail: [
               { status: statuses.revertScheduled },
@@ -401,6 +412,7 @@ describe('Intent services', () => {
           action: Actions.Resume,
           data: [{
             id: '11',
+            status: statuses.paused,
             displayStatus: displayStates.pausedReverted,
             statusTrail: [
               { status: statuses.paused, statusReason: statusReasons.reverted },
@@ -408,6 +420,7 @@ describe('Intent services', () => {
             ]
           },{
             id: '12',
+            status: statuses.paused,
             displayStatus: displayStates.pausedReverted,
             statusTrail: [
               { status: statuses.paused, statusReason: statusReasons.revertFailed },
@@ -415,6 +428,7 @@ describe('Intent services', () => {
             ]
           },{
             id: '13',
+            status: statuses.paused,
             displayStatus: displayStates.pausedFromInactive,
             statusTrail: [
               { status: statuses.paused, statusReason: statusReasons.fromInactive },
@@ -422,6 +436,7 @@ describe('Intent services', () => {
             ]
           } ,{
             id: '14',
+            status: statuses.paused,
             displayStatus: displayStates.pausedFromInactive,
             statusTrail: [
               { status: statuses.paused, statusReason: statusReasons.fromInactive },
@@ -430,10 +445,10 @@ describe('Intent services', () => {
             metadata: {
               scheduledAt: '2024-07-21T04:01:00.000Z',
               applyScheduledAt: '2024-07-21T04:01:00.000Z'
-            },
-            updatedAt: '2024-07-20T02:01:00.000Z'
+            }
           },{
             id: '15',
+            status: statuses.paused,
             displayStatus: displayStates.pausedFromInactive,
             statusTrail: [
               { status: statuses.paused, statusReason: statusReasons.fromInactive },
@@ -442,8 +457,7 @@ describe('Intent services', () => {
             metadata: {
               scheduledAt: '2024-07-21T04:01:00.000Z',
               applyScheduledAt: '2024-07-21T04:01:00.000Z'
-            },
-            updatedAt: '2024-07-19T02:01:00.000Z'
+            }
           }]
         }).unwrap()
       })

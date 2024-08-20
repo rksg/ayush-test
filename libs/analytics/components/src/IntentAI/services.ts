@@ -9,50 +9,18 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
-  NetworkPath,
   computeRangeFilter,
   TABLE_DEFAULT_PAGE_SIZE
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, StatusTrail, aiFeaturesLabel, groupedStates } from './config'
-import { statuses, displayStates }                                    from './states'
+import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent } from './config'
+import { displayStates }                                                         from './states'
 import {
   Actions,
   IntentWlan,
   parseTransitionGQLByAction,
   TransitionIntentItem } from './utils'
-
-type Intent = {
-  id: string
-  code: string
-  root: string
-  status: statuses
-  displayStatus: displayStates
-  createdAt: string
-  updatedAt: string
-  sliceType: string
-  sliceValue: string
-  sliceId: string
-  metadata: object
-  path: NetworkPath
-  idPath: NetworkPath
-  statusTrail: StatusTrail
-  trigger: string
-}
-
-export type IntentListItem = Intent & {
-  aiFeature: string
-  intent: string
-  scope: string
-  type?: string
-  category: string
-  status: string
-  statusTooltip: string,
-  preferences?: {
-    crrmFullOptimization: boolean
-  }
-}
 
 type Metadata = {
   error?: {
