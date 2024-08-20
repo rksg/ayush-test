@@ -1,12 +1,11 @@
-import { rest } from 'msw'
-
-import { useGetDpskQuery, useLazyNetworkListQuery }    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, DpskActionContext, DpskUrls } from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent }       from '@acx-ui/test-utils'
+import { useGetDpskQuery, useLazyNetworkListQuery } from '@acx-ui/rc/services'
+import { DpskActionContext }                        from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { fireEvent, render, screen }                from '@acx-ui/test-utils'
 
 
 import { DpskActionPreview } from './DpskActionPreview'
+
 const mockUseGetDpskQuery = useGetDpskQuery as jest.Mock
 const mockUseLazyNetworkListQuery = useLazyNetworkListQuery as jest.Mock
 
@@ -15,23 +14,6 @@ jest.mock('@acx-ui/rc/services')
 
 describe('DpskActionPreview', () => {
   beforeEach( () => {
-    mockServer.use(
-      rest.get(
-        DpskUrls.getDpsk.url,
-        (req, res, ctx) => res(ctx.json({
-          id: '12345',
-          name: 'DPSK Service'
-        }))
-      ),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
-        res(ctx.json({
-          fields: ['name', 'id', 'defaultGuestCountry'],
-          totalCount: 2,
-          page: 1,
-          data: [{ ssid: 'Network1' }, { ssid: 'Network2' }]
-        }))
-      )
-    )
     mockUseGetDpskQuery.mockReturnValue({ data: { networkIds: ['1', '2'] } })
     mockUseLazyNetworkListQuery.mockReturnValue([
       jest.fn(),
