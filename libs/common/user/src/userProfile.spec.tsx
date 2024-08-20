@@ -21,6 +21,7 @@ import {
   setUserProfile,
   WrapIfAccessible,
   hasRaiPermission,
+  isCustomAdmin,
   hasCrossVenuesPermission
 } from './userProfile'
 
@@ -147,6 +148,32 @@ describe('hasRoles', () => {
     ])).toBe(false)
 
 
+  })
+})
+
+describe('isCustomAdmin', () => {
+  beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
+  it('check system admin', () => {
+    expect(isCustomAdmin()).toBe(false)
+  })
+  it('check custom admin', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      profile: {
+        ...profile.profile,
+        roles: ['NEW_USER'],
+        customRoleType: CustomRoleType.SYSTEM,
+        customRoleName: RolesEnum.ADMINISTRATOR
+      },
+      allowedOperations: ['GET:/networks', 'GET:/switches'],
+      accountTier: '',
+      betaEnabled: false,
+      abacEnabled: true,
+      isCustomRole: false,
+      scopes: []
+    })
+    expect(isCustomAdmin()).toBe(true)
   })
 })
 
@@ -349,10 +376,10 @@ describe('AuthRoute', () => {
   })
 
   it('should go to no permissions page for cross venues', async () => {
-    setRole(RolesEnum.ADMINISTRATOR, true, false, [], false)
+    setRole(RolesEnum.ADMINISTRATOR, true, true, [], false)
     render(
       <Router>
-        <AuthRoute requireCrossVenuesPermission>
+        <AuthRoute requireCrossVenuesPermission scopes={[SwitchScopes.CREATE]}>
           <div>test page</div>
         </AuthRoute>
       </Router>
