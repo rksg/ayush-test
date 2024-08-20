@@ -39,18 +39,6 @@ export interface VenueTableUsageBySoftGre extends SoftGreActivationInformation{
 
 export interface SoftGreActivationInformation {
   venueId: string
-  aaaAffinityEnabled: boolean
   networkIds: string[]
 }
-
-// export interface SoftGreNetworkVenueActivation {
-//   id: string
-//   networkVenue: SoftGreNetworkVenue
-//   softGreProfile: SoftGre
-//   aaaAffinityEnabled: boolean
-// }
-// export interface SoftGreNetworkVenue {
-//   venueId: string
-//   wifiNetworkId: string
-// }
 

@@ -13,11 +13,10 @@ const { useWatch } = Form
 
 interface SoftGreSettingFormProps {
   editMode: boolean
-  isSwitchDisabled?: boolean
 }
 
 export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
-  const { editMode, isSwitchDisabled } = props
+  const { editMode } = props
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
@@ -235,9 +234,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
           </UI.FormItemWrapper>
           <Form.Item
             name='disassociateClientEnabled'
-            initialValue={editMode && isSwitchDisabled ? true : false}
+            initialValue={false}
             valuePropName='checked'
-            children={<Switch disabled={editMode && isSwitchDisabled} />}
+            children={<Switch />}
           />
         </UI.StyledSpace>
       </Col>

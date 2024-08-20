@@ -74,11 +74,6 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
 
     form.setFieldsValue(softGreData)
 
-    if (softGreData?.activationInformations?.length > 0) {
-      const isSwitchsDisabled =
-        softGreData?.activationInformations?.some(venue => venue.aaaAffinityEnabled === true)
-      setIsSwitchsDisabled(isSwitchsDisabled)
-    }
   }, [softGreData, form, editMode])
 
   return (
@@ -103,7 +98,7 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <SoftGreSettingForm editMode={editMode} isSwitchDisabled={isSwitchDisabled} />
+              <SoftGreSettingForm editMode={editMode} />
             </Col>
           </Row>
         </StepsForm.StepForm>

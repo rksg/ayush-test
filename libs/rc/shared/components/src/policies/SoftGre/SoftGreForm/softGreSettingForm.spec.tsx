@@ -120,23 +120,4 @@ describe('SoftGreSettingForm', () => {
     await user.type(secondaryGatewayField,'128.0.0.1')
     expect(errMsg).not.toBeInTheDocument()
   })
-
-  it('should disassociate clients be checked & switched on when AaaAffinity enabled', async () => {
-    const { result: formRef } = renderHook(() => {
-      const [ form ] = Form.useForm()
-      return form
-    })
-
-    render(
-      <Provider>
-        <Form form={formRef.current}>
-          <SoftGreSettingForm editMode={true} isSwitchDisabled={true} />
-        </Form>
-      </Provider>,
-      { route: { path: createViewPath, params } }
-    )
-    const switchBtn = screen.getByRole('switch')
-    expect(switchBtn).toBeDisabled()
-    expect(switchBtn).toBeChecked()
-  })
 })

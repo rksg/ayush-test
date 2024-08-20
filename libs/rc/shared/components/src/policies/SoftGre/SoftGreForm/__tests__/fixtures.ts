@@ -12,38 +12,6 @@ export const mockSoftGreData = {
   keepAliveRetryTimes: 5
 }
 
-export const mockSoftGreDataWithAaaAffinityEnabled = {
-  id: 'test-policyId',
-  name: 'UNKNOWN-SOFTGRE-NAME',
-  description: 'mockSoftGreDescription',
-  mtuType: MtuTypeEnum.AUTO,
-  primaryGatewayAddress: '128.0.0.1',
-  secondaryGatewayAddress: '128.0.0.0',
-  keepAliveInterval: 10,
-  keepAliveRetryTimes: 5,
-  // ...mockSoftGreData,
-  disassociateClientEnabled: true,
-  activationInformations: [
-    {
-      venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-      aaaAffinityEnabled: true,
-      networkIds: [
-        '9b33509cc0a1464cad9447778a72006f',
-        '797a1f499c254260b7a1aedafba524a3',
-        'b946294426b8413d819751cb3d320a20'
-      ]
-    },
-    {
-      venueId: 'eef3d9913bcc4deea43300804281c2c6',
-      aaaAffinityEnabled: true,
-      networkIds: [
-        '9b33509cc0a1464cad9447778a72006f',
-        'dca03b33dc354c90b89b1ef68a7f93e1'
-      ]
-    }
-  ]
-}
-
 export const mockSoftGreDetail = {
   fields: null,
   totalCount: 1,
@@ -62,7 +30,6 @@ export const mockSoftGreDetail = {
       activationInformations: [
         {
           venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-          aaaAffinityEnabled: true,
           networkIds: [
             '9b33509cc0a1464cad9447778a72006f',
             '797a1f499c254260b7a1aedafba524a3',
@@ -71,7 +38,6 @@ export const mockSoftGreDetail = {
         },
         {
           venueId: 'eef3d9913bcc4deea43300804281c2c6',
-          aaaAffinityEnabled: true,
           networkIds: [
             '9b33509cc0a1464cad9447778a72006f',
             'dca03b33dc354c90b89b1ef68a7f93e1'
@@ -156,7 +122,6 @@ export const mockSoftGreTable = {
         activationInformations: [
           {
             venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            aaaAffinityEnabled: true,
             networkIds: [
               '9b33509cc0a1464cad9447778a72006f',
               '797a1f499c254260b7a1aedafba524a3',
@@ -187,7 +152,6 @@ export const mockSoftGreTable = {
         activationInformations: [
           {
             venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            aaaAffinityEnabled: false
           }
         ]
       }
