@@ -824,12 +824,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getDefaultApLanPorts: build.query<WifiApSetting, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(WifiRbacUrlsInfo.getDefaultApLanPorts, params, apiCustomHeader)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       }
     }),
