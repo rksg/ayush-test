@@ -6,6 +6,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import {  showToast }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { useGetTenantDetailsQuery, useUpdateTenantSelfMutation } from '@acx-ui/rc/services'
 import { NotificationPreference }                                from '@acx-ui/rc/utils'
 
@@ -15,10 +16,15 @@ const labels = {
   DEVICE_EDGE_FIRMWARE: defineMessage({ defaultMessage: 'SmartEdge Firmware' })
 }
 
+const apiChanges = {
+  DEVICE_API_CHANGES: defineMessage({ defaultMessage: 'API Changes' })
+}
+
 const defaultNotification: NotificationPreference = {
   DEVICE_AP_FIRMWARE: true,
   DEVICE_SWITCH_FIRMWARE: true,
-  DEVICE_EDGE_FIRMWARE: true
+  DEVICE_EDGE_FIRMWARE: true,
+  DEVICE_API_CHANGES: true
 }
 const getApplyErrorMsg = () => {
   return defineMessage({ defaultMessage: 'Update failed, please try again later.' })
@@ -29,7 +35,11 @@ function OptionsList ({ preferences, setState }: {
   setState: Dispatch<SetStateAction<NotificationPreference>>
 }) {
   const { $t } = useIntl()
-  return <>{Object.entries(labels).map(([key, label]) => <div key={key}>
+  const apiChangesNotificationEnabled =
+    useIsSplitOn(Features.NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE)
+  const labelsCombined = apiChangesNotificationEnabled ? { ...apiChanges, ...labels } : labels
+
+  return <>{Object.entries(labelsCombined).map(([key, label]) => <div key={key}>
     <Checkbox
       id={key}
       name={key}
