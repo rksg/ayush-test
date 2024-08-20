@@ -1,7 +1,6 @@
 
 import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
-import { useParams }              from 'react-router-dom'
 
 import { StepsForm, Table, TableProps, useStepFormContext }                         from '@acx-ui/components'
 import { useGetEdgeClusterListQuery }                                               from '@acx-ui/rc/services'
@@ -11,8 +10,7 @@ import * as UI from '../styledComponents'
 
 export const ScopeForm = () => {
   const { $t } = useIntl()
-  const params = useParams()
-  const { form, editMode, initialValues } = useStepFormContext<EdgeQosViewData>()
+  const { form } = useStepFormContext<EdgeQosViewData>()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeClusterListQuery,

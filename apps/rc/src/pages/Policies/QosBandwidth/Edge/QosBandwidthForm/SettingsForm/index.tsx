@@ -1,6 +1,5 @@
 import { Alert, Checkbox, Col, Form, Input, InputNumber, Row, Space, Table, TableProps } from 'antd'
 import { useIntl }                                                                       from 'react-intl'
-import { useParams }                                                                     from 'react-router-dom'
 
 import { useStepFormContext }                                                                                      from '@acx-ui/components'
 import { SpaceWrapper }                                                                                            from '@acx-ui/rc/components'
@@ -9,9 +8,8 @@ import { EdgeQosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyN
 
 export const SettingsForm = () => {
   const { $t } = useIntl()
-  const params = useParams()
 
-  const { form, editMode, initialValues } = useStepFormContext<EdgeQosViewData>()
+  const { initialValues } = useStepFormContext<EdgeQosViewData>()
 
   const columns: TableProps<TrafficClassSetting>['columns'] = [
     {
