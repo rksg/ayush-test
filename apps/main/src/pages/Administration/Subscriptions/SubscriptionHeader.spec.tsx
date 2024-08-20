@@ -1,6 +1,7 @@
 import { rest } from 'msw'
 
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                                     from '@acx-ui/msp/utils'
 import { administrationApi }                                               from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
 import { Provider, store, userApi }                                        from '@acx-ui/store'
@@ -8,8 +9,8 @@ import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from 
 import { UserUrlsInfo }                                                    from '@acx-ui/user'
 import { isDelegationMode }                                                from '@acx-ui/utils'
 
-import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
-import { SubscriptionHeader }                   from './SubscriptionHeader'
+import { fakeMspEcProfile, mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
+import { SubscriptionHeader }                                     from './SubscriptionHeader'
 
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-11T12:33:37.101+00:00').getTime()
@@ -70,6 +71,10 @@ describe('SubscriptionHeader', () => {
           mockedTierReq()
           return res(ctx.json({ acx_account_tier: 'Gold' }))
         }
+      ),
+      rest.get(
+        MspUrlsInfo.getMspEcProfile.url,
+        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
       )
     )
   })

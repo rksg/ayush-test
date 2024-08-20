@@ -239,6 +239,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueNameMap,
+      filterKey: 'venueIds',
       align: 'center',
       sorter: true,
       render: (_, row) =>{
