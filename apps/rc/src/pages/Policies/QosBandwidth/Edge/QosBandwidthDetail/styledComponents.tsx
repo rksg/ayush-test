@@ -4,6 +4,15 @@ import { EyeOpenSolid } from '@acx-ui/icons'
 
 export const toolTipClassName = 'qos-traffic-class-tooltip-popover'
 
+
+export const InfoMargin = styled.div`
+  margin: 10px 10px;
+`
+
+export const InstancesMargin = styled.div`
+  margin: 10px 0px;
+`
+
 export const ToolTipStyle = createGlobalStyle`
   .${toolTipClassName} {
     .ant-table-thead>tr>th,.ant-table-tbody,

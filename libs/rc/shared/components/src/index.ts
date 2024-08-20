@@ -273,3 +273,4 @@ export {
 } from './useRwgActions'
 export * from './SwitchLagDrawer/SwitchLagModal'
 export { isOperationalSwitchPort, isStackPort } from './SwitchPortTable'
+export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'
