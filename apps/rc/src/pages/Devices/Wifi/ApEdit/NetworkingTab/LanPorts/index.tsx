@@ -305,7 +305,8 @@ export function LanPorts () {
         >
           <Row gutter={24}
             style={isResetLanPortEnabled ?
-              { marginLeft: '182px', marginRight: '-38px', marginTop: '-55px' } : {}}>
+              { position: 'absolute', right: '0', top: '0', whiteSpace: 'nowrap',
+                marginRight:'34%', transform: 'translateY(-326%)' } : {}}>
             <Col span={10}>
               <SettingMessage showButton={!!selectedModel?.lanPorts} />
             </Col>
