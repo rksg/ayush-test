@@ -2,10 +2,18 @@ import { userEvent } from '@storybook/testing-library'
 import { rest }      from 'msw'
 import { Path }      from 'react-router-dom'
 
-import { useIsSplitOn }                                                                                                   from '@acx-ui/feature-toggle'
-import { ActionType, GenericActionData, StepType, UIConfiguration, WorkflowActionDefinition, WorkflowStep, WorkflowUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                 from '@acx-ui/test-utils'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  ActionType,
+  AupActionContext,
+  GenericActionData,
+  StepType,
+  UIConfiguration,
+  WorkflowStep,
+  WorkflowUrls
+} from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { WorkflowActionPreview } from './WorkflowActionPreview'
 
@@ -28,30 +36,6 @@ const config: UIConfiguration = {
   welcomeName: '',
   welcomeTitle: ''
 }
-
-const actionDefinitions: WorkflowActionDefinition[] = [
-  {
-    actionType: ActionType.AUP,
-    id: 'actionId1',
-    name: 'action1',
-    category: '',
-    isSplit: false
-  },
-  {
-    actionType: ActionType.DATA_PROMPT,
-    id: 'actionId2',
-    name: 'action2',
-    category: '',
-    isSplit: false
-  },
-  {
-    actionType: ActionType.DISPLAY_MESSAGE,
-    id: 'actionId3',
-    name: 'action3',
-    category: '',
-    isSplit: false
-  }
-]
 
 const steps: WorkflowStep[] = [
   {
@@ -77,20 +61,13 @@ const steps: WorkflowStep[] = [
   }
 ]
 
-const actionData: GenericActionData = {
-  id: 'id1',
-  name: 'id1',
-  version: 1,
-  description: '',
-  actionType: ActionType.AUP,
+const actionData: AupActionContext = {
   title: '',
   messageHtml: '',
   checkboxText: '',
   bottomLabel: '',
   backButtonText: '',
-  continueButtonText: '',
-  displayBackButton: false,
-  displayContinueButton: false
+  continueButtonText: ''
 }
 
 
@@ -117,7 +94,6 @@ jest.mock('../../EnrollmentPortalDesignModal', () => ({
 describe('Workflow Action Preview', () => {
   const getUIConfigApi = jest.fn()
   const getUIConfigImageApi = jest.fn()
-  const getDefinitionApi = jest.fn()
   const getStepsApi = jest.fn()
   const getActionApi = jest.fn()
   jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -125,7 +101,6 @@ describe('Workflow Action Preview', () => {
   beforeEach(async () => {
     getUIConfigApi.mockClear()
     getUIConfigImageApi.mockClear()
-    getDefinitionApi.mockClear()
     getStepsApi.mockClear()
     getActionApi.mockClear()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -142,13 +117,6 @@ describe('Workflow Action Preview', () => {
         (reg, res, ctx) => {
           getUIConfigImageApi()
           return res(ctx.json({ fileUrl: 'fileUrl' }))
-        }
-      ),
-      rest.get(
-        WorkflowUrls.getWorkflowActionDefinitions.url.split('?')[0],
-        (req, res, ctx) => {
-          getDefinitionApi()
-          return res(ctx.json({ content: actionDefinitions }))
         }
       ),
       rest.get(
@@ -178,7 +146,6 @@ describe('Workflow Action Preview', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(() => expect(getUIConfigApi).toHaveBeenCalled())
     await waitFor(() => expect(getUIConfigImageApi).toHaveBeenCalledTimes(2))
-    await waitFor(() => expect(getDefinitionApi).toHaveBeenCalled())
     await waitFor(() => expect(getStepsApi).toHaveBeenCalled())
     const modal = await screen.findByText('Portal Design')
     userEvent.click(modal)
@@ -202,7 +169,7 @@ describe('Workflow Action Preview', () => {
 
   it('should render correctly with action data', async () => {
     render(<Provider>
-      <WorkflowActionPreview workflowId='id' actionData={actionData}/>
+      <WorkflowActionPreview workflowId='id' actionData={actionData as GenericActionData}/>
     </Provider>, {
       route: { params }
     })
