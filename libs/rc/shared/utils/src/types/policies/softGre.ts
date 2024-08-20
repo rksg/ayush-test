@@ -28,7 +28,7 @@ export interface SoftGreViewData {
   activationInformations: SoftGreActivationInformation[]
 }
 
-export interface VenueTableUsageBySoftGre extends SoftGreActivationInformation{
+export interface VenueTableUsageBySoftGre extends SoftGreActivationInformation {
     name: string
     id: string
     addressLine: string

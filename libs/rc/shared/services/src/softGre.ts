@@ -3,7 +3,6 @@ import _ from 'lodash'
 import { CommonResult,
   SoftGreViewData,
   TableResult,
-  // TunnelProfileUrls as SoftGreUrls,
   SoftGreUrls,
   SoftGre,
   CommonUrlsInfo,

@@ -151,7 +151,7 @@ export const mockSoftGreTable = {
         keepAliveRetryTimes: 8,
         activationInformations: [
           {
-            venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+            venueId: '0e2f68ab79154ffea64aa52c5cc48826'
           }
         ]
       }

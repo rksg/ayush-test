@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Col, Form, Row }                      from 'antd'
 import { useIntl }                             from 'react-intl'
@@ -32,7 +32,6 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [form] = Form.useForm()
-  const [isSwitchDisabled, setIsSwitchsDisabled] = useState(false)
 
   const previousPath = (location as LocationExtended)?.state?.from?.pathname
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SOFTGRE)
@@ -58,11 +57,11 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   const handleFinish = async (data: SoftGre) => {
     try {
       if (editMode) {
-        await updateSoftGre({ params, payload: data }).unwrap() // for softGre
-
+        await updateSoftGre({ params, payload: data }).unwrap()
       } else {
         await createSoftGre({ params, payload: data }).unwrap()
       }
+
       redirectPreviousPage(navigate, previousPath, linkToTableView)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -98,7 +97,7 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <SoftGreSettingForm editMode={editMode} />
+              <SoftGreSettingForm />
             </Col>
           </Row>
         </StepsForm.StepForm>

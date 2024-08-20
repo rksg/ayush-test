@@ -52,7 +52,6 @@ export default function SoftGreTable () {
     pagination: { settingsId }
   })
 
-
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
       scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE],

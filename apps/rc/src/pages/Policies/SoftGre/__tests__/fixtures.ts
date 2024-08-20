@@ -17,7 +17,6 @@ export const mockSoftGreTable = {
       activationInformations: [
         {
           venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-          aaaAffinityEnabled: true,
           networkIds: [
             '9b33509cc0a1464cad9447778a72006f',
             '797a1f499c254260b7a1aedafba524a3',
@@ -47,8 +46,7 @@ export const mockSoftGreTable = {
       keepAliveRetryTimes: 8,
       activationInformations: [
         {
-          venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-          aaaAffinityEnabled: false
+          venueId: '0e2f68ab79154ffea64aa52c5cc48826'
         }
       ]
     }
@@ -86,7 +84,6 @@ export const mockSoftGreDetailFromListQueryById = {
         activationInformations: [
           {
             venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            aaaAffinityEnabled: true,
             networkIds: [
               '9b33509cc0a1464cad9447778a72006f',
               '797a1f499c254260b7a1aedafba524a3',
@@ -119,7 +116,6 @@ export const mockSoftGreDetailFromListQueryById = {
         activationInformations: [
           {
             venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            aaaAffinityEnabled: true,
             networkIds: [
               '9b33509cc0a1464cad9447778a72006f',
               '797a1f499c254260b7a1aedafba524a3',
@@ -147,7 +143,6 @@ export const mockSoftGreDetail = {
   activationInformations: [
     {
       venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-      aaaAffinityEnabled: true,
       networkIds: [
         '9b33509cc0a1464cad9447778a72006f',
         '797a1f499c254260b7a1aedafba524a3',
@@ -156,7 +151,6 @@ export const mockSoftGreDetail = {
     },
     {
       venueId: 'eef3d9913bcc4deea43300804281c2c6',
-      aaaAffinityEnabled: true,
       networkIds: [
         '9b33509cc0a1464cad9447778a72006f',
         'dca03b33dc354c90b89b1ef68a7f93e1'

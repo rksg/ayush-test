@@ -11,12 +11,7 @@ import * as UI            from './styledComponents'
 
 const { useWatch } = Form
 
-interface SoftGreSettingFormProps {
-  editMode: boolean
-}
-
-export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
-  const { editMode } = props
+export const SoftGreSettingForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()

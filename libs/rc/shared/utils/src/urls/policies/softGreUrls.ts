@@ -56,26 +56,8 @@ export const SoftGreUrls: { [key: string]: ApiInfo } = {
     }
   },
   dectivateSoftGre: {
-    method: 'put',
+    method: 'delete',
     url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
-  },
-  updateSoftGreOnVenueAndNetwork: { // aaaAffinityEnable
-    method: 'put',
-    url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId/settings',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
-  },
-  getSoftGreOnVenueAndNetwork: {
-    method: 'get',
-    url: '/venues/:venueId/wifiNetworks/:networkId/softGreProfiles/:policyId/settings',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',

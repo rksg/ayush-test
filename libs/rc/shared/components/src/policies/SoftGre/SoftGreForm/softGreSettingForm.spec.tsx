@@ -55,7 +55,7 @@ describe('SoftGreSettingForm', () => {
 
     render(
       <Provider>
-        <Form form={formRef.current}><SoftGreSettingForm editMode={false} /></Form>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
       </Provider>,
       { route: { path: editViewPath, params } }
     )
@@ -75,7 +75,7 @@ describe('SoftGreSettingForm', () => {
     })
     render(
       <Provider>
-        <Form form={formRef.current}><SoftGreSettingForm editMode={false} /></Form>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
       </Provider>,
       { route: { path: createViewPath, params } }
     )
@@ -101,7 +101,7 @@ describe('SoftGreSettingForm', () => {
 
     render(
       <Provider>
-        <Form form={formRef.current}><SoftGreSettingForm editMode={false} /></Form>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
       </Provider>,
       { route: { path: createViewPath, params } }
     )
