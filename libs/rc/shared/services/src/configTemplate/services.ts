@@ -7,7 +7,7 @@ import {
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
   onSocketActivityChanged, Portal, PortalSaveData,
   WifiCallingFormContextType, WifiCallingSetting, GetApiVersionHeader, ApiVersionEnum,
-  DHCP_LIMIT_NUMBER, ServicesConfigTemplateRbacUrlsInfo
+  DHCP_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -82,7 +82,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     activatePortalTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          ServicesConfigTemplateRbacUrlsInfo.activatePortal,
+          ServicesConfigTemplateUrlsInfo.activatePortal,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1))
         return {

@@ -55,8 +55,7 @@ import {
   GetApiVersionHeader,
   convertMdnsProxyViewModelToMdnsProxyFormData,
   APExtended,
-  CommonRbacUrlsInfo,
-  PortalRbacUrlsInfo
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
@@ -981,7 +980,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     activatePortal: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          PortalRbacUrlsInfo.activatePortal,
+          PortalUrlsInfo.activatePortal,
           params,
           GetApiVersionHeader(ApiVersionEnum.v1))
         return {
