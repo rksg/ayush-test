@@ -271,6 +271,7 @@ describe('Multi-venue SD-LAN Table', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     const mockedData = cloneDeep(mockedMvSdLanDataList.slice(0, 1))
     mockedData[0].id = mockEdgeSdLanCompatibilities.compatibilities[0].serviceId
+    mockedData[0].name = 'compatible test'
 
     mockServer.use(
       rest.post(
@@ -291,7 +292,9 @@ describe('Multi-venue SD-LAN Table', () => {
         route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
       }
     )
-    const row1 = await screen.findByRole('row', { name: new RegExp(`${mockedSdLan1.name}`) })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    screen.getByRole('columnheader', { name: 'Cluster' })
+    const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
     const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))

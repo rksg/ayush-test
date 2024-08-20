@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { EdgeCompatibilityFixtures, EdgeSdLanFixtures, EdgeSdLanUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within, within }     from '@acx-ui/test-utils'
+import { mockServer, render, screen, waitForElementToBeRemoved, within }             from '@acx-ui/test-utils'
 
 import EdgeSdLanDetail from '.'
 

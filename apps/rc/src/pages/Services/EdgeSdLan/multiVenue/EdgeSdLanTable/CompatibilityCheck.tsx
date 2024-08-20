@@ -37,7 +37,7 @@ export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
         hasAnd: ((edgeIncompatible && apIncompatible) ? $t({ defaultMessage: 'and' }) : ''),
         apInfo: (apIncompatible
         // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: '{apCount} {apCount, plural, one {AP} other {APs}}' }, { apCount: apIncompatibleCount })
+          ? $t({ defaultMessage: '{apCount, plural, one {access point} other {access points}}' }, { apCount: apIncompatibleCount })
           : '')
       })}
       visible={false}
