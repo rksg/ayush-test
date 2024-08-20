@@ -361,8 +361,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
         checked={checked}
         setChecked={onPreDownloadChange}
       />
-
-      <SwitchNote notes={switchNoteData} />
+      {switchNoteData.length > 0 && <SwitchNote notes={switchNoteData} />}
     </div>
   )
 }

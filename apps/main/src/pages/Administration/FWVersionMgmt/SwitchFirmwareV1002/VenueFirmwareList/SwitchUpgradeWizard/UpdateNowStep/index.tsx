@@ -266,8 +266,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </UI.Ul>
         </UI.Section>
       </Form.Item>
-
-      <SwitchNote notes={switchNoteData} />
+      {switchNoteData.length > 0 && <SwitchNote notes={switchNoteData} />}
     </div>
   )
 }
