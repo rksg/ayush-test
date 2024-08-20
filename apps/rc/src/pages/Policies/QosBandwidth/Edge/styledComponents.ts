@@ -2,6 +2,12 @@ import styled, { createGlobalStyle } from 'styled-components/macro'
 
 import { EyeOpenSolid } from '@acx-ui/icons'
 
+export const InfoMargin = styled.div`
+  margin: 10px 10px;
+`
+export const InstancesMargin = styled.div`
+  margin: 10px 0px;
+`
 export const toolTipClassName = 'qos-traffic-class-tooltip-popover'
 
 export const ToolTipStyle = createGlobalStyle`

@@ -21,7 +21,7 @@ import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 
-import * as UI from './styledComponents'
+import * as UI from '../styledComponents'
 
 const EdgeQosBandwidthTable = () => {
 

@@ -9,8 +9,9 @@ import { TenantLink, useParams }                                                
 import { filterByAccess }                                                                                                 from '@acx-ui/user'
 
 
+import * as UI from '../styledComponents'
+
 import { EdgeClusterTable } from './EdgeClusterTable'
-import * as UI              from './styledComponents'
 
 const EdgeQosBandwidthDetail = () => {
   const { $t } = useIntl()
@@ -86,6 +87,7 @@ const EdgeQosBandwidthDetail = () => {
         isLoading: false
       }
     ]}>
+      <UI.ToolTipStyle/>
       <Space direction='vertical' size={30}>
         <SummaryCard data={qosInfo} colPerRow={6} />
         <Card>
