@@ -605,5 +605,14 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  queryCertificateTemplate: {
+    method: 'GET',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/certificateTemplates',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

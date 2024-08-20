@@ -470,6 +470,7 @@ export enum MspEcTierEnum {
 
 export interface MspEcWithVenue extends MspEc {
   isFirstLevel?: boolean,
+  isUnauthorizedAccess?: boolean,
   children: {
     name: string,
     id: string,
