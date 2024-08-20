@@ -18,7 +18,6 @@ export default function SoftGreDetailView () {
   const { $t } = useIntl()
   const params = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SOFTGRE)
-  const [ softGreData, setSoftGreData ] = useState<SoftGreViewData>()
   const { softGreDetail, isLoading } = useGetSoftGreViewDataListQuery(
     { payload: { filters: { id: [params.policyId] } } },
     {
@@ -31,16 +30,10 @@ export default function SoftGreDetailView () {
     }
   )
 
-  useEffect(() => {
-    if (softGreDetail && !softGreData) {
-      setSoftGreData(softGreDetail)
-    }
-  }, [softGreDetail, softGreData])
-
   return (
     <Loader states={[{ isLoading }]}>
       <PageHeader
-        title={softGreData?.name}
+        title={softGreDetail?.name}
         breadcrumb={breadcrumb}
         extra={
           filterByAccess([
@@ -61,11 +54,11 @@ export default function SoftGreDetailView () {
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
-          <SoftGreDetailContent data={softGreData}/>
+          <SoftGreDetailContent data={softGreDetail}/>
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <SoftGreVenueDetail activationInformations={
-            (softGreData?.activationInformations ?? []) as SoftGreActivationInformation[]}
+            (softGreDetail?.activationInformations ?? []) as SoftGreActivationInformation[]}
           />
         </GridCol>
       </GridRow>

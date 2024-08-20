@@ -23,7 +23,7 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate,
   useTenantLink: (): Path => mockedTenantPath
 }))
-// eslint-disable-next-line max-len
+
 const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
   type: PolicyType.SOFTGRE,
   oper: PolicyOperation.LIST

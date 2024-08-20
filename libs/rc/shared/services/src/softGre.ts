@@ -114,9 +114,9 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
         if (networkRes.error) return emptyResponse
 
-        const networkData =networkRes.data as TableResult<Network>
+        const { data: networkData } = networkRes.data as TableResult<Network>
         let networkMapping:{ [key:string]: string } = {}
-        networkData.data.forEach((network: Network) => {
+        networkData?.forEach((network: Network) => {
           networkMapping[network.id] = network.name
         })
 
@@ -133,7 +133,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         const { data: venueData } = venueRes?.data as TableResult<VenueDetail>
 
         // process data
-        const venueResult = venueData.map(venue =>{
+        const venueResult = venueData?.map(venue =>{
           const networIDs = venueNetworksMap[venue.id]
           const networkNames = networIDs.map(id => (networkMapping[id]))
           // eslint-disable-next-line max-len

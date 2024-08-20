@@ -26,7 +26,6 @@ interface SoftGreVenueDetailProps {
 export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
   const { activationInformations } = props
   const { $t } = useIntl()
-  // const [ basicData, setBasicData ] = useState<VenueTableUsageBySoftGre[]>()
 
   const tableQuery = useTableQuery({
     useQuery: useGetVenuesSoftGrePolicyQuery,
@@ -41,13 +40,6 @@ export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
       searchTargetFields: ['name']
     }
   })
-  // const basicData = tableQuery.data?.data
-
-  // useEffect(() => {
-  //   if (tableQuery?.data?.data) {
-  //     setBasicData(tableQuery?.data?.data)
-  //   }
-  // }, [tableQuery])
 
   return (
     <Loader states={[tableQuery]}>

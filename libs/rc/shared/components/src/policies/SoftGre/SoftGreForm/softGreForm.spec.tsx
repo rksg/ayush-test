@@ -164,14 +164,15 @@ describe('EditSoftGre', () => {
     )
   })
 
-  it('should update SoftGre successfully and go back to list page', async () => {
+  it('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
     render(
       <Provider>
         <SoftGreForm editMode={true} />
       </Provider>,
       { route: { path: editViewPath, params } }
     )
-
+    
+    waitFor(async() => expect(await screen.findByText('softGreProfileName1')).toBeVisible())
     const profileNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
     fireEvent.change(profileNameField, { target: { value: 'testSoftGre' } })
     // eslint-disable-next-line max-len
@@ -179,8 +180,8 @@ describe('EditSoftGre', () => {
     fireEvent.change(primaryGatewayAddress, { target: { value: '128.0.0.1' } })
 
     await user.click(screen.getByRole('button', { name: 'Apply' }))
-    await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
-    await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
+    waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
+    waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/softGre/list`,
       hash: '',
       search: ''
