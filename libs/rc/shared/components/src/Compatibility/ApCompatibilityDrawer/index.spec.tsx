@@ -1,12 +1,16 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import userEvent          from '@testing-library/user-event'
+import { cloneDeep, get } from 'lodash'
+import { rest }           from 'msw'
 
 import { venueApi, networkApi, apApi }                           from '@acx-ui/rc/services'
 import { WifiUrlsInfo, CommonUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
-import { act, mockServer, render, screen }                       from '@acx-ui/test-utils'
+import { act, mockServer, render, screen, within }               from '@acx-ui/test-utils'
 
+
+import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
+import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 
 import {
   mockApCompatibilitiesVenue,
@@ -15,6 +19,25 @@ import {
 } from './__test__/fixtures'
 
 import { ApGeneralCompatibilityDrawer, ApCompatibilityType } from '.'
+
+jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
+  const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
+  return {
+    ...CompatibilityItemComp,
+    CompatibilityItem: (props: CompatibilityItemProps) => <div data-testid='CompatibilityItem'>
+      <CompatibilityItemComp.CompatibilityItem {...props}/>
+    </div>
+  }
+})
+jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
+  const FeatureItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem/FeatureItem')
+  return {
+    ...FeatureItemComp,
+    FeatureItem: (props: FeatureItemProps) => <div data-testid='FeatureItem'>
+      <FeatureItemComp.FeatureItem {...props}/>
+    </div>
+  }
+})
 
 describe('ApGeneralCompatibilityDrawer', () => {
   const venueId = '8caa8f5e01494b5499fa156a6c565138'
@@ -58,6 +81,12 @@ describe('ApGeneralCompatibilityDrawer', () => {
     )
   })
   it('should fetch and display render venue correctly', async () => {
+    mockServer.use(
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (_, res, ctx) => res(ctx.json({ apCompatibilities: mockApCompatibilitiesVenue.apCompatibilities.slice(1, 2) })))
+    )
+
     render(
       <Provider>
         <ApGeneralCompatibilityDrawer
@@ -71,7 +100,19 @@ describe('ApGeneralCompatibilityDrawer', () => {
       </Provider>, {
         route: { params: { tenantId, venueId }, path: '/:tenantId' }
       })
-    expect(await screen.findByText('7.0.0.0.123')).toBeInTheDocument()
+
+    const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
+    expect(compatibilityItems.length).toBe(1)
+
+    const features = screen.getAllByTestId('FeatureItem')
+    expect(features.length).toBe(1)
+
+    const wifi = compatibilityItems[0]
+    expect(await within(wifi).findByText(/AP Firmware/)).toBeInTheDocument()
+    expect(within(wifi).getByText(/Test Venue/)).toBeInTheDocument()
+    expect(within(wifi).getByText('6.2.3.103.250')).toBeValid()
+    expect(within(wifi).getByText('1 / 1')).toBeValid()
+
     const icon = await screen.findByTestId('CloseSymbol')
     expect(icon).toBeVisible()
     expect(mockGetVenue).toBeCalledTimes(0)
@@ -165,11 +206,69 @@ describe('ApGeneralCompatibilityDrawer', () => {
       })
 
     expect(await screen.findByText(`Incompatibility Details: ${apName}`)).toBeInTheDocument()
+    const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
+    expect(compatibilityItems.length).toBe(1)
+    const features = screen.getAllByTestId('FeatureItem')
+    expect(features.length).toBe(1)
     expect(await screen.findByText(/The following features are not enabled on this access point/)).toBeInTheDocument()
     expect(screen.getByText('7.0.0.0.123')).toBeInTheDocument()
     const icon = screen.getByTestId('CloseSymbol')
     expect(icon).toBeVisible()
     await userEvent.click(icon)
     expect(mockedCloseDrawer).toBeCalledTimes(1)
+  })
+
+  it('should also fetch requiredFeatures and merge data', async () => {
+    const mockData = cloneDeep(mockApCompatibilitiesVenue)
+    mockData.apCompatibilities[0].incompatibleFeatures![0].featureName = IncompatibilityFeatures.SD_LAN
+    mockData.apCompatibilities[1].incompatibleFeatures![0].featureName = IncompatibilityFeatures.TUNNEL_PROFILE
+
+    mockServer.use(
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (req, res, ctx) => {
+          const payload = get(req.body, 'featureName')
+          let returnVal
+          if (payload === IncompatibilityFeatures.TUNNEL_PROFILE) {
+            returnVal = mockData.apCompatibilities.slice(1, 2)
+          } else {
+            returnVal = mockData.apCompatibilities.slice(0, 1)
+          }
+          return res(ctx.json({ apCompatibilities: returnVal }))
+        })
+    )
+
+    render(
+      <Provider>
+        <ApGeneralCompatibilityDrawer
+          visible={true}
+          type={ApCompatibilityType.VENUE}
+          venueId={venueId}
+          venueName={venueName}
+          featureName={IncompatibilityFeatures.SD_LAN}
+          requiredFeatures={[IncompatibilityFeatures.TUNNEL_PROFILE]}
+          isFeatureEnabledRegardless
+          onClose={mockedCloseDrawer}
+        />
+      </Provider>, {
+        route: { params: { tenantId, venueId }, path: '/:tenantId' }
+      })
+
+    const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
+    expect(compatibilityItems.length).toBe(1)
+    expect(await within(compatibilityItems[0]).findByText(/AP Firmware/)).toBeInTheDocument()
+
+    const features = screen.getAllByTestId('FeatureItem')
+    expect(features.length).toBe(2)
+
+    const feature1 = features[0]
+    expect(within(feature1).getByText('SD-LAN')).toBeValid()
+    expect(within(feature1).getByText('7.0.0.0.123')).toBeValid()
+    expect(within(feature1).getByText('1 / 1')).toBeValid()
+
+    const feature2 = features[1]
+    expect(within(feature2).getByText('Tunnel Profile')).toBeValid()
+    expect(within(feature2).getByText('6.2.3.103.250')).toBeValid()
+    expect(within(feature2).getByText('1 / 1')).toBeValid()
   })
 })

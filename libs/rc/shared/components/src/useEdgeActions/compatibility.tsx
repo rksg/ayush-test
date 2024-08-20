@@ -102,11 +102,12 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: 
 
             deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = {
               id: 'SD_LAN_edge_details',
-              incompatibleFeatures: [{
-                featureName: IncompatibilityFeatures.SD_LAN,
-                requiredFw,
-                incompatibleDevices: [{ count: incompatible }]
-              }],
+              incompatibleFeatures: incompatible > 0
+                ? [{
+                  featureName: IncompatibilityFeatures.SD_LAN,
+                  requiredFw,
+                  incompatibleDevices: [{ count: incompatible }]
+                }] : [],
               incompatible,
               total
             } as ApCompatibility
@@ -131,12 +132,12 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: 
 
             deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
               id: 'SD_LAN_wifi_details',
-              incompatibleFeatures: [{
+              incompatibleFeatures: incompatible > 0 ? [{
                 featureName: IncompatibilityFeatures.SD_LAN,
                 requiredFw,
                 supportedModelFamilies,
                 incompatibleDevices: [{ count: incompatible }]
-              }],
+              }] : [],
               incompatible,
               total
             } as ApCompatibility

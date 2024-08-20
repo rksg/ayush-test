@@ -316,7 +316,7 @@ const ClusterFirmwareInfo = (props: {
         {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
           { fwVersion }) }
       </Typography>
-      {isLower && <Tooltip
+      {(!!fwVersion && isLower) && <Tooltip
         title={<Loader states={[{ isLoading }]}>
           {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
         running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware

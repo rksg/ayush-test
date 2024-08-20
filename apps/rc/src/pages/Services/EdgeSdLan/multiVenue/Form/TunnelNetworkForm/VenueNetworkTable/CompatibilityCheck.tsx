@@ -54,6 +54,7 @@ export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, v
         venueName={venueName}
         featureName={IncompatibilityFeatures.SD_LAN}
         requiredFeatures={[IncompatibilityFeatures.TUNNEL_PROFILE]}
+        isFeatureEnabledRegardless
         onClose={() => setOpen(false)}
       />}
     </>

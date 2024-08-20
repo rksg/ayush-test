@@ -54,7 +54,8 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
     venueId, venueName,
     networkId,
     apName, apId,
-    data = []
+    data = [],
+    isFeatureEnabledRegardless = false
   } = props
 
   const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
@@ -68,8 +69,6 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
   const title = isMultiple
     ? ($t({ defaultMessage: 'Incompatibility Details' }) + apNameTitle)
     : $t({ defaultMessage: 'Compatibility Requirement' })
-
-  const isFeatureEnabledRegardless = Boolean(apId || networkId)
 
   const getApCompatibilities = async () => {
     if (ApCompatibilityType.NETWORK === type) {
@@ -85,7 +84,8 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
       }).unwrap()
 
     } else if (ApCompatibilityType.VENUE === type) {
-      const queryfeatures = (featureName ? [featureName] : []).concat(requiredFeatures ?? [])
+      // eslint-disable-next-line max-len
+      const queryfeatures = (featureName ? [featureName].concat(requiredFeatures ?? []) : [undefined])
       const reqs = queryfeatures.map(fName => getApCompatibilitiesVenue({
         params: { venueId },
         payload: {
@@ -104,7 +104,7 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
 
       return reqs.length > 1
         // eslint-disable-next-line max-len
-        ? { apCompatibilities: filterResultByRequiredFeatures(results, queryfeatures) } as ApCompatibilityResponse
+        ? { apCompatibilities: [mergeAndfilterResultByRequiredFeatures(results, queryfeatures as IncompatibilityFeatures[])] } as ApCompatibilityResponse
         : results[0]
     }
 
@@ -169,17 +169,25 @@ export const ApGeneralCompatibilityDrawer = (props: ApGeneralCompatibilityDrawer
 }
 
 // eslint-disable-next-line max-len
-const filterResultByRequiredFeatures = (results: ApCompatibilityResponse[], requiredFeatures: IncompatibilityFeatures[]) => {
-  const merged: ApCompatibility[] = []
+const mergeAndfilterResultByRequiredFeatures = (results: ApCompatibilityResponse[], requiredFeatures: IncompatibilityFeatures[]): ApCompatibility => {
+  const merged = { incompatible: 0 } as ApCompatibility
 
+  const incompatibleFeatures: ApIncompatibleFeature[] = []
   results.forEach(result => {
-    merged.push(...result.apCompatibilities.map(item => ({
-      ...item,
-      incompatibleFeatures: item.incompatibleFeatures
-        ?.filter(feature =>
-          requiredFeatures.includes(feature.featureName as IncompatibilityFeatures))
-    })))
+    const apCompatibility = result.apCompatibilities[0]
+
+    if (merged.incompatible < apCompatibility.incompatible) {
+      merged.id = apCompatibility.id
+      merged.incompatible = apCompatibility.incompatible
+      merged.total = apCompatibility.total
+    }
+
+    incompatibleFeatures.push(...((apCompatibility.incompatibleFeatures
+      ?.filter(feature =>
+        requiredFeatures.includes(feature.featureName as IncompatibilityFeatures)
+      )) ?? []))
   })
 
+  merged.incompatibleFeatures = incompatibleFeatures
   return merged
 }

@@ -8,9 +8,9 @@ import { FeatureCrossDeviceTypeCompatibility } from '../CompatibilityDrawer'
 
 export type EdgeSdLanDetailCompatibilityDrawerProps = {
   visible: boolean,
-  title: string,
   data: Record<string, ApCompatibility>,
   onClose: () => void,
+  title?: string,
   isLoading?: boolean,
 }
 

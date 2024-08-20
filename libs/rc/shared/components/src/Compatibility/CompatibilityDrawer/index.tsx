@@ -1,4 +1,4 @@
-import { Form, Space, Divider, Typography, Row } from 'antd'
+import { Form, Space, Divider, Row } from 'antd'
 
 import { Drawer, Loader, Tabs }           from '@acx-ui/components'
 import {
@@ -12,7 +12,8 @@ import {
 
 import { compatibilityDataGroupByFeatureDeviceType } from '../utils'
 
-import { CompatibilityItem } from './CompatibilityItem'
+import { CompatibilityItem }     from './CompatibilityItem'
+import { StyledDeviceTypeTitle } from './styledComponents'
 
 /**
  * featureName: when specified on a feature
@@ -129,12 +130,13 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
   return <Space direction='vertical' split={<Divider />}>
     {deviceTypes.map((typeName) => {
       const typeData = data[typeName]
+      const hasValidData = !!typeData?.incompatibleFeatures?.length
 
-      return <div key={typeName}>
+      return hasValidData && <div key={typeName}>
         <Row>
-          <Typography>
+          <StyledDeviceTypeTitle>
             {getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
-          </Typography>
+          </StyledDeviceTypeTitle>
         </Row>
         <CompatibilityItem
           compatibilityType={CompatibilityType.FEATURE}

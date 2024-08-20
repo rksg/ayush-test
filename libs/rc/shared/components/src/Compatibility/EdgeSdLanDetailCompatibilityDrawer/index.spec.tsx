@@ -60,6 +60,7 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
 
     render(<Provider>
       <EdgeSdLanDetailCompatibilityDrawer
+        title='Incompatibility Details'
         visible={true}
         data={result.current.sdLanCompatibilities}
         onClose={mockedCloseDrawer}

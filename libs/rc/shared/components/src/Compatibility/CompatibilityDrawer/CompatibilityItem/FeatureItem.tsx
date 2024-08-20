@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 
 import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+import * as UI from '../styledComponents'
 
 export interface FeatureItemProps {
   isMultiple?: boolean

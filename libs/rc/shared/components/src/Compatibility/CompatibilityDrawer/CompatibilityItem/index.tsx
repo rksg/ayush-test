@@ -1,4 +1,4 @@
-import { Form, Row }                 from 'antd'
+import { Col, Form, Row, Space }     from 'antd'
 import { omit, sumBy }               from 'lodash'
 import { useIntl, FormattedMessage } from 'react-intl'
 
@@ -30,12 +30,13 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
   const description = useDescription(omit(props, 'data'))
 
   const getFeatures = (items: ApIncompatibleFeature[]) => {
+    const isMultipleFeatures = items.length > 1
     return items?.map((itemDetail) => {
       const incompatible = sumBy(itemDetail.incompatibleDevices, (d) => d.count)
 
       return <FeatureItem
         key={itemDetail.featureName}
-        isMultiple={!featureName}
+        isMultiple={!featureName || isMultipleFeatures}
         deviceType={deviceType}
         data={itemDetail}
         incompatible={incompatible}
@@ -46,10 +47,14 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
 
   return (
     <Row>
-      <Form.Item>
-        {description}
-      </Form.Item>
-      {getFeatures(data)}
+      <Col span={24}>
+        <Form.Item>
+          {description}
+        </Form.Item>
+        <Space size='large' direction='vertical'>
+          {getFeatures(data)}
+        </Space>
+      </Col>
     </Row>
   )
 }
@@ -85,7 +90,7 @@ const useDescription = (props: Omit<CompatibilityItemProps, 'data'>) => {
     values={{
       b: (txt) => <b>{txt}</b>,
       featureName: featureName ?? '',
-      venueName: venueId ? venueData?.name : venueName,
+      venueName: venueData?.name || venueName,
       apFwLink
     }}/>
 

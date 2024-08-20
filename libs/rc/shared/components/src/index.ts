@@ -233,7 +233,9 @@ export {
 export {
   ApGeneralCompatibilityDrawer,
   EdgeCompatibilityDrawer,
-  CompatibilityWarningCircleIcon
+  CompatibilityWarningCircleIcon,
+  EdgeSdLanDetailCompatibilityDrawer,
+  CompatibleAlertBanner
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
