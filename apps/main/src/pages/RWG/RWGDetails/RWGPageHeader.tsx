@@ -14,7 +14,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, useUserProfileContext } from '@acx-ui/user'
 
 import RWGTabs from './RWGTabs'
 
@@ -54,6 +54,7 @@ function RWGPageHeader () {
   const location = useLocation()
   const rwgListBasePath = useTenantLink('/ruckus-wan-gateway/')
   const rwgActions = useRwgActions()
+  const { isCustomRole } = useUserProfileContext()
 
   const redirectToList = function () {
     navigate({
@@ -114,19 +115,20 @@ function RWGPageHeader () {
               rwgActions.refreshGateway()
             }
           >{$t({ defaultMessage: 'Refresh' })}</Button>,
-          <Button
-            type='default'
-            onClick={() =>
-              rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
-            }
-            disabled={!!clusterNodeId}
-          >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
-          <Dropdown
-            overlay={menu}>
-            { () => <Button
-              type='primary'
-            >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }
-          </Dropdown>])
+          ...(isCustomRole ? []
+            : [<Button
+              type='default'
+              onClick={() =>
+                rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
+              }
+              disabled={!!clusterNodeId}
+            >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
+            <Dropdown
+              overlay={menu}>
+              { () => <Button
+                type='primary'
+              >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }
+            </Dropdown>])])
       ]}
       footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
     />
