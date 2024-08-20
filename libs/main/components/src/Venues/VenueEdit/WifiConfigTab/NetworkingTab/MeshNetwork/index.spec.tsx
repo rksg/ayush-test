@@ -5,14 +5,15 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   venueData,
   venueSetting,
-  venueApsList
+  venueApsList,
+  validChannelsData
 } from '../../../../__tests__/fixtures'
 
 import { MeshNetwork } from '.'
@@ -40,7 +41,13 @@ describe('MeshNetwork', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json(venueApsList)))
+        (_, res, ctx) => res(ctx.json(venueApsList))),
+      rest.get(
+        WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json(validChannelsData))),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json(validChannelsData)))
     )
   })
   it('should render correctly', async () => {
@@ -156,7 +163,7 @@ describe('MeshNetwork', () => {
     await userEvent.click(await screen.findByTestId('radio24'))
     await userEvent.click(await screen.findByTestId('radio56'))
     await userEvent.click(await screen.findByTestId('radio5'))
-    expect(await screen.findByTestId('radio6')).toBeDisabled()
+    await userEvent.click(await screen.findByTestId('radio6'))
     // zero touch mesh
     await userEvent.click(await screen.findByTestId('zero-touch-mesh-switch'))
   })
