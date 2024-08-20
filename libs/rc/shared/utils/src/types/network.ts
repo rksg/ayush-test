@@ -160,6 +160,7 @@ export interface NetworkSaveData {
   authRadius?: Radius
   accountingRadius?: Radius
   dpskServiceProfileId?: string
+  useDpskService?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string
   maxRate?: MaxRateEnum
