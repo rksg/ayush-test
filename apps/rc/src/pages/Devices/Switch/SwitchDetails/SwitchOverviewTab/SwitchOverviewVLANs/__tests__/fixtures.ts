@@ -123,7 +123,7 @@ export const switchDetails = {
   portModuleIds: 'FMF3250Q06R',
   deviceStatus: 'ONLINE',
   // eslint-disable-next-line max-len
-  vlanMapping: '{"1":"DEFAULT-VLAN","100":"test<>123${testString}<><ffffff>","34":"34test","101":"test<>123${testString}<><ffffff>","2":"${testString}<AABB>","37":"test37","6":"test66","7":"test","8":"test8","31":"31test","10":"test10","32":"32test"}',
+  vlanMapping: '{"1":"DEFAULT-VLAN","100":"test<>123{testString}<><ffffff>","34":"34test","101":"test<>123{testString}<><ffffff>","2":"{testString}<AABB>","37":"test37","6":"test66","7":"test","8":"test8","31":"31test","10":"test10","32":"32test"}',
   // eslint-disable-next-line max-len
   temperatureGroups: '[{"serialNumber":"FMF3250Q06R","stackId":"C0:C5:20:B2:0E:E9","temperatureSlotList":[{"slotNumber":3,"temperatureValue":53},{"slotNumber":4,"temperatureValue":53},{"slotNumber":1,"temperatureValue":64.5},{"slotNumber":2,"temperatureValue":46}]}]',
   sendedHostname: true,
@@ -262,7 +262,7 @@ export const portList = {
   {
     cloudPort: false,
     stack: false,
-    name: 'testtttt${var}<><aaabb>',
+    name: 'testtttt{var}<><aaabb>',
     portId: 'c0-c5-20-b2-0e-eb_1-1-3',
     status: 'Down',
     adminStatus: 'Up',
@@ -458,7 +458,7 @@ export const portList = {
   {
     cloudPort: false,
     stack: false,
-    name: '${testString}<aaabbbccc>',
+    name: '{testString}<aaabbbccc>',
     portId: 'c0-c5-20-b2-0e-ef_1-1-7',
     status: 'Down',
     adminStatus: 'Up',
@@ -507,7 +507,7 @@ export const portList = {
   {
     cloudPort: false,
     stack: false,
-    name: '${testString}',
+    name: '{testString}',
     portId: 'c0-c5-20-b2-0e-f0_1-1-8',
     status: 'Down',
     adminStatus: 'Up',
@@ -751,7 +751,7 @@ export const portList_7150_C12P = {
   }, {
     cloudPort: false,
     stack: true,
-    name: 'testtttt${var}<><aaabb>',
+    name: 'testtttt{var}<><aaabb>',
     portId: 'c0-c5-20-aa-24-11_1-1-3',
     status: 'Down',
     adminStatus: 'Up',
@@ -1532,7 +1532,7 @@ export const transformdPortViewData = {
       mediaType: 'MEDIA_TYPE_EMPTY',
       multicastIn: '0',
       multicastOut: '0',
-      name: 'testtttt${var}<><aaabb>',
+      name: 'testtttt{var}<><aaabb>',
       neighborMacAddress: '',
       neighborName: '',
       opticsType: '1 Gbits per second copper',
@@ -1736,7 +1736,7 @@ export const transformdPortViewData = {
       mediaType: 'MEDIA_TYPE_EMPTY',
       multicastIn: '0',
       multicastOut: '0',
-      name: '${testString}<aaabbbccc>',
+      name: '{testString}<aaabbbccc>',
       neighborMacAddress: '',
       neighborName: '',
       opticsType: '1 Gbits per second copper',
@@ -1787,7 +1787,7 @@ export const transformdPortViewData = {
       mediaType: 'MEDIA_TYPE_EMPTY',
       multicastIn: '0',
       multicastOut: '0',
-      name: '${testString}',
+      name: '{testString}',
       neighborMacAddress: '',
       neighborName: '',
       opticsType: '1 Gbits per second copper',
@@ -2044,7 +2044,7 @@ export const transformdPortViewData_7150_C12P = {
     }, {
       cloudPort: false,
       stack: true,
-      name: 'testtttt${var}<><aaabb>',
+      name: 'testtttt{var}<><aaabb>',
       portId: 'c0-c5-20-aa-24-11_1-1-3',
       status: 'Down',
       adminStatus: 'Up',
