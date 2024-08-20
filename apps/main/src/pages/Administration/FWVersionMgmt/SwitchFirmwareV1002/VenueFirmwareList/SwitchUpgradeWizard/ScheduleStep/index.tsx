@@ -18,9 +18,9 @@ import {
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
-import * as UI               from '../../styledComponents'
-import { NoteButton }        from '../../styledComponents'
-import { Switch7150C08Note } from '../Switch7150C08Note'
+import * as UI                              from '../../styledComponents'
+import { NoteButton }                       from '../../styledComponents'
+import { NoteProps, NotesEnum, SwitchNote } from '../SwitchNote'
 
 import { PreDownload } from './PreDownload'
 
@@ -84,8 +84,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-  const [icx7150C08pGroupedData, setIcx7150C08pGroupedData] =
-    useState([] as SwitchFirmwareV1002[][])
+  const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
   const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
     payload: {
@@ -96,13 +95,23 @@ export function ScheduleStep (props: ScheduleStepProps) {
   }, { skip: upgradeVenueList.length === 0 })
 
   useEffect(() => {
+    let noteData = []
+
+    // NotesEnum.NOTE7150_1
     const upgradeSwitchListOfIcx7150C08p = upgradeSwitchList.filter(s =>
       s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08')
     if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
       const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
       const groupedObject = _.groupBy(switchList, 'venueId')
-      setIcx7150C08pGroupedData(Object.values(groupedObject))
+      const icx7150C08pGroupedData = Object.values(groupedObject)
+
+      getAvailableVersions(SwitchFirmwareModelGroup.ICX71)
+      if (icx71hasVersionStartingWith100 && icx7150C08pGroupedData.length > 0) {
+        noteData.push({ type: NotesEnum.NOTE7150_1, data: icx7150C08pGroupedData })
+      }
     }
+
+    setSwitchNoteData(noteData)
   }, [getSwitchFirmwareList])
 
   const handleICX71Change = (value: RadioChangeEvent) => {
@@ -136,11 +145,24 @@ export function ScheduleStep (props: ScheduleStepProps) {
     setShowSubTitle(false)
   }, [current])
 
-  const scrollToTarget = () => {
-    const targetElement = document.getElementById('note_1')
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const getNoteButton = (type: NotesEnum) => {
+    const scrollToTarget = () => {
+      const targetElement = document.getElementById(type)
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
+
+    const noteIndex = switchNoteData.findIndex(note => note.type === type)
+    if(noteIndex === -1) {
+      return null
+    }
+    return<NoteButton
+      size='small'
+      ghost={true}
+      onClick={scrollToTarget} >
+      {'[' + (noteIndex + 1) + ']'}
+    </NoteButton>
   }
 
   const startDate = dayjs().endOf('day')
@@ -275,23 +297,14 @@ export function ScheduleStep (props: ScheduleStepProps) {
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       {getVersionOptionV1002(intl, v,
-                        (icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') ?
-                          <NoteButton
-                            size='small'
-                            ghost={true}
-                            onClick={scrollToTarget} >
-                            {'[1]'}
-                          </NoteButton> : null))}
+                        (v.id.startsWith('100') ?
+                          getNoteButton(NotesEnum.NOTE7150_1) : null))}
                     </Radio>)}
                 <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>
             </Radio.Group>
-            {icx7150C08pGroupedData.length > 0 && icx71hasVersionStartingWith100 &&
-              <div id='note_1'>
-                <Switch7150C08Note icx7150C08pGroupedData={icx7150C08pGroupedData} />
-              </div>}
           </>}
         </div>
 
@@ -349,6 +362,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
         setChecked={onPreDownloadChange}
       />
 
+      <SwitchNote notes={switchNoteData} />
     </div>
   )
 }

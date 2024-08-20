@@ -4,10 +4,9 @@ import { Divider, Tag, Tooltip, Typography } from 'antd'
 import _                                     from 'lodash'
 import { IntlShape }                         from 'react-intl'
 
-import { cssStr }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { StarSolid }                 from '@acx-ui/icons'
+import { cssStr }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { StarSolid }                from '@acx-ui/icons'
 import {
   useGetSwitcDefaultVersionsQuery
 } from '@acx-ui/rc/services'
@@ -69,8 +68,9 @@ export function useSwitchFirmwareUtils () {
           <div>
             {parseSwitchVersion(v.name)} {note}
           </div>
-          {!isNaN(Date.parse(v.createdDate || '')) &&
-            formatter(DateFormatEnum.DateFormat)(v.createdDate)}
+          {/* [TODO] Wait for the backend to provide the correct date. */}
+          {/* {!isNaN(Date.parse(v.createdDate || '')) &&
+            formatter(DateFormatEnum.DateFormat)(v.createdDate)} */}
         </TypeSpace>}
       </span>
       {getSwitchVersionTagV1002(intl, v)}
