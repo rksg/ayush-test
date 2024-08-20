@@ -83,7 +83,7 @@ export const User = styled.div`
   width: max-content;
   max-width: 327px;
   height: auto;
-  border: 1px solid #E3E4E5;
+  border: 1px solid ${cssStr('--acx-neutrals-25')};
   border-radius: 10px 0px 10px 10px;
   background: ${cssStr('--acx-primary-white')};
   color: ${cssStr('--acx-primary-black')};

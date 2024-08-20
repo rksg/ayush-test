@@ -8,7 +8,8 @@ import { useIntl }         from 'react-intl'
 import { useLocation }     from 'react-router-dom'
 
 import { Conversation, FulfillmentMessage, Content,
-  ContentSwitcher, ContentSwitcherProps, Mode } from '@acx-ui/components'
+  ContentSwitcher, ContentSwitcherProps, Mode,
+  cssStr } from '@acx-ui/components'
 import { MelissaHeaderIcon, MelissaIcon } from '@acx-ui/icons'
 
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
@@ -344,7 +345,7 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
           placeholder={askAnything}
           value={inputValue}
           disabled={state.isInputDisabled}
-          style={{ height: '52px' }}
+          style={{ height: '52px', borderColor: cssStr('--acx-neutrals-25') }}
           onChange={(e) => {
             setInputValue(e.target.value)
           }}
