@@ -13,12 +13,14 @@ jest.mock('@acx-ui/config', () => ({
 
 jest.mock('moment-timezone', () => {
   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
+  const mockedMoment =(date: MomentInput) => date
+    ? moment(date)
+    : moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
+  mockedMoment.utc = moment.utc
   return {
     __esModule: true,
     ...moment,
-    default: (date: MomentInput) => date
-      ? moment(date)
-      : moment('07-15-2023 14:15', 'MM-DD-YYYY HH:mm')
+    default: mockedMoment
   }
 })
 
