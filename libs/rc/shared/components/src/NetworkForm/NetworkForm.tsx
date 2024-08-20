@@ -815,7 +815,6 @@ export function NetworkForm (props:{
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
-      const serviceId = processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
