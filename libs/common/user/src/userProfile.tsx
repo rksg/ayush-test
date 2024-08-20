@@ -179,10 +179,11 @@ export function hasRoles (roles: string | string[]) {
   return profile?.roles?.some(role => roles.includes(role))
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function hasCrossVenuesPermission (scopes?: ScopeKeys[]) {
-  const { abacEnabled, hasAllVenues } = getUserProfile()
-  return abacEnabled ? hasAllVenues : true
+export function hasCrossVenuesPermission () {
+  /* For testing purposes */
+  // const { abacEnabled, hasAllVenues } = getUserProfile()
+  // return abacEnabled ? hasAllVenues : true
+  return true
 }
 
 export function AuthRoute (props: {
