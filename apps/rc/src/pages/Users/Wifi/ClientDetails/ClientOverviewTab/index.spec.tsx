@@ -33,7 +33,8 @@ import {
   GuestList,
   GuestClients,
   VenueList,
-  dpskPassphraseClient
+  dpskPassphraseClient,
+  nonRbacClientRadioType
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -202,6 +203,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
+      rest.post(ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json(nonRbacClientRadioType))
+      ),
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
@@ -343,6 +347,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('Guest Details')).toBeVisible()
         expect(await screen.findByText(GuestList.data[3].emailAddress)).toBeVisible()
         expect(await screen.findByText(GuestList.data[3].mobilePhoneNumber!)).toBeVisible()
+        expect(await screen.findByText('a/n/ac/ax/be')).toBeVisible()
       })
 
       it('should render dpsk client correctly', async () => {
