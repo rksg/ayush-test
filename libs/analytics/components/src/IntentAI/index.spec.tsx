@@ -332,7 +332,7 @@ describe('IntentAITabContent', () => {
     await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
     expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
     expect(await screen.findByText('Revert')).toBeVisible()
-    await userEvent.click(await screen.findByText('Revert'))
+    await userEvent.click((await screen.findAllByText('Revert'))[0])
     await userEvent.click((await screen.findAllByText('Apply'))[0])
     await waitFor(() =>
       expect(screen.queryByText('Revert')).toBeNull()
