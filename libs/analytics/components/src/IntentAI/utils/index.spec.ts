@@ -189,6 +189,22 @@ describe('IntentAI utils', () => {
     })
 
     describe('should handle (Actions.Resume)', () => {
+      it('should handle scheduled', () => {
+        expect(getTransitionStatus(
+          Actions.Resume,
+          {
+            ...defaultTransitionIntentItem,
+            status: statuses.paused,
+            displayStatus: displayStates.pausedFromInactive,
+            statusTrail: [
+              { status: statuses.paused, statusReason: statusReasons.fromInactive },
+              { status: statuses.scheduled }
+            ]
+          }
+        )).toEqual(
+          { status: statuses.new }
+        )
+      })
       it('should handle pausedApplyFailed', () => {
         expect(getTransitionStatus(
           Actions.Resume,

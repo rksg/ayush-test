@@ -104,10 +104,14 @@ const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem =
 
   if (item.displayStatus === displayStates.pausedApplyFailed) {
     return { status: statuses.active }
-  } else if (item.displayStatus === displayStates.pausedFromActive) {
-    return preStatusTrail.status === statuses.applyScheduled &&
-      moment().isBefore(moment(item.metadata?.scheduledAt)) ?
-      { status: statuses.active } : preStatusTrail
+  } else if (
+    item.displayStatus === displayStates.pausedFromActive &&
+    preStatusTrail.status === statuses.applyScheduled &&
+    moment().isBefore(moment(item.metadata?.scheduledAt))
+  ) {
+    return { status: statuses.active }
+  } else if (preStatusTrail.status === statuses.scheduled) {
+    return { status: statuses.new }
   } else if (
     [displayStates.pausedRevertFailed, displayStates.pausedReverted].includes(item.displayStatus)) {
     return { status: statuses.na, statusReason: statusReasons.waitingForEtl }
