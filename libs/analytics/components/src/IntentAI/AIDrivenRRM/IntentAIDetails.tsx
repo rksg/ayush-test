@@ -15,7 +15,6 @@ import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
 import { IntentIcon }               from '../common/IntentIcon'
 import { isIntentActive }           from '../common/isIntentActive'
-import { isStandaloneSwitch }       from '../common/isStandaloneSwitch'
 import { KpiCard }                  from '../common/KpiCard'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
@@ -102,9 +101,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                   children={$t(codes[intent.code].category)}
                 />
                 <Descriptions.Item
-                  label={isStandaloneSwitch(
-                    $t({ defaultMessage: 'Zone' }),
-                    $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))}
+                  label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                   children={intent.sliceValue}
                 />
                 <Descriptions.Item

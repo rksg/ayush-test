@@ -6,9 +6,7 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { codes }            from '../config'
 import { useIntentContext } from '../IntentContext'
 
-import { getIntentStatus }    from './getIntentStatus'
-import { isStandaloneSwitch } from './isStandaloneSwitch'
-
+import { getIntentStatus } from './getIntentStatus'
 /**
  * Common helper to render summary of intent introduction
  * NOTE:
@@ -30,10 +28,7 @@ export function IntroSummary () {
         children={$t(feature.category)}
       />
       <Descriptions.Item
-        label={isStandaloneSwitch(
-          $t({ defaultMessage: 'Zone' }),
-          $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
-        }
+        label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={intent.sliceValue}
       />
       <Descriptions.Item
