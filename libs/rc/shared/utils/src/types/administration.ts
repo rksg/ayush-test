@@ -124,6 +124,7 @@ export interface TenantDetails {
   }
   accountTier?: AccountTier;
   subscribes?: string;
+  extendedTrial?: boolean;
 }
 
 export enum AdministrationDelegationType {

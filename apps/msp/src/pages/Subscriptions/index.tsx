@@ -113,6 +113,8 @@ export function Subscriptions () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
   const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
+  const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
+
   const {
     state
   } = useContext(HspContext)
@@ -400,8 +402,8 @@ export function Subscriptions () {
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
-              const showUtilBar = summary &&
-                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+              const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
+                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive))
               if (isvSmartEdgeEnabled) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }
@@ -475,7 +477,7 @@ export function Subscriptions () {
     assignedSubscriptions: {
       title: $t({ defaultMessage: 'MSP Assigned Subscriptions' }),
       content: <>
-        <SubscriptionUtilization />
+        {!isExtendedTrialToggleEnabled && <SubscriptionUtilization />}
         <AssignedSubscriptionTable />
       </>,
       visible: true

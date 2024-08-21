@@ -5,7 +5,7 @@ import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
 import { useIsEdgeReady }                        from '@acx-ui/rc/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
-import { hasRoles }                              from '@acx-ui/user'
+import { hasRoles, useUserProfileContext }       from '@acx-ui/user'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueRWG }    from './VenueRWG'
@@ -18,8 +18,11 @@ export function VenueDevicesTab () {
   const navigate = useNavigate()
   const { activeSubTab, venueId } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
+  const { isCustomRole } = useUserProfileContext()
   const isEdgeEnabled = useIsEdgeReady()
-  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
+    RolesEnum.ADMINISTRATOR,
+    RolesEnum.READ_ONLY]) || isCustomRole
 
   const onTabChange = (tab: string) => {
     navigate({
