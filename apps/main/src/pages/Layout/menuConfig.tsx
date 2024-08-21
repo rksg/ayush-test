@@ -146,7 +146,6 @@ export function useMenuConfig () {
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Wireless' }),
-          isBetaFeature: true,
           children: [
             {
               uri: '/users/wifi/clients',

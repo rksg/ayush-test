@@ -7,9 +7,10 @@ import _                                                              from 'loda
 import Highlighter                                                    from 'react-highlight-words'
 import { useIntl }                                                    from 'react-intl'
 
-import { BetaIcon, MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
-import { TABLE_DEFAULT_PAGE_SIZE }                                             from '@acx-ui/utils'
+import { MinusSquareOutlined, PlusSquareOutlined, SettingsOutlined } from '@acx-ui/icons'
+import { TABLE_DEFAULT_PAGE_SIZE }                                   from '@acx-ui/utils'
 
+import { getTitleWithIndicator }               from '../BetaIndicator'
 import { Button, DisabledButton, ButtonProps } from '../Button'
 import { Dropdown }                            from '../Dropdown'
 import { useLayoutContext }                    from '../Layout'
@@ -245,7 +246,10 @@ function Table <RecordType extends Record<string, any>> ({
           {column.title as React.ReactNode}
           <UI.InformationTooltip title={column.tooltip as string} />
         </UI.TitleWithTooltip>
-        : <>{ column.title }{ column?.isBetaFeature ? <BetaIcon /> : null }</>,
+        : (column?.isBetaFeature
+          ? getTitleWithIndicator(column?.title as string)
+          : column.title
+        ),
       disable: Boolean(column.fixed || column.disable),
       show: Boolean(column.fixed || column.disable || (column.show ?? true)),
       ellipsis: type === 'tall' && column.key !== settingsKey,

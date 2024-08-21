@@ -83,6 +83,17 @@ describe('Table component', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should render table with Beta indicator correctly', () => {
+    const { asFragment } = render(<Table
+      columns={[
+        { ...testColumns[0], isBetaFeature: true },
+        ...testColumns.slice(1, 3)
+      ]}
+      dataSource={testData}
+    />)
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should only render pagination when total items exceeds default page size', async () => {
     const props: TableProps<TestRow> = {
       columns: testColumns,
@@ -217,7 +228,7 @@ describe('Table component', () => {
   it('shows search/filter when no selected bar and row selected', async () => {
     const props: TableProps<TestRow> = {
       columns: [
-        { ...testColumns[0], searchable: true },
+        { ...testColumns[0], searchable: true, tooltip: 'Name tooltip' },
         ...testColumns.slice(1, 3)
       ],
       dataSource: testData,

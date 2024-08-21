@@ -152,8 +152,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       }, { skip: !supportHotspot20R1 }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
-      disabled: !supportHotspot20R1,
-      isBetaFeature: true
+      disabled: !supportHotspot20R1
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,

@@ -1,5 +1,7 @@
-import { Tabs as AntTabs, TabsProps as AntTabsProps } from 'antd'
-import { TabsType as AntTabsType }                    from 'antd/lib/tabs'
+import { Tabs as AntTabs, TabsProps as AntTabsProps, TabPaneProps as AntTabPaneProps } from 'antd'
+import { TabsType as AntTabsType }                                                     from 'antd/lib/tabs'
+
+import { getTitleWithIndicator } from '../BetaIndicator'
 
 import * as UI from './styledComponents'
 
@@ -11,6 +13,10 @@ export type TabsProps = Omit<AntTabsProps, 'type'> & {
   /** @default 'true' */
   stickyTop?: boolean
 }
+
+export type TabPaneProps = {
+  isBetaFeature?: boolean
+} & AntTabPaneProps
 
 export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
   const $type = type = type ?? 'line'
@@ -26,13 +32,45 @@ export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
     }
   }
 
+  const transformedProps = {
+    ...props,
+    ...( Array.isArray(props?.children) ? {
+      /**
+       * case1: [TabPane1, TabPane2, TabPane3]
+       * case2: [TabPane1, [TabPane2, TabPane3]]
+       */
+      children: (props?.children as React.ReactElement[])
+        ?.filter(tab => tab)
+        ?.map(tab => {
+          const isObj = typeof tab === 'object' && !Array.isArray(tab) && tab !== null
+          const checkTabIndicator = (tab: React.ReactElement) => {
+            const tabTitle = tab?.props?.isBetaFeature
+              ? getTitleWithIndicator(tab?.props?.tab) : tab?.props?.tab
+            return {
+              ...tab,
+              props: {
+                ...tab?.props,
+                tab: tabTitle
+              }
+            }
+          }
+          if (isObj) {
+            return checkTabIndicator(tab)
+          } else if (Array.isArray(tab)) {
+            return tab.map(t => checkTabIndicator(t))
+          }
+          return tab
+        })
+    } : {})
+  }
+
   return <UI.Tabs
     className={stickyTop ? 'sticky-top' : ''} // for PageHeader to count pageHeaderY
-    {...props}
+    {...transformedProps}
     type={type as AntTabsType}
     $type={$type}
     $stickyTop={stickyTop}
   />
 }
 
-Tabs.TabPane = AntTabs.TabPane
+Tabs.TabPane = (props: TabPaneProps) => <AntTabs.TabPane {...props} />

@@ -111,6 +111,7 @@ export default function ServiceCatalog () {
                   categories={item.categories}
                   type={'button'}
                   scopeKeysMap={item.scopeKeysMap}
+                  isBetaFeature={item.isBetaFeature}
                 />
               </GridCol>
             })}

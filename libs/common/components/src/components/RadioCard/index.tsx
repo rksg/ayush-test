@@ -1,7 +1,7 @@
 import { RadioProps }                                from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { BetaIcon } from '@acx-ui/icons'
+import { getTitleWithIndicator } from '../BetaIndicator'
 
 import {
   Button,
@@ -11,7 +11,6 @@ import {
   Description,
   Category,
   CategoryWrapper,
-  Indicator,
   RadioCardType
 } from './styledComponents'
 
@@ -54,8 +53,7 @@ export function RadioCard ({
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
-      {title}
-      { isBetaFeature ? <Indicator><BetaIcon /></Indicator> : null }
+      { isBetaFeature ? getTitleWithIndicator(title) : title }
     </Title>
     <Description>{description}</Description>
     { categories.length > 0 &&

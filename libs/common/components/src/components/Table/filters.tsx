@@ -105,7 +105,9 @@ export function renderSearch <RecordType> (
   width: number
 ): React.ReactNode {
   const placeHolderText = intl.$t({ defaultMessage: 'Search {searchables}' }, {
-    searchables: searchables.map(column => column.title).join(', ')
+    searchables: searchables.map(column => _.isString(column.title)
+      ? column.title : (column?.title as React.ReactElement )?.props?.children?.[0]
+    ).join(', ')
   })
   return <UI.SearchInput
     onChange={e => setSearchValue(e.target.value)}

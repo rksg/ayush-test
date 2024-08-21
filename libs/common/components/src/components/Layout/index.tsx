@@ -12,8 +12,8 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv }               from '@acx-ui/config'
-import { ArrowChevronRight, BetaIcon } from '@acx-ui/icons'
+import { get as getEnv }     from '@acx-ui/config'
+import { ArrowChevronRight } from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -22,7 +22,9 @@ import {
   MLISA_BASE_PATH
 } from '@acx-ui/react-router-dom'
 
-import modifyVars from '../../theme/modify-vars'
+import modifyVars                from '../../theme/modify-vars'
+import { getTitleWithIndicator } from '../BetaIndicator'
+
 
 import { Content as ResponsiveContent } from './Responsive/content'
 import * as UI                          from './styledComponents'
@@ -119,7 +121,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       return {
         ...item,
         key: key,
-        label: <>{ item.label }{ item?.isBetaFeature ? <BetaIcon /> : null }</>,
+        label: item?.isBetaFeature ? getTitleWithIndicator(item.label) : item.label,
         children: item.children?.map(child => getMenuItem(child, key))
       }
     }

@@ -19,12 +19,13 @@ export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
   count?: number
   scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
+  isBetaFeature?: boolean
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { serviceType, type: cardType, categories = [], count, scopeKeysMap } = props
+  const { serviceType, type: cardType, categories = [], count, scopeKeysMap, isBetaFeature } = props
   // eslint-disable-next-line max-len
   const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
   // eslint-disable-next-line max-len
@@ -69,6 +70,7 @@ export function ServiceCard (props: ServiceCardProps) {
           navigate(linkToList)
         }
       }}
+      isBetaFeature={isBetaFeature}
     />
   )
 }

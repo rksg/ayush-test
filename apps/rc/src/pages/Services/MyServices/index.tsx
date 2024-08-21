@@ -170,6 +170,7 @@ export default function MyServices () {
                 count={service.totalCount}
                 type={'default'}
                 scopeKeysMap={service.scopeKeysMap}
+                isBetaFeature={service.isBetaFeature}
               />
             </GridCol>
           )

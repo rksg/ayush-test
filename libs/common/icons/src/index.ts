@@ -1,6 +1,4 @@
 /* eslint-disable max-len */
-import Beta from './icons/Beta.png'
-
 export { ReactComponent as AccessPointOutlined } from './icons/AccessPointOutlined.svg'
 export { ReactComponent as AccessPointSolid } from './icons/AccessPointSolid.svg'
 export { ReactComponent as AccessPointWifi } from './icons/AccessPointWifi.svg'
@@ -283,6 +281,7 @@ export { ReactComponent as Reload } from './icons/Reload.svg'
 export { ReactComponent as ReportsOutlined } from './icons/ReportsOutlined.svg'
 export { ReactComponent as ReportsSolid } from './icons/ReportsSolid.svg'
 export { ReactComponent as RocketOutlined } from './icons/RocketOutlined.svg'
+export { ReactComponent as RocketOutlined16 } from './icons/RocketOutlined16.svg'
 export { ReactComponent as RocketSolid } from './icons/RocketSolid.svg'
 export { ReactComponent as Roku } from './icons/Roku.svg'
 export { ReactComponent as RotateMobileOutlined } from './icons/RotateMobileOutlined.svg'
@@ -406,7 +405,3 @@ export { ReactComponent as Xerox } from './icons/Xerox.svg'
 export { ReactComponent as Zoom } from './appInsight/Zoom.svg'
 
 export * from './styledComponents'
-
-export function BetaIcon () {
-  return <img src={Beta} alt='beta' width='16' height='16' style={{ margin: '0 0 4px 4px' }} />
-}
