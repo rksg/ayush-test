@@ -16,14 +16,14 @@ import {
 import type { PathFilter } from '@acx-ui/utils'
 
 import { states, codes, StatusTrail, aiFeaturesLabel, groupedStates } from './config'
-import { statuses, displayStates, statusReasons }                     from './states'
+import { Statuses, DisplayStates, StatusReasons }                     from './states'
 
 type Intent = {
   id: string
   code: string
   root: string
-  status: statuses
-  displayStatus: displayStates
+  status: Statuses
+  displayStatus: DisplayStates
   createdAt: string
   updatedAt: string
   sliceType: string
@@ -70,7 +70,7 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
-const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
+const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
@@ -118,8 +118,8 @@ const buildTransitionGQL = (index:number) => `t${index}: transition(
   }`
 
 export const parseTransitionGQL = (optimizeList:OptimizeAllItemMutationPayload[]) => {
-  const status = statuses.scheduled
-  const statusReason = statusReasons.oneClick
+  const status = Statuses.scheduled
+  const statusReason = StatusReasons.oneClick
   const paramsGQL:string[] = []
   const transitionsGQLs:string[] = []
   const variables:Record<string, string|OptimizeAllMetadata> = {}
