@@ -20,6 +20,7 @@ import { filterByAccess } from '@acx-ui/user'
 
 import ColorBoxIcon              from './ColorBoxIcon'
 import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
+import { WifiScopes } from '@acx-ui/types'
 
 export default function ResidentPortalDetail () {
   const params = useParams()
@@ -170,7 +171,8 @@ export default function ResidentPortalDetail () {
             type: ServiceType.RESIDENT_PORTAL,
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
-          })}>
+          })}
+          scopeKey={[WifiScopes.UPDATE]}>
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

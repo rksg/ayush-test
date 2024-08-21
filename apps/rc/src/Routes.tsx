@@ -676,13 +676,15 @@ function ServiceRoutes () {
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.CREATE })}
-        element={<ResidentPortalForm />}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><ResidentPortalForm /></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
-        element={<ResidentPortalForm editMode={true} />}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}>
+            <ResidentPortalForm editMode={true} />
+          </AuthRoute>}
       />
 
       {(isEdgeHaReady && isEdgeDhcpHaReady)

@@ -21,6 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { WifiScopes } from '@acx-ui/types'
 
 export default function ResidentPortalTable () {
   const intl = useIntl()
@@ -133,7 +134,8 @@ export default function ResidentPortalTable () {
           <TenantLink to={
             getServiceRoutePath({
               type: ServiceType.RESIDENT_PORTAL,
-              oper: ServiceOperation.CREATE })}>
+              oper: ServiceOperation.CREATE })}
+              scopeKey={[WifiScopes.CREATE]}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>
           </TenantLink>
         ])}
