@@ -157,7 +157,7 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
+            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
             statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
           } as (IntentListItem))
           return intents
@@ -337,11 +337,11 @@ type Filters = {
   sliceValue: string[] | undefined
   category: string[] | undefined
   aiFeature: string[] | undefined
-  status: string[] | undefined
+  statusLabel: string[] | undefined
 }
 const perpareFilterBy = (filters: Filters) => {
   const { $t } = getIntl()
-  const { sliceValue, category, aiFeature, status } = filters
+  const { sliceValue, category, aiFeature, statusLabel } = filters
   let filterBy = []
   if (sliceValue) {
     filterBy.push({ col: '"sliceId"', values: sliceValue })
@@ -368,9 +368,9 @@ const perpareFilterBy = (filters: Filters) => {
   if(featCodes.length > 0) {
     filterBy.push({ col: 'code', values: featCodes })
   }
-  if(status) {
+  if(statusLabel) {
     const filterStates = [] as string[]
-    status.forEach(st => {
+    statusLabel.forEach(st => {
       filterStates.push(...st.split('+'))
     })
     // concat status and statusReason
@@ -392,7 +392,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
     sliceValue: undefined,
     category: undefined,
     aiFeature: undefined,
-    status: undefined
+    statusLabel: undefined
   })
   const handlePageChange: TableProps<IntentListItem>['onChange'] = (
     customPagination

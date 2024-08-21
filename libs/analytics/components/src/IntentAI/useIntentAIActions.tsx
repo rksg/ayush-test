@@ -154,7 +154,7 @@ export function useIntentAIActions () {
 
   const doAllOptimize = async (rows:IntentListItem[], scheduledAt:string) => {
     const optimizeList = await Promise.all(rows.map(async (row) => {
-      const { code, preferences, displayStatus } = row
+      const { code, preferences, displayStatus, status } = row
       const metadata = { scheduledAt } as TransitionIntentMetadata
       if (code.startsWith('c-probeflex-')) { // AirflexAI c-probeflex-*
         metadata.wlans = await fetchWlans(row)
@@ -162,7 +162,7 @@ export function useIntentAIActions () {
       } else if (code.startsWith('c-crrm-')) { // AI-Driven
         metadata.preferences = { ...(preferences ?? {}), crrmFullOptimization: true }
       }
-      return { id: row.id, displayStatus, metadata } as TransitionIntentItem
+      return { id: row.id, displayStatus, status, metadata } as TransitionIntentItem
     }))
 
     const response = await transitionIntent(
@@ -241,6 +241,7 @@ export function useIntentAIActions () {
             {
               id: item.id,
               displayStatus: item.displayStatus,
+              status: item.status,
               metadata: { scheduledAt }
             } as TransitionIntentItem))
       })
@@ -266,6 +267,7 @@ export function useIntentAIActions () {
       data: rows.map(item =>
         ({ id: item.id,
           displayStatus: item.displayStatus,
+          status: item.status,
           statusTrail: item.statusTrail,
           metadata: item.metadata
         } as TransitionIntentItem))

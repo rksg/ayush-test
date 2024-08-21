@@ -260,19 +260,19 @@ export function IntentAITable (
     {
       title: $t({ defaultMessage: 'Status' }),
       width: 200,
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'statusLabel',
+      key: 'statusLabel',
       filterable: statuses,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Status' }),
       render: (_, row: IntentListItem ) => {
-        const { status, statusTooltip } = row
+        const { statusLabel, statusTooltip } = row
         return <Tooltip
           placement='top'
           title={statusTooltip}
           dottedUnderline={true}
         >
-          {status}
+          {statusLabel}
         </Tooltip>
       }
     },
