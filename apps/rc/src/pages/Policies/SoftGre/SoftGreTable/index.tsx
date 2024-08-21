@@ -18,7 +18,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }                                  from '@acx-ui/types'
+import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
@@ -56,7 +56,7 @@ export default function SoftGreTable () {
 
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE],
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {

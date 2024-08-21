@@ -1,7 +1,9 @@
-import { useIntl } from 'react-intl'
+import { isUndefined } from 'lodash'
+import { useIntl }     from 'react-intl'
 
 import { SummaryCard }                   from '@acx-ui/components'
 import { MtuTypeEnum,  SoftGreViewData } from '@acx-ui/rc/utils'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 interface SoftGreDetailContentProps {
   data: SoftGreViewData | undefined
@@ -13,7 +15,7 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
   const softGreInfo = [
     {
       title: $t({ defaultMessage: 'Description' }),
-      content: data?.description ?? '-'
+      content: data?.description ?? noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Primary Gateway' }),
@@ -24,21 +26,23 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
       content: data?.secondaryGatewayAddress
     },
     {
-      title: $t({ defaultMessage: 'Disassociate Clientes' }),
+      title: $t({ defaultMessage: 'Disassociate Clients' }),
       content: data?.disassociateClientEnabled ?
         $t({ defaultMessage: 'On' }) :
         $t({ defaultMessage: 'Off' })
     },
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
-      content: MtuTypeEnum.AUTO === data?.mtuType ?
-        $t({ defaultMessage: 'Auto' }) :
-        `${$t({ defaultMessage: 'Manual' })} (${data?.mtuSize})`
+      content: MtuTypeEnum.MANUAL === data?.mtuType ?
+        `${$t({ defaultMessage: 'Manual' })} (${data?.mtuSize})` :
+        $t({ defaultMessage: 'Auto' })
     },
     {
       title: $t({ defaultMessage: 'Keep Alive' }),
-      content: `${data?.keepAliveInterval ?? '' } ${$t({ defaultMessage: 'seconds' })}/ `+
-      `${data?.keepAliveRetryTimes ?? ''} ${$t({ defaultMessage: 'retries' })}`
+      content: (!isUndefined(data?.keepAliveInterval) && !isUndefined(data?.keepAliveRetryTimes)) ?
+        // eslint-disable-next-line max-len
+        `${data?.keepAliveInterval} ${$t({ defaultMessage: 'seconds' })}/ ${data?.keepAliveRetryTimes} ${$t({ defaultMessage: 'retries' })}`
+        : noDataDisplay
     }
   ]
 
