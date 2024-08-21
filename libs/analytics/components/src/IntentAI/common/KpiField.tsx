@@ -15,7 +15,6 @@ export const KpiField: React.FC<{
     <StepsForm.Subtitle children={$t(kpi.label)} />
     <Space align='center' size={5}>
       <span>{kpi.value}</span>
-      {/* TODO: fix: check kpi.delta before render */}
       {kpi.delta &&<TrendPill
         value={kpi.delta.value}
         trend={kpi.delta.trend}

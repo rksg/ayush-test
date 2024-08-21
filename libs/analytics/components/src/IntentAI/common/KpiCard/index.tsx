@@ -15,7 +15,6 @@ export const KpiCard: React.FC<{
     <UI.Title>{$t(kpi.label)}</UI.Title>
     <Space align='center' size={0}>
       <UI.Value>{kpi.value}</UI.Value>
-      {/* TODO: fix: check kpi.delta before render */}
       {kpi.delta && <UI.TrendPill
         value={kpi.delta.value}
         trend={kpi.delta.trend} />}
