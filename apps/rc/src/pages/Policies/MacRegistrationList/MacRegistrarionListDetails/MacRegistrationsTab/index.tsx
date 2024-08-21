@@ -219,6 +219,16 @@ export function MacRegistrationsTab () {
         return row.expirationDate ? toDateTimeString(row.expirationDate) :
           $t({ defaultMessage: 'Never Expire' })
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Device Name' }),
+      key: 'deviceName',
+      dataIndex: 'deviceName'
+    },
+    {
+      title: $t({ defaultMessage: 'Location' }),
+      key: 'location',
+      dataIndex: 'location'
     }
   ]
 

@@ -99,7 +99,11 @@ describe('ApMeshTab', () => {
 
     mockServer.use(
       rest.post(WifiUrlsInfo.getMeshUplinkAPs.url,
-        (_, res, ctx) => res(ctx.json(mockMeshUplinkAps)))
+        (_, res, ctx) => res(ctx.json(mockMeshUplinkAps))
+      ),
+      rest.post(CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      )
     )
 
   })
