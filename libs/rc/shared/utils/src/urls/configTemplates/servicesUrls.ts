@@ -314,5 +314,10 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activatePortal: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/portalServiceProfiles/:serviceId',
+    newApi: true
   }
 }
