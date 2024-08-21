@@ -189,17 +189,14 @@ export function Venues (props: VenuesProps) {
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   useEffect(() => {
-    if(isDefaultVenueSetted.current) return
-    if(defaultActiveVenues && tableData?.length > 0) {
-      defaultActiveVenues.forEach(defaultVenueId => {
-        const defaultVenueItem = tableData?.find(data => data.id === defaultVenueId)
-        if(defaultVenueItem) {
-          handleActivateVenue(true, [defaultVenueItem])
-        }
-      })
-      isDefaultVenueSetted.current = true
-    }
-  }, [defaultActiveVenues, tableData])
+    if(isDefaultVenueSetted.current || !defaultActiveVenues?.length) return
+
+    defaultActiveVenues.forEach(defaultVenueId => {
+      handleActivateVenue(true, [{ id: defaultVenueId } as Venue])
+    })
+    isDefaultVenueSetted.current = true
+
+  }, [defaultActiveVenues])
 
   const handleVenueSaveData = (newSelectedNetworkVenues: NetworkVenue[]) => {
     setData && setData({ ...data, venues: newSelectedNetworkVenues })
@@ -207,7 +204,7 @@ export function Venues (props: VenuesProps) {
   }
 
   const handleActivateVenue = (isActivate: boolean, rows: Venue[]) => {
-    let newSelectedNetworkVenues: NetworkVenue[] = [...activatedNetworkVenues]
+    let newSelectedNetworkVenues: NetworkVenue[] = [...(activatedNetworkVenues ?? [])]
     if (isActivate) {
       const newActivatedNetworkVenues: NetworkVenue[] =
         rows.map(row => {
