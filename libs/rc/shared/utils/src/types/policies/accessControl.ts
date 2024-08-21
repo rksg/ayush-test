@@ -38,7 +38,8 @@ export interface EnhancedAccessControlInfoType {
   applicationPolicyId: string,
   clientRateUpLinkLimit: number,
   clientRateDownLinkLimit: number,
-  networkIds: string[]
+  networkIds: string[],
+  wifiNetworkIds?: string[]
 }
 
 export interface AccessControlInfoType {

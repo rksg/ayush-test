@@ -44,6 +44,8 @@ import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 
+import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessControl/constants'
+
 import { AddModeProps, editModeProps }                            from './AccessControlForm'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
 import { useScrollLock }                                          from './ScrollLock'
@@ -118,7 +120,6 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [skipFetch, setSkipFetch] = useState(true)
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
-  const MAC_ADDRESS_LIMIT = 128
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -280,7 +281,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const handleAddAction = () => {
-    if (macAddressList.length === MAC_ADDRESS_LIMIT) {
+    if (macAddressList.length === PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT) {
       showToast({
         type: 'error',
         duration: 10,
@@ -552,7 +553,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         name='layer2AccessMacAddress'
         label={$t(
           { defaultMessage: 'MAC Address ( {count}/{count_limit} )' },
-          { count: macAddressList.length, count_limit: MAC_ADDRESS_LIMIT })
+          // eslint-disable-next-line max-len
+          { count: macAddressList.length, count_limit: PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT })
         }
         style={{ flexDirection: 'column' }}
         rules={[
@@ -720,7 +722,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
                     content: $t({ defaultMessage: 'No validate MAC Address could add' })
                   })
                 } else {
-                  if (macAddressList.length + addressTags.length <= MAC_ADDRESS_LIMIT) {
+                  // eslint-disable-next-line max-len
+                  if (macAddressList.length + addressTags.length <= PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT) {
                     setMacAddressList([...macAddressList, ...addressTags.map(tag => {
                       return {
                         macAddress: tag
