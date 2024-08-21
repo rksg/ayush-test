@@ -42,6 +42,7 @@ export enum Features {
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
+  EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
