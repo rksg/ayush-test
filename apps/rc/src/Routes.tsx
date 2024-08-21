@@ -1,3 +1,4 @@
+
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
@@ -33,7 +34,10 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  AddEthernetPortProfile,
+  EditEthernetPortProfile,
+  EthernetPortProfileDetail
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -95,9 +99,6 @@ import ClientIsolationTable                                             from './
 import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
-import AddEthernetPortProfile                                           from './pages/Policies/EthernetPortProfile/AddEthernetPortProfile'
-import EditEthernetPortProfile                                          from './pages/Policies/EthernetPortProfile/EditEthernetPortProfile'
-import EthernetPortProfileDetail                                        from './pages/Policies/EthernetPortProfile/EthernetPortProfileDetail'
 import EthernetPortProfileTable                                         from './pages/Policies/EthernetPortProfile/EthernetPortProfileTable'
 import IdentityProviderDetail                                           from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                                            from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'

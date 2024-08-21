@@ -7,6 +7,7 @@ import { useIntl }   from 'react-intl'
 import { Loader }                                from '@acx-ui/components'
 import {
   useDeleteEthernetPortProfileRadiusIdMutation,
+  useGetAAAPolicyListQuery,
   useGetEthernetPortProfileByIdQuery,
   useUpdateEthernetPortProfileMutation,
   useUpdateEthernetPortProfileRadiusIdMutation
@@ -17,9 +18,9 @@ import {
 }                                                     from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import EthernetPortProfileForm, { requestPreProcess } from '../EthernetPortProfileForm'
+import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
 
-const EditEthernetPortProfile = () => {
+export const EditEthernetPortProfile = () => {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const [ updateEthernetPortProfile ] = useUpdateEthernetPortProfileMutation()
@@ -32,6 +33,17 @@ const EditEthernetPortProfile = () => {
     useGetEthernetPortProfileByIdQuery(
       { params: { id: policyId } }
     )
+
+  const { data: aaaRadiusList, isLoading: isAaaRadiusLoading } = useGetAAAPolicyListQuery(
+    { payload: {
+      filters: {
+        ethernetPortProfileIds: [ethernetPortProfileData?.id]
+      }
+    } },
+    {
+      skip: !!!ethernetPortProfileData?.id
+    }
+  )
 
   const handleEditEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
@@ -82,17 +94,30 @@ const EditEthernetPortProfile = () => {
     }
   }
   useEffect(() => {
-    if(!ethernetPortProfileData) {
+    if(!ethernetPortProfileData || !aaaRadiusList) {
       return
     }
+
     const sourceData = cloneDeep(ethernetPortProfileData) as EthernetPortProfileFormType
     if (sourceData.authType !== EthernetPortAuthType.DISABLED) {
       sourceData.authEnabled = true
+      sourceData.accountingEnabled=false
       sourceData.authTypeRole = sourceData.authType
+
+      aaaRadiusList.data.forEach((radius) =>{
+        if (radius.type === 'AUTHENTICATION') {
+          sourceData.authRadiusId = radius.id
+        }
+
+        if (radius.type === 'ACCOUNTING') {
+          sourceData.accountingEnabled=true
+          sourceData.accountingRadiusId = radius.id
+        }
+      })
     }
 
     form.setFieldsValue(sourceData)
-  }, [ethernetPortProfileData])
+  }, [ethernetPortProfileData, aaaRadiusList])
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -106,4 +131,4 @@ const EditEthernetPortProfile = () => {
   )
 }
 
-export default EditEthernetPortProfile
+// export default EditEthernetPortProfile

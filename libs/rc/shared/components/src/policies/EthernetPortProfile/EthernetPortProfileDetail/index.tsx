@@ -16,7 +16,7 @@ import { filterByAccess }        from '@acx-ui/user'
 
 import { EthernetPortProfileInstanceTable } from './EthernetPortProfileInstanceTable'
 
-const EthernetPortProfileDetail = () => {
+export const EthernetPortProfileDetail = () => {
 
   const { $t } = useIntl()
   const { policyId } = useParams()
@@ -62,7 +62,7 @@ const EthernetPortProfileDetail = () => {
       title: $t({ defaultMessage: '802.1X Authentication' }),
       content: () => {
         const authTypeString = getEthernetPortAuthTypeString(ethernetPortProfileData?.authType)
-        return (authTypeString)? 'ON (' + authTypeString + ')' : 'OFF'
+        return (authTypeString)? 'On (' + authTypeString + ')' : 'Off'
       }
     }, {
       title: $t({ defaultMessage: 'Authentication Service' }),
@@ -144,5 +144,3 @@ const EthernetPortProfileDetail = () => {
     </Space>
   </>)
 }
-
-export default EthernetPortProfileDetail

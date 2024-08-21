@@ -2,7 +2,7 @@
 
 import { getIntl } from '@acx-ui/utils'
 
-import { ApLanPortTypeEnum, EthernetPortAuthType } from '../../models'
+import { ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortSupplicantType } from '../../models'
 
 export const getEthernetPortTypeOptions = ()
 : Array<{ label: string, value: ApLanPortTypeEnum }> => {
@@ -51,6 +51,31 @@ export const getEthernetPortAuthTypeString = (type?: EthernetPortAuthType) => {
     case EthernetPortAuthType.SUPPLICANT:
       return $t({ defaultMessage: 'Supplicant' })
     case EthernetPortAuthType.DISABLED:
+    default:
+      return ''
+  }
+}
+
+export const getEthernetPortCredentialTypeOptions = ()
+: Array<{ label: string, value: EthernetPortSupplicantType }> => {
+  return Object.values(EthernetPortSupplicantType)
+    .map(key => ({
+      label: getEthernetPortCredentialTypeString(key as EthernetPortSupplicantType),
+      value: key as EthernetPortSupplicantType
+    }))
+    .filter(item => {
+      return item.label !== ''
+    })
+}
+
+export const getEthernetPortCredentialTypeString = (type?: EthernetPortSupplicantType) => {
+  const { $t } = getIntl()
+
+  switch (type) {
+    case EthernetPortSupplicantType.CUSTOM :
+      return $t({ defaultMessage: 'Custom Auth' })
+    case EthernetPortSupplicantType.MAC_AUTH:
+      return $t({ defaultMessage: 'Use AP MAC Address Auth' })
     default:
       return ''
   }

@@ -41,7 +41,7 @@ const EthernetPortProfileTable = () => {
       sortOrder: 'ASC'
     },
     search: {
-      searchTargetFields: ['name']
+      searchTargetFields: ['name', 'venue']
     }
   })
   // eslint-disable-next-line max-len
@@ -51,8 +51,8 @@ const EthernetPortProfileTable = () => {
       fields: ['name', 'id'],
       sortField: 'name',
       sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
+      page: 1
+      // pageSize: 10000
     },
     enableRbac: enableServicePolicyRbac
   }, {

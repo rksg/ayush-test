@@ -15,6 +15,8 @@ export interface EthernetPortProfileViewData {
     supplicantAuthenticationOption?: EthernetPortSupplicantType
     dynamicVlanEnabled?: boolean
     unauthenticatedguestVlan?: number
+    enableAuthProxy?: boolean
+    enableAccountingProxy?: boolean
   }
 
 export interface EthernetPortProfile {
@@ -40,4 +42,5 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     authTypeRole?: EthernetPortAuthType
     authRadius?: Radius
     accountingRadius?: Radius
+    accountingEnabled?: boolean
   }

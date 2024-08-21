@@ -13,7 +13,7 @@ import { createHttpRequest }          from '@acx-ui/utils'
 
 export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints({
   endpoints: (build) => ({
-    createEthernetPortProfile: build.mutation<EthernetPortProfile, RequestPayload>({
+    createEthernetPortProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EthernetPortProfileUrls.createEthernetPortProfile)
         return {
@@ -39,7 +39,6 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             // 'AddEthernetPortServiceProfile',
-            // 'UpdateTunnelServiceProfile',
             'DeleteEthernetPortServiceProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {

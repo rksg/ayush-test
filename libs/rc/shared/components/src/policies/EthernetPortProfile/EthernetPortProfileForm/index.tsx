@@ -23,7 +23,8 @@ import {
   EthernetPortProfileMessages,
   EthernetPortProfileFormType,
   getEthernetPortTypeOptions,
-  getEthernetPortAuthTypeOptions
+  getEthernetPortAuthTypeOptions,
+  getEthernetPortCredentialTypeOptions
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -32,10 +33,12 @@ interface EthernetPortProfileFormProps {
   submitButtonLabel: string
   onFinish: (values: EthernetPortProfileFormType) => void
   form: FormInstance
+  onCancel?: () => void
+  isNoPageHeader?: boolean
 }
 
-const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
-  const { title, submitButtonLabel, onFinish, form: formRef } = props
+export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
+  const { title, submitButtonLabel, onFinish, form: formRef, onCancel } = props
   const { $t } = useIntl()
   // const params = useParams()
   const portType = Form.useWatch('type', formRef)
@@ -45,7 +48,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
   const dynamicVlanEnabled = Form.useWatch('dynamicVlanEnabled', formRef)
   const authEnabled = Form.useWatch('authEnabled', formRef)
   const isDynamicVLANEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE)
-
+  const isNoPageHeader = props.isNoPageHeader? props.isNoPageHeader : false
 
   const tablePath = getPolicyRoutePath({
     type: PolicyType.ETHERNET_PORT_PROFILE,
@@ -62,7 +65,12 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
     }
-    redirectPreviousPage(navigate, previousPath, linkToTableView)
+    // redirectPreviousPage(navigate, previousPath, linkToTableView)
+    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath, linkToTableView)
+  }
+
+  const handleCancel = () => {
+    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath, linkToTableView)
   }
 
   // const ethernetPortProfileListPayload = {
@@ -106,8 +114,9 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
         .includes(portType)
     })
 
-  useEffect(()=>{
-    if(portType === ApLanPortTypeEnum.TRUNK) {
+
+  const onPortTypeChanged = (currentPortType:ApLanPortTypeEnum) => {
+    if(currentPortType === ApLanPortTypeEnum.TRUNK) {
       formRef.setFieldsValue({
         untagId: 1,
         vlanMembers: '1-4094',
@@ -115,17 +124,38 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
       })
     }
 
-    if(portType === ApLanPortTypeEnum.ACCESS) {
+    if(currentPortType === ApLanPortTypeEnum.ACCESS) {
       formRef.setFieldsValue({
         vlanMembers: untagId,
         authTypeRole: EthernetPortAuthType.PORT_BASED
       })
     }
 
-    // if(portType === ApLanPortTypeEnum.GENERAL) {
+    // if(currentPortType === ApLanPortTypeEnum.GENERAL) {
     //   formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
     // }
-  }, [portType])
+  }
+
+  // useEffect(()=>{
+  //   if(portType === ApLanPortTypeEnum.TRUNK) {
+  //     formRef.setFieldsValue({
+  //       untagId: 1,
+  //       vlanMembers: '1-4094',
+  //       authTypeRole: EthernetPortAuthType.SUPPLICANT
+  //     })
+  //   }
+
+  //   if(portType === ApLanPortTypeEnum.ACCESS) {
+  //     formRef.setFieldsValue({
+  //       vlanMembers: untagId,
+  //       authTypeRole: EthernetPortAuthType.PORT_BASED
+  //     })
+  //   }
+
+  //   // if(portType === ApLanPortTypeEnum.GENERAL) {
+  //   //   formRef.setFieldValue('authTypeRole', EthernetPortAuthType.PORT_BASED)
+  //   // }
+  // }, [portType])
 
   useEffect(()=>{
     if(portType === ApLanPortTypeEnum.ACCESS) {
@@ -135,6 +165,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
 
   return (
     <>
+    {!isNoPageHeader &&
       <PageHeader
         title={title}
         breadcrumb={[
@@ -149,15 +180,16 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
           }
         ]}
       />
+    }
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
-        onCancel={() => redirectPreviousPage(navigate, previousPath, linkToTableView)}
+        onCancel={handleCancel}
         buttonLabel={{ submit: submitButtonLabel }}
       >
         <StepsForm.StepForm>
           <Row>
-            <Col span={5}>
+            <Col span={12}>
               <Form.Item
                 name='name'
                 label={$t({ defaultMessage: 'Profile Name' })}
@@ -175,7 +207,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
             </Col>
           </Row>
           <Row>
-            <Col span={5}>
+            <Col span={12}>
               <Form.Item
                 name='type'
                 label={<>
@@ -190,6 +222,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
               >
                 <Select
                   options={getEthernetPortTypeOptions()}
+                  onChange={onPortTypeChanged}
                 >
                 </Select>
               </Form.Item>
@@ -199,7 +232,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
             { $t({ defaultMessage: 'VLAN' }) }
           </Subtitle>
           <Row>
-            <Col span={5}>
+            <Col span={12}>
               <Form.Item
                 name='untagId'
                 label={<>
@@ -223,7 +256,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
             </Col>
           </Row>
           <Row>
-            <Col span={5}>
+            <Col span={12}>
               <Form.Item
                 name='vlanMembers'
                 label={<>
@@ -262,7 +295,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
           </StepsForm.FieldLabel>
           {authEnabled && <>
             <Row>
-              <Col span={5}>
+              <Col span={12}>
                 <Form.Item
                   name='authTypeRole'
                   label={<>
@@ -287,7 +320,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
             </Row>
             {authTypeRole === EthernetPortAuthType.SUPPLICANT &&
               <Row>
-                <Col span={5}>
+                <Col span={12}>
                   <Form.Item
                     name={['supplicantAuthenticationOptions', 'type']}
                     label={<>
@@ -298,15 +331,8 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
                   >
                     <Select
                       disabled={!(authEnabled || authTypeRole === EthernetPortAuthType.SUPPLICANT)}
-                    >
-                      {Object.entries(SupplicantTypeOptions).map(([value, label])=>
-                        <Select.Option
-                          children={label}
-                          key={value}
-                          value={value}
-                        />
-                      )}
-                    </Select>
+                      options={getEthernetPortCredentialTypeOptions()}
+                    />
                   </Form.Item>
                 </Col>
               </Row>
@@ -314,7 +340,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
             {supplicantType === EthernetPortSupplicantType.CUSTOM &&
               <>
                 <Row>
-                  <Col span={5}>
+                  <Col span={12}>
                     <Form.Item
                       name={['supplicantAuthenticationOptions', 'username']}
                       label={<>
@@ -334,7 +360,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={5}>
+                  <Col span={12}>
                     <Form.Item
                       name={['supplicantAuthenticationOptions', 'password']}
                       label={<>
@@ -359,7 +385,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
               <>
                 <EthernetPortAAASettings />
                 <Row>
-                  <Col span={5}>
+                  <Col span={12}>
                     <StepsForm.FieldLabel width={'280px'}>
                       <Space >
                         {$t({ defaultMessage: 'Use MAC auth bypass' })}
@@ -402,7 +428,7 @@ const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
 
           {dynamicVlanEnabled &&
           <Row>
-            <Col span={5}>
+            <Col span={12}>
               <Form.Item
                 name='unauthenticatedGuestVlan'
                 label={<>
@@ -441,4 +467,4 @@ export const requestPreProcess = (data: EthernetPortProfileFormType) => {
   return result
 }
 
-export default EthernetPortProfileForm
+// export default EthernetPortProfileForm

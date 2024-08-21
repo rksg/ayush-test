@@ -1,33 +1,39 @@
-import { Form }    from 'antd'
-import { useIntl } from 'react-intl'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
 
 import { useCreateEthernetPortProfileMutation, useUpdateEthernetPortProfileRadiusIdMutation } from '@acx-ui/rc/services'
 import { EthernetPortProfileFormType }                                                        from '@acx-ui/rc/utils'
 
-import EthernetPortProfileForm, { requestPreProcess } from '../EthernetPortProfileForm'
+import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfileForm'
 
-const AddEthernetPortProfile = () => {
+interface AddEthernetPortProfileFormProps {
+  isNoPageHeader?: boolean
+  onClose?: ()=>void
+}
+
+
+export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) => {
   const { $t } = useIntl()
   const [ createEthernetPortProfile ] = useCreateEthernetPortProfileMutation()
   const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
   const [form] = Form.useForm()
+  const { onClose, isNoPageHeader } = props
 
   const handleAddEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
       const createResult =
         await createEthernetPortProfile({ payload }).unwrap()
-
       if (payload.authRadiusId) {
         updateEthernetPortProfileRadiusId({ params: {
-          id: createResult.id,
+          id: createResult.response?.id,
           radiusId: payload.authRadiusId
         } })
       }
 
       if (payload.accountingRadiusId) {
         updateEthernetPortProfileRadiusId({ params: {
-          id: createResult.id,
+          id: createResult.response?.id,
           radiusId: payload.accountingRadiusId
         } })
       }
@@ -39,13 +45,18 @@ const AddEthernetPortProfile = () => {
   }
 
   return (
-    <EthernetPortProfileForm
-      title={$t({ defaultMessage: 'Add Ethernet Port Profile' })}
-      submitButtonLabel={$t({ defaultMessage: 'Add' })}
-      onFinish={handleAddEthernetPortProfile}
-      form={form}
-    />
+    <Row>
+      <Col span={12}>
+        <EthernetPortProfileForm
+          title={$t({ defaultMessage: 'Add Ethernet Port Profile' })}
+          submitButtonLabel={$t({ defaultMessage: 'Add' })}
+          onFinish={handleAddEthernetPortProfile}
+          form={form}
+          onCancel={(onClose)? onClose : undefined}
+          isNoPageHeader={(isNoPageHeader)? isNoPageHeader : undefined}
+        />
+      </Col>
+    </Row>
+
   )
 }
-
-export default AddEthernetPortProfile

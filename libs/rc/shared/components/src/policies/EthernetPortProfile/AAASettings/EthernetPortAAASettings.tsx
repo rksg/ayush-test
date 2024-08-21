@@ -10,7 +10,7 @@ import { AAAInstance } from '../../../NetworkForm/AAAInstance'
 export function EthernetPortAAASettings () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const enableAccountingService = useWatch('enableAccountingService', form)
+  const accountingEnabled = useWatch('accountingEnabled', form)
   const labelWidth = '280px'
 
   return (
@@ -33,13 +33,13 @@ export function EthernetPortAAASettings () {
         <StepsForm.FieldLabel width={labelWidth}>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
           <Form.Item
-            name='enableAccountingService'
+            name='accountingEnabled'
             valuePropName='checked'
             initialValue={false}
             children={<Switch />}
           />
         </StepsForm.FieldLabel>
-        {enableAccountingService && <>
+        {accountingEnabled && <>
           <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'/>
           <StepsForm.FieldLabel width={labelWidth}>
