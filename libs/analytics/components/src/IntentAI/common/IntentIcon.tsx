@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Space, Typography } from 'antd'
+import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
@@ -22,12 +23,18 @@ const sizes = {
 }
 
 type SizeProps = {
-  /** @default 'large' */
   size?: keyof typeof sizes
 }
 
-export const Icon = ({ feature, size = 'large' }: SizeProps & { feature: aiFeatures }) => {
-  return React.cloneElement(icons[feature], { style: sizes[size] })
+export const Icon = ({
+  feature,
+  size,
+  ...props
+}: { feature: aiFeatures } & SizeProps & React.SVGProps<SVGSVGElement>) => {
+  return React.cloneElement(icons[feature], {
+    ...props,
+    style: _.merge({}, size ? sizes[size] : {}, props.style)
+  })
 }
 
 export const IntentIcon = (props: SizeProps) => {
