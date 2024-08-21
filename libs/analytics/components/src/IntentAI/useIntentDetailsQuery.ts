@@ -10,7 +10,7 @@ import { recommendationApi }       from '@acx-ui/store'
 import { NetworkPath }             from '@acx-ui/utils'
 
 import { codes }      from './config'
-import { IntentWlan } from './services'
+import { IntentWlan } from './utils'
 
 export type IntentKPIConfig = {
   key: string;

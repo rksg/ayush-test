@@ -8,11 +8,13 @@ import { get }            from '@acx-ui/config'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM } from './__tests__/fixtures'
-import { Icon }                                                                                 from './common/IntentIcon'
-import { aiFeatures }                                                                           from './config'
-import * as UI                                                                                  from './styledComponents'
-import { AIFeature, iconTooltips }                                                              from './Table'
+import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
+import { Icon }                                                                                                  from './common/IntentIcon'
+import { aiFeatures }                                                                                            from './config'
+import { displayStates, statuses }                                                                               from './states'
+import * as UI                                                                                                   from './styledComponents'
+import { AIFeature, iconTooltips }                                                                               from './Table'
+import { Actions, isVisibledByAction }                                                                           from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -149,6 +151,43 @@ describe('AIFeature component', () => {
         </TenantLink>
       </UI.FeatureIcon>
     )
+  })
+
+  describe('isVisibledByAction', () => {
+    const extractItem = {
+      aiFeature: aiFeatures.RRM,
+      root: 'root',
+      sliceId: 'sliceId',
+      intent: 'Client Density vs. Throughput for 5 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: statuses.new,
+      statusLabel: 'New',
+      statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
+      statusTrail: []
+    }
+    const makeRow = (status: statuses, displayStatus: displayStates) => ({
+      ...mockAIDrivenRow, ...extractItem, displayStatus, status
+    })
+    const newRow = makeRow(statuses.new, displayStates.new)
+    const activeRow = makeRow(statuses.active, displayStates.active)
+    const pausedApplyFailedRow = makeRow(statuses.paused, displayStates.pausedApplyFailed)
+    const scheduledOneClickRow = makeRow(statuses.scheduled, displayStates.scheduledOneClick)
+    const revertScheduledRow = makeRow(statuses.revertScheduled, displayStates.revertScheduled)
+    it('should return true for all actions', () => {
+      expect(isVisibledByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
+      expect(isVisibledByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
+      expect(isVisibledByAction([scheduledOneClickRow], Actions.Optimize)).toBeTruthy()
+      expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Optimize)).toBeFalsy()
+      expect(isVisibledByAction([activeRow, revertScheduledRow], Actions.Revert)).toBeTruthy()
+      expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Revert)).toBeFalsy()
+      expect(isVisibledByAction([scheduledOneClickRow, activeRow], Actions.Pause)).toBeTruthy()
+      expect(isVisibledByAction([newRow, pausedApplyFailedRow], Actions.Pause)).toBeFalsy()
+      expect(isVisibledByAction([scheduledOneClickRow, revertScheduledRow], Actions.Cancel)).toBeTruthy()
+      expect(isVisibledByAction([newRow, revertScheduledRow], Actions.Cancel)).toBeFalsy()
+    })
+
   })
 
   it('should trigger click tooltip for R1', async () => {
