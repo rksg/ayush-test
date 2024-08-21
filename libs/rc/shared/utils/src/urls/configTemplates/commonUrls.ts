@@ -22,7 +22,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   applyConfigTemplateRbac: {
     method: 'post',
-    url: '/templates/:templateId/tenant/:tenantId',
+    url: '/templates/:templateId/tenants/:tenantId',
     newApi: true,
     defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
@@ -106,7 +106,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addAAAPolicyTemplate: {
     method: 'post',
     url: '/templates/radiusServerProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addAAAPolicyTemplateRbac: {
     method: 'post',
@@ -120,7 +124,10 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getAAAPolicyTemplate: {
     method: 'get',
     url: '/templates/radiusServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   getAAAPolicyTemplateRbac: {
     method: 'get',
@@ -134,7 +141,10 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteAAAPolicyTemplate: {
     method: 'delete',
     url: '/templates/radiusServerProfiles/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteAAAPolicyTemplateRbac: {
     method: 'delete',
@@ -148,7 +158,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateAAAPolicyTemplate: {
     method: 'put',
     url: '/templates/radiusServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateAAAPolicyTemplateRbac: {
     method: 'put',
@@ -269,6 +283,26 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activateVenueApGroupRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
+  deactivateVenueApGroupRbac: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
+    newApi: true
+  },
+  getVenueApGroupsRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
+  },
+  updateVenueApGroupsRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
+    newApi: true
   },
   getNetworkVenueTemplateRbac: {
     method: 'get',

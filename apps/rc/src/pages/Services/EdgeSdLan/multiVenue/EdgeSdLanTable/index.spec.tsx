@@ -2,9 +2,21 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, CommonUrlsInfo, EdgeSdLanUrls, EdgeGeneralFixtures, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                  from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                    from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { edgeApi }                from '@acx-ui/rc/services'
+import {
+  EdgeUrlsInfo,
+  ServiceOperation,
+  ServiceType,
+  getServiceDetailsLink,
+  CommonUrlsInfo,
+  EdgeSdLanUrls,
+  EdgeGeneralFixtures,
+  EdgeSdLanFixtures,
+  EdgeCompatibilityFixtures
+} from '@acx-ui/rc/utils'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { mockedVenueList } from '../__tests__/fixtures'
 
@@ -38,6 +50,7 @@ mockedSdLan2.tunneledWlans?.forEach((wlan, idx) => {
   }
 })
 
+const { mockEdgeSdLanCompatibilities, mockEdgeSdLanApCompatibilites } = EdgeCompatibilityFixtures
 const mockedUsedNavigate = jest.fn()
 const mockedGetClusterList = jest.fn()
 const mockedDeleteReq = jest.fn()
@@ -54,6 +67,8 @@ describe('Multi-venue SD-LAN Table', () => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
+
+    store.dispatch(edgeApi.util.resetApiState())
 
     mockedUsedNavigate.mockReset()
     mockedGetClusterList.mockReset()
@@ -102,6 +117,8 @@ describe('Multi-venue SD-LAN Table', () => {
     expect(rows[0]).toHaveTextContent(new RegExp(`${mockedSdLan1.name}\\s*${mockedSdLan1.edgeClusterName}\\s*${mockedSdLan1.guestEdgeClusterName}\\s*2\\s*Mocked_tunnel-1\\s*Mocked_tunnel-3\\s*Poor`))
     // eslint-disable-next-line max-len
     expect(rows[1]).toHaveTextContent(new RegExp(`${mockedSdLan2.name}\\s*${mockedSdLan2.edgeClusterName}\\s*1\\s*Mocked_tunnel-2\\s*Good`))
+    const fwWarningIcon = screen.queryAllByTestId('WarningCircleSolid')
+    expect(fwWarningIcon.length).toBe(0)
   })
 
   it('should display venue names when hover', async () => {
@@ -247,6 +264,41 @@ describe('Multi-venue SD-LAN Table', () => {
     screen.getByRole('row', { name: /sdLan_good_health/i })
     // eslint-disable-next-line max-len
     screen.getByRole('row', { name: 'sdLan_good_health SE_Cluster 0 SE_Cluster 3 2 Mocked_tunnel-1 Mocked_tunnel-3 Good' })
+  })
+
+  it('should have compatible warning', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+    const mockedData = cloneDeep(mockedMvSdLanDataList.slice(0, 1))
+    mockedData[0].id = mockEdgeSdLanCompatibilities.compatibilities[0].serviceId
+    mockedData[0].name = 'compatible test'
+
+    mockServer.use(
+      rest.post(
+        EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedData }))),
+      rest.post(
+        EdgeUrlsInfo.getSdLanEdgeCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeSdLanCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getSdLanApCompatibilities.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeSdLanApCompatibilites)))
+    )
+
+    render(
+      <Provider>
+        <EdgeSdLanTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeMvSdLan/list' }
+      }
+    )
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    screen.getByRole('columnheader', { name: 'Cluster' })
+    const row1 = await screen.findByRole('row', { name: new RegExp('compatible test') })
+    const fwWarningIcon = await within(row1).findByTestId('WarningCircleSolid')
+    await userEvent.hover(fwWarningIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('SmartEdges and access points')
   })
 })
 

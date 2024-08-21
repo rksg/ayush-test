@@ -58,7 +58,7 @@ export default function PortalTable () {
     },
     enableRbac: isEnabledRbacService,
     search: {
-      searchTargetFields: ['serviceName'],
+      searchTargetFields: [isEnabledRbacService? 'name' : 'serviceName'],
       searchString: ''
     }
   })

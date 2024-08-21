@@ -23,7 +23,7 @@ describe('RbacVenueMeshApsTable', () => {
   }
   beforeEach(() => {
     mockServer.use(
-      rest.post(CommonRbacUrlsInfo.getMeshAps.url,
+      rest.post(CommonRbacUrlsInfo.getMeshAps.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ ...meshApsQuery }))
       )
     )

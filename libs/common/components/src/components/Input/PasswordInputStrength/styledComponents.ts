@@ -25,7 +25,7 @@ export const TooltipTitle = styled(Typography)`
 `
 
 export const StrengthStatus = styled.span`
-  min-width: 50px;
+  min-width: 80px;
   text-align: center;
 `
 
