@@ -1,14 +1,14 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Row, Col, Form, Tooltip } from 'antd'
-import { DefaultOptionType }       from 'antd/lib/select'
-import _                           from 'lodash'
-import { useIntl }                 from 'react-intl'
-import { useParams }               from 'react-router-dom'
+import { Row, Col, Form }    from 'antd'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
+import { useParams }         from 'react-router-dom'
 
-import { Button, Loader, Select, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                 from '@acx-ui/formatter'
+import { Button, Loader, Select, StatusPill, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
   usePingMutation,
@@ -42,6 +42,7 @@ export function SwitchCableTestForm () {
   const [pingForm] = Form.useForm()
 
   const [isValid, setIsValid] = useState(false)
+  const [tableData, setTableData] = useState([] as CableTestTable[])
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
@@ -86,6 +87,16 @@ export function SwitchCableTestForm () {
   }
 
   useEffect(() => {
+    setTableData([
+      { port: '1/1/1',
+        speed: '100M',
+        status: 'OK',
+        pairA: 'Shorted',
+        pairB: 'Abnormal',
+        pairC: 'OK',
+        pairD: 'OK'
+      }
+    ])
     if (getTroubleshooting.data?.response) {
       const response = getTroubleshooting.data.response
       setIsLoading(response.syncing)
@@ -174,6 +185,20 @@ export function SwitchCableTestForm () {
       })
   }
 
+  const onCopy = async () => {
+    const response = 'test copy!!'
+    navigator.clipboard.writeText(response)
+  }
+
+  const getStausColor = (status: string) => {
+    const colorMap = {
+      OK: 'green',
+      Shorted: 'red',
+      Abnormal: 'yellow'
+    } as { [key:string]: string }
+    return colorMap[status] || 'green'
+  }
+
   const columns: TableProps<CableTestTable>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port' }),
@@ -188,27 +213,42 @@ export function SwitchCableTestForm () {
     {
       title: $t({ defaultMessage: 'Status' }),
       key: 'status',
-      dataIndex: 'status'
+      dataIndex: 'status',
+      render: (_, row) => {
+        return <StatusPill color={getStausColor(row.status)} value={row.status} />
+      }
     },
     {
       title: $t({ defaultMessage: 'Pair A' }),
-      key: 'pair1',
-      dataIndex: 'pair1'
+      key: 'pairA',
+      dataIndex: 'pairA',
+      render: (_, row) => {
+        return <StatusPill color={getStausColor(row.pairA)} value={row.pairA} />
+      }
     },
     {
       title: $t({ defaultMessage: 'Pair B' }),
-      key: 'pair2',
-      dataIndex: 'pair2'
+      key: 'pairB',
+      dataIndex: 'pairB',
+      render: (_, row) => {
+        return <StatusPill color={getStausColor(row.pairB)} value={row.pairB} />
+      }
     },
     {
       title: $t({ defaultMessage: 'Pair C' }),
-      key: 'pair3',
-      dataIndex: 'pair3'
+      key: 'pairC',
+      dataIndex: 'pairC',
+      render: (_, row) => {
+        return <StatusPill color={getStausColor(row.pairC)} value={row.pairC} />
+      }
     },
     {
       title: $t({ defaultMessage: 'Pair D' }),
-      key: 'pair4',
-      dataIndex: 'pair4'
+      key: 'pairD',
+      dataIndex: 'pairD',
+      render: (_, row) => {
+        return <StatusPill color={getStausColor(row.pairD)} value={row.pairD} />
+      }
     }
   ]
 
@@ -218,7 +258,7 @@ export function SwitchCableTestForm () {
     onChange={onChangeForm}
   >
     <Row gutter={20}>
-      <Col span={8}>
+      <Col span={4}>
         <Form.Item
           name='port'
           label={<>{$t({ defaultMessage: 'Port' })}</>}
@@ -239,6 +279,8 @@ export function SwitchCableTestForm () {
                   children={
                     <>{
                       disabled ? <Tooltip
+                        placement='right'
+                        overlayStyle={{ minWidth: '360px' }}
                         // eslint-disable-next-line max-len
                         title={$t({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' })}>
                         <span>{label}</span></Tooltip> : <>{label}</>
@@ -270,18 +312,35 @@ export function SwitchCableTestForm () {
             htmlType='submit'
             disabled={!isValid || isLoading}
             onClick={onSubmit}>
-            {$t({ defaultMessage: 'Run' })}
+            {$t({ defaultMessage: 'Run Test' })}
           </Button>
         </Form.Item>
       </Col>
     </Row>
-    <UI.ResultContainer>
-      <Loader states={[{
-        isLoading: false,
-        isFetching: isLoading
-      }]}>
-        <Table columns={columns} style={{ margin: '10px' }}/>
-      </Loader>
-    </UI.ResultContainer>
+    <Loader states={[{
+      isLoading: false,
+      isFetching: isLoading
+    }]}>
+      <UI.ResultContainer>
+        {
+          tableData.length && <Table
+            columns={columns}
+            dataSource={tableData}
+          />
+        }
+        <div className='report'>
+          <span className='title'>{$t({ defaultMessage: 'Report:' })}</span>
+          {$t({ defaultMessage: 'All Pairs are terminated properly.' })}
+        </div>
+      </UI.ResultContainer>
+      <Button
+        type='link'
+        style={{ alignSelf: 'baseline' }}
+        // disabled={_.isEmpty(lasySyncTime) || isLoading}
+        onClick={onCopy}
+      >
+        {$t({ defaultMessage: 'Copy CLI Output' })}
+      </Button>
+    </Loader>
   </Form>
 }

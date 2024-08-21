@@ -571,6 +571,83 @@ exports[`SeverityPill renders P4 1`] = `
 </DocumentFragment>
 `;
 
+exports[`StatusPill renders color pill 1`] = `
+<DocumentFragment>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-red-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="red"
+  >
+    Red
+  </span>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-green-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="green"
+  >
+    Green
+  </span>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-yellow-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="yellow"
+  >
+    Yellow
+  </span>
+  .c0 {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 3px 8px;
+  background-color: var(--acx-semantics-green-50);
+  line-height: 14px;
+  font-size: var(--acx-subtitle-5-font-size);
+  color: var(--acx-primary-white);
+  min-width: 50px;
+  text-align: center;
+}
+
+<span
+    class="c0"
+    color="test"
+  >
+    Green
+  </span>
+</DocumentFragment>
+`;
+
 exports[`TrendPill renders negative trend 1`] = `
 <DocumentFragment>
   .c0 {
