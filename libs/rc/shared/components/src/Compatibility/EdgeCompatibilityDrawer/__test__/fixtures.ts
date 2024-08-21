@@ -1,0 +1,334 @@
+import {
+  ApCompatibility,
+  ApFeatureSet,
+  ApIncompatibleDevice,
+  ApIncompatibleFeature,
+  CompatibilityEntityTypeEnum,
+  EdgeFeatureSets,
+  EdgeSdLanApCompatibilitiesResponse,
+  EdgeSdLanCompatibilitiesResponse,
+  VenueEdgeCompatibilitiesResponse
+} from '@acx-ui/rc/utils'
+
+export const mockEdgeCompatibilitiesVenue: VenueEdgeCompatibilitiesResponse ={
+  compatibilities: [
+    {
+      identityType: CompatibilityEntityTypeEnum.VENUE,
+      id: 'venue-1',
+      incompatibleFeatures: [
+        {
+          featureRequirement: {
+            featureName: 'SD-LAN',
+            requiredFw: '2.1.0.200'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            }
+          ]
+        },
+        {
+          featureRequirement: {
+            featureName: 'Tunnel Profile',
+            requiredFw: '2.1.0.400'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.300',
+              count: 1
+            }
+          ]
+        }
+      ],
+      total: 6,
+      incompatible: 2
+    },
+    {
+      identityType: CompatibilityEntityTypeEnum.VENUE,
+      id: 'venue-3',
+      incompatibleFeatures: [
+        {
+          featureRequirement: {
+            featureName: 'SD-LAN',
+            requiredFw: '2.1.0.200'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.150',
+              count: 3
+            }
+          ]
+        },
+        {
+          featureRequirement: {
+            featureName: 'Tunnel Profile',
+            requiredFw: '2.1.0.400'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.150',
+              count: 3
+            },
+            {
+              firmware: '2.1.0.200',
+              count: 1
+            }
+          ]
+        }
+      ],
+      total: 8,
+      incompatible: 5
+    }
+  ]
+}
+
+export const transformedMockEdgeCompatibilitiesVenue = {
+  compatibilities: mockEdgeCompatibilitiesVenue.compatibilities.map(item => ({
+    id: item.id,
+    total: item.total,
+    incompatible: item.incompatible,
+    incompatibleFeatures: item.incompatibleFeatures?.map(incompatibleFeature => ({
+      featureName: incompatibleFeature.featureRequirement.featureName,
+      requiredFw: incompatibleFeature.featureRequirement.requiredFw,
+      incompatibleDevices: incompatibleFeature.incompatibleDevices as ApIncompatibleDevice[]
+    } as ApIncompatibleFeature))
+  } as ApCompatibility))
+}
+
+export const mockEdgeSdLanCompatibilities: EdgeSdLanCompatibilitiesResponse = {
+  compatibilities: [
+    {
+      serviceId: 'sdLanService-1',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-1',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: 'SD-LAN',
+                requiredFw: '2.1.0.200'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            },
+            {
+              featureRequirement: {
+                featureName: 'Tunnel Profile',
+                requiredFw: '2.1.0.400'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                },
+                {
+                  firmware: '2.1.0.300',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 2
+        },
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-3',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: 'SD-LAN',
+                requiredFw: '2.1.0.200'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                },
+                {
+                  firmware: '2.1.0.150',
+                  count: 3
+                }
+              ]
+            },
+            {
+              featureRequirement: {
+                featureName: 'Tunnel Profile',
+                requiredFw: '2.1.0.400'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                },
+                {
+                  firmware: '2.1.0.150',
+                  count: 3
+                },
+                {
+                  firmware: '2.1.0.200',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 8,
+          incompatible: 5
+        }
+      ]
+    },  // end of service-1
+    {
+      serviceId: 'sdLanService-2',
+      clusterEdgeCompatibilities: [
+        {
+          identityType: CompatibilityEntityTypeEnum.CLUSTER,
+          id: 'edgeCluster-2',
+          incompatibleFeatures: [
+            {
+              featureRequirement: {
+                featureName: 'SD-LAN',
+                requiredFw: '2.1.0.200'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                }
+              ]
+            },
+            {
+              featureRequirement: {
+                featureName: 'Tunnel Profile',
+                requiredFw: '2.1.0.400'
+              },
+              incompatibleDevices: [
+                {
+                  firmware: '2.1.0.100',
+                  count: 1
+                },
+                {
+                  firmware: '2.1.0.300',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 2
+        }
+      ]
+    }  // end of service-2
+  ]
+}
+
+export const mockEdgeSdLanApCompatibilites: EdgeSdLanApCompatibilitiesResponse = {
+  compatibilities: [
+    {
+      serviceId: 'sdLanService-1',
+      venueSdLanApCompatibilities: [
+        {
+          venueId: 'venue-1',
+          incompatibleFeatures: [
+            {
+              featureName: 'SD-LAN',
+              requiredFw: '7.0.0.0.234',
+              supportedModelFamilies: [
+                'WIFI_7'
+              ],
+              incompatibleDevices: [
+                {
+                  firmware: '6.2.3.103.233',
+                  model: 'R550',
+                  count: 1
+                }
+              ]
+            }
+          ],
+          total: 6,
+          incompatible: 1
+        },
+        {
+          venueId: 'venue-3',
+          incompatibleFeatures: [
+            {
+              featureName: 'SD-LAN',
+              requiredFw: '7.0.0.0.234',
+              supportedModelFamilies: [
+                'WIFI_7'
+              ],
+              incompatibleDevices: [
+                {
+                  firmware: '6.2.3.103.233',
+                  model: 'R550',
+                  count: 1
+                },
+                {
+                  firmware: '6.2.3.122.644',
+                  model: 'R650',
+                  count: 2
+                }
+              ]
+            }
+          ],
+          total: 10,
+          incompatible: 3
+        }
+      ]
+    }
+  ]
+}
+export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
+  featureSets: [
+    {
+      featureName: 'SD-LAN',
+      requiredFw: '2.1.0.600'
+    },
+    {
+      featureName: 'Tunnel Profile',
+      requiredFw: '2.1.0.700'
+    }
+  ]
+}
+
+export const mockApFeatureCompatibilities: ApFeatureSet = {
+  featureName: 'SD-LAN',
+  requiredFw: '7.0.0.0',
+  supportedModelFamilies: ['Wi-Fi 7']
+}
+
+
+export const mockVenuelist = {
+  totalCount: 10,
+  page: 1,
+  data: [
+    {
+      city: 'New York',
+      country: 'United States',
+      description: 'My-Venue',
+      id: '8caa8f5e01494b5499fa156a6c565138',
+      latitude: '40.769141',
+      longitude: '-73.9429713',
+      name: 'My-Venue',
+      status: '1_InSetupPhase',
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 }
+    }
+  ]
+}
