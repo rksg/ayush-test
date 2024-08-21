@@ -236,7 +236,7 @@ export function NetworkForm (props:{
 
     const newSavedata = { ...saveState, ...saveData }
     newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
-    updateSaveState({ ...saveState, ...newSavedata })
+    updateSaveState((preState) => ({ ...preState, ...saveState, ...newSavedata }))
   }
 
   const { data } = useGetNetwork()
@@ -259,7 +259,10 @@ export function NetworkForm (props:{
     useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
     // eslint-disable-next-line max-len
-    skip: !isUseWifiRbacApi || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.CAPTIVEPORTAL),
+    skip: !isUseWifiRbacApi || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    saveState.guestPortal?.guestNetworkType &&
+    ![GuestNetworkTypeEnum.WISPr, GuestNetworkTypeEnum.Cloudpath]
+      .includes(saveState.guestPortal?.guestNetworkType)),
     payload: {
       fields: ['id', 'name'],
       filters: {
@@ -303,7 +306,7 @@ export function NetworkForm (props:{
         ...resolvedData,
         certificateTemplateId,
         ...(dpskService && { dpskServiceProfileId: dpskService.id }),
-        ...(isUseWifiRbacApi && portalService?.data?.[0]?.id &&
+        ...(portalService?.data?.[0]?.id &&
           { portalServiceProfileId: portalService.data[0].id })
       })
     }
