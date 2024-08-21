@@ -73,7 +73,7 @@ describe('SoftGreTable', () => {
     expect(rows).toHaveLength(3)
   })
 
-  it('should navigate to SoftGreDetailView Page correctly', async () => {
+  it('should navigate to SoftGreDetail Page correctly', async () => {
     render(
       <Provider>
         <SoftGreTable />

@@ -11,7 +11,7 @@ import { mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedNetworkQueryData, mockedVenueQueryData, mockSoftGreDetailFromListQueryById } from '../__tests__/fixtures'
 
-import SoftGreDetailView from './softGreDetailView'
+import SoftGreDetail from '.'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -61,7 +61,7 @@ describe('SoftGre Detail Page', () => {
   it('should render Breadcrumb correctly', async () => {
     render(
       <Provider>
-        <SoftGreDetailView />
+        <SoftGreDetail />
       </Provider>,
       { route: { params, path: detailPath } }
     )

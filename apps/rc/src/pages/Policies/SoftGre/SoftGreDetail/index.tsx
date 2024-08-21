@@ -12,7 +12,7 @@ import { filterByAccess }                                                       
 import SoftGreDetailContent from './softGreDetailContent'
 import SoftGreVenueDetail   from './softGreVenueDetail'
 
-export default function SoftGreDetailView () {
+export default function SoftGreDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SOFTGRE)
