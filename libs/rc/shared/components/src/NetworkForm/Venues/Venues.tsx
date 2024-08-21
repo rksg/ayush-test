@@ -189,14 +189,16 @@ export function Venues (props: VenuesProps) {
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
 
   useEffect(() => {
-    if(isDefaultVenueSetted.current || !defaultActiveVenues?.length) return
+    // need to make sure table data is ready.
+    // eslint-disable-next-line max-len
+    if(isDefaultVenueSetted.current || !defaultActiveVenues?.length || !data || !tableData?.length) return
 
     defaultActiveVenues.forEach(defaultVenueId => {
       handleActivateVenue(true, [{ id: defaultVenueId } as Venue])
     })
     isDefaultVenueSetted.current = true
 
-  }, [defaultActiveVenues])
+  }, [defaultActiveVenues, data, tableData])
 
   const handleVenueSaveData = (newSelectedNetworkVenues: NetworkVenue[]) => {
     setData && setData({ ...data, venues: newSelectedNetworkVenues })
@@ -221,12 +223,14 @@ export function Venues (props: VenuesProps) {
       const handleVenuesIds = rows.map(row => row.id)
       _.remove(newSelectedNetworkVenues, v => handleVenuesIds.includes(v.venueId as string))
     }
+
     handleVenueSaveData(newSelectedNetworkVenues)
     setTableDataActivate(tableData, newSelectedNetworkVenues.map(i=>i.venueId))
   }
 
   const setTableDataActivate = (dataOfTable: Venue[], selectedVenueIds: (string|undefined)[]) => {
     const data:Venue[] = []
+
     dataOfTable.forEach(item => {
       let activated = { isActivated: false }
       if(selectedVenueIds.find(id => id === item.id)) {
@@ -284,6 +288,7 @@ export function Venues (props: VenuesProps) {
           activated: targetNetworkVenue ? { isActivated: true } : { ...item.activated }
         }
       })
+
       setTableDataActivate(currentTableData, activatedNetworkVenues.map(v=>v.venueId))
     }
   }, [tableQuery.data, activatedNetworkVenues])
@@ -382,6 +387,7 @@ export function Venues (props: VenuesProps) {
         }else{
           title = ''
         }
+
         return <Tooltip
           title={title}
           placement='bottom'>
