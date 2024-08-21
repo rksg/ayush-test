@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes, WifiScopes }                                  from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: [
@@ -51,6 +51,8 @@ export default function SoftGreTable () {
     defaultPayload,
     pagination: { settingsId }
   })
+
+  const isSelectionVisible = hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] })
 
   const rowActions: TableProps<SoftGreViewData>['rowActions'] = [
     {
@@ -106,7 +108,7 @@ export default function SoftGreTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission() && filterByAccess([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
@@ -122,10 +124,7 @@ export default function SoftGreTable () {
           settingsId={settingsId}
           columns={useColumns()}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            // eslint-disable-next-line max-len
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-          }
+          rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
