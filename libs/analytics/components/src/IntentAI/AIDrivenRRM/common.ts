@@ -3,7 +3,7 @@ import { defineMessage } from 'react-intl'
 
 import { formatter } from '@acx-ui/formatter'
 
-import { IntentKPIConfig } from '../IntentAIForm/services'
+import { IntentKPIConfig } from '../useIntentDetailsQuery'
 
 export const kpis: IntentKPIConfig[] = [{
   key: 'number-of-interfering-links',

@@ -6,12 +6,14 @@ import { useIntl }              from 'react-intl'
 import { Loader, StepsForm } from '@acx-ui/components'
 
 import { CompareSlider }        from '../../../CompareSlider'
+import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
-import * as UI                  from '../../IntentAIForm/styledComponents'
+import { aiFeatures }           from '../../config'
 import { intentPriority }       from '../common'
 import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import * as SideNotes from './SideNotes'
+import * as UI        from './styledComponents'
 
 const { Paragraph } = Typography
 
@@ -42,7 +44,7 @@ export const SliderAfter = (props: { image: string }) => {
         {($t({ defaultMessage: 'Forecast' }))}
         <UI.SliderText>
           {($t({ defaultMessage: 'with' }))}&nbsp;
-          <UI.AIDrivenRRMSliderIcon />
+          <Icon feature={aiFeatures.RRM} size='xs' />
         </UI.SliderText>
       </UI.LabelStyleAfter>
       <img

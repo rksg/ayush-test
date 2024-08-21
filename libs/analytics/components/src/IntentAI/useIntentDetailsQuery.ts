@@ -1,3 +1,4 @@
+// TODO: move into root when switch to use intent resolver
 import { gql }                  from 'graphql-request'
 import { get, snakeCase, pick } from 'lodash'
 import moment                   from 'moment-timezone'
@@ -8,7 +9,8 @@ import { formatter }         from '@acx-ui/formatter'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { codes } from '../config'
+import { codes }      from './config'
+import { IntentWlan } from './services'
 
 export type IntentKPIConfig = {
   key: string;
@@ -21,22 +23,21 @@ export type IntentKPIConfig = {
   filter?: CallableFunction
 }
 
-export type IntentWlan = {
-  name: string
-  ssid: string
-}
-
-export type IntentKpi = Record<string, {
+export type IntentKpi = Record<`kpi_${string}`, {
   current: number | number[];
   previous: number | null;
   projected: number | null;
 }>
 
-export type IntentDetails = {
+export type Intent = {
   id: string;
   code: keyof typeof codes;
-  status: string // StateType;
-  metadata: object & { scheduledAt: string, wlans?: IntentWlan[] };
+  // TODO: fix change to StateType
+  status: string
+  metadata: object & {
+    scheduledAt: string
+    wlans?: IntentWlan[]
+  };
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
@@ -45,32 +46,28 @@ export type IntentDetails = {
     createdAt?: string
   }>;
   updatedAt: string;
+  // TODO: remove and move into metadata
   dataEndTime: string;
   preferences?: {
     crrmFullOptimization: boolean;
   }
 } & Partial<IntentKpi>
 
-export type EnhancedIntent = IntentDetails & {
-  appliedOnce: boolean;
-}
-
-export function extractBeforeAfter (value: IntentKpi[string]) {
+export function extractBeforeAfter (value: IntentKpi[`kpi_${string}`]) {
   const { current, previous, projected } = value
   const [before, after] = [previous, current, projected]
     .filter(value => value !== null)
   return [before, after]
 }
 
-export const transformDetailsResponse = (details: IntentDetails) => {
+export const transformDetailsResponse = (details: Intent) => {
   return {
     ...details,
-    appliedOnce: Boolean(details.statusTrail.find(t => t.status === 'applied')),
     preferences: details.preferences || undefined // prevent _.merge({ x: {} }, { x: null })
-  } as EnhancedIntent
+  }
 }
 
-export const kpiHelper = (kpis: IntentKPIConfig[]) => {
+const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
   return kpis.map(kpi => {
     const name = `kpi_${snakeCase(kpi.key)}`
     return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
@@ -84,22 +81,25 @@ export const kpiHelper = (kpis: IntentKPIConfig[]) => {
 
 // simplified handling of getKpis from libs/analytics/components/src/Recommendations/RecommendationDetails/Kpis.tsx
 export function getGraphKPIs (
-  intent: EnhancedIntent,
+  intent: Intent,
   kpis: IntentKPIConfig[]
 ) {
   return kpis.map((kpi) => {
     const [before, after] = extractBeforeAfter(
-      get(intent, `kpi_${snakeCase(kpi.key)}`) as IntentKpi[string]
+      get(intent, `kpi_${snakeCase(kpi.key)}`) as IntentKpi[`kpi_${string}`]
     ) as [number, number]
     const delta = kpiDelta(before, after, kpi.deltaSign, kpi.format)
     return { ...pick(kpi, ['key', 'label']), before, after, delta }
   })
 }
 
-
+type IntentDetailsQueryPayload = {
+  id: string
+  kpis: Pick<IntentKPIConfig, 'key' | 'deltaSign'>[]
+}
 export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    intentDetails: build.query<EnhancedIntent, { id: string; kpis: IntentKPIConfig[] }>({
+    intentDetails: build.query<Intent | undefined, IntentDetailsQueryPayload>({
       query: ({ id, kpis }) => ({
         document: gql`
           query IntentDetails($id: String) {
@@ -114,8 +114,10 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: { id }
       }),
-      transformResponse: (response: { intent: IntentDetails }) =>
-        transformDetailsResponse(response.intent),
+      transformResponse: (response: { intent?: Intent }) => {
+        if (!response.intent) return undefined
+        return transformDetailsResponse(response.intent)
+      },
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     })
   })

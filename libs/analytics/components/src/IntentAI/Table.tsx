@@ -11,7 +11,8 @@ import { TenantLink }                                                from '@acx-
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
-import { aiFeatures, codes, icons }              from './config'
+import { Icon }                                  from './common/IntentIcon'
+import { aiFeatures, codes }                     from './config'
 import { useIntentAITableQuery, IntentListItem } from './services'
 import * as UI                                   from './styledComponents'
 import { useIntentAIActions }                    from './useIntentAIActions'
@@ -102,7 +103,7 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       title={iconTooltips[codes[props.code].aiFeature]}
       overlayInnerStyle={{ width: '345px' }}
     >
-      {icons[codes[props.code].aiFeature]}
+      <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
     <TenantLink to={get('IS_MLISA_SA')
       ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`

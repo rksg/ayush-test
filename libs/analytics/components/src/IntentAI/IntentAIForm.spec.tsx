@@ -1,13 +1,20 @@
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM } from '../AIDrivenRRM/IntentAIDetails/__tests__/fixtures'
+import { mockedIntentCRRM } from './AIDrivenRRM/__tests__/fixtures'
+import { IntentAIForm }     from './IntentAIForm'
 
-import { IntentAIForm } from '.'
-
-jest.mock('../AIDrivenRRM', () => ({
+jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
   kpis: [],
-  IntentAIForm: () => <div data-testid='AIDrivenRRM-IntentAIForm'/>
+  IntentAIForm: () => <div data-testid='c-crrm-channel24g-auto-IntentAIForm'/>
+}))
+jest.mock('./AIDrivenRRM/CCrrmChannel5gAuto', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-crrm-channel5g-auto-IntentAIForm'/>
+}))
+jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-crrm-channel6g-auto-IntentAIForm'/>
 }))
 
 describe('IntentAIForm', () => {
@@ -22,7 +29,7 @@ describe('IntentAIForm', () => {
         route: { params: { code } },
         wrapper: Provider
       })
-      expect(await screen.findByTestId('AIDrivenRRM-IntentAIForm')).toBeVisible()
+      expect(await screen.findByTestId(`${code}-IntentAIForm`)).toBeVisible()
       unmount()
     }
   })

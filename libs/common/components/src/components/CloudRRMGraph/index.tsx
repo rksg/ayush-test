@@ -3,6 +3,7 @@ import { RefCallback, useImperativeHandle, useRef } from 'react'
 import { ScalePower }                      from 'd3'
 import { scalePow }                        from 'd3-scale'
 import ReactECharts, { EChartsReactProps } from 'echarts-for-react'
+import { omit }                            from 'lodash'
 import PropTypes                           from 'prop-types'
 
 import { cssStr, cssNumber } from '../../theme/helper'
@@ -131,7 +132,12 @@ export function Graph (props: GraphProps) {
     ]
   }
 
-  return <ReactECharts {...props} ref={eChartsRef} opts={{ renderer: 'svg' }} option={option} />
+  return <ReactECharts
+    {...omit(props, ['backgroundColor'])}
+    ref={eChartsRef}
+    opts={{ renderer: 'svg' }}
+    option={option}
+  />
 }
 
 Graph.propTypes = {

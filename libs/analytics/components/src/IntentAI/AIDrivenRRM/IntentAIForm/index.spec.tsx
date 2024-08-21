@@ -5,9 +5,10 @@ import { get }                                      from '@acx-ui/config'
 import { recommendationUrl, Provider }              from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
-import { transformDetailsResponse }           from '../../IntentAIForm/services'
 import { useIntentContext }                   from '../../IntentContext'
-import { mockedCRRMGraphs, mockedIntentCRRM } from '../IntentAIDetails/__tests__/fixtures'
+import { transformDetailsResponse }           from '../../useIntentDetailsQuery'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
+import { kpis }                               from '../common'
 
 import { IntentAIForm } from '.'
 
@@ -24,7 +25,7 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
-describe('AIDrivenRRM', () => {
+describe('IntentAIForm', () => {
   beforeEach(() => {
     mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
@@ -32,7 +33,7 @@ describe('AIDrivenRRM', () => {
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
     jest.mocked(useIntentContext)
-      .mockReturnValue({ intent: transformDetailsResponse(mockedIntentCRRM), kpis: [] })
+      .mockReturnValue({ intent: transformDetailsResponse(mockedIntentCRRM), kpis })
   })
   window.ResizeObserver = ResizeObserver
 

@@ -83,7 +83,7 @@ const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Me
   })
 }
 
-type IntentWlan = {
+export type IntentWlan = {
   name: string
   ssid: string
 }

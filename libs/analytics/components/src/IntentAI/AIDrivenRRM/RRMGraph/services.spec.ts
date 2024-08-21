@@ -1,7 +1,7 @@
 import { Provider, recommendationUrl }           from '@acx-ui/store'
 import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedIntentCRRM, mockedIntentCRRMApplied } from '../IntentAIDetails/__tests__/fixtures'
+import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedIntentCRRM, mockedIntentCRRMApplied } from '../__tests__/fixtures'
 
 import { useIntentAICRRMQuery } from './services'
 

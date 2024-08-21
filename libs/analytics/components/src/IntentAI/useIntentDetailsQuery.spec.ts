@@ -1,12 +1,9 @@
-import { omit } from 'lodash'
-
 import { recommendationUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery }         from '@acx-ui/test-utils'
 
-import { kpis }             from '../AIDrivenRRM'
-import { mockedIntentCRRM } from '../AIDrivenRRM/IntentAIDetails/__tests__/fixtures'
-
-import { api, kpiHelper } from './services'
+import { mockedIntentCRRM } from './AIDrivenRRM/__tests__/fixtures'
+import { kpis }             from './AIDrivenRRM/common'
+import { api }              from './useIntentDetailsQuery'
 
 describe('intentAI services', () => {
   describe('intent details', () => {
@@ -20,13 +17,7 @@ describe('intentAI services', () => {
       )
       expect(status).toBe('fulfilled')
       expect(error).toBeUndefined()
-      const removedMsgs = omit(data, [
-        'category',
-        'priority',
-        'summary'
-      ])
-      expect(removedMsgs).toStrictEqual({
-        appliedOnce: true,
+      expect(data).toStrictEqual({
         dataEndTime: '2023-06-26T00:00:25.772Z',
         code: 'c-crrm-channel24g-auto',
         id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
@@ -49,13 +40,5 @@ describe('intentAI services', () => {
         preferences: undefined
       })
     })
-  })
-})
-
-describe('kpiHelper', () => {
-  it('should return correct kpi', () => {
-    const kpi = kpiHelper(kpis)
-    const result = kpi.includes('kpi_number_of_interfering_links')
-    expect(result).toEqual(true)
   })
 })

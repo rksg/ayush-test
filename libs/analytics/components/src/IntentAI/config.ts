@@ -1,9 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react'
-
 import { defineMessage, MessageDescriptor } from 'react-intl'
-
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
 
 import { displayStates, statuses as stateType } from './states'
 
@@ -240,10 +236,3 @@ export const codes = {
     category: categories['Wi-Fi Experience']
   }
 } as Record<string, CodeInfo>
-
-export const icons = {
-  [aiFeatures.RRM]: React.createElement(AIDrivenRRM),
-  [aiFeatures.AirFlexAI]: React.createElement(AirFlexAI),
-  [aiFeatures.AIOps]: React.createElement(AIOperation),
-  [aiFeatures.EcoFlexAI]: React.createElement(EcoFlexAI)
-}

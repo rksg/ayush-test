@@ -1,9 +1,10 @@
-import { IntentDetails } from '../../../IntentAIForm/services'
+import { Intent } from '../../useIntentDetailsQuery'
 
 export const mockedIntentCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
+  // TODO: move into metadata
   dataEndTime: '2023-06-26T00:00:25.772Z',
   updatedAt: '2023-06-26T06:04:00.000Z',
   metadata: {},
@@ -207,12 +208,13 @@ export const mockedIntentCRRM = {
     projected: 0
   },
   preferences: null
-} as unknown as IntentDetails
+} as unknown as Intent
 
 export const mockedIntentCRRMnew = { // this fixture is used to test new crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
   code: 'c-crrm-channel5g-auto',
   status: 'new',
+  // TODO: move into metadata
   dataEndTime: '2023-06-26T00:00:25.772Z',
   metadata: {},
   sliceType: 'zone',
@@ -243,12 +245,13 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
     projected: 0
   },
   preferences: null
-} as unknown as IntentDetails
+} as unknown as Intent
 
 export const mockedIntentCRRMApplied = { // this fixture is used to test applied crrm intent
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
+  // TODO: move into metadata
   dataEndTime: '2023-06-26T00:00:25.772Z',
   metadata: {},
   sliceType: 'zone',
@@ -291,7 +294,7 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
     projected: null
   },
   preferences: null
-} as unknown as IntentDetails
+} as unknown as Intent
 
 export const mockedCRRMGraphs = {
   graph: {

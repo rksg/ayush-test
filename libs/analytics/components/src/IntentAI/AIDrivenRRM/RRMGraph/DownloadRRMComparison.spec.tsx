@@ -1,9 +1,9 @@
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { transformDetailsResponse }           from '../../IntentAIForm/services'
 import { useIntentContext }                   from '../../IntentContext'
-import { mockedCRRMGraphs, mockedIntentCRRM } from '../IntentAIDetails/__tests__/fixtures'
+import { transformDetailsResponse }           from '../../useIntentDetailsQuery'
+import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
 import { DownloadRRMComparison } from './DownloadRRMComparison'
 

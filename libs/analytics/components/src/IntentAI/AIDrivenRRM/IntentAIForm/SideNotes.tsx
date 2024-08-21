@@ -7,7 +7,7 @@ import { useStepFormContext }              from '@acx-ui/components'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 
 import { SideNotes }      from '../../common/SideNotes'
-import { EnhancedIntent } from '../../IntentAIForm/services'
+import { Intent }         from '../../useIntentDetailsQuery'
 import { intentPriority } from '../common'
 
 import { Priority as PriorityPage } from './Priority'
@@ -62,7 +62,7 @@ export const Priority: React.FC = () => {
 
 export const Settings: React.FC = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EnhancedIntent>()
+  const { form } = useStepFormContext<Intent>()
   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
   const { title, content } = isFullOptimization ? intentPriority.full : intentPriority.partial
 

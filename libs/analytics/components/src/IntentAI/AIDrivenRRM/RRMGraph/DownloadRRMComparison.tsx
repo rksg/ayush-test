@@ -34,7 +34,6 @@ export function DownloadRRMComparison (props: { title?: string }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
 
-  // TODO: refactor: possible to move band into result of useIntentAICRRMQuery?
   const band = intentBandMapping[intent.code as keyof typeof intentBandMapping]
   const queryResult = useIntentAICRRMQuery()
   const url = useDownloadUrl(queryResult.csv, 'text/csv')

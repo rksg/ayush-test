@@ -1,11 +1,13 @@
 import { useIntl } from 'react-intl'
 
 import { Descriptions }              from '@acx-ui/components'
-import { get }                       from '@acx-ui/config'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { states, codes }    from '../config'
+import { codes }            from '../config'
 import { useIntentContext } from '../IntentContext'
+
+import { getIntentStatus }    from './getIntentStatus'
+import { isStandaloneSwitch } from './isStandaloneSwitch'
 
 /**
  * Common helper to render summary of intent introduction
@@ -17,8 +19,6 @@ export function IntroSummary () {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
   const feature = codes[intent.code as keyof typeof codes]
-  // TODO: change to displayStatus of Intent
-  const state = states[intent.status as unknown as keyof typeof states]
   return (
     <Descriptions noSpace>
       <Descriptions.Item
@@ -30,16 +30,15 @@ export function IntroSummary () {
         children={$t(feature.category)}
       />
       <Descriptions.Item
-        label={get('IS_MLISA_SA')
-          ? $t({ defaultMessage: 'Zone' })
-          : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
+        label={isStandaloneSwitch(
+          $t({ defaultMessage: 'Zone' }),
+          $t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
         }
         children={intent.sliceValue}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Status' })}
-        // TODO: remove ternary when switch to Intent
-        children={state ? $t(state.text) : intent.status}
+        children={getIntentStatus(intent.status)}
       />
       <Descriptions.Item
         label={$t({ defaultMessage: 'Last update' })}

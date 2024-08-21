@@ -5,10 +5,10 @@ import { NamePath }               from 'antd/lib/form/interface'
 import { useIntl, defineMessage } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
-import { get }       from '@acx-ui/config'
 
-import { TradeOff }         from '../../../TradeOff'
-import { useIntentContext } from '../../IntentContext'
+import { TradeOff }           from '../../../TradeOff'
+import { isStandaloneSwitch } from '../../common/isStandaloneSwitch'
+import { useIntentContext }   from '../../IntentContext'
 
 import * as SideNotes from './SideNotes'
 
@@ -46,9 +46,9 @@ export function Priority () {
     }
   ]
 
-  const label = get('IS_MLISA_SA')
-    ? $t({ defaultMessage: 'What is your primary network intent for Zone: {zone}' }, { zone: sliceValue })
-    : $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: sliceValue })
+  const label = isStandaloneSwitch(
+    $t({ defaultMessage: 'What is your primary network intent for Zone: {zone}' }, { zone: sliceValue }),
+    $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: sliceValue }))
 
   return <Row gutter={20}>
     <Col span={15}>

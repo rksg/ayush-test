@@ -16,14 +16,14 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { EnhancedIntent } from '../../IntentAIForm/services'
+import { Intent } from '../../useIntentDetailsQuery'
 
 import { Legend } from './Legend'
 import * as UI    from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  intent: EnhancedIntent,
+  intent: Intent,
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean,
   summaryUrlBefore?: string,
@@ -43,6 +43,7 @@ function useGraph (
     chartRef={connectChart}
     title={$t({ defaultMessage: 'Before' })}
     subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
+      // TODO: take dataEndTime from intent.metadata.dataEndTime
       dateTime: formatter(DateFormatEnum.DateTimeFormat)(intent.dataEndTime)
     })}
     data={graphs[0]}
@@ -74,7 +75,7 @@ function useGraph (
 
   return (graphs?.length)
     ? [ isDrawer ? beforeGraph : beforeImage,
-      <UI.CrrmArrow>
+      <UI.CrrmArrow key='crrm-graph-arrow'>
         <UI.RightArrow/>
       </UI.CrrmArrow>,
       isDrawer ? afterGraph : afterImage,
@@ -94,7 +95,7 @@ const drawerZoomScale = scalePow()
 
 export const IntentAIRRMGraph = ({
   details, crrmData, summaryUrlBefore, summaryUrlAfter } : {
-    details: EnhancedIntent,
+    details: Intent,
     crrmData: ProcessedCloudRRMGraph[],
     summaryUrlBefore?: string,
     summaryUrlAfter?: string
@@ -121,6 +122,7 @@ export const IntentAIRRMGraph = ({
         <UI.GraphTitleText>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleText>
         <UI.GraphSubTitleText>
           {$t({ defaultMessage: 'As at {dateTime}' }, {
+            // TODO: take dataEndTime from intent.metadata.dataEndTime
             dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
           })}
         </UI.GraphSubTitleText>
