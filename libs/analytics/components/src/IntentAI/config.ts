@@ -1,9 +1,43 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { DisplayStates, Statuses as stateType } from './states'
+import { NetworkPath } from '@acx-ui/utils'
 
-export type StatusTrail = Array<{ status: stateType, createdAt?: string }>
+import { DisplayStates, Statuses as stateType, StatusReasons } from './states'
+
+export type StatusTrailItem = { status: stateType, statusReason?:StatusReasons, createdAt?: string }
+export type StatusTrail = Array<StatusTrailItem>
+
+export type Intent = {
+  id: string
+  code: string
+  root: string
+  status: stateType
+  displayStatus: DisplayStates
+  createdAt: string
+  updatedAt: string
+  sliceType: string
+  sliceValue: string
+  sliceId: string
+  metadata: object
+  path: NetworkPath
+  idPath: NetworkPath
+  statusTrail: StatusTrail
+  trigger: string
+}
+
+export type IntentListItem = Intent & {
+  aiFeature: string
+  intent: string
+  scope: string
+  type?: string
+  category: string
+  statusLabel: string
+  statusTooltip: string,
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
+}
 
 export enum aiFeatures {
   RRM = 'AI-Driven RRM',
