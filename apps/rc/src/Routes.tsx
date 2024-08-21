@@ -683,8 +683,8 @@ function ServiceRoutes () {
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
         element={<AuthRoute scopes={[WifiScopes.CREATE]}>
-            <ResidentPortalForm editMode={true} />
-          </AuthRoute>}
+          <ResidentPortalForm editMode={true} />
+        </AuthRoute>}
       />
 
       {(isEdgeHaReady && isEdgeDhcpHaReady)

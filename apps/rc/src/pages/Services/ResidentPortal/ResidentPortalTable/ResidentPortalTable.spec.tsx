@@ -17,12 +17,13 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { mockedDetailedResidentPortalList, mockedResidentPortalList } from '../__tests__/fixtures'
 
 import ResidentPortalTable from './ResidentPortalTable'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { WifiScopes } from '@acx-ui/types'
+
 
 // import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
 // import DpskTable                                     from './DpskTable'
@@ -95,7 +96,7 @@ describe('ResidentPortalTable', () => {
     )
 
     const targetResidentPortal = mockedResidentPortalList.content[0]
-    expect(await screen.queryByRole('button', { name: /Add Resident Portal/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Add Resident Portal/i })).toBeNull()
     expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
       .toBeVisible()
   })

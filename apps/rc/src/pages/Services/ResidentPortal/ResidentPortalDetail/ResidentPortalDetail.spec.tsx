@@ -13,12 +13,13 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { mockedResidentPortal, mockPropertyConfigs } from '../__tests__/fixtures'
 
 import ResidentPortalDetail from './ResidentPortalDetail'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { WifiScopes } from '@acx-ui/types'
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -121,7 +122,7 @@ describe('ResidentPortalDetail', () => {
       }
     )
 
-    expect(await screen.queryByRole('button', { name: /Configure/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Configure/i })).toBeNull()
 
     const nameInput =
       await screen.findByText(mockedResidentPortal.name)

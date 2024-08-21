@@ -15,12 +15,12 @@ import {
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 
 import ColorBoxIcon              from './ColorBoxIcon'
 import ResidentPortalVenuesTable from './ResidentPortalVenuesTable'
-import { WifiScopes } from '@acx-ui/types'
 
 export default function ResidentPortalDetail () {
   const params = useParams()
