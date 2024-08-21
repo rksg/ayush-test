@@ -279,7 +279,6 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
       sorter: true,
       fixed: 'left',
       filterMultiple: false,
-      isBetaFeature: true,
       filterable: filterableKeys ? statusFilterOptions : false,
       groupable: filterableKeys && getGroupableConfig()?.deviceStatusGroupableOptions,
       render: (_, row) => <SwitchStatus row={row}/>

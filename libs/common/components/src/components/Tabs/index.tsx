@@ -1,5 +1,6 @@
 import { Tabs as AntTabs, TabsProps as AntTabsProps, TabPaneProps as AntTabPaneProps } from 'antd'
 import { TabsType as AntTabsType }                                                     from 'antd/lib/tabs'
+import _                                                                               from 'lodash'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
 
@@ -32,36 +33,41 @@ export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
     }
   }
 
+  const checkTabIndicator = (tab: React.ReactElement) => {
+    const tabTitle = tab?.props?.isBetaFeature
+      ? getTitleWithIndicator(tab?.props?.tab) : tab?.props?.tab
+    return {
+      ...tab,
+      props: {
+        ...tab?.props,
+        tab: tabTitle
+      }
+    }
+  }
+
   const transformedProps = {
     ...props,
-    ...( Array.isArray(props?.children) ? {
-      /**
-       * case1: [TabPane1, TabPane2, TabPane3]
-       * case2: [TabPane1, [TabPane2, TabPane3]]
-       */
+    /**
+     * case1: [TabPane1, TabPane2, TabPane3]
+     * case2: [TabPane1, [TabPane2, TabPane3]]
+     * case3: {TabPane1} // only one TabPane
+     */
+    ...(_.isArray(props?.children) ? {
       children: (props?.children as React.ReactElement[])
         ?.filter(tab => tab)
         ?.map(tab => {
-          const isObj = typeof tab === 'object' && !Array.isArray(tab) && tab !== null
-          const checkTabIndicator = (tab: React.ReactElement) => {
-            const tabTitle = tab?.props?.isBetaFeature
-              ? getTitleWithIndicator(tab?.props?.tab) : tab?.props?.tab
-            return {
-              ...tab,
-              props: {
-                ...tab?.props,
-                tab: tabTitle
-              }
-            }
-          }
+          const isObj = _.isObject(tab) && !_.isArray(tab)
           if (isObj) {
             return checkTabIndicator(tab)
-          } else if (Array.isArray(tab)) {
+          } else if (_.isArray(tab)) {
             return tab.map(t => checkTabIndicator(t))
           }
           return tab
         })
-    } : {})
+    } : ( _.isObject(props?.children)
+      ? { children: checkTabIndicator(props?.children as React.ReactElement) }
+      : {}
+    ))
   }
 
   return <UI.Tabs

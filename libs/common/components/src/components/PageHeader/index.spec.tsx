@@ -78,6 +78,42 @@ describe('PageHeader', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
+  it('should render tabs with Beta indicator (only one tab)', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          title='With Tabs'
+          breadcrumb={[
+            { text: 'Networks', link: '/networks' }
+          ]}
+          footer={
+            <Tabs>
+              <Tabs.TabPane tab='Overview' key='1' isBetaFeature />
+            </Tabs>
+          }
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('should render tabs correctly (no content)', () => {
+    const { asFragment } = render(
+      <BrowserRouter>
+        <PageHeader
+          title='With Tabs'
+          breadcrumb={[
+            { text: 'Networks', link: '/networks' }
+          ]}
+          footer={
+            <Tabs></Tabs>
+          }
+        />
+      </BrowserRouter>
+    )
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should render page header with title, breadcrumb & subtitle', () => {
     const { asFragment } = render(
       <BrowserRouter>
