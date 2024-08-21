@@ -3,7 +3,6 @@ import React from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { TrendTypeEnum }        from '@acx-ui/analytics/utils'
 import { StepsForm, TrendPill } from '@acx-ui/components'
 
 import { getGraphKPIs } from '../useIntentDetailsQuery'
@@ -15,12 +14,12 @@ export const KpiField: React.FC<{
   return <div>
     <StepsForm.Subtitle children={$t(kpi.label)} />
     <Space align='center' size={5}>
-      <span>{kpi.after}</span>
+      <span>{kpi.value}</span>
       {/* TODO: fix: check kpi.delta before render */}
-      <TrendPill
+      {kpi.delta &&<TrendPill
         value={kpi.delta.value}
-        trend={kpi.delta.trend as TrendTypeEnum}
-      />
+        trend={kpi.delta.trend}
+      />}
     </Space>
   </div>
 }

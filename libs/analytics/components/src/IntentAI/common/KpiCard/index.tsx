@@ -1,8 +1,7 @@
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { TrendTypeEnum } from '@acx-ui/analytics/utils'
-import { Card }          from '@acx-ui/components'
+import { Card } from '@acx-ui/components'
 
 import { getGraphKPIs } from '../../useIntentDetailsQuery'
 
@@ -15,11 +14,11 @@ export const KpiCard: React.FC<{
   return <Card>
     <UI.Title>{$t(kpi.label)}</UI.Title>
     <Space align='center' size={0}>
-      <UI.Value>{kpi.after}</UI.Value>
+      <UI.Value>{kpi.value}</UI.Value>
       {/* TODO: fix: check kpi.delta before render */}
-      <UI.TrendPill
+      {kpi.delta && <UI.TrendPill
         value={kpi.delta.value}
-        trend={kpi.delta.trend as TrendTypeEnum} />
+        trend={kpi.delta.trend} />}
     </Space>
   </Card>
 }

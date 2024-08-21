@@ -9,18 +9,18 @@ import { Card, Descriptions, GridCol, GridRow, Loader } from '@acx-ui/components
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 import { getIntl }                                      from '@acx-ui/utils'
 
-import { FixedAutoSizer }                              from '../../DescriptionSection/styledComponents'
-import { DetailsSection }                              from '../common/DetailsSection'
-import { getIntentStatus }                             from '../common/getIntentStatus'
-import { IntentDetailsHeader }                         from '../common/IntentDetailsHeader'
-import { IntentIcon }                                  from '../common/IntentIcon'
-import { isIntentActive }                              from '../common/isIntentActive'
-import { isStandaloneSwitch }                          from '../common/isStandaloneSwitch'
-import { KpiCard }                                     from '../common/KpiCard'
-import { StatusTrail }                                 from '../common/StatusTrail'
-import { codes }                                       from '../config'
-import { useIntentContext }                            from '../IntentContext'
-import { extractBeforeAfter, IntentKpi, getGraphKPIs } from '../useIntentDetailsQuery'
+import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
+import { DetailsSection }           from '../common/DetailsSection'
+import { getIntentStatus }          from '../common/getIntentStatus'
+import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
+import { IntentIcon }               from '../common/IntentIcon'
+import { isIntentActive }           from '../common/isIntentActive'
+import { isStandaloneSwitch }       from '../common/isStandaloneSwitch'
+import { KpiCard }                  from '../common/KpiCard'
+import { StatusTrail }              from '../common/StatusTrail'
+import { codes }                    from '../config'
+import { useIntentContext }         from '../IntentContext'
+import { getGraphKPIs, getKpiData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
@@ -47,8 +47,7 @@ export function createUseValuesText ({ reason, tradeoff }: {
     )
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
-    const KpiValue = intent[`kpi_${_.snakeCase(kpi.key)}`] as IntentKpi[`kpi_${string}`]
-    const [before, after] = extractBeforeAfter(KpiValue).map(value => kpi.format(value))
+    const { data, compareData } = getKpiData(intent, kpi)
 
     const reasonText = isIntentActive(intent)
       ? isFullOptimization ? reason.activeFull : reason.activePartial
@@ -57,7 +56,7 @@ export function createUseValuesText ({ reason, tradeoff }: {
     const tradeoffText = isFullOptimization ? tradeoff.full : tradeoff.partial
 
     return {
-      reasonText: $t(reasonText, { before, after }),
+      reasonText: $t(reasonText, { before: kpi.format(compareData), after: kpi.format(data) }),
       tradeoffText: $t(tradeoffText)
     }
   }

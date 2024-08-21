@@ -1,13 +1,13 @@
 // TODO: move into root when switch to use intent resolver
-import { gql }                  from 'graphql-request'
-import { get, snakeCase, pick } from 'lodash'
-import moment                   from 'moment-timezone'
-import { MessageDescriptor }    from 'react-intl'
+import { gql }               from 'graphql-request'
+import _                     from 'lodash'
+import moment                from 'moment-timezone'
+import { MessageDescriptor } from 'react-intl'
 
-import { kpiDelta }          from '@acx-ui/analytics/utils'
-import { formatter }         from '@acx-ui/formatter'
-import { recommendationApi } from '@acx-ui/store'
-import { NetworkPath }       from '@acx-ui/utils'
+import { kpiDelta, TrendTypeEnum } from '@acx-ui/analytics/utils'
+import { formatter }               from '@acx-ui/formatter'
+import { recommendationApi }       from '@acx-ui/store'
+import { NetworkPath }             from '@acx-ui/utils'
 
 import { codes }      from './config'
 import { IntentWlan } from './services'
@@ -19,8 +19,6 @@ export type IntentKPIConfig = {
   deltaSign: '+' | '-' | 'none';
   valueAccessor?: (value: number[]) => number;
   valueFormatter?: ReturnType<typeof formatter>;
-  showAps?: boolean;
-  filter?: CallableFunction
 }
 
 export type IntentKpi = Record<`kpi_${string}`, {
@@ -53,13 +51,6 @@ export type Intent = {
   }
 } & Partial<IntentKpi>
 
-export function extractBeforeAfter (value: IntentKpi[`kpi_${string}`]) {
-  const { current, previous, projected } = value
-  const [before, after] = [previous, current, projected]
-    .filter(value => value !== null)
-  return [before, after]
-}
-
 export const transformDetailsResponse = (details: Intent) => {
   return {
     ...details,
@@ -69,7 +60,7 @@ export const transformDetailsResponse = (details: Intent) => {
 
 const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
   return kpis.map(kpi => {
-    const name = `kpi_${snakeCase(kpi.key)}`
+    const name = `kpi_${_.snakeCase(kpi.key)}`
     return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
             current${kpi.deltaSign === 'none' ? '' : ' previous'}
             projected
@@ -79,17 +70,39 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
     .trim()
 }
 
-// simplified handling of getKpis from libs/analytics/components/src/Recommendations/RecommendationDetails/Kpis.tsx
+export function getKpiData (intent: Intent, config: IntentKPIConfig) {
+  const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
+  const kpi = intent[key] as IntentKpi[`kpi_${string}`]
+  const [before, after] = [kpi.previous, kpi.current, kpi.projected]
+    .filter(value => value !== null)
+
+  return {
+    data: after ?? before,
+    compareData: after !== undefined ? before : undefined
+  }
+}
+
 export function getGraphKPIs (
   intent: Intent,
   kpis: IntentKPIConfig[]
 ) {
   return kpis.map((kpi) => {
-    const [before, after] = extractBeforeAfter(
-      get(intent, `kpi_${snakeCase(kpi.key)}`) as IntentKpi[`kpi_${string}`]
-    ) as [number, number]
-    const delta = kpiDelta(before, after, kpi.deltaSign, kpi.format)
-    return { ...pick(kpi, ['key', 'label']), before, after, delta }
+    const { data, compareData } = getKpiData(intent, kpi)
+    const valueAccessor = kpi.valueAccessor || ((value) => value[0])
+    const delta: { value: string; trend: TrendTypeEnum } | undefined = compareData
+      ? kpiDelta(
+        valueAccessor(_.castArray(compareData as number | number[])),
+        valueAccessor(_.castArray(data as number | number[])),
+        kpi.deltaSign,
+        kpi.valueFormatter || kpi.format
+      ) as { value: string; trend: TrendTypeEnum }
+      : undefined
+
+    return {
+      ..._.pick(kpi, ['key', 'label']),
+      value: kpi.format(data),
+      delta
+    }
   })
 }
 
