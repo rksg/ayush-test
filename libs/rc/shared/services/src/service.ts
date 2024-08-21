@@ -977,6 +977,18 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
+    activatePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PortalUrlsInfo.activatePortal,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     uploadPhoto: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(PortalUrlsInfo.uploadPhoto,
@@ -1088,6 +1100,7 @@ export const {
   useUpdatePortalMutation,
   useUploadBgImageMutation,
   useUploadLogoMutation,
+  useActivatePortalMutation,
   useUploadPhotoMutation,
   useUploadPoweredImgMutation,
   useUploadURLMutation,

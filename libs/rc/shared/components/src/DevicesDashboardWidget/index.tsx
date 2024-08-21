@@ -3,7 +3,7 @@ import { Features, useIsSplitOn }                       from '@acx-ui/feature-to
 import { useDashboardV2OverviewQuery, useRwgListQuery } from '@acx-ui/rc/services'
 import { useParams }                                    from '@acx-ui/react-router-dom'
 import { RolesEnum }                                    from '@acx-ui/types'
-import { hasRoles }                                     from '@acx-ui/user'
+import { hasRoles, useUserProfileContext }              from '@acx-ui/user'
 import { useDashboardFilter }                           from '@acx-ui/utils'
 
 import {
@@ -36,9 +36,11 @@ export function DevicesDashboardWidgetV2 () {
       ...rest
     })
   })
-
+  const { isCustomRole } = useUserProfileContext()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
+    RolesEnum.ADMINISTRATOR,
+    RolesEnum.READ_ONLY]) || isCustomRole
 
   const { data: rwgs, isLoading: rwgLoading } =
     useRwgListQuery({ params: useParams() }, { skip: !(showRwgUI && rwgHasPermission) })
