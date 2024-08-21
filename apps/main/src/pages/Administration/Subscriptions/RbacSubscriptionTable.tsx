@@ -30,6 +30,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 import * as UI from './styledComponent'
 
@@ -105,6 +106,7 @@ export const RbacSubscriptionTable = () => {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const isMspRbacMspEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const queryResults = useGetEntitlementsListQuery({ params },
     { skip: isEntitlementRbacApiEnabled })
@@ -161,7 +163,8 @@ export const RbacSubscriptionTable = () => {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
@@ -213,7 +216,8 @@ export const RbacSubscriptionTable = () => {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },
@@ -269,7 +273,12 @@ export const RbacSubscriptionTable = () => {
   }
 
   const subscriptionData = isEntitlementRbacApiEnabled
-    ? (rbacQueryResults?.data ?? [])
+    ? (rbacQueryResults?.data?.map(response => {
+      return {
+        ...response,
+        status: GetStatus(response?.effectiveDate, response?.expirationDate)
+      }
+    }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled) ?? [])
     : queryResults.data?.map(response => {
       return {
         ...response,

@@ -5,11 +5,18 @@ import { displayStates, statuses as stateType } from './states'
 
 export type StatusTrail = Array<{ status: stateType, createdAt?: string }>
 
+export enum aiFeatures {
+  RRM = 'AI-Driven RRM',
+  AirFlexAI = 'AirFlexAI',
+  AIOps = 'AI Operations',
+  EcoFlexAI = 'EcoFlexAI'
+}
+
 export const aiFeaturesLabel = {
-  'AI-Driven RRM': defineMessage({ defaultMessage: 'AI-Driven RRM' }),
-  'AirFlexAI': defineMessage({ defaultMessage: 'AirFlexAI' }),
-  'AI Operations': defineMessage({ defaultMessage: 'AI Operations' }),
-  'EcoFlexAI': defineMessage({ defaultMessage: 'EcoFlexAI' })
+  [aiFeatures.RRM]: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+  [aiFeatures.AirFlexAI]: defineMessage({ defaultMessage: 'AirFlexAI' }),
+  [aiFeatures.AIOps]: defineMessage({ defaultMessage: 'AI Operations' }),
+  [aiFeatures.EcoFlexAI]: defineMessage({ defaultMessage: 'EcoFlexAI' })
 }
 
 type CodeInfo = {
@@ -49,15 +56,15 @@ export const states = {
   },
   [displayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [displayStates.active]: {
     text: defineMessage({ defaultMessage: 'Active' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
+    tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
   [displayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [displayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
@@ -65,7 +72,7 @@ export const states = {
   },
   [displayStates.revertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [displayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
@@ -89,23 +96,23 @@ export const states = {
   },
   [displayStates.naConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the zone.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the <VenueSingular></VenueSingular>.' })
   },
   [displayStates.naNoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [displayStates.naNotEnoughLicense]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [displayStates.naNotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than 4 days of data in the {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than 4 days of data in the <VenueSingular></VenueSingular> {zoneName}.' })
   },
   [displayStates.naVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated {zoneName} configurations. No new changes have been recommended.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI has validated the <VenueSingular></VenueSingular> {zoneName} configurations. No new changes have been recommended.' })
   },
   [displayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
@@ -128,98 +135,104 @@ export const groupedStates = [
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
   'c-bgscan24g-enable': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-enable': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Dynamic vs Static Channel capability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan24g-timer': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan5g-timer': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bgscan6g-timer': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Network Efficiency vs Stability on 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-enable': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Expanded Radar channels vs Limited Channel options' }),
     category: categories['Wi-Fi Experience']
   },
   'c-dfschannels-disable': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Radar Interference vs Optimal Channel availability' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-enable-below-61': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Performance vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-bandbalancing-proactive': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Client Distribution vs Compatibility' }),
     category: categories['Wi-Fi Experience']
   },
   'c-aclb-enable': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Distributed Wi-Fi Load vs Client Stability' }),
     category: categories['Wi-Fi Experience']
   },
   'i-zonefirmware-upgrade': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Secure AP firmware vs Client Device Compatibility' }),
     category: categories.Infrastructure
   },
   'c-txpower-same': {
-    aiFeature: 'AI Operations',
+    aiFeature: aiFeatures.AIOps,
     intent: defineMessage({ defaultMessage: 'Optimize for 5 GHz Radio vs Longer range with 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel24g-auto': {
-    aiFeature: 'AI-Driven RRM',
+    aiFeature: aiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel5g-auto': {
-    aiFeature: 'AI-Driven RRM',
+    aiFeature: aiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel6g-auto': {
-    aiFeature: 'AI-Driven RRM',
+    aiFeature: aiFeatures.RRM,
     intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-24g': {
-    aiFeature: 'AirFlexAI',
+    aiFeature: aiFeatures.AirFlexAI,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-5g': {
-    aiFeature: 'AirFlexAI',
+    aiFeature: aiFeatures.AirFlexAI,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 5 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-6g': {
-    aiFeature: 'AirFlexAI',
+    aiFeature: aiFeatures.AirFlexAI,
     intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 6 GHz' }),
+    category: categories['Wi-Fi Experience']
+  },
+  'eco-flex-code': {
+    // TODO: EcoFlexAI code is not defined yet
+    aiFeature: aiFeatures.EcoFlexAI,
+    intent: defineMessage({ defaultMessage: 'TBD' }),
     category: categories['Wi-Fi Experience']
   }
 } as Record<string, CodeInfo>

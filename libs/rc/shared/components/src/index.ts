@@ -283,3 +283,5 @@ export * from './SwitchCliTemplateForm'
 export {
   useRwgActions
 } from './useRwgActions'
+export * from './SwitchLagDrawer/SwitchLagModal'
+export { isOperationalSwitchPort, isStackPort } from './SwitchPortTable'
