@@ -20,7 +20,7 @@ import {
 import { mockAIDrivenRow, mockAirflexRows } from './__tests__/fixtures'
 import { IntentListItem }                   from './config'
 import { TransitionMutationResponse }       from './services'
-import { displayStates }                    from './states'
+import { displayStates, statuses }          from './states'
 import { useIntentAIActions  }              from './useIntentAIActions'
 import { Actions }                          from './utils'
 
@@ -65,8 +65,8 @@ const extractItem = {
   category: 'Wi-Fi Experience',
   scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
-  status: 'active',
-  statusLabel: 'Active',
+  status: 'new',
+  statusLabel: 'New',
   statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
 }
 
@@ -127,6 +127,7 @@ describe('useIntentAIActions', () => {
           data: [{
             id: '15',
             displayStatus: displayStates.new,
+            status: statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T00:45:00.000Z' ,
               preferences: {
@@ -165,6 +166,7 @@ describe('useIntentAIActions', () => {
           data: [{
             id: '15',
             displayStatus: displayStates.new,
+            status: statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               preferences: {
@@ -205,6 +207,7 @@ describe('useIntentAIActions', () => {
           data: [{
             id: '16',
             displayStatus: displayStates.new,
+            status: statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -300,6 +303,7 @@ describe('useIntentAIActions', () => {
         data: [{
           id: '15',
           displayStatus: displayStates.new,
+          status: statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
             preferences: {
@@ -309,6 +313,7 @@ describe('useIntentAIActions', () => {
         },{
           id: '17',
           displayStatus: displayStates.new,
+          status: statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
             wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -355,6 +360,7 @@ describe('useIntentAIActions', () => {
           data: [{
             id: '15',
             displayStatus: displayStates.new,
+            status: statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               preferences: {
@@ -395,6 +401,7 @@ describe('useIntentAIActions', () => {
           data: [{
             id: '16',
             displayStatus: displayStates.new,
+            status: statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
@@ -487,8 +494,19 @@ describe('useIntentAIActions', () => {
     it('should handle handleTransitionIntent', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: displayStates.active, statusTrail },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: displayStates.active, statusTrail }
+        { ...mockAIDrivenRow,
+          aiFeature: 'AI-Driven RRM',
+          ...extractItem,
+          displayStatus: displayStates.active,
+          status: statuses.active,
+          statusTrail
+        },{ ...mockAirflexRows[1],
+          aiFeature: 'AirFlexAI',
+          ...extractItem,
+          displayStatus: displayStates.active,
+          status: statuses.active,
+          statusTrail
+        }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -502,11 +520,13 @@ describe('useIntentAIActions', () => {
         data: [{
           id: '15',
           displayStatus: displayStates.active,
+          status: statuses.active,
           statusTrail,
           metadata: { algorithmData: { isCrrmFullOptimization: false } }
         },{
           id: '17',
           displayStatus: displayStates.active,
+          status: statuses.active,
           statusTrail,
           metadata: {}
         }]
@@ -517,8 +537,18 @@ describe('useIntentAIActions', () => {
     it('should handle revert', async () => {
       const statusTrail = [ { status: 'new' }]
       const selectedRows = [
-        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM', ...extractItem, displayStatus: displayStates.active, statusTrail },
-        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI', ...extractItem, displayStatus: displayStates.active, statusTrail }
+        { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM',
+          ...extractItem,
+          displayStatus: displayStates.active,
+          status: statuses.active,
+          statusTrail
+        },
+        { ...mockAirflexRows[1], aiFeature: 'AirFlexAI',
+          ...extractItem,
+          displayStatus: displayStates.active,
+          status: statuses.active,
+          statusTrail
+        }
       ] as IntentListItem[]
       const { result } = renderHook(() => useIntentAIActions(), {
         wrapper: ({ children }) => <Provider children={children} />
@@ -532,10 +562,12 @@ describe('useIntentAIActions', () => {
         data: [{
           id: '15',
           displayStatus: displayStates.active,
+          status: statuses.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
         },{
           id: '17',
           displayStatus: displayStates.active,
+          status: statuses.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
         }]
       })
