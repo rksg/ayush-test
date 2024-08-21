@@ -358,13 +358,18 @@ function NetworkRoutes () {
       />
       <Route path='networks/wired/:configType/add'
         element={
-          <AuthRoute scopes={[SwitchScopes.CREATE]}>
+          <AuthRoute scopes={[SwitchScopes.CREATE]} requireCrossVenuesPermission>
             <CliTemplateForm />
           </AuthRoute>
-        } />
+        }
+      />
       <Route
         path='networks/wired/:configType/:templateId/:action'
-        element={<CliTemplateForm />}
+        element={
+          <AuthRoute scopes={[SwitchScopes.UPDATE]} requireCrossVenuesPermission>
+            <CliTemplateForm />
+          </AuthRoute>
+        }
       />
       <Route
         path='networks/wireless/:networkId/:action'
@@ -376,7 +381,7 @@ function NetworkRoutes () {
       <Route
         path='networks/wired/profiles/add'
         element={
-          <AuthRoute scopes={[SwitchScopes.CREATE]}>
+          <AuthRoute scopes={[SwitchScopes.CREATE]} requireCrossVenuesPermission>
             <ConfigurationProfileForm />
           </AuthRoute>
         }
@@ -384,21 +389,21 @@ function NetworkRoutes () {
       <Route
         path='networks/wired/profiles/regular/:profileId/:action'
         element={
-          <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+          <AuthRoute scopes={[SwitchScopes.UPDATE]} requireCrossVenuesPermission>
             <ConfigurationProfileForm />
           </AuthRoute>
         }
       />
       <Route path='networks/wired/:configType/cli/add'
         element={
-          <AuthRoute scopes={[SwitchScopes.CREATE]}>
+          <AuthRoute scopes={[SwitchScopes.CREATE]} requireCrossVenuesPermission>
             <CliProfileForm />
           </AuthRoute>
         } />
       <Route
         path='networks/wired/:configType/cli/:profileId/:action'
         element={
-          <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+          <AuthRoute scopes={[SwitchScopes.UPDATE]} requireCrossVenuesPermission>
             <CliProfileForm />
           </AuthRoute>
         }
