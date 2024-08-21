@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader }         from '@acx-ui/components'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanViewData,
@@ -14,13 +15,17 @@ import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { EdgeScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
+import { CompatibilityCheck }    from './CompatibilityCheck'
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
 import { VenueTableDataType }    from './VenueTable'
 
 const EdgeSdLanDetail = () => {
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const { $t } = useIntl()
   const params = useParams()
+
   const { edgeSdLanData, isLoading, isFetching } = useGetEdgeMvSdLanViewDataListQuery(
     { payload: {
       filters: { id: [params.serviceId] }
@@ -68,6 +73,10 @@ const EdgeSdLanDetail = () => {
         isLoading: isLoading,
         isFetching: isFetching
       }]}>
+        {(isEdgeCompatibilityEnabled && !!params.serviceId) && <CompatibilityCheck
+          serviceId={params.serviceId}
+        />
+        }
         {isDMZEnabled
           ? <DmzSdLanDetailContent data={edgeSdLanData} />
           : <DcSdLanDetailContent data={edgeSdLanData} />
