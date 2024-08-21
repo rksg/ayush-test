@@ -154,7 +154,7 @@ describe('IntentAITabContent', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: 'New',
+      status: 'new',
       statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
@@ -193,7 +193,7 @@ describe('IntentAITabContent', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: 'New',
+      status: 'new',
       statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
@@ -233,7 +233,7 @@ describe('IntentAITabContent', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: 'New',
+      status: 'new',
       statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
@@ -273,7 +273,7 @@ describe('IntentAITabContent', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: 'New',
+      status: 'new',
       statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
@@ -385,7 +385,7 @@ describe('IntentAITabContent', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: 'pausedReverted',
+      status: 'paused',
       displayStatus: 'paused-reverted',
       statusTooltip: 'statusTooltip'
     }

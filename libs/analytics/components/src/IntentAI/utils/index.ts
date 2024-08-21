@@ -69,24 +69,20 @@ export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
           displayStates.pausedRevertFailed].includes(row.displayStatus)
       )
     case Actions.Pause:
-      return !rows.some(row =>
-        ![displayStates.new, displayStates.scheduled,
-          displayStates.scheduledOneClick,displayStates.applyScheduled,
-          displayStates.active, displayStates.naVerified,
-          displayStates.naNoAps, displayStates.naWaitingForEtl].includes(row.displayStatus)
-      )
+      return !rows.some(row => ![
+        statuses.new,
+        statuses.scheduled,
+        statuses.applyScheduled,
+        statuses.active,
+        statuses.na
+      ].includes(row.status))
     case Actions.Cancel:
-      return !rows.some(row =>
-        ![displayStates.scheduled,
-          displayStates.scheduledOneClick,
-          displayStates.revertScheduled].includes(row.displayStatus)
-      )
+      return !rows.some(row => ![
+        statuses.scheduled,
+        statuses.revertScheduled
+      ].includes(row.status))
     case Actions.Resume:
-      return !rows.some(row =>
-        ![displayStates.pausedApplyFailed, displayStates.pausedRevertFailed,
-          displayStates.pausedReverted,displayStates.pausedFromInactive,
-          displayStates.pausedByDefault, displayStates.pausedFromActive].includes(row.displayStatus)
-      )
+      return !rows.some(row => row.status !== statuses.paused)
   }
 }
 

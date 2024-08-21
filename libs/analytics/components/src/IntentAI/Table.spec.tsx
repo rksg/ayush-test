@@ -166,11 +166,14 @@ describe('AIFeature component', () => {
       statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
       statusTrail: []
     }
-    const newRow = { ...mockAIDrivenRow, ...extractItem, displayStatus: displayStates.new }
-    const activeRow = { ...mockAIDrivenRow, ...extractItem, displayStatus: displayStates.active }
-    const pausedApplyFailedRow = { ...mockAIDrivenRow, ...extractItem, displayStatus: displayStates.pausedApplyFailed }
-    const scheduledOneClickRow = { ...mockAIDrivenRow, ...extractItem, displayStatus: displayStates.scheduledOneClick }
-    const revertScheduledRow = { ...mockAIDrivenRow, ...extractItem, displayStatus: displayStates.revertScheduled }
+    const makeRow = (status: statuses, displayStatus: displayStates) => ({
+      ...mockAIDrivenRow, ...extractItem, displayStatus, status
+    })
+    const newRow = makeRow(statuses.new, displayStates.new)
+    const activeRow = makeRow(statuses.active, displayStates.active)
+    const pausedApplyFailedRow = makeRow(statuses.paused, displayStates.pausedApplyFailed)
+    const scheduledOneClickRow = makeRow(statuses.scheduled, displayStates.scheduledOneClick)
+    const revertScheduledRow = makeRow(statuses.revertScheduled, displayStates.revertScheduled)
     it('should return true for all actions', () => {
       expect(isVisibledByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
       expect(isVisibledByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
