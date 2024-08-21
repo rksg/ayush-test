@@ -21,6 +21,8 @@ import {
 import { mockedDetailedResidentPortalList, mockedResidentPortalList } from '../__tests__/fixtures'
 
 import ResidentPortalTable from './ResidentPortalTable'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { WifiScopes } from '@acx-ui/types'
 
 // import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
 // import DpskTable                                     from './DpskTable'
@@ -70,6 +72,34 @@ describe('ResidentPortalTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
       .toBeVisible()
   })
+
+  it('should render the table without add button when not permitted', async () => {
+
+    setUserProfile({
+      profile: {
+        ...getUserProfile().profile
+      },
+      allowedOperations: [],
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetResidentPortal = mockedResidentPortalList.content[0]
+    expect(await screen.queryByRole('button', { name: /Add Resident Portal/i })).toBeNull()
+    expect(await screen.findByRole('row', { name: new RegExp(targetResidentPortal.name) }))
+      .toBeVisible()
+  })
+
 
   it('should render breadcrumb correctly', async () => {
     render(
