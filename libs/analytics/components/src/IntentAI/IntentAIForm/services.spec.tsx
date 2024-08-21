@@ -77,7 +77,7 @@ describe('intentai services', () => {
     ...mockedIntentCRRM,
     appliedOnce: true,
     settings: {
-      date: moment('2024-07-14'),
+      date: moment('2024-07-14T00:00:00.000Z'),
       hour: 7.5
     }
   }

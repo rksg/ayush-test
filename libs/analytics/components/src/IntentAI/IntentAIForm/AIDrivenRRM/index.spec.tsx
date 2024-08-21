@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import userEvent from '@testing-library/user-event'
 import { pick }  from 'lodash'
-import moment    from 'moment-timezone'
 
 import { get }                                                                       from '@acx-ui/config'
 import { recommendationUrl, Provider, intentAIUrl, recommendationApi, store }        from '@acx-ui/store'
@@ -146,11 +145,9 @@ describe('AIDrivenRRM', () => {
       expect(await formBody.findByText('Schedule Time')).toBeVisible()
       expect(await formBody.findByText('Side Notes')).toBeVisible()
 
-
       const datepicker = screen.getByRole('img', { name: 'calendar' })
       expect(datepicker).toBeEnabled()
       await userEvent.click(datepicker)
-      expect(await screen.findByRole('button', { name: moment().format('YYYY') })).toBeEnabled()
 
       const datepickerInput = screen.getByPlaceholderText('Select date')
       fireEvent.change(datepickerInput, { target: { value: '2023-07-16' } })

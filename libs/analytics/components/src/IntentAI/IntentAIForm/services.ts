@@ -65,9 +65,6 @@ export const transformDetailsResponse = (details: IntentDetails) => {
   let date: Moment | null = null
   let hour: number | null = null
 
-
-  date = moment('2024-7-18')
-  hour = 7.5
   if (details.metadata) {
     if (details.metadata.scheduledAt) {
       const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
@@ -79,7 +76,6 @@ export const transformDetailsResponse = (details: IntentDetails) => {
   }
   return {
     ...details,
-    status: 'new',
     appliedOnce: Boolean(details.statusTrail.find(t => t.status === 'applied')),
     preferences: details.preferences || undefined, // prevent _.merge({ x: {} }, { x: null })
     settings: {
@@ -149,7 +145,6 @@ export function processDtoToPayload (dto: EnhancedIntent) { // this function han
   const localScheduledAt = getLocalScheduledAt(dto!.settings!.date!, dto.settings!.hour!)
   const newScheduledAt = handleScheduledAt(localScheduledAt)
   const utcScheduledAt = moment.parseZone(newScheduledAt).utc().toISOString()
-  // const newScheduledAt = handleScheduledAt(scheduledAt)
   return {
     id: dto.id,
     status: dto.status,
