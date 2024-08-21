@@ -23,7 +23,8 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   scopes?: ScopeKeys
-  isCustomRole?: boolean
+  isCustomRole?: boolean,
+  hasAllVenues?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -54,6 +55,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
+  userProfile.hasAllVenues = profile?.hasAllVenues
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
@@ -186,13 +188,24 @@ export function isCustomAdmin () {
   }
   return false
 }
+export function hasCrossVenuesPermission () {
+  /* For testing purposes */
+  // const { abacEnabled, hasAllVenues } = getUserProfile()
+  // return abacEnabled ? hasAllVenues : true
+  return true
+}
 
 export function AuthRoute (props: {
-    scopes: ScopeKeys,
-    children: ReactElement
+    scopes?: ScopeKeys,
+    children: ReactElement,
+    requireCrossVenuesPermission?: boolean
   }) {
-  const { scopes, children } = props
-  return !hasScope(scopes) ? <TenantNavigate replace to='/no-permissions' /> : children
+  const { scopes = [], children, requireCrossVenuesPermission } = props
+  if(requireCrossVenuesPermission) {
+    return hasScope(scopes) && hasCrossVenuesPermission()
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
+  return hasScope(scopes) ? children : <TenantNavigate replace to='/no-permissions' />
 }
 
 

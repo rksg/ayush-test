@@ -4,11 +4,13 @@ import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { edgeApi }                   from '@acx-ui/rc/services'
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeGeneralFixtures,
   EdgeSdLanFixtures,
+  EdgeCompatibilityFixtures,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -26,6 +28,7 @@ import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../EdgeMvSdLanContex
 
 import { SettingsForm } from '.'
 
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
 const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
 mockEdgeClusterList.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
@@ -92,9 +95,8 @@ const useMockedFrom = () => {
 const mockedSetFieldsValue = jest.fn()
 const mockedReqClusterList = jest.fn()
 
+const tenantId = 'mock_tenantId'
 describe('Edge SD-LAN form: settings', () => {
-
-
   beforeEach(() => {
     mockedSetFieldsValue.mockClear()
     mockedReqClusterList.mockClear()
@@ -113,6 +115,16 @@ describe('Edge SD-LAN form: settings', () => {
   })
 
   it('should render correctly without DMZ enabled', async () => {
+    const featureSetsReq = jest.fn()
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => {
+          featureSetsReq()
+          return res(ctx.json({}))
+        })
+    )
+
     const { result: stepFormRef } = renderHook(useMockedFrom)
     render(<MockedTargetComponent form={stepFormRef.current} />)
 
@@ -121,6 +133,7 @@ describe('Edge SD-LAN form: settings', () => {
 
     // default DMZ is not enabled
     expect(await within(formBody).findByRole('switch')).not.toBeChecked()
+    expect(featureSetsReq).toBeCalledTimes(0)
   })
 
   it('should render correctly with DMZ enabled', async () => {
@@ -277,6 +290,48 @@ describe('Edge SD-LAN form: settings', () => {
     await userEvent.click(await within(formBody).findByRole('switch'))
     // HA mode check should disappeared
     await waitFor(() => expect(within(formBody).queryByRole('alert')).toBeNull())
+  })
+
+  it('should display compatible warning', async () => {
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
+    )
+
+    const { result: stepFormRef } = renderHook(useMockedFrom)
+    render(<MockedTargetComponent form={stepFormRef.current} />, {
+      route: { params: { tenantId }, path: '/:tenantId' }
+    }
+    )
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await checkBasicSettings()
+
+    // show fw info
+    screen.getByText('Cluster Firmware Verson: 2.1.0.580')
+    const fwWarningIcon = await screen.findByTestId('WarningCircleSolid')
+    await userEvent.hover(fwWarningIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('2.1.0.600')
+
+    // turn on DMZ
+    await userEvent.click(await within(formBody).findByRole('switch'))
+
+    // select DMZ edge
+    await userEvent.selectOptions(
+      await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
+      'clusterId_1')
+
+    screen.getByText('Cluster Firmware Verson: 2.1.0.480')
+    const fwWarningIcons = await screen.findAllByTestId('WarningCircleSolid')
+    expect(fwWarningIcons.length).toBe(2)
+    await userEvent.hover(fwWarningIcons[1])
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('2.1.0.600')
   })
 
 })

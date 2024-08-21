@@ -5,10 +5,11 @@ import { Form }                              from 'antd'
 import { cloneDeep }                         from 'lodash'
 import { rest }                              from 'msw'
 
-import { StepsForm, StepsFormProps }         from '@acx-ui/components'
-import { venueApi }                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeSdLanFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                   from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { venueApi }                                                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo, APCompatibilityFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -22,6 +23,7 @@ import { EdgeMvSdLanContext, EdgeMvSdLanContextType } from '../../EdgeMvSdLanCon
 import { EdgeSdLanVenueNetworksTable, VenueNetworksTableProps } from '.'
 
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockApCompatibilitiesVenue } = APCompatibilityFixtures
 
 const mockedOverlapSdLans = cloneDeep(mockedMvSdLanDataList)
 const targetVenue = mockedVenueList.data[1]
@@ -40,7 +42,10 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue('ecc2d7cf9d2342fdb31ae0e24958fcac')
 }))
-
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  ApGeneralCompatibilityDrawer: () => <div data-testid='ApGeneralCompatibilityDrawer'></div>
+}))
 jest.mock('./NetworksDrawer.tsx', () => ({
   ...jest.requireActual('./NetworksDrawer.tsx'),
   NetworksDrawer: (props: {
@@ -186,6 +191,30 @@ describe('Tunneled Venue Networks Table', () => {
     screen.getByRole('row', { name: /My-Venue/i })
     screen.getByRole('row', { name: /SG office/i })
     expect(screen.queryByRole('row', { name: /airport/i })).not.toBe(null)
+  })
+
+  it('should have compatible warning', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json({ data: mockedVenueList.data.slice(0, 1) }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getApCompatibilitiesVenue.url,
+        (_, res, ctx) => res(ctx.json(mockApCompatibilitiesVenue)))
+    )
+
+    render(<MockedTargetComponent />, { route: { params: { tenantId: 't-id' } } })
+
+    const row = await screen.findByRole('row', { name: /My-Venue .* 0/i })
+    const fwWarningIcon = await within(row).findByTestId('WarningCircleSolid')
+    await userEvent.hover(fwWarningIcon)
+    expect(await screen.findByRole('tooltip', { hidden: true }))
+      .toHaveTextContent('See the compatibility requirements.')
+    const btn = screen.getByRole('button', { name: 'See the compatibility requirements.' })
+    await userEvent.click(btn)
+    expect(await within(row).findByTestId('ApGeneralCompatibilityDrawer')).toBeVisible()
   })
 })
 
