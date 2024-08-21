@@ -816,7 +816,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkIds = networksList?.data.map(item => item.id!) || []
         if (networksList.data.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
           const vlanPoolListQuery = await fetchWithBQ({
-            ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, apiCustomHeader),
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
             body: JSON.stringify({
               fields: ['id', 'name', 'wifiNetworkIds'],
               filters: { wifiNetworkIds: networkIds }

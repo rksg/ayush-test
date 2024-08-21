@@ -47,7 +47,10 @@ import {
   updateAccessControlProfileFn,
   getEnhancedAccessControlProfileListFn,
   getEnhancedL2AclProfileListFn,
-  getEnhancedL3AclProfileListFn, getEnhancedDeviceProfileListFn, getEnhancedApplicationProfileListFn
+  getEnhancedL3AclProfileListFn,
+  getEnhancedDeviceProfileListFn,
+  getEnhancedApplicationProfileListFn,
+  getVLANPoolVenuesFn
 } from '../servicePolicy.utils'
 
 
@@ -444,7 +447,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }]
     }),
     getVlanPoolTemplateVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolVenues),
+      queryFn: getVLANPoolVenuesFn(true),
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
