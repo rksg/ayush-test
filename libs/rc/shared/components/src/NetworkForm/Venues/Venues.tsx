@@ -159,7 +159,7 @@ export function Venues (props: VenuesProps) {
 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const form = Form.useFormInstance()
-  const { cloneMode, data, setData } = useContext(NetworkFormContext)
+  const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
 
   const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
   const params = useParams()
@@ -190,8 +190,9 @@ export function Venues (props: VenuesProps) {
 
   useEffect(() => {
     // need to make sure table data is ready.
+    // should avoid triggering in editMode/cloneMode
     // eslint-disable-next-line max-len
-    if(isDefaultVenueSetted.current || !defaultActiveVenues?.length || !data || !tableData?.length) return
+    if(isDefaultVenueSetted.current || !defaultActiveVenues?.length || !data || !tableData?.length || editMode || cloneMode) return
 
     defaultActiveVenues.forEach(defaultVenueId => {
       handleActivateVenue(true, [{ id: defaultVenueId } as Venue])
