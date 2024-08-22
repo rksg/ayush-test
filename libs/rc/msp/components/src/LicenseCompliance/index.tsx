@@ -4,6 +4,7 @@ import { Col }     from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Card }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useGetEntitlementsCompliancesQuery }   from '@acx-ui/msp/services'
 import { ComplianceData, DeviceComplianceType } from '@acx-ui/msp/utils'
 import { useParams }                            from '@acx-ui/react-router-dom'
@@ -134,6 +135,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   const [selfData, setSelfData] = useState(emptyCompliance as ComplianceData)
   const [ecSummaryData, setEcSummaryData] = useState(emptyCompliance as ComplianceData)
   const { isMsp } = props
+  const isComplianceNotesEnabled = useIsSplitOn(Features.ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE)
 
   const RecPayload = {
     filters: {
@@ -162,7 +164,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   }, [queryData?.data])
 
   return <>
-    <ComplianceBanner />
+    {isComplianceNotesEnabled && <ComplianceBanner />}
     {isMsp
       ? <UI.ComplianceContainer>
         <DeviceNetworkingCard
