@@ -1,9 +1,9 @@
-import { statuses } from '../states'
+import { Statuses } from '../states'
 import { Intent }   from '../useIntentDetailsQuery'
 
 export const isIntentActive = (intent: Intent) => [
-  statuses.new,
-  statuses.scheduled,
-  statuses.paused,
-  statuses.na
-].includes(intent.status as statuses) === false
+  Statuses.new,
+  Statuses.scheduled,
+  Statuses.paused,
+  Statuses.na
+].includes(intent.status as Statuses) === false

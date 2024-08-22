@@ -41,7 +41,7 @@ describe('IntentAI utils', () => {
       status: Statuses.new
 
     }
-    it('should handle displayStates.new', () => {
+    it('should handle DisplayStates.new', () => {
       expect(getTransitionStatus(
         Actions.One_Click_Optimize,
         {
@@ -295,7 +295,7 @@ describe('IntentAI utils', () => {
         )
       })
 
-      it('should handle statusReasons.waitingForEtl', () => {
+      it('should handle StatusReasons.waitingForEtl', () => {
         expect(getTransitionStatus(
           Actions.Resume,
           {
