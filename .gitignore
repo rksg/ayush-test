@@ -29,6 +29,7 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+acx-ui.iml
 
 # IDE - VSCode
 .vscode/*
