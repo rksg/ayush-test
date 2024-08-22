@@ -14,7 +14,8 @@ import {
   ConnectionMeteringUrls,
   EdgeQosProfilesUrls,
   RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
-  getSelectPolicyRoutePath
+  getSelectPolicyRoutePath,
+  WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -35,6 +36,15 @@ import MyPolicies from '.'
 const mockTableResult = {
   totalCount: 0,
   data: []
+}
+
+const mockNewTableResult = {
+  content: [],
+  paging: {
+    page: 0,
+    pageSize: 0,
+    totalCount: 0
+  }
 }
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -91,6 +101,10 @@ describe('MyPolicies', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        WorkflowUrls.searchInProgressWorkflows.url.split('?')[0],
+        (req, res, ctx ) => res(ctx.json(mockNewTableResult))
       ),
       rest.post(
         RogueApUrls.getRoguePolicyListRbac.url,
