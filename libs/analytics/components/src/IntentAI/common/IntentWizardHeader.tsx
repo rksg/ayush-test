@@ -7,8 +7,7 @@ import { PageHeader } from '@acx-ui/components'
 import { aiFeaturesLabel, codes } from '../config'
 import { useIntentContext }       from '../IntentContext'
 
-import { Icon }               from './IntentIcon'
-import { isStandaloneSwitch } from './isStandaloneSwitch'
+import { Icon } from './IntentIcon'
 
 export function IntentWizardHeader () {
   const { $t } = useIntl()
@@ -29,9 +28,7 @@ export function IntentWizardHeader () {
         value: [$t(feature.intent)]
       },
       {
-        label: isStandaloneSwitch(
-          $t({ defaultMessage: 'Zone' }),
-          $t({ defaultMessage: '<VenueSingular></VenueSingular>' })),
+        label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
         value: [intent.sliceValue]
       }
     ]}

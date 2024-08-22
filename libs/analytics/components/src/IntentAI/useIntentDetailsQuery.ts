@@ -7,10 +7,10 @@ import { MessageDescriptor } from 'react-intl'
 import { kpiDelta, TrendTypeEnum } from '@acx-ui/analytics/utils'
 import { formatter }               from '@acx-ui/formatter'
 import { recommendationApi }       from '@acx-ui/store'
-import { NetworkPath }             from '@acx-ui/utils'
+import { NetworkPath, NodeType }   from '@acx-ui/utils'
 
 import { codes }      from './config'
-import { IntentWlan } from './services'
+import { IntentWlan } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -36,7 +36,7 @@ export type Intent = {
     scheduledAt: string
     wlans?: IntentWlan[]
   };
-  sliceType: string;
+  sliceType: NodeType;
   sliceValue: string;
   path: NetworkPath;
   statusTrail: Array<{
