@@ -318,5 +318,20 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/edgeFeatureSets/query',
     newApi: true
+  },
+  getSdLanEdgeCompatibilities: {
+    method: 'post',
+    url: '/edgeSdLanServices/edgeCompatibilities/query',
+    newApi: true
+  },
+  getSdLanApCompatibilities: {
+    method: 'post',
+    url: '/edgeSdLanServices/apCompatibilities/query',
+    newApi: true
+  },
+  getVenueEdgeCompatibilities: {
+    method: 'post',
+    url: '/venues/edgeCompatibilities/query',
+    newApi: true
   }
 }
