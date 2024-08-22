@@ -10,7 +10,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
 import { aiFeatures }                                                                                            from './config'
-import { displayStates, statuses }                                                                               from './states'
+import { DisplayStates, Statuses }                                                                               from './states'
 import * as UI                                                                                                   from './styledComponents'
 import { AIFeature, icons, iconTooltips }                                                                        from './Table'
 import { Actions, isVisibledByAction }                                                                           from './utils'
@@ -161,19 +161,19 @@ describe('AIFeature component', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: statuses.new,
+      status: Statuses.new,
       statusLabel: 'New',
       statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
       statusTrail: []
     }
-    const makeRow = (status: statuses, displayStatus: displayStates) => ({
+    const makeRow = (status: Statuses, displayStatus: DisplayStates) => ({
       ...mockAIDrivenRow, ...extractItem, displayStatus, status
     })
-    const newRow = makeRow(statuses.new, displayStates.new)
-    const activeRow = makeRow(statuses.active, displayStates.active)
-    const pausedApplyFailedRow = makeRow(statuses.paused, displayStates.pausedApplyFailed)
-    const scheduledOneClickRow = makeRow(statuses.scheduled, displayStates.scheduledOneClick)
-    const revertScheduledRow = makeRow(statuses.revertScheduled, displayStates.revertScheduled)
+    const newRow = makeRow(Statuses.new, DisplayStates.new)
+    const activeRow = makeRow(Statuses.active, DisplayStates.active)
+    const pausedApplyFailedRow = makeRow(Statuses.paused, DisplayStates.pausedApplyFailed)
+    const scheduledOneClickRow = makeRow(Statuses.scheduled, DisplayStates.scheduledOneClick)
+    const revertScheduledRow = makeRow(Statuses.revertScheduled, DisplayStates.revertScheduled)
     it('should return true for all actions', () => {
       expect(isVisibledByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
       expect(isVisibledByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()
