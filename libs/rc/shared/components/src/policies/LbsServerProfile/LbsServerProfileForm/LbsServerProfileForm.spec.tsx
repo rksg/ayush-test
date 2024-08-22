@@ -113,6 +113,7 @@ describe('LbsServerProfileForm', () => {
       route: { params: { tenantId: mockedTenantId, policyId: mockedPolicyId1 }, path: editPath }
     })
 
+    await userEvent.type(await screen.findByLabelText('LBS Venue Name'), '-2')
     await userEvent.type(await screen.findByLabelText('Port'), '8884')
 
     await userEvent.click(await screen.findByText('Finish'))
@@ -148,4 +149,32 @@ describe('LbsServerProfileForm', () => {
       search: ''
     }, { replace: true })
   })
+
+  it('should popup duplicate message', async () => {
+    const editLbsServerProfile = jest.fn()
+    mockServer.use(
+      rest.post(
+        LbsServerProfileUrls.addLbsServerProfile.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ response: { id: mockedPolicyId1 } }))
+        }
+      ),
+      rest.put(
+        LbsServerProfileUrls.updateLbsServerProfile.url,
+        (_, res, ctx) => {
+          editLbsServerProfile()
+          return res(ctx.json({ response: { id: mockedPolicyId1 } }))
+        }
+      )
+    )
+
+    render(<Provider><LbsServerProfileForm editMode={true} /></Provider>, {
+      route: { params: { tenantId: mockedTenantId, policyId: mockedPolicyId1 }, path: editPath }
+    })
+
+    await userEvent.type(await screen.findByLabelText('Port'), '8885')
+
+    await userEvent.click(await screen.findByText('Finish'))
+
+    await waitFor(() => expect(screen.queryByText('The LBS Venue Name and Server Address are duplicates of another profile')).toBeVisible()) })
 })
