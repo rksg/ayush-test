@@ -33,41 +33,29 @@ export function Tabs ({ type, stickyTop, ...props }: TabsProps) {
     }
   }
 
-  const checkTabIndicator = (tab: React.ReactElement) => {
-    const tabTitle = tab?.props?.isBetaFeature
-      ? getTitleWithIndicator(tab?.props?.tab) : tab?.props?.tab
-    return {
-      ...tab,
-      props: {
-        ...tab?.props,
-        tab: tabTitle
-      }
+  const checkTabIndicator = (tab: React.ReactElement) => ({
+    ...tab,
+    props: {
+      ...tab?.props,
+      tab: tab?.props?.isBetaFeature
+        ? getTitleWithIndicator(tab?.props?.tab) : tab?.props?.tab
     }
-  }
+  })
 
   const transformedProps = {
     ...props,
-    /**
-     * case1: [TabPane1, TabPane2, TabPane3]
-     * case2: [TabPane1, [TabPane2, TabPane3]]
-     * case3: {TabPane1} // only one TabPane
-     */
-    ...(_.isArray(props?.children) ? {
-      children: (props?.children as React.ReactElement[])
-        ?.filter(tab => tab)
-        ?.map(tab => {
-          const isObj = _.isObject(tab) && !_.isArray(tab)
-          if (isObj) {
-            return checkTabIndicator(tab)
-          } else if (_.isArray(tab)) {
-            return tab.map(t => checkTabIndicator(t))
-          }
-          return tab
-        })
-    } : ( _.isObject(props?.children)
-      ? { children: checkTabIndicator(props?.children as React.ReactElement) }
-      : {}
-    ))
+    ...( props?.children ? {
+      /**
+       * case1: [TabPane1, TabPane2, TabPane3]
+       * case2: [TabPane1, [TabPane2, TabPane3]]
+       * case3: {TabPane1} // only one TabPane
+       */
+      children: _.isArray(props?.children)
+        ? props.children.flat().filter(c => _.isObject(c) && Object.keys(c)).map(checkTabIndicator)
+        : _.isObject(props?.children)
+          ? checkTabIndicator(props.children as React.ReactElement)
+          : undefined
+    } : {})
   }
 
   return <UI.Tabs
