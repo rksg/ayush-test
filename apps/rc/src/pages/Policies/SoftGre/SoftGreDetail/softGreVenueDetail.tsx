@@ -35,7 +35,8 @@ export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
 
   return (
     <Loader states={[tableQuery]}>
-      <Card title={`${$t({ defaultMessage: 'Instances' })} (${tableQuery.data?.totalCount ?? 0})`}>
+      <Card title={$t({ defaultMessage: 'Instances ({totalCount})' },
+        { totalCount: tableQuery.data?.totalCount ?? 0 })}>
         <div style={{ width: '100%' }}>
           <Table<VenueTableUsageBySoftGre>
             enableApiFilter={true}
