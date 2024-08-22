@@ -50,7 +50,8 @@ import {
   getEnhancedL3AclProfileListFn,
   getEnhancedDeviceProfileListFn,
   getEnhancedApplicationProfileListFn,
-  getVLANPoolVenuesFn
+  getVLANPoolVenuesFn,
+  getVLANPoolPolicyViewModelListFn
 } from '../servicePolicy.utils'
 
 
@@ -409,7 +410,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getEnhancedVlanPoolPolicyTemplateList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedVlanPools),
+      queryFn: getVLANPoolPolicyViewModelListFn(true),
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

@@ -486,7 +486,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/vlanPools/:policyId/venues',
     newApi: true
   },
-  getVLANPoolPolicyList: {
+  getVlanPoolPolicyList: {
     method: 'post',
     url: '/templates/vlanPoolProfiles/query',
     newApi: true,
