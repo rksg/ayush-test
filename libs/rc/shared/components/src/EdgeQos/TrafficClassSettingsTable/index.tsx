@@ -6,7 +6,7 @@ import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay } from '@
 
 import * as UI from './styledComponents'
 
-const genClassTextForToolTip =
+const genClassText =
   (trafficClass?: string, priority?: string, priorityScheduling?: boolean) => {
     const capFirstClass = trafficClassToDisplay(trafficClass)
     const capFirstPriority = priorityToDisplay(priority)
@@ -18,7 +18,7 @@ const genClassTextForToolTip =
     return <>{capFirstClass + ' (' + capFirstPriority + ') '}{starSolidWhite}</>
   }
 
-const genBandWidthTextForToolTip = (bandwidth?: number) => {
+const genBandWidthText = (bandwidth?: number) => {
   return bandwidth ? bandwidth + '%' : ''
 }
 
@@ -36,7 +36,7 @@ export const TrafficClassSettingsTable = (props: TrafficClassSettingsProps) => {
       title: $t({ defaultMessage: 'Class' }),
       dataIndex: 'trafficClass',
       render: function (_, row) {
-        return genClassTextForToolTip(row.trafficClass, row.priority, row.priorityScheduling)
+        return genClassText(row.trafficClass, row.priority, row.priorityScheduling)
       }
     },
     {
@@ -44,7 +44,7 @@ export const TrafficClassSettingsTable = (props: TrafficClassSettingsProps) => {
       title: $t({ defaultMessage: 'Guaranteed BW' }),
       dataIndex: 'minBandwidth',
       render: function (_, row) {
-        return genBandWidthTextForToolTip(row?.minBandwidth)
+        return genBandWidthText(row?.minBandwidth)
       }
     },
     {
@@ -52,13 +52,14 @@ export const TrafficClassSettingsTable = (props: TrafficClassSettingsProps) => {
       title: $t({ defaultMessage: 'Max BW' }),
       dataIndex: 'maxBandwidth',
       render: function (_, row) {
-        return genBandWidthTextForToolTip(row.maxBandwidth)
+        return genBandWidthText(row.maxBandwidth)
       }
     }
   ]
 
   return (
     <Table
+      rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
       type='compactBordered'
       style={{ width: 400 }}
       columns={columns}

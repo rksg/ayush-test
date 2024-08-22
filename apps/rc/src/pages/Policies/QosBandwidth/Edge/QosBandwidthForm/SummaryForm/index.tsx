@@ -106,6 +106,7 @@ export const SummaryForm = () => {
           { $t({ defaultMessage: 'QoS Bandwidth Control:' }) }
         </Subtitle>
         <Table
+          rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}
           columns={banwidthColumns}
           dataSource={formValues?.trafficClassSettings}
           pagination={false}

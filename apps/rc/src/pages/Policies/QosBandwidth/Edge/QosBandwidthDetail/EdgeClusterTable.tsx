@@ -73,7 +73,7 @@ export const EdgeClusterTable = (props: EdgeClusterTableProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        rowKey='id'
+        rowKey='clusterId'
         columns={columns}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}

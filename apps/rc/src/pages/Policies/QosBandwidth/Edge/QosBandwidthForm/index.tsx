@@ -79,11 +79,6 @@ const QosBandwidthForm = (props: EdgeQosFormProps) => {
   }
 
   const initFormValues = getEdgeQosFormDefaultValues(mergeData(editData))
-  //   const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-  //   if (!isEditMode) {
-  //     initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-  //     initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
-  //   }
 
   return (<StepsForm
     form={form}

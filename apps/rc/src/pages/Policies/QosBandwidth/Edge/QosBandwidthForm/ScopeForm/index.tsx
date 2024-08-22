@@ -28,10 +28,6 @@ export const ScopeForm = () => {
     }
   })
 
-  const data = tableQuery.data?.data?.map((edgeCluster) => {
-    return edgeCluster
-  })
-
   const columns: TableProps<EdgeClusterStatus>['columns'] = [
     {
       title: $t({ defaultMessage: 'Cluster' }),
@@ -96,7 +92,7 @@ export const ScopeForm = () => {
         </UI.FieldText>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           rowKey='clusterId'
         />
