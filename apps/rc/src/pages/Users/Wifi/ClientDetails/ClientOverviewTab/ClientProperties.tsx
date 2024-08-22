@@ -80,7 +80,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
 
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API) || true
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
