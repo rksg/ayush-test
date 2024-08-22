@@ -12,7 +12,7 @@ import { noDataDisplay, PathFilter }                                 from '@acx-
 
 import { aiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
-import { displayStates }                               from './states'
+import { DisplayStates }                               from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
@@ -164,7 +164,7 @@ export function IntentAITable (
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Optimize),
-      label: selectedRows?.[0]?.displayStatus === displayStates.new ?
+      label: selectedRows?.[0]?.displayStatus === DisplayStates.new ?
         $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
       visible: rows => isVisibledByAction(rows, Actions.Optimize),
       onClick: (rows) => {
