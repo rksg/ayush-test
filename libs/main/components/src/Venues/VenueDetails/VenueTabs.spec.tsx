@@ -7,7 +7,7 @@ import { CommonRbacUrlsInfo, VenueDetailHeader } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { render, mockServer, screen, waitFor }   from '@acx-ui/test-utils'
 import { RolesEnum }                             from '@acx-ui/types'
-import { getUserProfile, setUserProfile }        from '@acx-ui/user'
+import {getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile} from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 
@@ -70,11 +70,8 @@ describe('VenueTabs', () => {
     expect(await screen.findByText('Services')).toBeVisible()
   })
 
-  it('should hide analytics when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide analytics when READ_INCIDENTS permission is false', async () => {
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
     </Provider>, { route: { params } })

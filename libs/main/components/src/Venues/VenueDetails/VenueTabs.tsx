@@ -9,9 +9,9 @@ import {
   useConfigTemplateTenantLink,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }          from '@acx-ui/react-router-dom'
-import { RolesEnum }                                      from '@acx-ui/types'
-import {hasPermission, hasRaiPermission, hasRoles, useUserProfileContext} from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { hasRaiPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()

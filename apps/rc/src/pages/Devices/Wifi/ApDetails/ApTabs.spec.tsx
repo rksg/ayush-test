@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
 import { RolesEnum }                          from '@acx-ui/types'
-import { getUserProfile, setUserProfile }     from '@acx-ui/user'
+import {getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile} from '@acx-ui/user'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApTabs           from './ApTabs'
@@ -59,11 +59,8 @@ describe('ApTabs', () => {
     })
   })
 
-  it('should hide analytics when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide analytics when READ_INCIDENTS permission is false', async () => {
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
