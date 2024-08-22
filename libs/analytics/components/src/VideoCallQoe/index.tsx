@@ -3,10 +3,10 @@ import { createContext, useEffect, useState } from 'react'
 import { Button }                 from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Tooltip, PageHeader }                       from '@acx-ui/components'
-import { TenantLink }                                from '@acx-ui/react-router-dom'
-import { WifiScopes }                                from '@acx-ui/types'
-import { getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import { Tooltip, PageHeader }                                                 from '@acx-ui/components'
+import { TenantLink }                                                          from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                          from '@acx-ui/types'
+import { getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { useVideoCallQoeTestsQuery } from './services'
 import { VideoCallQoeTable }         from './VideoCallQoeTable'
@@ -54,7 +54,7 @@ export function useVideoCallQoe () {
 
   return {
     title: $t(title, { count }),
-    headerExtra: hasPermission({
+    headerExtra: hasCrossVenuesPermission() && hasPermission({
       permission: 'WRITE_VIDEO_CALL_QOE',
       scopes: [WifiScopes.CREATE]
     }) ? headerExtra : [],

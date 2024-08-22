@@ -3,7 +3,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                          from '@acx-ui/types'
-import { hasPermission }                                       from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasPermission }             from '@acx-ui/user'
 
 import { Details }                                        from './DetailsTable'
 import { Title, useSubTitle, ReRunButton, TestRunButton } from './Header'
@@ -56,7 +56,7 @@ export function ServiceGuardDetails () {
           }
         ]}
         extra={[
-          ...(hasPermission({
+          ...(hasCrossVenuesPermission() && hasPermission({
             permission: 'WRITE_SERVICE_VALIDATION',
             scopes: [WifiScopes.UPDATE]
           })

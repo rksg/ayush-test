@@ -24,9 +24,9 @@ import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
 } from '@acx-ui/icons'
-import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission }   from '@acx-ui/user'
-import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
+import { TenantLink, useNavigateToPath }                                                       from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile }                         from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -281,7 +281,8 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={(hasPermission({ permission: 'WRITE_INCIDENTS' }) || !get('IS_MLISA_SA')) && {
+        rowSelection={hasCrossVenuesPermission() &&
+          (hasPermission({ permission: 'WRITE_INCIDENTS' }) || !get('IS_MLISA_SA')) && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

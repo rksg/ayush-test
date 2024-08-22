@@ -14,11 +14,11 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
-import { hasPermission }                    from '@acx-ui/user'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, Button }        from '@acx-ui/components'
+import { get }                                     from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }                from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -144,10 +144,10 @@ export function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
-                disabled={!hasPermission({
+                disabled={!(hasCrossVenuesPermission() && hasPermission({
                   permission: 'WRITE_HEALTH',
                   scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
-                })}
+                }))}
               />
             ) : (
               <BarChart

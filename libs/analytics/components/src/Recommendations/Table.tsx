@@ -17,13 +17,13 @@ import {
   showToast,
   showActionModal
 } from '@acx-ui/components'
-import { get }                                                       from '@acx-ui/config'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
-import { TenantLink, useParams }                                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
-import { getIntl, noDataDisplay, PathFilter }                        from '@acx-ui/utils'
+import { get }                                                                                 from '@acx-ui/config'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
+import { TenantLink, useParams }                                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                          from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay, PathFilter }                                                  from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
@@ -318,10 +318,10 @@ export function RecommendationTable (
   )
   const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
   const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
-  const writePermission = hasPermission({
+  const writePermission = hasCrossVenuesPermission() && (hasPermission({
     permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS'
-  }) || !get('IS_MLISA_SA')
-  const fullOptimizationPermission = hasPermission({
+  }) || !get('IS_MLISA_SA'))
+  const fullOptimizationPermission = hasCrossVenuesPermission() && hasPermission({
     permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS',
     scopes: [WifiScopes.UPDATE]
   })

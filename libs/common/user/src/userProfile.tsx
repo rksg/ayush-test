@@ -189,6 +189,9 @@ export function isCustomAdmin () {
   return false
 }
 export function hasCrossVenuesPermission () {
+  if (get('IS_MLISA_SA')) {
+    return true
+  }
   /* For testing purposes */
   // const { abacEnabled, hasAllVenues } = getUserProfile()
   // return abacEnabled ? hasAllVenues : true
