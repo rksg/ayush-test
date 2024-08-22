@@ -5,6 +5,7 @@ import {
   Filter
 } from '@acx-ui/components'
 import {
+  EdgeSdLanApCompatibilitiesResponse,
   ClusterNetworkSettings,
   CommonResult,
   EdgeAllPortTrafficData,
@@ -39,8 +40,10 @@ import {
   PingEdge,
   SEARCH,
   SORTER,
+  EdgeSdLanCompatibilitiesResponse,
   TableResult,
   TraceRouteEdge,
+  VenueEdgeCompatibilitiesResponse,
   downloadFile,
   getEdgePortIpModeEnumValue,
   onActivityMessageReceived,
@@ -874,6 +877,36 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    getVenueEdgeCompatibilities: build.query<VenueEdgeCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'VENUE_COMPATIBILITY' }]
+    }),
+    getSdLanEdgeCompatibilities: build.query<EdgeSdLanCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanEdgeCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_EDGE_COMPATIBILITY' }]
+    }),
+    getSdLanApCompatibilities: build.query<EdgeSdLanApCompatibilitiesResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(EdgeUrlsInfo.getSdLanApCompatibilities, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SDLAN_AP_COMPATIBILITY' }]
+    }),
     patchEdgeClusterNetworkSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.patchEdgeClusterNetworkSettings, params)
@@ -1066,5 +1099,12 @@ export const {
   useGetEdgeClusterNetworkSettingsQuery,
   useGetEdgesPortStatusQuery,
   useLazyGetEdgesPortStatusQuery,
-  useGetEdgeFeatureSetsQuery
+  useGetEdgeFeatureSetsQuery,
+  useLazyGetEdgeFeatureSetsQuery,
+  useGetVenueEdgeCompatibilitiesQuery,
+  useLazyGetVenueEdgeCompatibilitiesQuery,
+  useGetSdLanEdgeCompatibilitiesQuery,
+  useLazyGetSdLanEdgeCompatibilitiesQuery,
+  useGetSdLanApCompatibilitiesQuery,
+  useLazyGetSdLanApCompatibilitiesQuery
 } = edgeApi
