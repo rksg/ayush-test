@@ -69,6 +69,7 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
   return (type === EdgeCompatibilityType.SD_LAN || type === EdgeCompatibilityType.ALONE)
     ? <EdgeSdLanDetailCompatibilityDrawer
       visible={true}
+      featureName={featureName!}
       title={type === EdgeCompatibilityType.ALONE
         ? $t({ defaultMessage: 'Compatibility Requirement' })
         : $t({ defaultMessage: 'Incompatibility Details' })

@@ -10,7 +10,8 @@ import {
 } from '@acx-ui/rc/components'
 import {
   ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY,
-  CompatibilityDeviceEnum
+  CompatibilityDeviceEnum,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 
 export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
@@ -57,6 +58,7 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
         : null}
       <EdgeSdLanDetailCompatibilityDrawer
         visible={isCompatibleDrawerVisible}
+        featureName={IncompatibilityFeatures.SD_LAN}
         data={sdLanCompatibilities}
         onClose={() => toggleCompatibilityDrawer(false)}
       />

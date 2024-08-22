@@ -50,7 +50,8 @@ export default function MyServices () {
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const [openEdgeCompatibility, setOpenEdgeCompatibility] = useState<boolean>(false)
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   const services: ServicePolicyCardData<ServiceType>[] = [
     {
@@ -99,9 +100,7 @@ export default function MyServices () {
         ? <ApCompatibilityToolTip
           title={''}
           visible={true}
-          onClick={() => {
-            setOpenEdgeCompatibility(true)
-          }}
+          onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
         />
         : undefined,
       disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
@@ -190,12 +189,12 @@ export default function MyServices () {
           )
         })}
       </GridRow>
-      {openEdgeCompatibility && <EdgeCompatibilityDrawer
-        visible={openEdgeCompatibility}
+      {edgeCompatibilityFeature && <EdgeCompatibilityDrawer
+        visible
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
-        featureName={IncompatibilityFeatures.SD_LAN}
-        onClose={() => setOpenEdgeCompatibility(false)}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
       />}
     </>
   )

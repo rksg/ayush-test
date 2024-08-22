@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { find }                      from 'lodash'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
@@ -50,8 +51,20 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
+
+  if (isEdgeCompatibilityEnabled) {
+    find(policies, { type: PolicyType.TUNNEL_PROFILE })!.helpIcon = isEdgeCompatibilityEnabled
+      ? <ApCompatibilityToolTip
+        title=''
+        visible
+        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
+      />
+      : undefined
+  }
 
   const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
 
@@ -103,6 +116,14 @@ export default function MyPolicies () {
           })
         }
       </GridRow>
+      { edgeFeatureName && <EdgeCompatibilityDrawer
+        visible
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeFeatureName}
+        onClose={() => setEdgeFeatureName(undefined)}
+      />
+      }
     </>
   )
 }
@@ -118,7 +139,6 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   return [
     {
@@ -220,10 +240,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       }, { skip: !isEdgeEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeEnabled,
-      helpIcon: isEdgeCompatibilityEnabled
-        ? <CompatibilityRequirementInfo featureName={IncompatibilityFeatures.TUNNEL_PROFILE} />
-        : undefined
+      disabled: !isEdgeEnabled
     },
     {
       type: PolicyType.CONNECTION_METERING,
@@ -273,25 +290,4 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       disabled: !isEdgeQosEnabled
     }
   ]
-}
-
-// eslint-disable-next-line max-len
-export const CompatibilityRequirementInfo = ({ featureName } : { featureName: string }) => {
-  const { $t } = useIntl()
-  const [open, setOpen] = useState<boolean>(false)
-
-  return <>
-    <ApCompatibilityToolTip
-      title={''}
-      visible={true}
-      onClick={() => setOpen(true)}
-    />
-    {open && <EdgeCompatibilityDrawer
-      visible={open}
-      type={EdgeCompatibilityType.ALONE}
-      title={$t({ defaultMessage: 'Compatibility Requirement' })}
-      featureName={featureName as IncompatibilityFeatures}
-      onClose={() => setOpen(false)}
-    />}
-  </>
 }

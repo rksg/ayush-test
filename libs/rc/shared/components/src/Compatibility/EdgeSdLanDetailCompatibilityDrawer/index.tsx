@@ -4,10 +4,11 @@ import { useIntl } from 'react-intl'
 import { Drawer, Loader }                            from '@acx-ui/components'
 import {  ApCompatibility, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
-import { FeatureCrossDeviceTypeCompatibility } from '../CompatibilityDrawer'
+import { FeatureCrossDeviceTypeCompatibility } from '../CompatibilityDrawer/FeatureCrossDeviceTypeCompatibility'
 
 export type EdgeSdLanDetailCompatibilityDrawerProps = {
   visible: boolean,
+  featureName: IncompatibilityFeatures,
   data: Record<string, ApCompatibility>,
   onClose: () => void,
   title?: string,
@@ -19,6 +20,7 @@ export const EdgeSdLanDetailCompatibilityDrawer = (props: EdgeSdLanDetailCompati
   const { $t } = useIntl()
   const {
     visible,
+    featureName,
     title,
     isLoading = false,
     data,
@@ -38,7 +40,7 @@ export const EdgeSdLanDetailCompatibilityDrawer = (props: EdgeSdLanDetailCompati
         <Form layout='vertical'>
           <FeatureCrossDeviceTypeCompatibility
             data={data}
-            featureName={IncompatibilityFeatures.SD_LAN}
+            featureName={featureName}
           />
         </Form>
       </Loader>
