@@ -124,6 +124,7 @@ export interface TenantDetails {
   }
   accountTier?: AccountTier;
   subscribes?: string;
+  extendedTrial?: boolean;
 }
 
 export enum AdministrationDelegationType {
@@ -332,6 +333,7 @@ export interface PrivilegeGroup {
   scope?: string,
   memberCount?: number,
   allCustomers?: boolean,
+  allVenues?: boolean,
   delegation?: boolean,
   policies?: PrivilegePolicy[],
   policyEntityDTOS?: PrivilegePolicyEntity[]

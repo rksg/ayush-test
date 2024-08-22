@@ -16,6 +16,7 @@ import {
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
+  EdgeFeatureEnum,
   EdgeStatusEnum,
   deriveEdgeModel,
   edgeSerialNumberValidator,
@@ -79,7 +80,8 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     params: { tenantId }, payload: haAaFeatureRequirementPayload }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        requiredFw: data?.featureSets?.find(item => item.featureName === 'HA-AA')?.requiredFw,
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === EdgeFeatureEnum.HA_AA)?.requiredFw,
         isLoading
       }
     }
