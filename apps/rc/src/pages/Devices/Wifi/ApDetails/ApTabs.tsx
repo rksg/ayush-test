@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                             from '@acx-ui/components'
 import { ApDetailHeader, ApDeviceStatusEnum, useApContext } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { hasRaiPermission}                                  from '@acx-ui/user'
+import { hasRaiPermission }                                 from '@acx-ui/user'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()

@@ -1,5 +1,5 @@
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { goToNotFound, hasRaiPermission} from '@acx-ui/user'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
 
 import { ApAnalyticsTab }       from './ApAnalyticsTab'
 import { ApClientsTab }         from './ApClientsTab'

@@ -3,8 +3,7 @@ import '@testing-library/jest-dom'
 
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RolesEnum }                          from '@acx-ui/types'
-import {getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile} from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions }  from '@acx-ui/user'
 
 import { switchDetailData } from './__tests__/fixtures'
 import SwitchTabs           from './SwitchTabs'

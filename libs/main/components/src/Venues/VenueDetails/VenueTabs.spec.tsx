@@ -6,8 +6,7 @@ import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CommonRbacUrlsInfo, VenueDetailHeader } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { render, mockServer, screen, waitFor }   from '@acx-ui/test-utils'
-import { RolesEnum }                             from '@acx-ui/types'
-import {getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile} from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions }     from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 

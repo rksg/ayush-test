@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                  from '@acx-ui/components'
 import { SwitchViewModel, isOperationalSwitch }  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasRaiPermission}                       from '@acx-ui/user'
+import { hasRaiPermission }                      from '@acx-ui/user'
 
 function SwitchTabs (props:{ switchDetail: SwitchViewModel }) {
   const { $t } = useIntl()
