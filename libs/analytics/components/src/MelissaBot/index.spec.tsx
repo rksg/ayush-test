@@ -102,7 +102,7 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
-    await screen.findByText('What is cloud RRM?')
+    await screen.findAllByText('What is cloud RRM?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot()
   })
@@ -117,7 +117,7 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
-    await screen.findByText('What is cloud RRM?')
+    await screen.findAllByText('What is cloud RRM?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
     global.fetch = jest.fn().mockImplementation(() =>
@@ -129,9 +129,11 @@ describe('MelissaBot', () => {
       fireEvent.click(await screen.findByLabelText('General'))
     })
     await act(async ()=>{
-      await userEvent.type(screen.getByRole('textbox'),'How does wifi works?{enter}')
+      const textbox=screen.getByRole('textbox')
+      userEvent.clear(textbox)
+      await userEvent.type(textbox,'How does wifi works?{enter}')
     })
-    await screen.findByText('How does wifi works?')
+    await screen.findAllByText('How does wifi works?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(10)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('general-mode')
     await act(async ()=>{
@@ -152,7 +154,7 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
-    await screen.findByText('What is cloud RRM?')
+    await screen.findAllByText('What is cloud RRM?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
     global.fetch = jest.fn().mockImplementation(() =>
@@ -164,9 +166,11 @@ describe('MelissaBot', () => {
       fireEvent.click(await screen.findByLabelText('General'))
     })
     await act(async ()=>{
-      await userEvent.type(screen.getByRole('textbox'),'How does wifi works?{enter}')
+      const textbox=screen.getByRole('textbox')
+      userEvent.clear(textbox)
+      await userEvent.type(textbox,'How does wifi works?{enter}')
     })
-    await screen.findByText('How does wifi works?')
+    await screen.findAllByText('How does wifi works?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(10)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('general-mode')
     await new Promise((r) => setTimeout(r, (sessionTimeoutInSecs + 2) * 1000))
@@ -184,7 +188,7 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
-    await screen.findByText('What is cloud RRM?')
+    await screen.findAllByText('What is cloud RRM?')
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
     await new Promise((r) => setTimeout(r, (sessionTimeoutInSecs + 2) * 1000))
@@ -209,7 +213,7 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
     })
-    await screen.findByText('What is cloud RRM?')
+    await screen.findAllByText('What is cloud RRM?')
     await screen.findByText(ERROR_MSG)
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(5)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error1')
@@ -219,9 +223,11 @@ describe('MelissaBot', () => {
       })
     )
     await act(async ()=>{
-      await userEvent.type(screen.getByRole('textbox'),'What is datastudio?{enter}')
+      const textbox=screen.getByRole('textbox')
+      await userEvent.clear(textbox)
+      await userEvent.type(textbox,'What is datastudio?{enter}')
     })
-    await screen.findByText('What is datastudio?')
+    await screen.findAllByText('What is datastudio?')
     await screen.findAllByText(ERROR_MSG)
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
     expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after:error2')
@@ -242,7 +248,7 @@ describe('MelissaBot', () => {
     await act(async ()=>{
       await userEvent.type(screen.getByRole('textbox'),'support{enter}')
     })
-    await screen.findByText('support')
+    await screen.findAllByText('support')
     await act(async ()=>{
       fireEvent.click(await screen.findByTestId('button-link'))
     })
