@@ -34,6 +34,7 @@ export interface ServicePolicyCardData<T> {
   listViewPath?: Path
   disabled?: boolean
   scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
+  helpIcon?: React.ReactNode
 }
 // eslint-disable-next-line max-len
 export function isServicePolicyCardEnabled<T> (cardItem: ServicePolicyCardData<T>, oper: ServicePolicyScopeKeyOper): boolean {

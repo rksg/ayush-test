@@ -1,8 +1,10 @@
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }                              from '@acx-ui/rc/components'
+import { useIntl, FormattedMessage } from 'react-intl'
+
+import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -22,6 +24,7 @@ import {
   useSyslogPolicyListQuery
 } from '@acx-ui/rc/services'
 import {
+  IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
   ServicePolicyCardData,
@@ -67,18 +70,28 @@ export default function MyPolicies () {
         {
           // eslint-disable-next-line max-len
           policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+            const title = <FormattedMessage
+              defaultMessage={
+                '{name} ({count})<helpIcon></helpIcon>'
+              }
+              values={{
+                name: $t(policyTypeLabelMapping[policy.type]),
+                count: policy.totalCount ?? 0,
+                helpIcon: () => {
+                  return policy.helpIcon
+                    ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                    : ''
+                }
+              }}
+            />
+
             return (
               <GridCol key={policy.type} col={{ span: 6 }}>
                 <RadioCard
                   type={'default'}
                   key={`${policy.type}_${index}`}
                   value={policy.type}
-                  title={$t({
-                    defaultMessage: '{name} ({count})'
-                  }, {
-                    name: $t(policyTypeLabelMapping[policy.type]),
-                    count: policy.totalCount ?? 0
-                  })}
+                  title={title}
                   description={$t(policyTypeDescMapping[policy.type])}
                   categories={policy.categories}
                   onClick={() => {
@@ -105,6 +118,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   return [
     {
@@ -206,7 +220,10 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       }, { skip: !isEdgeEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled,
+      helpIcon: isEdgeCompatibilityEnabled
+        ? <CompatibilityRequirementInfo featureName={IncompatibilityFeatures.TUNNEL_PROFILE} />
+        : undefined
     },
     {
       type: PolicyType.CONNECTION_METERING,
@@ -256,4 +273,25 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       disabled: !isEdgeQosEnabled
     }
   ]
+}
+
+// eslint-disable-next-line max-len
+export const CompatibilityRequirementInfo = ({ featureName } : { featureName: string }) => {
+  const { $t } = useIntl()
+  const [open, setOpen] = useState<boolean>(false)
+
+  return <>
+    <ApCompatibilityToolTip
+      title={''}
+      visible={true}
+      onClick={() => setOpen(true)}
+    />
+    {open && <EdgeCompatibilityDrawer
+      visible={open}
+      type={EdgeCompatibilityType.ALONE}
+      title={$t({ defaultMessage: 'Compatibility Requirement' })}
+      featureName={featureName as IncompatibilityFeatures}
+      onClose={() => setOpen(false)}
+    />}
+  </>
 }

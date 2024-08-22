@@ -80,6 +80,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
       onClose={onClose}
       destroyOnClose={true}
       width={'500px'}
+
     >
       <Loader states={[ { isLoading } ]}>
         <Form layout='vertical'>

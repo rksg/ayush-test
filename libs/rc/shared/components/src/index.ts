@@ -233,6 +233,7 @@ export {
 export {
   ApGeneralCompatibilityDrawer,
   EdgeCompatibilityDrawer,
+  EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
   EdgeSdLanDetailCompatibilityDrawer,
   CompatibleAlertBanner

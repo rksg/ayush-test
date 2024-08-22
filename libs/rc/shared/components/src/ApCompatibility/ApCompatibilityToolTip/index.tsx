@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { ReactElement } from 'react'
+import { ReactElement, MouseEvent as ReactMouseEvent } from 'react'
 
 import { TooltipPlacement }          from 'antd/lib/tooltip'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -11,10 +11,10 @@ import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 export type ApCompatibilityToolTipProps = {
     visible: boolean,
     title: string,
-    onClick: () => void,
+    onClick: (e: ReactMouseEvent) => void,
     placement?: TooltipPlacement,
     icon?: ReactElement
-  }
+}
 
 /*
   Sample:
@@ -32,6 +32,11 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
         'See the compatibility requirements.'
   })
 
+  const handleOnClick = (e: ReactMouseEvent) => {
+    e.stopPropagation()
+    onClick(e)
+  }
+
   return (<Tooltip
     title={
       <FormattedMessage
@@ -44,7 +49,7 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
             type='link'
             data-testid='tooltip-button'
             style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-            onClick={onClick}>
+            onClick={handleOnClick}>
             {compatibilityToolTipInfo}
           </Button>:[])
         }}
