@@ -114,6 +114,21 @@ export const Bot = styled.div`
   padding: 14px 15px 14px 15px;
 `
 
+export const System = styled.div`
+  max-width: 350px;
+  height: auto;
+  border: none;
+  color: ${cssStr('--acx-primary-black')};
+  font-weight: ${cssStr('--acx-body-font-weight')};
+  font-family: ${cssStr('--acx-neutral-brand-font')};
+  font-style: italic;
+  font-size: ${cssStr('--acx-body-4-font-size')};
+  line-height: ${cssStr('--acx-body-4-line-height')};
+  margin-top: 10px;
+  text-align: center;
+  padding: 14px 15px 14px 15px;
+`
+
 const ChatTypingWrapper = styled.div`
 .typing {
   align-items: center;

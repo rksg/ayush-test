@@ -51,7 +51,8 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
   const { $t } = useIntl()
   const GENERIC_ERROR_MSG= $t({ defaultMessage: 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.' })
   const subTitleText = $t({ defaultMessage: 'with Generative AI' })
-  const askAnything = $t({ defaultMessage: 'Ask Anything' })
+  const askAnythingNetwork = $t({ defaultMessage: 'Ask me anything about your network...' })
+  const askAnythingGeneral = $t({ defaultMessage: 'Ask me anything about Ruckus products and technical information...' })
   const sessionTimeoutText = $t({ defaultMessage: 'Session Timed out.' })
   const doneText = $t({ defaultMessage: 'done!' })
   const betaSuperScriptText = 'ᴮᴱᵀᴬ'
@@ -341,10 +342,11 @@ export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_
             }
             defer(doAfterResponse)
           }}/>
-        <Input ref={inputRef}
-          placeholder={askAnything}
+        <Input.TextArea ref={inputRef}
+          placeholder={mode === 'my-network' ? askAnythingNetwork : askAnythingGeneral}
           value={inputValue}
           disabled={state.isInputDisabled}
+          autoSize={{ minRows: 2, maxRows: 3 }}
           style={{ height: '52px', borderColor: cssStr('--acx-neutrals-25') }}
           onChange={(e) => {
             setInputValue(e.target.value)
