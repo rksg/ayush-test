@@ -211,7 +211,7 @@ describe('hasCrossVenuesPermission', () => {
     jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
     expect(hasCrossVenuesPermission()).toBe(true)
   })
-  
+
 })
 
 describe('filterByAccess', () => {
