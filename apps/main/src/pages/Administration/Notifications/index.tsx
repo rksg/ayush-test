@@ -24,8 +24,12 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }         from '@acx-ui/react-router-dom'
+import {
+  filterByAccess,
+  hasAccess,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
 
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
@@ -193,8 +197,8 @@ export const NotificationsTable = () => {
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
-          actions={filterByAccess(tableActions)}
+          rowSelection={hasCrossVenuesPermission() && hasAccess() && { type: 'checkbox' }}
+          actions={hasCrossVenuesPermission() ? filterByAccess(tableActions) : []}
         />
       </Loader>
 

@@ -16,8 +16,9 @@ import {
   ApplicationAuthenticationStatus,
   roleDisplayText
 } from '@acx-ui/rc/utils'
-import { store }     from '@acx-ui/store'
-import { RolesEnum } from '@acx-ui/types'
+import { store }                    from '@acx-ui/store'
+import { RolesEnum }                from '@acx-ui/types'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { AddApplicationDrawer } from './AddApplicationDrawer'
 
@@ -74,6 +75,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
                 style={{ marginLeft: '290px', marginTop: '17px' }}
                 type='link'
                 key='viewxml'
+                disabled={!hasCrossVenuesPermission()}
                 onClick={() => {onAddAppToken()}}>
                 {$t({ defaultMessage: 'Add Application Token' })}
               </Button>
@@ -195,7 +197,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
             content: $t({
               defaultMessage: `
               You are about to revoke access for the "{formattedName}" application.
-              This will prevent the application from accessing your data and performing 
+              This will prevent the application from accessing your data and performing
               actions on your behalf
               `
             }, { formattedName: rows[0].name }),
@@ -258,11 +260,11 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
     return (
       <Table
         columns={columns}
-        actions={actions}
+        actions={hasCrossVenuesPermission() ? actions : []}
         dataSource={appTokenData}
         rowKey='id'
         rowActions={rowActions}
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasCrossVenuesPermission() && { type: 'radio' }}
       />
     )
   }

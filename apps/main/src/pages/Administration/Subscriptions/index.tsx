@@ -32,9 +32,9 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }                  from '@acx-ui/react-router-dom'
-import { filterByAccess }             from '@acx-ui/user'
-import { AccountType, noDataDisplay } from '@acx-ui/utils'
+import { useParams }                                from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { AccountType, noDataDisplay }               from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -292,7 +292,7 @@ export const SubscriptionTable = () => {
       }
       <Table
         columns={columns}
-        actions={filterByAccess(actions)}
+        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
         rowKey='id'
       />

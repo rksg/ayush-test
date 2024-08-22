@@ -33,12 +33,13 @@ import {
   compareSwitchVersion,
   SwitchModelGroupDisplayText
 } from '@acx-ui/rc/utils'
-import { useParams }                    from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
+  hasCrossVenuesPermission,
   hasPermission,
-  useUserProfileContext
+  hasRoles
 } from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -65,7 +66,6 @@ export function VenueFirmwareList () {
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
-  const { isCustomRole } = useUserProfileContext()
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenueV1002>({
     useQuery: useGetSwitchVenueVersionListV1002Query,
@@ -339,6 +339,9 @@ export function VenueFirmwareList () {
     scopes: [SwitchScopes.UPDATE]
   })
 
+  const isPreferencesVisible
+  = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -352,8 +355,8 @@ export function VenueFirmwareList () {
         enableApiFilter={true}
         rowKey='venueId'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox' }}
-        actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole ? [{
+        rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
+        actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
         }] : []}

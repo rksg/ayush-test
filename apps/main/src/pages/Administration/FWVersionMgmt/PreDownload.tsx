@@ -5,7 +5,8 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Subtitle } from '@acx-ui/components'
+import { Subtitle }                 from '@acx-ui/components'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -26,7 +27,11 @@ export function PreDownload (props: PreDownloadProps) {
         </Subtitle>
       </Col>
       <Col span={8}>
-        <Switch checked={checked} onChange={setChecked} data-testid='PreDownload' />
+        <Switch
+          checked={checked}
+          disabled={!hasCrossVenuesPermission()}
+          onChange={setChecked}
+          data-testid='PreDownload' />
       </Col>
       <Col>
         <UI.TitleActive>

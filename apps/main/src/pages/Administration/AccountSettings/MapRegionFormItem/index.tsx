@@ -3,6 +3,7 @@ import { useIntl }                            from 'react-intl'
 
 import { useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
 import { countryCodes, usePreference } from '@acx-ui/rc/components'
+import { hasCrossVenuesPermission }    from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -41,7 +42,7 @@ const MapRegionFormItem = () => {
               onChange={handleMapRegionChange}
               showSearch
               optionFilterProp='children'
-              disabled={isUpdatingPreference || isLoadingPreference}
+              disabled={!hasCrossVenuesPermission() || isUpdatingPreference || isLoadingPreference}
             >
               {countryCodes.map(({ label, value }) =>
                 (<Select.Option value={value} key={value} children={label}/>)

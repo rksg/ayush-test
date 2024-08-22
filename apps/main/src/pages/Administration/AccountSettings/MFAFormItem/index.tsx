@@ -3,12 +3,17 @@ import TextArea                                       from 'antd/lib/input/TextA
 import { useIntl }                                    from 'react-intl'
 import styled                                         from 'styled-components/macro'
 
-import { Card, showActionModal }                            from '@acx-ui/components'
-import { SpaceWrapper }                                     from '@acx-ui/rc/components'
-import { administrationApi, useGetTenantDetailsQuery }      from '@acx-ui/rc/services'
-import { useNavigate, useParams, useTenantLink }            from '@acx-ui/react-router-dom'
-import { store }                                            from '@acx-ui/store'
-import { MFAStatus, MfaDetailStatus, useToggleMFAMutation } from '@acx-ui/user'
+import { Card, showActionModal }                       from '@acx-ui/components'
+import { SpaceWrapper }                                from '@acx-ui/rc/components'
+import { administrationApi, useGetTenantDetailsQuery } from '@acx-ui/rc/services'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { store }                                       from '@acx-ui/store'
+import {
+  MFAStatus,
+  MfaDetailStatus,
+  hasCrossVenuesPermission,
+  useToggleMFAMutation
+} from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -81,7 +86,8 @@ const MFAFormItem = styled((props: MFAFormItemProps) => {
     ? tenantDetailsData?.data?.tenantMFA?.mfaStatus === MFAStatus.ENABLED
     : mfaTenantDetailsData?.tenantStatus === MFAStatus.ENABLED
   const recoveryCodes = mfaTenantDetailsData?.recoveryCodes
-  const isDisabled = !isPrimeAdminUser || isUpdating || ( isMspEc && isMfaEnabled )
+  const isDisabled = !hasCrossVenuesPermission() || !isPrimeAdminUser ||
+    isUpdating || (isMspEc && isMfaEnabled)
 
   return (
     <Row gutter={24} className={className}>

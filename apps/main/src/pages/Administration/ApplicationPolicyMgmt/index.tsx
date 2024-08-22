@@ -10,7 +10,7 @@ import { DateFormatEnum, formatter }                             from '@acx-ui/f
 import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType }                                 from '@acx-ui/rc/utils'
 import { WifiScopes }                                            from '@acx-ui/types'
-import { hasPermission }                                         from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasPermission }               from '@acx-ui/user'
 
 import * as UI                                                                           from './styledComponents'
 import { UpdateConfirms }                                                                from './UpdateConfirms'
@@ -99,7 +99,9 @@ const ApplicationPolicyMgmt = () => {
             </UI.CurrentDetail>
           </UI.FwContainer>
         </Space>
-        {updateAvailable && hasPermission({ scopes: [WifiScopes.UPDATE] }) && <>
+        {updateAvailable &&
+          hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          hasCrossVenuesPermission() && <>
           <div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
             {/* eslint-disable-next-line max-len */}
             {$t({ defaultMessage: 'Clicking "Update" will proceed with the below updates under this tenant' })}
@@ -116,23 +118,25 @@ const ApplicationPolicyMgmt = () => {
   }
   const updateDetails = () => {
     const tableActions = []
-    tableActions.push({
-      label: $t({ defaultMessage: 'Export All' }),
-      onClick: () => {
-        exportAllSigPack({ enableRbac: isWifiRbacEnabled }).unwrap().catch((error) => {
-          console.log(error) // eslint-disable-line no-console
-        })
-      }
-    })
-    tableActions.push({
-      label: $t({ defaultMessage: 'Export Current List' }),
-      onClick: () => {
-        exportSigPack({ params: { type }, enableRbac: isWifiRbacEnabled }).unwrap()
-          .catch((error) => {
+    if (hasCrossVenuesPermission()) {
+      tableActions.push({
+        label: $t({ defaultMessage: 'Export All' }),
+        onClick: () => {
+          exportAllSigPack({ enableRbac: isWifiRbacEnabled }).unwrap().catch((error) => {
             console.log(error) // eslint-disable-line no-console
           })
-      }
-    })
+        }
+      })
+      tableActions.push({
+        label: $t({ defaultMessage: 'Export Current List' }),
+        onClick: () => {
+          exportSigPack({ params: { type }, enableRbac: isWifiRbacEnabled }).unwrap()
+            .catch((error) => {
+              console.log(error) // eslint-disable-line no-console
+            })
+        }
+      })
+    }
 
     const added = changedAppsInfoMap[ApplicationUpdateType.APPLICATION_ADDED]?.data ?? []
     const updated = changedAppsInfoMap[ApplicationUpdateType.CATEGORY_UPDATED]?.data ?? []

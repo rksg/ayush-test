@@ -30,10 +30,15 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }                         from '@acx-ui/types'
-import { filterByAccess, hasPermission, useUserProfileContext } from '@acx-ui/user'
-import { noDataDisplay }                                        from '@acx-ui/utils'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  hasCrossVenuesPermission,
+  hasPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -67,7 +72,6 @@ export const VenueFirmwareTable = (
   const intl = useIntl()
   const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const { isCustomRole } = useUserProfileContext()
 
   const {
     getSwitchNextScheduleTplTooltip,
@@ -289,7 +293,7 @@ export const VenueFirmwareTable = (
   })
 
   const isPreferencesVisible
-    = hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole
+    = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
     <Loader states={[tableQuery,
@@ -304,7 +308,8 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        rowSelection={hasCrossVenuesPermission() &&
+          isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
         actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)

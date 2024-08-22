@@ -1,8 +1,8 @@
 import { Form, Select } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { useUserProfileContext }               from '@acx-ui/user'
-import { DEFAULT_SYS_LANG, useSupportedLangs } from '@acx-ui/utils'
+import { hasCrossVenuesPermission, useUserProfileContext } from '@acx-ui/user'
+import { DEFAULT_SYS_LANG, useSupportedLangs }             from '@acx-ui/utils'
 
 const PreferredLanguageFormItem = () => {
   const { $t } = useIntl()
@@ -18,6 +18,7 @@ const PreferredLanguageFormItem = () => {
       <Select
         value={userProfile?.preferredLanguage || DEFAULT_SYS_LANG}
         optionFilterProp='children'
+        disabled={!hasCrossVenuesPermission()}
         style={{ textTransform: 'capitalize' }}
       >
         {supportedLangs.map(({ label, value }) =>

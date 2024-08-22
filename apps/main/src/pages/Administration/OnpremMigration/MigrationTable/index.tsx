@@ -32,8 +32,8 @@ import {
   TaskContextType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { hasPermission } from '@acx-ui/user'
+import { TenantLink }                              from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import {
   GuestsDetail
@@ -201,7 +201,7 @@ const MigrationTable = () => {
             {$t({ defaultMessage: 'Migrated ZD Configurations' })}
           </Subtitle>
         </Col>
-        { hasPermission() &&
+        { hasCrossVenuesPermission() && hasPermission() &&
         <Col span={12}>
           <SpaceWrapper full justifycontent='flex-end' size='large'>
             <TenantLink to='/administration/onpremMigration/add'>
@@ -220,7 +220,7 @@ const MigrationTable = () => {
         // dataSource={migrationList}
         rowKey='taskId'
         rowActions={rowActions}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={hasCrossVenuesPermission() && { type: 'checkbox' }}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         searchableWidth={430}

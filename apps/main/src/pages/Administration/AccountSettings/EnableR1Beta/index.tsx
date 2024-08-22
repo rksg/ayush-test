@@ -3,11 +3,15 @@ import { useEffect, useState } from 'react'
 import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { Loader, showActionModal }                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
-import { SpaceWrapper }                                       from '@acx-ui/rc/components'
-import { useUserProfileContext, useToggleBetaStatusMutation } from '@acx-ui/user'
-import { userLogout }                                         from '@acx-ui/utils'
+import { Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { SpaceWrapper }            from '@acx-ui/rc/components'
+import {
+  useUserProfileContext,
+  useToggleBetaStatusMutation,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
+import { userLogout } from '@acx-ui/utils'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -31,7 +35,7 @@ function EnableR1Beta (props: EnableR1BetaProps) {
   const [showShowBetaFeaturesDrawer, setShowBetaFeaturesDrawer] = useState(false)
   const [checked, setChecked] = useState(betaEnabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
-  const isDisabled = isUpdating
+  const isDisabled = !hasCrossVenuesPermission() || isUpdating
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const openR1BetaTermsConditionDrawer = () => {
