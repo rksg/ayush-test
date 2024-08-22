@@ -70,5 +70,10 @@ export const PortalUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/portalServiceProfiles/query',
     newApi: true
+  },
+  activatePortal: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/portalServiceProfiles/:serviceId',
+    newApi: true
   }
 }
