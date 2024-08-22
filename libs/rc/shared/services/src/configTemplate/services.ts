@@ -194,8 +194,9 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
     }),
     updatePortalTemplate: build.mutation<CommonResult, RequestPayload<Portal>>({
-      query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         // eslint-disable-next-line max-len
         const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updatePortal,
           params, customHeaders)
