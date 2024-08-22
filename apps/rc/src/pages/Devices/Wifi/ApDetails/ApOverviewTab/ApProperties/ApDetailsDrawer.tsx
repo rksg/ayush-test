@@ -22,7 +22,8 @@ import {
   useGetVenueSettingsQuery,
   useGetApValidChannelQuery,
   useLazySwitchPortlistQuery,
-  useLazyGetLagListQuery
+  useLazyGetLagListQuery,
+  useGetApOperationalQuery
 } from '@acx-ui/rc/services'
 import {
   ApDetails,
@@ -51,8 +52,25 @@ interface ApDetailsDrawerProps {
   apDetails: ApDetails
 }
 
-export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
+const useGetApPassword = (currentAP: ApViewModel) => {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const params = {
+    venueId: currentAP?.venueId,
+    serialNumber: currentAP?.serialNumber
+  }
+
+  const { data: venueSettings } = useGetVenueSettingsQuery({ params },
+    { skip: isUseRbacApi || !currentAP?.venueId })
+
+  const { data: venueRbacApSetings } = useGetApOperationalQuery({ params, enableRbac: isUseRbacApi },
+    { skip: !isUseRbacApi || !currentAP?.venueId })
+
+  return isUseRbacApi ? venueRbacApSetings?.loginPassword : venueSettings?.apPassword
+}
+
+
+export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
+  const isUseRbacApi = true//useIsSplitOn(Features.WIFI_RBAC_API)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
@@ -90,9 +108,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
 
-  // TODO: wait for BE support RBAC API to get `apPassword`
-  const { data: venueSettings } = useGetVenueSettingsQuery({ params, enableRbac: isUseRbacApi },
-    { skip: !currentAP?.venueId })
+  const apPassword = useGetApPassword(currentAP)
 
   const fetchSwitchDetails = async () => {
     if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
@@ -122,7 +138,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
         })
 
       setSwitchPort(<Tooltip title={tooltip}> {currentAP?.switchPort} </Tooltip>)
-    }else if(portData){
+    } else if(portData) {
       const onEditLag = async () => {
         const { data: lagList } = await getLagList({
           params: {
@@ -227,15 +243,14 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       <Divider/>
       <Descriptions labelWidthPercent={50}>
         {
-          (userProfile?.support || userProfile?.var || userProfile?.dogfood) &&
-          venueSettings?.apPassword &&
+          (userProfile?.support || userProfile?.var || userProfile?.dogfood) && apPassword &&
           <Descriptions.Item
             label={$t({ defaultMessage: 'Admin Password' })}
             children={<UI.DetailsPassword>
               <PasswordInput
                 readOnly
                 bordered={false}
-                value={venueSettings?.apPassword}
+                value={apPassword}
               />
             </UI.DetailsPassword>}
           />
