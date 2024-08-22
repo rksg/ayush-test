@@ -21,7 +21,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                   from '@acx-ui/types'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 export default function ResidentPortalTable () {
   const intl = useIntl()
@@ -41,6 +41,7 @@ export default function ResidentPortalTable () {
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
       visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -61,6 +62,7 @@ export default function ResidentPortalTable () {
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -148,7 +150,7 @@ export default function ResidentPortalTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasPermission() && { type: 'radio' }}
         />
       </Loader>
     </>

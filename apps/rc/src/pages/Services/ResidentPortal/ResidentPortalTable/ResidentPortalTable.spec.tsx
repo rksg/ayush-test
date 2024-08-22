@@ -24,10 +24,6 @@ import { mockedDetailedResidentPortalList, mockedResidentPortalList } from '../_
 
 import ResidentPortalTable from './ResidentPortalTable'
 
-
-// import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
-// import DpskTable                                     from './DpskTable'
-
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
@@ -156,6 +152,36 @@ describe('ResidentPortalTable', () => {
       expect(screen.queryByRole('dialog')).toBeNull()
     )
   })
+
+
+  it('should not allow delete or edit when not allowed by RBAC scope', async () => {
+
+    setUserProfile({
+      profile: {
+        ...getUserProfile().profile
+      },
+      allowedOperations: [],
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(
+      <Provider>
+        <ResidentPortalTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetPortal = mockedDetailedResidentPortalList.content[1]
+    const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    expect(screen.queryByRole('button', { name: /Edit/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+  })
+
 
   it('should not delete the selected row when it is mapped to Venue', async () => {
 

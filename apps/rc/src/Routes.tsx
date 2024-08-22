@@ -682,7 +682,7 @@ function ServiceRoutes () {
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
-        element={<AuthRoute scopes={[WifiScopes.CREATE]}>
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}>
           <ResidentPortalForm editMode={true} />
         </AuthRoute>}
       />
