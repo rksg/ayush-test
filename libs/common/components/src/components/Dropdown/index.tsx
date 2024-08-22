@@ -85,6 +85,8 @@ function roundUpTimeToNearest15Minutes (timeStr: string) {
 }
 
 function getDisabledTime (dateSelected: Moment | null) {
+  console.log(moment())
+  console.log(dateSelected)
   if (dateSelected === null || !dateSelected.startOf('day').isSame(moment().startOf('day'))) {
     return 0
   }

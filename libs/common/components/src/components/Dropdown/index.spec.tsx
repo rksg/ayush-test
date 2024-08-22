@@ -7,7 +7,7 @@ import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker'
 import dayjs                                 from 'dayjs'
 import moment                                from 'moment-timezone'
 
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { fireEvent, render, renderHook, screen } from '@acx-ui/test-utils'
 
 import { regionMenu } from './stories'
 
@@ -80,9 +80,9 @@ export const renderFormHook = () => {
 
 const mockTime : MutableRefObject<number> = { current: 5.5 }
 describe('DateTimeDropdown', () => {
-
-  it('renders correctly', async () => {
-    const testDate = moment('2024-08-12T10:30:00')
+  jest.spyOn(Date,'now').mockReturnValue(+new Date('2024-08-12T10:30:00')) // mock current datetime
+  it('renders correctly for', async () => {
+    const testDate = moment('2024-08-13T00:00:00')
     const testOnChange: DatePickerProps['onChange'] = () => {}
     render( <Form> <DateTimeDropdown
       name={'Testing'}
@@ -97,49 +97,61 @@ describe('DateTimeDropdown', () => {
     expect(await screen.findByText('This is Date Label')).toBeVisible()
     expect(await screen.findByText('This is Time Label')).toBeVisible()
 
-    const dateInitialInput = await screen.findByTitle('2024-08-12')
-    expect(dateInitialInput).toBeVisible()
-    expect(dateInitialInput).toHaveValue('2024-08-12')
+    const datpickerInput = await screen.findByTitle('2024-08-13')
+    expect(datpickerInput).toBeVisible()
+    expect(datpickerInput).toHaveValue('2024-08-13')
 
     expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
     expect(screen.getByText('05:30 (UTC+00)')).toBeVisible()
+
+    expect(screen.queryByText('00:00 (UTC+00)')).not.toBeDisabled()
+    expect(screen.queryByText('23:45 (UTC+00)')).not.toBeDisabled()
+
   })
 
-  it('should handle events', async () => {
-    const testDate = moment('2024-08-12T10:30:00')
+  it('should handle time disabling events', async () => {
+    const testDate = moment('2024-08-13T00:00:00')
     const { form } = renderFormHook()
+    const spy = jest.spyOn(form, 'setFieldValue')
 
-    const testOnChange: DatePickerProps['onChange'] = (date) => {
-      form.setFieldValue(['settings', 'date'], date)
+    const testOnChange: DatePickerProps['onChange'] = () => {
       form.setFieldValue(['settings', 'hour'], null)
     }
-    const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
-      return current && current < dayjs().startOf('day')
-    }
+
     render( <Form> <DateTimeDropdown
       name={'Testing'}
       dateLabel={'This is Date Label'}
       timeLabel={'This is Time Label'}
       initialDate={testDate}
-      disabledDate={testDisabledDate}
       time={mockTime}
       onchange={testOnChange}
     />
     </Form>
     )
-    const dateInitialInput = await screen.findByTitle('2024-08-12')
+    const dateInitialInput = await screen.findByTitle('2024-08-13')
     expect(dateInitialInput).toBeVisible()
-    expect(dateInitialInput).toHaveValue('2024-08-12')
+    expect(dateInitialInput).toHaveValue('2024-08-13')
 
-    expect(screen.queryByText('Mo')).not.toBeInTheDocument()
-    expect(screen.queryByText('17')).not.toBeInTheDocument()
-    await userEvent.click(dateInitialInput)
-    expect(screen.getByText('Mo')).toBeInTheDocument()
-    expect(screen.getByText('17')).toBeInTheDocument()
+    expect(screen.queryByText('00:00 (UTC+00)')).not.toBeDisabled()
+    expect(screen.queryByText('23:45 (UTC+00)')).not.toBeDisabled()
 
-    const timeInitialInput = await screen.findByPlaceholderText('Select hour')
-    await userEvent.click(timeInitialInput)
-    expect(screen.getByText('05:30 (UTC+00)')).toBeVisible()
-    expect(screen.getByText('23:45 (UTC+00)')).toBeVisible()
+    const datepicker = screen.getByRole('img', { name: 'calendar' })
+    expect(datepicker).toBeEnabled()
+    await userEvent.click(datepicker)
+
+    // Select current date
+    const datepickerInput = screen.getByPlaceholderText('Select date')
+    fireEvent.change(datepickerInput, { target: { value: '2024-08-12' } })
+    await userEvent.click(screen.getByRole('cell', { name: '2024-08-12' }))
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy.mock.calls).toEqual([
+      [['settings', 'hour'], null]
+    ])
+
+    // Time before current should be disabled
+    expect(screen.queryByText('10:15 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('00:00 (UTC+00)')).toBeDisabled()
+    expect(screen.queryByText('10:30 (UTC+00)')).not.toBeDisabled()
+    expect(screen.queryByText('23:45 (UTC+00)')).not.toBeDisabled()
   })
 })
