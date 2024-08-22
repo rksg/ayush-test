@@ -15,7 +15,7 @@ import {
 import type { PathFilter } from '@acx-ui/utils'
 
 import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent } from './config'
-import { displayStates }                                                         from './states'
+import { DisplayStates }                                                         from './states'
 import {
   Actions,
   IntentWlan,
@@ -43,7 +43,7 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
-const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
+const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
