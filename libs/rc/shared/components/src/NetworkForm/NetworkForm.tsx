@@ -221,22 +221,25 @@ export function NetworkForm (props:{
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if(!editMode&&!saveState.enableAccountingService){
-      delete saveState.accountingRadius
-    }
+    updateSaveState((preState) => {
+      const updateSate = { ...preState }
+      if(!editMode&&!updateSate.enableAccountingService){
+        delete updateSate.accountingRadius
+      }
 
-    // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
-    if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
-        && !saveData.isCloudpathEnabled) {
-      delete saveState.authRadius
-      delete saveState.authRadiusId
-      delete saveData?.authRadius
-      delete saveData?.authRadiusId
-    }
+      // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
+      if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
+          && !saveData.isCloudpathEnabled) {
+        delete updateSate.authRadius
+        delete updateSate.authRadiusId
+        delete saveData?.authRadius
+        delete saveData?.authRadiusId
+      }
 
-    const newSavedata = { ...saveState, ...saveData }
-    newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
-    updateSaveState((preState) => ({ ...preState, ...saveState, ...newSavedata }))
+      const newSavedata = { ...updateSate, ...saveData }
+      newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      return { ...saveState, ...newSavedata }
+    })
   }
 
   const { data } = useGetNetwork()
@@ -818,6 +821,7 @@ export function NetworkForm (props:{
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
+      processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
