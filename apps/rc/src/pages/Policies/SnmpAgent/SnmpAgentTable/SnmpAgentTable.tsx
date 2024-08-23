@@ -25,9 +25,9 @@ import {
   PolicyOperation,
   PolicyType,
   useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }     from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { TenantLink, useTenantLink }                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -160,7 +160,7 @@ export default function SnmpAgentTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={((list?.totalCount as number) < 64) && filterByAccess([
+        extra={(hasCrossVenuesPermission() && (list?.totalCount as number) < 64) && filterByAccess([
           <TenantLink scopeKey={[WifiScopes.CREATE]}
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
           >
@@ -180,7 +180,7 @@ export default function SnmpAgentTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasPermission() && { type: 'radio' }}
+          rowSelection={hasCrossVenuesPermission() && hasPermission() && { type: 'radio' }}
         />
       </Loader>
     </>
