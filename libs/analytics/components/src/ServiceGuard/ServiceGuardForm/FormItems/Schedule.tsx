@@ -69,7 +69,7 @@ export function Schedule () {
       <Row align='middle' justify='center'>
         {
           typeWithSchedule === ScheduleFrequency.Daily &&
-          <TimeDropdown name={name} spanLength={24} />
+          <TimeDropdown name={[name, 'hour']} spanLength={24} />
         }
         {
           typeWithSchedule === ScheduleFrequency.Weekly &&

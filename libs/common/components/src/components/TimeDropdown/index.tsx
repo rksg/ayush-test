@@ -1,5 +1,9 @@
-import { Form, Col, Select } from 'antd'
-import moment                from 'moment'
+import React from 'react'
+
+import { Form, Col, Select, FormItemProps, SelectProps } from 'antd'
+import { NamePath }                                      from 'antd/lib/form/interface'
+import { castArray  }                                    from 'lodash'
+import moment                                            from 'moment'
 import {
   FormattedMessage,
   defineMessage,
@@ -111,17 +115,20 @@ const defaultDisabledTime =
 
 
 interface TimeDropdownProps {
-  name: string
+  name: NamePath
+  label?: React.ReactNode
+  placeholder?: SelectProps['placeholder']
+  rules?: FormItemProps['rules']
   disabledDateTime?: {
     disabledStrictlyBefore?: number,
     disabledStrictlyAfter?: number
   }
-  spanLength: number
+  spanLength?: number
 }
 
 interface DayTimeDropdownProps {
   type: Omit<DayAndTimeDropdownTypes, DayAndTimeDropdownTypes.Daily>
-  name: string
+  name: NamePath
   spanLength: number
 }
 
@@ -133,7 +140,7 @@ export function DayTimeDropdown ({ type, name, spanLength }: DayTimeDropdownProp
         day: () => (
           <Col span={spanLength}>
             <Form.Item
-              name={[name, 'day']}
+              name={[...castArray(name), 'day']}
               rules={[{ required: true, message: $t({ defaultMessage: 'Please enter day' }) }]}
               noStyle
             >
@@ -145,8 +152,8 @@ export function DayTimeDropdown ({ type, name, spanLength }: DayTimeDropdownProp
         ),
         at: (children) => <UI.AtCol span={2}>{children}</UI.AtCol>,
         hour: () => <TimeDropdown
+          name={[...castArray(name), 'hour']}
           spanLength={spanLength}
-          name={name}
         />
       }}
     />
@@ -154,26 +161,30 @@ export function DayTimeDropdown ({ type, name, spanLength }: DayTimeDropdownProp
 }
 
 
-export function TimeDropdown ({ name, disabledDateTime, spanLength }: TimeDropdownProps) {
+export function TimeDropdown (props: TimeDropdownProps) {
   const { $t } = useIntl()
+  const {
+    name,
+    label,
+    disabledDateTime,
+    rules = [{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }],
+    placeholder = $t({ defaultMessage: 'Select hour' }),
+    spanLength = 24
+  } = props
 
   const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
   ?? defaultDisabledTime.disabledStrictlyBefore
   const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
   ?? defaultDisabledTime.disabledStrictlyAfter
 
-  return (
-    <Col span={spanLength}>
-      <Form.Item
-        name={[name, 'hour']}
-        rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
-        noStyle
-      >
-        <Select
-          placeholder={$t({ defaultMessage: 'Select hour' })}>
-          {timeOptions(disabledStrictlyBefore, disabledStrictlyAfter)}
-        </Select>
-      </Form.Item>
-    </Col>
-  )
+  const children = <Form.Item {...{ name, label, rules }} noStyle={label ? false : true}>
+    <Select
+      placeholder={placeholder}
+      children={timeOptions(disabledStrictlyBefore, disabledStrictlyAfter)}
+    />
+  </Form.Item>
+
+  if (label) return children
+
+  return <Col span={spanLength} children={children} />
 }

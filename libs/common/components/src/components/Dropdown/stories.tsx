@@ -1,11 +1,8 @@
-import React, { MutableRefObject } from 'react'
+import React from 'react'
 
-import { storiesOf }                    from '@storybook/react'
-import { DatePickerProps, Menu, Space } from 'antd'
-import { RangePickerProps }             from 'antd/lib/date-picker'
-import dayjs                            from 'dayjs'
-import moment                           from 'moment-timezone'
-import styled                           from 'styled-components/macro'
+import { storiesOf }   from '@storybook/react'
+import { Menu, Space } from 'antd'
+import styled          from 'styled-components/macro'
 
 import { WorldSolid, QuestionMarkCircleSolid, ConfigurationOutlined, CaretDownSolid } from '@acx-ui/icons'
 
@@ -14,9 +11,7 @@ import { LayoutUI } from '../Layout/styledComponents'
 
 import { CaretDownSolidIcon } from './styledComponents'
 
-import { DateTimeDropdown, Dropdown } from '.'
-
-
+import { Dropdown } from '.'
 
 const FakeLink = (props: React.PropsWithChildren) =>
   // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -96,36 +91,4 @@ storiesOf('Dropdown', module)
         </Dropdown.OverlayContainer>
       }
     >{() => <Button>Open Overlay</Button>}</Dropdown>
-  })
-
-  .add('DateTimeDropdown - No disabled dates', () => {
-    const mockDate = moment('2024-08-12T10:30:00')
-    const testOnChange: DatePickerProps['onChange'] = () => {}
-    const mockTime : MutableRefObject<number> = { current: 5.5 }
-    return (<DateTimeDropdown
-      name={'Testing'}
-      dateLabel={'This is Date Label'}
-      timeLabel={'This is Time Label'}
-      initialDate={mockDate}
-      time={mockTime}
-      onchange={testOnChange}
-    />)
-  })
-
-  .add('DateTimeDropdown - Have disabled dates', () => {
-    const mockDate = moment('2024-08-12T10:30:00')
-    const testOnChange: DatePickerProps['onChange'] = () => {}
-    const mockTime : MutableRefObject<number> = { current: 5.5 }
-    const testDisabledDate : RangePickerProps['disabledDate']= (current) => {
-      return current && current < dayjs().startOf('day')
-    }
-    return (<DateTimeDropdown
-      name={'Testing'}
-      dateLabel={'This is Date Label'}
-      timeLabel={'This is Time Label'}
-      initialDate={mockDate}
-      disabledDate={testDisabledDate}
-      time={mockTime}
-      onchange={testOnChange}
-    />)
   })
