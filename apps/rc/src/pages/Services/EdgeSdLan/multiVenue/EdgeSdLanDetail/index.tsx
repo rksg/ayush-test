@@ -1,14 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader }         from '@acx-ui/components'
-import { useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
+import { Button, Loader, PageHeader }                         from '@acx-ui/components'
+import { useIsSplitOn, Features }                             from '@acx-ui/feature-toggle'
+import { useApListQuery, useGetEdgeMvSdLanViewDataListQuery } from '@acx-ui/rc/services'
 import {
   EdgeMvSdLanViewData,
   ServiceOperation,
   ServiceType,
   getServiceDetailsLink,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { EdgeScopes }            from '@acx-ui/types'
@@ -17,6 +19,20 @@ import { filterByAccess }        from '@acx-ui/user'
 import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
 import { VenueTableDataType }    from './VenueTable'
+
+const defaultApPayload = {
+  fields: [
+    'serialNumber',
+    'name',
+    'venueId',
+    'deviceGroupId',
+    'apStatusData.vxlanStatus.vxlanMtu',
+    'apStatusData.vxlanStatus.tunStatus',
+    'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId',
+    'apStatusData.vxlanStatus.activeRvtepInfo.deviceId'
+  ],
+  pageSize: 10000
+}
 
 const EdgeSdLanDetail = () => {
   const { $t } = useIntl()
@@ -101,4 +117,25 @@ export const getVenueTableData = (sdLanData?: EdgeMvSdLanViewData): VenueTableDa
     }
   })
   return result
+}
+
+export const useSdlanApListTableQuery = (sdLanData?: EdgeMvSdLanViewData) => {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const settingsId = 'sdlan-ap-table'
+  const venueIds = getVenueTableData(sdLanData).map(v => v.venueId)
+
+  return useTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: {
+      ...defaultApPayload,
+      filters: { venueId: venueIds }
+    },
+    search: {
+      searchString: '',
+      searchTargetFields: ['name']
+    },
+    pagination: { settingsId },
+    option: { skip: false },
+    enableRbac: isUseWifiRbacApi
+  })
 }
