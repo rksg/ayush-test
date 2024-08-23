@@ -70,7 +70,7 @@ const useGetApPassword = (currentAP: ApViewModel) => {
 
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
-  const isUseRbacApi = true//useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchAPPortLinkEnabled = useIsSplitOn(Features.SWITCH_AP_PORT_HYPERLINK)
