@@ -4,7 +4,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
-  ANY_3RDPARTY_INVITE_TOGGLE = 'removable-ff',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
@@ -42,6 +41,9 @@ export enum Features {
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
+  EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
+  EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
+  ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_COMPLIANCE_NOTES_TOGGLE = 'entitlement-no-courtesy-licenses-toggle',
@@ -83,6 +85,7 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
+  NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-channel-api-changes',
   NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
@@ -107,9 +110,7 @@ export enum Features {
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
-  SWITCH_ADMIN_PASSWORD = 'removable-ff',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
-  SWITCH_DHCP_CLIENTS = 'removable-ff',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
   SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
@@ -166,7 +167,9 @@ export enum Features {
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
   WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
-  WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle'
+  SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
+  WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle',
+  WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

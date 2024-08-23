@@ -470,6 +470,7 @@ export enum MspEcTierEnum {
 
 export interface MspEcWithVenue extends MspEc {
   isFirstLevel?: boolean,
+  isUnauthorizedAccess?: boolean,
   children: {
     name: string,
     id: string,
@@ -519,6 +520,12 @@ export interface MspCompliances {
     self?: ComplianceData,
     mspEcSummary?: ComplianceData
   }[]
+}
+
+export enum MspEcAccountType {
+  PAID = 'PAID',
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
 }
 
 export interface LicenseAttentionNotes {

@@ -79,6 +79,18 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return response?.data[0]
       }
     }),
+    activatePortalTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          ServicesConfigTemplateUrlsInfo.activatePortal,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getEnhancedDpskTemplateList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
@@ -375,7 +387,8 @@ export const {
   useUpdateWifiCallingServiceTemplateMutation,
   useDeleteWifiCallingServiceTemplateMutation,
   useActivateWifiCallingServiceTemplateMutation,
-  useDeactivateWifiCallingServiceTemplateMutation
+  useDeactivateWifiCallingServiceTemplateMutation,
+  useActivatePortalTemplateMutation
 } = servicesConfigTemplateApi
 
 

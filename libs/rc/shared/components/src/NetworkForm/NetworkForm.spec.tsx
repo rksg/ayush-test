@@ -3,8 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }                     from '@acx-ui/rc/services'
+import { Features, useIsSplitOn, useIsTierAllowed }    from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, serviceApi, venueApi } from '@acx-ui/rc/services'
 import {
   AccessControlUrls,
   CommonUrlsInfo,
@@ -23,8 +23,7 @@ import {
   screen,
   fireEvent,
   waitForElementToBeRemoved,
-  waitFor,
-  act
+  waitFor
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -58,10 +57,11 @@ jest.mock('./utils', () => ({
 describe('NetworkForm', () => {
 
   beforeEach(() => {
-    act(() => {
-      store.dispatch(networkApi.util.resetApiState())
-      store.dispatch(venueApi.util.resetApiState())
-    })
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(serviceApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockImplementation((ff) => (
       ff !== Features.RBAC_SERVICE_POLICY_TOGGLE && ff !== Features.WIFI_RBAC_API

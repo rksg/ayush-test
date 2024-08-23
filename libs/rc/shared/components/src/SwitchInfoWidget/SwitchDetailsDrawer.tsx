@@ -34,7 +34,6 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
   })
 
   const isStack = !!(switchDetail.isStack || switchDetail.formStacking)
-  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
   const enableSwitchExternalIp = useIsSplitOn(Features.SWITCH_EXTERNAL_IP_TOGGLE)
   const isSupportAdminPassword = isFirmwareSupportAdminPassword(switchDetail.firmware || '')
 
@@ -87,7 +86,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
           children={switchDetail.description || $t({ defaultMessage: 'None' })}
         />
         <Divider/>
-        { enableSwitchAdminPassword && isSupportAdminPassword && <Form.Item
+        { isSupportAdminPassword && <Form.Item
           label={$t({ defaultMessage: 'Admin Password' })}
           children={getAdminPassword(switchDetail, PasswordInput)}
         />}
