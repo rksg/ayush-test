@@ -14,10 +14,10 @@ export const mockSoftGreTable = {
       secondaryGatewayAddress: '128.0.0.0',
       keepAliveInterval: 100,
       keepAliveRetryTimes: 8,
-      activationInformations: [
+      activations: [
         {
           venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-          networkIds: [
+          wifiNetworkIds: [
             '9b33509cc0a1464cad9447778a72006f',
             '797a1f499c254260b7a1aedafba524a3',
             'b946294426b8413d819751cb3d320a20'
@@ -44,7 +44,7 @@ export const mockSoftGreTable = {
       secondaryGatewayAddress: '128.0.0.5',
       keepAliveInterval: 100,
       keepAliveRetryTimes: 8,
-      activationInformations: [
+      activations: [
         {
           venueId: '0e2f68ab79154ffea64aa52c5cc48826'
         }
@@ -81,10 +81,10 @@ export const mockSoftGreDetailFromListQueryById = {
         secondaryGatewayAddress: '128.0.0.0',
         keepAliveInterval: 100,
         keepAliveRetryTimes: 8,
-        activationInformations: [
+        activations: [
           {
             venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            networkIds: [
+            wifiNetworkIds: [
               '9b33509cc0a1464cad9447778a72006f',
               '797a1f499c254260b7a1aedafba524a3',
               'b946294426b8413d819751cb3d320a20'
@@ -113,10 +113,10 @@ export const mockSoftGreDetailFromListQueryById = {
         secondaryGatewayAddress: '128.0.0.0',
         keepAliveInterval: 100,
         keepAliveRetryTimes: 8,
-        activationInformations: [
+        activations: [
           {
             venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            networkIds: [
+            wifiNetworkIds: [
               '9b33509cc0a1464cad9447778a72006f',
               '797a1f499c254260b7a1aedafba524a3',
               'b946294426b8413d819751cb3d320a20'
@@ -140,10 +140,10 @@ export const mockSoftGreDetail = {
   secondaryGatewayAddress: '128.0.0.0',
   keepAliveInterval: 100,
   keepAliveRetryTimes: 8,
-  activationInformations: [
+  activations: [
     {
       venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-      networkIds: [
+      wifiNetworkIds: [
         '9b33509cc0a1464cad9447778a72006f',
         '797a1f499c254260b7a1aedafba524a3',
         'b946294426b8413d819751cb3d320a20'
@@ -151,7 +151,7 @@ export const mockSoftGreDetail = {
     },
     {
       venueId: 'eef3d9913bcc4deea43300804281c2c6',
-      networkIds: [
+      wifiNetworkIds: [
         '9b33509cc0a1464cad9447778a72006f',
         'dca03b33dc354c90b89b1ef68a7f93e1'
       ]

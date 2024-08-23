@@ -51,7 +51,7 @@ describe('SoftGreVenueDetail', () => {
   it('should show data correctly and navigate to VenuePage after clicking venue name', async () => {
     render(
       <Provider>
-        <SoftGreVenueDetail activationInformations={mockSoftGreDetail?.activationInformations} />
+        <SoftGreVenueDetail activations={mockSoftGreDetail?.activations} />
       </Provider>,
       { route: { params, path: detailPath } }
     )
@@ -66,10 +66,10 @@ describe('SoftGreVenueDetail', () => {
     )
   })
 
-  it('should show No Data on empty list when activationInformations is empty', async () => {
+  it('should show No Data on empty list when activations is empty', async () => {
     render(
       <Provider>
-        <SoftGreVenueDetail activationInformations={[]} />
+        <SoftGreVenueDetail activations={[]} />
       </Provider>,
       { route: { params, path: detailPath } }
     )

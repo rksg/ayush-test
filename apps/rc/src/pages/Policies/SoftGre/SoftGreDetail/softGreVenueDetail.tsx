@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { Card,  Loader,  Table, TableProps }                                     from '@acx-ui/components'
-import { SimpleListTooltip }                                                     from '@acx-ui/rc/components'
-import { useGetVenuesSoftGrePolicyQuery }                                        from '@acx-ui/rc/services'
-import { SoftGreActivationInformation, VenueTableUsageBySoftGre, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink }                                                            from '@acx-ui/react-router-dom'
+import { Card,  Loader,  Table, TableProps }                          from '@acx-ui/components'
+import { SimpleListTooltip }                                          from '@acx-ui/rc/components'
+import { useGetVenuesSoftGrePolicyQuery }                             from '@acx-ui/rc/services'
+import { SoftGreActivation, VenueTableUsageBySoftGre, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink }                                                 from '@acx-ui/react-router-dom'
 
 
 const defaultVenuePayload = {
@@ -16,20 +16,20 @@ const defaultVenuePayload = {
   }
 }
 interface SoftGreVenueDetailProps {
-  activationInformations: SoftGreActivationInformation[]
+  activations: SoftGreActivation[]
 }
 export default function SoftGreVenueDetail (props: SoftGreVenueDetailProps) {
-  const { activationInformations } = props
+  const { activations } = props
   const { $t } = useIntl()
 
   const tableQuery = useTableQuery({
     useQuery: useGetVenuesSoftGrePolicyQuery,
     defaultPayload: {
       ...defaultVenuePayload,
-      activationInformations
+      activations
     },
     option: {
-      skip: !activationInformations || activationInformations.length === 0
+      skip: !activations || activations.length === 0
     }
   })
 
@@ -83,9 +83,10 @@ function useColumns () {
       align: 'center',
       sorter: true,
       render: (_, row) => {
-        if (!row.networkIds || row.networkIds.length === 0) return 0
-        const tooltipItems = row?.networkNames as string[]
-        return <SimpleListTooltip items={tooltipItems} displayText={row?.networkNames?.length} />
+        if (!row.wifiNetworkIds || row.wifiNetworkIds.length === 0) return 0
+        const tooltipItems = row?.wifiNetworkNames as string[]
+        // eslint-disable-next-line max-len
+        return <SimpleListTooltip items={tooltipItems} displayText={row?.wifiNetworkNames?.length} />
       }
     }
   ]

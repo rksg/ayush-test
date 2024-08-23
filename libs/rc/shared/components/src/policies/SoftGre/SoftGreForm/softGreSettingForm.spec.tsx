@@ -42,7 +42,7 @@ describe('SoftGreSettingForm', () => {
     mockServer.use(
       rest.post(
         SoftGreUrls.getSoftGreViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockSoftGreTable.data))
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))
       )
     )
   })

@@ -6,7 +6,7 @@ import { CommonResult,
   SoftGreUrls,
   SoftGre,
   CommonUrlsInfo,
-  SoftGreActivationInformation,
+  SoftGreActivation,
   Network,
   VenueTableUsageBySoftGre,
   VenueDetail,
@@ -87,14 +87,14 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
     getVenuesSoftGrePolicy: build.query<TableResult<VenueTableUsageBySoftGre>, RequestPayload>({
       queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
         // eslint-disable-next-line max-len
-        const activationInformations = _.get(payload,'activationInformations') as SoftGreActivationInformation[]
+        const activations = _.get(payload,'activations') as SoftGreActivation[]
         const emptyResponse = { data: { totalCount: 0 } as TableResult<VenueTableUsageBySoftGre> }
         const venueNetworksMap:{ [key:string]: string[] } = {}
         let networkIds: string[] = []
 
-        activationInformations.forEach(venue => {
-          venueNetworksMap[venue.venueId] = venue.networkIds
-          networkIds = networkIds.concat(venue.networkIds)
+        activations.forEach(venue => {
+          venueNetworksMap[venue.venueId] = venue.wifiNetworkIds
+          networkIds = networkIds.concat(venue.wifiNetworkIds)
         })
 
         const networkIdsSet = Array.from(new Set(networkIds))
@@ -122,7 +122,7 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         // query venue name and address by venueId
         const venueIds = Object.keys(venueNetworksMap)
         const venueQueryPayload = {
-          ...(_.omit(payload as RequestPayload, ['activationInformations'])),
+          ...(_.omit(payload as RequestPayload, ['activations'])),
           filters: { id: venueIds }
         }
         // eslint-disable-next-line max-len
@@ -133,10 +133,10 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
 
         // process data
         const venueResult = venueData?.map(venue =>{
-          const networIDs = venueNetworksMap[venue.id]
-          const networkNames = networIDs.map(id => (networkMapping[id]))
+          const wifiNetworkIDs = venueNetworksMap[venue.id]
+          const wifiNetworkNames = wifiNetworkIDs.map(id => (networkMapping[id]))
           // eslint-disable-next-line max-len
-          return { ...venue, networkIds: networIDs, networkNames } as unknown as VenueTableUsageBySoftGre
+          return { ...venue, wifiNetworkIds: wifiNetworkIDs, wifiNetworkNames } as unknown as VenueTableUsageBySoftGre
         })
 
         const result = {

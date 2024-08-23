@@ -60,7 +60,6 @@ export default function SoftGreTable () {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-
         navigate({
           ...basePath,
           pathname: `${basePath.pathname}/` + getPolicyDetailsLink({
@@ -98,7 +97,7 @@ export default function SoftGreTable () {
         title={
           $t(
             { defaultMessage: 'SoftGRE Profile ({count})' },
-            { count: tableQuery.data?.totalCount }
+            { count: tableQuery.data?.totalCount ?? 0 }
           )
         }
         breadcrumb={[
@@ -149,7 +148,7 @@ function useColumns () {
       sortField: 'name',
       sortOrder: 'ASC',
       page: 1,
-      pageSize: 10000
+      pageSize: 10_000
     }
   }, {
     selectFromResult: ({ data }) => {
@@ -234,11 +233,11 @@ function useColumns () {
       filterable: venueNameMap,
       sorter: true,
       render: function (_, row) {
-        if (!row?.activationInformations || row?.activationInformations?.length === 0) return 0
+        if (!row?.activations || row?.activations?.length === 0) return 0
         // eslint-disable-next-line max-len
-        const tooltipItems = venueNameMap?.filter(v => row?.activationInformations?.map(venue => venue?.venueId)!.includes(v.key)).map(v => v.value)
+        const tooltipItems = venueNameMap?.filter(v => row?.activations?.map(venue => venue?.venueId)!.includes(v.key)).map(v => v.value)
         // eslint-disable-next-line max-len
-        return <SimpleListTooltip items={tooltipItems} displayText={row?.activationInformations?.length} />
+        return <SimpleListTooltip items={tooltipItems} displayText={row?.activations?.length} />
       }
     }
   ]

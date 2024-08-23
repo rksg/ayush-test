@@ -1,13 +1,13 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button,  GridCol, GridRow, Loader, PageHeader }                                                       from '@acx-ui/components'
-import { useGetSoftGreViewDataListQuery }                                                                      from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, SoftGreActivationInformation, SoftGreViewData, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink }                                                                                from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                          from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                                          from '@acx-ui/types'
-import { filterByAccess }                                                                                      from '@acx-ui/user'
+import { Button,  GridCol, GridRow, Loader, PageHeader }                                            from '@acx-ui/components'
+import { useGetSoftGreViewDataListQuery }                                                           from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, SoftGreActivation, SoftGreViewData, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink }                                                                     from '@acx-ui/rc/utils'
+import { TenantLink }                                                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                               from '@acx-ui/types'
+import { filterByAccess }                                                                           from '@acx-ui/user'
 
 import SoftGreDetailContent from './softGreDetailContent'
 import SoftGreVenueDetail   from './softGreVenueDetail'
@@ -55,8 +55,8 @@ export default function SoftGreDetail () {
           <SoftGreDetailContent data={softGreDetail}/>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <SoftGreVenueDetail activationInformations={
-            (softGreDetail?.activationInformations ?? []) as SoftGreActivationInformation[]}
+          <SoftGreVenueDetail activations={
+            (softGreDetail?.activations ?? []) as SoftGreActivation[]}
           />
         </GridCol>
       </GridRow>

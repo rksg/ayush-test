@@ -47,7 +47,7 @@ describe('SoftGreForm', () => {
         ),
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
-          (req, res, ctx) => res(ctx.json(mockSoftGreTable.data))
+          (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))
         )
       )
     })
@@ -119,14 +119,14 @@ describe('SoftGreForm', () => {
       mockServer.use(
         rest.post(
           SoftGreUrls.createSoftGre.url,
-          (req, res, ctx) => {
+          (_, res, ctx) => {
             createFn()
             return res(ctx.status(404), ctx.json({}))
           }
         ),
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
-          (req, res, ctx) => res(ctx.json(mockSoftGreTable.data))
+          (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))
         )
       )
       render(
@@ -160,7 +160,7 @@ describe('SoftGreForm', () => {
       mockServer.use(
         rest.post(
           SoftGreUrls.createSoftGre.url,
-          (req, res, ctx) => res(ctx.status(202))
+          (_, res, ctx) => res(ctx.status(202))
         ),
         rest.put(
           SoftGreUrls.updateSoftGre.url,
@@ -171,7 +171,7 @@ describe('SoftGreForm', () => {
         ),
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
-          (req, res, ctx) => res(ctx.json(mockSoftGreTable.data))
+          (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))
         )
       )
     })

@@ -25,20 +25,19 @@ export interface SoftGreViewData {
   keepAliveInterval: number
   keepAliveRetryTimes: number
   disassociateClientEnabled: boolean
-  activationInformations: SoftGreActivationInformation[]
+  activations: SoftGreActivation[]
 }
 
-export interface VenueTableUsageBySoftGre extends SoftGreActivationInformation {
+export interface VenueTableUsageBySoftGre extends SoftGreActivation {
     name: string
     id: string
     addressLine: string
-    networkIds: string[]
-    networkNames: string[]
+    wifiNetworkNames: string[]
 }
 
 
-export interface SoftGreActivationInformation {
+export interface SoftGreActivation {
   venueId: string
-  networkIds: string[]
+  wifiNetworkIds: string[]
 }
 
