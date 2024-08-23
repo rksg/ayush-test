@@ -6,7 +6,7 @@ import { Tooltip }                                                              
 import { useLazyGetSoftGreViewDataListQuery }                                              from '@acx-ui/rc/services'
 import { MtuTypeEnum, networkWifiIpRegExp, servicePolicyNameRegExp, checkObjectNotExists } from '@acx-ui/rc/utils'
 
-import { MessageMapping } from './MessageMapping'
+import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
 
 const { useWatch } = Form
@@ -95,13 +95,13 @@ export const SoftGreSettingForm = () => {
           name='mtuType'
           initialValue={MtuTypeEnum.AUTO}
           label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
-          tooltip={$t(MessageMapping.mtu_tooltip)}
+          tooltip={$t(messageMapping.mtu_tooltip)}
           extra={
             <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
               {
                 mtuType === MtuTypeEnum.MANUAL
                   ? (<><UI.InfoIcon />
-                    { $t(MessageMapping.mtu_help_msg) }</>)
+                    { $t(messageMapping.mtu_help_msg) }</>)
                   : null
               }
             </Space>
@@ -156,7 +156,7 @@ export const SoftGreSettingForm = () => {
           label={<>
             { $t({ defaultMessage: 'ICMP Keep Alive Interval' }) }
             <Tooltip.Question
-              title={$t(MessageMapping.keep_alive_interval_tooltip)}
+              title={$t(messageMapping.keep_alive_interval_tooltip)}
               placement='bottom'
             />
           </>}
@@ -193,7 +193,7 @@ export const SoftGreSettingForm = () => {
           label={<>
             { $t({ defaultMessage: 'ICMP Keep Alive Retries' }) }
             <Tooltip.Question
-              title={$t(MessageMapping.keep_alive_retry_tooltip)}
+              title={$t(messageMapping.keep_alive_retry_tooltip)}
               placement='bottom'
             />
           </>}
@@ -224,7 +224,7 @@ export const SoftGreSettingForm = () => {
           <UI.FormItemWrapper>
             <Form.Item
               label={$t({ defaultMessage: 'Disassociate Clients on Tunnel Failover' })}
-              tooltip={$t(MessageMapping.disassoicate_client_tooltip)}
+              tooltip={$t(messageMapping.disassoicate_client_tooltip)}
             />
           </UI.FormItemWrapper>
           <Form.Item

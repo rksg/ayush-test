@@ -73,7 +73,6 @@ function useColumns () {
     {
       title: $t({ defaultMessage: 'City, Country' }),
       dataIndex: 'addressLine',
-      sorter: true,
       key: 'addressLine'
     },
     {
@@ -81,9 +80,8 @@ function useColumns () {
       title: $t({ defaultMessage: 'Applied Networks' }),
       dataIndex: 'networkCount',
       align: 'center',
-      sorter: true,
       render: (_, row) => {
-        if (!row.wifiNetworkIds || row.wifiNetworkIds.length === 0) return 0
+        if (!row.wifiNetworkIds || row.wifiNetworkIds.length === 0) return ''
         const tooltipItems = row?.wifiNetworkNames as string[]
         // eslint-disable-next-line max-len
         return <SimpleListTooltip items={tooltipItems} displayText={row?.wifiNetworkNames?.length} />

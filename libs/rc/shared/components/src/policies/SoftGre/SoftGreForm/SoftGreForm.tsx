@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
-import { SoftGreSettingForm } from './softGreSettingForm'
+import { SoftGreSettingForm } from './SoftGreSettingForm'
 
 interface SoftGreFormProps {
   editMode: boolean

@@ -19,11 +19,11 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
     },
     {
       title: $t({ defaultMessage: 'Primary Gateway' }),
-      content: data?.primaryGatewayAddress
+      content: data?.primaryGatewayAddress ?? noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Secondary Gateway' }),
-      content: data?.secondaryGatewayAddress
+      content: data?.secondaryGatewayAddress ?? noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Disassociate Clients' }),

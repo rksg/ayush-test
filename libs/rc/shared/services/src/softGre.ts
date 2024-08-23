@@ -86,7 +86,6 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
     }),
     getVenuesSoftGrePolicy: build.query<TableResult<VenueTableUsageBySoftGre>, RequestPayload>({
       queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
-        // eslint-disable-next-line max-len
         const activations = _.get(payload,'activations') as SoftGreActivation[]
         const emptyResponse = { data: { totalCount: 0 } as TableResult<VenueTableUsageBySoftGre> }
         const venueNetworksMap:{ [key:string]: string[] } = {}
@@ -107,7 +106,6 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           page: 1,
           pageSize: 10_000
         }
-        // eslint-disable-next-line max-len
         const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
         // eslint-disable-next-line max-len
         const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
@@ -125,7 +123,6 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           ...(_.omit(payload as RequestPayload, ['activations'])),
           filters: { id: venueIds }
         }
-        // eslint-disable-next-line max-len
         const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params)
         const venueRes = await fetchWithBQ({ ...venueReq, body: JSON.stringify(venueQueryPayload) })
         if (venueRes.error) return emptyResponse

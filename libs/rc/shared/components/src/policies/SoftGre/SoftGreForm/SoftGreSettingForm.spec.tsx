@@ -9,7 +9,7 @@ import { Provider, store }                                                      
 import { mockServer, render, screen, renderHook, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockSoftGreTable }   from './__tests__/fixtures'
-import { SoftGreSettingForm } from './softGreSettingForm'
+import { SoftGreSettingForm } from './SoftGreSettingForm'
 
 
 const mockedUseNavigate = jest.fn()

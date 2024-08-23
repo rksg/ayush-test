@@ -4,7 +4,7 @@ import { render, screen }                                  from '@acx-ui/test-ut
 
 import { mockSoftGreDetail } from '../__tests__/fixtures'
 
-import SoftGreDetailContent from './softGreDetailContent'
+import SoftGreDetailContent from './SoftGreDetailContent'
 
 
 let params: { tenantId: string, policyId: string }

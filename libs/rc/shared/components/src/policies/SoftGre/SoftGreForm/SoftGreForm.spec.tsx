@@ -8,7 +8,7 @@ import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {  mockSoftGreTable } from './__tests__/fixtures'
-import { SoftGreForm }       from './softGreForm'
+import { SoftGreForm }       from './SoftGreForm'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

@@ -8,7 +8,7 @@ import { mockServer, render, within, screen }                              from 
 
 import {  mockedNetworkQueryData, mockedVenueQueryData, mockSoftGreDetail } from '../__tests__/fixtures'
 
-import SoftGreVenueDetail from './softGreVenueDetail'
+import SoftGreVenueDetail from './SoftGreVenueDetail'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {

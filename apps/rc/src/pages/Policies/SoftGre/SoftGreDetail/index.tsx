@@ -9,8 +9,8 @@ import { TenantLink }                                                           
 import { WifiScopes }                                                                               from '@acx-ui/types'
 import { filterByAccess }                                                                           from '@acx-ui/user'
 
-import SoftGreDetailContent from './softGreDetailContent'
-import SoftGreVenueDetail   from './softGreVenueDetail'
+import SoftGreDetailContent from './SoftGreDetailContent'
+import SoftGreVenueDetail   from './SoftGreVenueDetail'
 
 export default function SoftGreDetail () {
   const { $t } = useIntl()

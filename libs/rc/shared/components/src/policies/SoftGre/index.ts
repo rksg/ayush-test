@@ -1,2 +1,2 @@
-export * from './SoftGreForm/softGreSettingForm'
-export * from './SoftGreForm/softGreForm'
+export * from './SoftGreForm/SoftGreSettingForm'
+export * from './SoftGreForm/SoftGreForm'
