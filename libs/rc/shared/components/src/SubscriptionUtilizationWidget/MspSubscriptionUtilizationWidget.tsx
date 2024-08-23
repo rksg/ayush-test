@@ -18,6 +18,7 @@ interface MspSubscriptionUtilizationWidgetProps {
   barColors?: string[];
   tooltip?: string;
   trial?: boolean;
+  extendedTrial: boolean;
 }
 
 export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizationWidgetProps) => {
@@ -30,7 +31,8 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
     assigned,
     total,
     tooltip,
-    trial
+    trial,
+    extendedTrial
   } = props
 
   const isZeroQuantity = total <= 0
@@ -116,7 +118,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
           }]}
           barColors={usedBarColors}
         />
-        {trial
+        {trial && !extendedTrial
           ? <div style={{ marginLeft: '25px', fontSize: '11px' }}>
             <UI.LegendDot style={{ backgroundColor: usedBarColors[1] }} />
             <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
