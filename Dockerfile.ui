@@ -44,8 +44,6 @@ COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 RUN find /app/node_modules/.cache/nx -type f -mtime +1 -delete && \
     find /app/node_modules/.cache/nx -type d -empty -delete
 
-RUN echo $(ls -l /app/node_modules/.cache/nx)
-
 COPY tools/tests ./tools/tests
 
 # dump git information
