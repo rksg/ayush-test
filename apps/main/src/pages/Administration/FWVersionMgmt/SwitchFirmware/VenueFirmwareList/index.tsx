@@ -308,8 +308,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasCrossVenuesPermission() &&
-          isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
         actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)

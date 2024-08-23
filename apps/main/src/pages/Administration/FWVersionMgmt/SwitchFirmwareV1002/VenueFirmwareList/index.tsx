@@ -355,7 +355,7 @@ export function VenueFirmwareList () {
         enableApiFilter={true}
         rowKey='venueId'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)

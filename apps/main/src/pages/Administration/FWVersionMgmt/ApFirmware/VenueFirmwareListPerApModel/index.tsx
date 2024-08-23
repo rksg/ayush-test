@@ -15,7 +15,6 @@ import { FirmwareType, FirmwareVenuePerApModel, useTableQuery } from '@acx-ui/rc
 import { RolesEnum, WifiScopes }                                from '@acx-ui/types'
 import {
   filterByAccess,
-  hasCrossVenuesPermission,
   hasPermission,
   hasRoles
 }                                                               from '@acx-ui/user'
@@ -137,7 +136,7 @@ export function VenueFirmwareListPerApModel () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         // eslint-disable-next-line max-len
-        rowSelection={hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
           { type: 'checkbox', selectedRowKeys }}
         actions={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? [{
           label: $t({ defaultMessage: 'Preferences' }),

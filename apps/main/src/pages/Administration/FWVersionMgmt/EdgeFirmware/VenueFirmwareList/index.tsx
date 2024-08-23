@@ -36,7 +36,6 @@ import {
 import { EdgeScopes, RolesEnum } from '@acx-ui/types'
 import {
   filterByAccess,
-  hasCrossVenuesPermission,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
@@ -291,7 +290,7 @@ export function VenueFirmwareList () {
     }
   }
 
-  const isSelectionVisible = hasCrossVenuesPermission() && hasPermission({
+  const isSelectionVisible = hasPermission({
     scopes: [EdgeScopes.UPDATE]
   })
 
