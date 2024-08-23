@@ -14,7 +14,7 @@ export const KpiCard: React.FC<{
   // TODO: show timestamps on hover
   return <Card>
     <UI.Title>{$t(kpi.label)}</UI.Title>
-    <Space align='center' size={4}>
+    <Space align='center' size={5}>
       <UI.Value>{kpi.value}</UI.Value>
       {kpi.delta && <TrendPill
         value={kpi.delta.value}
