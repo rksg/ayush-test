@@ -5,7 +5,7 @@ import { FormInstance }            from 'antd'
 import _, { cloneDeep, findIndex } from 'lodash'
 import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
