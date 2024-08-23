@@ -25,7 +25,8 @@ const thresholdMap = {
   apServiceUptime: 0.995,
   apToSZLatency: 200,
   switchPoeUtilization: 0.8,
-  clusterLatency: 10
+  clusterLatency: 10,
+  switchCpuUtilization: 90
 }
 const filters = {
   startDate: '2022-01-01T00:00:00+08:00',
@@ -227,8 +228,8 @@ describe('Threshold Histogram chart', () => {
       <Provider>
         <Histogram
           filters={filters}
-          kpi={'timeToConnect'}
-          threshold={thresholdMap['timeToConnect']}
+          kpi={'switchCpuUtilization'}
+          threshold={thresholdMap['switchCpuUtilization']}
           thresholds={thresholdMap}
           setKpiThreshold={setKpiThreshold}
           mutationAllowed={true}
@@ -240,6 +241,9 @@ describe('Threshold Histogram chart', () => {
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
     expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
+    expect(await screen
+      .findByText('Aggregate metrics panel updated successfully based on the new SLA threshold.'))
+      .toBeInTheDocument()
   })
 
   it('should render default scale on null data', async () => {
