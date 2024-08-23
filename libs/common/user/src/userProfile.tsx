@@ -16,6 +16,10 @@ import {
   CustomRoleType
 } from './types'
 
+type Permission = {
+  needGlobalPermission: boolean
+}
+
 type Profile = {
   profile: UserProfile
   allowedOperations: string []
@@ -190,9 +194,7 @@ export function isCustomAdmin () {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function hasCrossVenuesPermission (props?: {
-  needGlobalPermission: boolean
-}) {
+export function hasCrossVenuesPermission (props?: Permission) {
   /* For testing purposes */
   // const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
   // if(!abacEnabled) return true
@@ -207,9 +209,13 @@ export function hasCrossVenuesPermission (props?: {
 export function AuthRoute (props: {
     scopes?: ScopeKeys,
     children: ReactElement,
-    requireCrossVenuesPermission?: boolean
+    requireCrossVenuesPermission?: boolean | Permission
   }) {
   const { scopes = [], children, requireCrossVenuesPermission } = props
+  if(typeof requireCrossVenuesPermission === 'object') {
+    return hasCrossVenuesPermission(requireCrossVenuesPermission)
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
   if(requireCrossVenuesPermission) {
     return hasScope(scopes) && hasCrossVenuesPermission()
       ? children : <TenantNavigate replace to='/no-permissions' />

@@ -412,6 +412,31 @@ describe('AuthRoute', () => {
     expect(await screen.findByText('test page')).toBeVisible()
   })
 
+  xit('should go to no permissions page for global permission', async () => {
+    setRole(RolesEnum.ADMINISTRATOR, true, false, [], false)
+    render(
+      <Router>
+        <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByTestId('no-permissions')).toBeVisible()
+  })
+
+  it('should go to correct page for for global permission', async () => {
+    setRole(RolesEnum.ADMINISTRATOR, true, false, [], true)
+    render(
+      <Router>
+        <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByText('test page')).toBeVisible()
+  })
 
   it('should go to correct page: custom role', async () => {
     setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.UPDATE])
