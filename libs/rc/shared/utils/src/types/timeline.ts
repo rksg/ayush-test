@@ -116,6 +116,7 @@ export interface EventBase {
   clientMac?: string
   clientName?: string
   remoteEdgeId?: string
+  clientMldMac?: string
 }
 
 export interface EventMeta {
