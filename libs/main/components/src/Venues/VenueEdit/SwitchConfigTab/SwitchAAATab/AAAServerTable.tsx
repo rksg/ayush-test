@@ -18,8 +18,9 @@ import {
   AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting,
   VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
@@ -27,7 +28,6 @@ import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayTex
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
-  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD) && !isTemplate
 
   const radiusColumns: TableProps<RadiusServer & TacacsServer & LocalUser>['columns'] = [
     {
@@ -136,7 +136,7 @@ function useColumns (type: AAAServerTypeEnum) {
         </div>
       }
     },
-    ...( enableSwitchAdminPassword ? [{
+    ...( !isTemplate ? [{
       title: $t({ defaultMessage: 'Use In' }),
       key: 'syncedPasswordSwitchCount',
       dataIndex: 'syncedPasswordSwitchCount',
@@ -262,6 +262,7 @@ export const AAAServerTable = (props: {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         setIsEditMode(true)
         setEditData(selectedRows[0])
@@ -272,6 +273,7 @@ export const AAAServerTable = (props: {
       label: $t({ defaultMessage: 'Delete' }),
       disabled: disabledDelete,
       tooltip: deleteButtonTooltip,
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (rows, clearSelection) => {
         let disableDeleteList:string[] = []
         if ((tableQuery.data?.totalCount === rows.length) &&
@@ -344,7 +346,7 @@ export const AAAServerTable = (props: {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={cliApplied || !hasAccess()
+        rowSelection={cliApplied || !hasPermission({ scopes: [SwitchScopes.UPDATE] })
           ? undefined
           : { type: 'checkbox', onChange: onSelectChange }}
       />

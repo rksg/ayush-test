@@ -41,7 +41,14 @@ const usedBarColor: string[] = [
 export const PasswordInputStrength = ({
   ...props
 }: Partial<PasswordStrengthProps>) => {
-  const { regExRules, regExErrorMessages, isAllConditionsMet, onConditionCountMet, value } = props
+  const {
+    regExRules,
+    regExErrorMessages,
+    isAllConditionsMet,
+    onConditionCountMet,
+    ...others
+  } = props
+  const { value } = others
   const { $t } = useIntl()
   const [input, setInput] = useState('')
   const [focus, setFocus] = useState(false)
@@ -71,7 +78,7 @@ export const PasswordInputStrength = ({
   return (
     <>
       <PasswordInput
-        {...props}
+        {...others}
         onChange={(e) => {
           setInput(e.target.value)
           const passedRulesRatio = calculatePassedRulesRatio(e.target.value, RULE_REGEX)
@@ -118,9 +125,9 @@ export const PasswordStrengthIndicator = ({
 
   const PASSWORD_STRENGTH_CODE = [
     $t({ defaultMessage: 'Insecure' }),
+    $t({ defaultMessage: 'Very Weak' }),
     $t({ defaultMessage: 'Weak' }),
     $t({ defaultMessage: 'Fair' }),
-    $t({ defaultMessage: 'Good' }),
     $t({ defaultMessage: 'Strong' })
   ]
 
@@ -165,11 +172,11 @@ export const PasswordStrengthIndicator = ({
 
   return (<UI.PasswordBarContainer>
     <StackedBarChart
-      style={{ height: 8, width: barWidth || 270, marginTop: 5 }}
+      style={{ height: 8, width: barWidth || 240, marginTop: 5 }}
       showLabels={false}
       showTotal={false}
       showTooltip={false}
-      barWidth={barWidth || 270}
+      barWidth={barWidth || 240}
       data={[{
         series,
         category: 'password strength'

@@ -1,80 +1,184 @@
-import _                                    from 'lodash'
-import moment                               from 'moment-timezone'
-import { defineMessage, MessageDescriptor } from 'react-intl'
+import moment            from 'moment-timezone'
+import { defineMessage } from 'react-intl'
 
-import { get }       from '@acx-ui/config'
-import { formatter } from '@acx-ui/formatter'
-import { getIntl }   from '@acx-ui/utils'
+import { get } from '@acx-ui/config'
 
-import { enumMap }     from '../../ConfigChange/Table/mapping/enumMap'
-import { json2keymap } from '../../ConfigChange/Table/util'
+import { IntentListItem, StatusTrail, StatusTrailItem } from '../config'
+import { DisplayStates, Statuses, StatusReasons }       from '../states'
 
 export const isDataRetained = (time?: string) => {
   const retainDate = moment().startOf('day').subtract(get('DRUID_RETAIN_PERIOD_DAYS'), 'days')
   return moment(time).isAfter(retainDate)
 }
 
-type CrrmTextType = { recommended: string, txPowerAPCount?: number }
-  | Array<{
-  radio: string,
-  channelMode: string | null,
-  channelWidth: string | null,
-  autoCellSizing: string | null
-}>
+export const dataRetentionText = defineMessage({ defaultMessage: 'Beyond data retention period' })
 
-const enumTextMap = json2keymap(['enumType', 'value'], 'text', ['TBD'])(enumMap)
-const enumMode = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelSelectMode'
-const enumWidth = 'com.ruckuswireless.scg.protobuf.ccm.Zone.CcmRadio.ChannelWidth'
+export const getDefaultTime = () => {
+  const datetime3AM = moment().set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
+  return moment().isSameOrBefore(datetime3AM) ?
+    datetime3AM : datetime3AM.add(1, 'd')
+}
 
-const currentConfiguration = defineMessage({
-  defaultMessage: '{channelMode} and {channelWidth} for {radioList} with {autoCellSizing}'
-})
-const unknown = defineMessage({ defaultMessage: 'Unknown' })
+export type IntentWlan = {
+  name: string
+  ssid: string
+}
 
-export const crrmText = (value: CrrmTextType) => {
-  const { $t, formatList } = getIntl()
-  if (Array.isArray(value)) {
-    const data = value.map(config => {
-      const channelMode = config.channelMode
-        ? $t(enumTextMap.get(`${enumMode}-${config.channelMode}`) as MessageDescriptor)
-        : $t(unknown)
-      const channelWidthValue = config.channelWidth
-        ? $t(enumTextMap.get(`${enumWidth}-${config.channelWidth}`) as MessageDescriptor)
-        : $t(unknown)
-      const channelWidth = config.channelWidth === '_AUTO'
-        ? channelWidthValue
-        : formatter('bandwidthFormat')(channelWidthValue)
-      const radio = formatter('radioFormat')(config.radio)
-      const autoCellSizing = config.autoCellSizing === 'true'
-        ? $t({ defaultMessage: 'Auto Cell Sizing on' })
-        : $t({ defaultMessage: 'static AP Tx Power' })
-      return {
-        mode: channelMode,
-        width: channelWidth,
-        radio: radio,
-        autoCellSizing: autoCellSizing
-      }
-    })
-    const groupByData = _.groupBy(
-      data, ({ mode, width, autoCellSizing }) => `${mode}-${width}-${autoCellSizing}`)
-    const result = Object.values(groupByData)
-    return result.map(config => $t(currentConfiguration, {
-      channelMode: config[0].mode,
-      channelWidth: config[0].width,
-      radioList: formatList(config.map(item => item.radio), { type: 'conjunction' }),
-      autoCellSizing: config[0].autoCellSizing
-    })).join(', ')
-  } else {
-    const { txPowerAPCount } = value
-    // eslint-disable-next-line max-len
-    return $t({ defaultMessage: 'AI-Driven RRM for channel and bandwidth plan with {txPowerAPCountText}' }, {
-      txPowerAPCountText: txPowerAPCount
-        // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: `static and reduced AP Tx Power in {txPowerAPCount} {txPowerAPCount, plural,
-            one {AP}
-            other {APs}
-          }` }, { txPowerAPCount })
-        : $t({ defaultMessage: 'no change in AP Tx Power' })
-    })
+export type TransitionIntentMetadata = {
+  scheduledAt: string
+  applyScheduledAt?: string
+  wlans?: IntentWlan[]
+  preferences?: {
+    crrmFullOptimization: boolean
   }
+}
+
+export type TransitionIntentItem = {
+  id: string
+  displayStatus: DisplayStates
+  status: Statuses
+  statusTrail?: StatusTrail
+  metadata?: TransitionIntentMetadata
+}
+
+export enum Actions {
+  One_Click_Optimize = '1-click-optimize',
+  Optimize = 'optimize',
+  Revert = 'revert',
+  Pause = 'pause',
+  Cancel = 'cancel',
+  Resume = 'resume'
+}
+
+export const isVisibledByAction = (rows: IntentListItem[], action: Actions) => {
+  switch (action) {
+    case Actions.One_Click_Optimize:
+      return !rows.some(row => row.displayStatus !== DisplayStates.new)
+    case Actions.Optimize:
+      return rows.length === 1 &&
+        [DisplayStates.new, DisplayStates.scheduled,
+          DisplayStates.scheduledOneClick,DisplayStates.applyScheduled,
+          DisplayStates.active].includes(rows[0].displayStatus)
+
+    case Actions.Revert:
+      return !rows.some(row =>
+        ![DisplayStates.applyScheduled,
+          DisplayStates.pausedApplyFailed,
+          DisplayStates.active,
+          DisplayStates.revertScheduled,
+          DisplayStates.pausedRevertFailed].includes(row.displayStatus)
+      )
+    case Actions.Pause:
+      return !rows.some(row => ![
+        Statuses.new,
+        Statuses.scheduled,
+        Statuses.applyScheduled,
+        Statuses.active,
+        Statuses.na
+      ].includes(row.status))
+    case Actions.Cancel:
+      return !rows.some(row => ![
+        Statuses.scheduled,
+        Statuses.revertScheduled
+      ].includes(row.status))
+    case Actions.Resume:
+      return !rows.some(row => row.status !== Statuses.paused)
+  }
+}
+
+const getCancelTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+  if ([DisplayStates.scheduled, DisplayStates.scheduledOneClick].includes(item.displayStatus)) {
+    return { status: Statuses.new }
+  }
+  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
+  if (!preStatusTrail) throw new Error('Invalid statusTrail(Cancel)')
+
+  return preStatusTrail?.status === Statuses.applyScheduled &&
+   moment().isAfter(moment(item.metadata?.applyScheduledAt)) ?
+    { status: Statuses.active } : preStatusTrail
+}
+
+const getResumeTransitionStatus = (item: TransitionIntentItem):StatusTrailItem => {
+  const preStatusTrail = item.statusTrail?.find(({ status }) => status !== item.status)
+  if (!preStatusTrail) throw new Error('Invalid statusTrail(Resume)')
+
+  if (item.displayStatus === DisplayStates.pausedApplyFailed) {
+    return { status: Statuses.active }
+  } else if (
+    item.displayStatus === DisplayStates.pausedFromActive &&
+    preStatusTrail.status === Statuses.applyScheduled &&
+    moment().isBefore(moment(item.metadata?.scheduledAt))
+  ) {
+    return { status: Statuses.active }
+  } else if (preStatusTrail.status === Statuses.scheduled) {
+    return { status: Statuses.new }
+  } else if (
+    [DisplayStates.pausedRevertFailed, DisplayStates.pausedReverted].includes(item.displayStatus)) {
+    return { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
+  }
+  return preStatusTrail
+}
+
+export const getTransitionStatus =(
+  action: Actions,
+  item: TransitionIntentItem
+):StatusTrailItem => {
+  const { displayStatus } = item
+  switch (action) {
+    case Actions.One_Click_Optimize:
+      return { status: Statuses.scheduled, statusReason: StatusReasons.oneClick }
+    case Actions.Optimize:
+      return [DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus) ?
+        { status: Statuses.active } :
+        { status: Statuses.scheduled }
+    case Actions.Revert:
+      return { status: Statuses.revertScheduled }
+    case Actions.Pause:
+      return [DisplayStates.applyScheduled, DisplayStates.active].includes(displayStatus) ?
+        { status: Statuses.paused, statusReason: StatusReasons.fromActive } :
+        { status: Statuses.paused, statusReason: StatusReasons.fromInactive }
+    case Actions.Cancel:
+      return getCancelTransitionStatus(item)
+    case Actions.Resume:
+      return getResumeTransitionStatus(item)
+  }
+}
+
+export type TransitionMutationPayload = {
+  id: string
+  displayStatus: DisplayStates
+}
+
+const buildTransitionGQL = (index:number, includeMetadata:boolean) => `t${index}: transition(
+  id: $id${index}, status: $status${index}, statusReason: $statusReason${index},
+   ${includeMetadata? 'metadata: $metadata'+index : ''}) {
+    success
+    errorMsg
+    errorCode
+  }`
+
+export const parseTransitionGQLByAction = (action: Actions, data: TransitionIntentItem[]) => {
+  const paramsGQL:string[] = []
+  const transitionsGQLs:string[] = []
+  const variables:Record<string, string|TransitionIntentMetadata|null> = {}
+  const includeMetadata = [Actions.Revert, Actions.One_Click_Optimize].includes(action)
+  data.forEach((item, index) => {
+    const currentIndex = index + 1
+    const { id, metadata } = item
+    const { status, statusReason } = getTransitionStatus(action, item)
+    paramsGQL.push(
+      `$id${currentIndex}:String!, $status${currentIndex}:String!, \n
+      $statusReason${currentIndex}:String, \n
+      ${includeMetadata && metadata? '$metadata'+currentIndex+':JSON': ''}`
+    )
+    transitionsGQLs.push(buildTransitionGQL(currentIndex, includeMetadata))
+    variables[`id${currentIndex}`] = id
+    variables[`status${currentIndex}`] = status
+    variables[`statusReason${currentIndex}`] = statusReason ?? null
+    if (includeMetadata && metadata) variables[`metadata${currentIndex}`] = metadata
+  })
+  return { paramsGQL,transitionsGQLs, variables } as {
+    paramsGQL:string[],
+    transitionsGQLs:string[],
+    variables: Record<string, string|TransitionIntentMetadata|null> }
 }

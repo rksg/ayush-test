@@ -31,10 +31,10 @@ export interface GraphProps extends Omit<EChartsReactProps, 'option' | 'opts' | 
   zoomScale: ScalePower<number, number, never>
   subtext?: string
   style?: EChartsReactProps['style'] & { width?: number, height?: number }
+  backgroundColor?: string | undefined
 }
 
 export function Graph (props: GraphProps) {
-
   const highlightColor = cssStr('--acx-semantics-red-50')
   const normalColor = cssStr('--acx-neutrals-50')
   const blurColor = cssStr('--acx-neutrals-30')
@@ -42,14 +42,18 @@ export function Graph (props: GraphProps) {
   const eChartsRef = useRef<ReactECharts>(null)
   useImperativeHandle(props.chartRef, () => eChartsRef.current!)
 
-  const { data: { nodes = [], links = [], categories = [] }, zoomScale } = props
+  const {
+    data: { nodes = [], links = [], categories = [] },
+    zoomScale,
+    backgroundColor
+  } = props
 
   const linksNodeRatio = links.length / nodes.length || 1
   const zoom = zoomScale(nodes.length) * zoomFactor(linksNodeRatio)
   const repulsion = repulsionScale(linksNodeRatio)
 
   const option = {
-    backgroundColor: cssStr('--acx-neutrals-10'),
+    backgroundColor: backgroundColor ?? cssStr('--acx-neutrals-10'),
     title: {
       text: props.title,
       textStyle: {

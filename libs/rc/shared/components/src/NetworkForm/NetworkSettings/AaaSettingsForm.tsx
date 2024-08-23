@@ -29,6 +29,7 @@ import {
   ManagementFrameProtectionEnum,
   WifiNetworkMessages,
   WlanSecurityEnum,
+  hasCloudpathAccess,
   macAuthMacFormatOptions
 } from '@acx-ui/rc/utils'
 
@@ -209,13 +210,13 @@ function SettingsForm () {
               </Select>
             </Form.Item>
           </GridCol>
-          <Button
+          { hasCloudpathAccess() && <Button
             type='link'
             style={{ top: '28px' }}
             onClick={() => setCertTempModalVisible(true)}
           >
             { $t({ defaultMessage: 'Add' }) }
-          </Button>
+          </Button> }
         </GridRow>
         <Modal
           title={$t({ defaultMessage: 'Add Certificate Template' })}

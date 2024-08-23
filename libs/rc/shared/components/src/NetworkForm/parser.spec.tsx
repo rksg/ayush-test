@@ -128,6 +128,18 @@ describe('NetworkForm parser', () => {
       // eslint-disable-next-line max-len
       expect((moreSettingData.wlan?.advancedCustomization as DpskWlanAdvancedCustomization)?.enableAaaVlanOverride).toBe(false)
     })
+
+    it('should set useDpskService correctly when enabling/disabling DPSK service profile', () => {
+      expect(tranferSettingsToSave({
+        type: NetworkTypeEnum.DPSK,
+        dpskServiceProfileId: ''
+      }, false)).toHaveProperty('useDpskService', false)
+
+      expect(tranferSettingsToSave({
+        type: NetworkTypeEnum.DPSK,
+        dpskServiceProfileId: 'DPSK_ID_12345'
+      }, false)).toHaveProperty('useDpskService', true)
+    })
   })
 
   describe('transfer NetworkMoreSettings', () => {
