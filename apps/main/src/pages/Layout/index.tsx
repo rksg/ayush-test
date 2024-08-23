@@ -74,8 +74,7 @@ function Layout () {
     defaultPayload: invitationPayload
   })
   const delegationCount = invitationTableQuery.data?.totalCount ?? 0
-  const nonVarDelegation =
-    useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE) && delegationCount > 0
+  const nonVarDelegation = delegationCount > 0
 
   const showHomeButton = nonVarDelegation ||
     isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
