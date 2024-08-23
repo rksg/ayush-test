@@ -1,13 +1,15 @@
 import React from 'react'
 
-import { Space, Typography } from 'antd'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import { Typography } from 'antd'
+import _              from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
 
-import { aiFeatures, aiFeaturesLabel, codes } from '../config'
-import { useIntentContext }                   from '../IntentContext'
+import { aiFeatures, aiFeaturesLabel, codes } from '../../config'
+import { useIntentContext }                   from '../../IntentContext'
+
+import * as UI from './styledComponents'
 
 export const icons = {
   [aiFeatures.RRM]: <AIDrivenRRM />,
@@ -41,8 +43,8 @@ export const IntentIcon = (props: SizeProps) => {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
   const feature = codes[intent.code].aiFeature
-  return <Space size={10} align='center'>
+  return <UI.Wrapper>
     {<Icon feature={feature} {...props} />}
     <Typography.Title level={3} children={$t(aiFeaturesLabel[feature])} />
-  </Space>
+  </UI.Wrapper>
 }
