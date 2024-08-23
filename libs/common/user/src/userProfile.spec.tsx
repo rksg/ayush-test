@@ -206,6 +206,17 @@ describe('hasCrossVenuesPermission', () => {
     })
     expect(hasCrossVenuesPermission()).toBe(true)
   })
+
+  it('check permissions for needGlobalPermission', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      abacEnabled: true,
+      hasAllVenues: true,
+      isCustomRole: false
+    })
+    expect(hasCrossVenuesPermission({ needGlobalPermission: true })).toBe(true)
+  })
 })
 
 describe('filterByAccess', () => {

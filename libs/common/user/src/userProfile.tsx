@@ -188,10 +188,19 @@ export function isCustomAdmin () {
   }
   return false
 }
-export function hasCrossVenuesPermission () {
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function hasCrossVenuesPermission (props?: {
+  needGlobalPermission: boolean
+}) {
   /* For testing purposes */
-  // const { abacEnabled, hasAllVenues } = getUserProfile()
-  // return abacEnabled ? hasAllVenues : true
+  // const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
+  // if(!abacEnabled) return true
+  // if(props?.needGlobalPermission) {
+  //   return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  // } else {
+  //   return hasAllVenues
+  // }
   return true
 }
 
