@@ -166,12 +166,12 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         title='Device Networking Subscriptions'
         subTitle='My Account License Expiration'
         data={selfData}
-        isMsp={isMsp}
+        isMsp={true}
       />
       <DeviceNetworkingCard
         title='Device Networking Subscriptions'
         subTitle='MSP Customers License Expiration'
-        isMsp={isMsp}
+        isMsp={false}
         data={ecSummaryData} />
     </UI.ComplianceContainer>
     : <DeviceNetworkingCard
