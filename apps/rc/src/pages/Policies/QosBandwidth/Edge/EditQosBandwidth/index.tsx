@@ -1,8 +1,8 @@
-import { Form } from 'antd'
-import _ from 'lodash'
+import { Form }    from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader } from '@acx-ui/components'
+import { Loader, PageHeader }       from '@acx-ui/components'
 import {
   useActivateQosOnEdgeClusterMutation,
   useDeactivateQosOnEdgeClusterMutation,
@@ -20,8 +20,8 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import QosBandwidthForm, { QosBandwidthFormModel } from '../QosBandwidthForm'
-import { ScopeForm } from '../QosBandwidthForm/ScopeForm'
-import { SettingsForm } from '../QosBandwidthForm/SettingsForm'
+import { ScopeForm }                               from '../QosBandwidthForm/ScopeForm'
+import { SettingsForm }                            from '../QosBandwidthForm/SettingsForm'
 
 
 const EditEdgeQosBandwidth = () => {

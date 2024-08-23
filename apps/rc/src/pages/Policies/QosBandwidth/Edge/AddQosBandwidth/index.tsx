@@ -1,15 +1,15 @@
-import { Form } from 'antd'
+import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { PageHeader } from '@acx-ui/components'
-import { useActivateQosOnEdgeClusterMutation, useCreateEdgeQosProfileMutation } from '@acx-ui/rc/services'
+import { PageHeader }                                                              from '@acx-ui/components'
+import { useActivateQosOnEdgeClusterMutation, useCreateEdgeQosProfileMutation }    from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useTenantLink }                                              from '@acx-ui/react-router-dom'
 
 import QosBandwidthForm, { QosBandwidthFormModel } from '../QosBandwidthForm'
-import { ScopeForm } from '../QosBandwidthForm/ScopeForm'
-import { SettingsForm } from '../QosBandwidthForm/SettingsForm'
-import { SummaryForm } from '../QosBandwidthForm/SummaryForm'
+import { ScopeForm }                               from '../QosBandwidthForm/ScopeForm'
+import { SettingsForm }                            from '../QosBandwidthForm/SettingsForm'
+import { SummaryForm }                             from '../QosBandwidthForm/SummaryForm'
 
 
 const AddEdgeQosBandwidth = () => {
