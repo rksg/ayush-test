@@ -48,8 +48,8 @@ const Administrators = () => {
   const adminGroupCount = adminGroupList?.data?.length! || 0
   const delegatedAdminCount = thirdPartyAdminList.data?.length! || 0
 
-  const isVAR = userProfileData?.var && !userProfileData?.support
   const tenantType = tenantDetailsData.data?.tenantType
+  const isVAR = tenantType === TenantType.VAR && !userProfileData?.support
   const isNonVarMsp = (tenantType === TenantType.MSP_NON_VAR)
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   let currentUserMail = userProfileData?.email

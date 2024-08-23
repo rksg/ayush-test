@@ -78,8 +78,8 @@ function Layout () {
     useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE) && delegationCount > 0
 
   const showHomeButton = nonVarDelegation ||
-    isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
-    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+    isDelegationMode() || tenantType === AccountType.VAR || tenantType === AccountType.MSP_NON_VAR
+      || tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
