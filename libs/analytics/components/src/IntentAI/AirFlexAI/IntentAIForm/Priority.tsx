@@ -27,21 +27,21 @@ export function Priority () {
     {
       key: 'full',
       value: true,
-      children: $t({ defaultMessage: 'High number of clients in a dense network (Default)' }),
+      children: $t({ defaultMessage: 'Reduce Management traffic in dense network' }),
       columns: [
-        $t({ defaultMessage: 'High number of clients in a dense network (Default)' }),
-        // TODO: i18n: Controller for R1?
-        $t({ defaultMessage: 'This is AI-Driven RRM Full Optimization mode, where IntentAI will consider only the channels configured on the Controller, assess the neighbor AP radio channels for each AP radio and build a channel plan for each radio to minimize the interference. While building the channel plan, IntentAI may optionally change the AP Radio Channel Width and Transmit Power to minimize the channel interference.' })
+        $t({ defaultMessage: 'Reduce Management traffic in dense network' }),
+        $t({ defaultMessage: `Leverage AirFlexAI, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network.
+        For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.` }),
       ]
     },
     {
       key: 'partial',
       value: false,
-      children: $t({ defaultMessage: 'High client throughput in sparse network' }),
+      children: $t({ defaultMessage: 'Standard Management traffic in a sparse network' }),
       columns: [
-        $t({ defaultMessage: 'High client throughput in sparse network' }),
-        // TODO: i18n: Controller for R1?
-        $t({ defaultMessage: 'This is AI-Driven RRM Partial Optimization mode, where IntentAI will consider only the channels configured on the Controller, assess the neighbor AP channels for each AP radio and build a channel plan for each AP radio to minimize interference. While building the channel plan, IntentAI will NOT change the AP Radio Channel Width and Transmit Power.' })
+        $t({ defaultMessage: 'Standard Management traffic in a sparse network' }),
+        $t({ defaultMessage: `This option will disable AirFlexAI feature and the network shall continue using current configuration if any for handling probe request/response in the network.
+        For manual control, you may directly change the network configurations.` }),
       ]
     }
   ]

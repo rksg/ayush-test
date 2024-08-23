@@ -22,7 +22,7 @@ export function Settings () {
       </StepsForm.TextContent>
     </Col>
     <Col span={7} offset={2}>
-      <SideNotes.Settings />
+      {/* <SideNotes.Settings /> */}
     </Col>
   </Row>
 }

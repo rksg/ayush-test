@@ -3,14 +3,11 @@
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Loader, StepsForm } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
-import { CompareSlider }        from '../../../CompareSlider'
 import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
 import { aiFeatures }           from '../../config'
-import { intentPriority }       from '../common'
-import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import * as SideNotes from './SideNotes'
 import * as UI        from './styledComponents'
@@ -62,25 +59,12 @@ export const SliderAfter = (props: { image: string }) => {
 }
 
 export function Introduction (
-  { sliderUrlBefore, sliderUrlAfter, queryResult }:
-  { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: ReturnType<typeof useIntentAICRRMQuery> }) {
+) {
   const { $t } = useIntl()
-
-  const compareSlider = <Loader states={[queryResult]}>
-    <CompareSlider
-      style={{ width: '40%', height: '100%' }}
-      itemOne={<SliderBefore image={sliderUrlBefore} />}
-      itemTwo={<SliderAfter image={sliderUrlAfter} />}
-      disabled={false}
-      portrait={false}
-      boundsPadding={0}
-      position={50}
-      changePositionOnHover={false}
-      keyboardIncrement={0}
-      onlyHandleDraggable={false}
-    />
-  </Loader>
-
+  const title1 = $t({ defaultMessage: 'Reduce Management traffic in dense network' })
+  const para1 = $t({ defaultMessage: ' Use intelligent probe responses to minimize unnecessary traffic, reducing congestion and improving overall performance by prioritizing essential communications in environments with many devices.' })
+  const title2 = $t({ defaultMessage: 'Standard Management traffic in a sparse network' })
+  const para2 = $t({ defaultMessage: 'Maintain regular probe responses to ensure reliable connectivity and network stability, as the lower device density doesn\'t typically cause congestion or performance issues, allowing for standard management traffic without adverse effects.' })
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t({ defaultMessage: 'Introduction' })} />
@@ -90,13 +74,12 @@ export function Introduction (
           {$t({ defaultMessage: 'Network Intent plays a crucial role in wireless network design' })}
         </StepsForm.Subtitle>
         <Paragraph>
-          <b>{$t(intentPriority.full.title)}:</b> <span>{$t(intentPriority.full.content)}</span>
+          <b>{title1}:</b> <span>{para1}</span>
         </Paragraph>
         <Paragraph>
-          <b>{$t(intentPriority.partial.title)}:</b> <span>{$t(intentPriority.partial.content)}</span>
+          <b>{title2}:</b> <span>{para2}</span>
         </Paragraph>
       </StepsForm.TextContent>
-      {compareSlider}
     </Col>
     <Col span={7} offset={2}>
       <SideNotes.Introduction />

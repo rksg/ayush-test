@@ -9,7 +9,6 @@ import { KpiField }                          from '../../common/KpiField'
 import { useIntentContext }                  from '../../IntentContext'
 import { getGraphKPIs }                      from '../../useIntentDetailsQuery'
 import { dataRetentionText, isDataRetained } from '../../utils'
-import { IntentAIRRMGraph }                  from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
 
@@ -23,25 +22,11 @@ export function Summary (
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <StepsForm.Subtitle>
-        {$t({ defaultMessage: 'Projected interfering links reduction' })}
-      </StepsForm.Subtitle>
-      {/* TODO: take dataEndTime from intent.metadata.dataEndTime */}
-      {isDataRetained(intent.dataEndTime)
-        ? <IntentAIRRMGraph
-          details={intent}
-          crrmData={crrmData}
-          summaryUrlBefore={summaryUrlBefore}
-          summaryUrlAfter={summaryUrlAfter}
-        />
-        : $t(dataRetentionText)
-      }
-      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
-      <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Schedule' })}
       </StepsForm.Subtitle>
     </Col>
     <Col span={7} offset={1}>
-      <SideNotes.Summary />
+      {/* <SideNotes.Summary /> */}
     </Col>
   </Row>
 }
