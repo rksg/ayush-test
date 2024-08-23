@@ -17,7 +17,8 @@ import {
   dropRight,
   uniq,
   flatten,
-  cloneDeep
+  cloneDeep,
+  set
 } from 'lodash'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
@@ -391,6 +392,13 @@ export function RadioSettings () {
     }
 
     const setRadioFormData = (data: VenueRadioCustomization) => {
+      // set EditRadioContext enableAfc false if AFC is not enable
+      // Otherwise the data could be true and it will case backend throw error
+      const isAFCEnabled = supportChannelsData?.afcEnabled
+      if (!isAFCEnabled) {
+        set(data, 'radioParams6G.enableAfc', false)
+      }
+
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
 

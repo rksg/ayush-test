@@ -6,7 +6,6 @@ import { Divider,
   Space } from 'antd'
 import { useIntl } from 'react-intl'
 
-
 import {
   Dropdown,
   CaretDownSolidIcon,
@@ -35,7 +34,8 @@ import { noDataDisplay }                         from '@acx-ui/utils'
 import {
   renderAllowedNetwork,
   renderExpires,
-  renderGuestType
+  renderGuestType,
+  operationRoles
 } from '../GuestsTable'
 import * as UI from '../styledComponents'
 
@@ -238,31 +238,30 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         label: $t({ defaultMessage: 'Generate New Password' }),
         key: 'generatePassword',
         scopeKey: [WifiScopes.UPDATE],
-        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Download Information' }),
         key: 'downloadInformation',
         scopeKey: [WifiScopes.READ],
-        allowedOperationUrl: 'POST:/guestUsers'
+        roles: operationRoles
       },
       {
         label: $t({ defaultMessage: 'Disable Guest' }),
         key: 'disableGuest',
         scopeKey: [WifiScopes.UPDATE],
-        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Enable Guest' }),
         key: 'enableGuest',
         scopeKey: [WifiScopes.UPDATE],
-        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }, {
         label: $t({ defaultMessage: 'Delete Guest' }),
         key: 'deleteGuest',
         scopeKey: [WifiScopes.DELETE],
-        allowedOperationUrl: 'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+        roles: operationRoles
       }].filter((item) => {
-        if (!hasRoles([RolesEnum.GUEST_MANAGER]) &&
-        !hasPermission({ scopes: item.scopeKey, allowedOperations: item.allowedOperationUrl })){
+        if (!hasPermission({ scopes: item.scopeKey, roles: item.roles })) {
           return false
         }
         if (item.key === 'enableGuest' &&

@@ -85,7 +85,7 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
         if (impactVenueIds.length !== 0) {
           impactVenueIds.forEach((impactVenueId) => {
           // eslint-disable-next-line max-len
-            newSelectedNetworks = toggleItemFromSelected(checked, impactVenueId, networkData, activatedGuestNetworks)
+            newSelectedNetworks = toggleItemFromSelected(checked, impactVenueId, networkData, newSelectedNetworks)
           })
         }
         setUpdateContent({

@@ -35,7 +35,8 @@ import {
   VlanPoolRbacUrls,
   VLANPoolViewModelRbacType,
   transformWifiNetwork,
-  DpskSaveData
+  DpskSaveData,
+  CertificateTemplate
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -47,7 +48,7 @@ import {
   fetchRbacApGroupNetworkVenueList,
   fetchRbacNetworkVenueList,
   fetchRbacVenueNetworkList,
-  getNetworkDeepList
+  getNetworkDeepList, updateNetworkVenueFn
 } from './networkVenueUtils'
 import { isPayloadHasField } from './utils'
 
@@ -288,17 +289,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-
-        const apiCustomHeader = enableRbac? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
-
-        const req = createHttpRequest(urlsInfo.updateNetworkVenue, params, apiCustomHeader)
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: updateNetworkVenueFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     // RBAC API doesn't support this
@@ -369,7 +360,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         const networkQuery = await fetchWithBQ(
           createHttpRequest(
-            params?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : WifiRbacUrlsInfo.getNetwork,
+            WifiRbacUrlsInfo.getNetwork,
             params,
             GetApiVersionHeader(ApiVersionEnum.v1)
           )
@@ -406,7 +397,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           const useCases = [
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ]
 
@@ -434,7 +427,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'UpdateNetworkDeep',
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
@@ -543,7 +538,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
@@ -718,7 +715,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings',
             'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
@@ -869,6 +868,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...externalProvidersReq
         }
+      }
+    }),
+    getCertificateTemplateNetworkBinding: build.query<CertificateTemplate, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryCertificateTemplate, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<CertificateTemplate>) => {
+        return response?.data[0]
       }
     }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -1317,6 +1327,7 @@ export const {
   useVenueNetworkListV2Query,
   useNewVenueNetworkTableQuery,
   useVenueRadioActiveNetworksQuery,
+  useLazyVenueRadioActiveNetworksQuery,
   useVenueNetworkTableV2Query,
   useApGroupNetworkListV2Query,
   useLazyApGroupNetworkListV2Query,
@@ -1326,6 +1337,7 @@ export const {
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
+  useGetCertificateTemplateNetworkBindingQuery,
   useActivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,

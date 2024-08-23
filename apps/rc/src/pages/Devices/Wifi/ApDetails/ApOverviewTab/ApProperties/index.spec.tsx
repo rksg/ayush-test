@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import { apApi }                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store  }                               from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen }          from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
+import { apApi }                                                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchRbacUrlsInfo, SwitchUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }                                              from '@acx-ui/test-utils'
 
 import { apDetails, apLanPorts, apRadio, currentAP, wifiCapabilities } from '../../__tests__/fixtures'
 
@@ -15,6 +17,159 @@ const params = {
   tenantId: 'tenant-id',
   serialNumber: 'serial-number'
 }
+
+const portData = {
+  data: [{
+    cloudPort: true,
+    stack: false,
+    name: 'GigabitEthernet1/1/7',
+    portId: 'c0-c5-20-b2-08-11_1-1-7',
+    status: 'Up',
+    adminStatus: 'Up',
+    vlanIds: '1',
+    portSpeed: '1 Gb/sec',
+    poeUsed: 0,
+    poeTotal: 0,
+    signalIn: 0,
+    signalOut: 0,
+    crcErr: '0',
+    inErr: '0',
+    outErr: '0',
+    opticsType: '1 Gbits per second copper',
+    switchUnitId: 'FMF3250Q06K',
+    poeEnabled: true,
+    usedInFormingStack: false,
+    portIdentifier: '1/1/7',
+    unTaggedVlan: '1',
+    inDiscard: '0',
+    broadcastIn: '13678856',
+    broadcastOut: '1434',
+    multicastIn: '58666052',
+    multicastOut: '271660',
+    poeType: 'n/a',
+    switchMac: 'c0:c5:20:b2:08:11',
+    id: 'c0-c5-20-b2-08-11_1-1-7',
+    neighborName: 'FMF3250Q0BT-0702-R1',
+    venueId: '3d995ef9a9c6426893629a89506f34fe',
+    ingressAclName: '',
+    egressAclName: '',
+    vsixIngressAclName: '',
+    vsixEgressAclName: '',
+    lagName: '',
+    switchName: 'R2',
+    switchSerial: 'c0:c5:20:b2:08:11',
+    lagId: '0',
+    deviceStatus: 'ONLINE',
+    unitStatus: 'Standalone',
+    unitState: 'ONLINE',
+    switchModel: 'ICX7150-C08P',
+    neighborMacAddress: 'C0:C5:20:B7:95:09',
+    syncedSwitchConfig: true,
+    mediaType: 'MEDIA_TYPE_EMPTY',
+    poeUsage: '0/0W (0%)'
+  }]
+}
+
+const switchData = {
+  type: 'device',
+  isStack: false,
+  rearModule: 'none',
+  switchMac: 'C0:C5:20:B2:08:11',
+  switchName: 'R2',
+  model: 'ICX7150-C08P',
+  id: 'c0:c5:20:b2:08:11',
+  syncDataEndTime: 1722930373335,
+  firmwareVersion: 'SPS09010h_cd2',
+  freeMemory: 437207040,
+  clientCount: 3,
+  floorplanId: '',
+  deviceType: 'DVCNWTYPE_SWITCH',
+  serialNumber: 'FMF3250Q06K',
+  yPercent: 0,
+  portsStatus: {
+    Down: 7,
+    Up: 3
+  },
+  staticOrDynamic: 'dynamic',
+  ipAddress: '10.206.1.58',
+  dns: '10.10.10.106',
+  cpu: 8,
+  stackMember: false,
+  cliApplied: false,
+  subnetMask: '255.255.255.0',
+  unitSerialNumbers: 'FMF3250Q06K',
+  modules: 'switch',
+  venueName: 'Ring_Topology_6F',
+  name: 'R2',
+  activeSerial: 'FMF3250Q06K',
+  syncedAdminPassword: false,
+  suspendingDeployTime: '',
+  cloudPort: '1/1/7',
+  ipFullContentParsed: true,
+  stackMemberOrder: '',
+  numOfUnits: 1,
+  memory: 57,
+  switchType: 'switch',
+  crtTime: '1713785846270',
+  configReady: true,
+  portModuleIds: 'FMF3250Q06K',
+  deviceStatus: 'ONLINE',
+  vlanMapping: '{"1":"DEFAULT-VLAN"}',
+  // eslint-disable-next-line max-len
+  temperatureGroups: '[{"serialNumber":"FMF3250Q06K","stackId":"C0:C5:20:B2:08:11","temperatureSlotList":[{"slotNumber":3,"temperatureValue":58.5},{"slotNumber":4,"temperatureValue":58.5},{"slotNumber":1,"temperatureValue":69},{"slotNumber":2,"temperatureValue":52.5}]}]',
+  sendedHostname: true,
+  venueId: '3d995ef9a9c6426893629a89506f34fe',
+  unitId: 1,
+  hasPoECapability: true,
+  firmware: 'SPS09010h_cd2',
+  adminPassword: '',
+  timestamp: 1722930360939,
+  syncedSwitchConfig: true,
+  xPercent: 0,
+  defaultGateway: '10.206.1.254',
+  stackMembers: [],
+  extIp: '210.58.90.254',
+  uptime: '94 days, 23:19:50.00',
+  poeUsage: {
+    poeFree: 33150,
+    poeTotal: 62000,
+    poeUtilization: 28850
+  },
+  totalMemory: 1019875328,
+  tenantId: '20788b98365b427e8bedab7faa11b48b',
+  family: 'ICX7150-C08P',
+  numOfPorts: 10
+}
+
+const lagList = [
+  {
+    id: 'b5a96cc814354616a50c724a758fd2d6',
+    lagId: 1,
+    name: 'lag56',
+    type: 'static',
+    ports: [
+      '1/1/5',
+      '1/1/6'
+    ],
+    untaggedVlan: '1',
+    switchId: 'c0:c5:20:b2:08:11',
+    lastName: 'lag567',
+    realRemove: true
+  },
+  {
+    id: 'f7407e6bffc24e8b86a614a493038980',
+    lagId: 1,
+    name: 'lag567',
+    type: 'static',
+    ports: [
+      '1/1/5',
+      '1/1/6'
+    ],
+    untaggedVlan: '1',
+    switchId: 'c0:c5:20:b2:08:11',
+    realRemove: true
+  }
+]
 
 describe('ApProperties', () => {
   beforeEach(() => {
@@ -36,6 +191,18 @@ describe('ApProperties', () => {
         }))
       ),
       rest.get(
+        WifiRbacUrlsInfo.getApOperational.url.replace('?operational=true', ''),
+        (_, res, ctx) => res(ctx.json({
+          loginPassword: 'admin!234'
+        }))
+      ),
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => res(ctx.json({
+          totalCount: 0, page: 1, data: []
+        }))
+      ),
+      rest.get(
         WifiUrlsInfo.getApLanPorts.url,
         (req, res, ctx) => res(ctx.json(apLanPorts))
       ),
@@ -54,6 +221,39 @@ describe('ApProperties', () => {
       rest.get(
         WifiUrlsInfo.getApValidChannel.url,
         (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApRadioCustomization.url,
+        (req, res, ctx) => res(ctx.json(apRadio))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(wifiCapabilities))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portData))
+      ),
+      rest.post(SwitchRbacUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portData))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getSwitchDetailHeader.url,
+        (req, res, ctx) => res(ctx.json(switchData))
+      ),
+      rest.get(SwitchRbacUrlsInfo.getSwitchDetailHeader.url,
+        (req, res, ctx) => res(ctx.json(switchData))
+      ),
+      rest.get(
+        SwitchUrlsInfo.getLagList.url,
+        (req, res, ctx) => res(ctx.json(lagList))
+      ),
+      rest.get(SwitchRbacUrlsInfo.getLagList.url,
+        (req, res, ctx) => res(ctx.json(lagList))
       )
     )
   })
@@ -71,4 +271,102 @@ describe('ApProperties', () => {
     fireEvent.click(button)
   })
 
+  it('should render edit port drawer correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <ApProperties
+        currentAP={currentAP}
+        apDetails={apDetails}
+        isLoading={false}
+      /></Provider>, { route: { params } })
+    expect(screen.getByText('AP Properties')).toBeVisible()
+    await userEvent.click(screen.getByText('More'))
+    const apPropertiesDialog = await screen.findByRole('dialog')
+    expect(apPropertiesDialog).toHaveTextContent('AP Properties')
+    const port = await screen.findByTestId('portButton')
+    expect(port).toBeVisible()
+    await userEvent.click(port)
+
+    //const dialogs = await screen.findAllByRole('dialog')
+    //expect(dialogs[1]).toBeVisible()
+  })
+
+  it('should render edit lag drawer correctly', async () => {
+    const portLagData = {
+      data: [{
+        adminStatus: 'Up',
+        broadcastIn: '15',
+        broadcastOut: '116734',
+        cloudPort: false,
+        crcErr: '0',
+        deviceStatus: 'ONLINE',
+        egressAclName: '',
+        id: 'c0-c5-20-b2-08-11_1-1-5',
+        inDiscard: '0',
+        inErr: '0',
+        ingressAclName: '',
+        lagId: '1',
+        lagName: 'lag567',
+        mediaType: 'MEDIA_TYPE_EMPTY',
+        multicastIn: '2882',
+        multicastOut: '669090',
+        name: 'GigabitEthernet1/1/7',
+        neighborMacAddress: '34:20:E3:19:79:F0',
+        neighborName: '302002015736',
+        opticsType: '1 Gbits per second copper',
+        outErr: '0',
+        poeEnabled: true,
+        poeTotal: 28850,
+        poeType: '2P-IEEE',
+        poeUsage: '4/29W (14%)',
+        poeUsed: 4400,
+        portId: 'c0-c5-20-b2-08-11_1-1-5',
+        portIdentifier: '1/1/7',
+        portSpeed: '1 Gb/sec',
+        signalIn: 0,
+        signalOut: 0,
+        stack: false,
+        status: 'Up',
+        switchMac: 'c0:c5:20:b2:08:11',
+        switchModel: 'ICX7150-C08P',
+        switchName: 'R2',
+        switchSerial: 'c0:c5:20:b2:08:11',
+        switchUnitId: 'FMF3250Q06K',
+        syncedSwitchConfig: true,
+        unTaggedVlan: '1',
+        unitState: 'ONLINE',
+        unitStatus: 'Standalone',
+        usedInFormingStack: false,
+        venueId: '3d995ef9a9c6426893629a89506f34fe',
+        vlanIds: '1',
+        vsixEgressAclName: '',
+        vsixIngressAclName: ''
+      }]
+    }
+
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portLagData))
+      ),
+      rest.post(SwitchRbacUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portLagData))
+      )
+    )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <ApProperties
+        currentAP={currentAP}
+        apDetails={apDetails}
+        isLoading={false}
+      /></Provider>, { route: { params } })
+    expect(screen.getByText('AP Properties')).toBeVisible()
+    await userEvent.click(screen.getByText('More'))
+    const apPropertiesDialog = await screen.findByRole('dialog')
+    expect(apPropertiesDialog).toHaveTextContent('AP Properties')
+    const port = await screen.findByTestId('portButton')
+    expect(port).toBeVisible()
+    await userEvent.click(port)
+  })
 })

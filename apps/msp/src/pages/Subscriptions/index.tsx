@@ -17,6 +17,7 @@ import { get }                       from '@acx-ui/config'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
+  LicenseCompliance,
   PendingActivations,
   SubscriptionUsageReportDialog
 } from '@acx-ui/msp/components'
@@ -43,6 +44,7 @@ import {
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                        from '@acx-ui/types'
 import { filterByAccess, hasRoles }                                         from '@acx-ui/user'
+import { noDataDisplay }                                                    from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -108,7 +110,11 @@ export function Subscriptions () {
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
-  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
+  const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
+  const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
+
   const {
     state
   } = useContext(HspContext)
@@ -158,7 +164,7 @@ export function Subscriptions () {
       }
     ]),
     {
-      title: isComplianceEnabled ? $t({ defaultMessage: 'License Count' })
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
         : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
@@ -201,7 +207,8 @@ export function Subscriptions () {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },
@@ -395,15 +402,16 @@ export function Subscriptions () {
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
-              const showUtilBar = summary &&
-                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
-              if (isComplianceEnabled) {
+              const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
+                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive))
+              if (isvSmartEdgeEnabled) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }
               return showUtilBar ? <MspSubscriptionUtilizationWidget
                 key={item.value}
                 deviceType={item.value}
                 title={item.label}
+                multiLine={isvSmartEdgeEnabled}
                 total={summary.total}
                 assigned={summary.assigned}
                 used={summary.used}
@@ -469,7 +477,7 @@ export function Subscriptions () {
     assignedSubscriptions: {
       title: $t({ defaultMessage: 'MSP Assigned Subscriptions' }),
       content: <>
-        <SubscriptionUtilization />
+        {!isExtendedTrialToggleEnabled && <SubscriptionUtilization />}
         <AssignedSubscriptionTable />
       </>,
       visible: true
@@ -478,6 +486,11 @@ export function Subscriptions () {
       title: $t({ defaultMessage: 'Pending Activations' }),
       content: <PendingActivations />,
       visible: isPendingActivationEnabled
+    },
+    compliance: {
+      title: $t({ defaultMessage: 'Compliance' }),
+      content: <LicenseCompliance isMsp={true}/>,
+      visible: showCompliance
     }
   }
 

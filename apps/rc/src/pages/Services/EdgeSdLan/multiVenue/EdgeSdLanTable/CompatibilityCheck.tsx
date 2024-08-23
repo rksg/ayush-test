@@ -1,0 +1,48 @@
+import { find, sumBy } from 'lodash'
+import { useIntl }     from 'react-intl'
+
+import { ApCompatibilityToolTip, CompatibilityWarningCircleIcon }                    from '@acx-ui/rc/components'
+import { CompatibilityDeviceEnum, EdgeSdLanApCompatibility, EdgeSdLanCompatibility } from '@acx-ui/rc/utils'
+
+interface CompatibilityCheckProps {
+  serviceId: string,
+  sdLanCompatibilityData?: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]>
+}
+export const CompatibilityCheck = (props: CompatibilityCheckProps) => {
+  const { $t } = useIntl()
+  const { serviceId, sdLanCompatibilityData } = props
+
+  // eslint-disable-next-line max-len
+  const edgeIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.EDGE], { serviceId }) as EdgeSdLanCompatibility)?.clusterEdgeCompatibilities
+  const edgeIncompatibleCount = sumBy(edgeIncompatibleData, (data) => data.incompatible)
+  const edgeIncompatible = edgeIncompatibleCount > 0
+  // eslint-disable-next-line max-len
+  const apIncompatibleData = (find(sdLanCompatibilityData?.[CompatibilityDeviceEnum.AP], { serviceId }) as EdgeSdLanApCompatibility)?.venueSdLanApCompatibilities
+  const apIncompatibleCount = sumBy(apIncompatibleData, (data) => data.incompatible)
+  const apIncompatible = apIncompatibleCount > 0
+
+  const isIncompatible = Boolean(edgeIncompatible || apIncompatible)
+
+  return isIncompatible
+    ? <ApCompatibilityToolTip
+    // eslint-disable-next-line max-len
+      title={$t({
+        defaultMessage: `This SD-LAN is not able to be brought up
+        on some {edgeInfo} {hasAnd} {apInfo} due to thier firmware incompatibility.` },
+      {
+        edgeInfo: (edgeIncompatible
+        // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: '{edgeCount, plural, one {SmartEdge} other {SmartEdges}}' }, { edgeCount: edgeIncompatibleCount })
+          : ''),
+        hasAnd: ((edgeIncompatible && apIncompatible) ? $t({ defaultMessage: 'and' }) : ''),
+        apInfo: (apIncompatible
+        // eslint-disable-next-line max-len
+          ? $t({ defaultMessage: '{apCount, plural, one {access point} other {access points}}' }, { apCount: apIncompatibleCount })
+          : '')
+      })}
+      visible={false}
+      icon={<CompatibilityWarningCircleIcon />}
+      onClick={() => {}}
+    />
+    : null
+}

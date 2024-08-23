@@ -149,6 +149,9 @@ export const WifiNetworkMessages = {
   LAN_PORTS_VLAN_MEMBERS_TOOLTIP: defineMessage({
     defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
   }),
+  LAN_PORTS_RESET_TOOLTIP: defineMessage({
+    defaultMessage: 'Reset port settings to default'
+  }),
   AP_VENUE_DHCP_DISABLED_TOOLTIP: defineMessage({
     defaultMessage: 'Not allow to change <VenueSingular></VenueSingular> on DHCP AP.'
   }),
@@ -286,6 +289,12 @@ export const PortStatusMessages = {
   }),
   CURRENT: defineMessage({
     defaultMessage: 'VLANs'
+  })
+}
+
+export const LbsServerProfileMessages = {
+  CONNECTION_PROTOCOL_TOOLTIP: defineMessage({
+    defaultMessage: 'This server uses Transport Layer Security (TLS) version 1.2 to ensure secure and encrypted communication.'
   })
 }
 

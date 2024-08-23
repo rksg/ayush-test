@@ -5,6 +5,7 @@ import { PageHeader, Button, GridRow, Loader, GridCol }                         
 import { useGetApSnmpViewModelQuery }                                                                                                        from '@acx-ui/rc/services'
 import { ApSnmpViewModelData, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, PolicyOperation, PolicyType, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                        from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission }                                                                                                          from '@acx-ui/user'
 
 import SnmpAgentInstancesTable from './SnmpAgentInstancesTable'
 import SnmpAgentOverview       from './SnmpAgentOverview'
@@ -48,7 +49,7 @@ export default function SnmpAgentDetail () {
           },
           { text: $t({ defaultMessage: 'SNMP Agent' }), link: tablePath }
         ]}
-        extra={[
+        extra={hasCrossVenuesPermission() && [
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.SNMP_AGENT,

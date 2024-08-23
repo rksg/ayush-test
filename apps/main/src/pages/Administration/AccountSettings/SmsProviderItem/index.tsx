@@ -277,9 +277,14 @@ const SmsProviderItem = () => {
         <div>
           <Form.Item
             colon={false}
-            label={$t({ defaultMessage: 'Auth Token' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.authToken}</h3>
+            label={$t({ defaultMessage: 'Auth Token' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.authToken}
+            style={{ padding: '0px' }}
+          />
         </div>
         <div>
           <Form.Item

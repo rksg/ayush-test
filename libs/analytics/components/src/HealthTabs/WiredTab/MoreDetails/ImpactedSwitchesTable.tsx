@@ -6,13 +6,14 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                  from '@acx-ui/config'
 import { formatter }            from '@acx-ui/formatter'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult, SwitchDetails,
-  showTopResult, topImpactedSwitchesLimit
+  showTopNTableResult, topImpactedSwitchesLimit
 } from './config'
 import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
 import { ChartTitle }                                                from './styledComponents'
@@ -33,15 +34,16 @@ export const ImpactedSwitchesTable = ({
   }
   const getTableData = (data: PieChartResult, type: WidgetType) => {
     if (!data) return []
-    return data[topNQueryMapping[type] as keyof PieChartResult]
+    return (data[topNQueryMapping[type] as keyof PieChartResult] as Array<{ mac: string }>)
+      .filter(({ mac }) => mac !== 'Others')
+      .slice (0, topImpactedSwitchesLimit) as PieChartResult[keyof PieChartResult]
   }
-
 
   const queryResults = useImpactedSwitchesDataQuery(
     {
       ...payload,
       type: queryType,
-      n: 10
+      n: topImpactedSwitchesLimit + 1
     }, {
       selectFromResult: (result) => {
         const { data, ...rest } = result
@@ -67,7 +69,10 @@ export const ImpactedSwitchesTable = ({
       key: 'name',
       fixed: 'left',
       render: (_, row: SwitchDetails) => (
-        <TenantLink to={`/devices/switch/${row.mac}/serial/details/reports`}>
+        <TenantLink
+          to={`/devices/switch/${row.mac?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
+            ? 'reports': 'overview'}`
+          }>
           {row.name}
         </TenantLink>
       ),
@@ -117,21 +122,12 @@ export const ImpactedSwitchesTable = ({
       }
     }
   ]
-  const isSwitchDetails = (item: SwitchDetails): item is SwitchDetails => {
-    return 'serial' in item && 'model' in item && 'status' in item &&
-    'firmware' in item && 'numOfPorts' in item
-  }
 
   const totalCount = queryResults?.data?.length
-  const data = queryResults?.data?.map((item, i) => {
-    if (isSwitchDetails(item as SwitchDetails)) {
-      return {
-        ...item,
-        rowId: i + 1 // added to make rowKey unique
-      }
-    }
-    return item
-  })
+  const data = queryResults?.data?.map((item, i) => ({
+    ...item,
+    rowId: i + 1
+  }))
 
   return (
     <Loader states={[queryResults]}>
@@ -142,7 +138,7 @@ export const ImpactedSwitchesTable = ({
             other {Switches}
           }`}
           values={{
-            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
+            count: showTopNTableResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
           }}

@@ -28,18 +28,19 @@ describe('ContentSwitcher',()=>{
     const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails}/>)
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render properly with two tabs',() => {
-    const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails}/>)
-    const chartContent = asFragment()
-    expect(chartContent).toMatchSnapshot('chartContent')
+  it('should render properly with two tabs',async () => {
+    render(<ContentSwitcher tabDetails={tabDetails}/>)
+    expect(await screen.findByText('Chart content')).toBeVisible()
     fireEvent.click(screen.getByText('Table'))
-    const tableContent = asFragment()
-    expect(tableContent).toMatchSnapshot('tableContent')
-    expect(tableContent).not.toBe(chartContent)
+    expect(await screen.findByText('Table content')).toBeVisible()
   })
-  it('should render component with default selection',() => {
-    const { asFragment } =render(<ContentSwitcher tabDetails={tabDetails} defaultValue={'table'}/>)
-    expect(asFragment()).toMatchSnapshot()
+  it('should render component with default selection',async () => {
+    render(<ContentSwitcher tabDetails={tabDetails} defaultValue={'table'}/>)
+    expect(await screen.findByText('Table content')).toBeVisible()
+  })
+  it('should render component with default selection: formInitValue', async () => {
+    render(<ContentSwitcher tabDetails={tabDetails} formInitValue={'table'}/>)
+    expect(await screen.findByText('Table content')).toBeVisible()
   })
 
   it('should trigger onChange function',async () => {
