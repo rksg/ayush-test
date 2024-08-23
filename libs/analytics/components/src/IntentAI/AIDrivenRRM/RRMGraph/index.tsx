@@ -23,13 +23,11 @@ import * as UI    from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
-  intent: Intent,
   zoomScale: ScalePower<number, number, never>,
   isDrawer: boolean,
   summaryUrlBefore?: string,
   summaryUrlAfter?: string
 ) {
-  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -41,11 +39,7 @@ function useGraph (
   const beforeGraph = <div key='crrm-graph-before'><AutoSizer>{({ height, width }) => <BasicGraph
     style={{ width, height }}
     chartRef={connectChart}
-    title={$t({ defaultMessage: 'Before' })}
-    subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
-      // TODO: take dataEndTime from intent.metadata.dataEndTime
-      dateTime: formatter(DateFormatEnum.DateTimeFormat)(intent.dataEndTime)
-    })}
+    title=''
     data={graphs[0]}
     zoomScale={zoomScale}
     backgroundColor='transparent'
@@ -60,7 +54,7 @@ function useGraph (
   const afterGraph = <div key='crrm-graph-after'><AutoSizer>{({ height, width }) => <BasicGraph
     style={{ width, height }}
     chartRef={connectChart}
-    title={$t({ defaultMessage: 'Recommended' })}
+    title=''
     data={graphs[1]}
     zoomScale={zoomScale}
     backgroundColor='transparent'
@@ -79,9 +73,9 @@ function useGraph (
         <UI.RightArrow/>
       </UI.CrrmArrow>,
       isDrawer ? afterGraph : afterImage,
-      <Legend key='crrm-graph-legend' isDrawer={isDrawer}/>
+      <Legend key='crrm-graph-legend' />
     ]
-    : null
+    : []
 }
 
 const detailsZoomScale = scalePow()
@@ -92,6 +86,22 @@ const drawerZoomScale = scalePow()
   .exponent(0.01)
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.07])
+
+const GraphTitle = ({ details }: { details: Intent }) => {
+  const { $t } = useIntl()
+  return <UI.GraphTitleWrapper>
+    <div>
+      <UI.GraphTitle>{$t({ defaultMessage: 'Before' })}</UI.GraphTitle>
+      <UI.GraphSubTitle>
+        {$t({ defaultMessage: 'As at {dateTime}' }, {
+          // TODO: take dataEndTime from intent.metadata.dataEndTime
+          dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
+        })}
+      </UI.GraphSubTitle>
+    </div>
+    <UI.GraphTitle>{$t({ defaultMessage: 'Recommended' })}</UI.GraphTitle>
+  </UI.GraphTitleWrapper>
+}
 
 export const IntentAIRRMGraph = ({
   details, crrmData, summaryUrlBefore, summaryUrlAfter } : {
@@ -110,24 +120,11 @@ export const IntentAIRRMGraph = ({
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
   return <UI.Wrapper>
     <Card>
-      <UI.GraphWrapper
-        key={'graph-details'}
-        children={
-          useGraph(
-            crrmData, details, detailsZoomScale,
-            false, summaryUrlBefore, summaryUrlAfter)
-        }
-      />
-      <UI.GraphBeforeTextWrapper>
-        <UI.GraphTitleText>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleText>
-        <UI.GraphSubTitleText>
-          {$t({ defaultMessage: 'As at {dateTime}' }, {
-            // TODO: take dataEndTime from intent.metadata.dataEndTime
-            dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
-          })}
-        </UI.GraphSubTitleText>
-      </UI.GraphBeforeTextWrapper>
-      <UI.GraphAfterTextWrapper>{$t({ defaultMessage: 'Recommended' })}</UI.GraphAfterTextWrapper>
+      <UI.GraphWrapper key={'graph-details'}>
+        {useGraph(crrmData, detailsZoomScale, false,
+          summaryUrlBefore, summaryUrlAfter)}
+        <GraphTitle details={details} />
+      </UI.GraphWrapper>
     </Card>
     <UI.ViewMoreButton onClick={showDrawer} children={$t({ defaultMessage: 'View More' })} />
     <Drawer
@@ -138,15 +135,12 @@ export const IntentAIRRMGraph = ({
       visible={visible}
       onClose={closeDrawer}
       children={
-        <UI.DrawerGraphWrapper>
-          {useGraph(
-            crrmData,
-            details,
-            drawerZoomScale,
-            true
-          )}
-        </UI.DrawerGraphWrapper>
-      }/>
+        <UI.GraphWrapper>
+          {useGraph(crrmData, drawerZoomScale, true)}
+          <GraphTitle details={details} />
+        </UI.GraphWrapper>
+      }
+    />
   </UI.Wrapper>
 }
 
@@ -180,7 +174,7 @@ const GraphImage = (
       }}>
       {crrmData[data] && <BasicGraph
         chartRef={connectChart}
-        title={''}
+        title=''
         data={crrmData[data]}
         zoomScale={detailsZoomScale}
         style={{

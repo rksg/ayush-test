@@ -11,6 +11,7 @@ export const KpiField: React.FC<{
   kpi: ReturnType<typeof getGraphKPIs>[number]
 }> = ({ kpi }) => {
   const { $t } = useIntl()
+  // TODO: show timestamps on hover
   return <div>
     <StepsForm.Subtitle children={$t(kpi.label)} />
     <Space align='center' size={5}>
