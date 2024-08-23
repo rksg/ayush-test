@@ -101,7 +101,8 @@ function Histogram ({
         showToast({
           type: 'success',
           content: $t({
-            defaultMessage: 'Wired summary updated successfully.'
+            defaultMessage:
+            'Aggregate metrics panel updated successfully based on the new SLA threshold.'
           })
         })
       }
