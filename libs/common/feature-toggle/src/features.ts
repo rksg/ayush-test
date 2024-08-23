@@ -4,7 +4,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
-  ANY_3RDPARTY_INVITE_TOGGLE = 'removable-ff',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
@@ -43,6 +42,7 @@ export enum Features {
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
   EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
+  EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
   ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
