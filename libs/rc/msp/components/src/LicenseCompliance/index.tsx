@@ -115,9 +115,12 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
       <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
         <label>
-          {data.licenseGap >= 0
-            ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
-            : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
+          {(trialType ? data.licenseGap :
+            (data.licenseGap - data.totalActiveTrialLicenseCount )) >= 0
+            ? <UI.LicenseAvailable>{trialType ? data.licenseGap :
+              (data.licenseGap - data.totalActiveTrialLicenseCount )}</UI.LicenseAvailable>
+            : <UI.LicenseGap>{trialType ? data.licenseGap :
+              (data.licenseGap - data.totalActiveTrialLicenseCount )}</UI.LicenseGap>}</label>
       </UI.FieldLabelSubs2>
     </Card>
   </Col>
