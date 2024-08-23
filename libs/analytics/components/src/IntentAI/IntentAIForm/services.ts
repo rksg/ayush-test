@@ -65,14 +65,12 @@ export const transformDetailsResponse = (details: IntentDetails) => {
   let date: Moment | null = null
   let hour: number | null = null
 
-  if (details.metadata) {
-    if (details.metadata.scheduledAt) {
-      const localScheduledAt =moment.utc(details.metadata.scheduledAt).local()
-      date=localScheduledAt
-      hour=roundUpTimeToNearest15Minutes(
-        localScheduledAt.format('HH:mm:ss')
-      )
-    }
+  if (details.metadata?.scheduledAt) {
+    const localScheduledAt = moment.utc(details.metadata.scheduledAt).local()
+    date = localScheduledAt
+    hour = roundUpTimeToNearest15Minutes(
+      localScheduledAt.format('HH:mm:ss')
+    )
   }
   return {
     ...details,

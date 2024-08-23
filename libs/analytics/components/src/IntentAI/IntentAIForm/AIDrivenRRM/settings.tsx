@@ -1,14 +1,12 @@
-import React, {  useRef } from 'react'
-
-import { Row, Col, Typography, Form }        from 'antd'
-import { DatePickerProps, RangePickerProps } from 'antd/lib/date-picker'
-import { NamePath }                          from 'antd/lib/form/interface'
-import dayjs                                 from 'dayjs'
-import { Moment }                            from 'moment-timezone'
-import { defineMessage, useIntl }            from 'react-intl'
+import { Row, Col, Typography, Form }               from 'antd'
+import { NamePath }                                 from 'antd/lib/form/interface'
+import moment                                       from 'moment-timezone'
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { DateTimeDropdown, StepsForm, TimeDropdown, useLayoutContext, useStepFormContext } from '@acx-ui/components'
 
+import { richTextFormatValues }                              from '../../AIDrivenRRM/common/richTextFormatValues'
+import { statuses }                                          from '../../states'
 import { EnhancedIntent, getLocalScheduledAt, SettingsType } from '../services'
 import * as UI                                               from '../styledComponents'
 import { handleScheduledAt }                                 from '../utils'
@@ -20,54 +18,22 @@ import { steps, crrmIntent, isOptimized } from '.'
 const name = 'settings' as NamePath
 const label = defineMessage({ defaultMessage: 'Settings' })
 
-function DateTimeSetting ({
-  scheduledDate,
-  scheduledTime
-}: DateTimeSettingProps) {
-  const initialTime = useRef(scheduledTime)
-  const { form } = useStepFormContext<EnhancedIntent>()
-  const disabledDate : RangePickerProps['disabledDate']= (current) => {
-    return current && current < dayjs().startOf('day')
-  }
-  const onChange: DatePickerProps['onChange'] = (date) => {
-    form.setFieldValue(['settings', 'date'], date)
-    form.setFieldValue(['settings', 'hour'], null)
-  }
-  const { $t } = useIntl()
-  return (
-    <DateTimeDropdown
-      name={name as string}
-      dateLabel={$t(defineMessage({ defaultMessage: 'Schedule Date' }))}
-      timeLabel={$t(defineMessage({ defaultMessage: 'Schedule Time' }))}
-      initialDate={scheduledDate} // initial date from scheduledAt if any
-      time={initialTime}
-      disabledDate={disabledDate} // disable all date before current
-      onchange={onChange}
+export const ScheduleTiming = () => {
+  const { initialValues } = useStepFormContext<EnhancedIntent>()
+  const status = initialValues?.status! as statuses
+
+  if ([statuses.new, statuses.scheduled].includes(status)) {
+    return <DateTimeDropdown
+      name={name}
+      dateLabel={<FormattedMessage defaultMessage='Schedule Date' />}
+      timeLabel={<FormattedMessage defaultMessage='Schedule Time' />}
+      disabledDate={(date) => date.isBefore(moment().startOf('day'))}
     />
-  )}
-
-type DateTimeSettingProps = {
-  scheduledDate: Moment
-  scheduledTime: number
-}
-
-const scheduleActions = {
-  datetime: (props: DateTimeSettingProps) => <DateTimeSetting {...props}/>,
-  time: () =>
-    <Form.Item
-      label={'Schedule Time'}
-      children={
-        <TimeDropdown name={name as string} spanLength={24} />
-      }
-    />
-}
-
-export function getAvailableActions (status: string,
-  settings: { date: Moment, hour: number }) {
-  if  (status === 'new' || status === 'scheduled') {
-    return scheduleActions.datetime({ scheduledDate: settings.date, scheduledTime: settings.hour })
   } else {
-    return scheduleActions.time()
+    return <TimeDropdown
+      name={name}
+      label={<FormattedMessage defaultMessage='Schedule Time' />}
+    />
   }
 }
 
@@ -76,33 +42,34 @@ export function Settings () {
   const { form } = useStepFormContext<EnhancedIntent>()
   const { pageHeaderY } = useLayoutContext()
   const intentPriority = form.getFieldValue(Priority.fieldName)
-  const scheduleSettings = form.getFieldValue('settings')
-  const status = form.getFieldValue('status')
-
-  const calendarText = defineMessage({ defaultMessage: `This recommendation will be
-    applied at the chosen time whenever there is a need to change the channel plan.
-    Schedule a time during off-hours when the number of WiFi clients is at the minimum.`
-  })
-
-  const sideNotes = {
-    title: defineMessage({ defaultMessage: 'Side Notes' })
-  }
 
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t(steps.title.settings)} />
       <StepsForm.TextContent>
-        <Typography.Paragraph>
-          {$t(calendarText)}
-        </Typography.Paragraph>
+        <FormattedMessage
+          values={richTextFormatValues}
+          /* eslint-disable max-len */
+          defaultMessage={`
+            <p>
+              Choose a start date for IntentAI to begin autonomously managing your network settings and configurations.
+            </p>
+            <p>
+              Additionally, select the time of day when these changes should occur. This time will be used daily by IntentAI to implement any necessary adjustments.
+            </p>
+            <p>
+              It is advisable to select a time during low network usage to minimize disruptions.
+            </p>
+          `}
+          /* eslint-enable */
+        />
       </StepsForm.TextContent>
-      {getAvailableActions(status,scheduleSettings)}
-
+      <ScheduleTiming />
     </Col>
     <Col span={7} offset={2}>
       <UI.SideNotes $pageHeaderY={pageHeaderY}>
         <Typography.Title level={4}>
-          {$t(sideNotes.title)}
+          {$t({ defaultMessage: 'Side Notes' })}
         </Typography.Title>
         <StepsForm.Subtitle>
           {$t(crrmIntent[isOptimized(intentPriority) as IntentPriority]?.title)}
