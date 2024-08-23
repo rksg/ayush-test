@@ -12,8 +12,8 @@ import {
   getPolicyDetailsLink,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { IdentityProviderInstancesTable } from './IdentityProviderInstancesTable'
 import { IdentityProviderOverview }       from './IdentityProviderOverview'
@@ -49,7 +49,7 @@ const IdentityProviderDetail = () => {
     <PageHeader
       title={data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={filterByAccess([
+      extra={hasCrossVenuesPermission() && filterByAccess([
         <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.IDENTITY_PROVIDER,
           oper: PolicyOperation.EDIT,

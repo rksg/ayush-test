@@ -77,6 +77,8 @@ export class ApDeep {
 
   multicastDnsProxyServiceProfileId?: string
 
+  loginPassword?: string // Rbac API
+
   constructor () {
     this.serialNumber = ''
 

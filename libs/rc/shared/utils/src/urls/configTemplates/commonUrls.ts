@@ -87,7 +87,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getNetworkTemplateList: {
     method: 'post',
     url: '/templates/networks/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getNetworkTemplateListRbac: {
     method: 'post',
