@@ -6,6 +6,7 @@ import { TrafficClassSettingsTable }                                            
 import { useGetEdgeQosProfileViewDataListQuery }                                                                          from '@acx-ui/rc/services'
 import { EdgeQosViewData, PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
+import { EdgeScopes }                                                                                                     from '@acx-ui/types'
 import { filterByAccess }                                                                                                 from '@acx-ui/user'
 
 
@@ -72,11 +73,12 @@ const EdgeQosBandwidthDetail = () => {
       ]}
       extra={filterByAccess([
         // eslint-disable-next-line max-len
-        <TenantLink to={getPolicyDetailsLink({
-          type: PolicyType.QOS_BANDWIDTH,
-          oper: PolicyOperation.EDIT,
-          policyId: params.policyId!
-        })}>
+        <TenantLink scopeKey={[EdgeScopes.UPDATE]}
+          to={getPolicyDetailsLink({
+            type: PolicyType.QOS_BANDWIDTH,
+            oper: PolicyOperation.EDIT,
+            policyId: params.policyId!
+          })}>
           <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
       ])}

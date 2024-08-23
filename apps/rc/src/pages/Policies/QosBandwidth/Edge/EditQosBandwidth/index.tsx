@@ -1,11 +1,11 @@
-import { Form }    from 'antd'
-import _           from 'lodash'
+import { Form } from 'antd'
+import _ from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }       from '@acx-ui/components'
+import { Loader, PageHeader } from '@acx-ui/components'
 import {
-  useActivateEdgeClusterMutation,
-  useDeactivateEdgeClusterMutation,
+  useActivateQosOnEdgeClusterMutation,
+  useDeactivateQosOnEdgeClusterMutation,
   useGetEdgeQosProfileViewDataListQuery,
   useUpdateEdgeQosProfileMutation
 } from '@acx-ui/rc/services'
@@ -20,8 +20,8 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import QosBandwidthForm, { QosBandwidthFormModel } from '../QosBandwidthForm'
-import { ScopeForm }                               from '../QosBandwidthForm/ScopeForm'
-import { SettingsForm }                            from '../QosBandwidthForm/SettingsForm'
+import { ScopeForm } from '../QosBandwidthForm/ScopeForm'
+import { SettingsForm } from '../QosBandwidthForm/SettingsForm'
 
 
 const EditEdgeQosBandwidth = () => {
@@ -35,8 +35,8 @@ const EditEdgeQosBandwidth = () => {
   })
   const linkToServiceList = useTenantLink(cfListRoute)
   const [updateEdgeQosProfile] = useUpdateEdgeQosProfileMutation()
-  const [activateEdgeCluster] = useActivateEdgeClusterMutation()
-  const [deactivateEdgeCluster] = useDeactivateEdgeClusterMutation()
+  const [activateEdgeCluster] = useActivateQosOnEdgeClusterMutation()
+  const [deactivateEdgeCluster] = useDeactivateQosOnEdgeClusterMutation()
   // const { data, isLoading } = useGetEdgeQosProfileByIdQuery({ params })
   const { viewData, isLoading } = useGetEdgeQosProfileViewDataListQuery(
     { payload: {

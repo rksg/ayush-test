@@ -87,14 +87,14 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    activateEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+    activateQosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
           ...createHttpRequest(EdgeQosProfilesUrls.activateEdgeCluster, params)
         }
       }
     }),
-    deactivateEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+    deactivateQosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
           ...createHttpRequest(EdgeQosProfilesUrls.deactivateEdgeCluster, params)
@@ -110,6 +110,6 @@ export const {
   useCreateEdgeQosProfileMutation,
   useDeleteEdgeQosProfileMutation,
   useUpdateEdgeQosProfileMutation,
-  useActivateEdgeClusterMutation,
-  useDeactivateEdgeClusterMutation
+  useActivateQosOnEdgeClusterMutation,
+  useDeactivateQosOnEdgeClusterMutation
 } = edgeQosProfilesApi

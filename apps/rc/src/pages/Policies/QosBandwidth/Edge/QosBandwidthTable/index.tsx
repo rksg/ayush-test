@@ -144,6 +144,7 @@ const EdgeQosBandwidthTable = () => {
 
   const rowActions: TableProps<EdgeQosViewData>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -159,6 +160,7 @@ const EdgeQosBandwidthTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -193,8 +195,11 @@ const EdgeQosBandwidthTable = () => {
           }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            scopeKey={[EdgeScopes.CREATE]}
+            to={getPolicyRoutePath({
+              type: PolicyType.QOS_BANDWIDTH,
+              oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add QoS Bandwidth Profile' })}</Button>
           </TenantLink>
         ])}
