@@ -38,7 +38,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -57,7 +57,7 @@ export default function MyPolicies () {
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
           <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>

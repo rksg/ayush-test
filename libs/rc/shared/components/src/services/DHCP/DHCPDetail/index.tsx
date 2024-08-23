@@ -18,9 +18,9 @@ import {
   useServiceListBreadcrumb,
   Venue
 } from '@acx-ui/rc/utils'
-import { DHCPUsage }      from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { DHCPUsage }                                from '@acx-ui/rc/utils'
+import { WifiScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { PoolTable }                         from '../DHCPForm'
@@ -60,7 +60,7 @@ export function DHCPDetail () {
       <PageHeader
         title={data?.serviceName}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
           <ServiceConfigTemplateLinkSwitcher
             scopeKey={[WifiScopes.UPDATE]}
             type={ServiceType.DHCP}

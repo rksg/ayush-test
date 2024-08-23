@@ -18,7 +18,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission }                from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -97,18 +97,13 @@ export default function DHCPTable () {
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'DHCP ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'DHCP ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })} scopeKey={[WifiScopes.CREATE]}>
             <Button type='primary'
@@ -127,8 +122,10 @@ export default function DHCPTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          // eslint-disable-next-line max-len
-          rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
+          rowSelection={
+            hasCrossVenuesPermission({ needGlobalPermission: true })
+            && { type: 'radio' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

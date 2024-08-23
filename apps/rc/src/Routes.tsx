@@ -525,12 +525,20 @@ function ServiceRoutes () {
         element={<TenantNavigate replace to={getServiceListRoutePath(true)} />}
       />
       <Route path={getServiceListRoutePath()} element={<MyServices />} />
-      <Route path={getSelectServiceRoutePath()} element={<SelectServiceForm />} />
+      <Route
+        path={getSelectServiceRoutePath()}
+        element={
+          // eslint-disable-next-line max-len
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+            <SelectServiceForm />
+          </AuthRoute>
+        }/>
       <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}>
+          // eslint-disable-next-line max-len
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE]}>
             <MdnsProxyForm />
           </AuthRoute>
         }
@@ -538,7 +546,8 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          // eslint-disable-next-line max-len
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.UPDATE]}>
             <MdnsProxyForm editMode={true} />
           </AuthRoute>
         }
@@ -587,11 +596,21 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-        element={<AuthRoute scopes={[WifiScopes.CREATE]}><DHCPForm/></AuthRoute>}
+        element={
+          // eslint-disable-next-line max-len
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE]}>
+            <DHCPForm/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<AuthRoute scopes={[WifiScopes.UPDATE]}><DHCPForm editMode={true}/></AuthRoute>}
+        element={
+          // eslint-disable-next-line max-len
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.UPDATE]}>
+            <DHCPForm editMode={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}

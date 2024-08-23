@@ -13,7 +13,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum, ScopeKeys }                    from '@acx-ui/types'
-import { hasPermission }                           from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
@@ -34,6 +34,7 @@ export function ServiceCard (props: ServiceCardProps) {
   const isAddButtonAllowed = () => {
     if (cardType !== 'button') return false
     if (serviceType === ServiceType.DPSK) return hasDpskAccess()
+    if (!hasCrossVenuesPermission({ needGlobalPermission: true })) return false
     // eslint-disable-next-line max-len
     const scopeKeyForCreate = servicePolicyCardDataToScopeKeys([{ scopeKeysMap, categories }], 'create')
     return hasPermission({

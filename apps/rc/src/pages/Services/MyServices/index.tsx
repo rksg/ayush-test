@@ -23,9 +23,9 @@ import {
   servicePolicyCardDataToScopeKeys,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useParams }                    from '@acx-ui/react-router-dom'
+import { EdgeScopes }                               from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -145,7 +145,6 @@ export default function MyServices () {
     }
   ]
 
-  // eslint-disable-next-line max-len
   const allServicesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(services, 'create')
 
   return (
@@ -153,7 +152,7 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
           <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={allServicesScopeKeysForCreate}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>

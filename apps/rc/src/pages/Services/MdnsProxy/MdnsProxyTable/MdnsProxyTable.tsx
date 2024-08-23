@@ -23,7 +23,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission }                from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
@@ -92,7 +92,7 @@ export default function MdnsProxyTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink scopeKey={[WifiScopes.CREATE]} to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>
@@ -109,7 +109,7 @@ export default function MdnsProxyTable () {
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
           rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) &&
+            hasCrossVenuesPermission({ needGlobalPermission: true }) &&
             { type: 'radio' }
           }
           onFilterChange={tableQuery.handleFilterChange}
