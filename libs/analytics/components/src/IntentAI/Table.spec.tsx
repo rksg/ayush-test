@@ -9,16 +9,17 @@ import { TenantLink }     from '@acx-ui/react-router-dom'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
+import { Icon }                                                                                                  from './common/IntentIcon'
 import { aiFeatures }                                                                                            from './config'
-import { displayStates, statuses }                                                                               from './states'
+import { DisplayStates, Statuses }                                                                               from './states'
 import * as UI                                                                                                   from './styledComponents'
-import { AIFeature, icons, iconTooltips }                                                                        from './Table'
+import { AIFeature, iconTooltips }                                                                               from './Table'
 import { Actions, isVisibledByAction }                                                                           from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
-const mockGet = get as jest.Mock
+const mockGet = jest.mocked(get)
 
 describe('AIFeature component', () => {
 
@@ -36,7 +37,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.RRM]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.RRM]}
+          <Icon feature={aiFeatures.RRM} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithRRM.root}/${aiFeatureWithRRM.sliceId}/${aiFeatureWithRRM.code}`}>
           <span>{aiFeatureWithRRM.aiFeature}</span>
@@ -51,7 +52,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.AirFlexAI]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.AirFlexAI]}
+          <Icon feature={aiFeatures.AirFlexAI} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithAirFlexAI.root}/${aiFeatureWithAirFlexAI.sliceId}/${aiFeatureWithAirFlexAI.code}`}>
           <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
@@ -66,7 +67,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.AIOps]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.AIOps]}
+          <Icon feature={aiFeatures.AIOps} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithAIOps.root}/${aiFeatureWithAIOps.sliceId}/${aiFeatureWithAIOps.code}`}>
           <span>{aiFeatureWithAIOps.aiFeature}</span>
@@ -81,7 +82,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.EcoFlexAI]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.EcoFlexAI]}
+          <Icon feature={aiFeatures.EcoFlexAI} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithEcoFlexAI.root}/${aiFeatureWithEcoFlexAI.sliceId}/${aiFeatureWithEcoFlexAI.code}`}>
           <span>{aiFeatureWithEcoFlexAI.aiFeature}</span>
@@ -98,7 +99,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.RRM]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.RRM]}
+          <Icon feature={aiFeatures.RRM} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithRRM.sliceId}/${aiFeatureWithRRM.code}`}>
           <span>{aiFeatureWithRRM.aiFeature}</span>
@@ -113,7 +114,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.AirFlexAI]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.AirFlexAI]}
+          <Icon feature={aiFeatures.AirFlexAI} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithAirFlexAI.sliceId}/${aiFeatureWithAirFlexAI.code}`}>
           <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
@@ -128,7 +129,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.AIOps]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.AIOps]}
+          <Icon feature={aiFeatures.AIOps} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithAIOps.sliceId}/${aiFeatureWithAIOps.code}`}>
           <span>{aiFeatureWithAIOps.aiFeature}</span>
@@ -143,7 +144,7 @@ describe('AIFeature component', () => {
           title={iconTooltips[aiFeatures.EcoFlexAI]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          {icons[aiFeatures.EcoFlexAI]}
+          <Icon feature={aiFeatures.EcoFlexAI} />
         </Tooltip>
         <TenantLink to={`/analytics/intentAI/${aiFeatureWithEcoFlexAI.sliceId}/${aiFeatureWithEcoFlexAI.code}`}>
           <span>{aiFeatureWithEcoFlexAI.aiFeature}</span>
@@ -161,19 +162,19 @@ describe('AIFeature component', () => {
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: statuses.new,
+      status: Statuses.new,
       statusLabel: 'New',
       statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.',
       statusTrail: []
     }
-    const makeRow = (status: statuses, displayStatus: displayStates) => ({
+    const makeRow = (status: Statuses, displayStatus: DisplayStates) => ({
       ...mockAIDrivenRow, ...extractItem, displayStatus, status
     })
-    const newRow = makeRow(statuses.new, displayStates.new)
-    const activeRow = makeRow(statuses.active, displayStates.active)
-    const pausedApplyFailedRow = makeRow(statuses.paused, displayStates.pausedApplyFailed)
-    const scheduledOneClickRow = makeRow(statuses.scheduled, displayStates.scheduledOneClick)
-    const revertScheduledRow = makeRow(statuses.revertScheduled, displayStates.revertScheduled)
+    const newRow = makeRow(Statuses.new, DisplayStates.new)
+    const activeRow = makeRow(Statuses.active, DisplayStates.active)
+    const pausedApplyFailedRow = makeRow(Statuses.paused, DisplayStates.pausedApplyFailed)
+    const scheduledOneClickRow = makeRow(Statuses.scheduled, DisplayStates.scheduledOneClick)
+    const revertScheduledRow = makeRow(Statuses.revertScheduled, DisplayStates.revertScheduled)
     it('should return true for all actions', () => {
       expect(isVisibledByAction([newRow, newRow], Actions.One_Click_Optimize)).toBeTruthy()
       expect(isVisibledByAction([newRow, activeRow], Actions.One_Click_Optimize)).toBeFalsy()

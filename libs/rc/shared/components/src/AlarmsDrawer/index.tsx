@@ -66,7 +66,9 @@ const defaultPayload: {
       'apName',
       'switchName',
       'sourceType',
-      'switchMacAddress'
+      'switchMacAddress',
+      'apModel',
+      'minimumRequiredVersion'
     ]
   }
 
