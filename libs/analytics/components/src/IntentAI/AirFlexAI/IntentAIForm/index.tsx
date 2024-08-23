@@ -44,11 +44,11 @@ export function IntentAIForm () {
         title={$t({ defaultMessage: 'Intent Priority' })}
         children={<Priority />}
       />
-      {/* <StepsForm.StepForm
+      <StepsForm.StepForm
         title={$t({ defaultMessage: 'Settings' })}
         children={<Settings />}
       />
-      <StepsForm.StepForm
+      {/* <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
         children={<Summary
           summaryUrlBefore={summaryUrlBefore}

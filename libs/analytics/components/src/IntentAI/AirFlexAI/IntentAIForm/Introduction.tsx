@@ -10,53 +10,8 @@ import { IntroSummary }         from '../../common/IntroSummary'
 import { aiFeatures }           from '../../config'
 
 import * as SideNotes from './SideNotes'
-import * as UI        from './styledComponents'
 
 const { Paragraph } = Typography
-
-export const SliderBefore = (props: { image: string }) => {
-  const { $t } = useIntl()
-  return (
-    <UI.SliderBefore>
-      <UI.LabelStyleBefore>{($t({ defaultMessage: 'Current' }))}</UI.LabelStyleBefore>
-      <img
-        src={props.image}
-        alt='imageBefore'
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%'
-        }}
-      />
-    </UI.SliderBefore>
-  )
-}
-
-export const SliderAfter = (props: { image: string }) => {
-  const { $t } = useIntl()
-  return (
-    <UI.SliderAfter>
-      <UI.LabelStyleAfter>
-        {($t({ defaultMessage: 'Forecast' }))}
-        <UI.SliderText>
-          {($t({ defaultMessage: 'with' }))}&nbsp;
-          <Icon feature={aiFeatures.RRM} size='xs' />
-        </UI.SliderText>
-      </UI.LabelStyleAfter>
-      <img
-        src={props.image}
-        alt='imageAfter'
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%'
-        }}
-      />
-    </UI.SliderAfter>
-  )
-}
 
 export function Introduction (
 ) {
