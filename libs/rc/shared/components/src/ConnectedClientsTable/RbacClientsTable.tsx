@@ -88,7 +88,7 @@ const AsyncLoadingInColumn = (
   callBack: Function,
   loadingCondition?: (row: ClientInfo) => boolean
 ): React.ReactNode => {
-  const defaultCondition = (row: ClientInfo) => row.apInformation?.name || row.venueInformation?.name
+  const defaultCondition = (row: ClientInfo) => !!row.apInformation?.name || !!row.venueInformation?.name
 
   if ((loadingCondition ?? defaultCondition)(row)) {
     return callBack()
