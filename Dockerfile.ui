@@ -38,11 +38,13 @@ COPY libs ./libs
 
 ENV NX_CACHE_DIRECTORY=/app/node_modules/.cache/nx
 
-RUN --from=nx-cache if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" != "master" ]; then \
+COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
+
+RUN if [ -z "${PRECOMMIT}" ] || [ "${PRECOMMIT}" == "true" ] || [ "${GIT_COMMIT_BRANCH}" != "master" ]; then \
       rm -rf /app/node_modules/.cache/nx/*; \
     fi
+RUN ls -alh /app/node_modules/.cache/nx/*
 
-COPY --from=nx-cache /app/node_modules/.cache/nx /app/node_modules/.cache/nx
 COPY tools/tests ./tools/tests
 
 # dump git information
