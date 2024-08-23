@@ -157,7 +157,11 @@ function AdministrationRoutes () {
         element={<EditPrivilegeGroup />} />
       <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
       <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
-      <Route path='onpremMigration/add' element={<MigrationForm />} />
+      <Route path='onpremMigration/add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <MigrationForm />
+          </AuthRoute>} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>
   )

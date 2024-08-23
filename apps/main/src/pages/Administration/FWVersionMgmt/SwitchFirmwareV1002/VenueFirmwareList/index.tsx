@@ -37,7 +37,6 @@ import { useParams }                               from '@acx-ui/react-router-do
 import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
-  hasCrossVenuesPermission,
   hasPermission,
   hasRoles
 } from '@acx-ui/user'
