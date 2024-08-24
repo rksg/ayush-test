@@ -53,6 +53,10 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
     },
     {
       type: 'red',
+      tooltipMsg: defineMessage({ defaultMessage:
+        `The aggregate value is calculated based on 
+        the SLA defined for the Congested Uplink Ports.` }),
+      tooltipStyle: 'white',
       values: [{
         title: defineMessage({ defaultMessage: 'Congested Uplink Ports' }),
         value: formatValue(
@@ -64,6 +68,10 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
     },
     {
       type: 'yellow',
+      tooltipMsg: defineMessage({ defaultMessage:
+        `The aggregate value is calculated based on 
+        the SLA defined for the Multicast Storm Ports.` }),
+      tooltipStyle: 'white',
       values: [{
         title: defineMessage({ defaultMessage: 'Multicast Storm Ports' }),
         value: formatValue(
@@ -75,6 +83,8 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
     },
     {
       type: 'grey',
+      tooltipMsg: defineMessage({ defaultMessage:
+        'The aggregate value is calculated based on the SLA defined for the High CPU.' }),
       values: [{
         title: defineMessage({ defaultMessage: 'High CPU' }),
         value: !isNil(summaryData?.switchCpuUtilizationPct)
