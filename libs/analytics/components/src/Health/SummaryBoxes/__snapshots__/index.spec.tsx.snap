@@ -180,6 +180,18 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
   padding: 0px 5px;
 }
 
+.c5 .ant-statistic-title svg.white path {
+  stroke: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-title svg {
+  height: 16px;
+  width: 16px;
+  margin-bottom: -3px;
+  margin-left: 4px;
+  color: var(--acx-semantics-yellow-50);
+}
+
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -209,6 +221,18 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
+}
+
+.c10 .ant-statistic-title svg.white path {
+  stroke: var(--acx-primary-white);
+}
+
+.c10 .ant-statistic-title svg {
+  height: 16px;
+  width: 16px;
+  margin-bottom: -3px;
+  margin-left: 4px;
+  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
@@ -594,6 +618,18 @@ exports[`Health Page should match snapshot 1`] = `
   padding: 0px 5px;
 }
 
+.c5 .ant-statistic-title svg.white path {
+  stroke: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-title svg {
+  height: 16px;
+  width: 16px;
+  margin-bottom: -3px;
+  margin-left: 4px;
+  color: var(--acx-semantics-yellow-50);
+}
+
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -623,6 +659,18 @@ exports[`Health Page should match snapshot 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
+}
+
+.c10 .ant-statistic-title svg.white path {
+  stroke: var(--acx-primary-white);
+}
+
+.c10 .ant-statistic-title svg {
+  height: 16px;
+  width: 16px;
+  margin-bottom: -3px;
+  margin-left: 4px;
+  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
@@ -1008,6 +1056,18 @@ exports[`Health Page should show - when no data 1`] = `
   padding: 0px 5px;
 }
 
+.c5 .ant-statistic-title svg.white path {
+  stroke: var(--acx-primary-white);
+}
+
+.c5 .ant-statistic-title svg {
+  height: 16px;
+  width: 16px;
+  margin-bottom: -3px;
+  margin-left: 4px;
+  color: var(--acx-semantics-yellow-50);
+}
+
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -1037,6 +1097,18 @@ exports[`Health Page should show - when no data 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
+}
+
+.c10 .ant-statistic-title svg.white path {
+  stroke: var(--acx-primary-white);
+}
+
+.c10 .ant-statistic-title svg {
+  height: 16px;
+  width: 16px;
+  margin-bottom: -3px;
+  margin-left: 4px;
+  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
