@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { get }                                              from '@acx-ui/config'
 import { apApi, switchApi }                                 from '@acx-ui/rc/services'
 import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                  from '@acx-ui/store'
 import { mockRestApiQuery, mockServer, render, screen }     from '@acx-ui/test-utils'
-import { RolesEnum }                                        from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                   from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions }                from '@acx-ui/user'
 
 import { switchDetailData, switchDetailsContextData } from './__tests__/fixtures'
 import { activities }                                 from './SwitchTimelineTab/__tests__/fixtures'
@@ -32,6 +32,10 @@ jest.mock('@acx-ui/reports/components', () => ({
 jest.mock('./SwitchOverviewTab', () => () => {
   return <div data-testid={'rc-SwitchOverviewTab'} title='SwitchOverviewTab' />
 })
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 const jwtToken = {
   access_token: 'access_token',
@@ -261,10 +265,8 @@ describe('SwitchDetails', () => {
   })
 
   it('should hide incidents when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     const params = {
       tenantId: 'tenant-id',
       switchId: 'switchId',
