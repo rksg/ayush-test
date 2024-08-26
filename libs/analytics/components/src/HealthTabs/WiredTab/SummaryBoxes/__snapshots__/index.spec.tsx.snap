@@ -180,18 +180,6 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
   padding: 0px 5px;
 }
 
-.c5 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c5 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -221,18 +209,6 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c10 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c10 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
@@ -321,10 +297,6 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                   class="ant-statistic-title"
                 >
                   Congested Uplink Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -366,10 +338,6 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                   class="ant-statistic-title"
                 >
                   Multicast Storm Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -411,9 +379,6 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                   class="ant-statistic-title"
                 >
                   High CPU
-                  <svg
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -619,18 +584,6 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
   padding: 0px 5px;
 }
 
-.c5 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c5 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -660,18 +613,6 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c10 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c10 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
@@ -760,10 +701,6 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                   class="ant-statistic-title"
                 >
                   Congested Uplink Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -805,10 +742,6 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                   class="ant-statistic-title"
                 >
                   Multicast Storm Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -850,9 +783,6 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                   class="ant-statistic-title"
                 >
                   High CPU
-                  <svg
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -1058,18 +988,6 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
   padding: 0px 5px;
 }
 
-.c5 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c5 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -1099,18 +1017,6 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c10 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c10 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
@@ -1199,10 +1105,6 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
                   class="ant-statistic-title"
                 >
                   Congested Uplink Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -1244,10 +1146,6 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
                   class="ant-statistic-title"
                 >
                   Multicast Storm Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -1289,9 +1187,6 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
                   class="ant-statistic-title"
                 >
                   High CPU
-                  <svg
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -1497,18 +1392,6 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
   padding: 0px 5px;
 }
 
-.c5 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c5 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c5 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -1538,18 +1421,6 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c10 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c10 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c10 .ant-statistic-content {
@@ -1638,10 +1509,6 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
                   class="ant-statistic-title"
                 >
                   Congested Uplink Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -1683,10 +1550,6 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
                   class="ant-statistic-title"
                 >
                   Multicast Storm Ports
-                  <svg
-                    class="white"
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -1728,9 +1591,6 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
                   class="ant-statistic-title"
                 >
                   High CPU
-                  <svg
-                    data-testid="InformationOutlined"
-                  />
                 </div>
                 <div
                   class="ant-statistic-content"

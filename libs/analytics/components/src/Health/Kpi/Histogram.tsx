@@ -98,13 +98,6 @@ function Histogram ({
           api.util.invalidateTags([
             { type: 'Health', id: 'WIRED_SUMMARY' }
           ]))
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage:
-            'Aggregate metrics panel updated successfully based on the new SLA threshold.'
-          })
-        })
       }
     }
   }

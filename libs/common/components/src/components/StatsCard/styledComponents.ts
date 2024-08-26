@@ -72,16 +72,6 @@ export const Statistic = styled(AntStatistic)<{ $type: string }>`
     min-height: ${props => props.style?.width !== '100%' ? '24px' : '0px'};
     margin-bottom: 0px;
     padding: 0px 5px;
-    svg.white path {
-      stroke: var(--acx-primary-white);
-    }
-    svg {
-      height: 16px;
-      width: 16px;
-      margin-bottom: -3px;
-      margin-left: 4px; 
-      color: var(--acx-semantics-yellow-50);
-    }
   }
   .ant-statistic-content {
     color: var(${props => colors[props.$type as Type].text});

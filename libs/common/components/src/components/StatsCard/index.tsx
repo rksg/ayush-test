@@ -2,7 +2,6 @@ import { Fragment } from 'react'
 
 import { MessageDescriptor, useIntl, defineMessage } from 'react-intl'
 
-import { Tooltip } from './../Tooltip'
 import {
   Wrapper,
   Statistic,
@@ -15,8 +14,6 @@ import {
 export interface StatsCardProps {
   type: Type
   title?: MessageDescriptor
-  tooltipMsg?: MessageDescriptor
-  tooltipStyle?: string
   values: {
     title: MessageDescriptor
     value: string
@@ -28,7 +25,7 @@ export interface StatsCardProps {
 
 export const StatsCard = (props: StatsCardProps) => {
   const { $t } = useIntl()
-  const { type, values, title, onClick, isOpen, tooltipMsg, tooltipStyle } = props
+  const { type, values, title, onClick, isOpen } = props
   const card = <Wrapper $type={type}>
     {
       title && <Title $type={type}>{$t(title)}</Title>
@@ -40,12 +37,7 @@ export const StatsCard = (props: StatsCardProps) => {
             <Statistic
               style={{ width: `${100 / values.length}%` }}
               $type={type}
-              title={<>{$t(value.title)}
-                {tooltipMsg && <Tooltip.Info className={tooltipStyle}
-                  key={`statsCardContent-tooltip${index}`}
-                  placement='top'
-                  title={$t(tooltipMsg)} />}
-              </>}
+              title={$t(value.title)}
               value={value.value}
               suffix={value.suffix}
             />

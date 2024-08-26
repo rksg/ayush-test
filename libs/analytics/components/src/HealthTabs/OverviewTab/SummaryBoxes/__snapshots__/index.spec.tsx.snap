@@ -172,18 +172,6 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
   padding: 0px 5px;
 }
 
-.c6 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c6 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c6 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -213,18 +201,6 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
   min-height: 24px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c12 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c12 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c12 .ant-statistic-content {
@@ -756,18 +732,6 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
   padding: 0px 5px;
 }
 
-.c6 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c6 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c6 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -797,18 +761,6 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
   min-height: 0px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c11 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c11 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c11 .ant-statistic-content {
@@ -1207,18 +1159,6 @@ exports[`SummaryBoxes should show - when no data 1`] = `
   padding: 0px 5px;
 }
 
-.c6 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c6 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
-}
-
 .c6 .ant-statistic-content {
   color: var(--acx-primary-white);
 }
@@ -1248,18 +1188,6 @@ exports[`SummaryBoxes should show - when no data 1`] = `
   min-height: 24px;
   margin-bottom: 0px;
   padding: 0px 5px;
-}
-
-.c12 .ant-statistic-title svg.white path {
-  stroke: var(--acx-primary-white);
-}
-
-.c12 .ant-statistic-title svg {
-  height: 16px;
-  width: 16px;
-  margin-bottom: -3px;
-  margin-left: 4px;
-  color: var(--acx-semantics-yellow-50);
 }
 
 .c12 .ant-statistic-content {

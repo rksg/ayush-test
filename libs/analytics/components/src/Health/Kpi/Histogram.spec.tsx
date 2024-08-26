@@ -241,9 +241,6 @@ describe('Threshold Histogram chart', () => {
     expect(applyBtn).toBeDefined()
     fireEvent.click(applyBtn)
     expect(await screen.findByText('Threshold set successfully.')).toBeInTheDocument()
-    expect(await screen
-      .findByText('Aggregate metrics panel updated successfully based on the new SLA threshold.'))
-      .toBeInTheDocument()
   })
 
   it('should render default scale on null data', async () => {
