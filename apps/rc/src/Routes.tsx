@@ -1226,7 +1226,9 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]} requireCrossVenuesPermission>
+          <AuthRoute scopes={[WifiScopes.CREATE]}
+            requireCrossVenuesPermission={{ needGlobalPermission: true }}
+          >
             <SoftGreForm editMode={false} />
           </AuthRoute>
         } />
@@ -1241,7 +1243,10 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]} requireCrossVenuesPermission>
+          <AuthRoute
+            scopes={[WifiScopes.UPDATE]}
+            requireCrossVenuesPermission={{ needGlobalPermission: true }}
+          >
             <SoftGreForm editMode={true} />
           </AuthRoute>}
       />

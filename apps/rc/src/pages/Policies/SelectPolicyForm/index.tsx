@@ -137,7 +137,7 @@ export default function SelectPolicyForm () {
   if (isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.SOFTGRE, categories: [RadioCardCategory.WIFI] })
   }
-  
+
   if (isEdgeQosEnabled) {
     sets.push({
       type: PolicyType.QOS_BANDWIDTH, categories: [RadioCardCategory.EDGE]

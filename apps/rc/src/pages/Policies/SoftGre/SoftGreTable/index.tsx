@@ -107,7 +107,7 @@ export default function SoftGreTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={hasCrossVenuesPermission() && filterByAccess([
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
@@ -123,7 +123,10 @@ export default function SoftGreTable () {
           settingsId={settingsId}
           columns={useColumns()}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
+          rowSelection={
+            hasCrossVenuesPermission({ needGlobalPermission: true }) &&
+            isSelectionVisible && { type: 'checkbox' }
+          }
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
