@@ -108,10 +108,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
 
   useEffect(() => {
     setApGroupOptions(Array.isArray(rawApGroupOptions) ?
-      rawApGroupOptions.filter(option =>
-        option.value &&
-        apListTableQuery?.data?.data.some(ap => ap.deviceGroupId === option.key)
-      ) :
+      rawApGroupOptions.filter(option => option.value) :
       rawApGroupOptions)
 
     setTableData(apListTableQuery?.data?.data ?? [])
