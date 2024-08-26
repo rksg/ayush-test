@@ -91,6 +91,9 @@ describe('IntentAI dashboard', () => {
     expect(await screen.findByText('AI-Driven RRM')).toBeVisible()
     expect(screen.queryByText('AirFlexAI')).toBeNull()
     expect(screen.queryByText('AI Operations')).toBeNull()
+    const linkElm = await screen.findByRole('link', { name: /Intents/ })
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('AI-Driven'))
   })
 
   it('render AirFlex data when intentHighlights only have AirFlex fields', async () => {
@@ -102,6 +105,9 @@ describe('IntentAI dashboard', () => {
     expect(await screen.findByText('AirFlexAI')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()
     expect(screen.queryByText('AI Operations')).toBeNull()
+    const linkElm = await screen.findByRole('link', { name: /Intents/ })
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('AirFlexAI'))
   })
 
   it('render AI operation data when intentHighlights only have AI operation fields', async () => {
@@ -113,6 +119,9 @@ describe('IntentAI dashboard', () => {
     expect(await screen.findByText('AI Operations')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeNull()
     expect(screen.queryByText('AirFlexAI')).toBeNull()
+    const linkElm = await screen.findByRole('link', { name: /Intents/ })
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('Operations'))
   })
 
 })

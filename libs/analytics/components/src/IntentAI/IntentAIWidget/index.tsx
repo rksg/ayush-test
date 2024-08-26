@@ -2,12 +2,13 @@ import { Row, Col }               from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { Loader, Card, ColorPill, NoDataIconOnly } from '@acx-ui/components'
-import { intlFormats }                             from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI }     from '@acx-ui/icons'
-import { TenantLink, useSearchParams }             from '@acx-ui/react-router-dom'
-import type { PathFilter }                         from '@acx-ui/utils'
+import { Loader, Card, ColorPill, NoDataIconOnly }  from '@acx-ui/components'
+import { intlFormats }                              from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI }      from '@acx-ui/icons'
+import { TenantLink, useSearchParams }              from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent, type PathFilter } from '@acx-ui/utils'
 
+import { aiFeatures }                                              from '../config'
 import { HighlightItem, IntentHighlight, useIntentHighlightQuery } from '../services'
 
 import * as UI from './styledComponents'
@@ -20,7 +21,8 @@ type IntentAIWidgetProps = {
 
 type HighlightCardProps = HighlightItem & {
   title: string,
-  icon: JSX.Element
+  icon: JSX.Element,
+  type: aiFeatures
 }
 
 function HighlightCard (props: HighlightCardProps) {
@@ -41,9 +43,11 @@ function HighlightCard (props: HighlightCardProps) {
       { activeCount: props.active }
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
-
+  const encodedPath = fixedEncodeURIComponent(
+    JSON.stringify({ feature: props.type })
+  )
   return <Card cardIcon={props.icon} title={title} className='highlight-card-title'>
-    <TenantLink to='/analytics/intentAI'>{content}</TenantLink>
+    <TenantLink to={`/analytics/intentAI?intentTableFilters=${encodedPath}`}>{content}</TenantLink>
   </Card>
 }
 
@@ -54,21 +58,24 @@ function useHighlightList (data: IntentHighlight | undefined) {
     highlightList.push({
       ...data.rrm,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
-      icon: <AIDrivenRRM />
+      icon: <AIDrivenRRM />,
+      type: aiFeatures.RRM
     })
   }
   if (data?.airflex) {
     highlightList.push({
       ...data.airflex,
       title: $t({ defaultMessage: 'AirFlexAI' }),
-      icon: <AirFlexAI />
+      icon: <AirFlexAI />,
+      type: aiFeatures.AirFlexAI
     })
   }
   if (data?.ops) {
     highlightList.push({
       ...data.ops,
       title: $t({ defaultMessage: 'AI Operations' }),
-      icon: <AIOperation />
+      icon: <AIOperation />,
+      type: aiFeatures.AIOps
     })
   }
   return highlightList
@@ -122,6 +129,7 @@ export function IntentAIWidget ({
                         title={detail.title}
                         new={detail.new}
                         active={detail.active}
+                        type={detail.type}
                       />
                     </Col>)
 

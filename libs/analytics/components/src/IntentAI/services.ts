@@ -10,7 +10,8 @@ import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
   computeRangeFilter,
-  TABLE_DEFAULT_PAGE_SIZE
+  TABLE_DEFAULT_PAGE_SIZE,
+  useEncodedParameter
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
@@ -89,6 +90,10 @@ type TransformedFilterOptions = {
   statuses: DisplayOption[]
   zones: DisplayOption[]
 }
+type IntentTableFilter = {
+  feature: string[] | undefined
+}
+
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIList: build.query<
@@ -359,6 +364,7 @@ const perpareFilterBy = (filters: Filters) => {
   }
   let featCodes = [] as string[]
   if(aiFeature) {
+    console.info('aiFeature', aiFeature)
     // derive codes from aiFeature
     aiFeature.forEach(aiFeature => {
       const matchedCodes = Object.keys(codes).filter(key => codes[key].aiFeature === aiFeature)
@@ -387,11 +393,15 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
+  const intentTableFilters = useEncodedParameter<IntentTableFilter>('intentTableFilters')
+  const [featurefromPath, setFeaturefromPath] = useState<string>(
+    intentTableFilters?.read()?.feature ?? ''
+  )
   const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
   const [filters, setFilters] = useState<Filters>({
     sliceValue: undefined,
     category: undefined,
-    aiFeature: undefined,
+    aiFeature: (featurefromPath)? [featurefromPath] : undefined,
     statusLabel: undefined
   })
   const handlePageChange: TableProps<IntentListItem>['onChange'] = (
@@ -407,6 +417,10 @@ export function useIntentAITableQuery (filter: PathFilter) {
   const handleFilterChange: TableProps<IntentListItem>['onFilterChange'] = (
     customFilter
   ) => {
+    if (featurefromPath) {
+      customFilter.aiFeature = [featurefromPath]
+      setFeaturefromPath('')
+    }
     setFilters(customFilter as Filters)
     setPagination(DEFAULT_PAGINATION)
   }
