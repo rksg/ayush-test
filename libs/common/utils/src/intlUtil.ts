@@ -21,7 +21,10 @@ export const onIntlError: OnErrorFn = (error) => {
 
 export function getReSkinningElements (locale?: Pick<LocaleContextType, 'lang' | 'messages'>) {
   const intl = locale
-    ? createIntl({ locale: locale.lang, messages: locale.messages }, globalIntlCache)
+    ? createIntl(
+      { locale: locale.lang, messages: locale.messages, onError: onIntlError },
+      globalIntlCache
+    )
     : null
   const { acx_account_vertical } = getJwtTokenPayload()
   if (get('IS_MLISA_SA')) {

@@ -6,29 +6,30 @@ import {
   GridRow,
   PageHeader,
   RadioCard,
-  StepsFormLegacy,
-  RadioCardCategory
+  RadioCardCategory,
+  StepsFormLegacy
 } from '@acx-ui/components'
 import {
   Features,
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeReady } from '@acx-ui/rc/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
+  PolicyOperation,
   PolicyType,
+  ServicePolicyCardData,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping,
-  ServicePolicyCardData,
+  hasCloudpathAccess,
   isServicePolicyCardEnabled,
-  hasCloudpathAccess
+  policyTypeDescMapping,
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                  from '@acx-ui/types'
@@ -45,6 +46,7 @@ export default function SelectPolicyForm () {
   const isEdgeEnabled = useIsEdgeReady()
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,
@@ -129,6 +131,12 @@ export default function SelectPolicyForm () {
 
   if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if (isEdgeQosEnabled) {
+    sets.push({
+      type: PolicyType.QOS_BANDWIDTH, categories: [RadioCardCategory.EDGE]
+    })
   }
 
   return (
