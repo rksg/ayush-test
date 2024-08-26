@@ -1,9 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi }                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                   from '@acx-ui/store'
+import { edgeApi }                 from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  EdgeCompatibilityFixtures, EdgeGeneralFixtures, EdgeFirmwareFixtures,
+  EdgeUrlsInfo, FirmwareUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
@@ -16,6 +20,9 @@ import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataPro
 import GeneralSettings from './index'
 
 const { mockEdgeData } = EdgeGeneralFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
+const { mockedVenueFirmwareList } = EdgeFirmwareFixtures
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -36,15 +43,19 @@ describe('EditEdge - GeneralSettings', () => {
     mockServer.use(
       rest.patch(
         EdgeUrlsInfo.updateEdge.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           updateRequestSpy()
           return res(ctx.status(202))
-        }
-      ),
+        }),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      )
+        (_, res, ctx) => res(ctx.json(mockVenueData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
     )
   })
 
@@ -144,12 +155,16 @@ describe('EditEdge general settings api fail', () => {
     mockServer.use(
       rest.patch(
         EdgeUrlsInfo.updateEdge.url,
-        (req, res, ctx) => res(ctx.status(500), ctx.json(null))
-      ),
+        (_, res, ctx) => res(ctx.status(500), ctx.json(null))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      )
+        (_, res, ctx) => res(ctx.json(mockVenueData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
     )
   })
 
