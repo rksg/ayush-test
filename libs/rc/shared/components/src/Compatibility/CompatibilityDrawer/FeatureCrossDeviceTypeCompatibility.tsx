@@ -1,7 +1,7 @@
 import { Divider, Form, Row, Space } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { ApCompatibility, CompatibilityDeviceEnum, CompatibilityType, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName } from '@acx-ui/rc/utils'
+import { ApCompatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName } from '@acx-ui/rc/utils'
 
 import { CompatibilityItem }           from './CompatibilityItem'
 import { messageMapping }              from './messageMapping'
@@ -12,6 +12,7 @@ interface FeatureCrossDeviceTypeCompatibilityProps {
   data: Record<string, ApCompatibility>
   featureName: IncompatibilityFeatures,
 }
+
 // eslint-disable-next-line max-len
 export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTypeCompatibilityProps) => {
   const { $t } = useIntl()
@@ -57,7 +58,6 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
             </StyledDeviceTypeTitle>
           </Row>
           <CompatibilityItem
-            compatibilityType={CompatibilityType.FEATURE}
             description=''
             data={typeData.incompatibleFeatures ?? []}
             deviceType={typeName as CompatibilityDeviceEnum}

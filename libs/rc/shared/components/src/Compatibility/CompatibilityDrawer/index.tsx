@@ -56,6 +56,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
       <Loader states={[ { isLoading } ]}>
         <Form layout='vertical'>
           {data.map(item => <DrawerContentUnit
+            key={item.id}
             data={item}
             deviceType={deviceType}
             {...others}

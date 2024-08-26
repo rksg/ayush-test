@@ -1,4 +1,5 @@
-import { useIntl } from 'react-intl'
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { Button, Loader, PageHeader }         from '@acx-ui/components'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
@@ -73,9 +74,13 @@ const EdgeSdLanDetail = () => {
         isLoading: isLoading,
         isFetching: isFetching
       }]}>
-        {(isEdgeCompatibilityEnabled && !!params.serviceId) && <CompatibilityCheck
-          serviceId={params.serviceId}
-        />
+        {(isEdgeCompatibilityEnabled && !!params.serviceId) && <Row>
+          <Col span={24}>
+            <CompatibilityCheck
+              serviceId={params.serviceId}
+            />
+          </Col>
+        </Row>
         }
         {isDMZEnabled
           ? <DmzSdLanDetailContent data={edgeSdLanData} />

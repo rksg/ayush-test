@@ -181,7 +181,8 @@ export {
 export {
   useEdgeSdLanCompatibilityData,
   useEdgeCompatibilityRequirementData,
-  useEdgeSdLanDetailsCompatibilitiesData
+  useEdgeSdLanDetailsCompatibilitiesData,
+  getSdLanDetailsCompatibilitiesDrawerData
 } from './useEdgeActions/compatibility'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'

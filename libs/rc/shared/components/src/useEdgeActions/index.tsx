@@ -1,280 +1,246 @@
-import { Form, Input, Modal }       from 'antd'
-import { RawIntlProvider, useIntl } from 'react-intl'
+import { useState, useEffect, useMemo } from 'react'
 
-import { showActionModal }        from '@acx-ui/components'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { get, sumBy } from 'lodash'
+
 import {
-  useDeleteEdgeMutation,
-  useFactoryResetEdgeMutation,
-  useRebootEdgeMutation,
-  useShutdownEdgeMutation,
-  useSendOtpMutation
-} from '@acx-ui/rc/services'
-import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
-import { getIntl }                    from '@acx-ui/utils'
+  useLazyGetSdLanEdgeCompatibilitiesQuery,
+  useLazyGetSdLanApCompatibilitiesQuery,
+  useLazyGetEdgeFeatureSetsQuery,
+  useLazyGetApFeatureSetsQuery
+}   from '@acx-ui/rc/services'
+import {
+  ApCompatibility,
+  EdgeSdLanApCompatibilitiesResponse,
+  EdgeSdLanCompatibilitiesResponse,
+  IncompatibilityFeatures,
+  isApRelatedEdgeFeature,
+  CompatibilityDeviceEnum,
+  EdgeSdLanApCompatibility,
+  EdgeSdLanCompatibility,
+  ApIncompatibleDevice
+} from '@acx-ui/rc/utils'
 
-import * as UI from './styledComponents'
+// eslint-disable-next-line max-len
+export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
+  // eslint-disable-next-line max-len
+  const [data, setData] = useState<Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
 
-export const useIsEdgeReady = () => {
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  return isEdgeReady
-}
+  const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
+  const [getSdLanApCompatibilities] = useLazyGetSdLanApCompatibilitiesQuery()
 
-export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
-  const isEdgeEnabled = useIsEdgeReady()
-  const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
-  return isEdgeEnabled && isEdgeFeatureReady
-}
+  const fetchEdgeCompatibilities = async (ids: string[]) => {
+    try {
+      const result = await Promise.allSettled([
+        getSdLanEdgeCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap(),
+        getSdLanApCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()
+      ])
 
-export const useEdgeActions = () => {
-  const { $t } = useIntl()
-  const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
-  const [ invokeRebootEdge ] = useRebootEdgeMutation()
-  const [ invokeShutdownEdge ] = useShutdownEdgeMutation()
-  const [ invokeFactoryResetEdge ] = useFactoryResetEdgeMutation()
-  const [ invokeSendOtp ] = useSendOtpMutation()
-
-  const reboot = (data: EdgeStatus, callback?: () => void) => {
-    showActionModal({
-      type: 'confirm',
-      title: $t(
-        { defaultMessage: 'Reboot "{edgeName}"?' },
-        { edgeName: data.name }
-      ),
-      content: $t({
-        defaultMessage: `Rebooting the SmartEdge will disconnect all connected clients.
-          Are you sure you want to reboot?`
-      }),
-      customContent: {
-        action: 'CUSTOM_BUTTONS',
-        buttons: [{
-          text: $t({ defaultMessage: 'Cancel' }),
-          type: 'default',
-          key: 'cancel'
-        }, {
-          text: $t({ defaultMessage: 'Reboot' }),
-          type: 'primary',
-          key: 'ok',
-          closeAfterAction: true,
-          handler: () => {
-            invokeRebootEdge({
-              params: {
-                venueId: data.venueId,
-                edgeClusterId: data.clusterId,
-                serialNumber: data.serialNumber
-              }
-            }).then(() => callback?.())
+      // eslint-disable-next-line max-len
+      const deviceTypeResultMap: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> = {}
+      result.forEach((resultItem, index) => {
+        if (resultItem.status === 'fulfilled') {
+          if(index === 0) {
+            // eslint-disable-next-line max-len
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities
+          } else {
+            // eslint-disable-next-line max-len
+            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
           }
-        }]
-      }
-    })
-  }
-
-  const shutdown = (data: EdgeStatus, callback?: () => void) => {
-    showActionModal({
-      type: 'confirm',
-      title: $t(
-        { defaultMessage: 'Shutdown "{edgeName}"?' },
-        { edgeName: data.name }
-      ),
-      content: $t({
-        defaultMessage: `Shutdown will safely end all operations on SmartEdge. You will need to 
-        manually restart the device. Are you sure you want to shut down this SmartEdge?`
-      }),
-      customContent: {
-        action: 'CUSTOM_BUTTONS',
-        buttons: [{
-          text: $t({ defaultMessage: 'Cancel' }),
-          type: 'default',
-          key: 'cancel'
-        }, {
-          text: $t({ defaultMessage: 'Shutdown' }),
-          type: 'primary',
-          key: 'ok',
-          closeAfterAction: true,
-          handler: () => {
-            invokeShutdownEdge({
-              params: {
-                venueId: data.venueId,
-                edgeClusterId: data.clusterId,
-                serialNumber: data.serialNumber
-              }
-            }).then(() => callback?.())
-          }
-        }]
-      }
-    })
-  }
-
-  const factoryReset = (data: EdgeStatus, callback?: () => void) => {
-    showActionModal({
-      type: 'confirm',
-      title: $t(
-        { defaultMessage: 'Reset & Recover "{edgeName}"?' },
-        { edgeName: data.name }
-      ),
-      content: (
-        <UI.Content>
-          <div className='mb-16'>
-            {
-              $t({
-                defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
-              })
-            }
-          </div>
-          <span className='warning-text'>
-            {$t({
-              defaultMessage: `Note: Reset & Recover can address anomalies,
-              but may not resolve all issues, especially for complex,
-              misconfigured, or hardware-related problems.`
-            })}
-          </span>
-        </UI.Content>
-      )
-      ,
-      customContent: {
-        action: 'CUSTOM_BUTTONS',
-        buttons: [{
-          text: $t({ defaultMessage: 'Cancel' }),
-          type: 'default',
-          key: 'cancel'
-        }, {
-          text: $t({ defaultMessage: 'Reset' }),
-          type: 'primary',
-          key: 'ok',
-          closeAfterAction: true,
-          handler: () => {
-            invokeFactoryResetEdge({
-              params: {
-                venueId: data.venueId,
-                edgeClusterId: data.clusterId,
-                serialNumber: data.serialNumber
-              }
-            }).then(() => callback?.())
-          }
-        }]
-      }
-    })
-  }
-
-  const deleteEdges = (data: EdgeStatus[], callback?: () => void) => {
-    const handleOk = () => {
-      const requests = []
-      if(data.length > 0) {
-        for(let item of data) {
-          requests.push(invokeDeleteEdge({
-            params: {
-              venueId: item.venueId,
-              edgeClusterId: item.clusterId,
-              serialNumber: item.serialNumber
-            }
-          }))
         }
-      }
-      Promise.all(requests).then(() => callback?.())
+      })
+
+      setData(deviceTypeResultMap)
+    } catch(e) {
+      // eslint-disable-next-line no-console
+      console.error('EdgeCompatibilityDrawer api error:', e)
     }
-    showDeleteModal(data, handleOk)
   }
 
-  const sendOtp = (data: EdgeStatus, callback?: () => void) => {
-    showActionModal({
-      type: 'confirm',
-      title: $t({ defaultMessage: 'Send OTP' }),
-      content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
-      onOk: () => {
-        invokeSendOtp({
-          params: {
-            venueId: data.venueId,
-            edgeClusterId: data.clusterId,
-            serialNumber: data.serialNumber
-          }
-        }).then(() => callback?.())
-      }
+  useEffect(() => {
+    if (!skip)
+      fetchEdgeCompatibilities(serviceIds)
+  }, [serviceIds, skip])
+
+  return data
+}
+
+// eslint-disable-next-line max-len
+const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibility | EdgeSdLanApCompatibility) => {
+  const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
+
+  const resultMapping : Record<string, ApCompatibility> = {}
+
+  if (isEdgePerspective) {
+    const data = (compatibleData as EdgeSdLanCompatibility).clusterEdgeCompatibilities
+    data.forEach(item => {
+      item.incompatibleFeatures?.forEach(feature => {
+        const featureName = feature.featureRequirement.featureName
+
+        if (!resultMapping[featureName]) {
+          resultMapping[featureName] = {
+            id: `edge_incompatible_details_${featureName}`,
+            incompatibleFeatures: [{
+              featureName,
+              requiredFw: feature.featureRequirement.requiredFw
+            }],
+            incompatible: 0,
+            total: 0
+          } as ApCompatibility
+        }
+
+        // eslint-disable-next-line max-len
+        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+        resultMapping[featureName].total += item.total
+        // eslint-disable-next-line max-len
+        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
+      })
+    })
+  } else {
+    const data = (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+    data.forEach(item => {
+      item.incompatibleFeatures?.forEach(feature => {
+        const featureName = feature.featureName
+
+        if (!resultMapping[featureName]) {
+          resultMapping[featureName] = {
+            id: `ap_incompatible_details_${featureName}`,
+            incompatibleFeatures: [{
+              featureName,
+              requiredFw: feature.requiredFw,
+              supportedModelFamilies: feature.supportedModelFamilies
+            }],
+            incompatible: 0,
+            total: 0
+          } as ApCompatibility
+        }
+
+        // eslint-disable-next-line max-len
+        resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
+        resultMapping[featureName].total += item.total
+        // eslint-disable-next-line max-len
+        resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
+          { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
+      })
     })
   }
 
-
-
-  return {
-    reboot,
-    shutdown,
-    factoryReset,
-    deleteEdges,
-    sendOtp
-  }
+  return resultMapping
 }
 
-export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
-  const intl = getIntl()
-  const { $t } = intl
-  const modal = Modal.confirm({})
-  const dataCount = data.length
-  const hasOperationalEdge = data.some(item => item.deviceStatus === EdgeStatusEnum.OPERATIONAL)
-  const confirmText = 'Delete'
+// eslint-disable-next-line max-len
+export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: boolean = false) => {
+  const [ isInitializing, setIsInitializing ] = useState(false)
+  const [ data, setData ] = useState<Record<string, Record<string, ApCompatibility>>>({})
 
-  const title = $t({
-    defaultMessage: `Delete "{count, plural,
-      one {{entityValue}}
-      other {{count} {formattedEntityName}}
-    }"?`
-  }, {
-    count: dataCount,
-    formattedEntityName: dataCount === 1 ?
-      $t({ defaultMessage: 'SmartEdge' }) :
-      $t({ defaultMessage: 'SmartEdges' }),
-    entityValue: data[0].name
-  })
+  const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
+  const [getSdLanApCompatibilities] = useLazyGetSdLanApCompatibilitiesQuery()
 
-  const content = <UI.Content>
-    <div className='mb-16'>
-      {$t({
-        defaultMessage: `Are you sure you want to delete {count, plural,
-              one {this}
-              other {these}
-            } {formattedEntityName}?`
-      }, {
-        count: dataCount,
-        formattedEntityName: dataCount === 1 ?
-          $t({ defaultMessage: 'SmartEdge' }) :
-          $t({ defaultMessage: 'SmartEdges' }) })}
-    </div>
-    {
-      hasOperationalEdge &&
-      <Form>
-        <Form.Item
-          label={
-            $t({ defaultMessage: 'Type the word "{text}" to confirm:' },
-              { text: confirmText })
+  const fetchEdgeCompatibilities = async () => {
+    try {
+      setIsInitializing(true)
+
+      const result = await Promise.allSettled([
+        getSdLanEdgeCompatibilities({ payload: { filters: { serviceIds: [serviceId] } } }).unwrap(),
+        getSdLanApCompatibilities({ payload: { filters: { serviceIds: [serviceId] } } }).unwrap()
+      ])
+
+      const deviceTypeResultMap: Record<string, Record<string, ApCompatibility>> = {}
+      result.forEach((resultItem, index) => {
+        if (resultItem.status === 'fulfilled') {
+          if(index === 0) {
+            // eslint-disable-next-line max-len
+            const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities[0])
+            deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = details
+          } else {
+            // eslint-disable-next-line max-len
+            const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities[0])
+            deviceTypeResultMap[CompatibilityDeviceEnum.AP] = details
           }
-        >
-          <Input onChange={(e) => {
-            const disabled = e.target.value.toLowerCase() !== confirmText.toLowerCase()
-            modal.update({
-              okButtonProps: { disabled }
-            })
-          }} />
-        </Form.Item>
-      </Form>
-    }
-    <span className='warning-text'>
-      {$t({
-        defaultMessage: `Existing configuration will be wiped. SmartEdge will have a
-      reboot and roll back to the initial firmware version.`
-      })}
-    </span>
-  </UI.Content>
+        }
+      })
 
-  const config = {
-    icon: <> </>,
-    title: title,
-    content: content,
-    cancelText: $t({ defaultMessage: 'Cancel' }),
-    okText: $t({ defaultMessage: 'Delete' }),
-    okButtonProps: { disabled: hasOperationalEdge },
-    onOk: handleOk
+      setData(deviceTypeResultMap)
+      setIsInitializing(false)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('EdgeCompatibilityDrawer api error:', e)
+      setIsInitializing(false)
+    }
   }
-  modal.update({
-    ...config,
-    content: <RawIntlProvider value={intl} children={config.content} />
-  })
+
+  useEffect(() => {
+    if (!skip) {
+      fetchEdgeCompatibilities()
+    }
+  }, [skip])
+
+  return useMemo(() => ({ sdLanCompatibilities: data, isLoading: isInitializing }),
+    [data, isInitializing])
+}
+
+// eslint-disable-next-line max-len
+export const getSdLanDetailsCompatibilitiesDrawerData = (sdLanCompatibilities: Record<string, Record<string, ApCompatibility>>, featureName: string) => {
+  const edgeData = get(sdLanCompatibilities, [CompatibilityDeviceEnum.EDGE, featureName])
+  const apData = get(sdLanCompatibilities, [CompatibilityDeviceEnum.AP, featureName])
+  const result = {} as Record<string, ApCompatibility>
+  if (edgeData) result[CompatibilityDeviceEnum.EDGE] = edgeData
+  if (apData) result[CompatibilityDeviceEnum.AP] = apData
+
+  return result
+}
+
+// eslint-disable-next-line max-len
+export const useEdgeCompatibilityRequirementData = (featureName: IncompatibilityFeatures, skip: boolean = false) => {
+  const [ isInitializing, setIsInitializing ] = useState(false)
+  const [ data, setData ] = useState<Record<string, ApCompatibility>>({})
+
+  const [ getEdgeFeatureSets ] = useLazyGetEdgeFeatureSetsQuery()
+  const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
+
+  const fetchEdgeCompatibilities = async () => {
+    try {
+      setIsInitializing(true)
+
+      const deviceTypeResultMap: Record<string, ApCompatibility> = {}
+
+      const edgeFeatures = await getEdgeFeatureSets({
+        payload: { filters: { featureNames: [featureName] } }
+      }).unwrap()
+
+      deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = {
+        id: 'edge_feature_requirements',
+        incompatibleFeatures: edgeFeatures.featureSets,
+        incompatible: 0,
+        total: 0
+      } as ApCompatibility
+
+      if (isApRelatedEdgeFeature(featureName)) {
+        const wifiFeature = await getApFeatureSets({
+          params: { featureName: encodeURI(featureName) }
+        }).unwrap()
+        deviceTypeResultMap[CompatibilityDeviceEnum.AP] = {
+          id: 'wifi_feature_requirements',
+          incompatibleFeatures: [wifiFeature],
+          incompatible: 0,
+          total: 0
+        } as ApCompatibility
+      }
+
+      setData(deviceTypeResultMap)
+      setIsInitializing(false)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('EdgeCompatibilityDrawer api error:', e)
+      setIsInitializing(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!skip)
+      fetchEdgeCompatibilities()
+  }, [skip])
+
+  return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
+    [data, isInitializing])
 }

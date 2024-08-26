@@ -126,22 +126,23 @@ describe('EdgeCompatibilityDrawer', () => {
           title='Testing Title'
           type={EdgeCompatibilityType.SD_LAN}
           serviceId={serviceId}
+          featureName={IncompatibilityFeatures.SD_LAN}
           onClose={mockedCloseDrawer}
         />
       </Provider>, {
         route: { params: { tenantId }, path: '/:tenantId' }
       })
 
+    expect(await screen.findByText('SD-LAN')).toBeInTheDocument()
     const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
     expect(compatibilityDevices.length).toBe(2)
     const features = screen.getAllByTestId('FeatureItem')
     expect(features.length).toBe(2)
 
     const edgeBlock = compatibilityDevices[0]
-    expect(await within(edgeBlock).findByText('SD-LAN')).toBeInTheDocument()
     expect(within(edgeBlock).getByText('2.1.0.200')).toBeValid()
     within(edgeBlock).getByText(/Incompatible SmartEdges/)
-    expect(within(edgeBlock).getByText('7 / 14')).toBeValid()
+    expect(within(edgeBlock).getByText('5 / 14')).toBeValid()
 
     const wifiBlock = compatibilityDevices[1]
     expect(within(wifiBlock).getByText('7.0.0.0.234')).toBeValid()
@@ -170,17 +171,20 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
+
     const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
+    expect(screen.getByText('SD-LAN')).toBeValid()
+    expect(screen.getByText('SmartEdge')).toBeValid()
+    expect(screen.getByText('Wi-Fi')).toBeValid()
+
     expect(compatibilityDevices.length).toBe(2)
     const features = screen.getAllByTestId('FeatureItem')
     expect(features.length).toBe(2)
 
     const edgeBlock = compatibilityDevices[0]
-    expect(await within(edgeBlock).findByText('SD-LAN')).toBeInTheDocument()
     expect(within(edgeBlock).getByText('2.1.0.600')).toBeValid()
 
     const wifiBlock = compatibilityDevices[1]
-    expect(within(wifiBlock).getByText('SD-LAN')).toBeValid()
     expect(within(wifiBlock).getByText('7.0.0.0')).toBeValid()
     expect(screen.getByTestId('CloseSymbol')).toBeVisible()
   })
@@ -200,7 +204,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    const descriptions = await screen.findAllByText(/The following features are unavailable on specific SmartEdges/)
+    const descriptions = await screen.findAllByText(/The following features are unavailable on certain SmartEdges in this venue due /)
     expect(descriptions.length).toBe(1)
     const features = screen.getAllByTestId('FeatureItem')
     expect(features.length).toBe(2)
@@ -237,7 +241,7 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    expect(await screen.findByText(/The following features are not enabled on this SmartEdge/)).toBeInTheDocument()
+    expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
     const features = screen.getAllByTestId('FeatureItem')
     expect(features.length).toBe(2)
 

@@ -5,8 +5,9 @@ import { CompatibilityDeviceEnum, CompatibilityType } from '@acx-ui/rc/utils'
 import { TenantLink }                                 from '@acx-ui/react-router-dom'
 import { getIntl }                                    from '@acx-ui/utils'
 
-import { CompatibilityItemProps } from './CompatibilityItem'
-import { messageMapping }         from './messageMapping'
+import { messageMapping } from './messageMapping'
+
+import { CompatibilityDrawerProps } from '.'
 
 export const getApFirmwareLink = () => {
   const { $t } = getIntl()
@@ -36,8 +37,13 @@ export const getFirmwareLinkByDeviceType = (deviceType: CompatibilityDeviceEnum)
   }
 }
 
-export const useDescription = (props: Omit<CompatibilityItemProps, 'data'>) => {
-  const { compatibilityType, deviceType, featureName, venueId, venueName } = props
+// eslint-disable-next-line max-len
+export const useDescription = (props: Pick<CompatibilityDrawerProps, 'compatibilityType'|'deviceType'|'featureName'|'venueId'|'venueName'>) => {
+  const {
+    compatibilityType,
+    deviceType = CompatibilityDeviceEnum.AP,
+    featureName,
+    venueId, venueName } = props
   const isVenueLevel = compatibilityType === CompatibilityType.VENUE
   const isFeatureLevel = compatibilityType === CompatibilityType.FEATURE
 

@@ -1,18 +1,15 @@
 import { Col, Form, Row, Space } from 'antd'
 import { sumBy }                 from 'lodash'
 
-import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures, CompatibilityType } from '@acx-ui/rc/utils'
+import { ApIncompatibleFeature, CompatibilityDeviceEnum, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
 import { FeatureItem } from './FeatureItem'
 
 export type CompatibilityItemProps = {
-  compatibilityType: CompatibilityType,
   deviceType: CompatibilityDeviceEnum,
   data: ApIncompatibleFeature[],
   description?: string | React.ReactNode,
   totalDevices?: number,
-  venueId?: string,
-  venueName?: string,
   featureName?: IncompatibilityFeatures,
 }
 
@@ -24,8 +21,6 @@ export const CompatibilityItem = (props: CompatibilityItemProps) => {
     totalDevices = 0,
     featureName
   } = props
-
-  // const description = useDescription(omit(props, 'data'))
 
   const getFeatures = (items: ApIncompatibleFeature[]) => {
     const isMultipleFeatures = items.length > 1

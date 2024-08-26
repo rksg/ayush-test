@@ -210,8 +210,10 @@ export const SettingsForm = () => {
                     />
                   </Form.Item>
                 </Col>
-                <ClusterFirmwareInfo
-                  fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
+                <Col span={24}>
+                  <ClusterFirmwareInfo
+                    fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
+                </Col>
               </Row>
             </Col>
           </Row>
@@ -313,7 +315,7 @@ const ClusterFirmwareInfo = (props: {
   return isEdgeCompatibilityEnabled
     ? ( <Space align='center' size='small'>
       <Typography>
-        {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
+        {$t({ defaultMessage: 'Cluster Firmware Version: {fwVersion}' },
           { fwVersion }) }
       </Typography>
       {(!!fwVersion && isLower) && <Tooltip
