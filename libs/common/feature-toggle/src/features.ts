@@ -4,7 +4,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
-  ANY_3RDPARTY_INVITE_TOGGLE = 'removable-ff',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
@@ -145,6 +144,7 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
+  WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',

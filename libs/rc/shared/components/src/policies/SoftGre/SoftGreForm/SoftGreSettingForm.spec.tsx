@@ -1,0 +1,124 @@
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
+
+import { softGreApi }                                                        from '@acx-ui/rc/services'
+import { SoftGreUrls }                                                       from '@acx-ui/rc/utils'
+import { Path }                                                              from '@acx-ui/react-router-dom'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { mockServer, render, screen, renderHook, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+
+import { mockSoftGreTable }   from './__tests__/fixtures'
+import { SoftGreSettingForm } from './SoftGreSettingForm'
+
+
+const mockedUseNavigate = jest.fn()
+const mockedTenantPath: Path = {
+  pathname: 't/__tenantId__',
+  search: '',
+  hash: ''
+}
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUseNavigate,
+  useTenantLink: ():Path => mockedTenantPath
+}))
+
+const editViewPath = '/:tenantId/t/policies/SoftGre/:policyId/edit'
+const createViewPath = '/:tenantId/t/policies/SoftGre/create'
+
+const params = {
+  tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+  policyId: '0d89c0f5596c4689900fb7f5f53a0859'
+}
+
+const user = userEvent.setup()
+
+describe('SoftGreSettingForm', () => {
+  beforeEach(() => {
+    store.dispatch(softGreApi.util.resetApiState())
+
+    mockServer.use(
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable.data))
+      )
+    )
+  })
+
+  it('should show error message while SoftGre Name is duplicated', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: editViewPath, params } }
+    )
+
+    const policyNameField = await screen.findByLabelText(/Profile Name/i)
+    await user.clear(policyNameField)
+    await user.type(policyNameField, 'softGreProfileName2')
+    await user.tab()
+
+    const validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating)
+
+    expect(await screen.findByText('SoftGRE with that name already exists')).toBeVisible()
+  })
+
+  it('should validate gateway address successfully', async () => {
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await user.type(profileNameField, '123')
+    // eslint-disable-next-line max-len
+    const primaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Primary Gateway Address' })
+    await user.type(primaryGatewayField,'128.0.0')
+    const errMsg = await screen.findByText('Please enter a valid IP address')
+    expect(errMsg).toBeVisible()
+
+    await user.clear(primaryGatewayField)
+    await user.type(primaryGatewayField,'128.0.0.1')
+    expect(errMsg).not.toBeInTheDocument()
+  })
+
+
+  it('should primary and secondary gateway address different', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    render(
+      <Provider>
+        <Form form={formRef.current}><SoftGreSettingForm /></Form>
+      </Provider>,
+      { route: { path: createViewPath, params } }
+    )
+    const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+    await user.type(profileNameField, 'Test-validation gateways different')
+    // eslint-disable-next-line max-len
+    const primaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Primary Gateway Address' })
+    await user.type(primaryGatewayField,'128.0.0.0')
+    // eslint-disable-next-line max-len
+    const secondaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Secondary Gateway Address' })
+    await user.type(secondaryGatewayField,'128.0.0.0')
+    const errMsg = await screen.findByText('IP address must be unique.')
+    expect(errMsg).toBeVisible()
+
+    await user.clear(secondaryGatewayField)
+    await user.type(secondaryGatewayField,'128.0.0.1')
+    expect(errMsg).not.toBeInTheDocument()
+  })
+})
