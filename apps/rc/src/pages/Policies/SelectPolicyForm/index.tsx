@@ -69,6 +69,7 @@ export default function SelectPolicyForm () {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -131,6 +132,10 @@ export default function SelectPolicyForm () {
 
   if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if (isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
+    sets.push({ type: PolicyType.SOFTGRE, categories: [RadioCardCategory.WIFI] })
   }
 
   if (isEdgeQosEnabled) {

@@ -486,6 +486,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/vlanPools/:policyId/venues',
     newApi: true
   },
+  getVlanPoolPolicyList: {
+    method: 'post',
+    url: '/templates/vlanPoolProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   getEnhancedVlanPools: {
     method: 'post',
     url: '/templates/enhancedVlanPoolProfiles/query',
