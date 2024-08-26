@@ -1,10 +1,8 @@
-import { useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCardCategory }                                       from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
+import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                   from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -20,7 +18,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
-  IncompatibilityFeatures,
   isServicePolicyCardEnabled,
   ServicePolicyCardData,
   servicePolicyCardDataToScopeKeys,
@@ -47,11 +44,8 @@ export default function MyServices () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
-  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  // eslint-disable-next-line max-len
-  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   const services: ServicePolicyCardData<ServiceType>[] = [
     {
@@ -96,13 +90,6 @@ export default function MyServices () {
       },{
         skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }).data?.totalCount,
-      helpIcon: isEdgeCompatibilityEnabled
-        ? <ApCompatibilityToolTip
-          title={''}
-          visible={true}
-          onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
-        />
-        : undefined,
       disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
       scopeKeysMap: {
         create: [EdgeScopes.CREATE],
@@ -183,19 +170,11 @@ export default function MyServices () {
                 count={service.totalCount}
                 type={'default'}
                 scopeKeysMap={service.scopeKeysMap}
-                helpIcon={service.helpIcon}
               />
             </GridCol>
           )
         })}
       </GridRow>
-      {edgeCompatibilityFeature && <EdgeCompatibilityDrawer
-        visible
-        type={EdgeCompatibilityType.ALONE}
-        title={$t({ defaultMessage: 'Compatibility Requirement' })}
-        featureName={edgeCompatibilityFeature}
-        onClose={() => setEdgeCompatibilityFeature(undefined)}
-      />}
     </>
   )
 }

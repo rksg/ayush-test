@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { omit }                                     from 'lodash'
 import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
@@ -47,21 +48,23 @@ export function ServiceCard (props: ServiceCardProps) {
 
   const formatServiceName = () => {
     const name = $t(serviceTypeLabelMapping[serviceType])
-    if (count === undefined) {
-      return name
-    }
-    return <FormattedMessage
-      defaultMessage={
-        '{name} ({count})<helpIcon></helpIcon>'
+    const msgValues = {
+      name,
+      count,
+      helpIcon: () => {
+        return helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''
       }
-      values={{
-        name,
-        count,
-        helpIcon: () => {
-          return helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''
-        }
-      }}
-    />
+    }
+
+    return count === undefined
+      ? <FormattedMessage
+        defaultMessage='{name}<helpIcon></helpIcon>'
+        values={omit(msgValues, 'count')}
+      />
+      : <FormattedMessage
+        defaultMessage='{name} ({count})<helpIcon></helpIcon>'
+        values={msgValues}
+      />
   }
 
   return (
