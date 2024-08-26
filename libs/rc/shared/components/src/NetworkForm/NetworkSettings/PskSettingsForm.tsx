@@ -217,7 +217,10 @@ function SettingsForm () {
   },[data])
 
   useEffect(() => {
-    if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
+
+    let security = editMode ? data?.wlan?.wlanSecurity : wlanSecurity
+
+    if (security === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
       disableMLO(false)
     } else {
       disableMLO(true)
