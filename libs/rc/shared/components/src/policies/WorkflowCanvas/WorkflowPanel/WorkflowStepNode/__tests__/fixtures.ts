@@ -1,8 +1,10 @@
-import { ActionType,
+import {
+  ActionType,
   DpskAction,
-  DpskSaveData,
+  DpskSaveData, MacRegistrationPool,
   PassphraseFormatEnum,
-  PersonaGroup } from '@acx-ui/rc/utils'
+  PersonaGroup
+} from '@acx-ui/rc/utils'
 
 
 export const mockedDpskEnrollmentAction:DpskAction = {
@@ -25,4 +27,13 @@ export const mockedDpskData:DpskSaveData = {
 export const mockedIdentityGroupData:PersonaGroup = {
   id: 'fake-persona-group-id',
   name: 'My Identity Group for Testing'
+}
+
+export const mockedMacRegData:MacRegistrationPool = {
+  id: 'test-mac-list-id',
+  name: 'test-mac-list-name',
+  registrationCount: 1,
+  defaultAccess: 'true',
+  autoCleanup: true,
+  enabled: true
 }

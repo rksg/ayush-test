@@ -6,7 +6,8 @@ import {
   AupActionTypeIcon,
   DataPromptActionTypeIcon,
   DisplayMessageActionTypeIcon,
-  DpskActionTypeIcon
+  DpskActionTypeIcon,
+  MacRegActionTypeIcon
 } from '@acx-ui/icons'
 
 import {
@@ -59,28 +60,32 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
-  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'Mac Registration' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.AUP]: AupActionTypeIcon,
   [ActionType.DATA_PROMPT]: DataPromptActionTypeIcon,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionTypeIcon,
-  [ActionType.DPSK]: DpskActionTypeIcon
+  [ActionType.DPSK]: DpskActionTypeIcon,
+  [ActionType.MAC_REG]: MacRegActionTypeIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
-  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' })
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
-  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' })
+  [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a Ruckus DPSK and identity, for the requested Identity Group.' }),
+  [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address registers and authenticated with RADIUS, assigned to an Identity Group' })
 }
 
 export const AupActionDefaultValue: {
@@ -129,7 +134,8 @@ export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
-  [ActionType.DPSK]: {}
+  [ActionType.DPSK]: {},
+  [ActionType.MAC_REG]: {}
 }
 /* eslint-enable max-len */
 

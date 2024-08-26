@@ -32,8 +32,9 @@ import { AupPreview, DisplayMessagePreview } from './index'
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: AupPreview,     // FIXME: Implement Data_Prompt preview component
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,  // FIXME: Implement Display_Message preview component
-  [ActionType.DPSK]: DpskActionPreview
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
+  [ActionType.DPSK]: DpskActionPreview,
+  [ActionType.MAC_REG]: AupPreview
 }
 
 export interface WorkflowActionPreviewProps {
