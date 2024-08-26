@@ -43,6 +43,18 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
+type IntentApPayload = {
+  id: string
+  search: string
+}
+
+type IntentAp = {
+  name: string
+  mac: string
+  model: string
+  version: string
+}
+
 const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
@@ -316,6 +328,30 @@ export const api = intentAIApi.injectEndpoints({
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
       providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
+    }),
+    getAps: build.query<IntentAp[], IntentApPayload>({
+      query: (payload) => ({
+        document: gql`
+          query GetAps($id: String!, $n: Int, $search: String, $key: String) {
+            intentById(id: $id) {
+              aps: aps(n: $n, search: $search, key: $key) {
+                name
+                mac
+                model
+                version
+              }
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          search: payload.search,
+          n: 100,
+          key: 'aps-on-latest-fw-version'
+        }
+      }),
+      transformResponse: (response: { intentById: { aps: IntentAp[] } }) =>
+        response.intentById.aps
     })
   })
 })
@@ -430,5 +466,6 @@ export const {
   useLazyIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
-  useIntentHighlightQuery
+  useIntentHighlightQuery,
+  useGetApsQuery
 } = api
