@@ -17,12 +17,33 @@ jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
   IntentAIForm: () => <div data-testid='c-crrm-channel6g-auto-IntentAIForm'/>
 }))
 
+jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='i-zonefirmware-upgrade-IntentAIForm'/>
+}))
+
 describe('IntentAIForm', () => {
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
       data: { intent: mockedIntentCRRM }
     })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
+
+    for (const code of codes) {
+      const { unmount } = render(<IntentAIForm />, {
+        route: { params: { code } },
+        wrapper: Provider
+      })
+      expect(await screen.findByTestId(`${code}-IntentAIForm`)).toBeVisible()
+      unmount()
+    }
+  })
+
+  it('should render for AIOperations', async () => {
+    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
+      data: { intent: mockedIntentCRRM }
+    })
+    const codes = ['i-zonefirmware-upgrade']
 
     for (const code of codes) {
       const { unmount } = render(<IntentAIForm />, {

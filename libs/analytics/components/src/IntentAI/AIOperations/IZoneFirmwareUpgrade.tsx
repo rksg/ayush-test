@@ -10,7 +10,7 @@ import { IntroSummary }                  from '../common/IntroSummary'
 import { KpiField }                      from '../common/KpiField'
 import { richTextFormatValues }          from '../common/richTextFormatValues'
 import { useIntentContext }              from '../IntentContext'
-import { statuses, statusReasons }       from '../states'
+import { Statuses, StatusReasons }       from '../states'
 import { getGraphKPIs, IntentKPIConfig } from '../useIntentDetailsQuery'
 
 import { createIntentAIDetails } from './createIntentAIDetails'
@@ -50,8 +50,8 @@ export const IntentAIDetails = createIntentAIDetails(useValuesText)
 export const IntentAIForm = createIntentAIForm({
   useInitialValues: () => ({ enable: true }),
   getFormDTO: (values) => values.enable
-    ? { status: statuses.scheduled }
-    : { status: statuses.paused, statusReason: statusReasons.fromInactive }
+    ? { status: Statuses.scheduled }
+    : { status: Statuses.paused, statusReason: StatusReasons.fromInactive }
 }).addStep({
   title: defineMessage({ defaultMessage: 'Introduction' }),
   SideNote: () => <Reason

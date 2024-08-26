@@ -1,45 +1,22 @@
-import { Typography }                                   from 'antd'
-import moment                                           from 'moment-timezone'
-import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                from 'antd'
+import moment                        from 'moment-timezone'
+import { FormattedMessage, useIntl } from 'react-intl'
 
-import { incidentScope }                        from '@acx-ui/analytics/utils'
 import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 
-import { FixedAutoSizer }       from '../../DescriptionSection/styledComponents'
-import { DetailsSection }       from '../common/DetailsSection'
-import { getIntentStatus }      from '../common/getIntentStatus'
-import { IntentDetailsHeader }  from '../common/IntentDetailsHeader'
-import { IntentIcon }           from '../common/IntentIcon'
-import { KpiCard }              from '../common/KpiCard'
-import { richTextFormatValues } from '../common/richTextFormatValues'
-import { StatusTrail }          from '../common/StatusTrail'
-import { codes }                from '../config'
-import { useIntentContext }     from '../IntentContext'
-import { getGraphKPIs }         from '../useIntentDetailsQuery'
+import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
+import { DetailsSection }      from '../common/DetailsSection'
+import { getIntentStatus }     from '../common/getIntentStatus'
+import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
+import { IntentIcon }          from '../common/IntentIcon'
+import { KpiCard }             from '../common/KpiCard'
+import { StatusTrail }         from '../common/StatusTrail'
+import { codes }               from '../config'
+import { useIntentContext }    from '../IntentContext'
+import { getGraphKPIs }        from '../useIntentDetailsQuery'
 
-export function createUseValuesText (config: {
-  intro: MessageDescriptor
-  action: MessageDescriptor
-  reason: MessageDescriptor
-  tradeoff: MessageDescriptor
-}) {
-  return function useValuesText () {
-    const { intent } = useIntentContext()
-    const values = {
-      ...richTextFormatValues,
-      currentValue: 'CURRENT_VALUE',
-      recommendedValue: 'RECOMMENDED_VALUE',
-      scope: incidentScope(intent)
-    }
-    return {
-      actionText: <FormattedMessage {...config.action} values={values} />,
-      reasonText: <FormattedMessage {...config.reason} values={values} />,
-      tradeoffText: <FormattedMessage {...config.tradeoff} values={values} />,
-      introText: <FormattedMessage {...config.intro} values={values} />
-    }
-  }
-}
+import { createUseValuesText } from './createUseValuesText'
 
 export function createIntentAIDetails (useValuesText: ReturnType<typeof createUseValuesText>) {
   return function IntentAIDetails () {
