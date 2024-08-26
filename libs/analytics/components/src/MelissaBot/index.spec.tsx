@@ -10,6 +10,7 @@ import { gptResponseBody, responseBody, uploadRes } from './__tests__/fixtures'
 
 import { MelissaBot } from '.'
 describe('MelissaBot', () => {
+  const sessionTimeoutInSecs=2
   let container:HTMLDivElement|undefined=undefined
   // eslint-disable-next-line max-len
   const ERROR_MSG = 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.'
@@ -139,6 +140,57 @@ describe('MelissaBot', () => {
     expect(document.querySelectorAll('.conversation > div')?.length).toBe(11)
     expect(document.querySelector('body')?.innerHTML)
       .toMatchSnapshot('switch-back-to-my-network-mode')
+  })
+  it('should chat with chatbot in general mode and handle DF session timeout',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot sessionTimeoutInSecs={sessionTimeoutInSecs}/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
+    })
+    await screen.findByText('What is cloud RRM?')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
+    global.fetch = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        json: () => Promise.resolve(gptResponseBody)
+      })
+    )
+    await act(async ()=>{
+      fireEvent.click(await screen.findByLabelText('General'))
+    })
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'How does wifi works?{enter}')
+    })
+    await screen.findByText('How does wifi works?')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(10)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('general-mode')
+    await new Promise((r) => setTimeout(r, (sessionTimeoutInSecs + 2) * 1000))
+    await screen.findByText('Session Timed out.')
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after-session-timeout')
+  })
+  it('should chat with chatbot in my network mode and handle DF session timeout',async ()=>{
+    await act(async ()=>{
+      render(<MelissaBot sessionTimeoutInSecs={sessionTimeoutInSecs}/>,{ route, container })
+    })
+    await act(async ()=>{
+      fireEvent.click(await screen.findByTestId('MelissaIcon'))
+    })
+    expect(document.querySelector('.ant-drawer-open')).toBeDefined()
+    await act(async ()=>{
+      await userEvent.type(screen.getByRole('textbox'),'What is cloud RRM?{enter}')
+    })
+    await screen.findByText('What is cloud RRM?')
+    expect(document.querySelectorAll('.conversation > div')?.length).toBe(7)
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('data-mode')
+    await new Promise((r) => setTimeout(r, (sessionTimeoutInSecs + 2) * 1000))
+    const timeoutText=screen.queryByText('Session Timed out.')
+    expect(timeoutText).not.toBeInTheDocument()
+    expect(document.querySelector('body')?.innerHTML).toMatchSnapshot('after-session-timeout')
   })
   it('should handle error message from chatbot',async ()=>{
     await act(async ()=>{
