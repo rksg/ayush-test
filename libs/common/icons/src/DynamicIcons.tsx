@@ -17,11 +17,11 @@ const IconSizes: Record<Size, string> = {
   lg: '32'
 }
 
-interface IconProps {
+type IconProps = {
   size?: Size;
   color?: string;
   style?: React.CSSProperties;
-}
+} & React.SVGProps<SVGSVGElement>
 
 const toPascalCase = (str: string) =>
   str.replace(/(^\w|-\w)/g, clearAndUpper)
@@ -31,11 +31,11 @@ const clearAndUpper = (text: string) =>
 
 const createIconComponent = (iconName: string) => {
   const componentName = toPascalCase(iconName)
-  const IconComponent: React.FC<IconProps> = ({ size = 'md', color, style }: IconProps) => {
+  const IconComponent: React.FC<IconProps> = ({ size = 'md', ...props }: IconProps) => {
     const IconLibrary = IconLibraries[size]
     const Icon = IconLibrary[iconName] || (MdIcons as IconMap)[iconName]
     const width = IconSizes[size]
-    return <Icon style={style} width={width} height={width} color={color} />
+    return <Icon width={width} height={width} {...props} />
   }
 
   IconComponent.displayName = componentName

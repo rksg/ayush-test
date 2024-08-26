@@ -1,8 +1,6 @@
 import { Space, Row, Input } from 'antd'
 import styled                from 'styled-components/macro'
 
-import { DeleteOutlinedIcon as DeleteOutlined } from '@acx-ui/icons'
-
 export const RowStyle = styled(Row)`
   .ant-form-item-label > label {
     color: var(--acx-primary-black);
@@ -79,9 +77,4 @@ export const CliConfiguration = styled(Input.TextArea)`
     border-color: var(--acx-neutrals-30) !important;
     box-shadow: none
   }  
-`
-
-export const DeleteOutlinedIcon = styled(DeleteOutlined)`
-  width: 16px;
-  cursor: pointer;
 `

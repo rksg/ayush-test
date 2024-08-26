@@ -1,8 +1,7 @@
 import { Typography } from 'antd'
 import styled         from 'styled-components/macro'
 
-import { StepsFormLegacy }    from '@acx-ui/components'
-import { DeleteOutlinedIcon } from '@acx-ui/icons'
+import { StepsFormLegacy } from '@acx-ui/components'
 
 export const TableContainer = styled.div`
   .ant-pro-table .ant-table-thead > tr:first-child > th,
@@ -36,12 +35,6 @@ export const TableContainer = styled.div`
   button{
     align-items: start;
     vertical-align: baseline;
-  }
-`
-
-export const DisabledDeleteOutlinedIcon = styled(DeleteOutlinedIcon)`
-  svg path{
-    stroke: var(--acx-neutrals-40);
   }
 `
 

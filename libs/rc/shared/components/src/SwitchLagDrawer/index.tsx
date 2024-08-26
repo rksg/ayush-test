@@ -16,9 +16,9 @@ import { Button,
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  DeleteOutlinedIcon,
-  EditOutlinedIcon
-} from '@acx-ui/icons'
+  DeleteOutlined,
+  EditOutlined
+} from '@acx-ui/icons-new'
 import {
   useDeleteLagMutation,
   useGetLagListQuery,
@@ -101,20 +101,20 @@ export const SwitchLagDrawer = (props: SwitchLagProps) => {
       render: function (data, row) {
         return <>
           { hasPermission({ scopes: [SwitchScopes.UPDATE] }) && <Button
+            type='link'
             key='edit'
             role='editBtn'
             disabled={!isOperational}
-            ghost={true}
-            icon={<EditOutlinedIcon />}
+            icon={<EditOutlined size='sm' />}
             style={{ height: '16px' }}
             onClick={() => handleEdit(row)}
           />}
           { hasPermission({ scopes: [SwitchScopes.DELETE] }) && <Button
+            type='link'
             key='delete'
             role='deleteBtn'
-            ghost={true}
             disabled={!isOperational}
-            icon={<DeleteOutlinedIcon />}
+            icon={<DeleteOutlined size='sm' />}
             style={{ height: '16px' }}
             onClick={() => handleDelete(row)}
           />}

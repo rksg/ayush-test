@@ -11,7 +11,7 @@ import { useIntl } from 'react-intl'
 
 import { Drawer, Table, Button, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon }                from '@acx-ui/icons'
+import { DeleteOutlined }                    from '@acx-ui/icons-new'
 import {
   useUpdateSwitchMutation,
   useGetSwitchQuery
@@ -36,8 +36,7 @@ import {
 } from '../../SwitchForm/blockListRelatedTsb.util'
 
 import {
-  TableContainer,
-  DisabledDeleteOutlinedIcon
+  TableContainer
 } from './styledComponents'
 
 export interface AddStackMemberProps {
@@ -182,13 +181,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
           type='link'
           key='delete'
           role='deleteBtn'
-          icon={
-            tableData.length <= 1 ? (
-              <DisabledDeleteOutlinedIcon />
-            ) : (
-              <DeleteOutlinedIcon />
-            )
-          }
+          icon={<DeleteOutlined size='sm' />}
           disabled={tableData.length <= 1}
           hidden={row.disabled}
           onClick={() => handleDelete(index, row)}

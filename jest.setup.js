@@ -189,6 +189,17 @@ jest.mock('@acx-ui/icons', ()=> {
   return Object.fromEntries(keys)
 }, { virtual: true })
 
+jest.mock('@acx-ui/icons-new', ()=> {
+  const React = jest.requireActual('react')
+  const icons = jest.requireActual('@acx-ui/icons-new')
+  const keys = Object.keys(icons).map(key => [
+    key,
+    React.forwardRef((props, ref) =>
+      React.createElement('svg', { 'data-testid': key, ...props, ref }))
+  ])
+  return Object.fromEntries(keys)
+}, { virtual: true })
+
 // For Error: Not implemented: HTMLCanvasElement.prototype.getContext (without installing the canvas npm package)
 HTMLCanvasElement.prototype.getContext = () => null
 
