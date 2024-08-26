@@ -27,9 +27,9 @@ import {
   DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum,
   ApDeviceStatusEnum, APExtended, DHCP_LIMIT_NUMBER,
   getServiceRoutePath, ServiceOperation, ServiceType,
-  useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate
+  useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate,
+  hasServicePermission
 } from '@acx-ui/rc/utils'
-import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
@@ -106,7 +106,9 @@ const VenueDHCPForm = (props: {
   const isMaxNumberReached = ()=>{
     return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
-  const hasAddDhcpPermission = hasCrossVenuesPermission({ needGlobalPermission: true })
+  const hasAddDhcpPermission = hasServicePermission({
+    serviceType: ServiceType.DHCP, oper: ServiceOperation.CREATE
+  })
 
   useEffect(() => {
     async function fetchData () {

@@ -4,27 +4,23 @@ import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
   getServiceRoutePath,
   ServiceOperation,
-  ServicePolicyScopeKeyOper,
-  servicePolicyCardDataToScopeKeys,
   ServiceType,
   serviceTypeDescMapping,
   serviceTypeLabelMapping,
-  hasDpskAccess
+  hasServicePermission
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum, ScopeKeys }                    from '@acx-ui/types'
-import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { RolesEnum }                               from '@acx-ui/types'
 
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
   count?: number
-  scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { serviceType, type: cardType, categories = [], count, scopeKeysMap } = props
+  const { serviceType, type: cardType, categories = [], count } = props
   // eslint-disable-next-line max-len
   const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
   // eslint-disable-next-line max-len
@@ -33,13 +29,11 @@ export function ServiceCard (props: ServiceCardProps) {
 
   const isAddButtonAllowed = () => {
     if (cardType !== 'button') return false
-    if (serviceType === ServiceType.DPSK) return hasDpskAccess()
-    if (!hasCrossVenuesPermission({ needGlobalPermission: true })) return false
-    // eslint-disable-next-line max-len
-    const scopeKeyForCreate = servicePolicyCardDataToScopeKeys([{ scopeKeysMap, categories }], 'create')
-    return hasPermission({
-      roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR],
-      scopes: scopeKeyForCreate
+
+    return hasServicePermission({
+      serviceType,
+      oper: ServiceOperation.CREATE,
+      roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
     })
   }
 

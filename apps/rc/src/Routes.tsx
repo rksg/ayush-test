@@ -50,7 +50,9 @@ import {
   getServiceRoutePath,
   CertificateCategoryType,
   hasDpskAccess,
-  hasCloudpathAccess
+  hasCloudpathAccess,
+  ServiceAuthRoute,
+  PolicyAuthRoute
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -537,19 +539,17 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
         element={
-          // eslint-disable-next-line max-len
-          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE]}>
+          <ServiceAuthRoute serviceType={ServiceType.MDNS_PROXY} oper={ServiceOperation.CREATE}>
             <MdnsProxyForm />
-          </AuthRoute>
+          </ServiceAuthRoute>
         }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
         element={
-          // eslint-disable-next-line max-len
-          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.UPDATE]}>
+          <ServiceAuthRoute serviceType={ServiceType.MDNS_PROXY} oper={ServiceOperation.EDIT}>
             <MdnsProxyForm editMode={true} />
-          </AuthRoute>
+          </ServiceAuthRoute>
         }
       />
       <Route
@@ -597,28 +597,26 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
         element={
-          // eslint-disable-next-line max-len
-          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.CREATE]}>
+          <ServiceAuthRoute serviceType={ServiceType.DHCP} oper={ServiceOperation.CREATE}>
             <DHCPForm/>
-          </AuthRoute>
+          </ServiceAuthRoute>
         }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
         element={
-          // eslint-disable-next-line max-len
-          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }} scopes={[WifiScopes.UPDATE]}>
+          <ServiceAuthRoute serviceType={ServiceType.DHCP} oper={ServiceOperation.EDIT}>
             <DHCPForm editMode={true}/>
-          </AuthRoute>
+          </ServiceAuthRoute>
         }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-        element={<AuthRoute scopes={[WifiScopes.READ]}><DHCPDetail/></AuthRoute>}
+        element={<DHCPDetail/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
-        element={<AuthRoute scopes={[WifiScopes.READ]}><DHCPTable/></AuthRoute>}
+        element={<DHCPTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
@@ -787,34 +785,26 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}>
+          <PolicyAuthRoute policyType={PolicyType.AAA} oper={PolicyOperation.CREATE}>
             <AAAForm edit={false}/>
-          </AuthRoute>
+          </PolicyAuthRoute>
         }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <PolicyAuthRoute policyType={PolicyType.AAA} oper={PolicyOperation.EDIT}>
             <AAAForm edit={true}/>
-          </AuthRoute>
+          </PolicyAuthRoute>
         }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
-        element={
-          <AuthRoute scopes={[WifiScopes.READ]}>
-            <AAAPolicyDetail/>
-          </AuthRoute>
-        }
+        element={<AAAPolicyDetail/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={
-          <AuthRoute scopes={[WifiScopes.READ]}>
-            <AAATable />
-          </AuthRoute>
-        }
+        element={<AAATable />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}

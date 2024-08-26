@@ -24,13 +24,12 @@ import {
 import {
   PolicyOperation,
   PolicyType,
-  ServicePolicyCardData,
+  filterServicePolicyByAccess,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  isServicePolicyCardEnabled,
+  isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping,
-  servicePolicyCardDataToScopeKeys
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -38,7 +37,6 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -48,17 +46,15 @@ export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
-
-  const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
+  const policies = useCardData()
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
+        extra={filterServicePolicyByAccess([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
@@ -66,7 +62,7 @@ export default function MyPolicies () {
       <GridRow>
         {
           // eslint-disable-next-line max-len
-          policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+          policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
             return (
               <GridCol key={policy.type} col={{ span: 6 }}>
                 <RadioCard
@@ -94,7 +90,7 @@ export default function MyPolicies () {
   )
 }
 
-function useCardData (): ServicePolicyCardData<PolicyType>[] {
+function useCardData () {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)

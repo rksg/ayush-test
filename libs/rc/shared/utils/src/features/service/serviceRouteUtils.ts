@@ -13,6 +13,7 @@ export enum DpskDetailsTabKey {
 export enum ServiceOperation {
   CREATE,
   EDIT,
+  DELETE,
   DETAIL,
   LIST
 }
@@ -32,7 +33,8 @@ const operationPathMapping: Record<ServiceOperation, string> = {
   [ServiceOperation.CREATE]: 'create',
   [ServiceOperation.EDIT]: ':serviceId/edit',
   [ServiceOperation.DETAIL]: ':serviceId/detail',
-  [ServiceOperation.LIST]: 'list'
+  [ServiceOperation.LIST]: 'list',
+  [ServiceOperation.DELETE]: ''
 }
 
 const serviceTypePathMapping: Record<ServiceType, string> = {
