@@ -1,4 +1,4 @@
-import { ClusterHighAvailabilityModeEnum, NodeClusterRoleEnum } from '@acx-ui/rc/utils'
+import { ClusterHighAvailabilityModeEnum, NodeClusterRoleEnum }                             from '../../../../models/EdgeEnum'
 import { EdgeAlarmSummary }                                                                 from '../../../../types/edge'
 import { EdgeMvSdLanExtended, EdgeMvSdLanViewData, EdgeSdLanViewData, EdgeSdLanViewDataP2 } from '../../../../types/services/edgeSdLanService'
 
@@ -398,12 +398,12 @@ export const mockClusterForApTableTest = {
         {
           name: 'Edge1',
           serialNumber: 'mocked-edge-1',
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
         },
         {
           name: 'Edge2',
           serialNumber: 'mocked-edge-2',
-          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP,
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
         }
       ]
     }
