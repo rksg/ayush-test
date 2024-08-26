@@ -4,10 +4,10 @@ export const mockedIntentCRRM = {
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
   code: 'c-crrm-channel24g-auto',
   status: 'applyscheduled',
-  // TODO: move into metadata
-  dataEndTime: '2023-06-26T00:00:25.772Z',
   updatedAt: '2023-06-26T06:04:00.000Z',
-  metadata: {},
+  metadata: {
+    dataEndTime: '2023-06-26T00:00:25.772Z'
+  },
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
   path: [
@@ -203,9 +203,14 @@ export const mockedIntentCRRM = {
     }
   ],
   kpi_number_of_interfering_links: {
-    current: 2,
-    previous: null,
-    projected: 0
+    data: {
+      timestamp: null,
+      result: 0
+    },
+    compareData: {
+      timestamp: '2023-06-26T00:00:25.772Z',
+      result: 2
+    }
   },
   preferences: null
 } as unknown as Intent
@@ -214,9 +219,9 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
   code: 'c-crrm-channel5g-auto',
   status: 'new',
-  // TODO: move into metadata
-  dataEndTime: '2023-06-26T00:00:25.772Z',
-  metadata: {},
+  metadata: {
+    dataEndTime: '2023-06-26T00:00:25.772Z'
+  },
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
   path: [
@@ -240,9 +245,14 @@ export const mockedIntentCRRMnew = { // this fixture is used to test new crrm in
     }
   ],
   kpi_number_of_interfering_links: {
-    current: 0,
-    previous: null,
-    projected: 0
+    data: {
+      timestamp: null,
+      result: 0
+    },
+    compareData: {
+      timestamp: '2023-06-26T00:00:25.772Z',
+      result: 0
+    }
   },
   preferences: null
 } as unknown as Intent
@@ -251,9 +261,9 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
   id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b8',
   code: 'c-crrm-channel5g-auto',
   status: 'applied',
-  // TODO: move into metadata
-  dataEndTime: '2023-06-26T00:00:25.772Z',
-  metadata: {},
+  metadata: {
+    dataEndTime: '2023-06-26T00:00:25.772Z'
+  },
   sliceType: 'zone',
   sliceValue: '21_US_Beta_Samsung',
   path: [
@@ -289,101 +299,116 @@ export const mockedIntentCRRMApplied = { // this fixture is used to test applied
     }
   ],
   kpi_number_of_interfering_links: {
-    current: 0,
-    previous: 2,
-    projected: null
+    data: {
+      timestamp: null,
+      result: 0
+    },
+    compareData: {
+      timestamp: '2023-06-26T00:00:25.772Z',
+      result: 2
+    }
   },
   preferences: null
 } as unknown as Intent
 
 export const mockedCRRMGraphs = {
   graph: {
-    current: {
-      nodes: [
-        {
-          apMac: '5C:DF:89:0B:FB:40',
-          apName: 'W07-R760-West-FACP',
-          channel: [ 128 ],
-          channelWidth: [ 80 ],
-          txPower: [ '_FULL' ]
-        },
-        {
-          apMac: '5C:DF:89:0B:FE:E0',
-          apName: 'W10-R760-Doberman',
-          channel: [ 120 ],
-          channelWidth: [ 80],
-          txPower: [ '_FULL' ]
-        }
-      ],
-      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-      interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+    compareData: {
+      timestamp: '',
+      result: {
+        nodes: [
+          {
+            apMac: '5C:DF:89:0B:FB:40',
+            apName: 'W07-R760-West-FACP',
+            channel: [ 128 ],
+            channelWidth: [ 80 ],
+            txPower: [ '_FULL' ]
+          },
+          {
+            apMac: '5C:DF:89:0B:FE:E0',
+            apName: 'W10-R760-Doberman',
+            channel: [ 120 ],
+            channelWidth: [ 80],
+            txPower: [ '_FULL' ]
+          }
+        ],
+        links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+        interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+      }
     },
-    projected: {
-      nodes: [
-        {
-          apMac: '5C:DF:89:0B:FB:40',
-          apName: 'W07-R760-West-FACP',
-          channel: [ 149 ],
-          channelWidth: [ 80 ],
-          txPower: [ null ]
-        },
-        {
-          apMac: '5C:DF:89:0B:FE:E0',
-          apName: 'W10-R760-Doberman',
-          channel: [ 36 ],
-          channelWidth: [ 80 ],
-          txPower: [ null ]
-        }
-      ],
-      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-      interferingLinks: null
-    },
-    previous: null
+    data: {
+      timestamp: null,
+      result: {
+        nodes: [
+          {
+            apMac: '5C:DF:89:0B:FB:40',
+            apName: 'W07-R760-West-FACP',
+            channel: [ 149 ],
+            channelWidth: [ 80 ],
+            txPower: [ null ]
+          },
+          {
+            apMac: '5C:DF:89:0B:FE:E0',
+            apName: 'W10-R760-Doberman',
+            channel: [ 36 ],
+            channelWidth: [ 80 ],
+            txPower: [ null ]
+          }
+        ],
+        links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+        interferingLinks: null
+      }
+    }
   }
 }
 
 export const mockedCRRMGraphsApplied = {
   graph: {
-    current: {
-      nodes: [
-        {
-          apMac: '5C:DF:89:0B:FB:40',
-          apName: 'W07-R760-West-FACP',
-          channel: [ 149 ],
-          channelWidth: [ 80 ],
-          txPower: [ null ]
-        },
-        {
-          apMac: '5C:DF:89:0B:FE:E0',
-          apName: 'W10-R760-Doberman',
-          channel: [ 36 ],
-          channelWidth: [ 80 ],
-          txPower: [ null ]
-        }
-      ],
-      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-      interferingLinks: null
+    data: {
+      timestamp: null,
+      result: {
+        nodes: [
+          {
+            apMac: '5C:DF:89:0B:FB:40',
+            apName: 'W07-R760-West-FACP',
+            channel: [ 149 ],
+            channelWidth: [ 80 ],
+            txPower: [ null ]
+          },
+          {
+            apMac: '5C:DF:89:0B:FE:E0',
+            apName: 'W10-R760-Doberman',
+            channel: [ 36 ],
+            channelWidth: [ 80 ],
+            txPower: [ null ]
+          }
+        ],
+        links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+        interferingLinks: null
+      }
     },
-    previous: {
-      nodes: [
-        {
-          apMac: '5C:DF:89:0B:FB:40',
-          apName: 'W07-R760-West-FACP',
-          channel: [ 128 ],
-          channelWidth: [ 80 ],
-          txPower: [ '_FULL' ]
-        },
-        {
-          apMac: '5C:DF:89:0B:FE:E0',
-          apName: 'W10-R760-Doberman',
-          channel: [ 120 ],
-          channelWidth: [ 80],
-          txPower: [ '_FULL' ]
-        }
-      ],
-      links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
-      interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
-    },
-    projected: null
+    compareData: {
+      timestamp: '',
+      result: {
+        nodes: [
+          {
+            apMac: '5C:DF:89:0B:FB:40',
+            apName: 'W07-R760-West-FACP',
+            channel: [ 128 ],
+            channelWidth: [ 80 ],
+            txPower: [ '_FULL' ]
+          },
+          {
+            apMac: '5C:DF:89:0B:FE:E0',
+            apName: 'W10-R760-Doberman',
+            channel: [ 120 ],
+            channelWidth: [ 80],
+            txPower: [ '_FULL' ]
+          }
+        ],
+        links: [ { source: '5C:DF:89:0B:FB:40', target: '5C:DF:89:0B:FE:E0' } ],
+        interferingLinks: [ '5C:DF:89:0B:FB:40-5C:DF:89:0B:FE:E0' ]
+      }
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Provider as wrapper, recommendationApi, recommendationUrl, store }    from '@acx-ui/store'
+import { Provider as wrapper, recommendationApi, intentAIUrl, store }          from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { createIntentContextProvider, useIntentContext } from './IntentContext'
@@ -33,11 +33,12 @@ const components = {
 }
 
 const intent = {
-  id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
+  system: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+  zone: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
   code: 'xyz-intent-code'
 }
 
-const params = { recommendationId: intent.id, code: intent.code }
+const params = { system: intent.system, zone: intent.zone, code: intent.code }
 
 describe('IntentAIForm', () => {
   beforeEach(() => {
@@ -45,28 +46,27 @@ describe('IntentAIForm', () => {
 
   })
   it('handle API respond with data for IntentAIForm & IntentAIDetails', async () => {
-    mockGraphqlQuery(recommendationUrl, 'IntentDetails', { data: { intent } })
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
 
     for (const key of ['IntentAIForm', 'IntentAIDetails'] as const) {
       const Component = components[key]
       const { unmount } = render(<Component />, { wrapper, route: { params } })
       const target = await screen.findByTestId(key)
       expect(target).toBeVisible()
-      expect(await within(target).findByText(intent.id)).toBeVisible()
       expect(await within(target).findByText(intent.code)).toBeVisible()
       unmount()
     }
   })
 
   it('handle no matching code', async () => {
-    const params = { recommendationId: intent.id, code: 'not-existed' }
+    const params = { system: intent.system, zone: intent.zone, code: 'not-existed' }
     const { container } = render(<components.IntentAIForm />, { wrapper, route: { params } })
 
     expect(container).toBeEmptyDOMElement()
   })
 
   it('handle 404', async () => {
-    mockGraphqlQuery(recommendationUrl, 'IntentDetails', { data: { intent: null } })
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: null } })
     const { container } = render(<components.IntentAIForm />, { wrapper, route: { params } })
 
     const loader = await screen.findByRole('img', { name: 'loader' })

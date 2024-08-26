@@ -23,12 +23,12 @@ export type IntentKPIConfig = {
 
 export type IntentKpi = Record<`kpi_${string}`, {
 data: {
-  timestamp: string
-  result: [number, number]
+  timestamp: string | null
+  result: number | [number, number]
 }
 compareData: {
-  timestamp: string,
-  result: [number, number]
+  timestamp: string | null
+  result: number | [number, number]
 }
 }>
 
