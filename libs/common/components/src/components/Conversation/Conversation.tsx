@@ -66,7 +66,14 @@ const Expandable = (props: { text: string, maxChar: number, isRuckusAi?:boolean,
   const general = <UI.ModeText><br/>{generalText}</UI.ModeText>
   const RUCKUS_AI_HEADER = props.isRuckusAi ? <>
     <strong><u>{RUCKUS_AI_TEXT}</u></strong><br/><br/></> : null
-  if(props.text.length <= props.maxChar){
+  if(props.mode === undefined && !props.isRuckusAi){
+    return (
+      <UI.System>
+        {props.text}
+      </UI.System>
+    )
+  }
+  else if(props.text.length <= props.maxChar){
     return (<UI.Bot>
       {RUCKUS_AI_HEADER}{props.text}
       { props.mode === 'my-network' && myNetwork}

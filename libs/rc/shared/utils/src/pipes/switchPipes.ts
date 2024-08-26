@@ -19,6 +19,9 @@ export function transformConfigType (type: ConfigTypeEnum | string) {
     case ConfigTypeEnum.DHCP_SERVER:
       transform = $t({ defaultMessage: 'DHCP Server' })
       break
+    case ConfigTypeEnum.NTP_SERVER:
+      transform = $t({ defaultMessage: 'NTP Server' })
+      break
     case ConfigTypeEnum.LAG_SETTINGS:
       transform = $t({ defaultMessage: 'LAG Setting' })
       break
