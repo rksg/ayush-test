@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload } from '@acx-ui/analytics/utils'
-import { dataApi }          from '@acx-ui/store'
-import type { NodesFilter } from '@acx-ui/utils'
+import { getSelectedNodePath } from '@acx-ui/analytics/utils'
+import { dataApi }             from '@acx-ui/store'
+import type { NodesFilter }    from '@acx-ui/utils'
 
 
 export interface RequestPayload {
@@ -54,7 +54,7 @@ export const api = dataApi.injectEndpoints({
           }`,
           variables: {
             ...payload,
-            ...getFilterPayload(payload),
+            path: getSelectedNodePath(payload.filter),
             enableSwitchFirmwareFilter: true
           }
         })

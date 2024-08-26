@@ -1,3 +1,4 @@
+import { ClusterHighAvailabilityModeEnum, NodeClusterRoleEnum }                             from '../../../../models/EdgeEnum'
 import { EdgeAlarmSummary }                                                                 from '../../../../types/edge'
 import { EdgeMvSdLanExtended, EdgeMvSdLanViewData, EdgeSdLanViewData, EdgeSdLanViewDataP2 } from '../../../../types/services/edgeSdLanService'
 
@@ -315,3 +316,102 @@ export const mockedMvSdLanDataList = [{
   edgeClusterTunnelInfo: [],
   guestEdgeClusterTunnelInfo: []
 }] as EdgeMvSdLanViewData[]
+
+export const mockApListForApTableTest = {
+  fields: [
+    'serialNumber',
+    'name',
+    'venueId',
+    'venueName',
+    'deviceGroupId',
+    'deviceGroupName',
+    'apStatusData.vxlanStatus.vxlanMtu',
+    'apStatusData.vxlanStatus.tunStatus',
+    'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId',
+    'apStatusData.vxlanStatus.activeRvtepInfo.deviceId'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      serialNumber: '121749001049',
+      name: 'AP-R610',
+      venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Venue1',
+      deviceGroupId: 'ap-group-1',
+      deviceGroupName: 'APGroup1',
+      apStatusData: {
+        vxlanStatus: {
+          vxlanMtu: 1500,
+          tunStatus: 'VxLAN_TUN_STATUS_CONNECTED',
+          primaryRvtepInfo: {
+            deviceId: 'mocked-edge-1'
+          },
+          activeRvtepInfo: {
+            deviceId: 'mocked-edge-1'
+          }
+        }
+      }
+    },
+    {
+      serialNumber: '121749001050',
+      name: 'AP-R510',
+      venueId: 'a307d7077410456f8f1a4fc41d861568',
+      venueName: 'Venue2',
+      deviceGroupId: 'ap-group-2',
+      deviceGroupName: 'APGroup2',
+      apStatusData: {
+        vxlanStatus: {
+          vxlanMtu: 1300,
+          tunStatus: 'VxLAN_TUN_STATUS_DISCONNECTED',
+          primaryRvtepInfo: {
+            deviceId: 'mocked-edge-2'
+          },
+          activeRvtepInfo: {
+            deviceId: 'mocked-edge-2'
+          }
+        }
+      }
+    }
+  ]
+}
+
+export const mockApGroupListForApTableTest = [
+  {
+    key: 'ap-group-1',
+    value: 'APGroup1'
+  },
+  {
+    key: 'ap-group-2',
+    value: 'APGroup2'
+  }
+]
+
+export const mockClusterForApTableTest = {
+  fields: [
+    'tenantId', 'clusterId', 'name', 'virtualIp', 'venueId', 'venueName',
+    'clusterStatus', 'edgeList'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
+      clusterId: '96B968BD2C76ED11EEA8E4B2E81F537A94',
+      name: 'Cluster1',
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
+      edgeList: [
+        {
+          name: 'Edge1',
+          serialNumber: 'mocked-edge-1',
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE
+        },
+        {
+          name: 'Edge2',
+          serialNumber: 'mocked-edge-2',
+          haStatus: NodeClusterRoleEnum.CLUSTER_ROLE_BACKUP
+        }
+      ]
+    }
+  ]
+}

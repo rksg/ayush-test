@@ -413,6 +413,10 @@ const apOldNewFieldsMapping: Record<string, string> = {
   [`${apSystemNamePathHeading}.managementVlan`]: 'networkStatus.managementTrafficVlan',
   'apStatusData.afcInfo.powerMode': 'afcStatus.powerState', //?
   'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState', //?
+  'apStatusData.vxlanStatus.vxlanMtu': 'vxLanTunnelStatus.mtuSize',
+  'apStatusData.vxlanStatus.tunStatus': 'vxLanTunnelStatus.connectStatus',
+  'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId': 'vxLanTunnelStatus.preferredEdgeId',
+  'apStatusData.vxlanStatus.activeRvtepInfo.deviceId': 'vxLanTunnelStatus.activeEdgeId',
   [cellularInfoNamePathHeading]: 'cellularStatus',
   [`${cellularInfoNamePathHeading}.cellularCountry`]: 'cellularStatus.country',
   [`${cellularInfoNamePathHeading}.cellularOperator`]: 'cellularStatus.operator',
