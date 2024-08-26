@@ -1,8 +1,8 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 
-import { Checkbox, Form } from 'antd'
-import useFormInstance    from 'antd/es/form/hooks/useFormInstance'
-import { useIntl }        from 'react-intl'
+import { Checkbox, Form, Input } from 'antd'
+import useFormInstance           from 'antd/es/form/hooks/useFormInstance'
+import { useIntl }               from 'react-intl'
 
 import { Card, Select }            from '@acx-ui/components'
 import {
@@ -92,8 +92,11 @@ export function DpskSettings () {
   }, [identityGroupId, identityGroupList, loadDpskNetworks])
 
   useEffect(() => {
-    if (dpskPoolQueryResponse.data?.name) {
-      setDpskServiceName(dpskPoolQueryResponse.data?.name)
+    if (dpskPoolQueryResponse.data) {
+      if (form.getFieldValue('dpskPoolId') !== dpskPoolQueryResponse.data.id) {
+        form.setFieldValue('dpskPoolId', dpskPoolQueryResponse.data.id)
+      }
+      setDpskServiceName(dpskPoolQueryResponse.data.name)
     }
   }, [dpskPoolQueryResponse])
 
@@ -125,6 +128,9 @@ export function DpskSettings () {
       </Form.Item>
       {identityGroupId ? (
         <>
+          <Form.Item hidden={true} name={'dpskPoolId'}>
+            <Input/>
+          </Form.Item>
           <Form.Item
             name={'identityId'}
             label={$t({ defaultMessage: 'Choose Identity' })}

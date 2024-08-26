@@ -25,13 +25,15 @@ import { EnrollmentPortalDesignModal } from '../../EnrollmentPortalDesignModal'
 import { ActionNavigationDrawer }      from '../ActionNavigationDrawer'
 import * as UI                         from '../styledComponents'
 
+import { DpskActionPreview } from './DpskActionPreview'
+
 import { AupPreview, DisplayMessagePreview } from './index'
 
 const previewMap = {
   [ActionType.AUP]: AupPreview,
   [ActionType.DATA_PROMPT]: AupPreview,     // FIXME: Implement Data_Prompt preview component
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview ,
-  [ActionType.DPSK]: AupPreview , // FIXME: Implement DPSK preview component
+  [ActionType.DPSK]: DpskActionPreview,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessagePreview,
   [ActionType.MAC_REG]: AupPreview
 }
 
