@@ -816,7 +816,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkIds = networksList?.data.map(item => item.id!) || []
         if (networksList.data.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
           const vlanPoolListQuery = await fetchWithBQ({
-            ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, apiCustomHeader),
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
             body: JSON.stringify({
               fields: ['id', 'name', 'wifiNetworkIds'],
               filters: { wifiNetworkIds: networkIds }
@@ -1121,7 +1121,7 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10_000
-      } : {}) : JSON.stringify({ filters })
+      } : { filters }) : JSON.stringify({ filters })
     }
     const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
     networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
@@ -1195,7 +1195,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10_000
-      } : {}) : JSON.stringify({ filters })
+      } : { filters }) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
@@ -1280,7 +1280,7 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10_000
-      } : {}) : JSON.stringify({ filters })
+      } : { filters }) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
