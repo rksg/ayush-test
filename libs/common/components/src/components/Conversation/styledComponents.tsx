@@ -83,7 +83,7 @@ export const User = styled.div`
   width: max-content;
   max-width: 327px;
   height: auto;
-  border: 1px solid #E3E4E5;
+  border: 1px solid ${cssStr('--acx-neutrals-25')};
   border-radius: 10px 0px 10px 10px;
   background: ${cssStr('--acx-primary-white')};
   color: ${cssStr('--acx-primary-black')};
@@ -111,6 +111,21 @@ export const Bot = styled.div`
   line-height: ${cssStr('--acx-body-4-line-height')};
   margin-top: 10px;
   text-align: left;
+  padding: 14px 15px 14px 15px;
+`
+
+export const System = styled.div`
+  max-width: 350px;
+  height: auto;
+  border: none;
+  color: ${cssStr('--acx-primary-black')};
+  font-weight: ${cssStr('--acx-body-font-weight')};
+  font-family: ${cssStr('--acx-neutral-brand-font')};
+  font-style: italic;
+  font-size: ${cssStr('--acx-body-4-font-size')};
+  line-height: ${cssStr('--acx-body-4-line-height')};
+  margin-top: 10px;
+  text-align: center;
   padding: 14px 15px 14px 15px;
 `
 
