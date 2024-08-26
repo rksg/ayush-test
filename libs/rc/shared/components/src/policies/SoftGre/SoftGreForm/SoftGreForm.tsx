@@ -5,7 +5,7 @@ import { Col, Form, Row }                      from 'antd'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { PageHeader, StepsForm }                                                              from '@acx-ui/components'
+import { Loader, PageHeader, StepsForm }                                                      from '@acx-ui/components'
 import { useCreateSoftGreMutation, useGetSoftGreViewDataListQuery, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
 import {
   LocationExtended,
@@ -44,12 +44,15 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   const [ updateSoftGre ] = useUpdateSoftGreMutation()
   const [ createSoftGre ] = useCreateSoftGreMutation()
 
-  const { softGreData } = useGetSoftGreViewDataListQuery(
+  const { softGreData, isLoading } = useGetSoftGreViewDataListQuery(
     { params, payload: { filters: { id: [params.policyId] } } },
     {
       skip: !editMode,
-      selectFromResult: ({ data }) => {
-        return { softGreData: (data?.data?.[0] ?? {}) as SoftGreViewData }
+      selectFromResult: ({ data, isLoading }) => {
+        return {
+          softGreData: (data?.data?.[0] ?? {}) as SoftGreViewData,
+          isLoading
+        }
       }
     }
   )
@@ -76,7 +79,7 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   }, [softGreData, form, editMode])
 
   return (
-    <>
+    <Loader states={[{ isLoading }]}>
       <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Edit SoftGRE' })
@@ -102,6 +105,6 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
           </Row>
         </StepsForm.StepForm>
       </StepsForm>
-    </>
+    </Loader>
   )
 }

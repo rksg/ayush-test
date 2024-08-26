@@ -2,11 +2,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { softGreApi }                                                                   from '@acx-ui/rc/services'
-import { SoftGreUrls }                                                                  from '@acx-ui/rc/utils'
-import { Path }                                                                         from '@acx-ui/react-router-dom'
-import { Provider, store }                                                              from '@acx-ui/store'
-import { mockServer, render, screen, renderHook, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { softGreApi }                                                        from '@acx-ui/rc/services'
+import { SoftGreUrls }                                                       from '@acx-ui/rc/utils'
+import { Path }                                                              from '@acx-ui/react-router-dom'
+import { Provider, store }                                                   from '@acx-ui/store'
+import { mockServer, render, screen, renderHook, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { mockSoftGreTable }   from './__tests__/fixtures'
 import { SoftGreSettingForm } from './SoftGreSettingForm'
@@ -60,8 +60,10 @@ describe('SoftGreSettingForm', () => {
     )
 
     const policyNameField = await screen.findByLabelText(/Profile Name/i)
-    fireEvent.change(policyNameField, { target: { value: 'softGreProfileName2' } })
-    fireEvent.blur(policyNameField)
+    await user.clear(policyNameField)
+    await user.type(policyNameField, 'softGreProfileName2')
+    await user.tab()
+
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitForElementToBeRemoved(validating)
 

@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { softGreApi }                                     from '@acx-ui/rc/services'
-import { SoftGreUrls }                                    from '@acx-ui/rc/utils'
-import { Path }                                           from '@acx-ui/react-router-dom'
-import { Provider, store }                                from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { softGreApi }                                                     from '@acx-ui/rc/services'
+import { SoftGreUrls }                                                    from '@acx-ui/rc/utils'
+import { Path }                                                           from '@acx-ui/react-router-dom'
+import { Provider, store }                                                from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {  mockSoftGreTable } from './__tests__/fixtures'
 import { SoftGreForm }       from './SoftGreForm'
@@ -64,7 +64,6 @@ describe('SoftGreForm', () => {
       expect(await screen.findByRole('link', { name: 'SoftGRE' })).toBeVisible()
     })
 
-
     it('should create SoftGre successfully and go back to list page', async () => {
       render(
         <Provider>
@@ -73,10 +72,10 @@ describe('SoftGreForm', () => {
         { route: { path: createViewPath, params } }
       )
 
-      const policyNameField = await screen.findByLabelText(/Profile Name/i)
-      fireEvent.change(policyNameField, { target: { value: 'createSoftGre' } })
+      const profileNameField = await screen.findByLabelText(/Profile Name/i)
+      await user.type(profileNameField, 'createSoftGre')
       const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
-      fireEvent.change(primaryGatewayField, { target: { value: '128.0.0.1' } })
+      await user.type(primaryGatewayField, '128.0.0.1')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
       await waitFor(() => expect(addFn).toHaveBeenCalledTimes(1))
@@ -135,10 +134,10 @@ describe('SoftGreForm', () => {
         </Provider>,
         { route: { path: createViewPath, params } }
       )
-      const profileNameField = screen.getByRole('textbox', { name: 'Profile Name' })
+      const profileNameField = await screen.findByLabelText(/Profile Name/i)
       await user.type(profileNameField, 'TestFailedToAddSoftGre')
       // eslint-disable-next-line max-len
-      const primaryGatewayField = screen.getByRole('textbox', { name: 'Tunnel Primary Gateway Address' })
+      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
       await user.type(primaryGatewayField,'128.0.0.1')
 
       await user.click(screen.getByRole('button', { name: 'Add' }))
@@ -185,23 +184,33 @@ describe('SoftGreForm', () => {
         { route: { path: editViewPath, params } }
       )
 
-      const profileNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
-      fireEvent.change(profileNameField, { target: { value: 'testSoftGre' } })
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+      const descriptionField = await screen.findByLabelText(/Description/i)
+      await user.clear(descriptionField)
+      await user.type(descriptionField, 'update profileName and primaryGatewayAdress')
+
+      const profileNameField = await screen.findByLabelText(/Profile Name/i)
+      await user.clear(profileNameField)
+      await user.type(profileNameField, 'testEditSoftGre')
+
       // eslint-disable-next-line max-len
-      const primaryGatewayAddress = await screen.findByRole('textbox', { name: 'Tunnel Primary Gateway Address' })
-      fireEvent.change(primaryGatewayAddress, { target: { value: '128.0.0.1' } })
+      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
+      await user.clear(primaryGatewayField)
+      await user.type(primaryGatewayField, '128.0.0.3')
 
       await user.click(await screen.findByRole('button', { name: 'Apply' }))
       await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
       await waitFor(() => {
         expect(updateFn).toHaveBeenCalledWith(expect.objectContaining({
-          name: 'testSoftGre',
-          description: '',
-          mtuType: 'AUTO',
-          keepAliveInterval: 10,
-          keepAliveRetryTimes: 5,
+          name: 'testEditSoftGre',
+          description: 'update profileName and primaryGatewayAdress',
+          mtuType: 'MANUAL',
+          keepAliveInterval: 100,
+          keepAliveRetryTimes: 8,
+          mtuSize: 1450,
           disassociateClientEnabled: false,
-          primaryGatewayAddress: '128.0.0.1'
+          primaryGatewayAddress: '128.0.0.3'
         }))
       })
       await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
