@@ -166,7 +166,7 @@ function DashboardPageHeader () {
             {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           </TenantLink>
         }]: []),
-      ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
+      ...((hasPermission({ scopes: [WifiScopes.CREATE] }) && hasCrossVenuesPermission()) ? [{
         key: 'add-wifi-network',
         label: <TenantLink to='networks/wireless/add'>{
           $t({ defaultMessage: 'Wi-Fi Network' })}
