@@ -14,7 +14,7 @@ import {
 } from './__tests__/fixtures'
 import { IntentListItem }                                         from './config'
 import { api, useIntentAITableQuery, TransitionMutationResponse } from './services'
-import { displayStates, statuses, statusReasons }                 from './states'
+import { DisplayStates, Statuses, StatusReasons }                 from './states'
 import { Actions }                                                from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
@@ -40,11 +40,11 @@ describe('Intent services', () => {
       {
         ...intentListResult.intents.data[0],
         aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        intent: 'Client Density vs Throughput for 5 GHz radio',
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > zone-1 (Venue)`,
-        status: statuses.active,
+        status: Statuses.active,
         statusLabel: 'Active',
         statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
       },
@@ -56,7 +56,7 @@ describe('Intent services', () => {
         scope: `vsz34 (SZ Cluster)
 > 01-US-CA-D1-Test-Home (Domain)
 > 01-Alethea-WiCheck Test (Venue)`,
-        status: statuses.na,
+        status: Statuses.na,
         statusLabel: 'No Recommendation, Not Enough License',
         statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue 01-Alethea-WiCheck Test.'
       },
@@ -68,7 +68,7 @@ describe('Intent services', () => {
         scope: `vsz34 (SZ Cluster)
 > 25-US-CA-D25-SandeepKour-home (Domain)
 > 25-US-CA-D25-SandeepKour-home (Venue)`,
-        status: statuses.na,
+        status: Statuses.na,
         statusLabel: 'No Recommendation, No APs',
         statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue 25-US-CA-D25-SandeepKour-home.'
       }
@@ -233,8 +233,8 @@ describe('Intent services', () => {
         result.current[0]({
           action: Actions.One_Click_Optimize,
           data: [{ id: '11',
-            displayStatus: displayStates.new,
-            status: statuses.new,
+            displayStatus: DisplayStates.new,
+            status: Statuses.new,
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z',
               wlans: [{ name: 'n1', ssid: 's1' }],
@@ -261,8 +261,8 @@ describe('Intent services', () => {
         result.current[0]({
           action: Actions.Optimize,
           data: [{ id: '11',
-            displayStatus: displayStates.scheduled,
-            status: statuses.scheduled,
+            displayStatus: DisplayStates.scheduled,
+            status: Statuses.scheduled,
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z',
               wlans: [{ name: 'n1', ssid: 's1' }],
@@ -290,11 +290,11 @@ describe('Intent services', () => {
           action: Actions.Revert,
           data: [{
             id: '12',
-            status: statuses.active,
-            displayStatus: displayStates.active,
+            status: Statuses.active,
+            displayStatus: DisplayStates.active,
             statusTrail: [
-              { status: statuses.active },
-              { status: statuses.revertScheduled }
+              { status: Statuses.active },
+              { status: Statuses.revertScheduled }
             ],
             metadata: {
               scheduledAt: '2023-11-17T11:45:00.000Z'
@@ -319,19 +319,19 @@ describe('Intent services', () => {
           action: Actions.Pause,
           data: [{
             id: '11',
-            status: statuses.applyScheduled,
-            displayStatus: displayStates.applyScheduled,
+            status: Statuses.applyScheduled,
+            displayStatus: DisplayStates.applyScheduled,
             statusTrail: [
-              { status: statuses.applyScheduled },
-              { status: statuses.paused, statusReason: statusReasons.fromActive }
+              { status: Statuses.applyScheduled },
+              { status: Statuses.paused, statusReason: StatusReasons.fromActive }
             ] },
           {
             id: '12',
-            status: statuses.na,
-            displayStatus: displayStates.naWaitingForEtl,
+            status: Statuses.na,
+            displayStatus: DisplayStates.naWaitingForEtl,
             statusTrail: [
-              { status: statuses.na, statusReason: statusReasons.waitingForEtl },
-              { status: statuses.paused, statusReason: statusReasons.fromInactive }
+              { status: Statuses.na, statusReason: StatusReasons.waitingForEtl },
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive }
             ] }]
         }).unwrap()
       })
@@ -349,19 +349,19 @@ describe('Intent services', () => {
           action: Actions.Cancel,
           data: [{
             id: '11',
-            status: statuses.scheduled,
-            displayStatus: displayStates.scheduled,
+            status: Statuses.scheduled,
+            displayStatus: DisplayStates.scheduled,
             statusTrail: [
-              { status: statuses.scheduled },
-              { status: statuses.new }
+              { status: Statuses.scheduled },
+              { status: Statuses.new }
             ]
           },{
             id: '12',
-            status: statuses.revertScheduled,
-            displayStatus: displayStates.revertScheduled,
+            status: Statuses.revertScheduled,
+            displayStatus: DisplayStates.revertScheduled,
             statusTrail: [
-              { status: statuses.revertScheduled },
-              { status: statuses.applyScheduled }
+              { status: Statuses.revertScheduled },
+              { status: Statuses.applyScheduled }
             ],
             metadata: {
               scheduledAt: '2024-07-19T04:01:00.000Z',
@@ -369,11 +369,11 @@ describe('Intent services', () => {
             }
           },{
             id: '13',
-            status: statuses.revertScheduled,
-            displayStatus: displayStates.revertScheduled,
+            status: Statuses.revertScheduled,
+            displayStatus: DisplayStates.revertScheduled,
             statusTrail: [
-              { status: statuses.revertScheduled },
-              { status: statuses.applyScheduled }
+              { status: Statuses.revertScheduled },
+              { status: Statuses.applyScheduled }
             ],
             metadata: {
               scheduledAt: '2024-07-21T04:01:00.000Z',
@@ -381,19 +381,19 @@ describe('Intent services', () => {
             }
           },{
             id: '14',
-            status: statuses.revertScheduled,
-            displayStatus: displayStates.revertScheduled,
+            status: Statuses.revertScheduled,
+            displayStatus: DisplayStates.revertScheduled,
             statusTrail: [
-              { status: statuses.revertScheduled },
-              { status: statuses.paused, statusReason: statusReasons.revertFailed }
+              { status: Statuses.revertScheduled },
+              { status: Statuses.paused, statusReason: StatusReasons.revertFailed }
             ]
           },{
             id: '15',
-            status: statuses.revertScheduled,
-            displayStatus: displayStates.revertScheduled,
+            status: Statuses.revertScheduled,
+            displayStatus: DisplayStates.revertScheduled,
             statusTrail: [
-              { status: statuses.revertScheduled },
-              { status: statuses.active }
+              { status: Statuses.revertScheduled },
+              { status: Statuses.active }
             ] }]
         }).unwrap()
       })
@@ -415,35 +415,35 @@ describe('Intent services', () => {
           action: Actions.Resume,
           data: [{
             id: '11',
-            status: statuses.paused,
-            displayStatus: displayStates.pausedReverted,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedReverted,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.reverted },
-              { status: statuses.revertScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.reverted },
+              { status: Statuses.revertScheduled }
             ]
           },{
             id: '12',
-            status: statuses.paused,
-            displayStatus: displayStates.pausedReverted,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedReverted,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.revertFailed },
-              { status: statuses.revertScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.revertFailed },
+              { status: Statuses.revertScheduled }
             ]
           },{
             id: '13',
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
             ]
           } ,{
             id: '14',
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.na, statusReason: statusReasons.verified }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.na, statusReason: StatusReasons.verified }
             ],
             metadata: {
               scheduledAt: '2024-07-21T04:01:00.000Z',
@@ -451,11 +451,11 @@ describe('Intent services', () => {
             }
           },{
             id: '15',
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.na, statusReason: statusReasons.verified }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.na, statusReason: StatusReasons.verified }
             ],
             metadata: {
               scheduledAt: '2024-07-21T04:01:00.000Z',
@@ -495,7 +495,7 @@ describe('Intent services', () => {
 
       const expectedCommonResult = {
         aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        intent: 'Client Density vs Throughput for 5 GHz radio',
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`
@@ -505,140 +505,140 @@ describe('Intent services', () => {
         {
           ...intentListWithAllStatus.intents.data[0],
           ...expectedCommonResult,
-          status: statuses.new,
+          status: Statuses.new,
           statusLabel: 'New',
           statusTooltip: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.'
         },
         {
           ...intentListWithAllStatus.intents.data[1],
           ...expectedCommonResult,
-          status: statuses.scheduled,
+          status: Statuses.scheduled,
           statusLabel: 'Scheduled',
           statusTooltip: 'The change recommendation has been scheduled via the user action "Optimize".'
         },
         {
           ...intentListWithAllStatus.intents.data[2],
           ...expectedCommonResult,
-          status: statuses.scheduled,
+          status: Statuses.scheduled,
           statusLabel: 'Scheduled',
           statusTooltip: 'The change recommendation has been scheduled via the user action "1-Click Optimize".'
         },
         {
           ...intentListWithAllStatus.intents.data[3],
           ...expectedCommonResult,
-          status: statuses.applyScheduled,
+          status: Statuses.applyScheduled,
           statusLabel: 'Scheduled',
           statusTooltip: 'The change recommendation has been automatically scheduled by IntentAI.'
         },
         {
           ...intentListWithAllStatus.intents.data[4],
           ...expectedCommonResult,
-          status: statuses.applyScheduleInProgress,
+          status: Statuses.applyScheduleInProgress,
           statusLabel: 'Apply In Progress',
           statusTooltip: 'IntentAI recommended changes are getting applied to the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[5],
           ...expectedCommonResult,
-          status: statuses.active,
+          status: Statuses.active,
           statusLabel: 'Active',
           statusTooltip: 'IntentAI is active and has successfully applied the changes to the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[6],
           ...expectedCommonResult,
-          status: statuses.paused,
+          status: Statuses.paused,
           statusLabel: 'Paused, Applied Failed',
           statusTooltip: 'IntentAI recommended changes failed to apply to the Venue zone-1 due to: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
         },
         {
           ...intentListWithAllStatus.intents.data[7],
           ...expectedCommonResult,
-          status: statuses.revertScheduled,
+          status: Statuses.revertScheduled,
           statusLabel: 'Revert Scheduled',
           statusTooltip: 'The Revert of the IntentAI recommended changes are scheduled for 06/17/2023 00:00, via user action "Revert".'
         },
         {
           ...intentListWithAllStatus.intents.data[8],
           ...expectedCommonResult,
-          status: statuses.revertScheduleInProgress,
+          status: Statuses.revertScheduleInProgress,
           statusLabel: 'Revert In Progress',
           statusTooltip: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[9],
           ...expectedCommonResult,
-          status: statuses.paused,
+          status: Statuses.paused,
           statusLabel: 'Paused, Revert Failed',
           statusTooltip: 'The Revert action on the IntentAI recommended change, failed due to the following reason: unknown error. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
         },
         {
           ...intentListWithAllStatus.intents.data[10],
           ...expectedCommonResult,
-          status: statuses.paused,
+          status: Statuses.paused,
           statusLabel: 'Paused, Revert Success',
           statusTooltip: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
         },
         {
           ...intentListWithAllStatus.intents.data[11],
           ...expectedCommonResult,
-          status: statuses.paused,
+          status: Statuses.paused,
           statusLabel: 'Paused',
           statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
         },
         {
           ...intentListWithAllStatus.intents.data[12],
           ...expectedCommonResult,
-          status: statuses.paused,
+          status: Statuses.paused,
           statusLabel: 'Paused',
           statusTooltip: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
         },
         {
           ...intentListWithAllStatus.intents.data[13],
           ...expectedCommonResult,
-          status: statuses.paused,
+          status: Statuses.paused,
           statusLabel: 'Paused',
           statusTooltip: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.'
         },
         {
           ...intentListWithAllStatus.intents.data[14],
           ...expectedCommonResult,
-          status: statuses.na,
+          status: Statuses.na,
           statusLabel: 'No Recommendation, Conflicting Configuration',
           statusTooltip: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the Venue.'
         },
         {
           ...intentListWithAllStatus.intents.data[15],
           ...expectedCommonResult,
-          status: statuses.na,
+          status: Statuses.na,
           statusLabel: 'No Recommendation, No APs',
           statusTooltip: 'No recommendation was generated because IntentAI found no APs in the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[16],
           ...expectedCommonResult,
-          status: statuses.na,
+          status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough License',
           statusTooltip: 'No recommendation was generated because IntentAI did not find sufficient licenses for the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[17],
           ...expectedCommonResult,
-          status: statuses.na,
+          status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough Data',
           statusTooltip: 'No recommendation was generated because IntentAI found less than 4 days of data in the Venue zone-1.'
         },
         {
           ...intentListWithAllStatus.intents.data[18],
           ...expectedCommonResult,
-          status: statuses.na,
+          status: Statuses.na,
           statusLabel: 'Verified',
           statusTooltip: 'IntentAI has validated the Venue zone-1 configurations. No new changes have been recommended.'
         },
         {
           ...intentListWithAllStatus.intents.data[19],
           ...expectedCommonResult,
-          status: statuses.na,
+          status: Statuses.na,
           statusLabel: 'No Recommendation',
           statusTooltip: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.'
         }
