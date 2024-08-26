@@ -43,8 +43,7 @@ function useGraph (
     chartRef={connectChart}
     title={$t({ defaultMessage: 'Before' })}
     subtext={$t({ defaultMessage: 'As at {dateTime}' }, {
-      // TODO: take dataEndTime from intent.metadata.dataEndTime
-      dateTime: formatter(DateFormatEnum.DateTimeFormat)(intent.dataEndTime)
+      dateTime: formatter(DateFormatEnum.DateTimeFormat)(intent.metadata.dataEndTime)
     })}
     data={graphs[0]}
     zoomScale={zoomScale}
@@ -122,8 +121,7 @@ export const IntentAIRRMGraph = ({
         <UI.GraphTitleText>{$t({ defaultMessage: 'Before' })}</UI.GraphTitleText>
         <UI.GraphSubTitleText>
           {$t({ defaultMessage: 'As at {dateTime}' }, {
-            // TODO: take dataEndTime from intent.metadata.dataEndTime
-            dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
+            dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.metadata.dataEndTime)
           })}
         </UI.GraphSubTitleText>
       </UI.GraphBeforeTextWrapper>

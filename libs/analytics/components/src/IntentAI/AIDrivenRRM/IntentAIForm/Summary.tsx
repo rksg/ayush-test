@@ -25,8 +25,7 @@ export function Summary (
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Projected interfering links reduction' })}
       </StepsForm.Subtitle>
-      {/* TODO: take dataEndTime from intent.metadata.dataEndTime */}
-      {isDataRetained(intent.dataEndTime)
+      {isDataRetained(intent.metadata.dataEndTime)
         ? <IntentAIRRMGraph
           details={intent}
           crrmData={crrmData}
