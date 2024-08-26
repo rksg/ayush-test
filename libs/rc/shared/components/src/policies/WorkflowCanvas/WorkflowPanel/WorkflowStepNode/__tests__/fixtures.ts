@@ -1,7 +1,7 @@
 import {
   ActionType,
   DpskAction,
-  DpskSaveData, ExpirationType, MacRegistrationPool,
+  DpskSaveData, MacRegistrationPool,
   PassphraseFormatEnum,
   PersonaGroup
 } from '@acx-ui/rc/utils'

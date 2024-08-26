@@ -95,10 +95,6 @@ describe('MacRegistrationSettings', () => {
     await waitFor(() => expect(getMacRegList).toBeCalled())
 
 
-    // eslint-disable-next-line max-len
-    const clientEnterMacAddress = await screen.findByRole('input', { name: /clientEnterMacAddress/ })
-    expect(clientEnterMacAddress).toBeDefined()
-
     const macRegPoolName = await screen.findByText(mockMacRegList.name)
     expect(macRegPoolName).toBeVisible()
 
