@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { get }                                from '@acx-ui/config'
 import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { venueApi }                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, CommonRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                    from '@acx-ui/store'
 import { mockServer, render, screen }         from '@acx-ui/test-utils'
-import { RolesEnum }                          from '@acx-ui/types'
-import { getUserProfile, setUserProfile }     from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions }  from '@acx-ui/user'
 
 import { venueDetailHeaderData } from '../__tests__/fixtures'
 
@@ -50,6 +50,10 @@ const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
 }))
 
 describe('VenueDetails', () => {
@@ -174,11 +178,9 @@ describe('VenueDetails', () => {
       .toHaveLength(0)
   })
 
-  it('should hide analytics when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide incidents when READ_INCIDENTS permission is false', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     const params = {
       tenantId: 'f378d3ba5dd44e62bacd9b625ffec681',
       venueId: '7482d2efe90f48d0a898c96d42d2d0e7',
