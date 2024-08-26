@@ -210,10 +210,12 @@ export const SettingsForm = () => {
                     />
                   </Form.Item>
                 </Col>
+                {edgeClusterId &&
                 <Col span={24}>
                   <ClusterFirmwareInfo
                     fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
                 </Col>
+                }
               </Row>
             </Col>
           </Row>
@@ -268,8 +270,14 @@ export const SettingsForm = () => {
                   />
                 </Form.Item>
               </Col>
-              <ClusterFirmwareInfo
-                fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion} />
+              {guestEdgeClusterId &&
+                <Col span={24}>
+                  <ClusterFirmwareInfo
+                    // eslint-disable-next-line max-len
+                    fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion}
+                  />
+                </Col>
+              }
             </Row>)
             : null
           }
