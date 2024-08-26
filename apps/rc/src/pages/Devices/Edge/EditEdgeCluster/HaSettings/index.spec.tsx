@@ -1,6 +1,7 @@
 
 import { rest } from 'msw'
 
+import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { edgeApi }                                              from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                      from '@acx-ui/store'
@@ -44,6 +45,7 @@ describe('Edit Edge Cluster - HaSettings', () => {
         (_req, res, ctx) => res(ctx.json(mockedHaNetworkSettings))
       )
     )
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should render EdgeHaSettingsForm correctly', async () => {
@@ -66,6 +68,26 @@ describe('Edit Edge Cluster - HaSettings', () => {
     const dailyTime = await screen.findByRole('textbox')
     expect(dailyTime.id).toBe('fallbackSettings_schedule_time')
     expect(dailyTime).toBeVisible()
+
+    expect(await screen.findByText('Per AP group distribution')).toBeVisible()
+  })
+
+  it('should not render fallback settings when FF off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <HaSettings
+          currentClusterStatus={mockEdgeClusterList.data[0] as unknown as EdgeClusterStatus}
+        />
+      </Provider>,
+      {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+
+    await waitFor(() => {
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    })
 
     expect(await screen.findByText('Per AP group distribution')).toBeVisible()
   })
