@@ -103,6 +103,9 @@ import LbsServerProfileTable                                            from './
 import MacRegistrationListDetails                                       from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import AddEdgeQosBandwidth                                              from './pages/Policies/QosBandwidth/Edge/AddQosBandwidth'
+import EditEdgeQosBandwidth                                             from './pages/Policies/QosBandwidth/Edge/EditQosBandwidth'
+import EdgeQosBandwidthDetail                                           from './pages/Policies/QosBandwidth/Edge/QosBandwidthDetail'
 import EdgeQosBandwidthTable                                            from './pages/Policies/QosBandwidth/Edge/QosBandwidthTable'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
@@ -1059,6 +1062,18 @@ function PolicyRoutes () {
         element={<AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
           <EditTunnelProfile />
         </AuthRoute>}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.CREATE })}
+        element={<AddEdgeQosBandwidth />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.EDIT })}
+        element={<EditEdgeQosBandwidth />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.DETAIL })}
+        element={<EdgeQosBandwidthDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })}
