@@ -16,15 +16,21 @@ interface LicenseCardProps {
   subTitle: string
   data: ComplianceData
   isMsp: boolean
+  trialType?: string
 }
 
 interface ComplianceProps {
   isMsp: boolean
 }
 
+enum TrialType {
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}
+
 const DeviceNetworkingCard = (props: LicenseCardProps) => {
   const { $t } = useIntl()
-  const { title, subTitle, data, isMsp } = props
+  const { title, subTitle, data, isMsp, trialType } = props
 
   const wifiData = data.deviceCompliances.find(item =>
     item.deviceType === DeviceComplianceType.WIFI)
@@ -68,23 +74,12 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
         <label>{virtualEdgeData?.installedDeviceCount}</label>
         <label>{virtualEdgeData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
-      {/* <UI.FieldLabelSubs width='275px'>
-        <label>{$t({ defaultMessage: 'SmartEdge HW Appliances' })}</label>
-        <label style={{ textAlign: 'center' }}>{'--'}</label>
-        <label style={{ textAlign: 'center' }}>{'--'}</label>
-      </UI.FieldLabelSubs> */}
       <UI.FieldLabelSubs width='275px'
         style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
         <label>{$t({ defaultMessage: 'RWGs' })}</label>
         <label>{rwgData?.installedDeviceCount}</label>
         <label>{rwgData?.usedLicenseCount}</label>
       </UI.FieldLabelSubs>
-      {/* <UI.FieldLabelSubs width='275px'
-        style={{ paddingBottom: '15px', borderBottom: '1px solid #02a7f0' }}>
-        <label>{$t({ defaultMessage: 'SmartZones' })}</label>
-        <label style={{ textAlign: 'center' }}>{'--'}</label>
-        <label style={{ textAlign: 'center' }}>{'--'}</label>
-      </UI.FieldLabelSubs> */}
 
       <UI.FieldLabelSubs2 width='275px' style={{ marginTop: '15px' }}>
         <label>{$t({ defaultMessage: 'Active Paid Licenses' })}</label>
@@ -94,22 +89,22 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
             {`(${data.nextTotalPaidExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
             ${data.nextPaidExpirationDate})`}</label>}
       </UI.FieldLabelSubs2>
-      <UI.FieldLabelSubs2 width='275px'>
+      {trialType && <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Active Trial Licenses' })}</label>
         <label>{data.totalActiveTrialLicenseCount}</label>
         {data.totalActiveTrialLicenseCount > 0 &&
           <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
             {`(${data.nextTotalTrialExpiringLicenseCount} ${$t({ defaultMessage: 'expire on' })} 
             ${data.nextTrialExpirationDate})`}</label>}
-      </UI.FieldLabelSubs2>
+      </UI.FieldLabelSubs2>}
 
       {isMsp && <div>
         <UI.FieldLabelSubs2 width='275px'>
-          <label>{$t({ defaultMessage: 'Active Paid Assigned Licenses' })}</label>
+          <label>{$t({ defaultMessage: 'Assigned Paid Licenses' })}</label>
           <label>{data.totalActivePaidAssignedLicenseCount}</label>
         </UI.FieldLabelSubs2>
         <UI.FieldLabelSubs2 width='275px'>
-          <label>{$t({ defaultMessage: 'Active Trial Assigned Licenses' })}</label>
+          <label>{$t({ defaultMessage: 'Assigned Trial Licenses' })}</label>
           <label>{data.totalActiveTrialAssignedLicenseCount}</label>
         </UI.FieldLabelSubs2>
       </div>}
@@ -120,9 +115,12 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
       <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
         <label>
-          {data.licenseGap >= 0
-            ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
-            : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
+          {(trialType ? data.licenseGap :
+            (data.licenseGap - data.totalActiveTrialLicenseCount )) >= 0
+            ? <UI.LicenseAvailable>{trialType ? data.licenseGap :
+              (data.licenseGap - data.totalActiveTrialLicenseCount )}</UI.LicenseAvailable>
+            : <UI.LicenseGap>{trialType ? data.licenseGap :
+              (data.licenseGap - data.totalActiveTrialLicenseCount )}</UI.LicenseGap>}</label>
       </UI.FieldLabelSubs2>
     </Card>
   </Col>
@@ -167,6 +165,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         subTitle='My Account License Expiration'
         data={selfData}
         isMsp={true}
+        trialType={TrialType.TRIAL}
       />
       <DeviceNetworkingCard
         title='Device Networking Subscriptions'
@@ -179,6 +178,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
       subTitle='License Expiration'
       isMsp={false}
       data={selfData}
+      trialType={TrialType.TRIAL}
     />
 
 }
