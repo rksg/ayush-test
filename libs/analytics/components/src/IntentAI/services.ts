@@ -428,6 +428,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
 export const {
   useIntentAIListQuery,
   useLazyIntentWlansQuery,
+  useIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery

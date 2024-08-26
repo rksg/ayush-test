@@ -4,6 +4,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { StepsForm } from '@acx-ui/components'
 
 import * as SideNotes from './SideNotes'
+import WlanSelection from './WlanSelection'
 
 export function Settings () {
   const { $t } = useIntl()
@@ -20,6 +21,7 @@ export function Settings () {
           {$t(calendarText)}
         </Typography.Paragraph>
       </StepsForm.TextContent>
+      <WlanSelection />
     </Col>
     <Col span={7} offset={2}>
       {/* <SideNotes.Settings /> */}
