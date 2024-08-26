@@ -15,23 +15,37 @@ export const Button = styled(AntButton)`
     width: 16px;
     height: 16px;
     path {
-      stroke: var(--acx-primary-black);
+      color: var(--acx-primary-black);
+    }
+  }
+
+  &.ant-btn-link {
+    svg { path {
+      color: var(--acx-accents-blue-50);
+    } }
+    &:hover {
+      color: var(--acx-accents-blue-60);
+      svg {
+        path {
+          color: var(--acx-accents-blue-60);
+        }
+      }
     }
   }
 
   &.ant-btn-primary {
     svg { path {
-      stroke: var(--acx-primary-white) !important;
-      fill: var(--acx-primary-white) !important;
+      color: var(--acx-primary-white) !important;
     } }
   }
 
   &[disabled], &.ant-btn-disabled {
-    svg { path { stroke: var(--acx-primary-white); } }
+    svg { path { color: var(--acx-primary-white); } }
 
+    &.ant-btn-link,
     &.ant-btn-default,
     &.ant-btn-primary {
-      svg { path { stroke: var(--acx-neutrals-40); } }
+      svg { path { color: var(--acx-neutrals-40); } }
     }
   }
 `

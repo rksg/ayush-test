@@ -29,24 +29,37 @@ exports[`NoAiOpsLicense should render correctly with the prop 1`] = `
 }
 
 .c4 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c4.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c4.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c4.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c4.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c4[disabled] svg path,
 .c4.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c4[disabled].ant-btn-link svg path,
+.c4.ant-btn-disabled.ant-btn-link svg path,
 .c4[disabled].ant-btn-default svg path,
 .c4.ant-btn-disabled.ant-btn-default svg path,
 .c4[disabled].ant-btn-primary svg path,
 .c4.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c1 {

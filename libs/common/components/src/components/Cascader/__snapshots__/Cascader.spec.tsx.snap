@@ -108,24 +108,37 @@ exports[`Cascader renders simple list with bands, triggers onApply with multi-se
 }
 
 .c7 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c7.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c7.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c7.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c7[disabled] svg path,
 .c7.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c7[disabled].ant-btn-link svg path,
+.c7.ant-btn-disabled.ant-btn-link svg path,
 .c7[disabled].ant-btn-default svg path,
 .c7.ant-btn-disabled.ant-btn-default svg path,
 .c7[disabled].ant-btn-primary svg path,
 .c7.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 <div
@@ -581,24 +594,37 @@ exports[`Cascader should render bands disabled, reset default bands and apply 1`
 }
 
 .c8 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c8.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c8.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c8.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c8.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c8[disabled] svg path,
 .c8.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c8[disabled].ant-btn-link svg path,
+.c8.ant-btn-disabled.ant-btn-link svg path,
 .c8[disabled].ant-btn-default svg path,
 .c8.ant-btn-disabled.ant-btn-default svg path,
 .c8[disabled].ant-btn-primary svg path,
 .c8.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 <div
