@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 
 import { Checkbox, Form, Input } from 'antd'
 import useFormInstance           from 'antd/es/form/hooks/useFormInstance'
@@ -6,7 +6,7 @@ import { useIntl }               from 'react-intl'
 
 import { Card, Select }            from '@acx-ui/components'
 import {
-  useLazyGetMacRegPoolQuery,
+  useLazyGetMacRegListQuery,
   useLazyNetworkListQuery,
   useLazySearchPersonaListQuery,
   useSearchPersonaGroupListQuery
@@ -30,7 +30,7 @@ export function MacRegistrationSettings () {
     }
   })
   const [ fetchIdentities, identitiesResponse ] = useLazySearchPersonaListQuery()
-  const [ getMacRegPool,macRegPoolQueryResponse ] = useLazyGetMacRegPoolQuery()
+  const [ getMacRegPool,macRegPoolQueryResponse ] = useLazyGetMacRegListQuery()
   const [ getNetworkList, networkListResponse ] = useLazyNetworkListQuery({
     selectFromResult: ({ data }) => {
       return data?.data.map(network => network.ssid) ?? []
@@ -125,7 +125,6 @@ export function MacRegistrationSettings () {
           <Form.Item
             name={'identityId'}
             label={$t({ defaultMessage: 'Choose Identity' })}
-            // initialValue={null}
           >
             <Select options={[
               {
@@ -148,7 +147,9 @@ export function MacRegistrationSettings () {
               label={$t({ defaultMessage: 'Supported Networks' })}
             >
               {networkList.map((network, index) => (
-                <b key={index}>{network}</b>
+                <Fragment key={index}>
+                  <b>{network}</b><br/>
+                </Fragment>
               ))}
             </Form.Item>
           </div>

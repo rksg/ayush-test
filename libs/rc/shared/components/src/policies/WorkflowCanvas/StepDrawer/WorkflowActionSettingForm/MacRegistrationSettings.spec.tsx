@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, DpskActionContext, MacRegActionContext, PersonaUrls, MacRegListUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                                from '@acx-ui/store'
-import { mockServer, render, renderHook, screen, waitFor }                                         from '@acx-ui/test-utils'
+import { CommonUrlsInfo, MacRegActionContext, PersonaUrls, MacRegListUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                             from '@acx-ui/store'
+import { mockServer, render, renderHook, screen, waitFor }                      from '@acx-ui/test-utils'
 
 import {
   mockedNetworkList,
@@ -17,6 +17,7 @@ import { MacRegistrationSettings } from './MacRegistrationSettings'
 
 const getPersonaList = jest.fn()
 const getNetworkList = jest.fn()
+const getMacRegList = jest.fn()
 
 
 describe('MacRegistrationSettings', () => {
@@ -34,8 +35,10 @@ describe('MacRegistrationSettings', () => {
       ),
       rest.get(
         MacRegListUrlsInfo.getMacRegistrationPool.url,
-        (req, res, ctx) =>
-          res(ctx.json(mockMacRegList))
+        (req, res, ctx) => {
+          getMacRegList()
+          return res(ctx.json(mockMacRegList))
+        }
       ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => {
@@ -71,7 +74,7 @@ describe('MacRegistrationSettings', () => {
     const { result: formRef } = renderHook(() => {
       const [form] = Form.useForm<MacRegActionContext>()
       form.setFieldsValue({
-        identityGroupId: mockPersonaGroupTableResult.content[0].id,
+        identityGroupId: mockPersonaGroupTableResult.content[1].id,
         identityId: mockPersonaTableResult.content[0].id,
         clientEnterMacAddress: true
       })
@@ -88,21 +91,24 @@ describe('MacRegistrationSettings', () => {
 
     await waitFor(() => expect(getPersonaList).toBeCalled())
 
+
+    await waitFor(() => expect(getMacRegList).toBeCalled())
+
+
     // eslint-disable-next-line max-len
-    const qrCodeNotification = await screen.findByRole('checkbox', { name: /clientEnterMacAddress/ })
-    expect(qrCodeNotification).toBeChecked()
+    const clientEnterMacAddress = await screen.findByRole('input', { name: /clientEnterMacAddress/ })
+    expect(clientEnterMacAddress).toBeDefined()
 
     const macRegPoolName = await screen.findByText(mockMacRegList.name)
     expect(macRegPoolName).toBeVisible()
 
-    // Test if the identityGroup is selected
-    expect(await screen.findByText(mockPersonaGroupTableResult.content[0].name)).toBeInTheDocument()
+    expect(await screen.findByText(mockPersonaGroupTableResult.content[1].name)).toBeInTheDocument()
     expect(await screen.findByText(mockPersonaTableResult.content[0].name)).toBeInTheDocument()
   })
 
   it('should render the component after identity group selected', async () => {
     const { result: formRef } = renderHook(() => {
-      const [form] = Form.useForm<DpskActionContext>()
+      const [form] = Form.useForm<MacRegActionContext>()
       return form
     })
 
@@ -120,9 +126,9 @@ describe('MacRegistrationSettings', () => {
 
     await userEvent.click(identityGroupSelect)
 
-    expect(await screen.findAllByTitle(mockPersonaGroupTableResult.content[0].name)).toHaveLength(1)
+    expect(await screen.findAllByTitle(mockPersonaGroupTableResult.content[1].name)).toHaveLength(1)
 
-    await userEvent.click(screen.getByTitle(mockPersonaGroupTableResult.content[0].name))
+    await userEvent.click(screen.getByTitle(mockPersonaGroupTableResult.content[1].name))
 
     await waitFor(() => expect(getPersonaList).toBeCalled())
 

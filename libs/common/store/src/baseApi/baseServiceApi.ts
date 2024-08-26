@@ -15,8 +15,7 @@ export const baseServiceApi = createApi({
     'WifiCalling',
     'DHCP',
     'Portal',
-    'EdgeFirewall',
-    'MacRegPool'
+    'EdgeFirewall'
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

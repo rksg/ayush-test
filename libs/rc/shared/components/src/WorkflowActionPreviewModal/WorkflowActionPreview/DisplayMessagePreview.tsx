@@ -14,7 +14,6 @@ export function DisplayMessagePreview (props: GenericActionPreviewProps<DisplayM
     body={
       <Space direction='vertical'
         align='center'>
-        <Text strong>{data?.title}</Text>
         <br/>
         <Text >{data?.messageHtml}</Text>
       </Space>

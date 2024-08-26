@@ -4,7 +4,7 @@ import { NodeProps } from 'reactflow'
 
 import { MacRegActionTypeIcon } from '@acx-ui/icons'
 import { useGetActionByIdQuery,
-  useGetMacRegPoolQuery,
+  useGetMacRegListQuery,
   useGetPersonaGroupByIdQuery } from '@acx-ui/rc/services'
 import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 
@@ -18,14 +18,14 @@ export function MacRegistrationNode (props: NodeProps<WorkflowStep>) {
   const { data } = useGetActionByIdQuery({ params: { actionId: props.data.enrollmentActionId } })
 
   const { data: macRegData } =
-    useGetMacRegPoolQuery({ params: { policyId: data?.macRegListId } }
+    useGetMacRegListQuery({ params: { policyId: data?.macRegListId } }
       , { skip: !data?.macRegListId })
   const { data: identityGroupData } =
     useGetPersonaGroupByIdQuery(
       { params: { groupId: data?.identityGroupId } }, { skip: !data?.identityGroupId })
 
   return (
-    <BaseStepNode {...{ ...props }}>
+    <BaseStepNode {...props}>
       <BasicActionContent
         icon={<MacRegActionTypeIcon />}
         title={$t(ActionNodeDisplay.MAC_REG)}

@@ -13,7 +13,6 @@ export function AupPreview (props: GenericActionPreviewProps<AupAction>) {
     body={
       <Space direction='vertical'
         align='center'>
-        <Text strong>{data?.title}</Text>
         <br/>
         <Text >{data?.messageHtml}</Text>
         <br/>

@@ -1028,20 +1028,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    getMacRegPool: build.query<MacRegistrationPool, RequestPayload>({
-      query: ({ params, payload }) => {
-        const getMacRegPoolReq = createDpskHttpRequest(MacRegListUrlsInfo.getMacRegistrationPool, params,
-          {
-            'Content-Type': 'application/vnd.ruckus.v1+json',
-            'Accept': 'application/vnd.ruckus.v1+json'
-          })
-        return {
-          ...getMacRegPoolReq,
-          body: JSON.stringify(payload)
-        }
-      },
-      providesTags: [{ type: 'MacRegPool', id: 'DETAIL' }]
-    })
   })
 })
 
@@ -1108,9 +1094,7 @@ export const {
   useUploadPoweredImgMutation,
   useUploadURLMutation,
   useGetDHCPProfileListViewModelQuery,
-  useLazyGetDHCPProfileListViewModelQuery,
-  useGetMacRegPoolQuery,
-  useLazyGetMacRegPoolQuery
+  useLazyGetDHCPProfileListViewModelQuery
 } = serviceApi
 
 export function createDpskHttpRequest (
