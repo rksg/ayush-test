@@ -5,6 +5,7 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
@@ -53,6 +54,7 @@ export const SubscriptionsTabHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
@@ -71,9 +73,9 @@ export const SubscriptionsTabHeader = () => {
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Subscription Utilization' })}
             </Subtitle>
-            <h4 style={{ marginTop: '-8px' }}>
+            {!isvSmartEdgeEnabled && <h4 style={{ marginTop: '-8px' }}>
               {$t({ defaultMessage: 'Paid, Assigned & Trial' })}
-            </h4>
+            </h4>}
           </Col>
         </Row>
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
@@ -84,10 +86,15 @@ export const SubscriptionsTabHeader = () => {
             )
               .map((item) => {
                 const summary = summaryData[item.value]
+                if (isvSmartEdgeEnabled) {
+                  item.label = $t({ defaultMessage: 'Device Networking' })
+                }
                 return summary ? <SubscriptionUtilizationWidget
                   key={item.value}
                   deviceType={item.value}
                   title={item.label}
+                  title2={isvSmartEdgeEnabled
+                    ? $t({ defaultMessage: 'Paid & Trial Licenses' }) : undefined}
                   total={summary.total}
                   used={summary.used}
                 /> : ''

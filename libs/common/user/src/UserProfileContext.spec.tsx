@@ -57,6 +57,20 @@ function TestUserProfile (props: {
 
 const route = { path: '/:tenantId/t', params: { tenantId } }
 
+const fakedPrivilegeGroupList =
+  [
+    {
+      id: '2765e98c7b9446e2a5bdd4720e0e8911',
+      name: 'PRIME_ADMIN',
+      description: 'Prime Admin Role',
+      roleName: 'PRIME_ADMIN',
+      type: 'System',
+      delegation: false,
+      allCustomers: false,
+      allVenues: true
+    }
+  ]
+
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -72,6 +86,9 @@ describe('UserProfileContext', () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
+    })
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedPrivilegeGroupList }
     })
     mockServer.use(
       rest.get(UserUrlsInfo.wifiAllowedOperations.url.replace('?service=wifi', ''),
@@ -255,6 +272,9 @@ describe('UserProfileContext', () => {
     services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
       return { data: { 'abac-policies-toggle': false,
         'allowed-operations-toggle': false } }
+    })
+    services.useGetPrivilegeGroupsQuery = jest.fn().mockImplementation(() => {
+      return { data: null }
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {

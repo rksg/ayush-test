@@ -50,7 +50,11 @@ const defaultPayload = {
     'name',
     'ipAddress',
     'detailedDescription',
-    'Persona-ID'
+    'Persona-ID',
+    'duration',
+    'remoteEdgeId',
+    'apModel',
+    'minimumRequiredVersion'
   ]
 }
 

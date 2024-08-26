@@ -1,21 +1,27 @@
 import { useEffect } from 'react'
 
-import { Select,Col, Form, Input, Row, Switch } from 'antd'
-import { findIndex }                            from 'lodash'
-import { useIntl }                              from 'react-intl'
-import { useParams }                            from 'react-router-dom'
+import { Select,Col, Form, Input, Row, Switch, Space, Typography } from 'antd'
+import { findIndex, find }                                         from 'lodash'
+import { useIntl }                                                 from 'react-intl'
+import { useParams }                                               from 'react-router-dom'
 
-import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { InformationSolid }                        from '@acx-ui/icons'
-import { SpaceWrapper }                            from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext, Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                    from '@acx-ui/icons'
+import { SpaceWrapper, CompatibilityWarningCircleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterListQuery
+  useGetEdgeClusterListQuery,
+  useGetEdgeFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   servicePolicyNameRegExp,
   useHelpPageLink,
-  EdgeMvSdLanFormModel
+  EdgeMvSdLanFormModel,
+  ClusterHighAvailabilityModeEnum,
+  EdgeFeatureEnum
 } from '@acx-ui/rc/utils'
+import { TenantLink }      from '@acx-ui/react-router-dom'
+import { compareVersions } from '@acx-ui/utils'
 
 import { useEdgeMvSdLanContext } from '../EdgeMvSdLanContextProvider'
 import { messageMappings }       from '../messageMappings'
@@ -25,11 +31,14 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isHaAaDmzEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_DMZ_TOGGLE)
+
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans } = useEdgeMvSdLanContext()
 
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
   const guestEdgeClusterId = Form.useWatch('guestEdgeClusterId', form)
+  const isGuestTunnelEnabled = Form.useWatch('isGuestTunnelEnabled', form)
 
   const helpUrl = useHelpPageLink()
 
@@ -48,7 +57,9 @@ export const SettingsForm = () => {
         'venueId',
         'clusterId',
         'clusterStatus',
-        'hasCorePort'
+        'hasCorePort',
+        'highAvailabilityMode',
+        'firmwareVersion'
       ],
       ...(filterSn.length === 2
         ? { filters: { clusterId: filterSn } }
@@ -89,6 +100,15 @@ export const SettingsForm = () => {
     }
   }, [clusterData, editMode, initialValues])
 
+  useEffect(() => {
+    if (!editMode) {
+      if ((isGuestTunnelEnabled && guestEdgeClusterId) || (!isGuestTunnelEnabled && edgeClusterId))
+        form.validateFields(isGuestTunnelEnabled
+          ? ['edgeClusterId', 'guestEdgeClusterId']
+          : ['edgeClusterId'])
+    }
+  }, [isGuestTunnelEnabled, editMode, edgeClusterId, guestEdgeClusterId])
+
   const onEdgeClusterChange = (val: string) => {
     const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
     form.setFieldsValue({
@@ -118,6 +138,26 @@ export const SettingsForm = () => {
         })}
       </UI.ClusterSelectorHelper>)
   }
+
+  const dmzHaModeCheck = (dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
+    const isDmzClusteAAMode = find(clusterData, { clusterId: dmzClusterId })
+      ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
+    if (isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
+      return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
+    } else {
+      return Promise.resolve()
+    }
+  }
+
+  const getDmzClusterOpts = () => clusterOptions?.filter(item => {
+    // eslint-disable-next-line max-len
+    const isAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
+    return item.value !== edgeClusterId &&
+          // eslint-disable-next-line max-len
+          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isAAMode || (editMode && item.value === guestEdgeClusterId))))
+  })
 
   return (
     <UI.Wrapper>
@@ -171,6 +211,8 @@ export const SettingsForm = () => {
                     />
                   </Form.Item>
                 </Col>
+                <ClusterFirmwareInfo
+                  fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
               </Row>
             </Col>
           </Row>
@@ -191,60 +233,104 @@ export const SettingsForm = () => {
               </Form.Item>
             </UI.FlexEndCol>
           </Row>
-
-          <Row>
-            <Col span={18}>
-              <Form.Item
-                noStyle
-                dependencies={['isGuestTunnelEnabled']}
-              >
-                {({ getFieldValue }) => {
-                  return getFieldValue('isGuestTunnelEnabled')
-                    ? (<Form.Item
-                      name='guestEdgeClusterId'
-                      label={<>
-                        { $t({ defaultMessage: 'DMZ Cluster' }) }
-                        <Tooltip.Question
-                          title={$t(messageMappings.setting_dmz_cluster_tooltip)}
-                          placement='bottom'
-                        />
-                      </>}
-                      rules={[{
-                        required: true,
-                        message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
-                      },
-                      { validator: (_, value) => checkCorePortConfigured(value) }
-                      ]}
-                    >
-                      <Select
-                        loading={isClusterOptsLoading}
-                        options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
-                        placeholder={$t({ defaultMessage: 'Select ...' })}
-                        disabled={editMode && !!initialValues?.guestEdgeClusterId}
-                        onChange={onDmzClusterChange}
-                      />
-                    </Form.Item>)
-                    : null
-                }}
-              </Form.Item>
-            </Col>
-          </Row>
+          {isGuestTunnelEnabled
+            ? (<Row>
+              <Col span={18}>
+                <Form.Item
+                  name='guestEdgeClusterId'
+                  label={<>
+                    { $t({ defaultMessage: 'DMZ Cluster' }) }
+                    <Tooltip.Question
+                      title={$t(messageMappings.setting_dmz_cluster_tooltip)}
+                      placement='bottom'
+                    />
+                  </>}
+                  rules={[{
+                    required: true,
+                    message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
+                  },
+                  { validator: (_, value) => checkCorePortConfigured(value) },
+                  { validator: (_, value) => isHaAaDmzEnabled
+                    ? Promise.resolve()
+                    : dmzHaModeCheck(value, isGuestTunnelEnabled) }
+                  ]}
+                >
+                  <Select
+                    loading={isClusterOptsLoading}
+                    options={getDmzClusterOpts()}
+                    placeholder={$t({ defaultMessage: 'Select ...' })}
+                    disabled={editMode && !!initialValues?.guestEdgeClusterId}
+                    onChange={onDmzClusterChange}
+                  />
+                </Form.Item>
+              </Col>
+              <ClusterFirmwareInfo
+                fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion} />
+            </Row>)
+            : null
+          }
         </SpaceWrapper>
       </Col>
       <UI.VerticalSplitLine span={1} />
       <Col span={10}>
-        <Form.Item
-          noStyle
-          dependencies={['isGuestTunnelEnabled']}
-        >
-          {({ getFieldValue }) => {
-            return <UI.StyledDiagram
-              isGuestTunnelEnabled={getFieldValue('isGuestTunnelEnabled')}
-              vertical={true}
-            />
-          }}
-        </Form.Item>
+        <UI.StyledDiagram
+          isGuestTunnelEnabled={isGuestTunnelEnabled}
+          vertical={true}
+        />
       </Col>
     </UI.Wrapper>
   )
+}
+
+const sdLanFeatureRequirementPayload = {
+  filters: {
+    featureNames: ['SD-LAN']
+  }
+}
+const ClusterFirmwareInfo = (props: {
+  fwVersion?: string
+}) => {
+  const { $t } = useIntl()
+  const { fwVersion } = props
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
+  const { requiredFw, isLoading } = useGetEdgeFeatureSetsQuery({
+    payload: sdLanFeatureRequirementPayload }, {
+    skip: !isEdgeCompatibilityEnabled,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === EdgeFeatureEnum.SD_LAN)?.requiredFw,
+        isLoading
+      }
+    }
+  })
+
+  const isLower = compareVersions(fwVersion, requiredFw) < 0
+
+  return isEdgeCompatibilityEnabled
+    ? ( <Space align='center' size='small'>
+      <Typography>
+        {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
+          { fwVersion }) }
+      </Typography>
+      {(!!fwVersion && isLower) && <Tooltip
+        title={<Loader states={[{ isLoading }]}>
+          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
+        running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware
+        from {targetLink}` },
+          {
+            b: (txt) => <b>{txt}</b>,
+            requiredFw,
+            targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
+              {$t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' })}
+            </TenantLink>
+          })}
+        </Loader>
+        }>
+        <CompatibilityWarningCircleIcon />
+      </Tooltip>
+      }
+    </Space>)
+    : null
 }

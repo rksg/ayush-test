@@ -92,6 +92,37 @@ describe('Health KPI', () => {
       }
     })
   })
+  it('should return correct config for wired in RA with kpi 10010e FF', () => {
+    expect(wiredKPIsForTab(true)).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchAuthentication',
+          'switchDhcp'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization',
+          'switchInterfaceAnomalies',
+          'switchStormControl'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
+        ]
+      }
+    })
+  })
   describe('shouldAddFirmwareFilter', () => {
     const mockPathname = jest.fn()
     Object.defineProperty(window, 'location', {

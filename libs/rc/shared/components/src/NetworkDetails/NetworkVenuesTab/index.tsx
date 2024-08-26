@@ -702,7 +702,10 @@ export function NetworkVenuesTab () {
           venueId: payload.venueId,
           networkId: payload.networkId
         },
-        payload: payload,
+        payload: {
+          ...payload,
+          isTemplate: isTemplate
+        },
         enableRbac: resolvedRbacEnabled
       }).then(()=>{
         setApGroupModalState({
@@ -753,7 +756,10 @@ export function NetworkVenuesTab () {
         venueId: payload.venueId,
         networkId: payload.networkId
       },
-      payload: payload,
+      payload: {
+        ...payload,
+        isTemplate: isTemplate
+      },
       enableRbac: resolvedRbacEnabled
     }).then(()=>{
       setScheduleModalState({
@@ -786,7 +792,7 @@ export function NetworkVenuesTab () {
           onOk: async (impactVenueIds: string[]) => {
             if (impactVenueIds.length) {
               // has conflict and confirmed
-              // setSdLanConflictChecked(true)
+
               const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
               actions.push(...impactVenueIds.map(impactVenueId =>
                 toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))

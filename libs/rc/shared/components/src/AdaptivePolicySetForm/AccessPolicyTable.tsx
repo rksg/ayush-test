@@ -17,8 +17,7 @@ import {
   getAdaptivePolicyDetailLink,
   PolicyOperation, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 
@@ -213,7 +212,7 @@ export const AccessPolicyTable = (props: AccessPolicyTableProps) => {
           rowKey='name'
           columns={basicColumns}
           dataSource={accessPolicies}
-          actions={filterByAccess(actions)}
+          actions={actions}
           components={{
             body: {
               row: DraggableRow
