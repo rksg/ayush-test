@@ -913,11 +913,11 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
 
       const updateNetworkVenueInfo = {
         ...createHttpRequest(urlInfo, params),
-        body: JSON.stringify(newPayload)
+        body: JSON.stringify(newPayload || payload) // newPayload is used for per apGroup setting update, otherwise use payload
       }
       const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
-      if (enableRbac) {
+      if (enableRbac && newPayload?.apGroups && oldPayload?.apGroups) {
         const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
           return {
             [key]: { new: currentPayload[key], old: oldPayload?.[key], id: id }
