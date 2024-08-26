@@ -20,7 +20,7 @@ import { DcSdLanDetailContent }  from './DcSdLanDetailContent'
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
 import { VenueTableDataType }    from './VenueTable'
 
-const defaultApPayload = {
+export const defaultSdLanApTablePayload = {
   fields: [
     'serialNumber',
     'name',
@@ -127,7 +127,7 @@ export const useSdlanApListTableQuery = (sdLanData?: EdgeMvSdLanViewData) => {
   return useTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      ...defaultApPayload,
+      ...defaultSdLanApTablePayload,
       filters: { venueId: venueIds }
     },
     search: {

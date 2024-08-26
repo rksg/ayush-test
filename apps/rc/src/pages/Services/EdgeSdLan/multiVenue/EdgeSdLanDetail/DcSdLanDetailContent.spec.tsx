@@ -6,7 +6,7 @@ import { render, screen }                                                       
 
 import { DcSdLanDetailContent } from './DcSdLanDetailContent'
 
-const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList, mockApListForApTableTest } = EdgeSdLanFixtures
 const mockedSdLanData = mockedMvSdLanDataList[1]
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -20,6 +20,13 @@ jest.mock('./SmartEdgesTable', () => ({
 jest.mock('./VenueTable', () => ({
   ...jest.requireActual('./VenueTable'),
   VenueTable: () => <div data-testid='VenueTable' />
+}))
+jest.mock('./index', () => ({
+  ...jest.requireActual('./index'),
+  useSdlanApListTableQuery: () => ({
+    data: mockApListForApTableTest,
+    isLoading: false
+  })
 }))
 
 describe('Edge SD-LAN Detail - DC', () => {
@@ -54,6 +61,7 @@ describe('Edge SD-LAN Detail - DC', () => {
     }))
     expect(screen.getByText('Instances')).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Venues(2)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'AP(2)' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'SmartEdges(1)' })).toBeVisible()
   })
 })

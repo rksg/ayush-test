@@ -47,6 +47,10 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
 
   const apListTableQuery = props.tableQuery
   const [tableData, setTableData] = useState<APExtended[]>([])
+  const [
+    apGroupOptions,
+    setApGroupOptions
+  ] = useState<{ key: string, value: string }[] | boolean>(false)
 
   const { cluster, isClusterLoading, isClusterFetching } = useGetEdgeClusterListQuery({
     payload: {
@@ -84,10 +88,12 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       ?.find(e => e.haStatus === NodeClusterRoleEnum.CLUSTER_ROLE_ACTIVE)
   }
 
-  const apgroupFilterOptions = useApGroupsFilterOpts()
+  const rawApGroupOptions = useApGroupsFilterOpts({
+    venueId: props.venueList.map(v => v.venueId)
+  })
   const getApGroupName = (apGroupId: string) => {
-    if (Array.isArray(apgroupFilterOptions)) {
-      const apGroupName = apgroupFilterOptions.find(g => g.key === apGroupId)
+    if (Array.isArray(apGroupOptions)) {
+      const apGroupName = apGroupOptions.find(g => g.key === apGroupId)
       return apGroupName?.value ?? ''
     }
     return ''
@@ -109,6 +115,13 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
   }
 
   useEffect(() => {
+    setApGroupOptions(Array.isArray(rawApGroupOptions) ?
+      rawApGroupOptions.filter(option =>
+        option.value &&
+        apListTableQuery?.data?.data.some(ap => ap.deviceGroupId === option.key)
+      ) :
+      rawApGroupOptions)
+
     setTableData(apListTableQuery?.data?.data?.map((ap: APExtended) => {
       const rowData = ({
         ...ap,
@@ -117,7 +130,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       })
       return rowData
     }) ?? [])
-  }, [apListTableQuery?.data, cluster])
+  }, [apListTableQuery?.data, cluster, rawApGroupOptions])
 
   const columns : TableProps<APExtended>['columns'] = [
     {
@@ -152,7 +165,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'deviceGroupName',
       filterKey: 'deviceGroupId',
-      filterable: apgroupFilterOptions,
+      filterable: apGroupOptions,
       sorter: true,
       render: (_, row: APExtended) => (
         <TenantLink to={`/devices/apgroups/${row.deviceGroupId}/details/members`}>
