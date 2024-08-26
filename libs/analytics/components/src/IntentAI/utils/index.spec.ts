@@ -2,7 +2,7 @@ import moment from 'moment-timezone'
 
 import { get } from '@acx-ui/config'
 
-import { displayStates, statuses, statusReasons } from '../states'
+import { DisplayStates, Statuses, StatusReasons } from '../states'
 
 import {
   isDataRetained,
@@ -37,18 +37,18 @@ describe('IntentAI utils', () => {
   describe('getTransitionStatus', () => {
     const defaultTransitionIntentItem = {
       id: '1',
-      displayStatus: displayStates.new,
-      status: statuses.new
+      displayStatus: DisplayStates.new,
+      status: Statuses.new
 
     }
-    it('should handle displayStates.new', () => {
+    it('should handle DisplayStates.new', () => {
       expect(getTransitionStatus(
         Actions.One_Click_Optimize,
         {
           ...defaultTransitionIntentItem,
-          displayStatus: displayStates.new
+          displayStatus: DisplayStates.new
         }
-      )).toEqual({ status: statuses.scheduled, statusReason: statusReasons.oneClick })
+      )).toEqual({ status: Statuses.scheduled, statusReason: StatusReasons.oneClick })
     })
 
     it('should handle (Actions.Optimize)', () => {
@@ -56,18 +56,18 @@ describe('IntentAI utils', () => {
         Actions.Optimize,
         {
           ...defaultTransitionIntentItem,
-          displayStatus: displayStates.new
+          displayStatus: DisplayStates.new
         }
-      )).toEqual({ status: statuses.scheduled })
+      )).toEqual({ status: Statuses.scheduled })
 
       expect(getTransitionStatus(
         Actions.Optimize,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.applyScheduled,
-          displayStatus: displayStates.applyScheduled
+          status: Statuses.applyScheduled,
+          displayStatus: DisplayStates.applyScheduled
         }
-      )).toEqual({ status: statuses.active })
+      )).toEqual({ status: Statuses.active })
     })
 
     it('should handle (Actions.Revert)', () => {
@@ -75,10 +75,10 @@ describe('IntentAI utils', () => {
         Actions.Revert,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.active,
-          displayStatus: displayStates.active
+          status: Statuses.active,
+          displayStatus: DisplayStates.active
         }
-      )).toEqual({ status: statuses.revertScheduled })
+      )).toEqual({ status: Statuses.revertScheduled })
     })
 
     it('should handle (Actions.Pause)', () => {
@@ -86,19 +86,19 @@ describe('IntentAI utils', () => {
         Actions.Pause,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.applyScheduled,
-          displayStatus: displayStates.applyScheduled
+          status: Statuses.applyScheduled,
+          displayStatus: DisplayStates.applyScheduled
         }
-      )).toEqual({ status: statuses.paused, statusReason: statusReasons.fromActive })
+      )).toEqual({ status: Statuses.paused, statusReason: StatusReasons.fromActive })
 
       expect(getTransitionStatus(
         Actions.Pause,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.na,
-          displayStatus: displayStates.naWaitingForEtl
+          status: Statuses.na,
+          displayStatus: DisplayStates.naWaitingForEtl
         }
-      )).toEqual({ status: statuses.paused, statusReason: statusReasons.fromInactive })
+      )).toEqual({ status: Statuses.paused, statusReason: StatusReasons.fromInactive })
     })
 
     it('should handle (Actions.Cancel)', () => {
@@ -106,70 +106,70 @@ describe('IntentAI utils', () => {
         Actions.Cancel,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.scheduled,
-          displayStatus: displayStates.scheduled
+          status: Statuses.scheduled,
+          displayStatus: DisplayStates.scheduled
         }
-      )).toEqual({ status: statuses.new })
+      )).toEqual({ status: Statuses.new })
 
       expect(getTransitionStatus(
         Actions.Cancel,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.revertScheduled,
-          displayStatus: displayStates.revertScheduled,
+          status: Statuses.revertScheduled,
+          displayStatus: DisplayStates.revertScheduled,
           metadata: {
             scheduledAt: '2024-07-19T04:01:00.000Z',
             applyScheduledAt: '2024-07-19T04:01:00.000Z'
           },
           statusTrail: [
-            { status: statuses.revertScheduled },
-            { status: statuses.applyScheduled }
+            { status: Statuses.revertScheduled },
+            { status: Statuses.applyScheduled }
           ]
         }
-      )).toEqual({ status: statuses.active })
+      )).toEqual({ status: Statuses.active })
 
       expect(getTransitionStatus(
         Actions.Cancel,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.revertScheduled,
-          displayStatus: displayStates.revertScheduled,
+          status: Statuses.revertScheduled,
+          displayStatus: DisplayStates.revertScheduled,
           metadata: {
             scheduledAt: '2024-07-21T04:01:00.000Z',
             applyScheduledAt: '2024-07-21T04:01:00.000Z'
           },
           statusTrail: [
-            { status: statuses.revertScheduled },
-            { status: statuses.applyScheduled }
+            { status: Statuses.revertScheduled },
+            { status: Statuses.applyScheduled }
           ]
         }
-      )).toEqual( { status: statuses.applyScheduled })
+      )).toEqual( { status: Statuses.applyScheduled })
 
       expect(getTransitionStatus(
         Actions.Cancel,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.revertScheduled,
-          displayStatus: displayStates.revertScheduled,
+          status: Statuses.revertScheduled,
+          displayStatus: DisplayStates.revertScheduled,
           statusTrail: [
-            { status: statuses.revertScheduled },
-            { status: statuses.paused, statusReason: statusReasons.revertFailed }
+            { status: Statuses.revertScheduled },
+            { status: Statuses.paused, statusReason: StatusReasons.revertFailed }
           ]
         }
-      )).toEqual({ status: statuses.paused, statusReason: statusReasons.revertFailed })
+      )).toEqual({ status: Statuses.paused, statusReason: StatusReasons.revertFailed })
 
       expect(getTransitionStatus(
         Actions.Cancel,
         {
           ...defaultTransitionIntentItem,
-          status: statuses.revertScheduled,
-          displayStatus: displayStates.revertScheduled,
+          status: Statuses.revertScheduled,
+          displayStatus: DisplayStates.revertScheduled,
           statusTrail: [
-            { status: statuses.revertScheduled },
-            { status: statuses.active }
+            { status: Statuses.revertScheduled },
+            { status: Statuses.active }
           ]
         }
-      )).toEqual({ status: statuses.active })
+      )).toEqual({ status: Statuses.active })
 
       expect(() => {
         try{
@@ -177,8 +177,8 @@ describe('IntentAI utils', () => {
             Actions.Cancel,
             {
               ...defaultTransitionIntentItem,
-              status: statuses.revertScheduled,
-              displayStatus: displayStates.revertScheduled,
+              status: Statuses.revertScheduled,
+              displayStatus: DisplayStates.revertScheduled,
               statusTrail: []
             }
           )
@@ -194,15 +194,15 @@ describe('IntentAI utils', () => {
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.scheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.scheduled }
             ]
           }
         )).toEqual(
-          { status: statuses.new }
+          { status: Statuses.new }
         )
       })
       it('should handle pausedApplyFailed', () => {
@@ -210,15 +210,15 @@ describe('IntentAI utils', () => {
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedApplyFailed,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedApplyFailed,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.applyFailed },
-              { status: statuses.revertScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.applyFailed },
+              { status: Statuses.revertScheduled }
             ]
           }
         )).toEqual(
-          { status: statuses.active }
+          { status: Statuses.active }
         )
       })
 
@@ -227,11 +227,11 @@ describe('IntentAI utils', () => {
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromActive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromActive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromActive },
-              { status: statuses.applyScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.fromActive },
+              { status: Statuses.applyScheduled }
             ],
             metadata: {
               scheduledAt: '2024-07-19T04:01:00.000Z',
@@ -239,18 +239,18 @@ describe('IntentAI utils', () => {
             }
           }
         )).toEqual(
-          { status: statuses.applyScheduled }
+          { status: Statuses.applyScheduled }
         )
 
         expect(getTransitionStatus(
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromActive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromActive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromActive },
-              { status: statuses.applyScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.fromActive },
+              { status: Statuses.applyScheduled }
             ],
             metadata: {
               scheduledAt: '2024-07-21T04:01:00.000Z',
@@ -258,7 +258,7 @@ describe('IntentAI utils', () => {
             }
           }
         )).toEqual(
-          { status: statuses.active }
+          { status: Statuses.active }
         )
       })
       it('should handle pausedReverted', () => {
@@ -266,15 +266,15 @@ describe('IntentAI utils', () => {
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedReverted,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedReverted,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.reverted },
-              { status: statuses.revertScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.reverted },
+              { status: Statuses.revertScheduled }
             ]
           }
         )).toEqual(
-          { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+          { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
       })
 
@@ -283,76 +283,76 @@ describe('IntentAI utils', () => {
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedRevertFailed,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedRevertFailed,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.revertFailed },
-              { status: statuses.revertScheduled }
+              { status: Statuses.paused, statusReason: StatusReasons.revertFailed },
+              { status: Statuses.revertScheduled }
             ]
           }
         )).toEqual(
-          { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+          { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
       })
 
-      it('should handle statusReasons.waitingForEtl', () => {
+      it('should handle StatusReasons.waitingForEtl', () => {
         expect(getTransitionStatus(
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
             ]
           }
         )).toEqual(
-          { status: statuses.na, statusReason: statusReasons.waitingForEtl }
+          { status: Statuses.na, statusReason: StatusReasons.waitingForEtl }
         )
 
         expect(getTransitionStatus(
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.na, statusReason: statusReasons.noAps }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.na, statusReason: StatusReasons.noAps }
             ]
           }
         )).toEqual(
-          { status: statuses.na, statusReason: statusReasons.noAps }
+          { status: Statuses.na, statusReason: StatusReasons.noAps }
         )
         expect(getTransitionStatus(
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.na, statusReason: statusReasons.verified }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.na, statusReason: StatusReasons.verified }
             ]
           }
         )).toEqual(
-          { status: statuses.na, statusReason: statusReasons.verified }
+          { status: Statuses.na, statusReason: StatusReasons.verified }
         )
 
         expect(getTransitionStatus(
           Actions.Resume,
           {
             ...defaultTransitionIntentItem,
-            status: statuses.paused,
-            displayStatus: displayStates.pausedFromInactive,
+            status: Statuses.paused,
+            displayStatus: DisplayStates.pausedFromInactive,
             statusTrail: [
-              { status: statuses.paused, statusReason: statusReasons.fromInactive },
-              { status: statuses.new }
+              { status: Statuses.paused, statusReason: StatusReasons.fromInactive },
+              { status: Statuses.new }
             ]
           }
         )).toEqual(
-          { status: statuses.new }
+          { status: Statuses.new }
         )
       })
 
@@ -363,8 +363,8 @@ describe('IntentAI utils', () => {
               Actions.Resume,
               {
                 ...defaultTransitionIntentItem,
-                status: statuses.paused,
-                displayStatus: displayStates.pausedFromInactive,
+                status: Statuses.paused,
+                displayStatus: DisplayStates.pausedFromInactive,
                 statusTrail: [],
                 metadata: {
                   scheduledAt: '2024-07-21T04:01:00.000Z'
