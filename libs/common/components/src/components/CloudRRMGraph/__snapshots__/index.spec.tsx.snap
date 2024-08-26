@@ -350,7 +350,7 @@ exports[`Graph should show transparent background 1`] = `
         xmlns:xlink="http://www.w3.org/1999/xlink"
       >
         <rect
-          fill="none"
+          fill="#F8F8FA"
           fill-opacity="1"
           height="800"
           id="0"

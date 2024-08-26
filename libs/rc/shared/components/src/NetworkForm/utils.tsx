@@ -5,7 +5,7 @@ import { FormInstance }            from 'antd'
 import _, { cloneDeep, findIndex } from 'lodash'
 import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -56,7 +56,8 @@ import {
   useDeactivateDeviceTemplateOnWifiNetworkMutation,
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useActivateApplicationPolicyTemplateOnWifiNetworkMutation
+  useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -77,7 +78,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
-  NetworkTunnelSdLanAction
+  NetworkTunnelSdLanAction,
+  VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -415,6 +417,43 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
   return { updateClientIsolationActivations }
 }
 
+function useVlanPoolId (networkId: string | undefined): string | undefined {
+  const { isTemplate } = useConfigTemplate()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
+  const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => {
+    return { vlanPoolId: data?.data[0]?.id }
+  }
+
+  const vlanPoolPayload = {
+    fields: ['name', 'id'],
+    filters: { wifiNetworkIds: [networkId] },
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 10000
+  }
+
+  const vlanPool: { vlanPoolId?: string } = useGetVLANPoolPolicyViewModelListQuery({
+    payload: vlanPoolPayload,
+    enableRbac: true
+  }, {
+    skip: isTemplate || !isPolicyRbacEnabled || !networkId,
+    selectFromResult: transformVlanPoolData
+  })
+
+  const vlanPoolTemplate: { vlanPoolId?: string } = useGetEnhancedVlanPoolPolicyTemplateListQuery({
+    payload: vlanPoolPayload,
+    enableRbac: true
+  }, {
+    skip: !isTemplate || !enableTemplateRbac || !networkId,
+    selectFromResult: transformVlanPoolData
+  })
+
+  return isTemplate ? vlanPoolTemplate.vlanPoolId : vlanPool.vlanPoolId
+}
+
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()
@@ -428,21 +467,7 @@ export function useVlanPool () {
     useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
   })
 
-
-  const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
-    payload: {
-      fields: ['name', 'id'],
-      filters: { wifiNetworkIds: [networkId] },
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    },
-    enableRbac: isPolicyRbacEnabled
-  }, {
-    skip: !isPolicyRbacEnabled || !networkId,
-    selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
-  })
+  const vlanPoolId = useVlanPoolId(networkId)
 
   // eslint-disable-next-line max-len
   const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {
