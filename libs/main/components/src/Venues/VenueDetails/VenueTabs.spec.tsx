@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { get }                                   from '@acx-ui/config'
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CommonRbacUrlsInfo, VenueDetailHeader } from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
@@ -24,6 +25,10 @@ const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
 }))
 
 describe('VenueTabs', () => {
@@ -70,6 +75,7 @@ describe('VenueTabs', () => {
   })
 
   it('should hide analytics when READ_INCIDENTS permission is false', async () => {
+    mockGet.mockReturnValue('true')
     setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     render(<Provider>
       <VenueTabs venueDetail={venueDetailHeaderData as unknown as VenueDetailHeader} />
