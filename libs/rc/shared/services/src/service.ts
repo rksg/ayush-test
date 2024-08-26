@@ -55,9 +55,7 @@ import {
   GetApiVersionHeader,
   convertMdnsProxyViewModelToMdnsProxyFormData,
   APExtended,
-  CommonRbacUrlsInfo,
-  MacRegListUrlsInfo,
-  MacRegistrationPool
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
@@ -1027,7 +1025,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           body: payload
         }
       }
-    }),
+    })
   })
 })
 
