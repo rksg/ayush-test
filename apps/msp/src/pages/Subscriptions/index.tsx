@@ -495,7 +495,10 @@ export function Subscriptions () {
     },
     compliance: {
       title: $t({ defaultMessage: 'Compliance' }),
-      content: <LicenseCompliance isMsp={true}/>,
+      content: <LicenseCompliance
+        isMsp={true}
+        isExtendedTrial={tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled}
+      />,
       visible: showCompliance
     }
   }

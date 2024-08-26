@@ -77,7 +77,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
             : $t({ defaultMessage: 'Total Paid: {total}' }, { total })}
         </Tooltip>
         : <Typography.Text>
-          {used} / {total}
+          {used+assigned} / {total}
         </Typography.Text>}
     </SpaceWrapper>
     {trial ? <div style={{ marginTop: '15px' }}>
@@ -138,9 +138,9 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
         <Tooltip
           title={trial ? '' : tooltip}
           placement={'top'}
-        ><Typography.Text>{used} / {total}</Typography.Text>
+        ><Typography.Text>{used+assigned} / {total}</Typography.Text>
         </Tooltip>
-        : <Typography.Text>{used} / {total}</Typography.Text>}
+        : <Typography.Text>{used+assigned} / {total}</Typography.Text>}
     </UI.FieldLabelUtilMsp>
   </Space>
 
