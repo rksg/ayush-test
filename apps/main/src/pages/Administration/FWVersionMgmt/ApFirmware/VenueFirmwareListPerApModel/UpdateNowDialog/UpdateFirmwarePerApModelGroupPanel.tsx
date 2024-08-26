@@ -133,8 +133,8 @@ function filterByVenues (
 ): ApFirmwareUpdateGroupType[] {
 
   const unhandledApModels = _.uniq(
-    _.compact(venuesFirmwares.map(venueFw => venueFw.currentApFirmwares))
-      .flat().map(currentApFw => currentApFw.apModel)
+    _.compact(venuesFirmwares.flatMap(venueFw => venueFw.currentApFirmwares))
+      .map(currentApFw => currentApFw.apModel)
   )
 
   const result: ApFirmwareUpdateGroupType[] = []
@@ -152,12 +152,16 @@ function filterByVenues (
     _.pullAll(unhandledApModels, intersectionApModels)
   }
 
-  // Verify that AP models in the updateGroup are already at the maximum firmware
   const maxFirmwareBasedOnApModel = findExtremeFirmwareBasedOnApModel(venuesFirmwares)
   return result.filter(updateGroup => {
     return updateGroup.apModels.some(apModel => {
       const maxFirmware = maxFirmwareBasedOnApModel[apModel]
-      return maxFirmware && compareVersions(updateGroup.firmwares[0].name, maxFirmware) > 0
+
+      if (!maxFirmware) return false
+
+      // eslint-disable-next-line max-len
+      const comparisonResult = compareVersions(updateGroup.firmwares[0].name, maxFirmware.extremeFirmware)
+      return comparisonResult > 0 || (!maxFirmware.isAllTheSame && comparisonResult === 0)
     })
   })
 }
