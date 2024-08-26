@@ -322,7 +322,9 @@ export const mockApListForApTableTest = {
     'serialNumber',
     'name',
     'venueId',
+    'venueName',
     'deviceGroupId',
+    'deviceGroupName',
     'apStatusData.vxlanStatus.vxlanMtu',
     'apStatusData.vxlanStatus.tunStatus',
     'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId',
@@ -335,7 +337,9 @@ export const mockApListForApTableTest = {
       serialNumber: '121749001049',
       name: 'AP-R610',
       venueId: 'a307d7077410456f8f1a4fc41d861567',
+      venueName: 'Venue1',
       deviceGroupId: 'ap-group-1',
+      deviceGroupName: 'APGroup1',
       apStatusData: {
         vxlanStatus: {
           vxlanMtu: 1500,
@@ -353,7 +357,9 @@ export const mockApListForApTableTest = {
       serialNumber: '121749001050',
       name: 'AP-R510',
       venueId: 'a307d7077410456f8f1a4fc41d861568',
+      venueName: 'Venue2',
       deviceGroupId: 'ap-group-2',
+      deviceGroupName: 'APGroup2',
       apStatusData: {
         vxlanStatus: {
           vxlanMtu: 1300,

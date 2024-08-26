@@ -26,13 +26,14 @@ export const defaultSdLanApTablePayload = {
     'serialNumber',
     'name',
     'venueId',
+    'venueName',
     'deviceGroupId',
+    'deviceGroupName',
     'apStatusData.vxlanStatus.vxlanMtu',
     'apStatusData.vxlanStatus.tunStatus',
     'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId',
     'apStatusData.vxlanStatus.activeRvtepInfo.deviceId'
-  ],
-  pageSize: 10000
+  ]
 }
 
 const EdgeSdLanDetail = () => {

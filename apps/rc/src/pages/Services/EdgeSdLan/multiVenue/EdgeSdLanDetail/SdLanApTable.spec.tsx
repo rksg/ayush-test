@@ -33,7 +33,8 @@ jest.mock('./index', () => ({
 }))
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
-  useApGroupsFilterOpts: () => (mockApGroupListForApTableTest)
+  useApGroupsFilterOpts: () => (mockApGroupListForApTableTest),
+  useIsSplitOn: jest.fn().mockReturnValue(false)
 }))
 
 describe('Edge SD-LAN Detail - ApTable', () => {
