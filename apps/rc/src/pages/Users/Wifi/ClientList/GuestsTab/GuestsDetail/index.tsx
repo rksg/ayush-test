@@ -26,10 +26,10 @@ import {
   GuestTypesEnum,
   transformDisplayText
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                 from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload, WifiScopes } from '@acx-ui/types'
-import { hasRoles, hasPermission }               from '@acx-ui/user'
-import { noDataDisplay }                         from '@acx-ui/utils'
+import { TenantLink, useParams }                             from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                                     from '@acx-ui/utils'
 
 import {
   renderAllowedNetwork,
@@ -96,6 +96,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
   const guestAction = useGuestActions()
+  const isReadOnly = !hasCrossVenuesPermission() || hasRoles([RolesEnum.READ_ONLY])
 
   const hasOnlineClient = function (row: Guest) {
     return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
@@ -229,7 +230,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const menu = (
     <Menu
       onClick={handleMenuClick}
-      items={hasRoles([RolesEnum.READ_ONLY]) ? [
+      items={isReadOnly ? [
         {
           label: $t({ defaultMessage: 'Download Information' }),
           key: 'downloadInformation'
