@@ -142,7 +142,14 @@ describe('MoreDetailsPieChart', () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: noDataFixture })
     render(
       <Provider>
-        <MoreDetailsPieChart title='test' filters={{} as AnalyticsFilter} queryType='cpuUsage' />
+        <MoreDetailsPieChart
+          title='test'
+          filters={{
+            filter: {},
+            startDate: '2021-12-31T00:00:00+00:00',
+            endDate: '2022-01-01T00:00:00+00:00' } as AnalyticsFilter
+          }
+          queryType='cpuUsage' />
       </Provider>
     )
     expect(await screen.findByText('No data to display')).toBeVisible()
