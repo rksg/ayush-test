@@ -364,7 +364,6 @@ const perpareFilterBy = (filters: Filters) => {
   }
   let featCodes = [] as string[]
   if(aiFeature) {
-    console.info('aiFeature', aiFeature)
     // derive codes from aiFeature
     aiFeature.forEach(aiFeature => {
       const matchedCodes = Object.keys(codes).filter(key => codes[key].aiFeature === aiFeature)
