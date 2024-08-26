@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { ReactElement } from 'react'
 
 import { TooltipPlacement }          from 'antd/lib/tooltip'
 import { FormattedMessage, useIntl } from 'react-intl'
@@ -11,7 +12,8 @@ export type ApCompatibilityToolTipProps = {
     visible: boolean,
     title: string,
     onClick: () => void,
-    placement?: TooltipPlacement
+    placement?: TooltipPlacement,
+    icon?: ReactElement
   }
 
 /*
@@ -23,7 +25,7 @@ export type ApCompatibilityToolTipProps = {
   */
 export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
   const { $t } = useIntl()
-  const { visible, title, onClick, placement } = props
+  const { visible, title, onClick, placement, icon } = props
 
   const compatibilityToolTipInfo = $t({
     defaultMessage:
@@ -49,8 +51,8 @@ export function ApCompatibilityToolTip (props: ApCompatibilityToolTipProps) {
       />
     }
     placement={placement ?? 'right'}>
-    <QuestionMarkCircleOutlined
+    {icon ?? <QuestionMarkCircleOutlined
       style={{ height: '16px', width: '16px', marginBottom: -3 }}
-    />
+    />}
   </Tooltip>)
 }
