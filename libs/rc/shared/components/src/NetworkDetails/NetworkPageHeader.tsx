@@ -8,7 +8,7 @@ import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateT
 import { TenantType }                                                                       from '@acx-ui/react-router-dom'
 import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                       from '@acx-ui/types'
-import { filterByAccess }                                                                   from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission }                                         from '@acx-ui/user'
 import { useDateFilter }                                                                    from '@acx-ui/utils'
 
 import { ActiveVenueFilter } from './ActiveVenueFilter'
@@ -77,7 +77,7 @@ function NetworkPageHeader ({
             selectionType={range}
           />
           : <></>,
-        ...filterByAccess([
+        ...(hasCrossVenuesPermission()? filterByAccess([
           <Button
             scopeKey={[WifiScopes.UPDATE]}
             type='primary'
@@ -94,7 +94,7 @@ function NetworkPageHeader ({
               })
             }
           >{$t({ defaultMessage: 'Configure' })}</Button>
-        ])
+        ]) : [])
       ]}
       footer={<NetworkTabs />}
     />

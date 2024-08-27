@@ -53,12 +53,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   activateVenueApGroup: {
     method: 'put',
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateVenueApGroup: {
     method: 'delete',
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getNetworkVenue: {
     method: 'get',

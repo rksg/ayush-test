@@ -221,22 +221,25 @@ export function NetworkForm (props:{
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if(!editMode&&!saveState.enableAccountingService){
-      delete saveState.accountingRadius
-    }
+    updateSaveState((preState) => {
+      const updateSate = { ...preState }
+      if(!editMode&&!updateSate.enableAccountingService){
+        delete updateSate.accountingRadius
+      }
 
-    // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
-    if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
-        && !saveData.isCloudpathEnabled) {
-      delete saveState.authRadius
-      delete saveState.authRadiusId
-      delete saveData?.authRadius
-      delete saveData?.authRadiusId
-    }
+      // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
+      if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
+          && !saveData.isCloudpathEnabled) {
+        delete updateSate.authRadius
+        delete updateSate.authRadiusId
+        delete saveData?.authRadius
+        delete saveData?.authRadiusId
+      }
 
-    const newSavedata = { ...saveState, ...saveData }
-    newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
-    updateSaveState({ ...saveState, ...newSavedata })
+      const newSavedata = { ...updateSate, ...saveData }
+      newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      return { ...saveState, ...newSavedata }
+    })
   }
 
   const { data } = useGetNetwork()
@@ -259,7 +262,10 @@ export function NetworkForm (props:{
     useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
     // eslint-disable-next-line max-len
-    skip: !isUseWifiRbacApi || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.CAPTIVEPORTAL),
+    skip: !isUseWifiRbacApi || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    saveState.guestPortal?.guestNetworkType &&
+    ![GuestNetworkTypeEnum.WISPr, GuestNetworkTypeEnum.Cloudpath]
+      .includes(saveState.guestPortal?.guestNetworkType)),
     payload: {
       fields: ['id', 'name'],
       filters: {
@@ -289,25 +295,37 @@ export function NetworkForm (props:{
   }, [saveState])
 
   useEffect(() => {
-    if(data){
-      const resolvedData = deriveFieldsFromServerData(data)
+    if (!data) return
 
-      if (cloneMode) {
-        formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
-      } else if (editMode) {
-        form?.resetFields()
-        form?.setFieldsValue(resolvedData)
-      }
-      updateSaveData({
-        ...resolvedData,
-        certificateTemplateId,
-        ...(dpskService && { dpskServiceProfileId: dpskService.id }),
-        ...(isUseWifiRbacApi && portalService?.data?.[0]?.id &&
-          { portalServiceProfileId: portalService.data[0].id })
-      })
+    let resolvedData = deriveFieldsFromServerData(data)
+
+    if (cloneMode) {
+      formRef.current?.resetFields()
+      formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+    } else if (editMode) {
+      form?.resetFields()
+      form?.setFieldsValue(resolvedData)
     }
-  }, [data, certificateTemplateId, dpskService, portalService])
+
+    if (vlanPoolId) {
+      resolvedData = merge({}, resolvedData,
+        {
+          wlan: {
+            advancedCustomization: {
+              vlanPool: { id: vlanPoolId, name: '', vlanMembers: [] }
+            }
+          }
+        }
+      )
+    }
+
+    updateSaveData({
+      ...resolvedData,
+      certificateTemplateId,
+      ...(dpskService && { dpskServiceProfileId: dpskService.id }),
+      ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
+    })
+  }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0) return
@@ -815,6 +833,7 @@ export function NetworkForm (props:{
 
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
+      processEditData(formData)
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
