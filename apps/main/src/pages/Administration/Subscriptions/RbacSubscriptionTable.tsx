@@ -273,7 +273,12 @@ export const RbacSubscriptionTable = () => {
   }
 
   const subscriptionData = isEntitlementRbacApiEnabled
-    ? (rbacQueryResults?.data ?? [])
+    ? (rbacQueryResults?.data?.map(response => {
+      return {
+        ...response,
+        status: GetStatus(response?.effectiveDate, response?.expirationDate)
+      }
+    }).filter(data => data.deviceType !== EntitlementDeviceType.EDGE || isEdgeEnabled) ?? [])
     : queryResults.data?.map(response => {
       return {
         ...response,

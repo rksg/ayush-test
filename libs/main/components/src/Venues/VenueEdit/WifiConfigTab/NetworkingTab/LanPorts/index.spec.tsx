@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { venueApi }                                                                          from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
@@ -145,5 +146,31 @@ describe('LanPortsForm', () => {
     await userEvent.clear(untagInput)
     await userEvent.type(untagInput, '2')
     expect(within(tabPanel).getByLabelText(/VLAN member/)).toHaveValue('2')
+  })
+
+  it('should display Reset to default link button after selected model', async () => {
+    render(
+      <Provider>
+        {mockLanPorts}
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('AP Model'))
+
+    fireEvent.mouseDown(await screen.findByRole('combobox'))
+    const option = screen.getByText('T750')
+    await userEvent.click(option)
+
+    const resetBtn = await screen.findByRole('button', { name: 'Reset to default' })
+    expect(resetBtn).toBeVisible()
+    fireEvent.mouseOver(resetBtn)
+    await waitFor(async () => {
+      expect(await screen.findByRole('tooltip')).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('Reset port settings to default')
+    })
   })
 })

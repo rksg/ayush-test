@@ -17,18 +17,16 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  NetworkRadiusSettings,
-  GetApiVersionHeader,
-  ApiVersionEnum
+  NetworkRadiusSettings
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { networkApi }                from '../network'
-import { fetchRbacNetworkVenueList } from '../networkVenueUtils'
-import { commonQueryFn }             from '../servicePolicy.utils'
-import { addNetworkVenueFn }         from '../servicePolicy.utils/network'
+import { networkApi }                                      from '../network'
+import { fetchRbacNetworkVenueList, updateNetworkVenueFn } from '../networkVenueUtils'
+import { commonQueryFn }                                   from '../servicePolicy.utils'
+import { addNetworkVenueFn }                               from '../servicePolicy.utils/network'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -76,15 +74,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'NetworkTemplate', id: 'LIST' }]
     }),
-    getNetworkTemplate: build.query<NetworkSaveData, RequestPayload>({
-      query: commonQueryFn(
-        ConfigTemplateUrlsInfo.getNetworkTemplate,
-        ConfigTemplateUrlsInfo.getNetworkTemplateRbac
-      ),
-      providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
-    }),
     getNetworkDeepTemplate: build.query<NetworkSaveData | null, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
@@ -93,14 +84,13 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
         const networkQuery = await fetchWithBQ(
           createHttpRequest(
-            ConfigTemplateUrlsInfo.getNetworkTemplateRbac,
-            params,
-            GetApiVersionHeader(ApiVersionEnum.v1)
+            enableRbac ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : ConfigTemplateUrlsInfo.getNetworkTemplate,
+            params
           )
         )
         const networkDeepData = networkQuery.data as NetworkSaveData
 
-        if (networkDeepData) {
+        if (networkDeepData && enableRbac) {
           const arg = {
             params,
             payload: { isTemplate: true }
@@ -122,7 +112,8 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
         return networkQuery as QueryReturnValue<NetworkSaveData,
           FetchBaseQueryError,
           FetchBaseQueryMeta>
-      }
+      },
+      providesTags: [{ type: 'NetworkTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(
@@ -295,16 +286,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const req = createHttpRequest(
-          enableRbac ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplateRbac : ConfigTemplateUrlsInfo.updateNetworkVenue,
-          params
-        )
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: updateNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -349,7 +331,6 @@ export const {
   useApplyConfigTemplateMutation,
   useAddNetworkTemplateMutation,
   useUpdateNetworkTemplateMutation,
-  useGetNetworkTemplateQuery,
   useGetNetworkDeepTemplateQuery,
   useDeleteNetworkTemplateMutation,
   useGetNetworkTemplateListQuery,

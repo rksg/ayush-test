@@ -1,3 +1,64 @@
+import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority } from '../../../../models'
+
+export const mockTrafficClassSettings = [
+  {
+    maxBandwidth: 100,
+    minBandwidth: 15,
+    trafficClass: EdgeQosTrafficClass.VIDEO,
+    priority: EdgeQosTrafficClassPriority.HIGH,
+    priorityScheduling: true
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 5,
+    trafficClass: EdgeQosTrafficClass.VIDEO,
+    priority: EdgeQosTrafficClassPriority.LOW,
+    priorityScheduling: true
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 1,
+    trafficClass: EdgeQosTrafficClass.VOICE,
+    priority: EdgeQosTrafficClassPriority.HIGH,
+    priorityScheduling: false
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 5,
+    trafficClass: EdgeQosTrafficClass.VOICE,
+    priority: EdgeQosTrafficClassPriority.LOW,
+    priorityScheduling: false
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 20,
+    trafficClass: EdgeQosTrafficClass.BEST_EFFORT,
+    priority: EdgeQosTrafficClassPriority.HIGH,
+    priorityScheduling: false
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 5,
+    trafficClass: EdgeQosTrafficClass.BEST_EFFORT,
+    priority: EdgeQosTrafficClassPriority.LOW,
+    priorityScheduling: false
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 10,
+    trafficClass: EdgeQosTrafficClass.BACKGROUND,
+    priority: EdgeQosTrafficClassPriority.HIGH,
+    priorityScheduling: false
+  },
+  {
+    maxBandwidth: 100,
+    minBandwidth: 5,
+    trafficClass: EdgeQosTrafficClass.BACKGROUND,
+    priority: EdgeQosTrafficClassPriority.LOW,
+    priorityScheduling: false
+  }
+]
+
 export const mockEdgeQosProfileStatusList = {
   fields: null,
   totalCount: 2,
@@ -8,15 +69,15 @@ export const mockEdgeQosProfileStatusList = {
         {
           maxBandwidth: 100,
           minBandwidth: 1,
-          trafficClass: 'VIDEO',
-          priority: 'HIGH',
+          trafficClass: EdgeQosTrafficClass.VIDEO,
+          priority: EdgeQosTrafficClassPriority.HIGH,
           priorityScheduling: false
         },
         {
           maxBandwidth: 100,
           minBandwidth: 1,
-          trafficClass: 'VOICE',
-          priority: 'HIGH',
+          trafficClass: EdgeQosTrafficClass.VOICE,
+          priority: EdgeQosTrafficClassPriority.HIGH,
           priorityScheduling: false
         }
       ],
@@ -24,67 +85,10 @@ export const mockEdgeQosProfileStatusList = {
       name: 'Test-QoS-1',
       description: 'description',
       id: '3bdd22df-aeab-430a-badd-9a04ae3683f1',
-      edgeClusterIds: []
+      edgeClusterIds: ['aa05c121-9e9e-4d98-b3b2-84d5acedee1c']
     },
     {
-      trafficClassSettings: [
-        {
-          maxBandwidth: 100,
-          minBandwidth: 15,
-          trafficClass: 'VIDEO',
-          priority: 'HIGH',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 5,
-          trafficClass: 'VIDEO',
-          priority: 'LOW',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 1,
-          trafficClass: 'VOICE',
-          priority: 'HIGH',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 5,
-          trafficClass: 'VOICE',
-          priority: 'LOW',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 20,
-          trafficClass: 'BEST_EFFORT',
-          priority: 'HIGH',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 5,
-          trafficClass: 'BEST_EFFORT',
-          priority: 'LOW',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 10,
-          trafficClass: 'BACKGROUND',
-          priority: 'HIGH',
-          priorityScheduling: false
-        },
-        {
-          maxBandwidth: 100,
-          minBandwidth: 5,
-          trafficClass: 'BACKGROUND',
-          priority: 'LOW',
-          priorityScheduling: false
-        }
-      ],
+      trafficClassSettings: mockTrafficClassSettings,
       tenantId: '0f18d1cf714b4bcf94bef4654f1ab29c',
       name: 'Test-QoS-2',
       description: 'des-22',

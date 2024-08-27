@@ -1,3 +1,4 @@
+import { get }                         from '@acx-ui/config'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
@@ -13,6 +14,10 @@ import {
 }                               from './__tests__/fixtures'
 import { ImpactedClientsTable } from './ImpactedClientsTable'
 import { moreDetailsApi }       from './services'
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 describe('ImpactedClientsTable', () => {
   afterEach(() =>
@@ -38,6 +43,7 @@ describe('ImpactedClientsTable', () => {
     )
     expect(await screen.findByText('ICX8200-48PF Router')).toBeVisible()
 
+    jest.mocked(get).mockReturnValue('true')
     rerender(
       <Router>
         <Provider>

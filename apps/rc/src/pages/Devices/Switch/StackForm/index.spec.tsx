@@ -3,8 +3,8 @@ import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { apApi, switchApi, venueApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { apApi, firmwareApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import { CommonUrlsInfo,
   FirmwareUrlsInfo,
   SwitchUrlsInfo,
@@ -97,6 +97,7 @@ describe('Switch Stack Form - Add', () => {
   const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' }
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    store.dispatch(firmwareApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(

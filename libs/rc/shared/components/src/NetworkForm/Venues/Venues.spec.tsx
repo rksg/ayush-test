@@ -301,6 +301,7 @@ describe('Create Network: Venues Step', () => {
     })
 
     const tbody = await findTBody()
+    await within(tbody).findByRole('row', { name: /network-venue-1/ })
     const rows = await within(tbody).findAllByRole('switch')
     expect(rows).toHaveLength(2)
     const toogleButton = rows[0]

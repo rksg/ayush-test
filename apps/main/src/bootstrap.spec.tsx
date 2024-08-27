@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { rest }       from 'msw'
 import { createRoot } from 'react-dom/client'
 
-import { AdministrationUrlsInfo }                             from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, TenantType }                 from '@acx-ui/rc/utils'
 import { act, screen, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                       from '@acx-ui/user'
 
@@ -57,7 +57,8 @@ describe('bootstrap.init', () => {
   const tenantData = {
     id: '9c2718296e134c628c0c8949b1f87f3b',
     externalId: '0012h00000oNjOXAA0',
-    name: 'msp.demo'
+    name: 'msp.demo',
+    tenantType: TenantType.VAR
   }
 
   beforeEach(() => {

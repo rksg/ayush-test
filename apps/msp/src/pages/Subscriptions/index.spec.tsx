@@ -50,6 +50,19 @@ const entitlement =
       quantity: 60,
       sku: 'CLD-MW00-1001',
       status: 'EXPIRED'
+    },
+    {
+      name: 'APSW',
+      deviceSubType: 'MSP_APSW',
+      deviceType: 'MSP_APSW',
+      effectiveDate: moment().add(30, 'days'),
+      expirationDate: moment().add(120, 'days'),
+      id: '373419122-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 60,
+      sku: 'CLD-MW00-1001',
+      status: 'FUTURE'
     }
   ]
 
@@ -184,6 +197,24 @@ describe('Subscriptions', () => {
   })
   it('should render correctly rbac feature flag on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ENTITLEMENT_RBAC_API)
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params, path: '/:tenantId/mspLicenses' }
+      })
+
+    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
+    fireEvent.click(generateUsageButton)
+    const licenseManagementButton =
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
+    fireEvent.click(licenseManagementButton)
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    fireEvent.click(refreshButton)
+  })
+  it('should render correctly virtual SmartEdge feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
     render(
       <Provider>
         <Subscriptions />
