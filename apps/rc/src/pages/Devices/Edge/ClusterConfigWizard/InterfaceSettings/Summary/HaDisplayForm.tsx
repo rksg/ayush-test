@@ -3,6 +3,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Subtitle }                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                          from '@acx-ui/utils'
 
@@ -27,35 +28,41 @@ export const HaDisplayForm = (props: HaDisplayFormProps) => {
     loadDistribution
   } = props
   const { $t } = useIntl()
+  const isEdgeHaAaFallbackOn = useIsSplitOn(Features.EDGE_HA_AA_FALLBACK_TOGGLE)
 
   return (
     <>
       <Subtitle level={4}>
         { $t({ defaultMessage: 'HA Settings' }) }
       </Subtitle>
-      <Form.Item
-        label={$t({ defaultMessage: 'SmartEdge Fallback' })}
-      >
-        {
-          fallbackEnable ?
-            $t({ defaultMessage: 'On' }) :
-            $t({ defaultMessage: 'Off' })
-        }
-      </Form.Item>
       {
-        fallbackEnable &&
-        <Form.Item
-          label={$t({ defaultMessage: 'Fallback Schedule' })}
-        >
+        isEdgeHaAaFallbackOn &&
+        <>
+          <Form.Item
+            label={$t({ defaultMessage: 'SmartEdge Fallback' })}
+          >
+            {
+              fallbackEnable ?
+                $t({ defaultMessage: 'On' }) :
+                $t({ defaultMessage: 'Off' })
+            }
+          </Form.Item>
           {
-            getFallbackScheduleStr(
-              fallbackScheduleType,
-              fallbackScheduleTime,
-              fallbackScheduleWeekday,
-              fallbackScheduleIntervalHours
-            )
+            fallbackEnable &&
+            <Form.Item
+              label={$t({ defaultMessage: 'Fallback Schedule' })}
+            >
+              {
+                getFallbackScheduleStr(
+                  fallbackScheduleType,
+                  fallbackScheduleTime,
+                  fallbackScheduleWeekday,
+                  fallbackScheduleIntervalHours
+                )
+              }
+            </Form.Item>
           }
-        </Form.Item>
+        </>
       }
       <Form.Item
         label={$t({ defaultMessage: 'Load Distribution' })}

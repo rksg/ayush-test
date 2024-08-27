@@ -1,12 +1,17 @@
 import moment from 'moment-timezone'
 
 import { StepsForm }                                                        from '@acx-ui/components'
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum } from '@acx-ui/rc/utils'
 import { render, screen }                                                   from '@acx-ui/test-utils'
 
 import { HaDisplayForm } from './HaDisplayForm'
 
 describe('InterfaceSettings - Summary > HaDisplayForm', () => {
+  beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+  })
+
   it('should render correctly', async () => {
     render(
       <StepsForm>
@@ -80,5 +85,22 @@ describe('InterfaceSettings - Summary > HaDisplayForm', () => {
     expect(screen.getByText('On')).toBeVisible()
     expect(screen.getByText('Every 12 hours')).toBeVisible()
     expect(screen.getByText('Per AP group distribution')).toBeVisible()
+  })
+
+  it('should not render fallback settings when FF is off', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(
+      <StepsForm>
+        <StepsForm.StepForm>
+          <HaDisplayForm
+            fallbackEnable={false}
+            loadDistribution={ClusterHaLoadDistributionEnum.RANDOM}
+          />
+        </StepsForm.StepForm>
+      </StepsForm>
+    )
+
+    expect(screen.queryByText('SmartEdge Fallback')).not.toBeInTheDocument()
+    expect(screen.getByText('Random distribution')).toBeVisible()
   })
 })
