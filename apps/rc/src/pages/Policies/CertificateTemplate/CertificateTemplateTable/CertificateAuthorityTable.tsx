@@ -8,9 +8,8 @@ import { useIntl }              from 'react-intl'
 import { Loader, TableProps, Table, Button, showActionModal }                                                                                    from '@acx-ui/components'
 import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                         from '@acx-ui/rc/components'
 import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
-import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery }                                                  from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                                                                            from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                         from '@acx-ui/user'
+import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, hasCloudpathAccess, useTableQuery }                              from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                                                                        from '@acx-ui/user'
 
 import { deleteDescription } from '../contentsMap'
 
@@ -176,15 +175,13 @@ export default function CertificateAuthorityTable () {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([selectedRow]) => {
         showEditModal(selectedRow)
-      },
-      scopeKey: [WifiScopes.UPDATE]
+      }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showDeleteModal(selectedRow, clearSelection)
-      },
-      scopeKey: [WifiScopes.DELETE]
+      }
     }
   ]
 
@@ -198,8 +195,7 @@ export default function CertificateAuthorityTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
+          rowSelection={hasCloudpathAccess() && { type: 'radio' }}
           rowKey='id'
           searchableWidth={430}
           enableApiFilter={true}

@@ -196,4 +196,7 @@ export const Description = styled.div`
 export const NoteButton = styled(Button)`
   color: var(--acx-accents-blue-50) !important;
   padding: 4px 0px !important;
+  span {
+    margin-top: 7px;
+  }
 `

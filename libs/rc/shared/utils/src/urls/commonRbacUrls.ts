@@ -328,6 +328,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
+  getDefaultVenueLanPorts: {
+    method: 'get',
+    url: '/venues/:venueId/apModelLanPortSettings?defaultOnly=true',
+    newApi: true
+  },
   getVenueLanPorts: {
     method: 'get',
     //url: '/venues/:venueId/lanPortSettings',

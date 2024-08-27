@@ -485,7 +485,8 @@ export function SwitchForm () {
         }}
       >
         <Loader states={[{
-          isLoading: venuesList.isLoading || isSwitchDataLoading || isSwitchDetailLoading
+          isLoading: venuesList.isLoading || isSwitchDataLoading
+            || isSwitchDetailLoading || venuesListV1002.isLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>

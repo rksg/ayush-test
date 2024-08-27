@@ -9,6 +9,7 @@ import { apKeyMap }                  from './mapping/apKeyMap'
 import { apSpecificKeyMap }          from './mapping/apSpecificKeyMap'
 import { enumMap }                   from './mapping/enumMap'
 import { ethernetPortProfileKeyMap } from './mapping/ethernetPortProfileKeyMap'
+import { intentAi }                  from './mapping/intentAi'
 import { wlanGroupKeyMap }           from './mapping/wlanGroupKeyMap'
 import { wlanKeyMap }                from './mapping/wlanKeyMap'
 import { zoneKeyMap }                from './mapping/zoneKeyMap'
@@ -66,6 +67,10 @@ export const jsonMapping = {
   ap: {
     configMap: configMapGenerator(apKeyMap, apSpecificKeyMap),
     enumMap: enumMapGenerator(apKeyMap, apSpecificKeyMap)
+  },
+  intentAI: {
+    configMap: configMapGenerator(intentAi),
+    enumMap: enumMapGenerator(intentAi)
   }
 }
 

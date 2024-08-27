@@ -314,6 +314,53 @@ describe('Firmware Venues Table Per AP Model', () => {
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
+  // eslint-disable-next-line max-len
+  it('should display the correct AP firmware in the UpdateFirmwarePerApModelIndividualPanel', async () => {
+    render(
+      <Provider>
+        <VenueFirmwareListPerApModel />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    // eslint-disable-next-line max-len
+    const targetVenueName1 = mockedFirmwareVenuesPerApModel.data.find(d => d.name === 'venueBBB-upToDate')?.name ?? ''
+    const targetRow1 = screen.getByRole('row', { name: new RegExp(targetVenueName1) })
+    await userEvent.click(within(targetRow1).getByRole('checkbox'))
+
+    // eslint-disable-next-line max-len
+    const targetVenueName2 = mockedFirmwareVenuesPerApModel.data.find(d => d.name === 'venueCCC-oneApOutdated')?.name ?? ''
+    const targetRow2 = screen.getByRole('row', { name: new RegExp(targetVenueName2) })
+    await userEvent.click(within(targetRow2).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    const updateFirmwareByApModelToggle = within(dialog).getByRole('switch')
+    await userEvent.click(updateFirmwareByApModelToggle)
+
+    // eslint-disable-next-line max-len
+    const availableFWCheckbox = await within(dialog).findByRole('checkbox', { name: /Show APs with available firmware only/ })
+    await userEvent.click(availableFWCheckbox)
+
+    // Check if R350 is up-to-date
+    const targetElement = await within(dialog).findByText(/The AP is up-to-date/i)
+    expect(within(targetElement).getByText('7.0.0.104.1242')).toBeVisible()
+
+    // Check if R550 can be updated
+    await userEvent.selectOptions(
+      await within(dialog).findByRole('combobox'),
+      '7.0.0.104.1242 (Release - Recommended) - 02/27/2024'
+    )
+
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
   describe('renderApFirmwareStatus', () => {
     it('should return noDataDisplay when isApFirmwareUpToDate is undefined', () => {
       const data = { isApFirmwareUpToDate: undefined, currentApFirmwares: [] }

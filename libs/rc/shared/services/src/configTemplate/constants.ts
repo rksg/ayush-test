@@ -89,8 +89,11 @@ export const useCasesToRefreshAccessControlTemplateList = [
 
 export const useCasesToRefreshVlanPoolTemplateList = [
   'AddVlanPoolTemplate',
+  'AddVlanPoolProfileTemplate',
   'UpdateVlanPoolTemplate',
+  'UpdateVlanPoolProfileTemplate',
   'DeleteVlanPoolTemplate',
+  'DeleteVlanPoolProfileTemplate',
   'PatchVlanPoolTemplate'
 ]
 

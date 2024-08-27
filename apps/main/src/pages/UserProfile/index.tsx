@@ -2,7 +2,6 @@ import { Row, Col, Form, Select } from 'antd'
 import { useIntl }                from 'react-intl'
 
 import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
   useNavigate,
@@ -26,7 +25,6 @@ import {
 
 export function UserProfile () {
   const { $t } = useIntl()
-  const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
   const { tenantId, activeTab } = useParams()
   const navigate = useNavigate()
@@ -86,9 +84,7 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              { isI18n2 && (
-                <PreferredLanguageFormItem />
-              )}
+              <PreferredLanguageFormItem />
             </Col>
           </Row>
         </StepsForm.StepForm>

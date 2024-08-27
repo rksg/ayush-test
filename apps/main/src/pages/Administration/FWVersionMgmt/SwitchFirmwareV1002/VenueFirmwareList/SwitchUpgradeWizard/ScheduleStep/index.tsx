@@ -18,7 +18,6 @@ import {
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
-import { DowngradeTag }      from '../../../styledComponents'
 import * as UI               from '../../styledComponents'
 import { NoteButton }        from '../../styledComponents'
 import { Switch7150C08Note } from '../Switch7150C08Note'
@@ -45,7 +44,11 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const intl = useIntl()
   const { form, current } = useStepFormContext()
-  const { getSwitchVersionLabelV1002 } = useSwitchFirmwareUtils()
+  const {
+    getSwitchVersionLabelV1002,
+    parseSwitchVersion,
+    getSwitchVersionTagV1002
+  } = useSwitchFirmwareUtils()
 
   const getCurrentSchedule = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -223,21 +226,28 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: 12 }}
+              style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
               onChange={handleICX82Change}
               value={selectedICX82Version}>
               <Space direction={'vertical'}>
-                { // eslint-disable-next-line max-len
-                  getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
-                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      <span style={{ lineHeight: '22px' }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
-                        {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
-                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                { getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
+                      <span style={{ marginRight: '5px' }}>
+                        {parseSwitchVersion(v?.name)}
                       </span>
-                    </Radio>)}
-
-                <Radio value='' key='0'>
+                      {getSwitchVersionTagV1002(intl, v)}
+                      <br />
+                      <div style={{
+                        marginTop: '5px',
+                        fontSize: 'var(--acx-body-4-font-size)',
+                        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
+                      }}>
+                        {getSwitchVersionLabelV1002(intl, v)}
+                      </div>
+                    </span>
+                  </Radio>)}
+                <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>
@@ -251,21 +261,28 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX7XCount} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: 12 }}
+              style={{ margin: '5px 0 40px 0', fontSize: '14px' }}
               onChange={handleICX7XChange}
               value={selectedICX7XVersion}>
               <Space direction={'vertical'}>
-                {
-                  getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
-                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      <span style={{ lineHeight: '22px' }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
-                        {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
-                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                {getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
+                      <span style={{ marginRight: '5px' }}>
+                        {parseSwitchVersion(v?.name)}
                       </span>
-                    </Radio>)}
-
-                <Radio value='' key='0'>
+                      {getSwitchVersionTagV1002(intl, v)}
+                      <br/>
+                      <div style={{
+                        marginTop: '5px',
+                        fontSize: 'var(--acx-body-4-font-size)',
+                        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
+                      }}>
+                        {getSwitchVersionLabelV1002(intl, v)}
+                      </div>
+                    </span>
+                  </Radio>)}
+                <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>
@@ -279,16 +296,16 @@ export function ScheduleStep (props: ScheduleStepProps) {
               ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
-              style={{ margin: 12 }}
+              style={{ margin: '5px 0 20px 0', fontSize: '14px' }}
               onChange={handleICX71Change}
               value={selectedICX71Version}>
               <Space direction={'vertical'}>
                 { // eslint-disable-next-line max-len
                   getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                      <span style={{ lineHeight: '22px' }}>
+                      <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
                         <span style={{ marginRight: '5px' }}>
-                          {getSwitchVersionLabelV1002(intl, v)}
+                          {parseSwitchVersion(v?.name)}
                         </span>
                         {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') &&
                           <NoteButton
@@ -297,12 +314,17 @@ export function ScheduleStep (props: ScheduleStepProps) {
                             onClick={scrollToTarget} >
                             {'[1]'}
                           </NoteButton>}
-                        {(v.isDowngradeVersion || v.isDowngraded10to90) && !v.inUse &&
-                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                        {getSwitchVersionTagV1002(intl, v)}
+                        <div style={{
+                          marginTop: '5px',
+                          fontSize: 'var(--acx-body-4-font-size)',
+                          color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
+                        }}>
+                          {getSwitchVersionLabelV1002(intl, v)}
+                        </div>
                       </span>
                     </Radio>)}
-
-                <Radio value='' key='0'>
+                <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>

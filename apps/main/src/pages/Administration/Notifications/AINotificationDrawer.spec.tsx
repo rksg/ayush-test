@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { showToast }    from '@acx-ui/components'
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   notificationApi,
@@ -32,6 +31,7 @@ jest.mock('@acx-ui/user', () => ({
   })
 }))
 
+const components = require('@acx-ui/components')
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
@@ -67,8 +67,13 @@ jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useUpdateTenantSelfMutation: () => [
     mockedSelfMutation, { reset: jest.fn() }
-  ]
+  ],
+  useGetTenantDetailsQuery: jest.fn().mockImplementation(() => {
+    return { data: tenantDetails }
+  })
 }))
+// eslint-disable-next-line max-len
+const tenantDetails = { subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":false,\"DEVICE_API_CHANGES\":true,\"DEVICE_AP_FIRMWARE\":true}' }
 
 describe('IncidentNotificationDrawer', () => {
   beforeEach(() => {
@@ -83,6 +88,7 @@ describe('IncidentNotificationDrawer', () => {
     mockedUnwrap.mockClear()
     mockServer.resetHandlers()
     mockServer.restoreHandlers()
+    components.showToast.mockClear()
     cleanup()
   })
   it('should render drawer open & close correctly', async () => {
@@ -144,11 +150,16 @@ describe('IncidentNotificationDrawer', () => {
     expect(await screen.findByText('Notifications Preferences')).toBeVisible()
     expect(screen.queryByText('AI Notifications')).toBeNull()
     await waitFor(() => {
-      expect(screen.getAllByRole('checkbox')).toHaveLength(10)
+      expect(screen.getAllByRole('checkbox')).toHaveLength(9)
     })
-    const inputs = await screen.findAllByRole('checkbox')
-    await waitFor(() => { expect(inputs[4]).toBeChecked() })
-    await waitFor(() => { expect(inputs[9]).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'API Changes' })).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'AP Firmware' })).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'Switch Firmware' })).not.toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked() })
   })
   it('should handle notification preference update', async () => {
     const mockedPref = {
@@ -203,10 +214,10 @@ describe('IncidentNotificationDrawer', () => {
       })
     })
     await waitFor(async () => {
-      expect(showToast)
+      expect(components.showToast)
         .toHaveBeenLastCalledWith({
           type: 'success',
-          content: 'Incident notifications updated succesfully.'
+          content: 'Notifications updated succesfully.'
         })
     })
   })
@@ -261,7 +272,7 @@ describe('IncidentNotificationDrawer', () => {
       })
     })
     await waitFor(async () => {
-      expect(showToast)
+      expect(components.showToast)
         .toHaveBeenLastCalledWith({
           type: 'error',
           content: 'Update failed, please try again later.'
@@ -308,14 +319,14 @@ describe('IncidentNotificationDrawer', () => {
       })
     })
     await waitFor(async () => {
-      expect(showToast)
+      expect(components.showToast)
         .toHaveBeenLastCalledWith({
           type: 'error',
           content: 'Update failed, please try again later.'
         })
     })
   })
-  it('should handle notification preference update for feature flag on', async () => {
+  it('should handle update for notification channel enabled FF on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const mockedPref = {
       incident: {
@@ -327,9 +338,6 @@ describe('IncidentNotificationDrawer', () => {
     }
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
-    }, true)
-    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
-      data: { success: true }
     }, true)
     mockRestApiQuery(`${window.location.origin}/tenants/self`, 'get', {
       data: { id: '123' }
@@ -338,61 +346,52 @@ describe('IncidentNotificationDrawer', () => {
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     fireEvent.click(drawerButton)
-    const applyButton = await screen.findByRole('button', { name: /Apply/ })
-    expect(applyButton).not.toBeDisabled()
+    expect(await screen.findByText('Notifications Preferences')).toBeVisible()
     await waitFor(() => {
-      expect(screen.getAllByRole('checkbox')).toHaveLength(10)
+      expect(screen.getAllByRole('checkbox')).toHaveLength(9)
     })
     const inputs = await screen.findAllByRole('checkbox')
-    await waitFor(() => { expect(inputs[0]).toBeChecked() })
-    await waitFor(() => { expect(inputs[4]).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
       userEvent.click(inputs[0])
-      userEvent.click(inputs[4])
-      userEvent.click(inputs[5])
-      userEvent.click(inputs[6])
-      userEvent.click(inputs[8])
-      userEvent.click(inputs[9])
+      userEvent.click(inputs[1])
+      userEvent.click(inputs[2])
     })
-    await waitFor(() => {
-      expect(screen.getByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked() })
+      expect(await screen.findByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'AI Operations' })).not.toBeChecked() })
+      expect(await screen.findByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
+    await waitFor(async () => {
+      expect(await screen.findByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked()
+    })
+    await waitFor(async () => {
+      expect(await screen.findByRole('checkbox', { name: 'API Changes' })).not.toBeChecked() })
+    const applyButton = await screen.findByRole('button', { name: /Apply/ })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyButton)} )
     await waitFor(() => {
-      expect(mockedPrefMutation).toHaveBeenLastCalledWith({
-        tenantId: 'test-tenant',
-        preferences: {
-          incident: {
-            P2: ['email'],
-            P3: ['email']
-          },
-          configRecommendation: {
-            crrm: ['email']
-          }
-        }
+      expect(mockedSelfMutation).toHaveBeenLastCalledWith({
+        params: {},
+        // eslint-disable-next-line max-len
+        payload: { id: 'test-tenant',subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":true,\"DEVICE_API_CHANGES\":false,\"DEVICE_AP_FIRMWARE\":false}' }
       })
     })
     await waitFor(() => {
-      expect(mockedSelfMutation).toHaveBeenLastCalledWith({
-        params: {},
-        payload: {
-          id: 'test-tenant',
-          subscribes: JSON.stringify({
-            DEVICE_AP_FIRMWARE: false,
-            DEVICE_SWITCH_FIRMWARE: true,
-            DEVICE_EDGE_FIRMWARE: true,
-            DEVICE_API_CHANGES: true
-          })
-        }
+      expect(mockedPrefMutation).toHaveBeenLastCalledWith({
+        tenantId: 'test-tenant',
+        preferences: mockedPref
       })
     })
+    await waitFor(async () => {
+      expect(components.showToast)
+        .toHaveBeenLastCalledWith({
+          type: 'success',
+          content: 'Notifications updated succesfully.'
+        })
+    })
+    expect(components.showToast).toHaveBeenCalledTimes(1)
   })
-  it('should handle error notification preference update for feature flag on', async () => {
+  it('should handle error on update for notification channel enabled FF on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const mockedPref = {
       incident: {
@@ -405,9 +404,6 @@ describe('IncidentNotificationDrawer', () => {
     mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
-      data: { success: true }
-    }, true)
     mockRestApiQuery(`${window.location.origin}/tenants/self`, 'get', {
       data: { id: '123' }
     }, true)
@@ -415,61 +411,49 @@ describe('IncidentNotificationDrawer', () => {
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     fireEvent.click(drawerButton)
-    const applyButton = await screen.findByRole('button', { name: /Apply/ })
-    expect(applyButton).not.toBeDisabled()
+    expect(await screen.findByText('Notifications Preferences')).toBeVisible()
     await waitFor(() => {
-      expect(screen.getAllByRole('checkbox')).toHaveLength(10)
+      expect(screen.getAllByRole('checkbox')).toHaveLength(9)
     })
     const inputs = await screen.findAllByRole('checkbox')
-    await waitFor(() => { expect(inputs[4]).toBeChecked() })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => {
-      userEvent.click(inputs[4])
-      userEvent.click(inputs[5])
-      userEvent.click(inputs[6])
-      userEvent.click(inputs[8])
-      userEvent.click(inputs[9])
+      userEvent.click(inputs[0])
+      userEvent.click(inputs[1])
+      userEvent.click(inputs[2])
     })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'P1 Incidents' })).not.toBeChecked() })
+      expect(await screen.findByRole('checkbox', { name: 'AP Firmware' })).not.toBeChecked() })
     await waitFor(async () => {
-      expect(await screen.findByRole('checkbox', { name: 'AI Operations' })).not.toBeChecked() })
+      expect(await screen.findByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
+    await waitFor(async () => {
+      expect(await screen.findByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked()
+    })
+    await waitFor(async () => {
+      expect(await screen.findByRole('checkbox', { name: 'API Changes' })).not.toBeChecked() })
+    const applyButton = await screen.findByRole('button', { name: /Apply/ })
     // eslint-disable-next-line testing-library/no-unnecessary-act
     await act(async () => { fireEvent.click(applyButton)} )
     await waitFor(() => {
-      expect(mockedPrefMutation).toHaveBeenLastCalledWith({
-        tenantId: 'test-tenant',
-        preferences: {
-          incident: {
-            P2: ['email'],
-            P3: ['email']
-          },
-          configRecommendation: {
-            crrm: ['email']
-          }
-        }
+      expect(mockedSelfMutation).toHaveBeenLastCalledWith({
+        params: {},
+        // eslint-disable-next-line max-len
+        payload: { id: 'test-tenant',subscribes: '{\"DEVICE_EDGE_FIRMWARE\":true,\"DEVICE_SWITCH_FIRMWARE\":true,\"DEVICE_API_CHANGES\":false,\"DEVICE_AP_FIRMWARE\":false}' }
       })
     })
     await waitFor(() => {
-      expect(mockedSelfMutation).toHaveBeenLastCalledWith({
-        params: {},
-        payload: {
-          id: 'test-tenant',
-          subscribes: JSON.stringify({
-            DEVICE_AP_FIRMWARE: true,
-            DEVICE_SWITCH_FIRMWARE: true,
-            DEVICE_EDGE_FIRMWARE: true,
-            DEVICE_API_CHANGES: true
-          })
-        }
+      expect(mockedPrefMutation).toHaveBeenLastCalledWith({
+        tenantId: 'test-tenant',
+        preferences: mockedPref
       })
     })
     await waitFor(async () => {
-      expect(showToast)
+      expect(components.showToast)
         .toHaveBeenLastCalledWith({
           type: 'error',
           content: 'Update failed, please try again later.'
         })
     })
+    expect(components.showToast).toHaveBeenCalledTimes(2)
   })
 })

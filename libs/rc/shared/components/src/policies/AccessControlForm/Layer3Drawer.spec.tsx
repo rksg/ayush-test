@@ -299,7 +299,7 @@ describe('Layer3Drawer Component', () => {
 
   })
 
-  it('Render Layer3Drawer component with subnet option successfully', async () => {
+  it('Render Layer3Drawer component with subnet option and save successfully', async () => {
     render(
       <Provider>
         <Form>
@@ -333,21 +333,9 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Cancel')[1])
 
-    await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
-
-    await userEvent.click(screen.getByRole('button', {
-      name: 'Edit'
-    }))
-
-    await screen.findByText(/edit layer 3 rule/i)
-
-    await userEvent.type(screen.getByRole('textbox', {
-      name: /description/i
-    }), '-ruleDescription')
-
     await userEvent.click(screen.getAllByText('Save')[1])
 
-    await userEvent.click(await screen.findByText('layer3-test-desc-subnet-ruleDescription'))
+    expect(await screen.findByText('layer3-test-desc-subnet')).toBeVisible()
     await userEvent.click(screen.getAllByText('Save')[0])
 
     await waitFor(() => {
@@ -378,6 +366,51 @@ describe('Layer3Drawer Component', () => {
     )
 
     expect(await screen.findByRole('option', { name: 'layer3-test' })).toBeInTheDocument()
+  })
+
+  it('Render Layer3Drawer component with subnet option and edit successfully', async () => {
+    render(
+      <Provider>
+        <Form>
+          <Layer3Drawer />
+        </Form>
+      </Provider>, {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await userEvent.click(screen.getByText('Add New'))
+
+    await screen.findByText(/layer 3 settings/i)
+
+    await userEvent.click(screen.getByText(/block traffic/i))
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /policy name:/i
+    }), 'layer3-test')
+
+    await subnetSetting()
+
+    await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
+
+
+    await userEvent.click(screen.getByText('IP: 1.2.3.4/255.255.0.0'))
+
+    await userEvent.click(screen.getByRole('button', {
+      name: 'Edit'
+    }))
+
+    await screen.findByText(/edit layer 3 rule/i)
+
+    await userEvent.type(screen.getByRole('textbox', {
+      name: /description/i
+    }), '-ruleDescription')
+
+    await userEvent.click(screen.getAllByText('Save')[1])
+
+    expect(await screen.findByText('layer3-test-desc-subnet-ruleDescription')).toBeVisible()
   })
 
   it('Render Layer3Drawer component in viewMode successfully', async () => {

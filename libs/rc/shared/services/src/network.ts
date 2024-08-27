@@ -35,7 +35,8 @@ import {
   VlanPoolRbacUrls,
   VLANPoolViewModelRbacType,
   transformWifiNetwork,
-  DpskSaveData
+  DpskSaveData,
+  CertificateTemplate
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -47,7 +48,7 @@ import {
   fetchRbacApGroupNetworkVenueList,
   fetchRbacNetworkVenueList,
   fetchRbacVenueNetworkList,
-  getNetworkDeepList
+  getNetworkDeepList, updateNetworkVenueFn
 } from './networkVenueUtils'
 import { isPayloadHasField } from './utils'
 
@@ -288,17 +289,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-
-        const apiCustomHeader = enableRbac? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
-
-        const req = createHttpRequest(urlsInfo.updateNetworkVenue, params, apiCustomHeader)
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
+      queryFn: updateNetworkVenueFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     // RBAC API doesn't support this
@@ -369,7 +360,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
 
         const networkQuery = await fetchWithBQ(
           createHttpRequest(
-            params?.isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : WifiRbacUrlsInfo.getNetwork,
+            WifiRbacUrlsInfo.getNetwork,
             params,
             GetApiVersionHeader(ApiVersionEnum.v1)
           )
@@ -406,7 +397,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           const useCases = [
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ]
 
@@ -434,7 +427,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'UpdateNetworkDeep',
             'UpdateNetworkVenue',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
@@ -543,7 +538,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
@@ -718,7 +715,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'UpdateNetworkDeep',
             'ActivateWifiNetworkOnVenue',
+            'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue',
             'UpdateVenueWifiNetworkSettings',
             'UpdateVenueWifiNetworkTemplateSettings'
           ], () => {
@@ -817,7 +816,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkIds = networksList?.data.map(item => item.id!) || []
         if (networksList.data.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
           const vlanPoolListQuery = await fetchWithBQ({
-            ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, apiCustomHeader),
+            ...createHttpRequest(VlanPoolRbacUrls.getVLANPoolPolicyList),
             body: JSON.stringify({
               fields: ['id', 'name', 'wifiNetworkIds'],
               filters: { wifiNetworkIds: networkIds }
@@ -869,6 +868,17 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...externalProvidersReq
         }
+      }
+    }),
+    getCertificateTemplateNetworkBinding: build.query<CertificateTemplate, RequestPayload> ({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.queryCertificateTemplate, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: (response: TableResult<CertificateTemplate>) => {
+        return response?.data[0]
       }
     }),
     activateCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -1111,7 +1121,7 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10_000
-      } : {}) : JSON.stringify({ filters })
+      } : { filters }) : JSON.stringify({ filters })
     }
     const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
     networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
@@ -1185,7 +1195,7 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10_000
-      } : {}) : JSON.stringify({ filters })
+      } : { filters }) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
@@ -1270,7 +1280,7 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
         sortOrder: 'ASC',
         page: 1,
         pageSize: 10_000
-      } : {}) : JSON.stringify({ filters })
+      } : { filters }) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
@@ -1327,6 +1337,7 @@ export const {
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
+  useGetCertificateTemplateNetworkBindingQuery,
   useActivateCertificateTemplateMutation,
   useActivateDpskServiceMutation,
   useGetDpskServiceQuery,

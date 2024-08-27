@@ -1,22 +1,27 @@
 import { useEffect } from 'react'
 
-import { Select,Col, Form, Input, Row, Switch } from 'antd'
-import { findIndex, find }                      from 'lodash'
-import { useIntl }                              from 'react-intl'
-import { useParams }                            from 'react-router-dom'
+import { Select,Col, Form, Input, Row, Switch, Space, Typography } from 'antd'
+import { findIndex, find }                                         from 'lodash'
+import { useIntl }                                                 from 'react-intl'
+import { useParams }                                               from 'react-router-dom'
 
-import {  StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
-import { InformationSolid }                        from '@acx-ui/icons'
-import { SpaceWrapper }                            from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext, Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                    from '@acx-ui/icons'
+import { SpaceWrapper, CompatibilityWarningCircleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  useGetEdgeClusterListQuery
+  useGetEdgeClusterListQuery,
+  useGetEdgeFeatureSetsQuery
 } from '@acx-ui/rc/services'
 import {
   servicePolicyNameRegExp,
   useHelpPageLink,
   EdgeMvSdLanFormModel,
-  ClusterHighAvailabilityModeEnum
+  ClusterHighAvailabilityModeEnum,
+  EdgeFeatureEnum
 } from '@acx-ui/rc/utils'
+import { TenantLink }      from '@acx-ui/react-router-dom'
+import { compareVersions } from '@acx-ui/utils'
 
 import { useEdgeMvSdLanContext } from '../EdgeMvSdLanContextProvider'
 import { messageMappings }       from '../messageMappings'
@@ -26,6 +31,8 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isHaAaDmzEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_DMZ_TOGGLE)
+
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans } = useEdgeMvSdLanContext()
 
@@ -51,7 +58,8 @@ export const SettingsForm = () => {
         'clusterId',
         'clusterStatus',
         'hasCorePort',
-        'highAvailabilityMode'
+        'highAvailabilityMode',
+        'firmwareVersion'
       ],
       ...(filterSn.length === 2
         ? { filters: { clusterId: filterSn } }
@@ -70,7 +78,6 @@ export const SettingsForm = () => {
   const clusterOptions = clusterData?.map(item => ({
     label: item.name,
     value: item.clusterId
-
   }))
 
   // prepare venue id
@@ -132,18 +139,25 @@ export const SettingsForm = () => {
       </UI.ClusterSelectorHelper>)
   }
 
-  // eslint-disable-next-line max-len
-  const checkHAModeConsist = (dcClusterId: string, dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
-    const dcClusterHaMode = find(clusterData, { clusterId: dcClusterId })
-      ?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
-    const dmzClusterHaMode = find(clusterData, { clusterId: dmzClusterId })
-      ?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const dmzHaModeCheck = (dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
+    const isDmzClusteAAMode = find(clusterData, { clusterId: dmzClusterId })
+      ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
-    if (!isGuestTunnelOn || !dmzClusterId || dcClusterHaMode === dmzClusterHaMode) {
+    if (isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
+      return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
+    } else {
       return Promise.resolve()
-    } else
-      return Promise.reject($t({ defaultMessage: 'High availability mode must be consistent.' }))
+    }
   }
+
+  const getDmzClusterOpts = () => clusterOptions?.filter(item => {
+    // eslint-disable-next-line max-len
+    const isAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
+    return item.value !== edgeClusterId &&
+          // eslint-disable-next-line max-len
+          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isAAMode || (editMode && item.value === guestEdgeClusterId))))
+  })
 
   return (
     <UI.Wrapper>
@@ -181,19 +195,11 @@ export const SettingsForm = () => {
                         placement='bottom'
                       />
                     </>}
-                    dependencies={['guestEdgeClusterId']}
                     rules={[{
                       required: true,
                       message: $t({ defaultMessage: 'Please select a Cluster' })
                     },
-                    { validator: (_, value) => checkCorePortConfigured(value) },
-                    ({ getFieldValue }) => ({
-                      validator: (_, value) => {
-                        const guestEdgeClusterId = getFieldValue('guestEdgeClusterId')
-                        // eslint-disable-next-line max-len
-                        return checkHAModeConsist(value, guestEdgeClusterId, isGuestTunnelEnabled)
-                      }
-                    })
+                    { validator: (_, value) => checkCorePortConfigured(value) }
                     ]}
                   >
                     <Select
@@ -204,8 +210,13 @@ export const SettingsForm = () => {
                       onChange={onEdgeClusterChange}
                     />
                   </Form.Item>
-
                 </Col>
+                {edgeClusterId &&
+                <Col span={24}>
+                  <ClusterFirmwareInfo
+                    fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
+                </Col>
+                }
               </Row>
             </Col>
           </Row>
@@ -226,11 +237,10 @@ export const SettingsForm = () => {
               </Form.Item>
             </UI.FlexEndCol>
           </Row>
-
-          <Row>
-            <Col span={18}>
-              {isGuestTunnelEnabled
-                ? (<Form.Item
+          {isGuestTunnelEnabled
+            ? (<Row>
+              <Col span={18}>
+                <Form.Item
                   name='guestEdgeClusterId'
                   label={<>
                     { $t({ defaultMessage: 'DMZ Cluster' }) }
@@ -239,32 +249,36 @@ export const SettingsForm = () => {
                       placement='bottom'
                     />
                   </>}
-                  dependencies={['edgeClusterId']}
                   rules={[{
                     required: true,
                     message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
                   },
                   { validator: (_, value) => checkCorePortConfigured(value) },
-                  ({ getFieldValue }) => ({
-                    validator: (_, value) => {
-                      const edgeClusterId = getFieldValue('edgeClusterId')
-                      return checkHAModeConsist(edgeClusterId, value, true)
-                    }
-                  })
+                  { validator: (_, value) => isHaAaDmzEnabled
+                    ? Promise.resolve()
+                    : dmzHaModeCheck(value, isGuestTunnelEnabled) }
                   ]}
                 >
                   <Select
                     loading={isClusterOptsLoading}
-                    options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
+                    options={getDmzClusterOpts()}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
                     disabled={editMode && !!initialValues?.guestEdgeClusterId}
                     onChange={onDmzClusterChange}
                   />
-                </Form.Item>)
-                : null
+                </Form.Item>
+              </Col>
+              {guestEdgeClusterId &&
+                <Col span={24}>
+                  <ClusterFirmwareInfo
+                    // eslint-disable-next-line max-len
+                    fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion}
+                  />
+                </Col>
               }
-            </Col>
-          </Row>
+            </Row>)
+            : null
+          }
         </SpaceWrapper>
       </Col>
       <UI.VerticalSplitLine span={1} />
@@ -276,4 +290,57 @@ export const SettingsForm = () => {
       </Col>
     </UI.Wrapper>
   )
+}
+
+const sdLanFeatureRequirementPayload = {
+  filters: {
+    featureNames: ['SD-LAN']
+  }
+}
+const ClusterFirmwareInfo = (props: {
+  fwVersion?: string
+}) => {
+  const { $t } = useIntl()
+  const { fwVersion } = props
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
+  const { requiredFw, isLoading } = useGetEdgeFeatureSetsQuery({
+    payload: sdLanFeatureRequirementPayload }, {
+    skip: !isEdgeCompatibilityEnabled,
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === EdgeFeatureEnum.SD_LAN)?.requiredFw,
+        isLoading
+      }
+    }
+  })
+
+  const isLower = compareVersions(fwVersion, requiredFw) < 0
+
+  return isEdgeCompatibilityEnabled
+    ? ( <Space align='center' size='small'>
+      <Typography>
+        {$t({ defaultMessage: 'Cluster Firmware Version: {fwVersion}' },
+          { fwVersion }) }
+      </Typography>
+      {(!!fwVersion && isLower) && <Tooltip
+        title={<Loader states={[{ isLoading }]}>
+          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
+        running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware
+        from {targetLink}` },
+          {
+            b: (txt) => <b>{txt}</b>,
+            requiredFw,
+            targetLink: <TenantLink to='/administration/fwVersionMgmt/edgeFirmware'>
+              {$t({ defaultMessage: 'Administration > Version Management > SmartEdge Firmware' })}
+            </TenantLink>
+          })}
+        </Loader>
+        }>
+        <CompatibilityWarningCircleIcon />
+      </Tooltip>
+      }
+    </Space>)
+    : null
 }

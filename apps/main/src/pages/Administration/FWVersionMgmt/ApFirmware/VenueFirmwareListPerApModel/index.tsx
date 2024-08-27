@@ -1,16 +1,14 @@
 import { useState } from 'react'
 
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal }                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                         from '@acx-ui/feature-toggle'
-import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenuePerApModel, useTableQuery }                                                           from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                                                     from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                  from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                                                         from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                          from '@acx-ui/components'
+import { useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
+import { FirmwareType, FirmwareVenuePerApModel, useTableQuery }                         from '@acx-ui/rc/utils'
+import { WifiScopes }                                                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                from '@acx-ui/user'
+import { getIntl, noDataDisplay }                                                       from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate }                                                                       from '../..'
 import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
@@ -78,7 +76,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
-        setSelectedRows(rows.filter(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)))
+        setSelectedRows(rows)
         setUpdateNowVisible(true)
       }
     },
@@ -87,7 +85,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
-        setSelectedRows(rows.filter(row => !isApFirmwareUpToDate(row.isApFirmwareUpToDate)))
+        setSelectedRows(rows)
         setChangeScheduleVisible(true)
       }
     },
@@ -222,15 +220,19 @@ function useColumns () {
 }
 
 function useVersionFilterOptions () {
-  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({
-    params: useParams(),
-    enableRbac: useIsSplitOn(Features.WIFI_RBAC_API)
+  const { versionFilterOptions } = useGetVenueApModelFirmwareListQuery({
+    payload: {
+      fields: ['name', 'id', 'currentApFirmwares'],
+      page: 1, pageSize: 10000
+    }
   }, {
-    refetchOnMountOrArgChange: false,
-    selectFromResult ({ data }) {
+    selectFromResult: ({ data }) => {
+      // eslint-disable-next-line max-len
+      const allFirmware = data?.data.map(v => v.currentApFirmwares?.map(f => f.firmware)).flat().filter(v => v) || []
+      const uniqueFirmware = [...new Set(allFirmware)].sort((v1, v2) => -compareVersions(v1, v2))
+
       return {
-        // eslint-disable-next-line max-len
-        versionFilterOptions: data?.map(v => ({ key: v, value: v })).sort((v1, v2) => -compareVersions(v1.value, v2.value))
+        versionFilterOptions: uniqueFirmware.map(v => ({ key: v, value: v }))
       }
     }
   })

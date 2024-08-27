@@ -58,7 +58,6 @@ function Layout () {
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
-  const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
@@ -106,7 +105,7 @@ function Layout () {
 
   useEffect(() => {
     if (data && userProfile) {
-      const isRecDelegation = nonVarDelegation && data.tenantType === AccountType.REC
+      const isRecDelegation = data.tenantType === AccountType.REC
       if (!isSupportToMspDashboardAllowed &&
         (userProfile?.support || userProfile?.dogfood || isRecDelegation)) {
         setTenantType('SUPPORT')

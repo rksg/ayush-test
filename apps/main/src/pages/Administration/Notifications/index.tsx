@@ -47,7 +47,6 @@ export const NotificationsTable = () => {
   const [showDialog, setShowDialog] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
-  const allowIncidentsEmail = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
@@ -176,12 +175,10 @@ export const NotificationsTable = () => {
       label: $t({ defaultMessage: 'Add Recipient' }),
       onClick: handleClickAddRecipient
     },
-    ...(allowIncidentsEmail
-      ? [{
-        label: titleNotification,
-        onClick: handleEnableIncidents
-      }]
-      : [])
+    {
+      label: titleNotification,
+      onClick: handleEnableIncidents
+    }
   ]
 
   const isLoading = deleteOneState.isLoading || deleteMultipleState.isLoading

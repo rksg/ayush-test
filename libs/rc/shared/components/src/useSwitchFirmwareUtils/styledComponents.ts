@@ -1,5 +1,5 @@
-import { Statistic as AntStatistic } from 'antd'
-import styled                        from 'styled-components/macro'
+import { Statistic as AntStatistic, Tag } from 'antd'
+import styled                             from 'styled-components/macro'
 
 export const Statistic = styled(AntStatistic) <{
   width: number,
@@ -15,4 +15,21 @@ export const Statistic = styled(AntStatistic) <{
     overflow: hidden;
     text-overflow: ellipsis;
   }
+`
+
+export const DowngradeTag = styled(Tag)`
+    color: var(--acx-accents-blue-50);
+    border-color: var(--acx-accents-blue-50);
+    background-color: var(--acx-accents-blue-10);
+    border-radius: 10px;
+    font-size: 12px;
+    height: 20px;
+`
+export const RecommendedTag = styled(Tag)`
+    color: var(--acx-semantics-yellow-70);
+    border-color: var(--acx-semantics-yellow-40);
+    background-color: #FFFBF1;
+    border-radius: 10px;
+    font-size: 12px;
+    height: 20px;
 `

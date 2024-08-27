@@ -4,7 +4,7 @@ import { useIntl }      from 'react-intl'
 import { Select }        from '@acx-ui/components'
 import { AlgorithmType } from '@acx-ui/rc/utils'
 
-import { algorithmLabel } from '../../contentsMap'
+import { algorithmLabel, onboardSettingsDescription } from '../../contentsMap'
 
 export default function CertificateStrengthSettings () {
   const { $t } = useIntl()
@@ -25,6 +25,7 @@ export default function CertificateStrengthSettings () {
       <Form.Item
         label={$t({ defaultMessage: 'Key Length' })}
         name='keyLength'
+        extra={$t(onboardSettingsDescription.KEY_LENGTH)}
         rules={[
           { required: true },
           { validator: (_, value) => validateMultipleOfEight(value) }

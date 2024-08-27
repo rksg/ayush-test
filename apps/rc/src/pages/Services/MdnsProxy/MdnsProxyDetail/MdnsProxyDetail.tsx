@@ -47,12 +47,15 @@ export default function MdnsProxyDetail () {
           }
         ]}
         extra={filterByAccess([
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.MDNS_PROXY,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId as string
-          })}>
-            <Button scopeKey={[WifiScopes.UPDATE]} key='configure' type='primary'>
+          <TenantLink
+            scopeKey={[WifiScopes.UPDATE]}
+            to={getServiceDetailsLink({
+              type: ServiceType.MDNS_PROXY,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId as string
+            })}
+          >
+            <Button key='configure' type='primary'>
               {$t({ defaultMessage: 'Configure' })}
             </Button>
           </TenantLink>

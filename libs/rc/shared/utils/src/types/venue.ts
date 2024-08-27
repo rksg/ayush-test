@@ -833,7 +833,7 @@ export interface ApCompatibility {
 }
 
 export interface ApIncompatibleFeature extends ApFeatureSet{
-  incompatibleDevices: ApIncompatibleDevice[]
+  incompatibleDevices?: ApIncompatibleDevice[]  // undefined when fullyCompatible
 }
 
 export interface ApIncompatibleDevice {

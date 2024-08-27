@@ -49,7 +49,11 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addDhcp: {
     method: 'post',
     url: '/templates/dhcpConfigServiceProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getDhcpList: {
     method: 'get',
@@ -59,17 +63,27 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateDhcp: {
     method: 'put',
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getDHCProfileDetail: {
     method: 'get',
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteDhcp: {
     method: 'delete',
     url: '/templates/dhcpConfigServiceProfiles/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   addDhcpRbac: {
     method: 'post',
@@ -184,7 +198,10 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getWifiCalling: {
     method: 'get',
     url: '/templates/wifiCallingServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedWifiCallingList: {
     method: 'post',
@@ -194,17 +211,28 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addWifiCalling: {
     method: 'post',
     url: '/templates/wifiCallingServiceProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateWifiCalling: {
     method: 'put',
     url: '/templates/wifiCallingServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Content-Type': 'application/vnd.ruckus.v1+json',
+      'Accept': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteWifiCalling: {
     method: 'delete',
     url: '/templates/wifiCallingServiceProfiles/:templateId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   getWifiCallingRbac: {
     method: 'get',
@@ -286,5 +314,10 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  activatePortal: {
+    method: 'put',
+    url: '/templates/wifiNetworks/:networkId/portalServiceProfiles/:serviceId',
+    newApi: true
   }
 }

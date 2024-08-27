@@ -66,9 +66,9 @@ describe('administrators delegation list', () => {
         route: { params }
       })
 
-    await screen.findByText('Partner Name')
-    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).not.toBeDisabled()
-    await userEvent.click(await screen.findByRole('button', { name: /Invite 3rd Party Administrator/i }))
+    await screen.findByText('Admin Name')
+    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Admin' })).not.toBeDisabled()
+    await userEvent.click(await screen.findByRole('button', { name: /Invite 3rd Party Admin/i }))
     await waitFor(async () => {
       expect(await screen.findByRole('dialog')).toBeInTheDocument()
     })
@@ -78,7 +78,6 @@ describe('administrators delegation list', () => {
 
   it('should be able to invite 3rd Party Administrator for feature flag on', async () => {
     // jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ANY_3RDPARTY_INVITE_TOGGLE)
     services.useGetDelegationsQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
     })
@@ -112,7 +111,7 @@ describe('administrators delegation list', () => {
     expect(row.length).toBe(2)
     expect(screen.queryByText('Email')).toBeNull()
     expect(await screen.findByRole('row', { name: /Invitation Sent/i })).toBeValid()
-    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeDisabled()
+    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Admin' })).toBeDisabled()
 
     await userEvent.click(await screen.findByRole('button', { name: /Cancel Invitation/i }))
     await waitFor(async () => {
@@ -163,7 +162,7 @@ describe('administrators delegation list', () => {
     const row = await screen.findAllByRole('row')
     expect(row.length).toBe(2)
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
-    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeDisabled()
+    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Admin' })).toBeDisabled()
 
     await userEvent.click(await screen.findByRole('button', { name: /Revoke access/i }))
     await waitFor(async () => {
@@ -383,10 +382,10 @@ describe('administrators delegation list', () => {
       })
 
     const colHeaders = await screen.findAllByRole('columnheader')
-    expect(colHeaders.length).toBe(3)
+    expect(colHeaders.length).toBe(4)
     expect(screen.queryByRole('columnheader', { name: 'Action' })).toBeNull()
     expect(await screen.findByRole('row', { name: /Access granted/i })).toBeValid()
-    expect(screen.queryByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Invite 3rd Party Admin' })).toBeNull()
   })
   it('should render correctly when multi var feature flag on', async () => {
     const delegation = {
@@ -414,11 +413,11 @@ describe('administrators delegation list', () => {
       })
     const row = await screen.findAllByRole('row')
     expect(row.length).toBe(3)
-    screen.getByText('Partner Name')
+    screen.getByText('Admin Name')
     screen.getByText('Email')
     screen.getByText('Status')
     screen.getByText('Action')
-    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Administrator' })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: 'Invite 3rd Party Admin' })).toBeEnabled()
 
     await userEvent.click(screen.getByText('Action'))
     await userEvent.click(screen.getByRole('img', { name: 'caret-up' }))

@@ -562,6 +562,7 @@ export const successResponse = {
 }
 
 export const policyListResponse = {
+  data: [],
   fields: ['name', 'id'],
   totalCount: 0,
   totalPages: 0,

@@ -247,20 +247,20 @@ describe('SwitchFirmware - SwitchUpgradeWizard', () => {
       })).toBeInTheDocument()
 
     const radio71 = await screen.findByRole('radio', {
-      name: /9\.0\.10f_b71 \(release\)/i
+      name: /9\.0\.10f_b71/i
     })
     expect(radio71).toBeInTheDocument()
     userEvent.click(radio71)
     expect(radio71).toBeEnabled()
 
     const radio82 = screen.getByRole('radio', {
-      name: /10\.0\.10_rc82 \(release\)/i
+      name: /10\.0\.10_rc82/i
     })
     userEvent.click(radio82)
     expect(radio82).toBeEnabled()
 
     const radio7x = screen.getByRole('radio', {
-      name: /10\.0\.10_rc55 \(release\)/i
+      name: /10\.0\.10_rc55/i
     })
     userEvent.click(radio7x)
     expect(radio7x).toBeEnabled()

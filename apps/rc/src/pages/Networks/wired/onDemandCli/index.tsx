@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
-import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
-import { useParams }                                              from '@acx-ui/react-router-dom'
-import { useNavigate }                                            from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                           from '@acx-ui/types'
-import { filterByAccess, hasPermission }                          from '@acx-ui/user'
+import { Loader, showActionModal, Table, TableProps, Tooltip }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery }  from '@acx-ui/rc/services'
+import { SwitchCliTemplateModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { useNavigate }                                             from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                            from '@acx-ui/types'
+import { hasCrossVenuesPermission, filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { Notification  } from './styledComponents'
 
@@ -121,14 +121,14 @@ export function OnDemandCliTab () {
         onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox' }}
-        actions={filterByAccess([{
+        rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
+        actions={hasCrossVenuesPermission() ? filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
           scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate('add', { replace: false })
           }
-        }])}
+        }]) : []}
       />
     </Loader></>
   )

@@ -1,6 +1,7 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                                                      from 'lodash'
 
 import {
   CommonResult,
@@ -33,7 +34,8 @@ import {
   SwitchRbacUrlsInfo,
   SwitchRow,
   ApFirmwareBatchOperationType,
-  ApFirmwareStartBatchOperationResult
+  ApFirmwareStartBatchOperationResult,
+  FirmwareType
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -652,17 +654,30 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        // eslint-disable-next-line max-len
-        const apiInfo = FirmwareUrlsInfo[enableRbac ? 'getApModelScheduledFirmware' : 'getScheduledFirmware']
-
-        return createHttpRequest(apiInfo, params)
+        if (enableRbac) {
+          return {
+            ...createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, params),
+            body: JSON.stringify({
+              fields: ['nextApFirmwareSchedules'],
+              page: 1, pageSize: 10000
+            })
+          }
+        } else {
+          return createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+        }
       },
       // eslint-disable-next-line max-len
-      transformResponse: (response: CloudVersion | { id: string }[], _meta, arg: RequestPayload) => {
+      transformResponse: (response: CloudVersion | TableResult<FirmwareVenuePerApModel>, _meta, arg: RequestPayload) => {
         if (arg.enableRbac) {
-          const res = response as { id: string }[]
+          const res = response as TableResult<FirmwareVenuePerApModel>
+          const result = res.data.flatMap(fw => {
+            return fw.nextApFirmwareSchedules?.map(nextFw =>
+              nextFw.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE &&
+              nextFw.versionInfo.version)
+          })
+
           return {
-            scheduleVersionList: res.map(r => r.id)
+            scheduleVersionList: _.uniq(_.compact(result))
           }
         }
         return response as CloudVersion
