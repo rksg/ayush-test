@@ -4,8 +4,10 @@
  * excluding Navigation, SmartEdge, Network Specific, Brands & Logos, Signal icon.
  *
  * Some icons are checking with the designer:
- * Blocked, BulbOff, ChatbotLink, CheckMark, PlaySolid2, StopSolid, SignalDown,
- * SignalLeft, SignalUp, SuccessSolid, TagsOutline, TagsSolid
+ * Blocked, BulbOff, CalendarDateSolid, ChatbotLink, CheckMark, ClockSolid,
+ * Drag, DeleteSolid, DevicesSolid, PlaySolid2, StopSolid, SignalDown, SignalLeft, SignalUp,
+ * SpeedIndicatorSolid, StackDeviceSolid, SuccessSolid, Switch, TagsOutline, TagsSolid
+ * QuestionMarkCircleOutlined, QuestionMarkCircleSolid, WarningTriangleOutlined, WarningTriangleSolid
  *
  */
 import { Icons } from './DynamicIcons'

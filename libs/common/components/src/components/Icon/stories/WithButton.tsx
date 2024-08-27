@@ -65,7 +65,7 @@ export function WithButton () {
             <Divider orientation='left' plain>{ iconName }</Divider>
             <Space>
               <IconWrapper key={`${iconName}-link-16`} className='svg16' title='16px'>
-                <Button type='link' icon={<Icon />}>Text</Button>
+                <Button type='link' icon={<Icon size='sm' />}>Text</Button>
               </IconWrapper>
               <IconWrapper key={`${iconName}-link-24`} className='svg24' title='24px'>
                 <Button type='link' icon={<Icon />}>Text</Button>
@@ -78,7 +78,7 @@ export function WithButton () {
               </IconWrapper>
 
               <IconWrapper key={`${iconName}-default-16`} className='svg16' title='16px'>
-                <Button type='default' icon={<Icon />}>Text</Button>
+                <Button type='default' icon={<Icon size='sm' />}>Text</Button>
               </IconWrapper>
               <IconWrapper key={`${iconName}-default-24`} className='svg24' title='24px'>
                 <Button type='default' icon={<Icon />}>Text</Button>
@@ -91,7 +91,7 @@ export function WithButton () {
               </IconWrapper>
 
               <IconWrapper key={`${iconName}-primary-16`} className='svg16' title='16px'>
-                <Button type='primary' icon={<Icon />}>Text</Button>
+                <Button type='primary' icon={<Icon size='sm' />}>Text</Button>
               </IconWrapper>
               <IconWrapper key={`${iconName}-primary-24`} className='svg24' title='24px'>
                 <Button type='primary' icon={<Icon />}>Text</Button>
