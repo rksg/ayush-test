@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { RolesEnum, ScopeKeys }                                               from '@acx-ui/types'
+import { RolesEnum, ScopeKeys, WifiScopes }                                   from '@acx-ui/types'
 import { AuthRoute, filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { ServiceType }     from '../../constants'
@@ -85,6 +85,8 @@ export function getScopeKeyByPolicy (policyType: PolicyType, oper: PolicyOperati
   const operScope = policyOperScopeMap[oper]
 
   const targetScope = policyTypeScopeMap[policyType]
+
+  if (!targetScope) return [WifiScopes.READ] // Always return wifi read scope if the policy has not defined scope
 
   return targetScope.map(scope => scope + '-' + operScope as ScopeKeys[number])
 }
