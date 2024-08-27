@@ -28,11 +28,6 @@ describe('Intent services', () => {
     path: defaultNetworkPath
   } as PathFilter
 
-  const intentApPayload = {
-    id: '5a4c8253-a2cb-485b-aa81-5ec75db9ceaf',
-    search: ''
-  }
-
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
@@ -659,13 +654,18 @@ describe('Intent services', () => {
   it('should return correct ap details', async () => {
     mockGraphqlQuery(intentAIUrl, 'GetAps', {
       data: {
-        intentFromId: {
+        intent: {
           aps: mockedIntentApFirmware
         }
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.getAps.initiate(intentApPayload)
+      api.endpoints.getAps.initiate({
+        code: 'c1',
+        root: 'r1',
+        sliceId: 's1',
+        search: ''
+      })
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
