@@ -333,7 +333,7 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
           query GetAps($id: String!, $n: Int, $search: String, $key: String) {
-            intentById(id: $id) {
+            intentFromId(id: $id) {
               aps: aps(n: $n, search: $search, key: $key) {
                 name
                 mac
@@ -350,8 +350,8 @@ export const api = intentAIApi.injectEndpoints({
           key: 'aps-on-latest-fw-version'
         }
       }),
-      transformResponse: (response: { intentById: { aps: IntentAp[] } }) =>
-        response.intentById.aps
+      transformResponse: (response: { intentFromId: { aps: IntentAp[] } }) =>
+        response.intentFromId.aps
     })
   })
 })
