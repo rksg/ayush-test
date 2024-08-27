@@ -203,6 +203,11 @@ export function hasCrossVenuesPermission (props?: Permission) {
   // } else {
   //   return hasAllVenues
   // }
+
+  /* Comment out the following code for testing purposes. */
+  if(props?.needGlobalPermission) {
+    return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  }
   return true
 }
 
