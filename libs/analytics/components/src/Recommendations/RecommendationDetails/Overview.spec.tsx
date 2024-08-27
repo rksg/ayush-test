@@ -3,7 +3,7 @@ import { rest } from 'msw'
 import { get }                                                              from '@acx-ui/config'
 import { networkApi }                                                       from '@acx-ui/rc/services'
 import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { recommendationUrl, store, Provider }                               from '@acx-ui/store'
+import { intentAIUrl, store, Provider }                                     from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, fireEvent, waitFor, mockServer } from '@acx-ui/test-utils'
 
 
@@ -42,10 +42,10 @@ describe('Recommendation Overview', () => {
   afterAll(() => mockGet.mockReset())
   it('should render correctly for firmware in R1', async () => {
     const firmwareDetails = transformDetailsResponse(mockedRecommendationFirmware)
-    mockGraphqlQuery(recommendationUrl, 'GetAps', {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', {
       data: {
-        recommendation: {
-          APs: mockedRecommendationApFirmware
+        intentFromId: {
+          aps: mockedRecommendationApFirmware
         }
       }
     })
@@ -67,10 +67,10 @@ describe('Recommendation Overview', () => {
 
   it('should render correctly for firmware in RA SA', async () => {
     const firmwareDetails = transformDetailsResponse(mockedRecommendationFirmware)
-    mockGraphqlQuery(recommendationUrl, 'GetAps', {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', {
       data: {
-        recommendation: {
-          APs: mockedRecommendationApFirmware
+        intentFromId: {
+          aps: mockedRecommendationApFirmware
         }
       }
     })
@@ -92,10 +92,10 @@ describe('Recommendation Overview', () => {
 
   it('should render correctly for firmware drawer', async () => {
     const firmwareDetails = transformDetailsResponse(mockedRecommendationFirmware)
-    mockGraphqlQuery(recommendationUrl, 'GetAps', {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', {
       data: {
-        recommendation: {
-          APs: mockedRecommendationApFirmware
+        intentFromId: {
+          aps: mockedRecommendationApFirmware
         }
       }
     })

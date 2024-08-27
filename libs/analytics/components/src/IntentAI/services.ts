@@ -48,7 +48,7 @@ type IntentApPayload = {
   search: string
 }
 
-type IntentAp = {
+export type IntentAp = {
   name: string
   mac: string
   model: string
