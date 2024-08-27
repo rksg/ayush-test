@@ -23,6 +23,7 @@ interface EdgeQosFormProps {
   steps: EdgeQosFormStep[]
   editData?: EdgeQosViewData
   onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+  onCancel?: () => void
 }
 
 export interface QosBandwidthFormModel extends EdgeQosViewData {
@@ -42,7 +43,7 @@ export const getEdgeQosFormDefaultValues
   }
 
 const QosBandwidthForm = (props: EdgeQosFormProps) => {
-  const { form, steps, editData, onFinish } = props
+  const { form, steps, editData, onFinish, onCancel } = props
   const navigate = useNavigate()
   const isEditMode = Boolean(editData)
 
@@ -82,7 +83,7 @@ const QosBandwidthForm = (props: EdgeQosFormProps) => {
 
   return (<StepsForm
     form={form}
-    onCancel={() => navigate(linkToServiceList)}
+    onCancel={onCancel}
     onFinish={handleFinish}
     editMode={isEditMode}
     initialValues={initFormValues}
