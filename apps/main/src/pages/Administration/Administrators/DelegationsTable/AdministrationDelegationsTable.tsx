@@ -30,7 +30,6 @@ import { filterByAccess, hasRoles } from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
-import DelegationInviteDialog from './DelegationInviteDialog'
 import DelegationInviteDrawer from './DelegationInviteDrawer'
 
 
@@ -42,14 +41,12 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   const { isSupport } = props
   const { $t } = useIntl()
   const params = useParams()
-  const [showDialog, setShowDialog] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false)
   const [isTenantLocked, setIsTenantLocked] = useState(false)
   const [revokeInvitation] = useRevokeInvitationMutation()
   const hasRevokeInvitationPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const hasInvite3rdPartyPermmision = hasRoles([RolesEnum.PRIME_ADMIN])
   const isMultipleVarEnabled = useIsSplitOn(Features.MULTIPLE_VAR_INVITATION_TOGGLE)
-  const is3PartyVarEnabled = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const MAX_VAR_INVITATIONS = 10
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
 
@@ -60,9 +57,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
   const maxInvitationReached = Boolean(data?.length) && !shouldInvite3rdPartyEnabled
 
-  const handleClickInviteDelegation = () => {
-    is3PartyVarEnabled ? setShowDrawer(true) : setShowDialog(true)
-  }
+  const handleClickInviteDelegation = () => {setShowDrawer(true)}
 
   const delegationRevokeInvitation= (rowData: Delegation) => {
     setIsTenantLocked(true)
@@ -108,8 +103,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
 
   const columns: TableProps<Delegation>['columns'] = [
     {
-      title: is3PartyVarEnabled ? $t({ defaultMessage: 'Admin Name' })
-        : $t({ defaultMessage: 'Partner Name' }),
+      title: $t({ defaultMessage: 'Admin Name' }),
       key: 'delegatedToName',
       dataIndex: 'delegatedToName',
       sorter: { compare: sortProp('delegatedToName', defaultSort) },
@@ -150,7 +144,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
           return (_b - _a) as SortResult
         }) },
       render: (_, row) => {
-        return <Button type={is3PartyVarEnabled ? 'link' : 'default'}
+        return <Button type={'link'}
           onClick={handleClickRevokeInvitation(row)}
           disabled={isTenantLocked}
         >
@@ -168,9 +162,7 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
   if (!isSupport && hasInvite3rdPartyPermmision) {
     tableActions.push({
       label: isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Add Delegated Admin' })
-        : (is3PartyVarEnabled
-          ? $t({ defaultMessage: 'Invite 3rd Party Admin' })
-          : $t({ defaultMessage: 'Invite 3rd Party Administrator' })),
+        : ($t({ defaultMessage: 'Invite 3rd Party Admin' })),
       disabled: maxInvitationReached,
       onClick: handleClickInviteDelegation
     })
@@ -234,18 +226,11 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
       }
     ]}>
       {!isGroupBasedLoginEnabled && <UI.TableTitleWrapper direction='vertical'>
-        <Subtitle level={4}>
-          {is3PartyVarEnabled
-            ? $t({ defaultMessage: '3rd Party Administrators' })
-            : $t({ defaultMessage: '3rd Party Administrator' })}
-        </Subtitle>
-        <Subtitle level={5}>
-          {!is3PartyVarEnabled &&
-            $t({ defaultMessage: 'You can delegate access rights to a 3rd party administrator.' }) }
+        <Subtitle level={4}>{$t({ defaultMessage: '3rd Party Administrators' })}
         </Subtitle>
       </UI.TableTitleWrapper>}
 
-      {is3PartyVarEnabled ? <Table
+      <Table
         columns={columns}
         dataSource={data}
         rowKey='id'
@@ -256,27 +241,12 @@ export const AdministrationDelegationsTable = (props: AdministrationDelegationsT
         actions={filterByAccess(tableActions)}
         rowActions={rowActions}
         rowSelection={{ type: 'radio' }}
-      /> :
-        <Table
-          columns={columns}
-          dataSource={data}
-          rowKey='id'
-          locale={{
-          // eslint-disable-next-line max-len
-            emptyText: <Empty description={$t({ defaultMessage: 'No 3rd Party Administrator Invited' })} />
-          }}
-          actions={filterByAccess(tableActions)}
-        />}
+      />
 
-      {is3PartyVarEnabled
-        ? <DelegationInviteDrawer
-          visible={showDrawer}
-          setVisible={setShowDrawer}
-        />
-        : <DelegationInviteDialog
-          visible={showDialog}
-          setVisible={setShowDialog}
-        />}
+      <DelegationInviteDrawer
+        visible={showDrawer}
+        setVisible={setShowDrawer}
+      />
     </Loader>
   )
 }

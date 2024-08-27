@@ -40,7 +40,6 @@ describe('Graph', () => {
       title='Current'
       data={deriveInterfering(sample, BandEnum._5_GHz)}
       zoomScale={zoomScale}
-      grayBackground={false}
     />)
     const fragment = asFragment()
     fragment.querySelector('div[_echarts_instance_^="ec_"]')?.removeAttribute('_echarts_instance_')

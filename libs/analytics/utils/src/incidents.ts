@@ -155,7 +155,7 @@ export function impactedArea (path: NetworkPath, sliceValue: string) {
     : sliceValue
 }
 
-export function incidentScope (incident: Incident) {
+export function incidentScope (incident: Pick<Incident, 'sliceType' | 'sliceValue' | 'path'>) {
   const { $t } = getIntl()
   const scope = $t({
     defaultMessage: '{nodeType}: {nodeName}',
