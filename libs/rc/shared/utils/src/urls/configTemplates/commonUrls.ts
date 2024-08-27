@@ -322,10 +322,5 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/networkActivations/mappings',
     newApi: true
-  },
-  getVLANPoolPolicyListTemplate: {
-    method: 'post',
-    url: '/templates/vlanPoolProfiles/query',
-    newApi: true
   }
 }

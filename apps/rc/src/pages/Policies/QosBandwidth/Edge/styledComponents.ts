@@ -1,7 +1,13 @@
 import styled, { createGlobalStyle } from 'styled-components/macro'
 
-import { EyeOpenSolid, StarSolid } from '@acx-ui/icons'
+import { EyeOpenSolid } from '@acx-ui/icons'
 
+export const InfoMargin = styled.div`
+  margin: 10px 10px;
+`
+export const InstancesMargin = styled.div`
+  margin: 10px 0px;
+`
 export const toolTipClassName = 'qos-traffic-class-tooltip-popover'
 
 export const ToolTipStyle = createGlobalStyle`
@@ -15,19 +21,6 @@ export const ToolTipStyle = createGlobalStyle`
   }
 `
 export const EyeOpenSolidCustom = styled(EyeOpenSolid)`
-  transform: scale(1.75);
-  path:nth-child(1){
-    stroke: currentColor;
-  }
-  path:nth-child(2){
-    fill: currentColor;
-  }
-  path:nth-child(3){
-    stroke: currentColor;
-  }
-`
-
-export const StarSolidCustom = styled(StarSolid)`
   transform: scale(1.75);
   path:nth-child(1){
     stroke: currentColor;
