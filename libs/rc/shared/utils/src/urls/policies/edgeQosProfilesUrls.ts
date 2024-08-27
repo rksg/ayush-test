@@ -3,7 +3,7 @@ import { ApiInfo } from '@acx-ui/utils'
 export const EdgeQosProfilesUrls: { [key: string]: ApiInfo } = {
   getEdgeQosProfileById: {
     method: 'get',
-    url: '/edgeQosProfiles/:qosProfileId',
+    url: '/edgeQosProfiles/:policyId',
     newApi: true
   },
   addEdgeQosProfile: {
@@ -13,17 +13,27 @@ export const EdgeQosProfilesUrls: { [key: string]: ApiInfo } = {
   },
   updateEdgeQosProfile: {
     method: 'put',
-    url: '/edgeQosProfiles/:qosProfileId',
+    url: '/edgeQosProfiles/:policyId',
     newApi: true
   },
   deleteEdgeQosProfile: {
     method: 'delete',
-    url: '/edgeQosProfiles/:qosProfileId',
+    url: '/edgeQosProfiles/:policyId',
     newApi: true
   },
   getEdgeQosProfileViewDataList: {
     method: 'post',
     url: '/edgeQosProfiles/query',
+    newApi: true
+  },
+  activateEdgeCluster: {
+    method: 'put',
+    url: '/edgeQosProfiles/:policyId/venues/:venueId/edgeClusters/:edgeClusterId',
+    newApi: true
+  },
+  deactivateEdgeCluster: {
+    method: 'delete',
+    url: '/edgeQosProfiles/:policyId/venues/:venueId/edgeClusters/:edgeClusterId',
     newApi: true
   }
 }

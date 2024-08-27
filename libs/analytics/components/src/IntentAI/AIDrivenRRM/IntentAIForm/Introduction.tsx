@@ -41,11 +41,9 @@ export const SliderAfter = (props: { image: string }) => {
   return (
     <UI.SliderAfter>
       <UI.LabelStyleAfter>
-        {($t({ defaultMessage: 'Forecast' }))}
-        <UI.SliderText>
-          {($t({ defaultMessage: 'with' }))}&nbsp;
-          <Icon feature={aiFeatures.RRM} size='xs' />
-        </UI.SliderText>
+        <span>{($t({ defaultMessage: 'Forecast' }))}</span>
+        <span>{($t({ defaultMessage: 'with' }))}</span>
+        <Icon feature={aiFeatures.RRM} size='xs' />
       </UI.LabelStyleAfter>
       <img
         src={props.image}
