@@ -93,9 +93,9 @@ const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
 })
 
 export function useIntentAICRRMQuery () {
-  const { system: root, zone: sliceId, code } = useParams() as {
-    system: string
-    zone: string
+  const { root, sliceId, code } = useParams() as {
+    root: string
+    sliceId: string
     code: keyof typeof intentBandMapping
   }
   const band = intentBandMapping[code]

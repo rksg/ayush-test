@@ -33,12 +33,12 @@ const components = {
 }
 
 const intent = {
-  system: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-  zone: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+  sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
   code: 'xyz-intent-code'
 }
 
-const params = { system: intent.system, zone: intent.zone, code: intent.code }
+const params = { root: intent.root, sliceId: intent.sliceId, code: intent.code }
 
 describe('IntentAIForm', () => {
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe('IntentAIForm', () => {
   })
 
   it('handle no matching code', async () => {
-    const params = { system: intent.system, zone: intent.zone, code: 'not-existed' }
+    const params = { root: intent.root, sliceId: intent.sliceId, code: 'not-existed' }
     const { container } = render(<components.IntentAIForm />, { wrapper, route: { params } })
 
     expect(container).toBeEmptyDOMElement()

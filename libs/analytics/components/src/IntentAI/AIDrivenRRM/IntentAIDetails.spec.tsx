@@ -29,8 +29,8 @@ const mockIntentContextWith = (data: Partial<Intent>) => {
   return {
     params: {
       code: mockedIntentCRRM.code,
-      system: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-      zone: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
+      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
     }
   }
 }

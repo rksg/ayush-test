@@ -74,7 +74,7 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
             timestamp
             result
           }
-          }`
+        }`
   })
     .join('\n')
     .trim()
