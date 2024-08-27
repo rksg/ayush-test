@@ -1,6 +1,6 @@
 import { graphql, rest } from 'msw'
 
-import { useIsSplitOn  }                          from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features  }                from '@acx-ui/feature-toggle'
 import { apApi, venueApi, networkApi, clientApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -33,7 +33,8 @@ import {
   GuestList,
   GuestClients,
   VenueList,
-  dpskPassphraseClient
+  dpskPassphraseClient,
+  nonRbacClientRadioType
 } from '../../__tests__/fixtures'
 
 import { ClientOverviewWidget } from './ClientOverviewWidget'
@@ -58,6 +59,8 @@ jest.mock('@acx-ui/utils', () => ({
 jest.mock('./TopApplications', () => ({
   TopApplications: () => <div data-testid={'rc-TopApplications'} title='TopApplications' />
 }))
+
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
 
 const params = {
   tenantId: 'tenant-id',
@@ -202,6 +205,9 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.post(ClientUrlsInfo.getClients.url,
         (_, res, ctx) => res(ctx.json(GuestClients))
       ),
+      rest.post(ClientUrlsInfo.getClientList.url,
+        (_, res, ctx) => res(ctx.json(nonRbacClientRadioType))
+      ),
       rest.post(
         SwitchRbacUrlsInfo.getSwitchClientList.url,
         (_, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
@@ -343,6 +349,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
         expect(await screen.findByText('Guest Details')).toBeVisible()
         expect(await screen.findByText(GuestList.data[3].emailAddress)).toBeVisible()
         expect(await screen.findByText(GuestList.data[3].mobilePhoneNumber!)).toBeVisible()
+        expect(await screen.findByText('a/n/ac/ax/be')).toBeVisible()
       })
 
       it('should render dpsk client correctly', async () => {
@@ -541,7 +548,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
       })
 
       it('should render historical client (dpsk) correctly', async () => {
-        jest.mocked(useIsSplitOn).mockReturnValue(false)
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('historical')
         mockServer.use(
           rest.get(WifiUrlsInfo.getNetwork.url,
@@ -587,6 +594,7 @@ describe('ClientOverviewTab - ClientProperties', () => {
 
       it('should render correctly when search parameters is disappeared', async () => {
         jest.spyOn(URLSearchParams.prototype, 'get').mockReturnValue('')
+        jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
         store.dispatch(dataApi.util.resetApiState())
         mockServer.use(
           rest.get(ClientUrlsInfo.getClientDetails.url,
