@@ -2,13 +2,13 @@
 import { rest } from 'msw'
 
 import { edgeApi }                                                      from '@acx-ui/rc/services'
-import { EdgeUrlsInfo }                                                 from '@acx-ui/rc/utils'
+import { EdgeUrlsInfo, IncompatibilityFeatures }                        from '@acx-ui/rc/utils'
 import { store, Provider }                                              from '@acx-ui/store'
 import { act, mockServer, render, screen, within, renderHook, waitFor } from '@acx-ui/test-utils'
 
-import { useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
-import { CompatibilityItemProps }                 from '../CompatibilityDrawer/CompatibilityItem'
-import { FeatureItemProps }                       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
+import { getSdLanDetailsCompatibilitiesDrawerData, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
+import { CompatibilityItemProps }                                                           from '../CompatibilityDrawer/CompatibilityItem'
+import { FeatureItemProps }                                                                 from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 import {
   mockEdgeSdLanCompatibilities,
   mockEdgeSdLanApCompatibilites
@@ -53,22 +53,25 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
     )
   })
 
-  it('should fetch and display correctly', async () => {
+  it('should fetch and display SD-LAN correctly', async () => {
     const { result } = renderHook(() => useEdgeSdLanDetailsCompatibilitiesData('mock_service'),
       { wrapper: Provider })
     await waitFor(() => expect(result.current.isLoading).toBe(false))
+    const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.SD_LAN)
 
     render(<Provider>
       <EdgeSdLanDetailCompatibilityDrawer
         title='Incompatibility Details'
         visible={true}
-        data={result.current.sdLanCompatibilities}
+        featureName={IncompatibilityFeatures.SD_LAN}
+        data={sdlanData}
         onClose={mockedCloseDrawer}
       /></Provider>, {
       route: { params: { tenantId }, path: '/:tenantId' }
     })
 
     await screen.findByText('Incompatibility Details')
+    expect(await screen.findByText('SD-LAN')).toBeInTheDocument()
     const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
     expect(compatibilityItems.length).toBe(2)
 
@@ -76,14 +79,45 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
     expect(features.length).toBe(2)
 
     const edge = compatibilityItems[0]
-    expect(await within(edge).findByText(/SmartEdge Firmware/)).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: /SmartEdge Firmware/ })).toBeInTheDocument()
     expect(within(edge).getByText('2.1.0.200')).toBeValid()
-    expect(within(edge).getByText('7 / 14')).toBeValid()
+    expect(within(edge).getByText('5 / 14')).toBeValid()
 
     const wifi = compatibilityItems[1]
-    expect(await within(wifi).findByText(/AP Firmware/)).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: /AP Firmware/ })).toBeInTheDocument()
     expect(within(wifi).getByText('7.0.0.0.234')).toBeValid()
     expect(within(wifi).getByText('WIFI_7')).toBeValid()
     expect(within(wifi).getByText('4 / 16')).toBeValid()
+  })
+
+  it('should fetch and display Tunnel Profile correctly', async () => {
+    const { result } = renderHook(() => useEdgeSdLanDetailsCompatibilitiesData('mock_service'),
+      { wrapper: Provider })
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+    const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.TUNNEL_PROFILE)
+
+    render(<Provider>
+      <EdgeSdLanDetailCompatibilityDrawer
+        title='Incompatibility Details'
+        visible={true}
+        featureName={IncompatibilityFeatures.TUNNEL_PROFILE}
+        data={sdlanData}
+        onClose={mockedCloseDrawer}
+      /></Provider>, {
+      route: { params: { tenantId }, path: '/:tenantId' }
+    })
+
+    await screen.findByText('Incompatibility Details')
+    expect(await screen.findByText('Tunnel Profile')).toBeInTheDocument()
+    const compatibilityItems = await screen.findAllByTestId('CompatibilityItem')
+    expect(compatibilityItems.length).toBe(1)
+
+    const features = screen.getAllByTestId('FeatureItem')
+    expect(features.length).toBe(1)
+
+    const edge = compatibilityItems[0]
+    expect(await screen.findByRole('link', { name: /SmartEdge Firmware/ })).toBeInTheDocument()
+    expect(within(edge).getByText('2.1.0.400')).toBeValid()
+    expect(within(edge).getByText('7 / 14')).toBeValid()
   })
 })
