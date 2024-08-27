@@ -10,13 +10,12 @@ import { useWifiNetworkListQuery }                                      from '@a
 import { truthy }                                                       from '@acx-ui/utils'
 
 import { DescriptionSection }          from '../../DescriptionSection'
-import { useGetApsQuery }              from '../../IntentAI/services'
 import { codes, statusTrailMsgs }      from '../config'
 import { RecommendationWlan }          from '../services'
 import { PriorityIcon, OptimizedIcon } from '../styledComponents'
 
-import { DownloadRRMComparison }                    from './Graph/DownloadRRMComparison'
-import { EnhancedRecommendation, RecommendationAp } from './services'
+import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
+import { EnhancedRecommendation, RecommendationAp, useGetApsQuery } from './services'
 
 const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   { id: string, aps: RecommendationAp[], visible: boolean, onClose: () => void }) => {
