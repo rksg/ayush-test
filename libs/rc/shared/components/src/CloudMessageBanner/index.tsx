@@ -76,20 +76,20 @@ export function CloudMessageBanner () {
   const checkWifiScheduleExists = async () => {
     return await getCloudScheduleVersion({ params, enableRbac: isUpgradeByModelEnabled }).unwrap()
       .then(cloudScheduleVersion => {
-        if (cloudScheduleVersion) {
-          const updateVersion = {
-            ...version,
-            scheduleVersionList: cloudScheduleVersion?.scheduleVersionList
-          }
-          setVersion(updateVersion)
-          setNewWifiScheduleExists(
-            isThereNewSchedule(
-              updateVersion as CloudVersion,
-              userSettings as UserSettingsUIModel,
-              dismissUpgradeSchedule
-            )
-          )
+        if (!cloudScheduleVersion) return
+
+        const updateVersion = {
+          ...version,
+          scheduleVersionList: cloudScheduleVersion.scheduleVersionList
         }
+        setVersion(updateVersion)
+        setNewWifiScheduleExists(
+          isThereNewSchedule(
+            updateVersion as CloudVersion,
+            userSettings as UserSettingsUIModel,
+            dismissUpgradeSchedule
+          )
+        )
       }).catch((error) => {
         console.log(error) // eslint-disable-line no-console
       })

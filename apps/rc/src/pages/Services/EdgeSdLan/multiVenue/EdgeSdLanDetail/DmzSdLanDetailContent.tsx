@@ -10,17 +10,20 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { SdLanApTable }    from './SdLanApTable'
 import { SmartEdgesTable } from './SmartEdgesTable'
 import * as UI             from './styledComponents'
 import { VenueTable }      from './VenueTable'
 
-import { getVenueTableData } from '.'
+import { getVenueTableData, useSdlanApListTableQuery } from '.'
 
 export const DmzSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => {
   const { data = {} } = props
   const { $t } = useIntl()
 
   const venueTableData = getVenueTableData(data)
+  const venueList = venueTableData.map(v => ({ venueId: v.venueId, venueName: v.venueName }))
+  const apListTableQuery = useSdlanApListTableQuery(data)
 
   const sdLanInfo = [{
     title: $t({ defaultMessage: 'Service Health' }),
@@ -92,6 +95,19 @@ export const DmzSdLanDetailContent = (props: { data?: EdgeMvSdLanViewData }) => 
           key='venues'
         >
           <VenueTable sdLanVenueData={venueTableData} />
+        </Tabs.TabPane>
+        <Tabs.TabPane
+          tab={$t(
+            { defaultMessage: 'AP({count})' },
+            { count: apListTableQuery?.data?.totalCount ?? 0 }
+          )}
+          key='ap'
+        >
+          <SdLanApTable
+            tableQuery={apListTableQuery}
+            venueList={venueList}
+            clusterId={data.edgeClusterId ?? ''}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'SmartEdges({count})' }, { count: 2 })}
