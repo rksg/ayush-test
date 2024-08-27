@@ -72,7 +72,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
     }
   }, [data])
 
-  const handleLbsServerProfile = async (formData: LbsServerProfileContext) => {
+  const handleLbsServerProfile = (formData: LbsServerProfileContext) => {
     const payload = { ...formData }
     if (isDuplicateProfile(payload)) {
       return
@@ -82,7 +82,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
 
   const isDuplicateProfile = (payload: LbsServerProfileContext) => {
     const theOtherProfiles = _.filter(list?.data, function (o) {
-      return params?.policyId !== o.id
+      return params?.policy !== o.id
     })
     const isDuplicated = _.some(theOtherProfiles, function (o) {
       return payload.lbsVenueName === o.lbsVenueName
