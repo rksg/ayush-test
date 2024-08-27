@@ -2,9 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeErrorsFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                         from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                              from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeErrorsFixtures, EdgeUrlsInfo, EdgeCompatibilityFixtures, FirmwareUrlsInfo, EdgeFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                            from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
   screen,
@@ -19,6 +19,8 @@ const {
   mockValidationFailedDataWithDefinedCode,
   mockValidationFailedDataWithUndefinedCode
 } = EdgeErrorsFixtures
+const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
+const { mockedVenueFirmwareList } = EdgeFirmwareFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -38,20 +40,22 @@ describe('AddEdge', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdge.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
+        (_, res, ctx) => res(ctx.status(202))),
       rest.post(
         EdgeUrlsInfo.addEdgeCluster.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
+        (_, res, ctx) => res(ctx.status(202))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      ),
+        (_, res, ctx) => res(ctx.json(mockVenueData))),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json(mockClusterData))
-      )
+        (_, res, ctx) => res(ctx.json(mockClusterData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
     )
   })
 
@@ -194,16 +198,19 @@ describe('AddEdge api fail', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.addEdge.url,
-        (req, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithDefinedCode))
-      ),
+        (_, res, ctx) => res(ctx.status(422), ctx.json(mockValidationFailedDataWithDefinedCode))),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueData))
-      ),
+        (_, res, ctx) => res(ctx.json(mockVenueData))),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
-        (req, res, ctx) => res(ctx.json(mockClusterData))
-      )
+        (_, res, ctx) => res(ctx.json(mockClusterData))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeFeatureSets.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList)))
     )
   })
 

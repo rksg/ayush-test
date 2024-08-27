@@ -13,9 +13,13 @@ import {
   IncompatibilityFeatures, CompatibilityType, CompatibilityDeviceEnum
 } from '@acx-ui/rc/utils'
 
-import { useEdgeCompatibilityRequirementData, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
-import { CompatibilityDrawer }                                                         from '../CompatibilityDrawer'
-import { EdgeSdLanDetailCompatibilityDrawer }                                          from '../EdgeSdLanDetailCompatibilityDrawer'
+import {
+  useEdgeCompatibilityRequirementData,
+  useEdgeSdLanDetailsCompatibilitiesData,
+  getSdLanDetailsCompatibilitiesDrawerData
+} from '../../useEdgeActions/compatibility'
+import { CompatibilityDrawer }                from '../CompatibilityDrawer'
+import { EdgeSdLanDetailCompatibilityDrawer } from '../EdgeSdLanDetailCompatibilityDrawer'
 
 export enum EdgeCompatibilityType {
   SD_LAN = 'SD-LAN',
@@ -69,6 +73,7 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
   return (type === EdgeCompatibilityType.SD_LAN || type === EdgeCompatibilityType.ALONE)
     ? <EdgeSdLanDetailCompatibilityDrawer
       visible={true}
+      featureName={featureName!}
       title={type === EdgeCompatibilityType.ALONE
         ? $t({ defaultMessage: 'Compatibility Requirement' })
         : $t({ defaultMessage: 'Incompatibility Details' })
@@ -79,7 +84,7 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
       }
       data={type === EdgeCompatibilityType.ALONE
         ? featureInfos
-        : sdLanCompatibilities
+        : getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, featureName!)
       }
       onClose={onClose}
     />

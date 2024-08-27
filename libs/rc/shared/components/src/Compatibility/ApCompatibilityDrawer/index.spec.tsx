@@ -150,7 +150,7 @@ describe('ApGeneralCompatibilityDrawer', () => {
       </Provider>, {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
-    await screen.findByText(/To utilize the/)
+    await screen.findByText(/To use the/)
     screen.getByText('DSAE')
     expect(screen.getByText('6.2.3.103.251')).toBeInTheDocument()
     const icon = screen.getByTestId('CloseSymbol')
