@@ -7,12 +7,14 @@ import AutoSizer    from 'react-virtualized-auto-sizer'
 import { KpiThresholdType, KPIHistogramResponse, healthApi }                     from '@acx-ui/analytics/services'
 import { kpiConfig, productNames }                                               from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, cssStr, VerticalBarChart, showToast, NoData } from '@acx-ui/components'
+import { store }                                                                 from '@acx-ui/store'
 import type { TimeStamp }                                                        from '@acx-ui/types'
 import type { AnalyticsFilter }                                                  from '@acx-ui/utils'
 
 import GenericError         from '../../GenericError'
 import { defaultThreshold } from '../Kpi'
 
+import { api }          from './../../HealthTabs/WiredTab/SummaryBoxes/services'
 import  HistogramSlider from './HistogramSlider'
 import  ThresholdConfig from './ThresholdConfigContent'
 
@@ -69,8 +71,8 @@ function Histogram ({
   disabled?: boolean;
 }) {
   const { $t } = useIntl()
-  const { histogram, text,
-    enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { histogram, text, enableSwitchFirmwareFilter,
+    refreshWiredSummary } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
@@ -91,6 +93,12 @@ function Histogram ({
           defaultMessage: 'Threshold set successfully.'
         })
       })
+      if(refreshWiredSummary) {
+        store.dispatch(
+          api.util.invalidateTags([
+            { type: 'Health', id: 'WIRED_SUMMARY' }
+          ]))
+      }
     }
   }
   /* istanbul ignore next */
