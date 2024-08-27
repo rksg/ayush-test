@@ -11,8 +11,13 @@ import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                    from '@acx-ui/rc/utils'
 
 import {
-  useIntentWlansQuery,
-} from '../../services'
+  useRecommendationWlansQuery,
+} from '../../../Recommendations/services'
+
+// TODO
+// import {
+//   useIntentWlansQuery,
+// } from '../../services'
 import { useIntentContext }                                                           from '../../IntentContext'
 
 type Wlan = {
@@ -36,7 +41,7 @@ export default function WlanSelection() {
   const selected = wlans.filter(wlan => !wlan.excluded)
   const selectedWlans = selected.length ? selected : wlans
   const venueId = path?.filter(({ type }) => type === 'zone')?.[0].name
-  const raIQuery = useIntentWlansQuery({ id, code }, { skip: !isMlisa })
+  const raIQuery = useRecommendationWlansQuery({ id }, { skip: !isMlisa })
   let available: Wlan[] | undefined
   const r1Networks = useVenueRadioActiveNetworksQuery({
     params: { venueId },
