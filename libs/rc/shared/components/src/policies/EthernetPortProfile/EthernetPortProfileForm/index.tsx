@@ -7,7 +7,6 @@ import { useLocation, useNavigate }                                             
 
 import { PageHeader, PasswordInput, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
-import { EthernetPortAAASettings }                                 from '@acx-ui/rc/components'
 import {
   ApLanPortTypeEnum,
   LocationExtended,
@@ -27,6 +26,8 @@ import {
   getEthernetPortCredentialTypeOptions
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+
+import { EthernetPortAAASettings } from '../AAASettings/EthernetPortAAASettings'
 
 interface EthernetPortProfileFormProps {
   title: string
@@ -92,11 +93,6 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
 
   //   return checkObjectNotExists(list, value, $t({ defaultMessage: 'Profile Name' }))
   // }
-
-  const SupplicantTypeOptions = {
-    [EthernetPortSupplicantType.CUSTOM]: $t({ defaultMessage: 'Custom Auth' }),
-    [EthernetPortSupplicantType.MAC_AUTH]: $t({ defaultMessage: 'Use AP MAC Address Auth' })
-  }
 
   const portTypeAndAuthTypeMapping = {
     [EthernetPortAuthType.SUPPLICANT]: [ApLanPortTypeEnum.TRUNK],
@@ -165,7 +161,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
 
   return (
     <>
-    {!isNoPageHeader &&
+      {!isNoPageHeader &&
       <PageHeader
         title={title}
         breadcrumb={[
@@ -180,7 +176,7 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
           }
         ]}
       />
-    }
+      }
       <StepsForm
         form={formRef}
         onFinish={handleFinish}
