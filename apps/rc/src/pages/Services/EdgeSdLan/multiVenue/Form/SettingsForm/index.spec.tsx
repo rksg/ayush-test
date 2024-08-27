@@ -358,7 +358,7 @@ describe('Edge SD-LAN form: settings', () => {
     const formBody = await checkBasicSettings()
 
     // show fw info
-    screen.getByText('Cluster Firmware Verson: 2.1.0.580')
+    screen.getByText('Cluster Firmware Version: 2.1.0.580')
     const fwWarningIcon = await screen.findByTestId('WarningCircleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
@@ -372,7 +372,7 @@ describe('Edge SD-LAN form: settings', () => {
       await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
       'clusterId_5')
 
-    screen.getByText('Cluster Firmware Verson: 2.1.0.480')
+    screen.getByText('Cluster Firmware Version: 2.1.0.480')
     const fwWarningIcons = await screen.findAllByTestId('WarningCircleSolid')
     expect(fwWarningIcons.length).toBe(2)
     await userEvent.hover(fwWarningIcons[1])
