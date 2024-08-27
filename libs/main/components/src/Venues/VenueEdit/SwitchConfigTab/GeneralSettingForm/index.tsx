@@ -344,7 +344,8 @@ export function GeneralSettingForm () {
                       }}
                     />
                   </Tooltip>
-                  <Button ghost
+                  <Button
+                    ghost
                     role='configBtn'
                     icon={<ConfigurationOutlined size='sm' />}
                     onClick={() => {

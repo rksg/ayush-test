@@ -20,6 +20,10 @@ export const TableContainer = styled.div`
     padding-top: 0;
     padding-bottom: 0;
     vertical-align: baseline;
+    .ant-radio-group {
+      position: relative;
+      top: 1px;
+    }
   }
   .ant-pro-table .ant-table-tbody > tr > td:first-child{
     color: var(--acx-neutrals-60);
@@ -29,12 +33,9 @@ export const TableContainer = styled.div`
   .ant-pro-table .ant-table-tbody > tr > td:nth-child(4) {
     text-align: center;
   }
-  .ant-pro-table .ant-table-tbody > tr > td:nth-child(5) {
-    top: 3px;
-  }
   button{
-    align-items: start;
-    vertical-align: baseline;
+    align-items: center;
+    vertical-align: middle;
   }
 `
 
