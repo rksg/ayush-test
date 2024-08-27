@@ -9,6 +9,7 @@ describe('Switch Pipes', () => {
     expect(transformConfigType(ConfigTypeEnum.AAA_SERVER)).toBe('AAA Server')
     expect(transformConfigType(ConfigTypeEnum.AAA_SETTING)).toBe('AAA Setting')
     expect(transformConfigType(ConfigTypeEnum.DNS_SERVER)).toBe('DNS Server')
+    expect(transformConfigType(ConfigTypeEnum.NTP_SERVER)).toBe('NTP Server')
     expect(transformConfigType(ConfigTypeEnum.LAG_SETTINGS)).toBe('LAG Setting')
     expect(transformConfigType(ConfigTypeEnum.MODEL)).toBe('Model')
     expect(transformConfigType(ConfigTypeEnum.OVERWRITE)).toBe('Overwrite')
