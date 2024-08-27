@@ -1,46 +1,27 @@
-import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteEdgeQosProfileMutation,
   useGetEdgeClusterListQuery,
   useGetEdgeQosProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeQosTrafficClass,
   EdgeQosViewData,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  TrafficClassSetting,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
-import * as UI from './styledComponents'
 
-const genClassTextForToolTip =
-  (trafficClass: string, priority: string, priorityScheduling: boolean) => {
-    const trafficClassEnumValue =
-    EdgeQosTrafficClass[trafficClass as keyof typeof EdgeQosTrafficClass]
-    const capFirstClass = _.capitalize(trafficClassEnumValue)
-    const capFirstPriority = _.capitalize(priority)
-    const starSolidWhite = priorityScheduling === true ?
-      <UI.StarSolidCustom
-        height={8}
-        width={12}
-        color={cssStr('--acx-primary-white')}/> : undefined
-    return <>{capFirstClass + ' (' + capFirstPriority + ') '}{starSolidWhite}</>
-  }
-
-const genBandWidthTextForToolTip = (bandwidth: number) => {
-  return bandwidth ? bandwidth + '%' : ''
-}
+import * as UI from '../styledComponents'
 
 const EdgeQosBandwidthTable = () => {
 
@@ -97,33 +78,6 @@ const EdgeQosBandwidthTable = () => {
 
   const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeQosProfileMutation()
 
-  const tracfficClassColumns: TableProps<TrafficClassSetting>['columns'] = [
-    {
-      key: 'trafficClass',
-      title: $t({ defaultMessage: 'Class' }),
-      dataIndex: 'trafficClass',
-      render: function (_, row) {
-        return genClassTextForToolTip(row.trafficClass, row.priority, row.priorityScheduling)
-      }
-    },
-    {
-      key: 'minBandwidth',
-      title: $t({ defaultMessage: 'Guaranteed BW' }),
-      dataIndex: 'minBandwidth',
-      render: function (_, row) {
-        return genBandWidthTextForToolTip(row.minBandwidth)
-      }
-    },
-    {
-      key: 'maxBandwidth',
-      title: $t({ defaultMessage: 'Max BW' }),
-      dataIndex: 'maxBandwidth',
-      render: function (_, row) {
-        return genBandWidthTextForToolTip(row.maxBandwidth)
-      }
-    }
-  ]
-
   const columns: TableProps<EdgeQosViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -160,11 +114,8 @@ const EdgeQosBandwidthTable = () => {
       dataIndex: 'tracfficClass',
       render: function (_, row) {
         return <Tooltip title={
-          <Table<TrafficClassSetting>
-            type='compactBordered'
-            style={{ width: 400 }}
-            columns={tracfficClassColumns}
-            dataSource={row.trafficClassSettings}
+          <TrafficClassSettingsTable
+            trafficClassSettings={row.trafficClassSettings || []}
           />
         }
         placement='bottom'
@@ -186,13 +137,14 @@ const EdgeQosBandwidthTable = () => {
       sorter: true,
       filterable: clusterOptions,
       render: function (_, row) {
-        return row.edgeClusterIds.length
+        return row?.edgeClusterIds?.length
       }
     }
   ]
 
   const rowActions: TableProps<EdgeQosViewData>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -208,6 +160,7 @@ const EdgeQosBandwidthTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -219,7 +172,7 @@ const EdgeQosBandwidthTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteQos({ params: { qosProfileId: rows[0].id } })
+            deleteQos({ params: { policyId: rows[0].id } })
               .then(clearSelection)
           }
         })
@@ -242,8 +195,11 @@ const EdgeQosBandwidthTable = () => {
           }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            scopeKey={[EdgeScopes.CREATE]}
+            to={getPolicyRoutePath({
+              type: PolicyType.QOS_BANDWIDTH,
+              oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add QoS Bandwidth Profile' })}</Button>
           </TenantLink>
         ])}

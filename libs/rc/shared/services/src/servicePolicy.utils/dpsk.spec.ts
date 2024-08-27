@@ -1,20 +1,12 @@
 /* eslint-disable max-len */
-import { BaseQueryApi } from '@reduxjs/toolkit/query'
-import _                from 'lodash'
+import _ from 'lodash'
 
 import { ExpirationType, PassphraseFormatEnum } from '@acx-ui/rc/utils'
 
+import { mockQueryApi }            from './__tests__/fixtures'
 import { addDpskFn, updateDpskFn } from './dpsk'
 
-const mockQueryApi: BaseQueryApi = {
-  dispatch: jest.fn(),
-  getState: jest.fn(),
-  abort: jest.fn(),
-  extra: {},
-  signal: new AbortController().signal,
-  endpoint: '',
-  type: 'query'
-}
+
 const mockedCreateHttpRequest = jest.fn()
 const mockedBatchApi = jest.fn()
 jest.mock('@acx-ui/utils', () => ({
@@ -24,7 +16,7 @@ jest.mock('@acx-ui/utils', () => ({
   batchApi: () => mockedBatchApi()
 }))
 
-describe('rogueAp.utils', () => {
+describe('dpsk.utils', () => {
   afterEach(() => {
     jest.clearAllMocks()
     mockedBatchApi.mockRestore()

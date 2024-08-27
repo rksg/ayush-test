@@ -37,7 +37,9 @@ describe('intentAI services', () => {
           projected: 0
         },
         statusTrail: mockedIntentCRRM.statusTrail,
-        preferences: undefined
+        preferences: undefined,
+        currentValue: { recommended: 'crrm', txPowerAPCount: 0 },
+        recommendedValue: { recommended: 'crrm', txPowerAPCount: 0 }
       })
     })
   })

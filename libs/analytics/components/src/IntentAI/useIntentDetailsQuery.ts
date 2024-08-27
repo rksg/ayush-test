@@ -27,6 +27,12 @@ export type IntentKpi = Record<`kpi_${string}`, {
   projected: number | null;
 }>
 
+export type IntentConfigurationValue =
+  string |
+  Array<{ channelMode: string, channelWidth: string, radio: string }> |
+  boolean |
+  null
+
 export type Intent = {
   id: string;
   code: keyof typeof codes;
@@ -48,7 +54,9 @@ export type Intent = {
   dataEndTime: string;
   preferences?: {
     crrmFullOptimization: boolean;
-  }
+  },
+  currentValue: IntentConfigurationValue
+  recommendedValue: IntentConfigurationValue
 } & Partial<IntentKpi>
 
 export const transformDetailsResponse = (details: Intent) => {
@@ -122,6 +130,7 @@ export const api = recommendationApi.injectEndpoints({
               preferences path { type name }
               statusTrail { status createdAt }
               ${kpiHelper(kpis)}
+              currentValue recommendedValue
             }
           }
         `,

@@ -1,0 +1,29 @@
+import { Intent } from '../../useIntentDetailsQuery'
+
+export const mocked = {
+  id: '2c392d0a-124f-4183-b5c4-529d6571f540',
+  code: 'i-zonefirmware-upgrade',
+  status: 'applied',
+  metadata: {},
+  sliceType: 'zone',
+  sliceValue: 'weiguo-mesh',
+  updatedAt: '2024-06-14T08:30:39.214Z',
+  dataEndTime: '2024-06-09T00:00:00.000Z',
+  path: [
+    { type: 'system', name: 'vsz-bruce' },
+    { type: 'zone', name: 'weiguo-mesh' }
+  ],
+  statusTrail: [
+    { status: 'applied', createdAt: '2024-06-14T08:30:39.214Z' },
+    { status: 'applyscheduleinprogress', createdAt: '2024-06-14T08:30:02.362Z' },
+    { status: 'applyscheduled', createdAt: '2024-06-04T08:06:00.791Z' },
+    { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
+  ],
+  kpi_aps_on_latest_fw_version: {
+    current: [0, 0],
+    previous: [0, 0],
+    projected: null
+  },
+  currentValue: null,
+  recommendedValue: '7.0.0'
+} as unknown as Intent
