@@ -59,6 +59,7 @@ export const api = dataApi.injectEndpoints({
           }
         })
       },
+      providesTags: [{ type: 'Health', id: 'WIRED_SUMMARY' }],
       transformResponse: (response: {
         network: { hierarchyNode: WiredSummaryResult } }) => response.network.hierarchyNode
     })
