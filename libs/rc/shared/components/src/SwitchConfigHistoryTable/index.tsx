@@ -31,6 +31,7 @@ export function SwitchConfigHistoryTable (props: {
   const codeMirrorEl = useRef(null as unknown as { highlightLine: Function, removeHighlightLine: Function })
   const { tenantId, venueId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchNtpServerEnabled = useIsSplitOn(Features.SWITCH_NTP_SERVER)
   const [visible, setVisible] = useState(false)
   const [showError, setShowError] = useState(true)
   const [showClis, setShowClis] = useState(true)
@@ -97,9 +98,17 @@ export function SwitchConfigHistoryTable (props: {
     enableRbac: isSwitchRbacEnabled
   })
 
-  const configTypeFilterOptions = Object.values(ConfigTypeEnum).map(ctype=>({
-    key: ctype, value: transformConfigType(ctype)
-  }))
+
+  const getConfigTypeFilterOptions = function () {
+    let configTypeOptions = Object.values(ConfigTypeEnum)
+    if (!isSwitchNtpServerEnabled) {
+      configTypeOptions = configTypeOptions.filter(ctype => ctype !== ConfigTypeEnum.NTP_SERVER)
+    }
+    return configTypeOptions.map(ctype=>({
+      key: ctype, value: transformConfigType(ctype)
+    }))
+  }
+
 
   const getCols = () => {
     const columns: TableProps<ConfigurationHistory>['columns'] = [{
@@ -118,7 +127,7 @@ export function SwitchConfigHistoryTable (props: {
       key: 'configType',
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'configType',
-      filterable: configTypeFilterOptions,
+      filterable: getConfigTypeFilterOptions(),
       filterMultiple: false,
       sorter: !isVenueLevel
     }, {

@@ -1,7 +1,7 @@
 export enum EdgeQosTrafficClass {
     VOICE = 'VOICE',
     VIDEO = 'VIDEO',
-    BEST_EFFORT = 'BEST EFFORT',
+    BEST_EFFORT = 'BEST_EFFORT',
     BACKGROUND = 'BACKGROUND'
 }
 

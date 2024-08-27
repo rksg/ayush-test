@@ -20,7 +20,11 @@ export const VlanPoolRbacUrls: { [key:string]:ApiInfo } = {
   getVLANPoolPolicyList: {
     method: 'post',
     url: '/vlanPoolProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVLANPoolPolicy: {
     method: 'get',
