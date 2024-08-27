@@ -72,12 +72,12 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
     }
   }, [data])
 
-  const handleLbsServerProfile = (formData: LbsServerProfileContext) => {
+  const handleLbsServerProfile = async (formData: LbsServerProfileContext) => {
     const payload = { ...formData }
     if (isDuplicateProfile(payload)) {
       return
     }
-    saveLbsServerProfile(payload)
+    await saveLbsServerProfile(payload)
   }
 
   const isDuplicateProfile = (payload: LbsServerProfileContext) => {
@@ -141,9 +141,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
       formRef={formRef}
       editMode={editMode}
       onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
-      onFinish={async (data) => {
-        return handleLbsServerProfile(data)
-      }}
+      onFinish={handleLbsServerProfile}
     >
       <StepsFormLegacy.StepForm>
         <GridRow>
