@@ -20,7 +20,8 @@ import {
   getServiceDetailsLink
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { WifiScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 export default function ResidentPortalTable () {
   const intl = useIntl()
@@ -40,6 +41,7 @@ export default function ResidentPortalTable () {
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
       visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -60,6 +62,7 @@ export default function ResidentPortalTable () {
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -133,7 +136,8 @@ export default function ResidentPortalTable () {
           <TenantLink to={
             getServiceRoutePath({
               type: ServiceType.RESIDENT_PORTAL,
-              oper: ServiceOperation.CREATE })}>
+              oper: ServiceOperation.CREATE })}
+          scopeKey={[WifiScopes.CREATE]}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>
           </TenantLink>
         ])}
@@ -146,7 +150,7 @@ export default function ResidentPortalTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasPermission() && { type: 'radio' }}
         />
       </Loader>
     </>

@@ -244,7 +244,7 @@ export function ConfigTemplatesRoutes () {
           <Route
             path='venues/add'
             element={
-              <AuthRoute requireCrossVenuesPermission>
+              <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
                 <VenuesForm />
               </AuthRoute>
             }

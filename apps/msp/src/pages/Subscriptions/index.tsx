@@ -30,9 +30,9 @@ import {
   useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }                 from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }              from '@acx-ui/rc/components'
-import { useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
+import { MspAssignmentSummary, MspEntitlementSummary }                                           from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                        from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
   dateSort,
   defaultSort,
@@ -145,6 +145,9 @@ export function Subscriptions () {
   const { isHsp: isHspSupportEnabled } = state
 
   const { tenantId, activeTab } = useParams()
+
+  const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
+
   const subscriptionDeviceTypeList = isEntitlementRbacApiEnabled
     ? getEntitlementDeviceTypes()
     : getEntitlementDeviceTypes().filter(o => o.value.startsWith('MSP'))
@@ -429,6 +432,8 @@ export function Subscriptions () {
           style={{ marginBottom: '20px' }}>
           {
             subscriptionDeviceTypeList.map((item) => {
+              const showExtendedTrial = tenantDetailsData?.extendedTrial
+                && isExtendedTrialToggleEnabled
               const summary = summaryData[item.value]
               const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
                   (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive))
@@ -445,6 +450,7 @@ export function Subscriptions () {
                 used={summary.used}
                 trial={summary.trial}
                 tooltip={summary.tooltip}
+                extendedTrial={showExtendedTrial ?? false}
               /> : ''
             })
           }
@@ -520,7 +526,10 @@ export function Subscriptions () {
         {hasAttentionNotes && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'New licensing attention notes are available' })} />}
       </UI.TabWithHint>,
-      content: <LicenseCompliance isMsp={true}/>,
+      content: <LicenseCompliance
+        isMsp={true}
+        isExtendedTrial={tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled}
+      />,
       visible: showCompliance
     }
   }

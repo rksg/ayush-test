@@ -346,8 +346,15 @@ describe('Firmware Venues Table Per AP Model', () => {
     const availableFWCheckbox = await within(dialog).findByRole('checkbox', { name: /Show APs with available firmware only/ })
     await userEvent.click(availableFWCheckbox)
 
+    // Check if R350 is up-to-date
     const targetElement = await within(dialog).findByText(/The AP is up-to-date/i)
     expect(within(targetElement).getByText('7.0.0.104.1242')).toBeVisible()
+
+    // Check if R550 can be updated
+    await userEvent.selectOptions(
+      await within(dialog).findByRole('combobox'),
+      '7.0.0.104.1242 (Release - Recommended) - 02/27/2024'
+    )
 
     await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 

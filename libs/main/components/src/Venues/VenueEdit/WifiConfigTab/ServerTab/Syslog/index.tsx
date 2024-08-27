@@ -34,8 +34,8 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
+import { WifiScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { VenueEditContext } from '../../..'
 import * as UI              from '../../styledComponents'
@@ -207,7 +207,9 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            { hasPermission({ scopes: [WifiScopes.CREATE] }) && <Button type='link'
+            { hasCrossVenuesPermission() &&
+              hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+            <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {
                 await setEditContextData({

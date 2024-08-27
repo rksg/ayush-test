@@ -295,25 +295,37 @@ export function NetworkForm (props:{
   }, [saveState])
 
   useEffect(() => {
-    if(data){
-      const resolvedData = deriveFieldsFromServerData(data)
+    if (!data) return
 
-      if (cloneMode) {
-        formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
-      } else if (editMode) {
-        form?.resetFields()
-        form?.setFieldsValue(resolvedData)
-      }
-      updateSaveData({
-        ...resolvedData,
-        certificateTemplateId,
-        ...(dpskService && { dpskServiceProfileId: dpskService.id }),
-        ...(portalService?.data?.[0]?.id &&
-          { portalServiceProfileId: portalService.data[0].id })
-      })
+    let resolvedData = deriveFieldsFromServerData(data)
+
+    if (cloneMode) {
+      formRef.current?.resetFields()
+      formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+    } else if (editMode) {
+      form?.resetFields()
+      form?.setFieldsValue(resolvedData)
     }
-  }, [data, certificateTemplateId, dpskService, portalService])
+
+    if (vlanPoolId) {
+      resolvedData = merge({}, resolvedData,
+        {
+          wlan: {
+            advancedCustomization: {
+              vlanPool: { id: vlanPoolId, name: '', vlanMembers: [] }
+            }
+          }
+        }
+      )
+    }
+
+    updateSaveData({
+      ...resolvedData,
+      certificateTemplateId,
+      ...(dpskService && { dpskServiceProfileId: dpskService.id }),
+      ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
+    })
+  }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0) return

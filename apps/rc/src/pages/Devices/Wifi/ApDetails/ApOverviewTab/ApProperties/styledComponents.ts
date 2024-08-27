@@ -42,6 +42,9 @@ export const TextNumber = styled.div`
 `
 
 export const DetailsPassword = styled.span`
+  .ant-input-affix-wrapper:has(.ant-input-suffix) {
+    padding-left: 0px;
+  }
   .ant-input-password {
     padding: 0px;
     input { 
