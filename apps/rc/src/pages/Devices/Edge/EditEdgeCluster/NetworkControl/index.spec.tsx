@@ -116,7 +116,8 @@ describe('Edge Cluster Network Control Tab', () => {
 
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -144,7 +145,8 @@ describe('Edge Cluster Network Control Tab', () => {
 
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -163,7 +165,8 @@ describe('Edge Cluster Network Control Tab', () => {
   it('dhcp toggle should be on when dhcp returned', async () => {
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -186,7 +189,8 @@ describe('Edge Cluster Network Control Tab', () => {
   it('should show DHCP and HQoS selection form when switch is toggled on', async () => {
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -200,7 +204,8 @@ describe('Edge Cluster Network Control Tab', () => {
   it('should back to list page when clicking cancel button', async () => {
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -228,7 +233,8 @@ describe('Edge Cluster Network Control Tab', () => {
     )
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -259,7 +265,8 @@ describe('Edge Cluster Network Control Tab', () => {
     )
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -290,7 +297,8 @@ describe('Edge Cluster Network Control Tab', () => {
     )
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
@@ -317,7 +325,8 @@ describe('Edge Cluster Network Control Tab', () => {
     )
     render(
       <Provider>
-        <EdgeNetworkControl currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
+        <EdgeNetworkControl
+          currentClusterStatus={mockEdgeClusterList.data[0] as EdgeClusterStatus} />
       </Provider>, {
         route: {
           params,
