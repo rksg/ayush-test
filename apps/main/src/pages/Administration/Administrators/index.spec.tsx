@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
+import { Provider }                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -35,6 +35,7 @@ jest.mock('./AdministratorsTable', () => ({
   }
 }))
 const services = require('@acx-ui/msp/services')
+const rcServices = require('@acx-ui/rc/services')
 
 describe('Administrators', () => {
   let params: { tenantId: string }
@@ -79,16 +80,15 @@ describe('Administrators', () => {
   })
 
   it('should correctly render when delegation not ready', async () => {
-    const fakeVARUSer = { ...fakeUserProfile }
-    fakeVARUSer.var = true
+    const tenantDetails = { ...fakeTenantDetails, tenantType: TenantType.VAR }
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantDetails }
+    })
 
     render(
       <Provider>
         <UserProfileContext.Provider
-          value={{
-            data: fakeVARUSer,
-            isPrimeAdmin
-          } as UserProfileContextProps}
+          value={userProfileContextValues}
         >
           <Administrators />
         </UserProfileContext.Provider>

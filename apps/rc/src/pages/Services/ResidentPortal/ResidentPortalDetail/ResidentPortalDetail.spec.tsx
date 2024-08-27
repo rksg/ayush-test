@@ -13,10 +13,13 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { mockedResidentPortal, mockPropertyConfigs } from '../__tests__/fixtures'
 
 import ResidentPortalDetail from './ResidentPortalDetail'
+
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -72,6 +75,54 @@ describe('ResidentPortalDetail', () => {
     )
 
     expect(await screen.findByRole('button', { name: /Configure/i })).toBeVisible()
+
+    const nameInput =
+      await screen.findByText(mockedResidentPortal.name)
+    expect(nameInput).toBeInTheDocument()
+
+    const titleInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.title)
+    expect(titleInput).toBeInTheDocument()
+
+    const subtitleInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.subTitle)
+    expect(subtitleInput).toBeInTheDocument()
+
+    const loginInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.loginText)
+    expect(loginInput).toBeInTheDocument()
+
+    const announcementsInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.announcements)
+    expect(announcementsInput).toBeInTheDocument()
+
+    const helpInput =
+      await screen.findByText(mockedResidentPortal.uiConfiguration?.text.helpText)
+    expect(helpInput).toBeInTheDocument()
+  })
+
+  it('should not render the configure button without permission', async () => {
+
+    setUserProfile({
+      profile: {
+        ...getUserProfile().profile
+      },
+      allowedOperations: [],
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+
+    render(
+      <Provider>
+        <ResidentPortalDetail />
+      </Provider>, {
+        route: { params, path: detailPath }
+      }
+    )
+
+    expect(screen.queryByRole('button', { name: /Configure/i })).toBeNull()
 
     const nameInput =
       await screen.findByText(mockedResidentPortal.name)
