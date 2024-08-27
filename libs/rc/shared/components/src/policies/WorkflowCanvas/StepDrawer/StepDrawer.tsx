@@ -16,7 +16,8 @@ import {
   AupSettings,
   DataPromptSettings,
   DisplayMessageSetting,
-  DpskSettings
+  DpskSettings,
+  MacRegistrationSettings
 } from './WorkflowActionSettingForm'
 
 
@@ -36,7 +37,8 @@ const actionFormMap: Record<ActionType, FunctionComponent> = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
-  [ActionType.DPSK]: DpskSettings
+  [ActionType.DPSK]: DpskSettings,
+  [ActionType.MAC_REG]: MacRegistrationSettings
 }
 
 export default function StepDrawer (props: StepDrawerProps) {

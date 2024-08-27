@@ -28,7 +28,8 @@ const starterActions: ActionType[] = [
   ActionType.DISPLAY_MESSAGE
 ]
 const deviceOnboardingActions: ActionType[] = [
-  ActionType.DPSK
+  ActionType.DPSK,
+  ActionType.MAC_REG
 ]
 const resultActions: ActionType[] = [
   ActionType.DATA_PROMPT

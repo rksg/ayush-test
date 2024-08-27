@@ -10,7 +10,8 @@ export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
   DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
-  DPSK = 'DPSK'
+  DPSK = 'DPSK',
+  MAC_REG = 'MAC_REG'
 }
 
 export interface ActionBase {
@@ -75,18 +76,26 @@ export interface DisplayMessageAction extends ActionBase {
   displayBackButton: boolean,
   displayContinueButton: boolean
 }
+export interface MacRegAction extends ActionBase {
+  identityGroupId: string,
+  macRegListId?: string,
+  identityId?: string,
+  clientEnterMacAddress?: boolean
+}
 
 export type AupActionContext = Omit<AupAction, keyof ActionBase>
 export type DataPromptActionContext = Omit<DataPromptAction, keyof ActionBase>
 export type DisplayMessageActionContext = Omit<DisplayMessageAction, keyof ActionBase>
 export type DpskActionContext = Omit<DpskAction, keyof ActionBase>
+export type MacRegActionContext = Omit<MacRegAction, keyof ActionBase>
 
 export type GenericActionData =
   ActionBase &
   AupActionContext &
   DataPromptActionContext &
   DisplayMessageActionContext &
-  DpskActionContext
+  DpskActionContext &
+  MacRegActionContext
 
 export interface GenericActionPreviewProps<T> {
   data?: T,

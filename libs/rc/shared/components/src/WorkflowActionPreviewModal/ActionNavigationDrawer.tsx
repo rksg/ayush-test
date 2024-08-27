@@ -32,6 +32,7 @@ function transformToDataNode (nodes: Node<WorkflowStep, ActionType>[], selectedI
             AUP {Acceptable Use Policy (AUP)}
             DATA_PROMPT {Display a Form}
             DISPLAY_MESSAGE {Custom Message}
+            MAC_REG {MAC Registration}
             other {}
           }` }, {
             type: node.data.actionType

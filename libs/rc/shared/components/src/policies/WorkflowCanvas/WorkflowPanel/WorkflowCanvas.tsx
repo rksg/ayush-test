@@ -24,6 +24,7 @@ import {
   DataPromptNode,
   DisplayMessageNode,
   DpskNode,
+  MacRegistrationNode,
   StartNode
 } from './WorkflowStepNode'
 
@@ -35,7 +36,8 @@ const nodeTypes: NodeTypes = {
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode,
-  [ActionType.DPSK]: DpskNode
+  [ActionType.DPSK]: DpskNode,
+  [ActionType.MAC_REG]: MacRegistrationNode
 }
 
 interface WorkflowProps {
