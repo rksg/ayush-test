@@ -112,7 +112,7 @@ export const SdLanApTable = (props: SdLanApTableProps) => {
       rawApGroupOptions)
 
     setTableData(apListTableQuery?.data?.data ?? [])
-  }, [apListTableQuery?.data, cluster])
+  }, [apListTableQuery?.data, cluster, rawApGroupOptions])
 
   const columns : TableProps<APExtended>['columns'] = [
     {

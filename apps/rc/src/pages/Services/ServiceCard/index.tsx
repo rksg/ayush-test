@@ -1,4 +1,7 @@
-import { defineMessage, useIntl } from 'react-intl'
+import { ReactNode } from 'react'
+
+import { omit }                                     from 'lodash'
+import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
@@ -15,12 +18,13 @@ import { RolesEnum }                               from '@acx-ui/types'
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
   count?: number
+  helpIcon?: ReactNode
 }
 
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { serviceType, type: cardType, categories = [], count } = props
+  const { serviceType, type: cardType, categories = [], count, helpIcon } = props
   // eslint-disable-next-line max-len
   const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
   // eslint-disable-next-line max-len
@@ -39,10 +43,23 @@ export function ServiceCard (props: ServiceCardProps) {
 
   const formatServiceName = () => {
     const name = $t(serviceTypeLabelMapping[serviceType])
-    if (count === undefined) {
-      return name
+    const msgValues = {
+      name,
+      count,
+      helpIcon: () => {
+        return helpIcon ? <span style={{ marginLeft: '5px' }}>{helpIcon}</span> : ''
+      }
     }
-    return $t({ defaultMessage: '{name} ({count})' }, { name, count })
+
+    return count === undefined
+      ? <FormattedMessage
+        defaultMessage='{name}<helpIcon></helpIcon>'
+        values={omit(msgValues, 'count')}
+      />
+      : <FormattedMessage
+        defaultMessage='{name} ({count})<helpIcon></helpIcon>'
+        values={msgValues}
+      />
   }
 
   return (

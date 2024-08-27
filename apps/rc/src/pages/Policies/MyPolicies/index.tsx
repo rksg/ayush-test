@@ -1,8 +1,11 @@
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }                              from '@acx-ui/rc/components'
+import { find }                      from 'lodash'
+import { useIntl, FormattedMessage } from 'react-intl'
+
+import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -23,6 +26,7 @@ import {
   useGetSoftGreViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
+  IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
   filterServicePolicyByAccess,
@@ -33,6 +37,7 @@ import {
   policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
+  Path,
   TenantLink,
   useNavigate,
   useParams,
@@ -46,8 +51,20 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const policies = useCardData()
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
+
+  if (isEdgeCompatibilityEnabled) {
+    find(policies, { type: PolicyType.TUNNEL_PROFILE })!.helpIcon = isEdgeCompatibilityEnabled
+      ? <ApCompatibilityToolTip
+        title=''
+        visible
+        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
+      />
+      : undefined
+  }
 
   return (
     <>
@@ -64,18 +81,28 @@ export default function MyPolicies () {
         {
           // eslint-disable-next-line max-len
           policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
+            const title = <FormattedMessage
+              defaultMessage={
+                '{name} ({count})<helpIcon></helpIcon>'
+              }
+              values={{
+                name: $t(policyTypeLabelMapping[policy.type]),
+                count: policy.totalCount ?? 0,
+                helpIcon: () => {
+                  return policy.helpIcon
+                    ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                    : ''
+                }
+              }}
+            />
+
             return (
               <GridCol key={policy.type} col={{ span: 6 }}>
                 <RadioCard
                   type={'default'}
                   key={`${policy.type}_${index}`}
                   value={policy.type}
-                  title={$t({
-                    defaultMessage: '{name} ({count})'
-                  }, {
-                    name: $t(policyTypeLabelMapping[policy.type]),
-                    count: policy.totalCount ?? 0
-                  })}
+                  title={title}
                   description={$t(policyTypeDescMapping[policy.type])}
                   categories={policy.categories}
                   onClick={() => {
@@ -87,11 +114,28 @@ export default function MyPolicies () {
           })
         }
       </GridRow>
+      { edgeFeatureName && <EdgeCompatibilityDrawer
+        visible
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeFeatureName}
+        onClose={() => setEdgeFeatureName(undefined)}
+      />
+      }
     </>
   )
 }
 
-function useCardData () {
+interface PolicyCardData {
+  type: PolicyType
+  categories: RadioCardCategory[]
+  totalCount?: number
+  listViewPath?: Path
+  disabled?: boolean
+  helpIcon?: React.ReactNode
+}
+
+function useCardData (): PolicyCardData[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)

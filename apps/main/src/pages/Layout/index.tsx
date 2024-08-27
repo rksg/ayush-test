@@ -76,9 +76,9 @@ function Layout () {
   const delegationCount = invitationTableQuery.data?.totalCount ?? 0
   const nonVarDelegation = delegationCount > 0
 
-  const showHomeButton = nonVarDelegation ||
-    isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
-    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const showHomeButton = nonVarDelegation || isDelegationMode() || tenantType === AccountType.MSP
+      || tenantType === AccountType.VAR || tenantType === AccountType.MSP_NON_VAR
+      || tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
