@@ -10,19 +10,13 @@ import { useNavigate, useTenantLink, TenantLink }                    from '@acx-
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
 
+import { Icon }                                        from './common/IntentIcon'
 import { aiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
 import { DisplayStates }                               from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
-
-export const icons = {
-  [aiFeatures.RRM]: <AIDrivenRRM />,
-  [aiFeatures.AirFlexAI]: <AirFlexAI />,
-  [aiFeatures.AIOps]: <AIOperation />,
-  [aiFeatures.EcoFlexAI]: <EcoFlexAI />
-}
 
 type IconTooltipProps = {
   title: MessageDescriptor
@@ -110,7 +104,7 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       title={iconTooltips[codes[props.code].aiFeature]}
       overlayInnerStyle={{ width: '345px' }}
     >
-      {icons[codes[props.code].aiFeature]}
+      <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
     <TenantLink to={get('IS_MLISA_SA')
       ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`

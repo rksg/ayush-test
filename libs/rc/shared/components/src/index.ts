@@ -181,7 +181,8 @@ export {
 export {
   useEdgeSdLanCompatibilityData,
   useEdgeCompatibilityRequirementData,
-  useEdgeSdLanDetailsCompatibilitiesData
+  useEdgeSdLanDetailsCompatibilitiesData,
+  getSdLanDetailsCompatibilitiesDrawerData
 } from './useEdgeActions/compatibility'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
@@ -233,6 +234,7 @@ export {
 export {
   ApGeneralCompatibilityDrawer,
   EdgeCompatibilityDrawer,
+  EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
   EdgeSdLanDetailCompatibilityDrawer,
   CompatibleAlertBanner
@@ -285,3 +287,4 @@ export {
 } from './useRwgActions'
 export * from './SwitchLagDrawer/SwitchLagModal'
 export { isOperationalSwitchPort, isStackPort } from './SwitchPortTable'
+export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'

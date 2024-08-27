@@ -1,19 +1,18 @@
-import { Form, Space, Divider, Row } from 'antd'
+import { Form } from 'antd'
+import { omit } from 'lodash'
 
-import { Drawer, Loader, Tabs }           from '@acx-ui/components'
+import { Drawer, Loader } from '@acx-ui/components'
 import {
   ApCompatibility,
-  ApIncompatibleFeature,
   IncompatibilityFeatures,
   CompatibilityDeviceEnum,
-  CompatibilityType,
-  getCompatibilityDeviceTypeDisplayName
-} from '@acx-ui/rc/utils'
+  CompatibilityType } from '@acx-ui/rc/utils'
 
 import { compatibilityDataGroupByFeatureDeviceType } from '../utils'
 
-import { CompatibilityItem }     from './CompatibilityItem'
-import { StyledDeviceTypeTitle } from './styledComponents'
+import { CompatibilityItem }           from './CompatibilityItem'
+import { SameDeviceTypeCompatibility } from './SameDeviceTypeCompatibility'
+import { useDescription }              from './utils'
 
 /**
  * featureName: when specified on a feature
@@ -45,33 +44,6 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
     ...others
   } = props
 
-  const getContent = (items: ApCompatibility[]) => {
-    return items.map(item => {
-      const compatibilityData = compatibilityDataGroupByFeatureDeviceType(item)
-      const deviceTypes = Object.keys(compatibilityData)
-      const isCrossDevices = deviceTypes.length > 1
-
-      if (isCrossDevices) {
-        return <SameDeviceTypeCompatibility
-          key={item.id}
-          types={deviceTypes}
-          data={compatibilityData}
-          deviceType={deviceType}
-          totalDevices={item.total}
-          {...others}
-        />
-      }
-
-      return <CompatibilityItem
-        key={item.id}
-        data={compatibilityData[deviceTypes[0]]}
-        deviceType={deviceType}
-        totalDevices={item.total}
-        {...others}
-      />
-    })
-  }
-
   return (
     <Drawer
       title={title}
@@ -83,69 +55,48 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
     >
       <Loader states={[ { isLoading } ]}>
         <Form layout='vertical'>
-          {getContent(data)}
+          {data.map(item => <DrawerContentUnit
+            key={item.id}
+            data={item}
+            deviceType={deviceType}
+            {...others}
+          />)}
         </Form>
       </Loader>
     </Drawer>
   )
 }
 
-interface SameDeviceTypeCompatibilityProps {
-  types: string[],
-  data: Record<string, ApIncompatibleFeature[]>
-  compatibilityType: CompatibilityType,
-  deviceType: CompatibilityDeviceEnum,
-  totalDevices?: number,
-  venueId?: string,
-  venueName?: string,
-  featureName?: IncompatibilityFeatures,
-}
-const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityProps) => {
-  const { types, data, ...others } = props
-
-  return <Tabs defaultActiveKey={types[0]}>
-    {types.map((typeName) =>
-      <Tabs.TabPane
-        key={typeName}
-        tab={getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
-      >
-        <CompatibilityItem
-          data={data[typeName]}
-          {...others}
-        />
-      </Tabs.TabPane>)}
-  </Tabs>
-}
-
-interface FeatureCrossDeviceTypeCompatibilityProps {
-  data: Record<string, ApCompatibility>
-  featureName: IncompatibilityFeatures,
-}
 // eslint-disable-next-line max-len
-export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTypeCompatibilityProps) => {
-  const { data, ...others } = props
+interface DrawerContentUnitProps extends Omit<CompatibilityDrawerProps, 'data' | 'visible' | 'isLoading' | 'onClose' | 'title'> {
+  data: ApCompatibility,
+  deviceType: CompatibilityDeviceEnum,
+}
+const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
+  const { data, deviceType = CompatibilityDeviceEnum.AP, ...others } = props
+  const description = useDescription(omit(props, 'data'))
 
-  const deviceTypes = Object.keys(data)
+  const compatibilityData = compatibilityDataGroupByFeatureDeviceType(data)
+  const deviceTypes = Object.keys(compatibilityData)
+  const isCrossDevices = deviceTypes.length > 1
 
-  return <Space direction='vertical' split={<Divider />}>
-    {deviceTypes.map((typeName) => {
-      const typeData = data[typeName]
-      const hasValidData = !!typeData?.incompatibleFeatures?.length
+  if (isCrossDevices) {
+    return <SameDeviceTypeCompatibility
+      key={data.id}
+      types={deviceTypes}
+      data={compatibilityData}
+      deviceType={deviceType}
+      totalDevices={data.total}
+      {...others}
+    />
+  }
 
-      return hasValidData && <div key={typeName}>
-        <Row>
-          <StyledDeviceTypeTitle>
-            {getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
-          </StyledDeviceTypeTitle>
-        </Row>
-        <CompatibilityItem
-          compatibilityType={CompatibilityType.FEATURE}
-          data={typeData.incompatibleFeatures ?? []}
-          deviceType={typeName as CompatibilityDeviceEnum}
-          totalDevices={typeData.total}
-          {...others}
-        />
-      </div>
-    })}
-  </Space>
+  return <CompatibilityItem
+    key={data.id}
+    data={compatibilityData[deviceTypes[0]]}
+    deviceType={deviceType}
+    description={description}
+    totalDevices={data.total}
+    {...others}
+  />
 }

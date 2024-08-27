@@ -1,12 +1,12 @@
 
 import { EdgeSdLanFixtures, getPolicyDetailsLink, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 import { Provider }                                                             from '@acx-ui/store'
-import { render, screen }                                                       from '@acx-ui/test-utils'
+import {  render, screen }                                                      from '@acx-ui/test-utils'
 
 
 import { DmzSdLanDetailContent } from './DmzSdLanDetailContent'
 
-const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockedMvSdLanDataList, mockApListForApTableTest } = EdgeSdLanFixtures
 const mockedSdLanData = mockedMvSdLanDataList[0]
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -20,6 +20,17 @@ jest.mock('./SmartEdgesTable', () => ({
 jest.mock('./VenueTable', () => ({
   ...jest.requireActual('./VenueTable'),
   VenueTable: () => <div data-testid='VenueTable' />
+}))
+jest.mock('./SdLanApTable', () => ({
+  ...jest.requireActual('./SdLanApTable'),
+  SdLanApTable: () => <div data-testid='SdLanApTable' />
+}))
+jest.mock('./index', () => ({
+  ...jest.requireActual('./index'),
+  useSdlanApListTableQuery: () => ({
+    data: mockApListForApTableTest,
+    isLoading: false
+  })
 }))
 
 describe('Edge SD-LAN Detail - DMZ', () => {
@@ -57,6 +68,7 @@ describe('Edge SD-LAN Detail - DMZ', () => {
     }))
     expect(screen.getByText('Instances')).toBeVisible()
     expect(screen.getByRole('tab', { name: 'Venues(1)' })).toBeVisible()
+    expect(screen.getByRole('tab', { name: 'AP(2)' })).toBeVisible()
     expect(screen.getByRole('tab', { name: 'SmartEdges(2)' })).toBeVisible()
   })
 })

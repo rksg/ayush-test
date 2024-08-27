@@ -54,8 +54,8 @@ describe('LbsServerProfileForm', () => {
           return res(ctx.json({ response: { id: mockedPolicyId1 } }))
         }
       ),
-      rest.put(
-        LbsServerProfileUrls.updateLbsServerProfile.url,
+      rest.post(
+        LbsServerProfileUrls.addLbsServerProfile.url,
         (_, res, ctx) => {
           return res(ctx.json({ response: { id: mockedPolicyId1 } }))
         }
@@ -116,9 +116,12 @@ describe('LbsServerProfileForm', () => {
     await userEvent.type(await screen.findByLabelText('LBS Venue Name'), '-2')
     await userEvent.type(await screen.findByLabelText('Port'), '8884')
 
+    await userEvent.type(await screen.findByLabelText('Server Address'), 'abc.venue.ruckuslbs.com')
+    await userEvent.type(await screen.findByLabelText('Password'), 'qwerasdf')
+
     await userEvent.click(await screen.findByText('Finish'))
 
-    await waitFor(async () => expect(editLbsServerProfile).toBeCalledTimes(1))
+    await waitFor(() => expect(editLbsServerProfile).toBeCalledTimes(1))
   })
 
 

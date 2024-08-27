@@ -272,14 +272,6 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
       Accept: 'application/vnd.ruckus.v1+json'
     }
   },
-  getApModelScheduledFirmware: {
-    method: 'get',
-    url: '/apModelFirmwares?status=scheduled',
-    newApi: true,
-    defaultHeaders: {
-      Accept: 'application/vnd.ruckus.v1+json'
-    }
-  },
   getDistinctFirmwareIdList: {
     method: 'get',
     url: '/apModelFirmwares?status=distinctFirmwareVersion',
