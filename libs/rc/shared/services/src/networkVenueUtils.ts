@@ -950,6 +950,13 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           if (!newApGroup) deleteApGroups.push(oldApGroup)
         })
 
+        // When user switch from "All APs" to "Select specific AP Groups" but the content remains the same
+        if (addApGroups.length + updateApGroups.length + deleteApGroups.length === 0
+          && oldPayload.isAllApGroups === true
+          && newPayload.isAllApGroups === false) {
+          addApGroups.push(...newApGroups)
+        }
+
         if (addApGroups.length > 0) {
           await Promise.all(addApGroups.map(apGroup => {
             const apGroupSettingReq = {
