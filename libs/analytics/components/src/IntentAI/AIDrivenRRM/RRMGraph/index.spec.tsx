@@ -5,7 +5,6 @@ import { GraphProps }                       from '@acx-ui/components'
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { transformDetailsResponse }           from '../../useIntentDetailsQuery'
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
 import { mockCrrmData } from './__tests__/fixtures'
@@ -37,7 +36,7 @@ describe('CloudRRM', () => {
   })
 
   it('should render correctly', async () => {
-    const details = transformDetailsResponse(mockedIntentCRRM)
+    const details = mockedIntentCRRM
     render(<IntentAIRRMGraph details={details} crrmData={mockCrrmData}/>, { wrapper: Provider })
     expect(await screen.findByText('View More')).toBeVisible()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
@@ -46,7 +45,7 @@ describe('CloudRRM', () => {
   })
 
   it('should handle drawer', async () => {
-    const details = transformDetailsResponse(mockedIntentCRRM)
+    const details = mockedIntentCRRM
     render(<IntentAIRRMGraph details={details} crrmData={mockCrrmData}/>, { wrapper: Provider })
     await userEvent.click(await screen.findByText('View More'))
     expect(await screen.findByText('Key Performance Indications')).toBeVisible()

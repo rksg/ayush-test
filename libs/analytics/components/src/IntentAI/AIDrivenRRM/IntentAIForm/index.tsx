@@ -1,34 +1,45 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import _           from 'lodash'
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { IntentWizardHeader }                                                         from '../../common/IntentWizardHeader'
-import { useIntentContext }                                                           from '../../IntentContext'
-import { Intent }                                                                     from '../../useIntentDetailsQuery'
-import { roundUpTimeToNearest15Minutes, useIntentTransitionMutation }                 from '../../useIntentTransitionMutation'
+import { IntentWizardHeader } from '../../common/IntentWizardHeader'
+import { getScheduledAt }     from '../../common/ScheduleTiming'
+import { SettingsPage }       from '../../common/SettingsPage'
+import { useIntentContext }   from '../../IntentContext'
+import { Statuses }           from '../../states'
+import {
+  createUseIntentTransition,
+  recToIntentStatues,
+  FormValues,
+  IntentTransitionPayload
+} from '../../useIntentTransition'
 import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                                                       from '../RRMGraph/services'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
-import { Settings }     from './Settings'
 import { Summary }      from './Summary'
 
-// TODO: move this away
-function getSettings (intent: Intent) {
-  if (intent.metadata?.scheduledAt) {
-    const localScheduledAt = moment.utc(intent.metadata.scheduledAt).local()
-    return {
-      date: localScheduledAt,
-      time: roundUpTimeToNearest15Minutes(localScheduledAt.format('HH:mm:ss'))
+type CRRMFormValues = FormValues<{ crrmFullOptimization: boolean }>
+type CRRMPayload = IntentTransitionPayload<Exclude<CRRMFormValues['preferences'], undefined>>
+
+function getFormDTO (values: CRRMFormValues): CRRMPayload {
+  values = { ...values, ...recToIntentStatues(values) }
+  return {
+    id: values.id,
+    status: values.status === Statuses.new ? Statuses.scheduled : values.status,
+    statusReason: values.status === Statuses.new ? undefined : values.statusReason,
+    metadata: {
+      ..._.pick(values, ['preferences']),
+      scheduledAt: getScheduledAt(values).utc().toISOString()
     }
   }
-  else return { date: undefined, time: undefined }
 }
+
+const useIntentTransition = createUseIntentTransition(getFormDTO)
 
 export function IntentAIForm () {
   const { intent } = useIntentContext()
@@ -41,13 +52,7 @@ export function IntentAIForm () {
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-  const [submit] = useIntentTransitionMutation()
-  const defaultValue = {
-    preferences: {
-      crrmFullOptimization: true
-    },
-    settings: getSettings(intent)
-  }
+  const { initialValues, submit } = useIntentTransition()
 
   return (<>
     <IntentWizardHeader />
@@ -60,9 +65,11 @@ export function IntentAIForm () {
     </div>}
     <StepsForm
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
-      initialValues={_.merge(defaultValue, intent)}
-      // onFinish={async (values) => submit(values)}
-      onFinish={async (values) => console.log(values)}
+      initialValues={{
+        ...initialValues,
+        preferences: _.get(intent, ['metadata','preferences']) || { crrmFullOptimization: true }
+      }}
+      onFinish={async (values) => { submit(values) }}
     >
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Introduction' })}
@@ -78,7 +85,7 @@ export function IntentAIForm () {
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Settings' })}
-        children={<Settings />}
+        children={<SettingsPage />}
       />
       <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}

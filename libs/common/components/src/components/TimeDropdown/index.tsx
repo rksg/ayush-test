@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Form, Col, Select, FormItemProps, SelectProps } from 'antd'
-import { NamePath }                                      from 'antd/lib/form/interface'
-import { castArray  }                                    from 'lodash'
-import moment                                            from 'moment'
+import { Form, Col, Select, SelectProps } from 'antd'
+import { NamePath }                       from 'antd/lib/form/interface'
+import { castArray  }                     from 'lodash'
+import moment                             from 'moment'
 import {
   FormattedMessage,
   defineMessage,
@@ -116,14 +116,11 @@ const defaultDisabledTime =
 
 interface TimeDropdownProps {
   name: NamePath
-  label?: React.ReactNode
-  placeholder?: SelectProps['placeholder']
-  rules?: FormItemProps['rules']
   disabledDateTime?: {
     disabledStrictlyBefore?: number,
     disabledStrictlyAfter?: number
   }
-  spanLength?: number
+  spanLength: number
 }
 
 interface DayTimeDropdownProps {
@@ -163,28 +160,37 @@ export function DayTimeDropdown ({ type, name, spanLength }: DayTimeDropdownProp
 
 export function TimeDropdown (props: TimeDropdownProps) {
   const { $t } = useIntl()
-  const {
-    name,
-    label,
-    disabledDateTime,
-    rules = [{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }],
-    placeholder = $t({ defaultMessage: 'Select hour' }),
-    spanLength = 24
-  } = props
+  const { name, disabledDateTime, spanLength } = props
 
-  const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
-  ?? defaultDisabledTime.disabledStrictlyBefore
-  const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
-  ?? defaultDisabledTime.disabledStrictlyAfter
-
-  const children = <Form.Item {...{ name, label, rules }} noStyle={label ? false : true}>
-    <Select
-      placeholder={placeholder}
-      children={timeOptions(disabledStrictlyBefore, disabledStrictlyAfter)}
+  return <Col span={spanLength}>
+    <Form.Item
+      noStyle
+      name={name}
+      rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
+      children={<TimeDropdownPlain
+        {...{ disabledDateTime }}
+        placeholder={$t({ defaultMessage: 'Select hour' })}
+      />}
     />
-  </Form.Item>
+  </Col>
+}
 
-  if (label) return children
+export function TimeDropdownPlain ({
+  disabledDateTime,
+  ...props
+}: Omit<SelectProps, 'children'> & {
+  disabledDateTime?: {
+    disabledStrictlyBefore?: number,
+    disabledStrictlyAfter?: number
+  }
+}) {
+  const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
+    ?? defaultDisabledTime.disabledStrictlyBefore
+  const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
+    ?? defaultDisabledTime.disabledStrictlyAfter
 
-  return <Col span={spanLength} children={children} />
+  return <Select
+    {...props}
+    children={timeOptions(disabledStrictlyBefore, disabledStrictlyAfter)}
+  />
 }

@@ -3,8 +3,8 @@ import _ from 'lodash'
 import { recommendationUrl, Provider, store, recommendationApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within }              from '@acx-ui/test-utils'
 
-import { useIntentContext }                 from '../IntentContext'
-import { Intent, transformDetailsResponse } from '../useIntentDetailsQuery'
+import { useIntentContext } from '../IntentContext'
+import { Intent }           from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
 import * as CCrrmChannel24gAuto               from './CCrrmChannel24gAuto'
@@ -23,7 +23,7 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 }))
 
 const mockIntentContextWith = (data: Partial<Intent>) => {
-  let intent = transformDetailsResponse(mockedIntentCRRM)
+  let intent = mockedIntentCRRM
   intent = _.merge({}, intent, data) as typeof intent
   jest.mocked(useIntentContext).mockReturnValue({ intent, kpis })
   return {

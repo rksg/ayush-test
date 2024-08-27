@@ -2,7 +2,6 @@ import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { useIntentContext }                   from '../../IntentContext'
-import { transformDetailsResponse }           from '../../useIntentDetailsQuery'
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
 import { DownloadRRMComparison } from './DownloadRRMComparison'
@@ -10,7 +9,7 @@ import { DownloadRRMComparison } from './DownloadRRMComparison'
 jest.mock('../../IntentContext')
 
 describe('DownloadRRMComparison', () => {
-  const intent = transformDetailsResponse(mockedIntentCRRM)
+  const intent = mockedIntentCRRM
   const params = { recommendationId: intent.id, code: intent.code }
 
   beforeEach(() => {

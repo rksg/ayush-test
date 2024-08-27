@@ -182,14 +182,3 @@ export const parseTransitionGQLByAction = (action: Actions, data: TransitionInte
     transitionsGQLs:string[],
     variables: Record<string, string|TransitionIntentMetadata|null> }
 }
-
-export function handleScheduledAt (scheduledAt: string) {
-  const originalScheduledAt = moment(scheduledAt)
-  const futureThreshold = moment().add(15, 'minutes')
-  if (originalScheduledAt.isBefore(futureThreshold)) {
-    const newScheduledAt = originalScheduledAt.add(1, 'day')
-    return newScheduledAt.format()
-  } else {
-    return originalScheduledAt.format()
-  }
-}

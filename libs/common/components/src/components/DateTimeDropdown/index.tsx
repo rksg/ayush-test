@@ -4,7 +4,7 @@ import { castArray }                         from 'lodash'
 import moment, { Moment }                    from 'moment-timezone'
 import { useIntl }                           from 'react-intl'
 
-import { TimeDropdown } from '../TimeDropdown'
+import { TimeDropdownPlain } from '../TimeDropdown'
 
 export interface DateTimeDropdownProps {
   name: NamePath
@@ -43,15 +43,18 @@ export const DateTimeDropdown = ({
       }
     />
 
-    <TimeDropdown
+    <Form.Item
       // key required to force re-render when date changed
       key={date?.toISOString() ?? 'timedropdown'}
       name={timeName}
       label={timeLabel}
       rules={[{ required: true, message: $t({ defaultMessage: 'Please select time' }) }]}
-      placeholder={$t({ defaultMessage: 'Select time' })}
-      disabledDateTime={{ disabledStrictlyBefore: getDisabledTime(date) }}
-    />
+      children={
+        <TimeDropdownPlain
+          placeholder={$t({ defaultMessage: 'Select time' })}
+          disabledDateTime={{ disabledStrictlyBefore: getDisabledTime(date) }}
+        />
+      } />
   </>)
 }
 
