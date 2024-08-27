@@ -10,13 +10,13 @@ import {
   dateSort,
   getUserProfile
 }                              from '@acx-ui/analytics/utils'
-import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
-import { get }                                                          from '@acx-ui/config'
-import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
-import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                   from '@acx-ui/types'
-import { useUserProfileContext, filterByAccess, hasPermission }         from '@acx-ui/user'
-import { noDataDisplay }                                                from '@acx-ui/utils'
+import { Loader, TableProps, Table, showActionModal, showToast, Modal }                   from '@acx-ui/components'
+import { get }                                                                            from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                                      from '@acx-ui/formatter'
+import { TenantLink, useTenantLink }                                                      from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                     from '@acx-ui/types'
+import { useUserProfileContext, filterByAccess, hasPermission, hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }                                                                  from '@acx-ui/utils'
 
 import { CountContext }  from '..'
 import * as contents     from '../contents'
@@ -254,6 +254,7 @@ export function ServiceGuardTable () {
         columns={ColumnHeaders}
         dataSource={queryResults.data}
         rowSelection={
+          hasCrossVenuesPermission() &&
           hasPermission({ permission: 'WRITE_SERVICE_VALIDATION' }) && { type: 'radio' }
         }
         rowActions={filterByAccess(rowActions)}
