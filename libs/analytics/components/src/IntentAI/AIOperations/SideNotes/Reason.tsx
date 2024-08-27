@@ -26,7 +26,7 @@ export const Reason = (props: {
     </a>
   ))
   return <SideNotes>
-    <SideNotes.Section title={$t({ defaultMessage: 'Why is the recommendation?' })}>
+    <SideNotes.Section title={$t({ defaultMessage: 'Why is the intent?' })}>
       <Typography.Paragraph children={props.reasonText} />
     </SideNotes.Section>
     {props.resources?.length && (

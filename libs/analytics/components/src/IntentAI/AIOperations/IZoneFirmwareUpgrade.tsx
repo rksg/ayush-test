@@ -2,22 +2,36 @@
 import { Form, Typography }                         from 'antd'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
+import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
-import { TradeOff }                      from '../../TradeOff'
-import { IntroSummary }                  from '../common/IntroSummary'
-import { KpiField }                      from '../common/KpiField'
-import { richTextFormatValues }          from '../common/richTextFormatValues'
-import { useIntentContext }              from '../IntentContext'
-import { Statuses, StatusReasons }       from '../states'
-import { getGraphKPIs, IntentKPIConfig } from '../useIntentDetailsQuery'
+import { TradeOff }                                    from '../../TradeOff'
+import { IntroSummary }                                from '../common/IntroSummary'
+import { isIntentActive }                              from '../common/isIntentActive'
+import { KpiField }                                    from '../common/KpiField'
+import { richTextFormatValues }                        from '../common/richTextFormatValues'
+import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
+import { Statuses, StatusReasons }                     from '../states'
+import { getGraphKPIs, Intent, IntentKPIConfig }       from '../useIntentDetailsQuery'
 
+import { ConfigurationField }    from './ConfigurationField'
 import { createIntentAIDetails } from './createIntentAIDetails'
 import { createIntentAIForm }    from './createIntentAIForm'
 import { createUseValuesText }   from './createUseValuesText'
 import { Reason }                from './SideNotes/Reason'
 import { Tradeoff }              from './SideNotes/Tradeoff'
+
+export const configuration: IntentConfigurationConfig = {
+  label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
+  valueFormatter: formatter('noFormat'),
+  tooltip: (intent: Intent) =>
+    (isIntentActive(intent) &&
+      intent.currentValue &&
+      compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
+      ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
+      : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this intent is applied.' })
+}
 
 export const kpis: IntentKPIConfig[] = [{
   key: 'aps-on-latest-fw-version',
@@ -43,7 +57,8 @@ const useValuesText = createUseValuesText({
       <b>Delay to avoid network downtime and compatibility issues:</b>
       Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
     </p>
-  ` })
+  ` }),
+  summary: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
@@ -69,20 +84,9 @@ export const IntentAIForm = createIntentAIForm({
   Content: () => (<>
     <IntroSummary />
     <StepsForm.Subtitle>
-      <FormattedMessage defaultMessage='Why is the recommendation?' />
+      <FormattedMessage defaultMessage='Why is the intent?' />
     </StepsForm.Subtitle>
-    <FormattedMessage
-      values={richTextFormatValues}
-      defaultMessage={`
-        <p>
-          <b>Upgrade for latest security and features:</b>
-          Upgrading the network ensures it benefits from the latest security patches and features, enhancing protection against cyber threats and enabling access to new functionalities for improved performance.
-        </p>
-        <p>
-          <b>Delay to avoid network downtime and compatibility issues:</b>
-          Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
-        </p>
-      `} />
+    {useValuesText().introText}
   </>)
 }).addStep({
   title: defineMessage({ defaultMessage: 'Intent Priority' }),
@@ -103,13 +107,13 @@ export const IntentAIForm = createIntentAIForm({
           radios={[{
             key: 'yes',
             value: true,
-            children: $t({ defaultMessage: 'Yes, apply the recommendation' }),
+            children: $t({ defaultMessage: 'Yes, apply the intent' }),
             columns: [
-              $t({ defaultMessage: 'Yes, apply the recommendation' }),
+              $t({ defaultMessage: 'Yes, apply the intent' }),
               <FormattedMessage
                 values={richTextFormatValues}
                 defaultMessage={`
-                  <p>IntentAI will upgrading the Zone firmware ensuring the network remains secure and up-to-date with the latest features, enhancing protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+                  <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
                   <p>IntentAI will continuously monitor these configurations.</p>
                 `}
               />
@@ -117,14 +121,15 @@ export const IntentAIForm = createIntentAIForm({
           }, {
             key: 'no',
             value: false,
-            children: $t({ defaultMessage: 'No, do not apply the recommendation' }),
+            children: $t({ defaultMessage: 'No, do not apply the intent' }),
             columns: [
-              $t({ defaultMessage: 'No, do not apply the recommendation' }),
+              $t({ defaultMessage: 'No, do not apply the intent' }),
               <FormattedMessage
                 values={richTextFormatValues}
                 defaultMessage={`
-                  <p>IntentAI will maintain the current configuration on the Controller, keeping Zone firmware version unchanged.</p>
-                  <p>IntentAI will cease monitoring these configurations. To restart monitoring, you can select the "Reset" action, after which IntentAI will resume overseeing the network for this Intent.</p>
+                  <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
+                  <p>For manual control, you may directly change the network configurations.</p>
+                  <p>For automated monitoring and control, you can select the "Reset" action, after which IntentAI will resume overseeing the network for this Intent.</p>
               `} />
             ]
           }]}
@@ -140,7 +145,7 @@ export const IntentAIForm = createIntentAIForm({
     const enable = form.getFieldValue('enable')
     return <>
       <Typography.Paragraph
-        children={$t({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })} />
+        children={$t({ defaultMessage: 'This intent will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })} />
       Enabled Calendar: {String(enable)}
     </>
   }
@@ -148,9 +153,9 @@ export const IntentAIForm = createIntentAIForm({
   title: defineMessage({ defaultMessage: 'Summary' }),
   Content: () => {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, configuration } = useIntentContext()
     return <>
-      {/* TODO: add configuration to be enabled as a field */}
+      {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
       {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
       <StepsForm.Subtitle>
         {$t({ defaultMessage: 'Schedule' })}

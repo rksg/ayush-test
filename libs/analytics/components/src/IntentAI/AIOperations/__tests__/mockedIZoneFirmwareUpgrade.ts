@@ -1,6 +1,6 @@
 import { Intent } from '../../useIntentDetailsQuery'
 
-export const mockedIZoneFirmwareUpgrade = {
+export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
   code: 'i-zonefirmware-upgrade',
   status: 'applied',
@@ -21,6 +21,9 @@ export const mockedIZoneFirmwareUpgrade = {
   ],
   kpi_aps_on_latest_fw_version: {
     current: [0, 0],
-    previous: [0, 0], projected: null
-  }
+    previous: [0, 0],
+    projected: null
+  },
+  currentValue: null,
+  recommendedValue: '7.0.0'
 } as unknown as Intent

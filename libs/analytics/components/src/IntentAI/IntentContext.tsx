@@ -1,14 +1,23 @@
 import React, { createContext, useContext } from 'react'
 
-import _ from 'lodash'
+import _                     from 'lodash'
+import { MessageDescriptor } from 'react-intl'
 
 import { Loader }    from '@acx-ui/components'
+import { formatter } from '@acx-ui/formatter'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { Intent, IntentKPIConfig, useIntentDetailsQuery } from './useIntentDetailsQuery'
 
+export type IntentConfigurationConfig = {
+  label: MessageDescriptor
+  valueFormatter?: ReturnType<typeof formatter>
+  tooltip?: (intent: Intent) => MessageDescriptor
+}
+
 type IIntentContext = {
   intent: Intent
+  configuration?: IntentConfigurationConfig
   kpis: IntentKPIConfig[]
 }
 
@@ -18,6 +27,7 @@ export const useIntentContext = () => useContext(IntentContext)
 export function createIntentContextProvider (
   of: 'IntentAIDetails' | 'IntentAIForm',
   specs: Record<string, {
+    configuration?: IntentConfigurationConfig
     kpis: IntentKPIConfig[]
     IntentAIDetails: React.ComponentType
     IntentAIForm: React.ComponentType
@@ -41,7 +51,7 @@ export function createIntentContextProvider (
 
     return <Loader states={[query]}>
       <IntentContext.Provider
-        value={{ intent: query.data!, kpis: spec.kpis }}
+        value={{ intent: query.data!, configuration: spec.configuration, kpis: spec.kpis }}
         children={React.createElement(spec[of])}
       />
     </Loader>

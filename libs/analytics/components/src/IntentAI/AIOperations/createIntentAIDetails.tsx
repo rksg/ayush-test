@@ -16,12 +16,13 @@ import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 
+import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
 
 export function createIntentAIDetails (useValuesText: ReturnType<typeof createUseValuesText>) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
 
     return <>
@@ -31,10 +32,7 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
           <FixedAutoSizer>
             {({ width }) => (<div style={{ width }}>
               <IntentIcon size='large' />
-              {/* TODO: missing contents for each intent details in knowledge base? */}
-              <Typography.Paragraph children={$t({
-                defaultMessage: 'This content not defined?????'
-              })} />
+              <Typography.Paragraph children={valuesText.summary} />
               <Descriptions noSpace>
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Intent' })}
@@ -67,19 +65,23 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
             data-testid='Details'
             title={$t({ defaultMessage: 'Details' })}
             children={<GridRow>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
-                </GridCol>
-              ))}
+              {[
+                <GridCol data-testid='Configuration' key='value' col={{ span: 12 }}>
+                  <ConfigurationCard configuration={configuration!} intent={intent}/>
+                </GridCol>,
+                ...getGraphKPIs(intent, kpis).map(kpi => (
+                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                    <KpiCard kpi={kpi} />
+                  </GridCol>
+                ))]}
             </GridRow>}
           />
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection
-                data-testid='Why this recommendation?'
-                title={$t({ defaultMessage: 'Why this recommendation?' })}
+                data-testid='Why is this intent?'
+                title={$t({ defaultMessage: 'Why is this intent?' })}
                 children={<Card>{valuesText.reasonText}</Card>}
               />
             </GridCol>
