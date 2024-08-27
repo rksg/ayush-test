@@ -9,6 +9,7 @@ import { EthernetPortProfileForm, requestPreProcess } from '../EthernetPortProfi
 interface AddEthernetPortProfileFormProps {
   isNoPageHeader?: boolean
   onClose?: ()=>void
+  updateInstance?: (createId:string)=>void
 }
 
 
@@ -17,25 +18,31 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
   const [ createEthernetPortProfile ] = useCreateEthernetPortProfileMutation()
   const [ updateEthernetPortProfileRadiusId ] = useUpdateEthernetPortProfileRadiusIdMutation()
   const [form] = Form.useForm()
-  const { onClose, isNoPageHeader } = props
+  const { onClose, isNoPageHeader, updateInstance } = props
 
   const handleAddEthernetPortProfile = async (data: EthernetPortProfileFormType) => {
     try {
       const payload = requestPreProcess(data)
       const createResult =
         await createEthernetPortProfile({ payload }).unwrap()
-      if (payload.authRadiusId) {
-        updateEthernetPortProfileRadiusId({ params: {
-          id: createResult.response?.id,
-          radiusId: payload.authRadiusId
-        } })
-      }
+      const createId = createResult.response?.id
 
-      if (payload.accountingRadiusId) {
-        updateEthernetPortProfileRadiusId({ params: {
-          id: createResult.response?.id,
-          radiusId: payload.accountingRadiusId
-        } })
+      if (createId) {
+        if (payload.authRadiusId) {
+          updateEthernetPortProfileRadiusId({ params: {
+            id: createId,
+            radiusId: payload.authRadiusId
+          } })
+        }
+
+        if (payload.accountingRadiusId) {
+          updateEthernetPortProfileRadiusId({ params: {
+            id: createId,
+            radiusId: payload.accountingRadiusId
+          } })
+        }
+
+        updateInstance?.(createId)
       }
 
     } catch (error) {
