@@ -29,7 +29,7 @@ import {
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
-  filterServicePolicyByAccess,
+  filterByAccessForServicePolicyMutation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   isPolicyCardEnabled,
@@ -71,7 +71,7 @@ export default function MyPolicies () {
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterServicePolicyByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>

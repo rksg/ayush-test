@@ -28,7 +28,11 @@ export const serviceOperScopeMap: Record<ServiceOperation, 'c' | 'r' | 'u' | 'd'
 }
 
 export const policyTypeScopeMap: Partial<Record<PolicyType, Array<'wifi' | 'edge' | 'switch'>>> = {
-  [PolicyType.AAA]: ['wifi']
+  [PolicyType.AAA]: ['wifi'],
+  [PolicyType.CERTIFICATE]: ['wifi'],
+  [PolicyType.CERTIFICATE_AUTHORITY]: ['wifi'],
+  [PolicyType.CERTIFICATE_TEMPLATE]: ['wifi'],
+  [PolicyType.SOFTGRE]: ['wifi']
 }
 
 export const policyOperScopeMap: Record<PolicyOperation, 'c' | 'r' | 'u' | 'd'> = {

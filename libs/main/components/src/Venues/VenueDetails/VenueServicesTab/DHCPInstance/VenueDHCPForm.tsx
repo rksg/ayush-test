@@ -323,26 +323,26 @@ const VenueDHCPForm = (props: {
             )}
           </AntSelect>
         </StyledForm.Item>
-
-        <Link style={!hasAddDhcpPermission || isMaxNumberReached()
-          ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
-          : { marginLeft: 10 }}
-        onClick={(e) => {
-          if(!hasAddDhcpPermission || isMaxNumberReached()){
-            e.preventDefault()
-            e.stopPropagation()
-          }
-        }}
-        to={addDhcpPath}
-        state={{
-          from: {
-            pathname: venueServicesTabPath,
-            returnParams: { showConfig: true }
-          }
-        }}>
-          {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
-        </Link>
-
+        {hasAddDhcpPermission &&
+          <Link style={isMaxNumberReached()
+            ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
+            : { marginLeft: 10 }}
+          onClick={(e) => {
+            if (isMaxNumberReached()) {
+              e.preventDefault()
+              e.stopPropagation()
+            }
+          }}
+          to={addDhcpPath}
+          state={{
+            from: {
+              pathname: venueServicesTabPath,
+              returnParams: { showConfig: true }
+            }
+          }}>
+            {$t({ defaultMessage: 'Add DHCP for Wi-Fi Service' })}
+          </Link>
+        }
       </Space>
     </StyledForm.Item>
 

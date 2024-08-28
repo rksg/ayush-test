@@ -196,19 +196,19 @@ export function isCustomAdmin () {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function hasCrossVenuesPermission (props?: Permission) {
   /* For testing purposes */
-  // const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
-  // if(!abacEnabled) return true
-  // if(props?.needGlobalPermission) {
-  //   return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
-  // } else {
-  //   return hasAllVenues
-  // }
+  const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
+  if(!abacEnabled) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  if(props?.needGlobalPermission) {
+    return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  } else {
+    return hasAllVenues
+  }
 
   /* Comment out the following code for testing purposes. */
-  if(props?.needGlobalPermission) {
-    return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
-  }
-  return true
+  // if(props?.needGlobalPermission) {
+  //   return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  // }
+  // return true
 }
 
 export function AuthRoute (props: {

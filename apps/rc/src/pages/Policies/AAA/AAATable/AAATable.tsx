@@ -22,7 +22,7 @@ import {
   AAAPurposeEnum,
   AAA_LIMIT_NUMBER,
   getScopeKeyByPolicy,
-  filterServicePolicyByAccess
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -93,7 +93,7 @@ export default function AAATable () {
     }
   ]
 
-  const allowedRowActions = filterServicePolicyByAccess(rowActions)
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -109,7 +109,7 @@ export default function AAATable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterServicePolicyByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.CREATE)}

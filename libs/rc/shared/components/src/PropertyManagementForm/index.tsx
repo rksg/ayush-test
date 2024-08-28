@@ -22,9 +22,12 @@ import {
   AssociatedResource,
   EditPropertyConfigMessages,
   hasCloudpathAccess,
+  hasServicePermission,
   PropertyConfigs,
   PropertyConfigStatus,
-  ResidentPortalType
+  ResidentPortalType,
+  ServiceOperation,
+  ServiceType
 } from '@acx-ui/rc/utils'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
@@ -95,6 +98,9 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const personaGroupId = Form.useWatch('personaGroupId', form)
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
+  const hasAddResidentPortalPermission = hasServicePermission({
+    serviceType: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
+  })
 
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery(
@@ -448,19 +454,21 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                           />
                       }
                     />
-                    <Form.Item
-                      noStyle
-                      hidden={hasUnits
-                        && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL}
-                    >
-                      <Button
-                        type={'link'}
-                        size={'small'}
-                        onClick={() => setResidentPortalModalVisible(true)}
+                    {hasAddResidentPortalPermission &&
+                      <Form.Item
+                        noStyle
+                        hidden={hasUnits
+                          && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL}
                       >
-                        {$t({ defaultMessage: 'Add Resident Portal' })}
-                      </Button>
-                    </Form.Item>
+                        <Button
+                          type={'link'}
+                          size={'small'}
+                          onClick={() => setResidentPortalModalVisible(true)}
+                        >
+                          {$t({ defaultMessage: 'Add Resident Portal' })}
+                        </Button>
+                      </Form.Item>
+                    }
                   </>
                 }
                 {

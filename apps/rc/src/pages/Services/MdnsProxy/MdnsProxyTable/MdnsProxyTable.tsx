@@ -21,7 +21,7 @@ import {
   getServiceRoutePath,
   MdnsProxyViewModel,
   getScopeKeyByService,
-  filterServicePolicyByAccess
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -82,7 +82,7 @@ export default function MdnsProxyTable () {
     }
   ]
 
-  const allowedRowActions = filterServicePolicyByAccess(rowActions)
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -94,7 +94,7 @@ export default function MdnsProxyTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterServicePolicyByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.CREATE)}
             // eslint-disable-next-line max-len

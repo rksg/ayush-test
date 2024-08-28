@@ -6,7 +6,7 @@ import { Features, useIsSplitOn }                          from '@acx-ui/feature
 import { useAaaPolicyQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  filterServicePolicyByAccess,
+  filterByAccessForServicePolicyMutation,
   getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
@@ -39,7 +39,7 @@ export function AAAPolicyDetail () {
       <PageHeader
         title={queryResults.data?.name || ''}
         breadcrumb={breadcrumb}
-        extra={filterServicePolicyByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
             scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT)}
             type={PolicyType.AAA}

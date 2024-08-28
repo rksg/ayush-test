@@ -17,7 +17,7 @@ import {
   useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
-  filterServicePolicyByAccess,
+  filterByAccessForServicePolicyMutation,
   getSelectServiceRoutePath,
   isServiceCardEnabled,
   ServiceOperation,
@@ -144,7 +144,7 @@ export default function MyServices () {
       <PageHeader
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterServicePolicyByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getSelectServiceRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>

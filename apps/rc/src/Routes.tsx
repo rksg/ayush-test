@@ -699,15 +699,23 @@ function ServiceRoutes () {
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.CREATE })}
-        element={<AuthRoute scopes={[WifiScopes.CREATE]}><ResidentPortalForm /></AuthRoute>}
+        element={
+          // eslint-disable-next-line max-len
+          <ServiceAuthRoute serviceType={ServiceType.RESIDENT_PORTAL} oper={ServiceOperation.CREATE}>
+            <ResidentPortalForm />
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
-        element={<AuthRoute scopes={[WifiScopes.UPDATE]}>
-          <ResidentPortalForm editMode={true} />
-        </AuthRoute>}
+        element={
+          // eslint-disable-next-line max-len
+          <ServiceAuthRoute serviceType={ServiceType.RESIDENT_PORTAL} oper={ServiceOperation.EDIT}>
+            <ResidentPortalForm editMode={true} />
+          </ServiceAuthRoute>
+        }
       />
 
       {(isEdgeHaReady && isEdgeDhcpHaReady)
@@ -831,26 +839,35 @@ function PolicyRoutes () {
       />
       {isCloudpathBetaEnabled ? <>
         <Route
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
           element={<MacRegistrationListDetails />}
         />
         <Route
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
           element={<MacRegistrationListsTable />}
         />
-        { hasCloudpathAccess() && <>
-          <Route
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-            element={<MacRegistrationListForm />} />
-          <Route
+          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.MAC_REGISTRATION_LIST} oper={PolicyOperation.CREATE}>
+              <MacRegistrationListForm />
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-            element={<MacRegistrationListForm editMode={true}/>}
-          />
-        </> }
+          path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.MAC_REGISTRATION_LIST} oper={PolicyOperation.EDIT}>
+              <MacRegistrationListForm editMode={true}/>
+            </PolicyAuthRoute>
+          }
+        />
       </> : <></> }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
@@ -1200,32 +1217,40 @@ function PolicyRoutes () {
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE })}
           element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_TEMPLATE} oper={PolicyOperation.CREATE}>
               <CertificateTemplateForm editMode={false}/>
-            </AuthRoute>}
+            </PolicyAuthRoute>
+          }
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.EDIT })}
           element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_TEMPLATE} oper={PolicyOperation.EDIT}>
               <CertificateTemplateForm editMode={true}/>
-            </AuthRoute>}
+            </PolicyAuthRoute>
+          }
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE })}
           element={
-            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.CERTIFICATE_AUTHORITY} oper={PolicyOperation.CREATE}>
               <CertificateAuthorityForm/>
-            </AuthRoute>}
+            </PolicyAuthRoute>
+          }
         />
         <Route
           path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })}
           element={
-            <AuthRoute scopes={[WifiScopes.CREATE]}>
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.CERTIFICATE} oper={PolicyOperation.CREATE}>
               <CertificateForm/>
-            </AuthRoute>}
+            </PolicyAuthRoute>
+          }
         />
         <Route
         // eslint-disable-next-line max-len
@@ -1237,11 +1262,9 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}
-            requireCrossVenuesPermission={{ needGlobalPermission: true }}
-          >
+          <PolicyAuthRoute policyType={PolicyType.SOFTGRE} oper={PolicyOperation.CREATE}>
             <SoftGreForm editMode={false} />
-          </AuthRoute>
+          </PolicyAuthRoute>
         } />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })}
@@ -1254,14 +1277,11 @@ function PolicyRoutes () {
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT })}
         element={
-          <AuthRoute
-            scopes={[WifiScopes.UPDATE]}
-            requireCrossVenuesPermission={{ needGlobalPermission: true }}
-          >
+          <PolicyAuthRoute policyType={PolicyType.SOFTGRE} oper={PolicyOperation.EDIT}>
             <SoftGreForm editMode={true} />
-          </AuthRoute>}
+          </PolicyAuthRoute>
+        }
       />
-      {/* </>} */}
     </Route>
   )
 }

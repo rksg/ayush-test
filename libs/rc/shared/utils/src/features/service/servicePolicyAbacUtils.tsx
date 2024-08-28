@@ -1,19 +1,28 @@
 import { ReactElement } from 'react'
 
-import { RolesEnum, ScopeKeys, WifiScopes }                                   from '@acx-ui/types'
-import { AuthRoute, filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { RolesEnum, ScopeKeys }                                                                                        from '@acx-ui/types'
+import { AuthRoute, filterByAccess, getUserProfile, hasCrossVenuesPermission, hasPermission, hasRoles, isCustomAdmin } from '@acx-ui/user'
 
 import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
 import { PolicyOperation } from '../policy'
 
-import { hasDpskAccess }                                                                    from './dpskUtils'
 import { policyOperScopeMap, policyTypeScopeMap, serviceOperScopeMap, serviceTypeScopeMap } from './servicePolicyAbacContentsMap'
 import { ServiceOperation }                                                                 from './serviceRouteUtils'
 
-export function filterServicePolicyByAccess <Item> (items: Item[]): Item[] {
+export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): Item[] {
   if (!hasCrossVenuesPermission({ needGlobalPermission: true })) return []
   return filterByAccess(items)
+}
+
+export function hasDpskAccess () {
+  const { hasAllVenues } = getUserProfile()
+
+  if (isCustomAdmin()) {
+    return hasAllVenues
+  }
+
+  return hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.DPSK_ADMIN])
 }
 
 export function isServiceCardEnabled (
@@ -64,11 +73,16 @@ export function ServiceAuthRoute (props: {
   children: ReactElement
 }) {
   const { serviceType, oper, children } = props
-  const scopeKeys = getScopeKeyByService(serviceType, oper)
+
+  if ([ServiceOperation.DETAIL, ServiceOperation.LIST].includes(oper)) {
+    return <AuthRoute
+      scopes={getScopeKeyByService(serviceType, oper)}
+      children={children}
+    />
+  }
 
   return <AuthRoute
     requireCrossVenuesPermission={{ needGlobalPermission: true }}
-    scopes={scopeKeys}
     children={children}
   />
 }
@@ -84,9 +98,7 @@ export function isPolicyCardEnabled (
 export function getScopeKeyByPolicy (policyType: PolicyType, oper: PolicyOperation): ScopeKeys {
   const operScope = policyOperScopeMap[oper]
 
-  const targetScope = policyTypeScopeMap[policyType]
-
-  if (!targetScope) return [WifiScopes.READ] // Always return wifi read scope if the policy has not defined scope
+  const targetScope = policyTypeScopeMap[policyType] || ['wifi'] // Always return wifi if the policy has not defined scopes
 
   return targetScope.map(scope => scope + '-' + operScope as ScopeKeys[number])
 }
@@ -110,11 +122,16 @@ export function PolicyAuthRoute (props: {
   children: ReactElement
 }) {
   const { policyType, oper, children } = props
-  const scopeKeys = getScopeKeyByPolicy(policyType, oper)
+
+  if ([PolicyOperation.LIST, PolicyOperation.DETAIL].includes(oper)) {
+    return <AuthRoute
+      scopes={getScopeKeyByPolicy(policyType, oper)}
+      children={children}
+    />
+  }
 
   return <AuthRoute
     requireCrossVenuesPermission={{ needGlobalPermission: true }}
-    scopes={scopeKeys}
     children={children}
   />
 }

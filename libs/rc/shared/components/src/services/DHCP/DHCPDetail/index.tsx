@@ -11,7 +11,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
-  filterServicePolicyByAccess,
+  filterByAccessForServicePolicyMutation,
   getScopeKeyByService,
   ServiceOperation,
   ServiceType,
@@ -60,7 +60,7 @@ export function DHCPDetail () {
       <PageHeader
         title={data?.serviceName}
         breadcrumb={breadcrumb}
-        extra={filterServicePolicyByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <ServiceConfigTemplateLinkSwitcher
             scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT)}
             type={ServiceType.DHCP}

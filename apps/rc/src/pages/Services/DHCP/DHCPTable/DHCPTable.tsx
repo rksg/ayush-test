@@ -15,7 +15,7 @@ import {
   DHCP_LIMIT_NUMBER,
   DHCPPool,
   IpUtilsService,
-  filterServicePolicyByAccess,
+  filterByAccessForServicePolicyMutation,
   getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -94,7 +94,7 @@ export default function DHCPTable () {
     }
   ]
 
-  const allowedRowActions = filterServicePolicyByAccess(rowActions)
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -106,8 +106,7 @@ export default function DHCPTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterServicePolicyByAccess([
-          // eslint-disable-next-line max-len
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
             scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.CREATE)}
