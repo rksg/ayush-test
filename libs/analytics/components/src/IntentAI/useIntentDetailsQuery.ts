@@ -9,8 +9,9 @@ import { formatter }               from '@acx-ui/formatter'
 import { intentAIApi }             from '@acx-ui/store'
 import { NetworkPath, NodeType }   from '@acx-ui/utils'
 
-import { codes }      from './config'
-import { IntentWlan } from './utils'
+import { codes }                 from './config'
+import { Statuses as stateType } from './states'
+import { IntentWlan }            from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -35,8 +36,7 @@ compareData: {
 export type Intent = {
   id: string;
   code: keyof typeof codes;
-  // TODO: fix change to StateType
-  status: string
+  status: stateType
   metadata: object & {
     scheduledAt: string
     wlans?: IntentWlan[]

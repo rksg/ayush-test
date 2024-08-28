@@ -24,7 +24,7 @@ export function createIntentContextProvider (
   }>
 ) {
   const Component: React.FC = function () {
-    const { code, root, sliceId } = useParams() as {
+    const { root, sliceId, code } = useParams() as {
       root: string
       sliceId: string
       code: keyof typeof specs
