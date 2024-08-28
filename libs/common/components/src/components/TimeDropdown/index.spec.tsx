@@ -1,11 +1,12 @@
+import '@testing-library/jest-dom/extend-expect'
+
 import { ReactElement } from 'react'
 
 import { Form } from 'antd'
 
 import { render, screen } from '@acx-ui/test-utils'
 
-import '@testing-library/jest-dom/extend-expect'
-import { DayTimeDropdown, DayTimeDropdownTypes, getDisplayTime, TimeDropdown, DayAndTimeDropdownTypes } from '.'
+import { DayTimeDropdown, DayAndTimeDropdownTypes, getDisplayTime, TimeDropdown } from '.'
 
 type MockSelectProps = React.PropsWithChildren<{
   showSearch: boolean
@@ -32,23 +33,17 @@ jest.mock('antd', () => {
 
 describe('TimeDropdown', () => {
   it('renders Daily dropdown without disabled time correctly', async () => {
-    render(
-      <Form>
-        <TimeDropdown name='daily' spanLength={24} />
-      </Form>
-    )
-
+    render(<Form><TimeDropdown name='daily' spanLength={24} /></Form>)
     expect(screen.getByPlaceholderText('Select hour')).toBeInTheDocument()
   })
 
   it('renders Daily dropdown with disabled strictly before correctly', async () => {
     render(
       <Form>
-        <TimeDropdown name='daily'
+        <TimeDropdown
+          name='daily'
           spanLength={24}
-          disabledDateTime={
-            { disabledStrictlyBefore: 10 }
-          }
+          disabledDateTime={{ disabledStrictlyBefore: 10 }}
         />
       </Form>
     )
@@ -59,15 +54,13 @@ describe('TimeDropdown', () => {
     expect(screen.queryByText('23:45 (UTC+00)')).not.toBeDisabled()
   })
 
-
   it('renders Daily dropdown with disabled strictly after correctly', async () => {
     render(
       <Form>
-        <TimeDropdown name='daily'
+        <TimeDropdown
+          name='daily'
           spanLength={24}
-          disabledDateTime={
-            { disabledStrictlyAfter: 7.75 }
-          }
+          disabledDateTime={{ disabledStrictlyAfter: 7.75 }}
         />
       </Form>
     )
@@ -81,12 +74,10 @@ describe('TimeDropdown', () => {
   it('renders Daily dropdown with disabled correctly', async () => {
     render(
       <Form>
-        <TimeDropdown name='daily'
+        <TimeDropdown
+          name='daily'
           spanLength={24}
-          disabledDateTime={
-            { disabledStrictlyBefore: 5.75,
-              disabledStrictlyAfter: 11.25 }
-          }
+          disabledDateTime={{ disabledStrictlyBefore: 5.75, disabledStrictlyAfter: 11.25 }}
         />
       </Form>
     )
@@ -95,7 +86,6 @@ describe('TimeDropdown', () => {
     expect(screen.queryByText('05:30 (UTC+00)')).toBeDisabled()
     expect(screen.queryByText('11:30 (UTC+00)')).toBeDisabled()
     expect(screen.queryByText('23:45 (UTC+00)')).toBeDisabled()
-
     expect(screen.queryByText('05:45 (UTC+00)')).not.toBeDisabled()
     expect(screen.queryByText('11:15 (UTC+00)')).not.toBeDisabled()
   })
@@ -103,7 +93,8 @@ describe('TimeDropdown', () => {
   it('renders Weekly dropdown correctly', () => {
     render(
       <Form>
-        <DayTimeDropdown type={DayTimeDropdownTypes.Weekly}
+        <DayTimeDropdown
+          type={DayAndTimeDropdownTypes.Weekly}
           name='weekly'
           spanLength={11}
         />
@@ -117,7 +108,8 @@ describe('TimeDropdown', () => {
   it('renders Month dropdown correctly', () => {
     render(
       <Form>
-        <DayTimeDropdown type={DayTimeDropdownTypes.Monthly}
+        <DayTimeDropdown
+          type={DayAndTimeDropdownTypes.Monthly}
           name='monthly'
           spanLength={11}
         />

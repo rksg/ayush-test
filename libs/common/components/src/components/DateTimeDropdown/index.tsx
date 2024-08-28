@@ -69,11 +69,7 @@ function roundUpTimeToNearest15Minutes (timeStr: string) {
 }
 
 function getDisabledTime (dateSelected?: Moment) {
-  if (!dateSelected?.startOf('day').isSame(moment().startOf('day'))) {
-    return 0
-  }
-  const result = roundUpTimeToNearest15Minutes(
-    moment().format('HH:mm:ss'))
-  return result
-
+  return (!dateSelected?.startOf('day').isSame(moment().startOf('day')))
+    ? 0
+    : roundUpTimeToNearest15Minutes(moment().format('HH:mm:ss'))
 }

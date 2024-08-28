@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react'
 import { Form, Row } from 'antd'
 
-import { DayTimeDropdown, DayTimeDropdownTypes, TimeDropdown } from '.'
+import { DayTimeDropdown, DayAndTimeDropdownTypes, TimeDropdown } from '.'
 
 storiesOf('TimeDropdown', module)
   .add('Daily - Without disabled time', () => <Form.Item style={{ width: '30%' }}>
@@ -39,7 +39,7 @@ storiesOf('TimeDropdown', module)
   </Form.Item>)
   .add('Weekly', () => <Form><Form.Item style={{ width: '30%' }}>
     <Row align='middle' justify='center'>
-      <DayTimeDropdown type={DayTimeDropdownTypes.Weekly}
+      <DayTimeDropdown type={DayAndTimeDropdownTypes.Weekly}
         name='weekly'
         spanLength={11}
       />
@@ -47,7 +47,7 @@ storiesOf('TimeDropdown', module)
   </Form.Item></Form>)
   .add('Monthly', () => <Form><Form.Item style={{ width: '30%' }}>
     <Row align='middle' justify='center'>
-      <DayTimeDropdown type={DayTimeDropdownTypes.Monthly}
+      <DayTimeDropdown type={DayAndTimeDropdownTypes.Monthly}
         name='monthly'
         spanLength={11}
       />

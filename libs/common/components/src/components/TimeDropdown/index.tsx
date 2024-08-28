@@ -18,37 +18,21 @@ export enum DayAndTimeDropdownTypes {
   Monthly = 'monthly'
 }
 
-
-export enum DayTimeDropdownTypes {
-  Weekly = 'weekly',
-  Monthly = 'monthly'
-}
-
 function timeMap () {
   const timeMap = new Map<number, string>()
-  const times = [...Array.from(Array(96), (_, i) => {
+  new Array(96).fill(0).forEach((_, i) => {
     const designator = moment().format('UTCZ').replace(':00', '')
-    return moment().hour(0).minute(0).add(i * 15, 'minute').format(`HH:mm (${designator})`)
-  })]
-  times.forEach((time, i) => timeMap.set(i / 4, time))
+    const time = moment().hour(0).minute(0).add(i * 15, 'minute').format(`HH:mm (${designator})`)
+    timeMap.set(i / 4, time)
+  })
   return timeMap
 }
-
 function timeOptions (disabledStrictlyBefore: number, disabledStrictlyAfter: number) {
-  const timeOptions = []
-  for (const [value, hour] of timeMap().entries()) {
-    if (value >= disabledStrictlyBefore &&
-    value <= disabledStrictlyAfter) {
-      timeOptions.push(<Select.Option value={+value} key={hour} children={hour} />)
-    }
-    else {
-      timeOptions.push(<Select.Option value={+value}
-        key={hour}
-        children={hour}
-        disabled={true}/>)
-    }
-  }
-  return timeOptions
+  return Array.from(timeMap().entries()).map(([value, hour]) =>
+    (value >= disabledStrictlyBefore && value <= disabledStrictlyAfter)
+      ? <Select.Option value={+value} key={hour} children={hour} />
+      : <Select.Option value={+value} key={hour} children={hour} disabled={true}/>
+  )
 }
 
 function dayOfWeekMap () {
@@ -59,32 +43,23 @@ function dayOfWeekMap () {
   return dayOfWeekMap
 }
 function dayOfWeekOptions () {
-  const dayOfWeekOptions = []
-  for (const [value, day] of dayOfWeekMap().entries()) {
-    dayOfWeekOptions.push(<Select.Option value={+value} key={day} children={day} />)
-  }
-  return dayOfWeekOptions
+  return Array.from(dayOfWeekMap().entries()).map(([value, day]) =>
+    <Select.Option value={+value} key={day} children={day} />)
 }
 
 function dayOfMonthMap () {
   const dayOfMonthMap = new Map<number, string>()
-  const monthDays = [...Array.from(Array(31), (_, i) =>
-    moment(`2021-1-${i + 1}`, 'YYYY-MM-DD').format('Do')
-  )]
-  monthDays.forEach((day, i) => dayOfMonthMap.set(i + 1, day))
+  new Array(31).fill(0).forEach((_, i) => {
+    dayOfMonthMap.set(i + 1, moment(`2021-1-${i + 1}`, 'YYYY-MM-DD').format('Do'))
+  })
   return dayOfMonthMap
 }
 function dayOfMonthOptions () {
-  const dayOfMonthOptions = []
-  for (const [value, day] of dayOfMonthMap().entries()) {
-    dayOfMonthOptions.push(<Select.Option value={+value} key={day} children={day} />)
-  }
-  return dayOfMonthOptions
+  return Array.from(dayOfMonthMap().entries()).map(([value, day]) =>
+    <Select.Option value={+value} key={day} children={day} />)
 }
 
-const atDayHour = defineMessage({
-  defaultMessage: '<day></day> <at>at</at> <hour></hour>'
-})
+const atDayHour = defineMessage({ defaultMessage: '<day></day> <at>at</at> <hour></hour>' })
 
 export function getDisplayTime (type: DayAndTimeDropdownTypes) {
   return {
@@ -142,7 +117,7 @@ export function DayTimeDropdown ({ type, name, spanLength }: DayTimeDropdownProp
               noStyle
             >
               <Select placeholder={$t({ defaultMessage: 'Select day' })}>
-                {type === DayTimeDropdownTypes.Weekly ? dayOfWeekOptions() : dayOfMonthOptions()}
+                {type === DayAndTimeDropdownTypes.Weekly ? dayOfWeekOptions() : dayOfMonthOptions()}
               </Select>
             </Form.Item>
           </Col>
@@ -157,18 +132,16 @@ export function DayTimeDropdown ({ type, name, spanLength }: DayTimeDropdownProp
   )
 }
 
-
 export function TimeDropdown (props: TimeDropdownProps) {
   const { $t } = useIntl()
   const { name, disabledDateTime, spanLength } = props
-
   return <Col span={spanLength}>
     <Form.Item
       noStyle
       name={name}
       rules={[{ required: true, message: $t({ defaultMessage: 'Please enter hour' }) }]}
       children={<TimeDropdownPlain
-        {...{ disabledDateTime }}
+        disabledDateTime={disabledDateTime}
         placeholder={$t({ defaultMessage: 'Select hour' })}
       />}
     />
@@ -176,21 +149,13 @@ export function TimeDropdown (props: TimeDropdownProps) {
 }
 
 export function TimeDropdownPlain ({
-  disabledDateTime,
-  ...props
+  disabledDateTime, ...props
 }: Omit<SelectProps, 'children'> & {
-  disabledDateTime?: {
-    disabledStrictlyBefore?: number,
-    disabledStrictlyAfter?: number
-  }
+  disabledDateTime?: { disabledStrictlyBefore?: number, disabledStrictlyAfter?: number }
 }) {
-  const disabledStrictlyBefore = disabledDateTime?.disabledStrictlyBefore
-    ?? defaultDisabledTime.disabledStrictlyBefore
-  const disabledStrictlyAfter = disabledDateTime?.disabledStrictlyAfter
-    ?? defaultDisabledTime.disabledStrictlyAfter
-
-  return <Select
-    {...props}
-    children={timeOptions(disabledStrictlyBefore, disabledStrictlyAfter)}
-  />
+  const args = [
+    disabledDateTime?.disabledStrictlyBefore ?? defaultDisabledTime.disabledStrictlyBefore,
+    disabledDateTime?.disabledStrictlyAfter ?? defaultDisabledTime.disabledStrictlyAfter
+  ] as [number, number]
+  return <Select {...props} children={timeOptions(...args)} />
 }
