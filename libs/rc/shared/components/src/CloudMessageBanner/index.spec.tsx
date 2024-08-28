@@ -12,7 +12,8 @@ import {
   cloudMessageBanner,
   cloudVersion,
   scheduleVersion,
-  switchVenueVersionList
+  switchVenueVersionList,
+  venueApModelFirmwareList
 } from './__tests__/fixtures'
 
 import { CloudMessageBanner } from '.'
@@ -59,6 +60,10 @@ describe('cloud Message Banner', () => {
       rest.get(
         FirmwareUrlsInfo.getScheduledFirmware.url.replace('?status=scheduled', ''),
         (_, res, ctx) => res(ctx.json(scheduleVersion))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (_, res, ctx) => res(ctx.json(venueApModelFirmwareList))
       ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,

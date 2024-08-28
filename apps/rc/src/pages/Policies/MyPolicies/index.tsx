@@ -19,7 +19,8 @@ import {
   useGetVLANPoolPolicyViewModelListQuery,
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
-  useSyslogPolicyListQuery
+  useSyslogPolicyListQuery,
+  useGetSoftGreViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyOperation,
@@ -105,6 +106,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   return [
     {
@@ -254,6 +256,15 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })),
       disabled: !isEdgeQosEnabled
+    },
+    {
+      type: PolicyType.SOFTGRE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !isSoftGreEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })),
+      disabled: !isSoftGreEnabled
     }
   ]
 }
