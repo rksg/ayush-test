@@ -102,29 +102,32 @@ export function LanPortSettings (props: {
     onGUIChanged?.(fieldName)
   }
 
-  const { data: ethernetPortListQuery } = useGetEthernetPortProfileViewDataListQuery({
-    payload: {}
-  })
-  const [ ethernetPortDropdownItems, setEthernetPortDropdownItems ]=
-    useState(convertEthernetPortListToDropdownItems(ethernetPortListQuery?.data))
+  const { ethernetPortDropdownItems, ethernetPortListQuery } =
+    useGetEthernetPortProfileViewDataListQuery({
+      payload: {
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    }, {
+      selectFromResult: ({ data: queryResult })=>{
 
-  useEffect(()=>{
-    if (ethernetPortListQuery?.data) {
-      // eslint-disable-next-line max-len
-      setEthernetPortDropdownItems(convertEthernetPortListToDropdownItems(ethernetPortListQuery.data))
-    }
-  },[ethernetPortListQuery])
+        return {
+          ethernetPortDropdownItems: (queryResult)?
+            convertEthernetPortListToDropdownItems(queryResult.data) :
+            [],
+          ethernetPortListQuery: queryResult
+        }
+      }
+    })
 
   useEffect(()=> {
     if (ethernetPortListQuery?.data) {
       setCurrentEthernetPortData(
         ethernetPortListQuery.data.find((profile)=> profile.id === ethernetPortProfileId))
     }
-
-  }, [ethernetPortProfileId])
+  }, [ethernetPortProfileId, ethernetPortListQuery?.data])
 
   function convertEthernetPortListToDropdownItems (
-    // targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],
     ethernetPortList?: EthernetPortProfileViewData[]
   ): DefaultOptionType[] {
     // eslint-disable-next-line max-len
@@ -193,12 +196,12 @@ export function LanPortSettings (props: {
           },
           ...ethernetPortDropdownItems
           ]}
-        // onChange={(value) => handlePortTypeChange(value, index)}
+          onChange={() => onChangedByCustom('ethernetPortProfileId')}
         />}
       />
       <EthernetPortProfileDrawer
         updateInstance={(createId) => {
-          console.log(createId)
+          form.setFieldValue(['lan', index, 'ethernetPortProfileId'], createId)
         }}
         currentEthernetPortData={currentEthernetPortData}
       />

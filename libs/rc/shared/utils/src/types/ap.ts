@@ -464,7 +464,8 @@ export interface LanPort {
   enabled?: boolean,
   portId?: string,
   type?: 'ACCESS' | 'GENERAL' | 'TRUNK',
-  vni: number
+  vni: number,
+  ethernetPortProfileId: string
 }
 
 export enum ApModelTypeEnum {

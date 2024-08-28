@@ -38,7 +38,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            // 'AddEthernetPortServiceProfile',
+            'AddEthernetPortProfile',
             'DeleteEthernetPortServiceProfile'
           ]
           onActivityMessageReceived(msg, activities, () => {
