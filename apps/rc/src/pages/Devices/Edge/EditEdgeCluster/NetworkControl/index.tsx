@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 
 import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
@@ -28,8 +27,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
-  const [currentDhcpId, setCurrentDhcpId] = useState('')
-  const [currentQosId, setCurrentQosId] = useState('')
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [activateEdgeQos] = useActivateQosOnEdgeClusterMutation()
   const [deactivateEdgeQos] = useDeactivateQosOnEdgeClusterMutation()
@@ -67,18 +64,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     })
   })
 
-  useEffect(() => {
-    if (currentDhcp) {
-      setCurrentDhcpId(currentDhcp.id)
-    }
-  }, [currentDhcp])
-
-  useEffect(() => {
-    if (currentQos) {
-      setCurrentQosId(currentQos.id??'')
-    }
-  }, [currentQos])
-
   const handleApply = async () => {
     await handleApplyDhcp()
     await handleApplyQos()
@@ -86,6 +71,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const handleApplyDhcp = async () => {
     const isDhcpServiceActive = form.getFieldValue('dhcpSwitch')
+    const currentDhcpId = currentDhcp?.id??''
     if (!isDhcpServiceActive) {
       if(currentDhcpId!== ''){
         await removeDhcpService()
@@ -102,6 +88,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const handleApplyQos = async () => {
     const isQosProfileActive = form.getFieldValue('qosSwitch')
+    const currentQosId = currentQos?.id??''
     if (!isQosProfileActive) {
       if(currentQosId!== ''){
         await removeQosProfile()
@@ -123,7 +110,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         currentClusterStatus?.venueId ?? '',
         clusterId ?? ''
       )
-      setCurrentDhcpId(dhcpId)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -132,11 +118,10 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const removeDhcpService = async () => {
     try {
       await deactivateEdgeDhcp(
-        currentDhcpId,
+        currentDhcp?.id??'',
         currentClusterStatus?.venueId ?? '',
         clusterId ?? ''
       )
-      setCurrentDhcpId('')
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -149,7 +134,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
         venueId: currentClusterStatus?.venueId,
         edgeClusterId: clusterId
       } }).unwrap()
-      setCurrentQosId(qosId)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -158,11 +142,10 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const removeQosProfile = async () => {
     try {
       await deactivateEdgeQos({ params: {
-        policyId: currentQosId,
+        policyId: currentQos?.id,
         venueId: currentClusterStatus?.venueId,
         edgeClusterId: clusterId
       } }).unwrap()
-      setCurrentQosId('')
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
