@@ -22,7 +22,7 @@ import { sortProp,
   PrivilegeGroup,
   CustomGroupType
 } from '@acx-ui/rc/utils'
-import { useTenantLink }                                        from '@acx-ui/react-router-dom'
+import { TenantType, useTenantLink }                            from '@acx-ui/react-router-dom'
 import { RolesEnum }                                            from '@acx-ui/types'
 import { filterByAccess, roleStringMap, useUserProfileContext } from '@acx-ui/user'
 import { AccountType }                                          from '@acx-ui/utils'
@@ -35,6 +35,7 @@ interface PrivilegeGroupsTableProps {
 export interface PrivilegeGroupSateProps {
   isOnboardedMsp?: boolean;
   name?: string;
+  tenantType?: TenantType
 }
 
 const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
@@ -68,10 +69,14 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     : []
 
   const handleClickAdd = () => {
+    const stateProp: PrivilegeGroupSateProps = {
+      isOnboardedMsp: isOnboardedMsp,
+      tenantType: tenantType as TenantType
+    }
     navigate({
       ...linkAddPriviledgePath,
       pathname: `${linkAddPriviledgePath.pathname}/create`
-    }, { state: isOnboardedMsp })
+    }, { state: stateProp })
   }
 
   const getPrivilegeScopes = (data: PrivilegeGroup) => {
@@ -162,7 +167,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
       onClick: (selectedRows) => {
         const stateProp: PrivilegeGroupSateProps = {
           isOnboardedMsp: isOnboardedMsp,
-          name: selectedRows[0].name
+          name: selectedRows[0].name,
+          tenantType: tenantType as TenantType
         }
         navigate({
           ...linkAddPriviledgePath,
