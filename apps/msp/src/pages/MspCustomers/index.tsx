@@ -247,7 +247,7 @@ export function MspCustomers () {
         dataIndex: 'status',
         key: 'status',
         sorter: true,
-        width: 80,
+        width: 120,
         render: function (_, row) {
           return $t(mspUtils.getStatus(row))
         }
