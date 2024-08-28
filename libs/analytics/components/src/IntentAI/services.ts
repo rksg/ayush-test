@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import { formattedPath }             from '@acx-ui/analytics/utils'
-import { TableProps }                from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { intentAIApi }               from '@acx-ui/store'
+import { formattedPath }                  from '@acx-ui/analytics/utils'
+import { TableProps }                     from '@acx-ui/components'
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import { intentAIApi, recommendationApi } from '@acx-ui/store'
 import {
   getIntl,
   computeRangeFilter,
@@ -44,9 +44,7 @@ export type IntentHighlight = {
 }
 
 type IntentApPayload = {
-  code: string,
-  root: string,
-  sliceId: string,
+  id: string;
   search: string
 }
 
@@ -330,39 +328,35 @@ export const api = intentAIApi.injectEndpoints({
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
       providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
-    }),
+    })
+  })
+})
+
+export const recApi = recommendationApi.injectEndpoints({
+  endpoints: (build) => ({
     getAps: build.query<IntentAp[], IntentApPayload>({
       query: (payload) => ({
         document: gql`
-        query GetAps(
-          $code: String!
-          $root: String!
-          $sliceId: String!
-          $n: Int
-          $search: String
-          $key: String
-        ) {
-          intent(code: $code, root: $root, sliceId: $sliceId) {
-            aps: aps(n: $n, search: $search, key: $key) {
-              name
-              mac
-              model
-              version
+          query GetAps($id: String, $n: Int, $search: String, $key: String) {
+              recommendation(id: $id) {
+                APs: APs(n: $n, search: $search, key: $key) {
+                  name
+                  mac
+                  model
+                  version
+                }
+              }
             }
-          }
-        }
-        `,
+          `,
         variables: {
-          code: payload.code,
-          root: payload.root,
-          sliceId: payload.sliceId,
+          id: payload.id,
           search: payload.search,
           n: 100,
           key: 'aps-on-latest-fw-version'
         }
       }),
-      transformResponse: (response: { intent: { aps: IntentAp[] } }) =>
-        response.intent.aps
+      transformResponse: (response: { recommendation: { APs: IntentAp[] } }) =>
+        response.recommendation.APs
     })
   })
 })
@@ -477,6 +471,9 @@ export const {
   useLazyIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
-  useIntentHighlightQuery,
-  useGetApsQuery
+  useIntentHighlightQuery
 } = api
+
+export const {
+  useGetApsQuery
+} = recApi

@@ -6,19 +6,11 @@ import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 
 import { IntentAp, useGetApsQuery } from '../services'
 
-export default function ImpactedApsDrawer (
-  props: {
-    code: string,
-    root: string,
-    sliceId: string,
-    aps: IntentAp[],
-    visible: boolean,
-    onClose: () => void
-}) {
-  const { code, root, sliceId, aps, visible, onClose } = props
+export const ImpactedApsDrawer = ({ id, aps, visible, onClose } :
+  { id: string, aps: IntentAp[], visible: boolean, onClose: () => void }) => {
   const { $t } = useIntl()
   const [search, setSearch] = useState('')
-  const impactedApsQuery = useGetApsQuery({ code, root, sliceId, search })
+  const impactedApsQuery = useGetApsQuery({ id, search })
   const columns: TableProps<IntentAp>['columns'] = [
     {
       key: 'name',
