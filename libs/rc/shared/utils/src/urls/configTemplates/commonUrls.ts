@@ -291,12 +291,20 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   activateVenueApGroupRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateVenueApGroupRbac: {
     method: 'delete',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueApGroupsRbac: {
     method: 'get',
@@ -321,11 +329,6 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenuesTemplate: {
     method: 'put',
     url: '/templates/networkActivations/mappings',
-    newApi: true
-  },
-  getVLANPoolPolicyListTemplate: {
-    method: 'post',
-    url: '/templates/vlanPoolProfiles/query',
     newApi: true
   }
 }

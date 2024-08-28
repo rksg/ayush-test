@@ -33,7 +33,8 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  SoftGreForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -110,6 +111,8 @@ import SelectPolicyForm                                                 from './
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
+import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
+import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -679,13 +682,15 @@ function ServiceRoutes () {
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.CREATE })}
-        element={<ResidentPortalForm />}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><ResidentPortalForm /></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
-        element={<ResidentPortalForm editMode={true} />}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <ResidentPortalForm editMode={true} />
+        </AuthRoute>}
       />
 
       {(isEdgeHaReady && isEdgeDhcpHaReady)
@@ -1220,6 +1225,34 @@ function PolicyRoutes () {
         />
       </>
       }
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}
+            requireCrossVenuesPermission={{ needGlobalPermission: true }}
+          >
+            <SoftGreForm editMode={false} />
+          </AuthRoute>
+        } />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })}
+        element={<SoftGreTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.DETAIL })}
+        element={<SoftGreDetail />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT })}
+        element={
+          <AuthRoute
+            scopes={[WifiScopes.UPDATE]}
+            requireCrossVenuesPermission={{ needGlobalPermission: true }}
+          >
+            <SoftGreForm editMode={true} />
+          </AuthRoute>}
+      />
+      {/* </>} */}
     </Route>
   )
 }

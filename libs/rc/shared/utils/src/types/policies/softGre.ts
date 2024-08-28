@@ -1,0 +1,43 @@
+import { MtuTypeEnum } from '../../models'
+
+export interface SoftGre {
+  id: string
+  name: string
+  description?: string
+  primaryGatewayAddress: string
+  secondaryGatewayAddress?: string
+  mtuType: MtuTypeEnum
+  mtuSize?: number
+  keepAliveInterval: number
+  keepAliveRetryTimes: number
+  disassociateClientEnabled: boolean
+}
+
+
+export interface SoftGreViewData {
+  id: string
+  name: string
+  description?: string
+  primaryGatewayAddress: string
+  secondaryGatewayAddress?: string
+  mtuType: MtuTypeEnum
+  mtuSize?: number
+  keepAliveInterval: number
+  keepAliveRetryTimes: number
+  disassociateClientEnabled: boolean
+  activations: SoftGreActivation[]
+}
+
+export interface VenueTableUsageBySoftGre extends SoftGreActivation {
+    name: string
+    id: string
+    addressLine: string
+    wifiNetworkNames: string[]
+}
+
+
+export interface SoftGreActivation {
+  venueId: string
+  wifiNetworkIds: string[]
+}
+
