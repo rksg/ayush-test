@@ -15,7 +15,7 @@ export const IconWrapper = styled(Space)`
   height: 150px;
   flex-direction: column;
   justify-content: flex-end;
-  border: 1px solid #dedede;
+  border: 1px solid var(--acx-neutrals-30);
   padding: 35px 0;
   overflow: hidden;
   .name {
@@ -26,8 +26,8 @@ export const IconWrapper = styled(Space)`
     white-space: nowrap;
   }
   &:hover {
-    background: #f5f5f5;
-    color: #5496EA;
+    background: var(--acx-neutrals-15);
+    color: var(--acx-accents-blue-50);
   }
 `
 
@@ -43,7 +43,7 @@ export function Basic () {
   const allIcons = Object.keys(Icons).filter(name => !excludedIcons.includes(name))
 
   return (<div>
-    <Typography.Title level={4} strong>Icons:</Typography.Title>
+    <Typography.Title level={4} style={{ fontWeight: 600 }}>Icons:</Typography.Title>
     <Space style={{ marginBottom: '8px' }}>
       Search: <Input placeholder='Search by icon name...'
         onChange={(e) => { setSearchText(e.target.value) }}
@@ -53,7 +53,7 @@ export function Basic () {
       allIcons
         .filter(name => !!searchText ? name.includes(searchText) : name)
         .map((iconName, index) => {
-          const Icon = Icons[iconName]
+          const Icon = Icons[iconName as keyof typeof Icons]
           return <IconWrapper key={index}>
             <Icon />
             <div className='name' title={iconName}>{ iconName }</div>

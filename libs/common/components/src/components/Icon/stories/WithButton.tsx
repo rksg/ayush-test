@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useState } from 'react'
 
 import { Divider, Input, Space, Typography } from 'antd'
@@ -9,40 +10,7 @@ import { Button } from '../../Button'
 
 export const IconList = styled(Space)`
   flex-flow: wrap;
-  padding: .6em 0 2em;
-`
-
-export const IconWrapper = styled(Space)`
-  flex-direction: column;
-  min-width: 150px;
-  min-height: 50px;
-  justify-content: center;
-
-  p {
-    max-width: 120px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  &.svg16 {
-    svg {
-      width: 16px !important;
-      height: 16px !important;
-    }
-  }
-  &.svg24 {
-    svg {
-      width: 24px !important;
-      height: 24px !important;
-    }
-  }
-  &.svg32 {
-    svg {
-      width: 32px !important;
-      height: 32px !important;
-    }
-  }
+  padding: .6em 2em 2em 0;
 `
 
 export function WithButton () {
@@ -50,7 +18,7 @@ export function WithButton () {
   const allIcons = Object.keys(Icons)
 
   return (<div>
-    <Typography.Title level={4} strong>Icons:</Typography.Title>
+    <Typography.Title level={4} style={{ fontWeight: 600 }}>Icons:</Typography.Title>
     <Space style={{ marginBottom: '8px' }}>
       Search: <Input placeholder='Search by icon name...'
         onChange={(e) => { setSearchText(e.target.value) }}
@@ -60,48 +28,27 @@ export function WithButton () {
       allIcons
         .filter(name => !!searchText ? name.includes(searchText) : name)
         .map((iconName) => {
-          const Icon = Icons[iconName]
-          return <div>
+          const Icon = Icons[iconName as keyof typeof Icons]
+          return <div key={iconName}>
             <Divider orientation='left' plain>{ iconName }</Divider>
-            <Space>
-              <IconWrapper key={`${iconName}-link-16`} className='svg16' title='16px'>
-                <Button type='link' icon={<Icon size='sm' />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-link-24`} className='svg24' title='24px'>
-                <Button type='link' icon={<Icon />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-link-32`} className='svg32' title='32px'>
-                <Button type='link' icon={<Icon />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-disabled-link-32`} className='svg32' title='32px'>
-                <Button type='link' disabled icon={<Icon />}>Text</Button>
-              </IconWrapper>
+            <Space size={50}>
+              <Button title='16px' size='small' type='link' icon={<Icon size='sm' />}>Text</Button>
+              <Button title='16px' size='middle' type='link' icon={<Icon size='sm' />}>Text</Button>
+              <Button title='24px' size='large' type='link' icon={<Icon style={{ width: '24px', height: '24px' }} />}>Text</Button>
+              <Button title='32px' size='large' type='link' icon={<Icon size='lg' style={{ width: '32px', height: '32px' }} />} >Text</Button>
+              <Button title='32px' size='large' type='link' disabled icon={<Icon size='lg' style={{ width: '32px', height: '32px' }} />}>Text</Button>
 
-              <IconWrapper key={`${iconName}-default-16`} className='svg16' title='16px'>
-                <Button type='default' icon={<Icon size='sm' />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-default-24`} className='svg24' title='24px'>
-                <Button type='default' icon={<Icon />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-default-32`} className='svg32' title='32px'>
-                <Button type='default' icon={<Icon />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-disabled-default-32`} className='svg32' title='32px'>
-                <Button type='default' disabled icon={<Icon />}>Text</Button>
-              </IconWrapper>
+              <Button title='16px' size='small' type='default' icon={<Icon size='sm' />}>Text</Button>
+              <Button title='16px' size='middle' type='default' icon={<Icon size='sm' />}>Text</Button>
+              <Button title='24px' size='large' type='default' icon={<Icon style={{ width: '24px', height: '24px' }} />}>Text</Button>
+              <Button title='32px' size='large' type='default' icon={<Icon size='lg' style={{ width: '32px', height: '32px' }} />}>Text</Button>
+              <Button title='32px' size='large' type='default' disabled icon={<Icon size='lg' style={{ width: '32px', height: '32px' }} />}>Text</Button>
 
-              <IconWrapper key={`${iconName}-primary-16`} className='svg16' title='16px'>
-                <Button type='primary' icon={<Icon size='sm' />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-primary-24`} className='svg24' title='24px'>
-                <Button type='primary' icon={<Icon />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-primary-32`} className='svg32' title='32px'>
-                <Button type='primary' icon={<Icon />}>Text</Button>
-              </IconWrapper>
-              <IconWrapper key={`${iconName}-disabled-primary-32`} className='svg32' title='32px'>
-                <Button type='primary' disabled icon={<Icon />}>Text</Button>
-              </IconWrapper>
+              <Button title='16px' size='small' type='primary' icon={<Icon size='sm' />}>Text</Button>
+              <Button title='16px' size='middle' type='primary' icon={<Icon size='sm' />}>Text</Button>
+              <Button title='24px' size='large' type='primary' icon={<Icon style={{ width: '24px', height: '24px' }} />}>Text</Button>
+              <Button title='32px' size='large' type='primary' icon={<Icon size='lg' style={{ width: '32px', height: '32px' }} />}>Text</Button>
+              <Button title='32px' size='large' type='primary' disabled icon={<Icon size='lg' style={{ width: '32px', height: '32px' }} />}>Text</Button>
             </Space>
           </div>
         })
