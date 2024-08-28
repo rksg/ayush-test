@@ -4,7 +4,7 @@ import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
 
 
-import { StepsForm }                                                                                                                               from '@acx-ui/components'
+import { Loader, StepsForm }                                                                                                                       from '@acx-ui/components'
 import { Features }                                                                                                                                from '@acx-ui/feature-toggle'
 import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                        from '@acx-ui/rc/components'
 import { useActivateQosOnEdgeClusterMutation, useDeactivateQosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeQosProfileViewDataListQuery } from '@acx-ui/rc/services'
@@ -30,7 +30,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
   const [currentDhcpId, setCurrentDhcpId] = useState('')
-  const [isQosProfileActive, setIsQosProfileActive] = useState(false)
   const [currentQosId, setCurrentQosId] = useState('')
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [activateEdgeQos] = useActivateQosOnEdgeClusterMutation()
@@ -52,7 +51,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     })
   })
 
-  const { currentQos } = useGetEdgeQosProfileViewDataListQuery({
+  const { currentQos, isQosLoading } = useGetEdgeQosProfileViewDataListQuery({
     payload: {
       fields: [
         'id'
@@ -62,8 +61,9 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   },
   {
     skip: !Boolean(clusterId),
-    selectFromResult: ({ data }) => ({
-      currentQos: data?.data[0]
+    selectFromResult: ({ data, isLoading }) => ({
+      currentQos: data?.data[0],
+      isQosLoading: isLoading
     })
   })
 
@@ -77,11 +77,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }, [currentDhcp])
 
   useEffect(() => {
-    setIsQosProfileActive(Boolean(currentQos))
-
     if (currentQos) {
       setCurrentQosId(currentQos.id??'')
-      form.setFieldValue('qosId', currentQos.id)
     }
   }, [currentQos])
 
@@ -106,6 +103,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   const handleApplyQos = async () => {
+    const isQosProfileActive = form.getFieldValue('qosSwitch')
     if (!isQosProfileActive) {
       if(currentQosId!== ''){
         await removeQosProfile()
@@ -173,16 +171,18 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   return (
-    <StepsForm
-      editMode
-      form={form}
-      onFinish={handleApply}
-      onCancel={() => navigate(linkToEdgeList)}
-    >
-      <StepsForm.StepForm>
-        <Row gutter={20}>
-          <Col span={7}>
-            {isEdgeDhcpHaReady &&
+    <Loader states={[{ isLoading: isQosLoading }]}>
+      <StepsForm
+        editMode
+        form={form}
+        onFinish={handleApply}
+        onCancel={() => navigate(linkToEdgeList)}
+        initialValues={{ qosSwitch: Boolean(currentQos), qosId: currentQos?.id }}
+      >
+        <StepsForm.StepForm>
+          <Row gutter={20}>
+            <Col span={7}>
+              {isEdgeDhcpHaReady &&
             <StepsForm.FieldLabel width='50%'>
               {$t({ defaultMessage: 'DHCP Service' })}
               <Form.Item
@@ -191,33 +191,40 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
                 }
               />
             </StepsForm.FieldLabel>
-            }
-            {isEdgeDhcpHaReady && isDhcpServiceActive &&
+              }
+              {isEdgeDhcpHaReady && isDhcpServiceActive &&
             <Form.Item>
               <EdgeDhcpSelectionForm hasNsg={false} />
             </Form.Item>}
-          </Col>
-        </Row>
-        <Row gutter={20}>
-          <Col span={7}>
-            {isEdgeQosEnabled &&
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col span={7}>
+              {isEdgeQosEnabled &&
               <StepsForm.FieldLabel width='50%'>
                 {$t({ defaultMessage: 'Hierarchical QoS' })}
                 <Form.Item
-                  children={
-                    <Switch checked={isQosProfileActive} onChange={setIsQosProfileActive} />
-                  }
+                  name='qosSwitch'
+                  valuePropName='checked'
+                  children={<Switch />}
                 />
               </StepsForm.FieldLabel>
-            }
-            {isEdgeQosEnabled && isQosProfileActive &&
-            <Form.Item>
-              <EdgeQosProfileSelectionForm />
-            </Form.Item>}
-          </Col>
-        </Row>
-      </StepsForm.StepForm>
+              }
+              {
+                isEdgeQosEnabled &&
+                <Form.Item
+                  dependencies={['qosSwitch']}
+                >
+                  {({ getFieldValue }) => {
+                    return getFieldValue('qosSwitch') ?<EdgeQosProfileSelectionForm />:<></>
+                  }}
+                </Form.Item>
+              }
+            </Col>
+          </Row>
+        </StepsForm.StepForm>
 
-    </StepsForm>
+      </StepsForm>
+    </Loader>
   )
 }
