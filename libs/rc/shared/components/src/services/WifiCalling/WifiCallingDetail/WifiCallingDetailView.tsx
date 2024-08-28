@@ -13,8 +13,8 @@ import { Features, useIsSplitOn }                                               
 import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
   filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   ServiceOperation,
-  ServiceType,
   ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   WifiCallingDetailContextType
 } from '@acx-ui/rc/utils'
