@@ -11,10 +11,10 @@ import { HistoricalClientsTable } from '../HistoricalClientsTable'
 import { ClientLink, SearchBarDiv, SearchCountDiv } from './styledComponents'
 export function ClientDualTable () {
   const { $t } = useIntl()
-  const [searchValue, setSearchValue] = useState('')
+  const { clientMac } = useParams<{ clientMac?: string }>()
+  const [searchValue, setSearchValue] = useState( clientMac ?? '' )
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
-  const { clientMac } = useParams<{ clientMac: string }>()
 
   const getSearchToolTipText = () => {
     return defineMessage({ defaultMessage: `
@@ -35,12 +35,6 @@ export function ClientDualTable () {
       window.scrollTo({ top: element.offsetHeight })
     }
   }
-
-  useEffect(() => {
-    if (clientMac) {
-      setSearchValue(clientMac)
-    }
-  }, [clientMac])
 
   return <>
     <div id='ClientsTable'>
