@@ -81,7 +81,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   }
 
   const isDuplicateProfile = (payload: LbsServerProfileContext) => {
-    const otherProfiles = list?.data?.filter((o) => params?.policy !== o.id)
+    const otherProfiles = list?.data?.filter((o) => params?.policyId !== o.id)
     const isDuplicated = otherProfiles?.some((o) =>
       payload.lbsVenueName === o.lbsVenueName && payload.serverAddress === o.server.split(':')[0])
 
