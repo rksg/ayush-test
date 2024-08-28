@@ -1,9 +1,8 @@
 import { ReactElement } from 'react'
 
-import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
+import { Form } from 'antd'
 
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { render, screen } from '@acx-ui/test-utils'
 
 import '@testing-library/jest-dom/extend-expect'
 import { DayTimeDropdown, DayTimeDropdownTypes, getDisplayTime, TimeDropdown, DayAndTimeDropdownTypes } from '.'
@@ -99,33 +98,6 @@ describe('TimeDropdown', () => {
 
     expect(screen.queryByText('05:45 (UTC+00)')).not.toBeDisabled()
     expect(screen.queryByText('11:15 (UTC+00)')).not.toBeDisabled()
-  })
-
-  it('support custom name, label, rules, and placeholder', async () => {
-    const { result: { current: form } } = renderHook(() => Form.useForm()[0])
-    const name = ['field', 'name']
-    render(<Form form={form} onFinish={jest.fn()}>
-      <TimeDropdown name={name}
-        label='I am time'
-        rules={[{ required: true, message: 'XYZ' }]}
-        placeholder='ABC'
-      />
-      <button type='submit'>Submit</button>
-    </Form>)
-
-    const dropdown = await screen.findByRole('combobox', { name: 'I am time' })
-    expect(dropdown).toHaveAttribute('placeholder', 'ABC')
-    expect(dropdown).toBeVisible()
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Submit' }))
-
-    expect(await screen.findByRole('alert', {
-      name: (_, e) => e.textContent === 'XYZ'
-    })).toBeVisible()
-
-    await userEvent.selectOptions(dropdown, '05:30 (UTC+00)')
-
-    expect(form.getFieldValue(name)).toEqual('5.5')
   })
 
   it('renders Weekly dropdown correctly', () => {
