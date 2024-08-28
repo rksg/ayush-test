@@ -13,6 +13,7 @@ import { ApDataContext, ApEditContext } from '..'
 
 import { AntennaSection }                 from './Antenna/AntennaSection'
 import { ClientAdmissionControlSettings } from './ClientAdmissionControlSettings/ClientAdmissionControlSettings'
+import { ClientSteering }                 from './ClientSteering/ClientSteering'
 import { RadioSettings }                  from './RadioSettings/RadioSettings'
 
 export interface ApRadioContext {
@@ -53,11 +54,13 @@ export function RadioTab () {
   // waiting for the feature is implemented and useing feature flag to control
   const supportAntTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE) && isAntTypeAP
   const supportAntenna = supportAntTypeSelection
+  const isStickyClientSteeringEnable = useIsSplitOn(Features.WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE)
 
   const wifiRadioLink = $t({ defaultMessage: 'Wi-Fi Radio' })
   const wifiRadioTitle = $t({ defaultMessage: 'Wi-Fi Radio Settings' })
   const clientAdmissionCtlTitle = $t({ defaultMessage: 'Client Admission Control' })
   const antennaTitle = $t({ defaultMessage: 'Antenna' })
+  const clientSteeringTitle = $t({ defaultMessage: 'Client Steering' })
 
   const anchorItems = [{
     title: wifiRadioLink,
@@ -70,6 +73,17 @@ export function RadioTab () {
       </>
     )
   },
+  ...(isStickyClientSteeringEnable ? [{
+    title: clientSteeringTitle,
+    content: (
+      <>
+        <StepsFormLegacy.SectionTitle id='client-steering'>
+          { clientSteeringTitle }
+        </StepsFormLegacy.SectionTitle>
+        <ClientSteering />
+      </>
+    )
+  }] : []),
   {
     title: clientAdmissionCtlTitle,
     content: (
