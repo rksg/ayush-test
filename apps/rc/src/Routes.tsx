@@ -424,9 +424,11 @@ const edgeDhcpRoutes = () => {
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.CREATE
       })}
-      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
-        <AddDHCP/>
-      </AuthRoute>}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_DHCP} oper={ServiceOperation.CREATE}>
+          <AddDHCP/>
+        </ServiceAuthRoute>
+      }
     />
     <Route
       path={getServiceRoutePath({
@@ -447,9 +449,11 @@ const edgeDhcpRoutes = () => {
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.EDIT
       })}
-      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-        <EditDhcp />
-      </AuthRoute>}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_DHCP} oper={ServiceOperation.EDIT}>
+          <EditDhcp />
+        </ServiceAuthRoute>
+      }
     />
   </>
 }
@@ -475,18 +479,22 @@ const edgeFirewallRoutes = () => {
         type: ServiceType.EDGE_FIREWALL,
         oper: ServiceOperation.CREATE
       })}
-      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
-        <AddFirewall />
-      </AuthRoute>}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_FIREWALL} oper={ServiceOperation.CREATE}>
+          <AddFirewall />
+        </ServiceAuthRoute>
+      }
     />
     <Route
       path={getServiceRoutePath({
         type: ServiceType.EDGE_FIREWALL,
         oper: ServiceOperation.EDIT
       })}
-      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-        <EditFirewall />
-      </AuthRoute>}
+      element={
+        <ServiceAuthRoute serviceType={ServiceType.EDGE_FIREWALL} oper={ServiceOperation.EDIT}>
+          <EditFirewall />
+        </ServiceAuthRoute>
+      }
     />
   </>
 }
@@ -570,35 +578,27 @@ function ServiceRoutes () {
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
         element={
-          <AuthRoute scopes={[WifiScopes.CREATE]}>
+          <ServiceAuthRoute serviceType={ServiceType.WIFI_CALLING} oper={ServiceOperation.CREATE}>
             <WifiCallingForm />
-          </AuthRoute>
+          </ServiceAuthRoute>
         }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })}
         element={
-          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <ServiceAuthRoute serviceType={ServiceType.WIFI_CALLING} oper={ServiceOperation.EDIT}>
             <WifiCallingConfigureForm />
-          </AuthRoute>
+          </ServiceAuthRoute>
         }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
-        element={
-          <AuthRoute scopes={[WifiScopes.READ]}>
-            <WifiCallingDetailView />
-          </AuthRoute>
-        }
+        element={<WifiCallingDetailView />}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
-        element={
-          <AuthRoute scopes={[WifiScopes.READ]}>
-            <WifiCallingTable/>
-          </AuthRoute>
-        }
+        element={<WifiCallingTable/>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
@@ -669,11 +669,19 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
-        element={<PortalForm/>}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.PORTAL} oper={ServiceOperation.CREATE}>
+            <PortalForm/>
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.EDIT })}
-        element={<PortalForm editMode={true}/>}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.PORTAL} oper={ServiceOperation.EDIT}>
+            <PortalForm editMode={true}/>
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.DETAIL })}
