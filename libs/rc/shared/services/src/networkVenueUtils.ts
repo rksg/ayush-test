@@ -14,6 +14,7 @@ import {
   Network, NetworkApGroup,
   NetworkDetail, NetworkVenue,
   NewApGroupViewModelResponseType,
+  PoliciesConfigTemplateUrlsInfo,
   TableResult,
   Venue,
   VlanPoolRbacUrls,
@@ -553,8 +554,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       // fetch network vlan pool info
       const networkVlanPoolListQuery = await fetchWithBQ({
         ...createHttpRequest(
-          isTemplate ? ConfigTemplateUrlsInfo.getVLANPoolPolicyListTemplate : VlanPoolRbacUrls.getVLANPoolPolicyList,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
         ),
         body: JSON.stringify({
           fields: ['id', 'name', 'wifiNetworkIds', 'wifiNetworkVenueApGroups'],
@@ -568,8 +568,7 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       if (apGroupVenueIds.length) {
         const apGroupVlanPoolListQuery = await fetchWithBQ({
           ...createHttpRequest(
-            isTemplate ? ConfigTemplateUrlsInfo.getVLANPoolPolicyListTemplate : VlanPoolRbacUrls.getVLANPoolPolicyList,
-            GetApiVersionHeader(ApiVersionEnum.v1)
+            isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
           ),
           body: JSON.stringify({
             fields: ['id', 'name', 'wifiNetworkIds', 'wifiNetworkVenueApGroups'],
@@ -753,8 +752,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
       // fetch network vlan pool info
       const networkVlanPoolListQuery = await fetchWithBQ({
         ...createHttpRequest(
-          isTemplate ? ConfigTemplateUrlsInfo.getVLANPoolPolicyListTemplate : VlanPoolRbacUrls.getVLANPoolPolicyList,
-          GetApiVersionHeader(ApiVersionEnum.v1)
+          isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
         ),
         body: JSON.stringify({
           fields: ['id', 'name', 'wifiNetworkIds', 'wifiNetworkVenueApGroups'],
@@ -768,8 +766,7 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
       if (apGroupVenueIds.length) {
         const apGroupVlanPoolListQuery = await fetchWithBQ({
           ...createHttpRequest(
-            isTemplate ? ConfigTemplateUrlsInfo.getVLANPoolPolicyListTemplate : VlanPoolRbacUrls.getVLANPoolPolicyList,
-            GetApiVersionHeader(ApiVersionEnum.v1)
+            isTemplate ? PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicyList : VlanPoolRbacUrls.getVLANPoolPolicyList
           ),
           body: JSON.stringify({
             fields: ['id', 'name', 'wifiNetworkIds', 'wifiNetworkVenueApGroups'],
@@ -952,6 +949,13 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           const newApGroup = find(newApGroups, { apGroupId })
           if (!newApGroup) deleteApGroups.push(oldApGroup)
         })
+
+        // When user switch from "All APs" to "Select specific AP Groups" but the content remains the same
+        if (addApGroups.length + updateApGroups.length + deleteApGroups.length === 0
+          && oldPayload.isAllApGroups === true
+          && newPayload.isAllApGroups === false) {
+          addApGroups.push(...newApGroups)
+        }
 
         if (addApGroups.length > 0) {
           await Promise.all(addApGroups.map(apGroup => {
