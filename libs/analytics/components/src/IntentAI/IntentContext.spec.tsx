@@ -33,12 +33,13 @@ const components = {
 }
 
 const intent = {
+  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   tenantId: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
   code: 'xyz-intent-code'
 }
 
-const params = { root: intent.tenantId, sliceId: intent.sliceId, code: intent.code }
+const params = { root: intent.root, sliceId: intent.sliceId, code: intent.code }
 
 describe('IntentAIForm', () => {
   beforeEach(() => {

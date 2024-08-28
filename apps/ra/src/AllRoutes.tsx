@@ -98,8 +98,8 @@ function AllRoutes () {
       </Route>
       <Route path='intentAI' element={check('READ_INTENT_AI')}>
         <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
-        <Route path=':tenantId/:sliceId/:code' element={<IntentAIDetails />} />
-        <Route path=':tenantId/:sliceId/:code/edit' element={<IntentAIForm />} />
+        <Route path=':root/:sliceId/:code' element={<IntentAIDetails />} />
+        <Route path=':root/:sliceId/:code/edit' element={<IntentAIForm />} />
       </Route>
       <Route path='networks/wireless' element={check('READ_WIFI_NETWORKS_LIST')}>
         <Route index={true} element={<WiFiNetworksPage tab={NetworkTabsEnum.LIST} />} />
