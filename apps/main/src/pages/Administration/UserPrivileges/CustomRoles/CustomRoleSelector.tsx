@@ -14,6 +14,7 @@ export interface CustomRoleSelectorProps {
   }
 
 const NonSupportedRoles = [
+  RolesEnum.PRIME_ADMIN,
   RolesEnum.DPSK_ADMIN,
   RolesEnum.GUEST_MANAGER
 ]

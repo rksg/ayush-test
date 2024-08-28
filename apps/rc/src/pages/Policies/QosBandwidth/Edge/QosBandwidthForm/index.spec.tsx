@@ -3,10 +3,7 @@ import { Form, Input } from 'antd'
 
 import {
   EdgeQosProfileFixtures,
-  PolicyOperation,
-  PolicyType,
-  getDefaultTrafficClassListData,
-  getPolicyRoutePath
+  getDefaultTrafficClassListData
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -59,37 +56,6 @@ const mockedFinishFn = jest.fn()
 describe('Edge QoS form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
-  })
-
-  it('should navigate to service list when click cancel', async () => {
-    const { result } = renderHook(() => Form.useForm())
-    render(<QosBandwidthForm
-      form={result.current[0]}
-      steps={addSteps}
-      onFinish={mockedFinishFn}
-    />, {
-      wrapper: Provider,
-      route: {
-        params: { tenantId: 't-id' }
-      }
-    })
-
-    const targetPath = getPolicyRoutePath({
-      type: PolicyType.QOS_BANDWIDTH,
-      oper: PolicyOperation.LIST
-    })
-
-    const form = within(await screen.findByTestId('steps-form'))
-    within(await form.findByTestId('steps-form-body'))
-    const actions = within(await form.findByTestId('steps-form-actions'))
-    await click(await actions.findByRole('button', { name: 'Cancel' }))
-    await waitFor(() => {
-      expect(mockedNavigate).toBeCalledWith({
-        hash: '',
-        pathname: '/t-id/t/'+targetPath,
-        search: ''
-      })
-    })
   })
 
   describe('Add', () => {

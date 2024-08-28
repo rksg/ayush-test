@@ -113,7 +113,7 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
           <label>{data.totalActiveTrialAssignedLicenseCount}</label>
         </UI.FieldLabelSubs2>
       </div>}
-      <UI.FieldLabelSubs2 width='275px'>
+      <UI.FieldLabelSubs2 style={{ marginTop: '10px' }} width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
         <label>{data.licensesUsed}</label>
       </UI.FieldLabelSubs2>
