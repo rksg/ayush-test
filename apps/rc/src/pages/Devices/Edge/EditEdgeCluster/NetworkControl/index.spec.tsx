@@ -87,7 +87,8 @@ describe('Edge Cluster Network Control Tab', () => {
       rest.post(
         EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList))
-      ),rest.put(
+      ),
+      rest.put(
         EdgeQosProfilesUrls.activateEdgeCluster.url,
         (req, res, ctx) => {
           mockedActivateEdgeQosFn(req.params)
@@ -100,6 +101,10 @@ describe('Edge Cluster Network Control Tab', () => {
           mockedDeactivateEdgeQosFn(req.params)
           return res(ctx.status(202))
         }
+      ),
+      rest.get(
+        EdgeQosProfilesUrls.getEdgeQosProfileById.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList.data[1]))
       )
     )
   })
