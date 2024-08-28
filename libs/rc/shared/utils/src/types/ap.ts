@@ -519,7 +519,8 @@ export interface CapabilitiesApModel {
   defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
-  defaultBandCombination?: BandModeEnum
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
