@@ -19,6 +19,9 @@ export interface ApRadioContext {
   updateWifiRadio?: (data?: unknown) => void | Promise<void>
   discardWifiRadioChanges?: (data?: unknown) => void | Promise<void>
 
+  updateClientSteering?: (data?: unknown) => void | Promise<void>
+  discardClientSteeringChanges?: (data?: unknown) => void | Promise<void>
+
   updateClientAdmissionControl?: (data?: unknown) => void | Promise<void>
   discardClientAdmissionControlChanges?: (data?: unknown) => void | Promise<void>
 
@@ -119,6 +122,8 @@ export function RadioTab () {
       delete newData.discardExternalAntennaChanges
       delete newData.updateApAntennaType
       delete newData.discardApAntennaTypeChanges
+      delete newData.updateClientSteering
+      delete newData.discardClientSteeringChanges
 
       setEditRadioContextData(newData)
     }
@@ -130,6 +135,7 @@ export function RadioTab () {
       await editRadioContextData.updateClientAdmissionControl?.()
       await editRadioContextData.updateExternalAntenna?.()
       await editRadioContextData.updateApAntennaType?.()
+      await editRadioContextData.updateClientSteering?.()
 
       resetEditContextData()
 
@@ -150,6 +156,7 @@ export function RadioTab () {
       await editRadioContextData.discardClientAdmissionControlChanges?.()
       await editRadioContextData.discardExternalAntennaChanges?.()
       await editRadioContextData.discardApAntennaTypeChanges?.()
+      await editRadioContextData.discardClientSteeringChanges?.()
 
       resetEditContextData()
 
