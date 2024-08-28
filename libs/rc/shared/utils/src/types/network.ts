@@ -185,6 +185,10 @@ export enum MaxRateEnum {
 export interface ExternalProviders{
   providers: Providers[]
 }
+
+export interface ExternalWifiProviders extends ExternalProviders{
+  wisprProviders: Providers[]
+}
 export interface Providers{
   customExternalProvider: boolean,
   name: string,
