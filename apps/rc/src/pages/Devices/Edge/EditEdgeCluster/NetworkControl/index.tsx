@@ -28,7 +28,6 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
-  const [isDhcpServiceActive, setIsDhcpServiceActive] = useState(false)
   const [currentDhcpId, setCurrentDhcpId] = useState('')
   const [currentQosId, setCurrentQosId] = useState('')
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
@@ -36,7 +35,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [deactivateEdgeQos] = useDeactivateQosOnEdgeClusterMutation()
   const { $t } = useIntl()
 
-  const { currentDhcp } = useGetDhcpStatsQuery({
+  const { currentDhcp, isDhcpLoading } = useGetDhcpStatsQuery({
     payload: {
       fields: [
         'id'
@@ -46,8 +45,9 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   },
   {
     skip: !Boolean(clusterId),
-    selectFromResult: ({ data }) => ({
-      currentDhcp: data?.data[0]
+    selectFromResult: ({ data, isLoading }) => ({
+      currentDhcp: data?.data[0],
+      isDhcpLoading: isLoading
     })
   })
 
@@ -68,11 +68,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   })
 
   useEffect(() => {
-    setIsDhcpServiceActive(Boolean(currentDhcp))
-
     if (currentDhcp) {
       setCurrentDhcpId(currentDhcp.id)
-      form.setFieldValue('dhcpId', currentDhcp.id)
     }
   }, [currentDhcp])
 
@@ -88,6 +85,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   const handleApplyDhcp = async () => {
+    const isDhcpServiceActive = form.getFieldValue('dhcpSwitch')
     if (!isDhcpServiceActive) {
       if(currentDhcpId!== ''){
         await removeDhcpService()
@@ -171,13 +169,15 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }
 
   return (
-    <Loader states={[{ isLoading: isQosLoading }]}>
+    <Loader states={[{ isLoading: isQosLoading || isDhcpLoading }]}>
       <StepsForm
         editMode
         form={form}
         onFinish={handleApply}
         onCancel={() => navigate(linkToEdgeList)}
-        initialValues={{ qosSwitch: Boolean(currentQos), qosId: currentQos?.id }}
+        initialValues={{
+          dhcpSwitch: Boolean(currentDhcp), dhcpId: currentDhcp?.id,
+          qosSwitch: Boolean(currentQos), qosId: currentQos?.id }}
       >
         <StepsForm.StepForm>
           <Row gutter={20}>
@@ -186,15 +186,21 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
             <StepsForm.FieldLabel width='50%'>
               {$t({ defaultMessage: 'DHCP Service' })}
               <Form.Item
+                name='dhcpSwitch'
+                valuePropName='checked'
                 children={
-                  <Switch checked={isDhcpServiceActive} onChange={setIsDhcpServiceActive} />
+                  <Switch />
                 }
               />
             </StepsForm.FieldLabel>
               }
-              {isEdgeDhcpHaReady && isDhcpServiceActive &&
-            <Form.Item>
-              <EdgeDhcpSelectionForm hasNsg={false} />
+              {isEdgeDhcpHaReady &&
+            <Form.Item
+              dependencies={['dhcpSwitch']}
+            >
+              {({ getFieldValue }) => {
+                return getFieldValue('dhcpSwitch') ?<EdgeDhcpSelectionForm hasNsg={false} />:<></>
+              }}
             </Form.Item>}
             </Col>
           </Row>
