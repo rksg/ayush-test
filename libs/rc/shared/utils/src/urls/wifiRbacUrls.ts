@@ -741,5 +741,32 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
+  },
+  getApStickyClientSteering: {
+    method: 'GET',
+    newApi: true,
+    url: '/venues/:venueId/aps/:serialNumber/stickyClientSteeringSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  updateApStickyClientSteering: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/aps/:serialNumber/stickyClientSteeringSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  resetApStickyClientSteering: {
+    method: 'DELETE',
+    newApi: true,
+    url: '/venues/:venueId/aps/:serialNumber/stickyClientSteeringSettings',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
