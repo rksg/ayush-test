@@ -217,6 +217,9 @@ function SettingsForm () {
   },[data])
 
   useEffect(() => {
+
+    if(!wlanSecurity) {return}
+
     if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
       disableMLO(false)
     } else {

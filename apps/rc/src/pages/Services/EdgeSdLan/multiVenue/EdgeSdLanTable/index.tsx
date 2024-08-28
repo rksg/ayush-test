@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Row, Space } from 'antd'
 import { find, uniq } from 'lodash'
 import { useIntl }    from 'react-intl'
@@ -11,7 +13,8 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight }      from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
+import { EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useDeleteEdgeSdLanMutation,
@@ -41,6 +44,8 @@ import {
 import { EdgeScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
+import { CompatibilityCheck } from './CompatibilityCheck'
+
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
   pageSize: 10000,
@@ -59,6 +64,8 @@ const clusterOptionsDefaultPayload = {
 }
 
 const EdgeMvSdLanTable = () => {
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
@@ -93,6 +100,13 @@ const EdgeMvSdLanTable = () => {
     },
     pagination: { settingsId }
   })
+
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const skipFetchCompatibilities = !isEdgeCompatibilityEnabled || currentServiceIds.length === 0
+  // eslint-disable-next-line max-len
+  const sdLanCompatibilityData = useEdgeSdLanCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestEdgeClusterId?.length) {
@@ -143,7 +157,9 @@ const EdgeMvSdLanTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row) => {
-        return (
+        const serviceId = row.id
+
+        return (<Space>
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
@@ -153,6 +169,11 @@ const EdgeMvSdLanTable = () => {
           >
             {row.name}
           </TenantLink>
+          {isEdgeCompatibilityEnabled && <CompatibilityCheck
+            serviceId={serviceId!}
+            sdLanCompatibilityData={sdLanCompatibilityData}
+          />}
+        </Space>
         )
       }
     },

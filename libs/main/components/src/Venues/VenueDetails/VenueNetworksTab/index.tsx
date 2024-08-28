@@ -223,7 +223,7 @@ export function VenueNetworksTab () {
       page: 1,
       pageSize: 10000
     },
-    enableRbac: resolvedRbacEnabled
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
