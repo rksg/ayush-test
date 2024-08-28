@@ -14,7 +14,8 @@ import {
   createUseIntentTransition,
   recToIntentStatues,
   FormValues,
-  IntentTransitionPayload
+  IntentTransitionPayload,
+  useInitialValues
 } from '../../useIntentTransition'
 import { SliderGraphAfter, SliderGraphBefore, SummaryGraphAfter, SummaryGraphBefore } from '../RRMGraph'
 import { useIntentAICRRMQuery }                                                       from '../RRMGraph/services'
@@ -52,7 +53,8 @@ export function IntentAIForm () {
   const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
   const [summaryUrlAfter, setSummaryUrlAfter] = useState<string>('')
 
-  const { initialValues, submit } = useIntentTransition()
+  const { submit } = useIntentTransition()
+  const initialValues = useInitialValues()
 
   return (<>
     <IntentWizardHeader />

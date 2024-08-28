@@ -1,54 +1,206 @@
-// import { getScheduledAt, ScheduleTiming } from '.'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import moment    from 'moment-timezone'
 
-// TODO:
-// refer to libs/common/components/src/components/DateTimeDropdown/index.spec.tsx
-// for guide on how to mock and test calendar and time picker
-// Please delete component below once all tests are done
-// libs/common/components/src/components/DateTimeDropdown/
+import { screen, render, renderHook } from '@acx-ui/test-utils'
+
+import { mockedIntentCRRM, mockedIntentCRRMnew } from '../../AIDrivenRRM/__tests__/fixtures'
+import { useIntentContext }                      from '../../IntentContext'
+import { Statuses }                              from '../../states'
+import { useInitialValues }                      from '../../useIntentTransition'
+
+import { getScheduledAt, ScheduleTiming, validateScheduleTiming } from '.'
+
+const { click, selectOptions } = userEvent
+
+jest.mock('../../IntentContext')
+
+jest.mock('antd', () => {
+  const components = jest.requireActual('antd')
+  const Select = ({
+    children, ...props
+  }: React.PropsWithChildren<{ onChange?: (value: string) => void }>) => {
+    return (<select {...props} onChange={(e) => props.onChange?.(e.target.value)}>
+      {/* Additional <option> to ensure it is possible to reset value to empty */}
+      <option value={undefined}></option>
+      {children}
+    </select>)
+  }
+  Select.Option = 'option'
+  Select.OptGroup = 'optgroup'
+  return { ...components, Select }
+})
+
+const renderForm = (children: JSX.Element) => {
+  const { result: { current: initialValues } } = renderHook(() => useInitialValues())
+  const { result: { current: form } } = renderHook(() => Form.useForm()[0])
+  const onFinish = jest.fn()
+  return {
+    form,
+    onFinish,
+    formRender: render(<Form {...{ form, onFinish, initialValues }}>
+      {children}
+      <button type='submit'>Submit</button>
+    </Form>)
+  }
+}
 
 describe('ScheduleTiming', () => {
+  beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
+  afterEach(() => jest.restoreAllMocks())
   describe('intent status = new/scheduled', () => {
-    // TODO: render form and use onFinish to assert submitted value
+    beforeEach(() =>
+      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRMnew, kpis: [] }))
+    it('show date & time & handle selection submission', async () => {
+      const { form, onFinish } = renderForm(<ScheduleTiming/>)
 
-    // partially in L59 libs/common/components/src/components/DateTimeDropdown/index.spec.tsx
-    it.todo('show date & time & handle selection submission')
-    it.todo('handle selected date & time, then waited past selected time validation')
+      await click(await screen.findByRole('button', { name: 'Submit' }))
+      expect(onFinish).not.toBeCalled()
 
-    // L109 libs/common/components/src/components/DateTimeDropdown/index.spec.tsx
-    it.todo('handle selected today and some time are disable')
+      const date = await screen.findByPlaceholderText('Select date')
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-13' }))
+      expect(date).toHaveValue('08/13/2024')
 
-    // L90 libs/common/components/src/components/DateTimeDropdown/index.spec.tsx
-    it.todo('handle change date clears time field')
+      const time = await screen.findByPlaceholderText('Select time')
+      await selectOptions(time, '05:30 (UTC+00)')
+      expect(time).toHaveValue('5.5')
+
+      await click(await screen.findByRole('button', { name: 'Submit' }))
+      expect(onFinish).toBeCalled()
+      const values = form.getFieldsValue()
+      expect({ ...values.settings, date: values.settings.date?.format('YYYY-MM-DD') })
+        .toEqual({ date: '2024-08-13', time: '5.5' })
+    })
+    it('handle selected date & time, then waited past selected time validation', async () => {
+      jest.mocked(useIntentContext).mockReturnValue({
+        intent: { ...mockedIntentCRRMnew, metadata: { scheduledAt: '2024-08-12T10:00:00' } },
+        kpis: []
+      })
+      const { onFinish } = renderForm(<ScheduleTiming/>)
+
+      await click(await screen.findByRole('button', { name: 'Submit' }))
+      expect(onFinish).not.toBeCalled()
+
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00')).toBeVisible()
+    })
+
+    it('handle selected today and some time are disable', async () => {
+      renderForm(<ScheduleTiming/>)
+
+      const date = await screen.findByPlaceholderText('Select date')
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-12' }))
+      expect(date).toHaveValue('08/12/2024')
+
+      const time = await screen.findByPlaceholderText('Select time')
+      await click(time)
+      expect(await screen.findByText('05:00 (UTC+00)')).toBeDisabled()
+      expect(await screen.findByText('12:00 (UTC+00)')).toBeEnabled()
+    })
+
+    it('handle change date clears time field', async () => {
+      renderForm(<ScheduleTiming/>)
+
+      const date = await screen.findByPlaceholderText('Select date')
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-13' }))
+      expect(date).toHaveValue('08/13/2024')
+
+      const time = await screen.findByPlaceholderText('Select time')
+      await selectOptions(time, '12:00 (UTC+00)')
+      expect(time).toHaveValue('12')
+
+      await click(date)
+      await click(await screen.findByRole('cell', { name: '2024-08-12' }))
+      expect(await screen.findByPlaceholderText('Select time')).toHaveValue('')
+    })
   })
 
   describe('intent status = active/applyscheduled', () => {
-    // TODO: render form and use onFinish to assert submitted value
-    it.todo('show time only & handle selection submission')
+    beforeEach(() =>
+      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRM, kpis: [] }))
+    it('show time only & handle selection submission', async () => {
+      const { form, onFinish } = renderForm(<ScheduleTiming/>)
+
+      expect(screen.queryByPlaceholderText('Select date')).not.toBeInTheDocument()
+
+      const time = await screen.findByPlaceholderText('Select time')
+      await selectOptions(time, '12:00 (UTC+00)')
+      expect(time).toHaveValue('12')
+
+      await click(await screen.findByRole('button', { name: 'Submit' }))
+      expect(onFinish).toBeCalled()
+      const values = form.getFieldsValue()
+      expect(values.settings).toEqual({ time: '12' })
+    })
   })
 })
 
 describe('ScheduleTiming.FieldSummary', () => {
+  beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
+  afterEach(() => jest.restoreAllMocks())
   describe('intent status = new/scheduled', () => {
-    it.todo('show date + time')
+    it('show date + time', async () => {
+      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRMnew, kpis: [] })
+      renderForm(<ScheduleTiming.FieldSummary/>)
+      expect(await screen.findByText('Start Date & Time')).toBeVisible()
+      expect(await screen.findByText('08/12/2024 00:00')).toBeVisible()
+    })
   })
 
   describe('intent status = active/applyscheduled', () => {
-    it.todo('show time only')
+    it('show time only', async () => {
+      jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRM, kpis: [] })
+      renderForm(<ScheduleTiming.FieldSummary/>)
+      expect(await screen.findByText('Schedule Time')).toBeVisible()
+      expect(await screen.findByText('14:15')).toBeVisible()
+    })
   })
 })
 
 describe('getScheduledAt', () => {
+  beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
   describe('intent status = new/scheduled', () => {
-    it.todo('returns value with date & time given')
+    it('returns value with date & time given', () => {
+      expect(getScheduledAt({
+        status: Statuses.new,
+        settings: { date: moment('2024-08-12'), time: 12 }
+      }).format()).toEqual('2024-08-12T12:00:00+00:00')
+    })
   })
 
   describe('intent status = active/applyscheduled', () => {
-    it.todo('returns value with date & time given')
-    it.todo('moves date to tomorrow if scheduledAt < bufferedNow')
+    it('returns value with date & time given', () => {
+      expect(getScheduledAt({
+        status: Statuses.active,
+        settings: { date: moment('2024-08-12'), time: 12 }
+      }).format()).toEqual('2024-08-12T12:00:00+00:00')
+    })
+    it('moves date to tomorrow if scheduledAt < bufferedNow', () => {
+      expect(getScheduledAt({
+        status: Statuses.active,
+        settings: { date: moment('2024-08-12'), time: 5 }
+      }).format()).toEqual('2024-08-13T05:00:00+00:00')
+    })
   })
 })
 
 describe('validateScheduleTiming', () => {
-  it.todo('handle validate date & time')
-  it.todo('handle date & time in past')
+  beforeEach(() => jest.spyOn(Date, 'now').mockReturnValue(+new Date('2024-08-12T10:38:00')))
+  it('handle validate date & time', async () => {
+    expect(validateScheduleTiming({
+      status: Statuses.new,
+      settings: { date: moment('2024-08-12'), time: 12 }
+    })).toBeTruthy()
+  })
+  it('handle date & time in past', async () => {
+    expect(validateScheduleTiming({
+      status: Statuses.new,
+      settings: { date: moment('2024-08-12'), time: 5 }
+    })).toBeFalsy()
+    expect(await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00'))
+      .toBeVisible()
+  })
 })

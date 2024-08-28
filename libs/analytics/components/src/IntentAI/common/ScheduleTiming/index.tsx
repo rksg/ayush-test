@@ -205,21 +205,14 @@ function isScheduleAtValid (values: FormValues) {
   return scheduledAt.isSameOrAfter(current)
 }
 
-export function validateScheduleTiming (values: FormValues): Promise<boolean> {
+export function validateScheduleTiming (values: FormValues): boolean {
   const isValid = isScheduleAtValid(values)
-  if (isValid) return Promise.resolve(true)
+  if (isValid) return true
 
   const content = getSchduleIsFutureErrorMessage()
   showToast({ type: 'error', content })
 
-  return Promise.reject({
-    values,
-    errorFields: [{
-      name: fieldName,
-      errors: [content]
-    }],
-    outOfDate: true
-  })
+  return false
 }
 
 function getSchduleIsFutureErrorMessage () {

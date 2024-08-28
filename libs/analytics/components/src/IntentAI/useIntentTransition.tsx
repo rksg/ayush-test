@@ -94,7 +94,8 @@ export function recToIntentStatues (intent: Pick<Intent, 'status'>) {
   return result
 }
 
-function useInitialValues <Preferences> ({ id, metadata, status }: Intent) {
+export function useInitialValues <Preferences> () {
+  const { id, metadata, status } = useIntentContext().intent as unknown as Intent
   return {
     id,
     ...recToIntentStatues({ status }),
@@ -113,12 +114,9 @@ export function createUseIntentTransition <Preferences> (
     const { intent } = useIntentContext()
     const navigate = useNavigateToPath('/analytics/intentAI')
     const [doSubmit, response] = useIntentTransitionMutation()
-    // TODO: fix type when change to Intent resolver
-    const initialValues = useInitialValues(intent as unknown as Intent)
 
     const submit = useCallback(async (values: FormValues<Preferences>) => {
-      await validateScheduleTiming(values)
-      return doSubmit(getFormDTO(values))
+      return validateScheduleTiming(values) ? doSubmit(getFormDTO(values)) : false
     }, [doSubmit])
 
     useEffect(() => {
@@ -143,6 +141,6 @@ export function createUseIntentTransition <Preferences> (
       }
     }, [$t, navigate, intent, response])
 
-    return { initialValues, submit, response }
+    return { submit, response }
   }
 }
