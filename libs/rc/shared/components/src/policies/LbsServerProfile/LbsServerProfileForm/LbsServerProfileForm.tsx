@@ -81,13 +81,9 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   }
 
   const isDuplicateProfile = (payload: LbsServerProfileContext) => {
-    const theOtherProfiles = _.filter(list?.data, function (o) {
-      return params?.policy !== o.id
-    })
-    const isDuplicated = _.some(theOtherProfiles, function (o) {
-      return payload.lbsVenueName === o.lbsVenueName
-        && payload.serverAddress === o.server.split(':')[0]
-    })
+    const otherProfiles = list?.data?.filter((o) => params?.policy !== o.id)
+    const isDuplicated = otherProfiles?.some((o) =>
+      payload.lbsVenueName === o.lbsVenueName && payload.serverAddress === o.server.split(':')[0])
 
     if (isDuplicated) {
       // eslint-disable-next-line max-len
