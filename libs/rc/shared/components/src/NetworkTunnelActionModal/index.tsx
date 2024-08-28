@@ -15,6 +15,7 @@ import * as UI                                                                  
 import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                         from './types'
 import { useEdgeMvSdLanData }                                                     from './useEdgeMvSdLanData'
 import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction } from './utils'
+import WifiSoftGreRadioOption                                                     from './WifiSoftGreRadioOption'
 
 export interface NetworkTunnelActionModalProps {
   visible: boolean
@@ -126,6 +127,11 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 networkVlanPool={networkVlanPool}
               />
             }
+            <WifiSoftGreRadioOption
+              currentTunnelType={tunnelType}
+              venueId={networkVenueId!}
+              networkId={networkId}
+            />
           </Space>
         </Radio.Group>
       </Form.Item>

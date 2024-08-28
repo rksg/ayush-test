@@ -41,3 +41,8 @@ export interface SoftGreActivation {
   wifiNetworkIds: string[]
 }
 
+export interface SoftGreOption {
+  label: string
+  value: string
+  disable?: boolean
+}

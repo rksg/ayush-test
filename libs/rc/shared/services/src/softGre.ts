@@ -11,7 +11,8 @@ import { CommonResult,
   VenueTableUsageBySoftGre,
   VenueDetail,
   onSocketActivityChanged,
-  onActivityMessageReceived
+  onActivityMessageReceived,
+  SoftGreOption
 } from '@acx-ui/rc/utils'
 import { baseSoftGreApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -145,9 +146,197 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       },
       providesTags: [{ type: 'SoftGre', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    getSoftGreSelectOption: build.query<SoftGreOption[], RequestPayload>({
+      queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
+        const { current: venueId, networkId } = _.get(payload,'current')
+        const emptyResponse = [] as unknown as SoftGreOption[]
+        // query SoftGre profiles
+        const softGreListReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList, params)
+        const reqPayload = _.omit(payload as RequestPayload, ['current'])
+        // eslint-disable-next-line max-len
+        const softGreListRes = await fetchWithBQ({ ...softGreListReq, body: JSON.stringify(reqPayload) })
+        if (softGreListRes.error) return emptyResponse
+        // eslint-disable-next-line max-len, @typescript-eslint/no-unused-vars
+        let { data: _softGreListData } = softGreListRes?.data as unknown as SoftGreOption[]
+
+        let venueTotal = 0
+        let softGreProfileId = ''
+
+        let options: SoftGreOption[]
+        const softGreListData = [
+          {
+            id: '086b1cacab274e0e8f7c3b8e40cfd73e',
+            name: 'jean-1',
+            activations: [
+              {
+                venueId: '54d0451af18549bcadc9ed084ddf1288', // My-Venue
+                wifiNetworkIds: [
+                  '850811279c2b4f92b0f684a0c74aee49', // _WPA3_
+                  'fd5d6b3a003c4cd0b6b5ab80159b1187' // ==dev-app8-ssi
+                ]
+              },
+              {
+                venueId: '54d0451af18549bcadc9ed084ddf1288', // test-0821
+                wifiNetworkIds: [
+                  'fbde2b0600b646cfb7663f304cb20b7e'
+                ]
+              }
+            ]
+          },{
+            id: 'a983a74d1791406a9dfb17c6796676d4',
+            name: '1112232',
+            activations: [
+              {
+                venueId: '991eb992ece042a183b6945a2398ddb9', // joe-test
+                wifiNetworkIds: [
+                  '9b33509cc0a1464cad9447778a72006f',
+                  '797a1f499c254260b7a1aedafba524a3',
+                  'b946294426b8413d819751cb3d320a20'
+                ]
+              }
+            ]
+          },
+          {
+            id: 'd01d17d3a59f4907b7ad895cc3182394',
+            name: '5555',
+            activations: [
+              {
+                venueId: '54d0451af18549bcadc9ed084ddf1288', // test-0821
+                wifiNetworkIds: [
+                  '9b33509cc0a1464cad9447778a72006f' // ==dev-app8-wipsr
+                ]
+              }
+            ]
+          },
+          {
+            id: '56376b8a7fd04649a771dfa6a3ae776b',
+            name: '553567',
+            activations: [
+              {
+                venueId: '54d0451af18549bcadc9ed084ddf1288', // test-0821
+                wifiNetworkIds: [
+                  'd5997305b9624cc68bc321dc5211e77e' // ==app8=psk
+                ]
+              }
+            ]
+          }
+        ]
+        // // eslint-disable-next-line max-len
+        const aggregatedData = softGreListData.map(softGre => {
+          let isCurrentVenue:boolean
+          softGre.activations.forEach(activation => {
+            isCurrentVenue = activation.venueId === venueId
+            if (activation.venueId === venueId === true) {
+              venueTotal += 1 // TODO: can not count, venueTotal is always 0
+            }
+            if (activation.wifiNetworkIds.includes(networkId)) {
+              softGreProfileId = softGre.id
+            }
+          })
+          const result = {
+            label: softGre.name,
+            value: softGre.id,
+            isCurrentVenue
+          }
+          return result
+        })
+
+        options = aggregatedData.map(
+          (softGre: { label: string; value: string; isCurrentVenue: boolean } ) => {
+            return {
+              label: softGre.label,
+              value: softGre.value,
+              disable: venueTotal === 3 ? (softGre.isCurrentVenue ? false : true) : false
+            } as SoftGreOption
+          }) as unknown as SoftGreOption[]
+        return { data: options }
+      },
+      providesTags: [{ type: 'SoftGre', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
+// avcCategoryList: build.query<AvcCategory[], RequestPayload>({
+//   queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+//     if (enableRbac) {
+//       try {
+//         const categoryListReq = createHttpRequest(
+//           AccessControlUrls.applicationLibrariesCategoryList,
+//           params
+//         )
+//         const categoryListRes = await fetchWithBQ(categoryListReq)
+
+//         if (categoryListRes.error) {
+//           return { error: categoryListRes.error as FetchBaseQueryError }
+//         }
+
+//         const categoryListResData = (categoryListRes.data as { categories: { id: string, name: string }[] }).categories
+//         return { data: categoryListResData.map(categoryList => {
+//           return {
+//             catId: categoryList.id as string,
+//             catName: categoryList.name as string,
+//             appNames: []
+//           }
+//         }) as unknown as AvcCategory[] }
+//       } catch (error) {
+//         return { error: error as FetchBaseQueryError }
+//       }
+//     }
+
+//     const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCategory, params)
+//     const avcCatListRes = await fetchWithBQ({
+//       ...avcCatListReq,
+//       body: payload
+//     })
+
+//     if (avcCatListRes.error) {
+//       return { error: avcCatListRes.error as FetchBaseQueryError }
+//     }
+
+//     return { data: avcCatListRes.data as AvcCategory[] }
+//   },
+//   providesTags: [{ type: 'Policy', id: 'LIST' }]
+// }),
+
+//  getRegisteredUsersList: build.query<RegisteredUserSelectOption[], RequestPayload>({
+//       query: ({ params }) => {
+//         const req =
+//           createHttpRequest(AdministrationUrlsInfo.getRegisteredUsersList, params)
+//         return {
+//           ...req
+//         }
+//       },
+//       transformResponse: (response: unknown[]) => {
+//         return response.map((item: unknown) => {
+//           const { email, externalId } = item as { email: string, externalId: string }
+
+//           return {
+//             externalId: externalId,
+//             email: email
+//           }
+//         })
+//       }
+//     }),
+// ====
+// query: ({ payload, params }) => {
+
+//   const req = createHttpRequest(SoftGreUrls.getSoftGreViewDataList, params)
+//   return {
+//     ...req,
+//     body: JSON.stringify(payload)
+//   }
+// },
+// transformResponse: (response: { data: SoftGre[] } ): SoftGreOption[] => {
+//   const options: SoftGreOption[] = []
+//   response.data.forEach(item => {
+//     const option = { label: item.name, value: item.id } as SoftGreOption
+//     const isCurrentVenue = item.id === current.venueId
+//     options.push(option)
+//   })
+//   console.info(response)
+//   return options
+// }
 
 export const {
   useCreateSoftGreMutation,
@@ -156,5 +345,6 @@ export const {
   useDeleteSoftGreMutation,
   useGetSoftGreByIdQuery,
   useUpdateSoftGreMutation,
-  useGetVenuesSoftGrePolicyQuery
+  useGetVenuesSoftGrePolicyQuery,
+  useGetSoftGreSelectOptionQuery
 } = softGreApi
