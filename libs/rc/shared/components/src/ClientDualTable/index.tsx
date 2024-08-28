@@ -1,4 +1,4 @@
-import { useState, SyntheticEvent, useEffect } from 'react'
+import { useState, SyntheticEvent } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
