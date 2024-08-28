@@ -224,14 +224,20 @@ export function convertToApModelIndividualDisplayData (
       if (!result[apModel]) {
         result[apModel] = {
           versionOptions: [],
-          extremeFirmware: apModelExtremeFirmware
+          extremeFirmware: apModelExtremeFirmware.extremeFirmware
         }
       }
 
-      const comparisonResult = compareVersions(apModelExtremeFirmware, apModelFirmware.id)
-      if (isUpgrade ? comparisonResult >= 0 : comparisonResult <= 0) return
+      // eslint-disable-next-line max-len
+      const comparisonResult = compareVersions(apModelFirmware.id, apModelExtremeFirmware.extremeFirmware)
 
-      result[apModel].versionOptions.push(createFirmwareOption(apModelFirmware))
+      const shouldAddOption = isUpgrade
+        ? comparisonResult > 0 || (!apModelExtremeFirmware.isAllTheSame && comparisonResult === 0)
+        : comparisonResult <= 0
+
+      if (shouldAddOption) {
+        result[apModel].versionOptions.push(createFirmwareOption(apModelFirmware))
+      }
     })
   })
 
@@ -266,25 +272,39 @@ function getApModelDefaultFirmwareFromOptions (
   return targetApModelFirmwares?.firmware ?? versionOptions[0].key
 }
 
+type ExtremeFirmwareBasedOnApModel = {
+  [apModel in string]: {
+    extremeFirmware: string,
+    isAllTheSame: boolean
+  }
+}
+
 export function findExtremeFirmwareBasedOnApModel (
   venuesFirmwares: FirmwareVenuePerApModel[],
   findMax = true
-): { [apModel in string]: string } {
+): ExtremeFirmwareBasedOnApModel {
 
   return venuesFirmwares.reduce((acc, curr) => {
     if (!curr.currentApFirmwares) return acc
 
     curr.currentApFirmwares.forEach(currentApFw => {
       if (!acc[currentApFw.apModel]) {
-        acc[currentApFw.apModel] = currentApFw.firmware
+        acc[currentApFw.apModel] = {
+          extremeFirmware: currentApFw.firmware,
+          isAllTheSame: true
+        }
       } else {
-        const comparisonResult = compareVersions(currentApFw.firmware, acc[currentApFw.apModel])
+        // eslint-disable-next-line max-len
+        const comparisonResult = compareVersions(currentApFw.firmware, acc[currentApFw.apModel].extremeFirmware)
+
+        if (comparisonResult !== 0) acc[currentApFw.apModel].isAllTheSame = false
+
         if (findMax ? comparisonResult > 0 : comparisonResult < 0) {
-          acc[currentApFw.apModel] = currentApFw.firmware
+          acc[currentApFw.apModel].extremeFirmware = currentApFw.firmware
         }
       }
     })
 
     return acc
-  }, {} as { [apModel in string]: string })
+  }, {} as ExtremeFirmwareBasedOnApModel)
 }
