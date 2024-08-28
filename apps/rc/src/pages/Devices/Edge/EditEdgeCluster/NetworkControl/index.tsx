@@ -80,8 +80,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   }, [currentQos])
 
   const handleApply = async () => {
-    handleApplyDhcp()
-    handleApplyQos()
+    await handleApplyDhcp()
+    await handleApplyQos()
   }
 
   const handleApplyDhcp = async () => {
@@ -144,7 +144,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const applyQosProfile = async (qosId: string) => {
     try {
-      activateEdgeQos({ params: {
+      await activateEdgeQos({ params: {
         policyId: qosId,
         venueId: currentClusterStatus?.venueId,
         edgeClusterId: clusterId
@@ -157,7 +157,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
 
   const removeQosProfile = async () => {
     try {
-      deactivateEdgeQos({ params: {
+      await deactivateEdgeQos({ params: {
         policyId: currentQosId,
         venueId: currentClusterStatus?.venueId,
         edgeClusterId: clusterId

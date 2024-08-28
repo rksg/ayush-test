@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                                                                        from '@acx-ui/feature-toggle'
-import { edgeApi }                                                                                                             from '@acx-ui/rc/services'
+import { edgeApi, edgeDhcpApi, edgeQosProfilesApi }                                                                            from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeQosProfileFixtures, EdgeQosProfilesUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }                                                                                 from '@acx-ui/test-utils'
@@ -61,6 +61,8 @@ describe('Edge Cluster Network Control Tab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeDhcpApi.util.resetApiState())
+    store.dispatch(edgeQosProfilesApi.util.resetApiState())
 
     params = {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -217,7 +219,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-
+    await screen.findAllByRole('button')
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toBeCalledWith({
       hash: '',
@@ -278,6 +280,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
+    await screen.findAllByRole('button')
     expect(await screen.findByText('Test-QoS-1')).toBeVisible()
     await userEvent.selectOptions(await screen.findByRole('combobox'),
       await screen.findByRole('option', { name: 'Test-QoS-2' })
@@ -338,6 +341,7 @@ describe('Edge Cluster Network Control Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
+    await screen.findAllByRole('button')
     expect(await screen.findByText('Test-QoS-1')).toBeVisible()
     const switchBtn = screen.getAllByRole('switch')[1]
     expect(switchBtn).toBeChecked()

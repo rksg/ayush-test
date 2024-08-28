@@ -47,7 +47,6 @@ export const EdgeQosProfileSelectionForm = () => {
           }
         ]}
         noStyle
-        initialValue={null}
       >
         <Select
           style={{ width: '200px' }}
