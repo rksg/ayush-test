@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { AdministrationUrlsInfo, SmsProviderType } from '@acx-ui/rc/utils'
 import { Provider }                                from '@acx-ui/store'
 import {
@@ -28,6 +29,7 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('Set SMS Provider Drawer', () => {
   const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
   beforeEach(async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     jest.spyOn(services, 'useUpdateNotificationSmsProviderMutation')
     mockServer.use(
       rest.post(
@@ -82,6 +84,37 @@ describe('Set SMS Provider Drawer', () => {
 
     expect(screen.getByText('Set SMS Provider')).toBeVisible()
     expect(screen.getByDisplayValue('sid123')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  })
+  it('should render edit layout correctly for twililo data with messaging ff on', async () => {
+    const mockedCloseDrawer = jest.fn()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const providerData = {
+      providerType: SmsProviderType.TWILIO,
+      providerData: {
+        accountSid: 'sid123',
+        authToken: 'token123',
+        fromNumber: '123456789'
+      }
+    }
+    render(
+      <Provider>
+        <SetupSmsProviderDrawer
+          visible={true}
+          isEditMode={true}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+          editData={providerData}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set SMS Provider')).toBeVisible()
+    expect(screen.getByDisplayValue('sid123')).toBeVisible()
+    expect(screen.getByText('Send messages through...')).toBeVisible()
+    expect(screen.getByRole('radio', { name: 'Phone Number' })).toBeChecked()
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
@@ -146,6 +179,7 @@ describe('Set SMS Provider Drawer', () => {
     expect(await screen.findByText('Account SID')).toBeVisible()
     expect(await screen.findByText('Auth Token')).toBeVisible()
     expect(await screen.findByText('Phone Number')).toBeVisible()
+    expect(screen.queryByText('Messaging Service')).toBeNull()
 
     await userEvent.click(screen.getAllByRole('combobox')[0])
     await userEvent.click(await screen.findByText('Esendex'))

@@ -393,6 +393,7 @@ export interface NotificationSmsConfig
   accountSid?: string,
   authToken?: string,
   fromNumber?: string,
+  // fromService?: string,
   // esendex
   apiKey?: string,
   // others
@@ -402,4 +403,9 @@ export interface NotificationSmsConfig
 export interface TwiliosIncommingPhoneNumbers
 {
   incommingPhoneNumbers?: string[]
+}
+
+export interface TwiliosMessagingServices
+{
+  messagingServiceResources?: string[]
 }

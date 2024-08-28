@@ -59,6 +59,10 @@ export const reloadSmsNotification = (timeoutSec?: number) => {
   }, milisec)
 }
 
+export const isTwilioFromNumber = (trilioValue: string) => {
+  return (trilioValue[trilioValue.length-1] !== ']')
+}
+
 const SmsProviderItem = () => {
   const { $t } = useIntl()
   const params = useParams()
@@ -289,7 +293,9 @@ const SmsProviderItem = () => {
         <div>
           <Form.Item
             colon={false}
-            label={$t({ defaultMessage: 'Phone Number' })} />
+            label={isTwilioFromNumber(smsProvider.data?.fromNumber ?? '')
+              ? $t({ defaultMessage: 'Phone Number' })
+              : $t({ defaultMessage: 'Message Service' })} />
           <h3 style={{ marginTop: '-18px' }}>
             {smsProvider.data?.fromNumber}</h3>
         </div>
