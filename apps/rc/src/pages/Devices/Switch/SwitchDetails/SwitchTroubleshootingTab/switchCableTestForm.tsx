@@ -1,20 +1,20 @@
+/* eslint-disable max-len */
 import { useContext, useEffect, useState } from 'react'
 
-import { Row, Col, Form }    from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
-import { useParams }         from 'react-router-dom'
+import { Row, Col, Form }         from 'antd'
+import { DefaultOptionType }      from 'antd/lib/select'
+import _                          from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
+import { useParams }              from 'react-router-dom'
 
-import { Button, Loader, Select, StatusPill, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
+import { Button, Loader, Select, showActionModal, StatusPill, Table, TableProps, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                                       from '@acx-ui/formatter'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
-  usePingMutation,
   useSwitchPortlistQuery }                             from '@acx-ui/rc/services'
-import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction } from '@acx-ui/rc/utils'
-import { getIntl }                                                               from '@acx-ui/utils'
+import { SwitchPortViewModelQueryFields, TroubleshootingType, sortPortFunction, SwitchPortViewModel } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                    from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '..'
 
@@ -39,7 +39,7 @@ export function SwitchCableTestForm () {
   const { $t } = useIntl()
   const { tenantId, switchId, serialNumber } = useParams()
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
-  const [pingForm] = Form.useForm()
+  const [cableTestForm] = Form.useForm()
 
   const [isValid, setIsValid] = useState(false)
   const [tableData, setTableData] = useState([] as CableTestTable[])
@@ -56,7 +56,6 @@ export function SwitchCableTestForm () {
     venueId: switchDetailsContextData.switchDetailHeader?.venueId
   }
 
-  const [runMutation] = usePingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
@@ -80,17 +79,52 @@ export function SwitchCableTestForm () {
     enableRbac: isSwitchRbacEnabled
   })
 
+  const getPortDisabled = (port: SwitchPortViewModel) => {
+    return port.portSpeed !== 'AUTO' || port.status !== 'Up' // || This test can only be executed on Copper ports.
+  }
+
+  const TOOLTIPS= {
+    auto: $t(defineMessage({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' })),
+    up: $t(defineMessage({ defaultMessage: 'To execute the cable test, the port must be UP' })),
+    copper: $t(defineMessage({ defaultMessage: 'This test can only be executed on Copper ports. Fiber ports are not supported' }))
+  }
+
+  const getPortDisabledTooltip = (port: SwitchPortViewModel) => {
+    const t = []
+    if(port.portSpeed !== 'AUTO') {
+      t.push(TOOLTIPS.auto)
+    }
+    if(port.status !== 'Up') {
+      t.push(TOOLTIPS.up)
+    }
+    // t.push(TOOLTIPS.copper)
+
+    if(t.length == 1) {
+      return <span>{t[0]}</span>
+    }else {
+      return <ul>{t.map(i => <li>{i}</li>)}</ul>
+    }
+  }
+
   const refetchResult = function () {
     setTimeout(() => {
       getTroubleshooting.refetch()
     }, 3000)
   }
 
+  const reportMap: { [key:string]: string } = {
+    OK: $t(defineMessage({ defaultMessage: 'All Pairs are terminated properly.' })),
+    Shorted: $t(defineMessage({ defaultMessage: 'One or more pairs are shorted. Re run the test to be sure and if the result is the same, replace the cable.' })),
+    Open: $t(defineMessage({ defaultMessage: 'One or more pairs are Open. Re-run the test to be sure and if the result is the same, try connecting the cable properly. If it still shows up as ‘Open’, replace the cable.' })),
+    Abnormal: $t(defineMessage({ defaultMessage: 'Impedance on the highlighted pairs above is not within expected bounds. It is either too high or too low. Replace the cable if you any flaps or errors are seen on the port.' })),
+    Failed: $t(defineMessage({ defaultMessage: 'The test failed on the highlighted pairs above. Run the test again.' }))
+  }
+
   useEffect(() => {
     setTableData([
       { port: '1/1/1',
         speed: '100M',
-        status: 'OK',
+        status: 'Shorted',
         pairA: 'Shorted',
         pairB: 'Abnormal',
         pairC: 'OK',
@@ -105,9 +139,10 @@ export function SwitchCableTestForm () {
         refetchResult()
       }
 
-      pingForm.setFieldValue('targetHost', response.pingIp)
-      setLastSyncTime(response.latestResultResponseTime)
-      pingForm.setFieldValue('result', parseResult(response.result))
+      cableTestForm.setFieldValue('targetHost', response.pingIp)
+      // setLastSyncTime(response.latestResultResponseTime)
+      setLastSyncTime('2024-08-28T04:11:19.176+00:00')
+      cableTestForm.setFieldValue('result', parseResult(response.result))
 
       if (response.latestResultResponseTime) {
         setIsValid(true)
@@ -126,44 +161,86 @@ export function SwitchCableTestForm () {
         ...(portList?.data?.data?.map(port => ({
           id: port.portIdentifier,
           label: port.portIdentifier,
-          disabled: port.portSpeed === 'AUTO'
+          disabled: getPortDisabled(port),
+          tooltip: getPortDisabledTooltip(port)
         }))
           .sort(sortPortFunction)
           .map(item => ({
-            label: item.label, value: item.id, disabled: true
+            label: item.label,
+            value: item.id,
+            // disabled: true,
+            tooltip: item.tooltip
           }))
       ?? [])
       ])
     }
   }, [portList])
 
-  const onSubmit = async () => {
-    setIsLoading(true)
-    try {
-      const payload = {
-        targetHost: pingForm.getFieldValue('targetHost'),
-        troubleshootingPayload: {
-          targetHost: pingForm.getFieldValue('targetHost')
-        },
-        troubleshootingType: 'ping'
+  const onModal = () => {
+    showActionModal({
+      type: 'warning',
+      width: 400,
+      title: $t({ defaultMessage: 'Proceed Cable Test?' }),
+      content: <p>
+        {$t({ defaultMessage: `
+              This test might result in the adjacent ports flapping causing network disruption as a result.
+              {p} Do you want to proceed?` }, {
+          p: <p />
+        })}
+      </p>,
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [
+          {
+            text: $t({ defaultMessage: 'Cancel' }),
+            type: 'default',
+            key: 'cancel'
+          },
+          {
+            text: $t({ defaultMessage: 'Yes' }),
+            type: 'primary',
+            key: 'ok',
+            closeAfterAction: true,
+            handler: async () => {
+              try{
+                // const formValue = cableTestForm.getFieldsValue()
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
+            }
+          }
+        ]
       }
-      const result = await runMutation({
-        params: {
-          tenantId,
-          switchId,
-          venueId: switchDetailsContextData.switchDetailHeader?.venueId
-        },
-        payload,
-        enableRbac: isSwitchRbacEnabled
-      }).unwrap()
-      if (result) {
-        refetchResult()
-      }
-    } catch (error) {
-      setIsValid(false)
-      console.log(error) // eslint-disable-line no-console
-    }
+    })
   }
+
+  // const onSubmit = async () => {
+  //   setIsLoading(true)
+  //   try {
+  //     const payload = {
+  //       targetHost: cableTestForm.getFieldValue('targetHost'),
+  //       troubleshootingPayload: {
+  //         targetHost: cableTestForm.getFieldValue('targetHost')
+  //       },
+  //       troubleshootingType: 'ping'
+  //     }
+  //     const result = await runMutation({
+  //       params: {
+  //         tenantId,
+  //         switchId,
+  //         venueId: switchDetailsContextData.switchDetailHeader?.venueId
+  //       },
+  //       payload,
+  //       enableRbac: isSwitchRbacEnabled
+  //     }).unwrap()
+  //     if (result) {
+  //       refetchResult()
+  //     }
+  //   } catch (error) {
+  //     setIsValid(false)
+  //     console.log(error) // eslint-disable-line no-console
+  //   }
+  // }
 
   const onClear = async () => {
     setIsLoading(true)
@@ -176,7 +253,7 @@ export function SwitchCableTestForm () {
   }
 
   const onChangeForm = function () {
-    pingForm.validateFields()
+    cableTestForm.validateFields()
       .then(() => {
         setIsValid(true)
       })
@@ -253,9 +330,8 @@ export function SwitchCableTestForm () {
   ]
 
   return <Form
-    form={pingForm}
+    form={cableTestForm}
     layout='vertical'
-    onChange={onChangeForm}
   >
     <Row gutter={20}>
       <Col span={4}>
@@ -268,11 +344,11 @@ export function SwitchCableTestForm () {
           children={<Select
             defaultValue={null}
             showSearch
-            // onChange={onPortChange}
+            onChange={onChangeForm}
             dropdownMatchSelectWidth={false}
             allowClear>
             {
-              portOptions.map(({ label, value, disabled }) =>
+              portOptions.map(({ label, value, disabled, tooltip }) =>
                 (<Select.Option value={value}
                   key={value}
                   disabled={disabled}
@@ -280,9 +356,8 @@ export function SwitchCableTestForm () {
                     <>{
                       disabled ? <Tooltip
                         placement='right'
-                        overlayStyle={{ minWidth: '360px' }}
-                        // eslint-disable-next-line max-len
-                        title={$t({ defaultMessage: 'To execute the cable test, port speed must be set to “Auto”' })}>
+                        overlayStyle={{ minWidth: '380px' }}
+                        title={tooltip}>
                         <span>{label}</span></Tooltip> : <>{label}</>
                     }</>}
                 />))
@@ -311,7 +386,7 @@ export function SwitchCableTestForm () {
             type='primary'
             htmlType='submit'
             disabled={!isValid || isLoading}
-            onClick={onSubmit}>
+            onClick={onModal}>
             {$t({ defaultMessage: 'Run Test' })}
           </Button>
         </Form.Item>
@@ -323,15 +398,17 @@ export function SwitchCableTestForm () {
     }]}>
       <UI.ResultContainer>
         {
-          tableData.length && <Table
-            columns={columns}
-            dataSource={tableData}
-          />
+          tableData.length && <>
+            <Table
+              columns={columns}
+              dataSource={tableData}
+            />
+            <div className='report'>
+              <span className='title'>{$t({ defaultMessage: 'Report:' })}</span>
+              {reportMap[tableData[0].status]}
+            </div>
+          </>
         }
-        <div className='report'>
-          <span className='title'>{$t({ defaultMessage: 'Report:' })}</span>
-          {$t({ defaultMessage: 'All Pairs are terminated properly.' })}
-        </div>
       </UI.ResultContainer>
       <Button
         type='link'
