@@ -1,4 +1,4 @@
-import { Provider as wrapper, recommendationApi, intentAIUrl, store }          from '@acx-ui/store'
+import { Provider as wrapper, intentAIUrl, store, intentAIApi }                from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { createIntentContextProvider, useIntentContext } from './IntentContext'
@@ -33,16 +33,16 @@ const components = {
 }
 
 const intent = {
-  root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+  tenantId: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
   code: 'xyz-intent-code'
 }
 
-const params = { root: intent.root, sliceId: intent.sliceId, code: intent.code }
+const params = { root: intent.tenantId, sliceId: intent.sliceId, code: intent.code }
 
 describe('IntentAIForm', () => {
   beforeEach(() => {
-    store.dispatch(recommendationApi.util.resetApiState())
+    store.dispatch(intentAIApi.util.resetApiState())
 
   })
   it('handle API respond with data for IntentAIForm & IntentAIDetails', async () => {
@@ -59,7 +59,7 @@ describe('IntentAIForm', () => {
   })
 
   it('handle no matching code', async () => {
-    const params = { root: intent.root, sliceId: intent.sliceId, code: 'not-existed' }
+    const params = { root: intent.tenantId, sliceId: intent.sliceId, code: 'not-existed' }
     const { container } = render(<components.IntentAIForm />, { wrapper, route: { params } })
 
     expect(container).toBeEmptyDOMElement()
