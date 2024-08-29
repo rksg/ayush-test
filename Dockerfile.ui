@@ -1,7 +1,8 @@
 ARG CI_SERVICE_BASE
 ARG GAR_CONTAINER_URL
+ARG GAR_DOCKER_ROOT_URL
 
-FROM us-docker.pkg.dev/alto-cicd/acx-service/acx-ui-cache/nx-cache:latest as nx-cache
+FROM ${GAR_DOCKER_ROOT_URL}acx-service/acx-ui-cache/nx-cache:latest as nx-cache
 FROM ${CI_SERVICE_BASE}node:master--latest as build-base
 
 WORKDIR /app
