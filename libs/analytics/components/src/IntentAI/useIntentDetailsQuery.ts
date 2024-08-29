@@ -9,9 +9,8 @@ import { formatter }               from '@acx-ui/formatter'
 import { intentAIApi }             from '@acx-ui/store'
 import { NetworkPath, NodeType }   from '@acx-ui/utils'
 
-import { codes }                 from './config'
-import { Statuses as stateType } from './states'
-import { IntentWlan }            from './utils'
+import { DisplayStates, Statuses, StatusReasons } from './states'
+import { IntentWlan }                             from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -23,35 +22,41 @@ export type IntentKPIConfig = {
 }
 
 export type IntentKpi = Record<`kpi_${string}`, {
-data: {
-  timestamp: string | null
-  result: number | [number, number]
-}
-compareData: {
-  timestamp: string | null
-  result: number | [number, number]
-}
+  data: {
+    timestamp: string | null
+    result: number | [number, number]
+  }
+  compareData: {
+    timestamp: string | null
+    result: number | [number, number]
+  }
 }>
 
 export type Intent = {
-  id: string;
-  code: keyof typeof codes;
-  status: stateType
+  id: string
+  root: string
+  code: string
+  sliceId: string
+  status: Statuses
+  statusReason: StatusReasons
+  displayStatus: DisplayStates
   metadata: object & {
     scheduledAt: string
     wlans?: IntentWlan[]
     dataEndTime: string
-  };
-  sliceType: NodeType;
-  sliceValue: string;
-  path: NetworkPath;
+  }
+  sliceType: NodeType
+  sliceValue: string
+  path: NetworkPath
   statusTrail: Array<{
-    status: string
+    status: Statuses
+    statusReason: StatusReasons
+    displayStatus: DisplayStates
     createdAt?: string
-  }>;
-  updatedAt: string;
+  }>
+  updatedAt: string
   preferences?: {
-    crrmFullOptimization: boolean;
+    crrmFullOptimization: boolean
   }
 } & Partial<IntentKpi>
 
@@ -126,14 +131,16 @@ type IntentDetailsQueryPayload = {
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentDetails: build.query<Intent | undefined, IntentDetailsQueryPayload>({
-      query: ({ root, sliceId, code, kpis }) => ({
+      query: ({ root, sliceId, code, kpis }: IntentDetailsQueryPayload) => ({
         document: gql`
           query IntentDetails($root: String!, $sliceId: String!, $code: String!) {
             intent(root: $root, sliceId: $sliceId, code: $code) {
-              id code status metadata
+              root sliceId code
+              id metadata preferences
+              status statusReason displayStatus
               sliceType sliceValue updatedAt
-              preferences path { type name }
-              statusTrail { status createdAt }
+              path { type name }
+              statusTrail { status statusReason displayStatus createdAt }
               ${kpiHelper(kpis)}
             }
           }

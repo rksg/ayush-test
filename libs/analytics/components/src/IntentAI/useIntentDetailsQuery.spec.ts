@@ -36,7 +36,7 @@ describe('intentAI services', () => {
         updatedAt: '2023-06-26T06:04:00.000Z',
         sliceType: 'zone',
         sliceValue: '21_US_Beta_Samsung',
-        status: 'applyscheduled',
+        displayStatus: 'applyscheduled',
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
