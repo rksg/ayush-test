@@ -107,7 +107,7 @@ const VenueDHCPForm = (props: {
     return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
   const hasAddDhcpPermission = hasServicePermission({
-    serviceType: ServiceType.DHCP, oper: ServiceOperation.CREATE
+    type: ServiceType.DHCP, oper: ServiceOperation.CREATE
   })
 
   useEffect(() => {

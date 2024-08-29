@@ -175,7 +175,7 @@ function DpskServiceSelector () {
 
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
   const hasAddDpskPermission = hasServicePermission({
-    serviceType: ServiceType.DPSK, oper: ServiceOperation.CREATE
+    type: ServiceType.DPSK, oper: ServiceOperation.CREATE
   })
 
   const findService = (serviceId: string) => {

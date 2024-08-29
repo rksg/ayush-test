@@ -32,7 +32,7 @@ export default function AAAPolicyModal (props:{
       if(data)updateInstance(data)
     }}/>
 
-  if (!hasPolicyPermission({ policyType: PolicyType.AAA, oper: PolicyOperation.CREATE })) {
+  if (!hasPolicyPermission({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })) {
     return null
   }
 

@@ -24,7 +24,7 @@ export default function PortalServiceModal (props:{
     }}/>
 
   const hasAddPortalPermission = hasServicePermission({
-    serviceType: ServiceType.PORTAL, oper: ServiceOperation.CREATE
+    type: ServiceType.PORTAL, oper: ServiceOperation.CREATE
   })
 
   if (!hasAddPortalPermission) return null

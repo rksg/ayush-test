@@ -4,7 +4,15 @@ import { PolicyOperation } from '../policy'
 
 import { ServiceOperation } from './serviceRouteUtils'
 
-export const serviceTypeScopeMap: Record<ServiceType, Array<'wifi' | 'edge' | 'switch'>> = {
+export type SvcPcyAllowedScope = Array<'wifi' | 'edge' | 'switch'>
+export type SvcPcyAllowedType = ServiceType | PolicyType
+export type SvcPcyScopeMap<T extends SvcPcyAllowedType> = Partial<Record<T, SvcPcyAllowedScope>>
+
+type SvcPcyAllowedOperChar = 'c' | 'r' | 'u' | 'd'
+export type SvcPcyAllowedOper = ServiceOperation | PolicyOperation
+export type SvcPcyOperMap<T extends SvcPcyAllowedOper> = Record<T, SvcPcyAllowedOperChar>
+
+export const serviceTypeScopeMap: SvcPcyScopeMap<ServiceType> = {
   [ServiceType.PORTAL]: ['wifi'],
   [ServiceType.DHCP]: ['wifi'],
   [ServiceType.EDGE_DHCP]: ['edge'],
@@ -19,7 +27,7 @@ export const serviceTypeScopeMap: Record<ServiceType, Array<'wifi' | 'edge' | 's
   [ServiceType.EDGE_SD_LAN_P2]: ['wifi', 'edge']
 }
 
-export const serviceOperScopeMap: Record<ServiceOperation, 'c' | 'r' | 'u' | 'd'> = {
+export const serviceOperScopeMap: SvcPcyOperMap<ServiceOperation> = {
   [ServiceOperation.CREATE]: 'c',
   [ServiceOperation.EDIT]: 'u',
   [ServiceOperation.DELETE]: 'd',
@@ -27,7 +35,7 @@ export const serviceOperScopeMap: Record<ServiceOperation, 'c' | 'r' | 'u' | 'd'
   [ServiceOperation.LIST]: 'r'
 }
 
-export const policyTypeScopeMap: Partial<Record<PolicyType, Array<'wifi' | 'edge' | 'switch'>>> = {
+export const policyTypeScopeMap: SvcPcyScopeMap<PolicyType>= {
   [PolicyType.AAA]: ['wifi'],
   [PolicyType.CERTIFICATE]: ['wifi'],
   [PolicyType.CERTIFICATE_AUTHORITY]: ['wifi'],
@@ -35,7 +43,7 @@ export const policyTypeScopeMap: Partial<Record<PolicyType, Array<'wifi' | 'edge
   [PolicyType.SOFTGRE]: ['wifi']
 }
 
-export const policyOperScopeMap: Record<PolicyOperation, 'c' | 'r' | 'u' | 'd'> = {
+export const policyOperScopeMap: SvcPcyOperMap<PolicyOperation> = {
   [PolicyOperation.CREATE]: 'c',
   [PolicyOperation.EDIT]: 'u',
   [PolicyOperation.DELETE]: 'd',

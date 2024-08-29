@@ -35,7 +35,7 @@ export function ServiceCard (props: ServiceCardProps) {
     if (cardType !== 'button') return false
 
     return hasServicePermission({
-      serviceType,
+      type: serviceType,
       oper: ServiceOperation.CREATE,
       roles: [RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]
     })

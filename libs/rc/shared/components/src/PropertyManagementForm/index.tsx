@@ -99,7 +99,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
   const hasAddResidentPortalPermission = hasServicePermission({
-    serviceType: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
+    type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
   })
 
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
