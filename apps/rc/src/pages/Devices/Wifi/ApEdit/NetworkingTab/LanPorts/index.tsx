@@ -22,7 +22,8 @@ import {
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
-  useGetDefaultApLanPortsQuery
+  useGetDefaultApLanPortsQuery,
+  useGetEthernetPortProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
@@ -117,9 +118,28 @@ export function LanPorts () {
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
 
+  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
+
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
+
+  const defaultPayload = {
+    fields: [
+      'id',
+      'name',
+      'type',
+      'untagId',
+      'vlanMembers',
+      'authType',
+      'apSerialNumbers'
+    ],
+    filters: { serialNumber: [serialNumber] }
+  }
+
+  // const { data: ethList, isLoading: isEthListLoading }
+  //   = useGetEthernetPortProfileViewDataListQuery(
+  //     { payload: defaultPayload }, { skip: !isEthernetPortProfileEnabled })
 
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {

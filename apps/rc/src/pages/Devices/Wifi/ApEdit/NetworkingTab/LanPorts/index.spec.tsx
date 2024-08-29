@@ -2,10 +2,17 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                    from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                    from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi, venueApi }        from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  EthernetPortProfileUrls,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -54,6 +61,10 @@ describe('AP Lan port settings', () => {
       rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(WifiUrlsInfo.resetApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -179,4 +190,8 @@ describe('AP Lan port settings', () => {
     await userEvent.click(venueLink)
     expect(mockedUsedNavigate).toBeCalled()
   })
+
+  // it ('Should render ethernet profile correctly with AP model T750SE', async () => {
+
+  // })
 })
