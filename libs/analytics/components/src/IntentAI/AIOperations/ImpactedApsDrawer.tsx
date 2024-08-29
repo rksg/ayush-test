@@ -1,16 +1,18 @@
 import { useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 
 import { IntentAp, useGetApsQuery } from '../services'
 
-export const ImpactedApsDrawer = ({ id, aps, visible, onClose } :
-  { id: string, aps: IntentAp[], visible: boolean, onClose: () => void }) => {
+export const ImpactedApsDrawer = ({ aps, visible, onClose } :
+  { aps: IntentAp[], visible: boolean, onClose: () => void }) => {
   const { $t } = useIntl()
+  const { code, root, sliceId } = useParams()
   const [search, setSearch] = useState('')
-  const impactedApsQuery = useGetApsQuery({ id, search })
+  const impactedApsQuery = useGetApsQuery({ code: code!, root: root!, sliceId: sliceId!, search })
   const columns: TableProps<IntentAp>['columns'] = [
     {
       key: 'name',

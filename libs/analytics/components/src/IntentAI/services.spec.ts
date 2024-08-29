@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom'
 
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
-import { intentAIUrl, store, Provider, recommendationUrl }                 from '@acx-ui/store'
+import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
 import { DateRange, PathFilter }                                           from '@acx-ui/utils'
 
@@ -13,10 +13,10 @@ import {
   filterOptions,
   mockedIntentApFirmware
 } from './__tests__/fixtures'
-import { IntentListItem }                                                           from './config'
-import { api, recApi, useIntentAITableQuery, TransitionMutationResponse, IntentAp } from './services'
-import { DisplayStates, Statuses, StatusReasons }                                   from './states'
-import { Actions }                                                                  from './utils'
+import { IntentListItem }                                                   from './config'
+import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAp } from './services'
+import { DisplayStates, Statuses, StatusReasons }                           from './states'
+import { Actions }                                                          from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
@@ -652,16 +652,18 @@ describe('Intent services', () => {
   })
 
   it('should return correct ap details', async () => {
-    mockGraphqlQuery(recommendationUrl, 'GetAps', {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', {
       data: {
-        recommendation: {
-          APs: mockedIntentApFirmware
+        intent: {
+          aps: mockedIntentApFirmware
         }
       }
     })
     const { status, data, error } = await store.dispatch(
-      recApi.endpoints.getAps.initiate({
-        id: 'id',
+      api.endpoints.getAps.initiate({
+        code: 'c1',
+        root: 'r1',
+        sliceId: 's1',
         search: ''
       })
     )

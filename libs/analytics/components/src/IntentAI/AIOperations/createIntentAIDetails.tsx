@@ -31,7 +31,12 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
     const [drawerVisible, setDrawerVisible] = useState(false)
 
     const hasAp = true // Boolean(kpis.filter(kpi => kpi.showAps).length)
-    const impactedApsQuery = useGetApsQuery({ id: intent.id, search: '' }, { skip: !hasAp })
+    const impactedApsQuery = useGetApsQuery({
+      code: intent.code,
+      root: intent.root,
+      sliceId: intent.sliceId,
+      search: ''
+    }, { skip: !hasAp })
 
     return <Loader states={[impactedApsQuery]}>
       <IntentDetailsHeader />
@@ -87,7 +92,6 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
             </div>)}
           </FixedAutoSizer>
           <ImpactedApsDrawer
-            id={intent.id}
             aps={impactedApsQuery.data!}
             visible={drawerVisible}
             onClose={() => setDrawerVisible(false)}

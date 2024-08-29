@@ -44,7 +44,9 @@ export type IntentHighlight = {
 }
 
 type IntentApPayload = {
-  id: string;
+  code: string
+  root: string
+  sliceId: string
   search: string
 }
 
@@ -328,35 +330,39 @@ export const api = intentAIApi.injectEndpoints({
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
       providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
-    })
-  })
-})
-
-export const recApi = recommendationApi.injectEndpoints({
-  endpoints: (build) => ({
+    }),
     getAps: build.query<IntentAp[], IntentApPayload>({
       query: (payload) => ({
         document: gql`
-          query GetAps($id: String, $n: Int, $search: String, $key: String) {
-              recommendation(id: $id) {
-                APs: APs(n: $n, search: $search, key: $key) {
-                  name
-                  mac
-                  model
-                  version
-                }
+          query GetAps(
+            $code: String!
+            $root: String!
+            $sliceId: String!
+            $n: Int
+            $search: String
+            $key: String
+          ) {
+            intent(code: $code, root: $root, sliceId: $sliceId) {
+              aps: aps(n: $n, search: $search, key: $key) {
+                name
+                mac
+                model
+                version
               }
             }
+          }
           `,
         variables: {
-          id: payload.id,
+          code: payload.code,
+          root: payload.root,
+          sliceId: payload.sliceId,
           search: payload.search,
           n: 100,
           key: 'aps-on-latest-fw-version'
         }
       }),
-      transformResponse: (response: { recommendation: { APs: IntentAp[] } }) =>
-        response.recommendation.APs
+      transformResponse: (response: { intent: { aps: IntentAp[] } }) =>
+        response.intent.aps
     })
   })
 })
@@ -471,9 +477,6 @@ export const {
   useLazyIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
-  useIntentHighlightQuery
-} = api
-
-export const {
+  useIntentHighlightQuery,
   useGetApsQuery
-} = recApi
+} = api
