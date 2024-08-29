@@ -877,15 +877,12 @@ export interface SupportCcdApGroup {
   aps: APExtended[]
 }
 
-export class StickyClientSteering {
+export interface StickyClientSteering {
   enabled?: boolean
   snrThreshold?: number
   neighborApPercentageThreshold?: number
 }
 
-export class VenueStickyClientSteering extends StickyClientSteering {
-}
-
-export class ApStickyClientSteering extends StickyClientSteering {
+export interface ApStickyClientSteering extends StickyClientSteering {
   useVenueSettings?: boolean
 }

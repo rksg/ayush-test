@@ -16,8 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   StickyClientSteering,
-  ApStickyClientSteering,
-  VenueStickyClientSteering
+  ApStickyClientSteering
 } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../../index'
@@ -74,7 +73,7 @@ export const ClientSteering = () => {
   const [stickyClientSteeringDisable, setStickyClientSteeringDisable] = useState(false)
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
-  const venueRef = useRef<VenueStickyClientSteering>()
+  const venueRef = useRef<StickyClientSteering>()
   const initDataRef = useRef<ApStickyClientSteering>()
 
 
