@@ -2,10 +2,10 @@ import { createContext, useEffect, useState } from 'react'
 
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Button }        from '@acx-ui/components'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { WifiScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
+import { Button }                                  from '@acx-ui/components'
+import { TenantLink }                              from '@acx-ui/react-router-dom'
+import { WifiScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { ServiceGuardTable }            from './ServiceGuardTable'
 import { useAllServiceGuardSpecsQuery } from './services'
@@ -27,7 +27,7 @@ export function useServiceGuard () {
     description: 'Translation string - Service Validation'
   })
 
-  const extra = hasPermission({
+  const extra = hasCrossVenuesPermission() && hasPermission({
     permission: 'WRITE_SERVICE_VALIDATION',
     scopes: [WifiScopes.CREATE]
   }) ? [

@@ -2,7 +2,9 @@ import { Intent } from '../../useIntentDetailsQuery'
 
 export const mocked = {
   id: '2c392d0a-124f-4183-b5c4-529d6571f540',
+  root: '3e93a325-c53c-4bdb-876f-ced1f59ca820',
   code: 'i-zonefirmware-upgrade',
+  sliceId: '5f46ced9-03b8-4cf1-89f1-fac17afdf421',
   status: 'applied',
   metadata: {},
   sliceType: 'zone',

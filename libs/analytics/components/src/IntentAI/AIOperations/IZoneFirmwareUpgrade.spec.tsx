@@ -17,7 +17,7 @@ describe('IntentAIDetails', () => {
       intent: { ...mocked, status: Statuses.paused }, configuration, kpis
     })
     render(<IntentAIDetails />, {
-      route: { params: { code: mocked.code, recommendationId: mocked.id } },
+      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
       wrapper: Provider
     })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
@@ -36,7 +36,7 @@ describe('IntentAIDetails', () => {
       intent: { ...mocked, currentValue: '7.0.0' }, configuration, kpis
     })
     render(<IntentAIDetails />, {
-      route: { params: { code: mocked.code, recommendationId: mocked.id } },
+      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
       wrapper: Provider
     })
 
@@ -48,7 +48,7 @@ describe('IntentAIDetails', () => {
   it('should render', async () => {
     jest.mocked(useIntentContext).mockReturnValue({ intent: mocked, configuration, kpis })
     render(<IntentAIDetails />, {
-      route: { params: { code: mocked.code, recommendationId: mocked.id } },
+      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
       wrapper: Provider
     })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
@@ -73,7 +73,7 @@ describe('IntentAIForm', () => {
   it('should render when apply', async () => {
     jest.mocked(useIntentContext).mockReturnValue({ intent: mocked, configuration, kpis })
     render(<IntentAIForm />, {
-      route: { params: { code: mocked.code, recommendationId: mocked.id } },
+      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
       wrapper: Provider
     })
     const form = within(await screen.findByTestId('steps-form'))
@@ -100,7 +100,7 @@ describe('IntentAIForm', () => {
   it('should render when not apply', async () => {
     jest.mocked(useIntentContext).mockReturnValue({ intent: mocked, configuration, kpis })
     render(<IntentAIForm />, {
-      route: { params: { code: mocked.code, recommendationId: mocked.id } },
+      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
       wrapper: Provider
     })
     const form = within(await screen.findByTestId('steps-form'))

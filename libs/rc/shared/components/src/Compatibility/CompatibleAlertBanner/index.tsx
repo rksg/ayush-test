@@ -1,8 +1,8 @@
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
 import { Tooltip, Button, cssStr }                 from '@acx-ui/components'
 import { ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY } from '@acx-ui/rc/utils'
+import { useParams }                               from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 

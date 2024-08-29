@@ -34,17 +34,21 @@ export function createIntentContextProvider (
   }>
 ) {
   const Component: React.FC = function () {
-    const { code, recommendationId: id } = useParams() as {
-      recommendationId: string
-      code: keyof typeof specs
+    const { tenantId, root, sliceId, code } = useParams() as {
+      tenantId?: string
+      root: Intent['root']
+      sliceId: Intent['sliceId']
+      code: string
     }
+    const id = root || tenantId
     const spec = specs[code]
     const kpis = spec?.kpis
       // pick only 2 required field
       // which its value is primitive value type
       // to prevent RTK Query unable to use param as cache key
       .map(kpi => _.pick(kpi, ['key', 'deltaSign']))
-    const query = useIntentDetailsQuery({ id, kpis }, { skip: !spec })
+    const query = useIntentDetailsQuery(
+      { root: id as string, sliceId, code, kpis }, { skip: !spec })
 
     if (!spec) return null // no matching spec
     if (query.isSuccess && !query.data) return null // 404

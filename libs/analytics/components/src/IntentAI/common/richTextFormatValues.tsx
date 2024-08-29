@@ -7,5 +7,6 @@ export const richTextFormatValues: Record<
 > = {
   p: (content) => <Typography.Paragraph children={content} />,
   b: (chunks) => <b>{chunks}</b>,
+  i: (chunks) => <i>{chunks}</i>,
   br: () => <br />
 }
