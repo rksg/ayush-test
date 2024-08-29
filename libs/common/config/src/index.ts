@@ -83,3 +83,5 @@ export function get (key: keyof EnvironmentConfig): string {
 export function getJwtToken () {
   return sessionStorage.getItem('jwt') || null
 }
+
+export const websocketServerUrl = '/api/websocket/socket.io'

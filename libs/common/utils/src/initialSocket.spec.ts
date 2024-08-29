@@ -1,8 +1,7 @@
+import { websocketServerUrl }  from '@acx-ui/config'
 import { mockWebsocketServer } from '@acx-ui/test-utils'
 
 import { initialSocket } from './initialSocket'
-
-import { websocketServerUrl } from '.'
 
 describe('Test websocket', () => {
   it('should connect websocket correctly', async () => {

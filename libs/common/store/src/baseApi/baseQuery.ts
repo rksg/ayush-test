@@ -1,7 +1,7 @@
 import { fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react'
 import _                         from 'lodash'
 
-import { updateJwtCache } from '@acx-ui/utils'
+import { getTenantId, reConnectSocket, updateJwtCache } from '@acx-ui/utils'
 
 import type { FetchArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery'
 
@@ -31,6 +31,11 @@ export const baseQuery = retry(
         sessionStorage.setItem('jwt', loginToken)
         sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
         updateJwtCache(loginToken)
+        const tenantId = getTenantId()
+
+        const url = loginToken ? `/activity?token=${loginToken}&tenantId=${tenantId}`
+          : `/activity?tenantId=${tenantId}`
+        reConnectSocket(url)
       }
     }
 
