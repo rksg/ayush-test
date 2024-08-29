@@ -52,16 +52,6 @@ jest.mock('@acx-ui/rc/services', () => ({
       }) }
     }]
   },
-  // useUpdateEdgeMvSdLanPartialMutation: jest.fn().mockImplementation(() => {
-  //   return [(req: RequestPayload) => {
-  //     return { unwrap: () => new Promise((resolve) => {
-  //       resolve(true)
-  //       setTimeout(() => {
-  //         (req.callback as Function)?.()
-  //       }, 300)
-  //     }) }
-  //   }]
-  // }),
   useAddEdgeSdLanP2Mutation: () => {
     return [(req: RequestPayload) => {
       return { unwrap: () => new Promise((resolve) => {
@@ -74,21 +64,12 @@ jest.mock('@acx-ui/rc/services', () => ({
       }) }
     }]
   }
-  // useUpdateEdgeSdLanPartialP2Mutation: () => {
-  //   return [(req: RequestPayload) => {
-  //     return { unwrap: () => new Promise((resolve) => {
-  //       resolve(true)
-  //       setTimeout(() => {
-  //         (req.callback as Function)?.()
-  //       }, 300)
-  //     }) }
-  //   }]
-  // }
 }))
 
 describe('useEdgeMvSdLanActions', () => {
   beforeEach(() => {
     store.dispatch(edgeSdLanApi.util.resetApiState())
+
     mockedCallback.mockClear()
     mockedActivateEdgeSdLanDmzClusterReq.mockClear()
     mockedDeactivateEdgeSdLanDmzClusterReq.mockClear()
@@ -473,6 +454,58 @@ describe('useEdgeMvSdLanActions', () => {
       expect(mockedCallback).toBeCalledTimes(1)
       expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
       expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('should be able to change dmz cluster', async () => {
+      const mockedData = cloneDeep(mockedEditData)
+      const mockedPayload = {
+        ...mockedData,
+        guestEdgeClusterId: '0000000005'
+      }
+
+      await prepareTesting(mockedData, mockedPayload)
+
+      await waitFor(() => expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1))
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+        edgeClusterId: '0000000005',
+        serviceId: 'mocked_service_id',
+        venueId: 'mocked_venue_id'
+      })
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('should be able to change dmz cluster when change from DC to DMZ', async () => {
+      const mockedData = cloneDeep(mockedEditData)
+      mockedData.isGuestTunnelEnabled = false
+      const mockedPayload = {
+        ...mockedData,
+        isGuestTunnelEnabled: true,
+        guestEdgeClusterId: '0000000005'
+      }
+
+      await prepareTesting(mockedData, mockedPayload)
+
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true }))
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+        edgeClusterId: '0000000005',
+        serviceId: 'mocked_service_id',
+        venueId: 'mocked_venue_id'
+      })
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
       expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
       expect(mockedDeactivateMvNetworkReq).toBeCalledTimes(0)
       expect(mockedActivateMvNetworkReq).toBeCalledTimes(0)
@@ -955,6 +988,57 @@ describe('useEdgeSdLanActions', () => {
       expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
       expect(mockedActivateNetworkReq).toBeCalledTimes(0)
     })
+
+    it('should be able to change dmz cluster', async () => {
+      const mockedData = cloneDeep(mockedEditData)
+      const mockedPayload = {
+        ...mockedData,
+        guestEdgeClusterId: '0000000005'
+      }
+
+      await prepareTest(mockedData, mockedPayload)
+      await waitFor(() => expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1))
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+        edgeClusterId: '0000000005',
+        serviceId: 'mocked_service_id',
+        venueId: 'mocked_venue_id'
+      })
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedToggleDmzReq).toBeCalledTimes(0)
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+    })
+
+    it('should be able to change dmz cluster when change from DC to DMZ', async () => {
+      const mockedData = cloneDeep(mockedEditData)
+      mockedData.isGuestTunnelEnabled = false
+      const mockedPayload = {
+        ...mockedData,
+        isGuestTunnelEnabled: true,
+        guestEdgeClusterId: '0000000005'
+      }
+
+      await prepareTest(mockedData, mockedPayload)
+      await waitFor(() => expect(mockedToggleDmzReq).toBeCalledWith({
+        serviceId: 'mocked_service_id'
+      }, { isGuestTunnelEnabled: true }))
+      expect(mockedDeactivateEdgeSdLanDmzClusterReq).toBeCalledTimes(0)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledTimes(1)
+      expect(mockedActivateEdgeSdLanDmzClusterReq).toBeCalledWith({
+        edgeClusterId: '0000000005',
+        serviceId: 'mocked_service_id',
+        venueId: 'mocked_venue_id'
+      })
+      expect(mockedActivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedCallback).toBeCalledTimes(1)
+      expect(mockedDeactivateDmzTunnelReq).toBeCalledTimes(0)
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+    })
+
 
     it('should update porfile name only', async () => {
       const mockedData = cloneDeep(mockedEditData)

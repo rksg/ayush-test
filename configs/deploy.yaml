@@ -13,4 +13,4 @@
     name: acx-ui
     type: service
     image:
-      path: gcr.io/kumo-scratch/services/acx-ui
+      path: acx-ui
