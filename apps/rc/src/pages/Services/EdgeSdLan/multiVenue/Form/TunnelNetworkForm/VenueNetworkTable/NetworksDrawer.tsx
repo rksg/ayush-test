@@ -139,6 +139,11 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     } else {
       setUpdateContent({
         ...updateContent,
+        // eslint-disable-next-line max-len
+        ...((data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && fieldName === 'activatedNetworks' && !checked)
+          // eslint-disable-next-line max-len
+          ? { activatedGuestNetworks: toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks) }
+          :{}),
         activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks)
       })
     }

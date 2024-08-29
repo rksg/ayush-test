@@ -144,6 +144,10 @@ export const TunnelScopeForm = () => {
       }
     } else {
       form.setFieldValue(fieldName, newSelected)
+      if (data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && !checked) {
+        // eslint-disable-next-line max-len
+        form.setFieldValue('activatedGuestNetworks', toggleItemFromSelected(checked, data, activatedGuestNetworks))
+      }
     }
   }
 
