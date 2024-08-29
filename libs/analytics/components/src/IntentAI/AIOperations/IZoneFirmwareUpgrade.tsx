@@ -157,9 +157,9 @@ export const IntentAIForm = createIntentAIForm({
     return <>
       {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
       {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
-      <StepsForm.Subtitle>
-        {$t({ defaultMessage: 'Schedule' })}
-      </StepsForm.Subtitle>
+      <Form.Item label={$t({ defaultMessage: 'Schedule' })}>
+        {/* <ScheduleTiming.FieldSummary /> */}
+      </Form.Item>
     </>
   }
 }).IntentAIForm

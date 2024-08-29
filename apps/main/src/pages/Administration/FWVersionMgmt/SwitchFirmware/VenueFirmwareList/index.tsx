@@ -30,10 +30,14 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
-import { useParams }                                            from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }                         from '@acx-ui/types'
-import { filterByAccess, hasPermission, useUserProfileContext } from '@acx-ui/user'
-import { noDataDisplay }                                        from '@acx-ui/utils'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
+import {
+  filterByAccess,
+  hasPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -67,7 +71,6 @@ export const VenueFirmwareTable = (
   const intl = useIntl()
   const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const { isCustomRole } = useUserProfileContext()
 
   const {
     getSwitchNextScheduleTplTooltip,
@@ -289,7 +292,7 @@ export const VenueFirmwareTable = (
   })
 
   const isPreferencesVisible
-    = hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole
+    = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   return (
     <Loader states={[tableQuery,
