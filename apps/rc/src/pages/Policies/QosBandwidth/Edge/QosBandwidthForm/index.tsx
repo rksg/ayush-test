@@ -3,15 +3,11 @@ import { ReactNode } from 'react'
 import { FormInstance } from 'antd'
 import _                from 'lodash'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }               from '@acx-ui/components'
 import {
   EdgeQosViewData,
-  getDefaultTrafficClassListData,
-  getPolicyRoutePath,
-  PolicyOperation,
-  PolicyType
+  getDefaultTrafficClassListData
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
 interface EdgeQosFormStep {
   title: string
@@ -23,6 +19,7 @@ interface EdgeQosFormProps {
   steps: EdgeQosFormStep[]
   editData?: EdgeQosViewData
   onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+  onCancel?: () => void
 }
 
 export interface QosBandwidthFormModel extends EdgeQosViewData {
@@ -42,14 +39,8 @@ export const getEdgeQosFormDefaultValues
   }
 
 const QosBandwidthForm = (props: EdgeQosFormProps) => {
-  const { form, steps, editData, onFinish } = props
-  const navigate = useNavigate()
+  const { form, steps, editData, onFinish, onCancel } = props
   const isEditMode = Boolean(editData)
-
-  const linkToServiceList = useTenantLink(getPolicyRoutePath({
-    type: PolicyType.QOS_BANDWIDTH,
-    oper: PolicyOperation.LIST
-  }))
 
   const handleFinish = async (formData: QosBandwidthFormModel) => {
     onFinish(formData)
@@ -82,7 +73,7 @@ const QosBandwidthForm = (props: EdgeQosFormProps) => {
 
   return (<StepsForm
     form={form}
-    onCancel={() => navigate(linkToServiceList)}
+    onCancel={onCancel}
     onFinish={handleFinish}
     editMode={isEditMode}
     initialValues={initFormValues}
