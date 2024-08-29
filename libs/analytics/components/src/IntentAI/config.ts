@@ -3,23 +3,26 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { NetworkPath } from '@acx-ui/utils'
 
-import { DisplayStates, Statuses as stateType, StatusReasons } from './states'
+import { DisplayStates, Statuses, StatusReasons } from './states'
 
-export type StatusTrailItem = { status: stateType, statusReason?:StatusReasons, createdAt?: string }
+export type StatusTrailItem = { status: Statuses, statusReason?: StatusReasons, createdAt?: string }
 export type StatusTrail = Array<StatusTrailItem>
 
 export type Intent = {
   id: string
   code: string
   root: string
-  status: stateType
+  status: Statuses
+  statusReason: StatusReasons
   displayStatus: DisplayStates
   createdAt: string
   updatedAt: string
   sliceType: string
   sliceValue: string
   sliceId: string
-  metadata: object
+  metadata: object & {
+    scheduledAt: string
+  }
   path: NetworkPath
   idPath: NetworkPath
   statusTrail: StatusTrail
