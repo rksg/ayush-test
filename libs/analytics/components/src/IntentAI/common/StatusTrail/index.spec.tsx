@@ -14,7 +14,7 @@ describe('StatusTrail', () => {
     jest.mocked(useIntentContext).mockReturnValue({ intent, kpis: [] })
     render(<StatusTrail />)
     expect(await screen.findAllByText('New')).toHaveLength(1)
-    expect(await screen.findAllByText('Applied')).toHaveLength(14)
+    expect(await screen.findAllByText('Active')).toHaveLength(14)
     expect(await screen.findAllByText('Apply In Progress')).toHaveLength(14)
     expect(await screen.findAllByText('Scheduled')).toHaveLength(15)
   })
