@@ -22,9 +22,8 @@ export const mocked = {
     { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
   ],
   kpi_aps_on_latest_fw_version: {
-    current: [0, 0],
-    previous: [0, 0],
-    projected: null
+    data: { timestamp: '2024-08-29T08:30:00.000Z', result: [ 0, 0 ] },
+    compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: [ 0, 0 ] }
   },
   currentValue: null,
   recommendedValue: '7.0.0'
