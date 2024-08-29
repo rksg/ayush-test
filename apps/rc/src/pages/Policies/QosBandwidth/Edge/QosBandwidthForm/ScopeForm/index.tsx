@@ -49,7 +49,8 @@ export const ScopeForm = () => {
       title: $t({ defaultMessage: 'APs' }),
       key: 'activeAp',
       dataIndex: 'activeAp',
-      fixed: 'left'
+      fixed: 'left',
+      width: 50
     },
     {
       title: $t({ defaultMessage: 'Activate' }),
@@ -81,7 +82,7 @@ export const ScopeForm = () => {
       <Col span={13}>
         <StepsForm.Title>{$t({ defaultMessage: 'Scope' })}</StepsForm.Title>
       </Col>
-      <Col span={13}>
+      <Col span={15}>
         <UI.FieldText>
           {
             $t({
