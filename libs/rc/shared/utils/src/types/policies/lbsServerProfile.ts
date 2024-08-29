@@ -19,6 +19,8 @@ export interface LbsServerProfile {
 export interface LbsServerProfileContext {
     id?: string,
     profileName: string,
+    lbsVenueName: string
+    serverAddress: string
 }
 
 export interface LbsServerProfileDetailContextType {

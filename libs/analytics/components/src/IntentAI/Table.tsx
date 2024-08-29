@@ -2,27 +2,21 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip }                        from '@acx-ui/components'
-import { get }                                                       from '@acx-ui/config'
-import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }            from '@acx-ui/icons'
-import { useNavigate, useTenantLink, TenantLink }                    from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter }                                 from '@acx-ui/utils'
+import { Loader, TableProps, Table, Tooltip }                                                  from '@acx-ui/components'
+import { get }                                                                                 from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
+import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { noDataDisplay, PathFilter }                                                           from '@acx-ui/utils'
 
+import { Icon }                                        from './common/IntentIcon'
 import { aiFeatures, codes, IntentListItem }           from './config'
 import { useIntentAITableQuery }                       from './services'
-import { displayStates }                               from './states'
+import { DisplayStates }                               from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
-
-export const icons = {
-  [aiFeatures.RRM]: <AIDrivenRRM />,
-  [aiFeatures.AirFlexAI]: <AirFlexAI />,
-  [aiFeatures.AIOps]: <AIOperation />,
-  [aiFeatures.EcoFlexAI]: <EcoFlexAI />
-}
 
 type IconTooltipProps = {
   title: MessageDescriptor
@@ -110,7 +104,7 @@ export const AIFeature = (props: AIFeatureProps): JSX.Element => {
       title={iconTooltips[codes[props.code].aiFeature]}
       overlayInnerStyle={{ width: '345px' }}
     >
-      {icons[codes[props.code].aiFeature]}
+      <Icon feature={codes[props.code].aiFeature} />
     </Tooltip>
     <TenantLink to={get('IS_MLISA_SA')
       ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
@@ -164,7 +158,7 @@ export function IntentAITable (
     },
     {
       key: getShowWithoutRbacCheckKey(Actions.Optimize),
-      label: selectedRows?.[0]?.displayStatus === displayStates.new ?
+      label: selectedRows?.[0]?.displayStatus === DisplayStates.new ?
         $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
       visible: rows => isVisibledByAction(rows, Actions.Optimize),
       onClick: (rows) => {
@@ -297,7 +291,8 @@ export function IntentAITable (
         columns={columns}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
+        rowSelection={hasCrossVenuesPermission() &&
+          hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
           type: 'checkbox',
           selectedRowKeys,
           onChange: (_, selRows) => setSelectedRows(selRows)

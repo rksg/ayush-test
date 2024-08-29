@@ -52,7 +52,9 @@ const defaultPayload = {
     'detailedDescription',
     'Persona-ID',
     'duration',
-    'remoteEdgeId'
+    'remoteEdgeId',
+    'apModel',
+    'minimumRequiredVersion'
   ]
 }
 

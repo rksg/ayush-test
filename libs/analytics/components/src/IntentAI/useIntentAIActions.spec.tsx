@@ -20,7 +20,7 @@ import {
 import { mockAIDrivenRow, mockAirflexRows } from './__tests__/fixtures'
 import { IntentListItem }                   from './config'
 import { TransitionMutationResponse }       from './services'
-import { displayStates, statuses }          from './states'
+import { DisplayStates, Statuses }          from './states'
 import { useIntentAIActions  }              from './useIntentAIActions'
 import { Actions }                          from './utils'
 
@@ -126,8 +126,8 @@ describe('useIntentAIActions', () => {
           action: Actions.One_Click_Optimize,
           data: [{
             id: '15',
-            displayStatus: displayStates.new,
-            status: statuses.new,
+            displayStatus: DisplayStates.new,
+            status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T00:45:00.000Z' ,
               preferences: {
@@ -165,8 +165,8 @@ describe('useIntentAIActions', () => {
           action: Actions.One_Click_Optimize,
           data: [{
             id: '15',
-            displayStatus: displayStates.new,
-            status: statuses.new,
+            displayStatus: DisplayStates.new,
+            status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               preferences: {
@@ -206,8 +206,8 @@ describe('useIntentAIActions', () => {
           action: Actions.One_Click_Optimize,
           data: [{
             id: '16',
-            displayStatus: displayStates.new,
-            status: statuses.new,
+            displayStatus: DisplayStates.new,
+            status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -302,8 +302,8 @@ describe('useIntentAIActions', () => {
         action: Actions.One_Click_Optimize,
         data: [{
           id: '15',
-          displayStatus: displayStates.new,
-          status: statuses.new,
+          displayStatus: DisplayStates.new,
+          status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
             preferences: {
@@ -312,8 +312,8 @@ describe('useIntentAIActions', () => {
           }
         },{
           id: '17',
-          displayStatus: displayStates.new,
-          status: statuses.new,
+          displayStatus: DisplayStates.new,
+          status: Statuses.new,
           metadata: {
             scheduledAt: '2024-07-21T04:45:00.000Z',
             wlans: [{ name: 'i4', ssid: 's4' },{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
@@ -359,8 +359,8 @@ describe('useIntentAIActions', () => {
           action: Actions.One_Click_Optimize,
           data: [{
             id: '15',
-            displayStatus: displayStates.new,
-            status: statuses.new,
+            displayStatus: DisplayStates.new,
+            status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               preferences: {
@@ -400,8 +400,8 @@ describe('useIntentAIActions', () => {
           action: Actions.One_Click_Optimize,
           data: [{
             id: '16',
-            displayStatus: displayStates.new,
-            status: statuses.new,
+            displayStatus: DisplayStates.new,
+            status: Statuses.new,
             metadata: {
               scheduledAt: '2024-07-21T04:45:00.000Z',
               wlans: [{ id: 'n1', name: 'n1', ssid: 's1' },{ id: 'n2', name: 'n2', ssid: 's2' },{ id: 'n3', name: 'n3', ssid: 's3' }]
@@ -497,14 +497,14 @@ describe('useIntentAIActions', () => {
         { ...mockAIDrivenRow,
           aiFeature: 'AI-Driven RRM',
           ...extractItem,
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           statusTrail
         },{ ...mockAirflexRows[1],
           aiFeature: 'AirFlexAI',
           ...extractItem,
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           statusTrail
         }
       ] as IntentListItem[]
@@ -519,14 +519,14 @@ describe('useIntentAIActions', () => {
         action: Actions.Pause,
         data: [{
           id: '15',
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           statusTrail,
           metadata: { algorithmData: { isCrrmFullOptimization: false } }
         },{
           id: '17',
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           statusTrail,
           metadata: {}
         }]
@@ -539,14 +539,14 @@ describe('useIntentAIActions', () => {
       const selectedRows = [
         { ...mockAIDrivenRow, aiFeature: 'AI-Driven RRM',
           ...extractItem,
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           statusTrail
         },
         { ...mockAirflexRows[1], aiFeature: 'AirFlexAI',
           ...extractItem,
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           statusTrail
         }
       ] as IntentListItem[]
@@ -561,13 +561,13 @@ describe('useIntentAIActions', () => {
         action: Actions.Revert,
         data: [{
           id: '15',
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
         },{
           id: '17',
-          displayStatus: displayStates.active,
-          status: statuses.active,
+          displayStatus: DisplayStates.active,
+          status: Statuses.active,
           metadata: { scheduledAt: '2024-07-21T04:45:00.000Z' }
         }]
       })

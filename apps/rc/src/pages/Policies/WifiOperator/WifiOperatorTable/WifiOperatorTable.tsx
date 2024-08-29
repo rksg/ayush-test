@@ -26,7 +26,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 
 
@@ -101,7 +101,7 @@ export default function WifiOperatorTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission() && filterByAccess([
           <TenantLink
             scopeKey={[WifiScopes.CREATE]}
             to={getPolicyRoutePath({
@@ -124,7 +124,7 @@ export default function WifiOperatorTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasPermission() && { type: 'checkbox' }}
+          rowSelection={hasCrossVenuesPermission() && hasPermission() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

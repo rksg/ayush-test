@@ -1,4 +1,4 @@
-export enum statuses {
+export enum Statuses {
   na = 'na',
   new = 'new',
   active = 'active',
@@ -10,7 +10,7 @@ export enum statuses {
   revertScheduleInProgress = 'revertscheduleinprogress'
 }
 
-export enum statusReasons {
+export enum StatusReasons {
   applyFailed = 'apply-failed',
   revertFailed = 'revert-failed',
   reverted = 'reverted',
@@ -26,25 +26,25 @@ export enum statusReasons {
   oneClick = 'one-click'
 }
 
-export enum displayStates {
-  naConflictingConfiguration = statuses.na + '-' + statusReasons.conflictingConfiguration,
-  naNoAps = statuses.na + '-' + statusReasons.noAps,
-  naNotEnoughLicense = statuses.na + '-' + statusReasons.notEnoughLicense,
-  naNotEnoughData = statuses.na + '-' + statusReasons.notEnoughData,
-  naVerified = statuses.na + '-' + statusReasons.verified,
-  naWaitingForEtl = statuses.na + '-' + statusReasons.waitingForEtl,
-  new = statuses.new,
-  active = statuses.active,
-  pausedFromInactive = statuses.paused + '-' + statusReasons.fromInactive,
-  pausedFromActive = statuses.paused + '-' + statusReasons.fromActive,
-  pausedByDefault = statuses.paused + '-' + statusReasons.byDefault,
-  pausedApplyFailed = statuses.paused + '-' + statusReasons.applyFailed,
-  pausedRevertFailed = statuses.paused + '-' + statusReasons.revertFailed,
-  pausedReverted = statuses.paused + '-' + statusReasons.reverted,
-  scheduled = statuses.scheduled,
-  scheduledOneClick = statuses.scheduled + '-' + statusReasons.oneClick,
-  applyScheduled = statuses.applyScheduled,
-  applyScheduleInProgress = statuses.applyScheduleInProgress,
-  revertScheduled = statuses.revertScheduled,
-  revertScheduleInProgress = statuses.revertScheduleInProgress
+export enum DisplayStates {
+  naConflictingConfiguration = Statuses.na + '-' + StatusReasons.conflictingConfiguration,
+  naNoAps = Statuses.na + '-' + StatusReasons.noAps,
+  naNotEnoughLicense = Statuses.na + '-' + StatusReasons.notEnoughLicense,
+  naNotEnoughData = Statuses.na + '-' + StatusReasons.notEnoughData,
+  naVerified = Statuses.na + '-' + StatusReasons.verified,
+  naWaitingForEtl = Statuses.na + '-' + StatusReasons.waitingForEtl,
+  new = Statuses.new,
+  active = Statuses.active,
+  pausedFromInactive = Statuses.paused + '-' + StatusReasons.fromInactive,
+  pausedFromActive = Statuses.paused + '-' + StatusReasons.fromActive,
+  pausedByDefault = Statuses.paused + '-' + StatusReasons.byDefault,
+  pausedApplyFailed = Statuses.paused + '-' + StatusReasons.applyFailed,
+  pausedRevertFailed = Statuses.paused + '-' + StatusReasons.revertFailed,
+  pausedReverted = Statuses.paused + '-' + StatusReasons.reverted,
+  scheduled = Statuses.scheduled,
+  scheduledOneClick = Statuses.scheduled + '-' + StatusReasons.oneClick,
+  applyScheduled = Statuses.applyScheduled,
+  applyScheduleInProgress = Statuses.applyScheduleInProgress,
+  revertScheduled = Statuses.revertScheduled,
+  revertScheduleInProgress = Statuses.revertScheduleInProgress
 }

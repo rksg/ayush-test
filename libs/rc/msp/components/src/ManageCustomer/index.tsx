@@ -58,6 +58,7 @@ import {
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                       from '@acx-ui/rc/services'
 import {
   Address,
   emailRegExp,
@@ -231,6 +232,7 @@ export function ManageCustomer () {
   const isExtendedTrialEditMode = action === 'edit' && status === 'ExtendedTrial'
 
   const { data: userProfile } = useUserProfileContext()
+  const { data: tenantDetailsData } = useGetTenantDetailsQuery({ params })
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
     { skip: isEntitlementRbacApiEnabled })
@@ -272,6 +274,7 @@ export function ManageCustomer () {
     option: { skip: action !== 'edit' }
   })
 
+  const showExtendedTrial = tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled
   const [
     enableMspEcSupport
   ] = useEnableMspEcSupportMutation()
@@ -1719,7 +1722,7 @@ export function ManageCustomer () {
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
           <Form.Item children={displayCustomerAdmins()} />
-          {isExtendedTrialToggleEnabled ? <EditCustomerSubscriptionFormNew />
+          {showExtendedTrial ? <EditCustomerSubscriptionFormNew />
             : <EditCustomerSubscriptionForm />}
           <EnableSupportForm></EnableSupportForm>
         </StepsFormLegacy.StepForm>}
@@ -1789,7 +1792,7 @@ export function ManageCustomer () {
               return true
             }}
           >
-            {isExtendedTrialToggleEnabled ? <CustomerSubscriptionNew /> : <CustomerSubscription />}
+            {showExtendedTrial ? <CustomerSubscriptionNew /> : <CustomerSubscription />}
           </StepsFormLegacy.StepForm>
 
           <StepsFormLegacy.StepForm name='summary'

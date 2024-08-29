@@ -5,10 +5,10 @@ import { findIndex, find }                                         from 'lodash'
 import { useIntl }                                                 from 'react-intl'
 import { useParams }                                               from 'react-router-dom'
 
-import {  StepsForm, Tooltip, useStepFormContext, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { InformationSolid }                                from '@acx-ui/icons'
-import { SpaceWrapper, CompatibilityWarningCircleIcon }    from '@acx-ui/rc/components'
+import {  StepsForm, Tooltip, useStepFormContext, Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { InformationSolid }                                                    from '@acx-ui/icons'
+import { SpaceWrapper, CompatibilityWarningCircleIcon, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterListQuery,
   useGetEdgeFeatureSetsQuery
@@ -31,6 +31,8 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const isHaAaDmzEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_DMZ_TOGGLE)
+
   const { form, editMode, initialValues } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans } = useEdgeMvSdLanContext()
 
@@ -137,18 +139,25 @@ export const SettingsForm = () => {
       </UI.ClusterSelectorHelper>)
   }
 
-  // eslint-disable-next-line max-len
-  const checkHAModeConsist = (dcClusterId: string, dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
-    const dcClusterHaMode = find(clusterData, { clusterId: dcClusterId })
-      ?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
-    const dmzClusterHaMode = find(clusterData, { clusterId: dmzClusterId })
-      ?.highAvailabilityMode ?? ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
+  const dmzHaModeCheck = (dmzClusterId: string | undefined, isGuestTunnelOn: boolean) => {
+    const isDmzClusteAAMode = find(clusterData, { clusterId: dmzClusterId })
+      ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
-    if (!isGuestTunnelOn || !dmzClusterId || dcClusterHaMode === dmzClusterHaMode) {
+    if (isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
+      return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
+    } else {
       return Promise.resolve()
-    } else
-      return Promise.reject($t({ defaultMessage: 'High availability mode must be consistent.' }))
+    }
   }
+
+  const getDmzClusterOpts = () => clusterOptions?.filter(item => {
+    // eslint-disable-next-line max-len
+    const isAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+
+    return item.value !== edgeClusterId &&
+          // eslint-disable-next-line max-len
+          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isAAMode || (editMode && item.value === guestEdgeClusterId))))
+  })
 
   return (
     <UI.Wrapper>
@@ -186,19 +195,11 @@ export const SettingsForm = () => {
                         placement='bottom'
                       />
                     </>}
-                    dependencies={['guestEdgeClusterId']}
                     rules={[{
                       required: true,
                       message: $t({ defaultMessage: 'Please select a Cluster' })
                     },
-                    { validator: (_, value) => checkCorePortConfigured(value) },
-                    ({ getFieldValue }) => ({
-                      validator: (_, value) => {
-                        const guestEdgeClusterId = getFieldValue('guestEdgeClusterId')
-                        // eslint-disable-next-line max-len
-                        return checkHAModeConsist(value, guestEdgeClusterId, isGuestTunnelEnabled)
-                      }
-                    })
+                    { validator: (_, value) => checkCorePortConfigured(value) }
                     ]}
                   >
                     <Select
@@ -210,8 +211,12 @@ export const SettingsForm = () => {
                     />
                   </Form.Item>
                 </Col>
-                <ClusterFirmwareInfo
-                  fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
+                {edgeClusterId &&
+                <Col span={24}>
+                  <ClusterFirmwareInfo
+                    fwVersion={find(clusterData, { clusterId: edgeClusterId })?.firmwareVersion} />
+                </Col>
+                }
               </Row>
             </Col>
           </Row>
@@ -244,30 +249,33 @@ export const SettingsForm = () => {
                       placement='bottom'
                     />
                   </>}
-                  dependencies={['edgeClusterId']}
                   rules={[{
                     required: true,
                     message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
                   },
                   { validator: (_, value) => checkCorePortConfigured(value) },
-                  ({ getFieldValue }) => ({
-                    validator: (_, value) => {
-                      const edgeClusterId = getFieldValue('edgeClusterId')
-                      return checkHAModeConsist(edgeClusterId, value, true)
-                    }
-                  }) ]}
+                  { validator: (_, value) => isHaAaDmzEnabled
+                    ? Promise.resolve()
+                    : dmzHaModeCheck(value, isGuestTunnelEnabled) }
+                  ]}
                 >
                   <Select
                     loading={isClusterOptsLoading}
-                    options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
+                    options={getDmzClusterOpts()}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
                     disabled={editMode && !!initialValues?.guestEdgeClusterId}
                     onChange={onDmzClusterChange}
                   />
                 </Form.Item>
               </Col>
-              <ClusterFirmwareInfo
-                fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion} />
+              {guestEdgeClusterId &&
+                <Col span={24}>
+                  <ClusterFirmwareInfo
+                    // eslint-disable-next-line max-len
+                    fwVersion={find(clusterData, { clusterId: guestEdgeClusterId })?.firmwareVersion}
+                  />
+                </Col>
+              }
             </Row>)
             : null
           }
@@ -313,7 +321,7 @@ const ClusterFirmwareInfo = (props: {
   return isEdgeCompatibilityEnabled
     ? ( <Space align='center' size='small'>
       <Typography>
-        {$t({ defaultMessage: 'Cluster Firmware Verson: {fwVersion}' },
+        {$t({ defaultMessage: 'Cluster Firmware Version: {fwVersion}' },
           { fwVersion }) }
       </Typography>
       {(!!fwVersion && isLower) && <Tooltip

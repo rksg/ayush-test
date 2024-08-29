@@ -358,6 +358,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000005',
       venueName: 'venue_5',
       clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
+      firmwareVersion: '2.1.0.480',
       hasCorePort: true,
       edgeList: [
         {
