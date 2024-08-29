@@ -17,7 +17,7 @@ export default function EthernetPortProfileDrawer (props:{
   disabled?: boolean
   currentEthernetPortData?: EthernetPortProfileViewData
 }) {
-  const { updateInstance, currentEthernetPortData }=props
+  const { updateInstance, currentEthernetPortData, disabled }=props
   const { $t } = useIntl()
   const onClose = () => {
     setFormVisible(false)
@@ -39,12 +39,12 @@ export default function EthernetPortProfileDrawer (props:{
       <Space size={'large'}>
         <Button type='link'
           onClick={()=>setDetailVisible(true)}
-          disabled={props.disabled}>
+          disabled={disabled}>
           {$t({ defaultMessage: 'Show Profile' })}
         </Button>
         <Button type='link'
           onClick={()=>setFormVisible(true)}
-          disabled={props.disabled}>
+          disabled={disabled}>
           {$t({ defaultMessage: 'Add Profile' })}
         </Button>
       </Space>

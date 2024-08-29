@@ -103,7 +103,7 @@ const EthernetPortProfileOverwriteItem = (props:EthernetPortProfileOverwriteProp
       }
       { !isEditMode &&
         <Space>
-          {currentFieldValue} {(isEditable) ? (isDirty? '(Custom)': '(Default)') : ''}
+          {currentFieldValue}{(isEditable) ? (isDirty? '(Custom)': '(Default)') : ''}
           { isEditable &&
             <>
               <Button

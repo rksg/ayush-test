@@ -34,7 +34,7 @@ export const EditEthernetPortProfile = () => {
       { params: { id: policyId } }
     )
 
-  const { data: aaaRadiusList, isLoading: isAaaRadiusLoading } = useGetAAAPolicyListQuery(
+  const { data: aaaRadiusList } = useGetAAAPolicyListQuery(
     { payload: {
       filters: {
         ethernetPortProfileIds: [ethernetPortProfileData?.id]
@@ -126,6 +126,7 @@ export const EditEthernetPortProfile = () => {
         submitButtonLabel={$t({ defaultMessage: 'Apply' })}
         onFinish={handleEditEthernetPortProfile}
         form={form}
+        isEditMode={true}
       />
     </Loader>
   )

@@ -35,11 +35,12 @@ interface EthernetPortProfileFormProps {
   onFinish: (values: EthernetPortProfileFormType) => void
   form: FormInstance
   onCancel?: () => void
-  isNoPageHeader?: boolean
+  isNoPageHeader?: boolean,
+  isEditMode?: boolean
 }
 
 export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => {
-  const { title, submitButtonLabel, onFinish, form: formRef, onCancel } = props
+  const { title, submitButtonLabel, onFinish, form: formRef, onCancel, isEditMode=false } = props
   const { $t } = useIntl()
   // const params = useParams()
   const portType = Form.useWatch('type', formRef)
@@ -66,8 +67,8 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
     } catch(error) {
       console.log(error) // eslint-disable-line no-console
     }
-    // redirectPreviousPage(navigate, previousPath, linkToTableView)
-    (onCancel)? onCancel() : redirectPreviousPage(navigate, previousPath, linkToTableView)
+
+    handleCancel()
   }
 
   const handleCancel = () => {
@@ -215,10 +216,12 @@ export const EthernetPortProfileForm = (props: EthernetPortProfileFormProps) => 
                 </>
                 }
                 initialValue={ApLanPortTypeEnum.TRUNK}
+
               >
                 <Select
                   options={getEthernetPortTypeOptions()}
                   onChange={onPortTypeChanged}
+                  disabled={isEditMode}
                 >
                 </Select>
               </Form.Item>
@@ -462,5 +465,3 @@ export const requestPreProcess = (data: EthernetPortProfileFormType) => {
 
   return result
 }
-
-// export default EthernetPortProfileForm
