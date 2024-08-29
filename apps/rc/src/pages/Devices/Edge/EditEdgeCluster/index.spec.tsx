@@ -17,8 +17,8 @@ jest.mock('react-router-dom', () => ({
 jest.mock('./ClusterDetails', () => ({
   ClusterDetails: () => <div data-testid='cluster-details' />
 }))
-jest.mock('./EdgeClusterDhcp', () => ({
-  EdgeClusterDhcp: () => <div data-testid='dhcp' />
+jest.mock('./NetworkControl', () => ({
+  EdgeNetworkControl: () => <div data-testid='network-control' />
 }))
 jest.mock('./VirtualIp', () => ({
   VirtualIp: () => <div data-testid='virtual-ip' />
@@ -61,9 +61,9 @@ describe('Edit Edge Cluster', () => {
     expect(await screen.findByTestId('cluster-details')).toBeVisible()
   })
 
-  it('when DHCP_HA OFF, should not render DHCP', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
-
+  it('when DHCP_and QoS OFF, should not render Network Control', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.EDGE_DHCP_HA_TOGGLE && ff !== Features.EDGE_QOS_TOGGLE)
     render(
       <Provider>
         <EditEdgeCluster />
@@ -72,7 +72,7 @@ describe('Edit Edge Cluster', () => {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
     expect((await screen.findAllByRole('tab')).length).toBe(3)
-    expect(screen.queryByTestId('dhcp')).toBeNull()
+    expect(screen.queryByTestId('network-control')).toBeNull()
   })
 
   it('should change tab correctly', async () => {
@@ -140,7 +140,7 @@ describe('Edit Edge Cluster', () => {
       expect(screen.getByRole('tab', { name: 'Cluster Interface' }).getAttribute('aria-disabled'))
         .toBe('true'))
     await waitFor(async () =>
-      expect(screen.getByRole('tab', { name: 'DHCP' }).getAttribute('aria-disabled'))
+      expect(screen.getByRole('tab', { name: 'Network Control' }).getAttribute('aria-disabled'))
         .toBe('true'))
   })
 })
