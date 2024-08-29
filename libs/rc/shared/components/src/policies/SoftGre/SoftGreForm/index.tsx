@@ -77,7 +77,11 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <SoftGreSettingForm editMode={editMode} policyId={params?.policyId} />
+              <SoftGreSettingForm
+                editMode={editMode}
+                readMode={false}
+                policyId={params?.policyId}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>

@@ -29,7 +29,8 @@ import {
   IsNetworkSupport6g,
   ApGroupModalState,
   SchedulerTypeEnum, useConfigTemplate, EdgeMvSdLanViewData,
-  NetworkTunnelSdLanAction
+  NetworkTunnelSdLanAction,
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
@@ -158,6 +159,7 @@ export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const form = Form.useFormInstance()
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
 
@@ -169,7 +171,6 @@ export function Venues (props: VenuesProps) {
   const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
-
   const tableQuery = useNetworkVenueList()
 
   const [tableData, setTableData] = useState<Venue[]>([])
@@ -440,7 +441,7 @@ export function Venues (props: VenuesProps) {
           getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
     },
-    ...(isEdgeSdLanMvEnabled ? [{
+    ...(isEdgeSdLanMvEnabled || isSoftGreEnabled ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
@@ -585,7 +586,7 @@ export function Venues (props: VenuesProps) {
     })
   }
 
-  const handleNetworkTunnelActionFinish = async (
+  const handleSdLanTunnelAction = async (
     modalFormValues: NetworkTunnelActionForm,
     otherData: {
       network: NetworkTunnelActionModalProps['network'],
@@ -656,6 +657,29 @@ export function Venues (props: VenuesProps) {
     }
   }
 
+  const handleSoftGreTunnelAction = async (modalFormValues: NetworkTunnelActionForm) => {
+    const networkVenueId = tunnelModalState.network?.venueId
+    const updateContent = form.getFieldValue('softGreAssociationUpdate') ??
+    {} as NetworkTunnelSoftGreAction
+    form.setFieldValue('softGreAssociationUpdate',
+      { ...updateContent, [`${networkVenueId}`]: { ...modalFormValues.softGre } })
+  }
+
+  const handleNetworkTunnelActionFinish = async (
+    modalFormValues: NetworkTunnelActionForm,
+    otherData: {
+      network: NetworkTunnelActionModalProps['network'],
+      venueSdLan?: EdgeMvSdLanViewData
+    }
+  ) => {
+
+    handleSoftGreTunnelAction(modalFormValues)
+    if (modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan) {
+      await handleSdLanTunnelAction(modalFormValues, otherData)
+    }
+    // Need to check reset to Local Breakout
+  }
+
   return (
     <>
       <StepsFormLegacy.Title>
@@ -697,7 +721,7 @@ export function Venues (props: VenuesProps) {
               onCancel={handleCancel}
             />
           </Form.Provider>
-          {isEdgeSdLanMvEnabled && tunnelModalState.visible &&
+          {(isEdgeSdLanMvEnabled || isSoftGreEnabled) && tunnelModalState.visible &&
             <NetworkTunnelActionModal
               {...tunnelModalState}
               onFinish={handleNetworkTunnelActionFinish}
@@ -706,6 +730,7 @@ export function Venues (props: VenuesProps) {
           }
         </Loader>
       </Form.Item>
+      {isSoftGreEnabled && <Form.Item noStyle name={['softGreAssociationUpdate']}></Form.Item>}
     </>
   )
 }

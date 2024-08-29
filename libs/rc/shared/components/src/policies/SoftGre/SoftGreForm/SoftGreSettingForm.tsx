@@ -12,7 +12,6 @@ import { noDataDisplay }                                                        
 import { messageMapping } from './messageMapping'
 import * as UI            from './styledComponents'
 
-const { useWatch } = Form
 
 interface SoftGreSettingFormProps {
   policyId?: string
@@ -20,7 +19,7 @@ interface SoftGreSettingFormProps {
   readMode?: boolean
 }
 
-const listPayload = {
+const defaultPayload = {
   fields: ['name', 'id'],
   searchString: '',
   searchTargetFields: ['name'],
@@ -33,7 +32,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
   const { readMode, policyId } = props
   const params = useParams()
   const form = Form.useFormInstance()
-  const mtuType = useWatch('mtuType')
+  const mtuType = Form.useWatch('mtuType')
   const [ getSoftGreViewDataList ] = useLazyGetSoftGreViewDataListQuery()
   const isDrawerMode = readMode !== undefined
 
@@ -50,20 +49,20 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
     }
   )
 
-  const nameValidator = async (value: string) => {
-    const payload = { ...listPayload, searchString: value }
-    // eslint-disable-next-line max-len
-    const list = (await getSoftGreViewDataList({ params, payload }).unwrap()).data.filter(n => n.id !== params.policyId).map(n => ({ name: n.name }))
-    // eslint-disable-next-line max-len
-    return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'SoftGRE' }))
-  }
-
   useEffect(() => {
     if (!policyId || !softGreData) return
 
     form.setFieldsValue(softGreData)
 
-  }, [softGreData, form, policyId])
+  }, [policyId, softGreData, form])
+
+  const nameValidator = async (value: string) => {
+    const payload = { ...defaultPayload, searchString: value }
+    // eslint-disable-next-line max-len
+    const list = (await getSoftGreViewDataList({ params, payload }).unwrap()).data.filter(n => n.id !== params.policyId).map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: value }, $t({ defaultMessage: 'SoftGRE' }))
+  }
 
   return (
     <Loader states={[{ isLoading }]}>
@@ -73,7 +72,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             hidden={readMode}
             name='name'
             label={$t({ defaultMessage: 'Profile Name' })}
-            rules={[
+            rules={readMode ? [] : [
               { required: true },
               { min: 2 },
               { max: 32 },
@@ -90,24 +89,21 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             name='description'
             label={$t({ defaultMessage: 'Description' })}
             initialValue=''
-            rules={[
-              { max: 64 }
-            ]}
-            children={readMode
-              ? softGreData?.description ?? noDataDisplay
-              : <Input.TextArea rows={2} />
+            rules={readMode? [] : [{ max: 64 } ]}
+            children={
+              readMode ? softGreData?.description ?? noDataDisplay
+                : <Input.TextArea rows={2} />
             }
           />
           <Form.Item
             name='primaryGatewayAddress'
             label={$t({ defaultMessage: 'Tunnel Primary Gateway Address' })}
-            rules={[
-              { required: !readMode },
+            rules={readMode ? [] : [
+              { required: true },
               { validator: (_, value) => networkWifiIpRegExp(value) }
             ]}
-            children={readMode
-              ? softGreData?.primaryGatewayAddress
-              : <Input />
+            children={
+              readMode ? softGreData?.primaryGatewayAddress : <Input />
             }
             validateFirst
             hasFeedback
@@ -115,7 +111,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
           <Form.Item
             name='secondaryGatewayAddress'
             label={$t({ defaultMessage: 'Tunnel Secondary Gateway Address' })}
-            rules={[
+            rules={readMode ? [] : [
               { validator: (_, value) => networkWifiIpRegExp(value) },
               { validator: (_, value) => {
                 const primaryGatewayAddress = form.getFieldValue('primaryGatewayAddress')
@@ -124,9 +120,8 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                   Promise.resolve()
               } }
             ]}
-            children={readMode
-              ? softGreData?.secondaryGatewayAddress
-              : <Input/>
+            children={
+              readMode ? softGreData?.secondaryGatewayAddress : <Input/>
             }
             validateFirst
             hasFeedback
@@ -137,8 +132,8 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             name='mtuType'
             initialValue={MtuTypeEnum.AUTO}
             label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
-            tooltip={readMode ? undefined : $t(messageMapping.mtu_tooltip)}
-            extra={readMode ? undefined
+            tooltip={readMode ? null : $t(messageMapping.mtu_tooltip)}
+            extra={readMode ? null
               : <Space size={1} style={{ alignItems: 'start', marginTop: 5 }}>
                 {
                   mtuType === MtuTypeEnum.MANUAL
@@ -149,9 +144,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               </Space>
             }
             children={
-              readMode
+              readMode ?
               // eslint-disable-next-line max-len
-                ? softGreData?.mtuType !== MtuTypeEnum.MANUAL ? $t({ defaultMessage: 'Auto' }) : $t({ defaultMessage: 'Manual' })
+                softGreData?.mtuType !== MtuTypeEnum.MANUAL ? $t({ defaultMessage: 'Auto' }) : $t({ defaultMessage: 'Manual' })
                 : <Radio.Group>
                   <Space direction='vertical'>
                     <Radio value={MtuTypeEnum.AUTO} >
@@ -200,7 +195,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             style={{ marginBottom: '10px' }}
             label={<>
               { $t({ defaultMessage: 'ICMP Keep Alive Interval' }) }
-              {readMode ? undefined
+              {readMode ? null
                 : <Tooltip.Question
                   title={$t(messageMapping.keep_alive_interval_tooltip)}
                   placement='bottom'/>}
@@ -211,9 +206,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               <Form.Item
                 name='keepAliveInterval'
                 initialValue={10}
-                rules={[
+                rules={readMode ? [] : [
                   {
-                    required: !readMode,
+                    required: true,
                     message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Interval' })
                   },
                   {
@@ -223,9 +218,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                     })
                   }
                 ]}
-                children={readMode
-                  ? softGreData?.mtuSize ?? noDataDisplay
-                  : <InputNumber style={{ width: '60px' }}/>}
+                children={
+                  readMode ? softGreData?.mtuSize ?? noDataDisplay
+                    : <InputNumber style={{ width: '60px' }}/>}
                 validateFirst
                 noStyle
                 hasFeedback
@@ -239,7 +234,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             style={{ marginBottom: '10px' }}
             label={<>
               { $t({ defaultMessage: 'ICMP Keep Alive Retries' }) }
-              {readMode ? undefined
+              {readMode ? null
                 : <Tooltip.Question
                   title={$t(messageMapping.keep_alive_retry_tooltip)}
                   placement='bottom'/>}
@@ -250,16 +245,16 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               <Form.Item
                 name='keepAliveRetryTimes'
                 initialValue={5}
-                rules={[
+                rules={readMode ? [] : [
                   {
                     required: true,
                     message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Retries' })
                   },
                   { type: 'number', min: 2, max: 10 }
                 ]}
-                children={readMode
-                  ? softGreData?.keepAliveRetryTimes ?? noDataDisplay
-                  : <InputNumber style={{ width: '60px' }}/>}
+                children={
+                  readMode ? softGreData?.keepAliveRetryTimes ?? noDataDisplay
+                    : <InputNumber style={{ width: '60px' }}/>}
                 validateFirst
                 noStyle
                 hasFeedback
@@ -276,7 +271,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             <UI.FormItemWrapper>
               <Form.Item
                 label={$t({ defaultMessage: 'Disassociate Clients on Tunnel Failover' })}
-                tooltip={readMode ? undefined : $t(messageMapping.disassoicate_client_tooltip)}
+                tooltip={readMode ? null : $t(messageMapping.disassoicate_client_tooltip)}
               />
             </UI.FormItemWrapper>
             <Form.Item

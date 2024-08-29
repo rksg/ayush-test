@@ -5,7 +5,7 @@ import { FormInstance }            from 'antd'
 import _, { cloneDeep, findIndex } from 'lodash'
 import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -57,7 +57,9 @@ import {
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useActivateSoftGreMutation,
+  useDectivateSoftGreMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -79,7 +81,8 @@ import {
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
-  VLANPoolViewModelType
+  VLANPoolViewModelType,
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -828,6 +831,32 @@ export const useUpdateEdgeSdLanActivations = () => {
 
   return updateEdgeSdLanActivations
 }
+
+export const useUpdateSoftGreActivations = () => {
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
+  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
+
+  // eslint-disable-next-line max-len
+  const updateeSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[]) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (action.newProfileId === '' && !action.oldProfileId) {
+        return dectivateSoftGre({ networkId, policyId: action.oldProfileId })
+      } else if (action.newProfileId !== action.oldProfileId) {
+        return activateSoftGre({ networkId, policyId: action.oldProfileId })
+      }
+      return Promise.resolve()
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateeSoftGreActivations
+}
+
 
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,

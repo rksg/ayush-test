@@ -1,10 +1,10 @@
 
-import {  Col, Form, Row } from 'antd'
-import { useIntl }         from 'react-intl'
+import {  Col, Form, Row }   from 'antd'
+import { DefaultOptionType } from 'antd/lib/select'
+import { useIntl }           from 'react-intl'
 
 import { Drawer }                                             from '@acx-ui/components'
 import { useCreateSoftGreMutation, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
-import { SoftGreOption }                                      from '@acx-ui/rc/utils'
 import { useParams }                                          from '@acx-ui/react-router-dom'
 
 import { SoftGreSettingForm } from './SoftGreSettingForm'
@@ -17,7 +17,7 @@ interface SoftGreDrawerProps {
   readMode: boolean
   policyId?:string
   policyName?: string
-  callbackFn?: (option: SoftGreOption) => void
+  callbackFn?: (option: DefaultOptionType) => void
 }
 
 export default function SoftGreDrawer (props: SoftGreDrawerProps) {
@@ -25,8 +25,6 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-
-
   const [ updateSoftGre ] = useUpdateSoftGreMutation()
   const [ createSoftGre ] = useCreateSoftGreMutation()
 
@@ -38,29 +36,18 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
         await updateSoftGre({ params, payload: values }).unwrap()
       } else {
         const resData = await createSoftGre({ params, payload: values }).unwrap()
-        const newOption = {
-          value: resData.response?.id, label: values.name
-        } as { value: string, label: string }
-        callbackFn && callbackFn(newOption)
+        if (resData.response?.id) {
+          const newOption = {
+            value: resData.response?.id, label: values.name
+          } as { value: string, label: string }
+          callbackFn && callbackFn(newOption)
+        }
       }
       setVisible(false)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
-
-  const content =
-    <Form layout='vertical' form={form} >
-      <Row gutter={20}>
-        <Col span={24}>
-          <SoftGreSettingForm
-            editMode={editMode}
-            readMode={readMode}
-            policyId={policyId}
-          />
-        </Col>
-      </Row>
-    </Form>
 
   const handleClose = () => {
     setVisible(false)
@@ -75,7 +62,17 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
       }
       visible={visible}
       width={450}
-      children={content}
+      children={<Form layout='vertical' form={form} >
+        <Row gutter={20}>
+          <Col span={24}>
+            <SoftGreSettingForm
+              editMode={editMode}
+              readMode={readMode}
+              policyId={policyId}
+            />
+          </Col>
+        </Row>
+      </Form>}
       onClose={handleClose}
       destroyOnClose={true}
       footer={!readMode &&

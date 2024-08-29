@@ -8,6 +8,10 @@ export interface NetworkTunnelActionForm {
   tunnelType: NetworkTunnelTypeEnum
   sdLan: {
     isGuestTunnelEnabled: boolean
+  },
+  softGre: {
+    newProfileId: string,
+    oldProfileId: string
   }
 }
 

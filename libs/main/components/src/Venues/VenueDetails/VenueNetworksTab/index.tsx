@@ -46,7 +46,9 @@ import {
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useActivateSoftGreMutation,
+  useDectivateSoftGreMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -162,8 +164,6 @@ export function VenueNetworksTab () {
   const { isTemplate } = useConfigTemplate()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  // const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
-  const isSoftGreEnabled = true
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
@@ -207,9 +207,12 @@ export function VenueNetworksTab () {
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
+  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
@@ -485,7 +488,7 @@ export function VenueNetworksTab () {
           isReadOnly)
       }
     },
-    ...(isEdgeMvSdLanReady ? [{
+    ...(isEdgeMvSdLanReady || isSoftGreEnabled ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
@@ -546,7 +549,6 @@ export function VenueNetworksTab () {
       visible: false
     })
   }
-
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
     let data = cloneDeep(scheduleModalState.networkVenue)
@@ -640,6 +642,13 @@ export function VenueNetworksTab () {
     const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
     && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
 
+    if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+      formValues.softGre.oldProfileId !== formValues.softGre.newProfileId) {
+      await activateSoftGre({ ...params, policyId: formValues.softGre.newProfileId })
+    } else if (formValues.softGre.oldProfileId) {
+      await dectivateSoftGre({ ...params, policyId: formValues.softGre.oldProfileId })
+    }
+
     if (needSdLanConfigConflictCheck) {
       await new Promise<void>((resolve) => {
         showSdLanGuestFwdConflictModal({
@@ -668,6 +677,7 @@ export function VenueNetworksTab () {
       })
     } else {
       await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+
       handleCloseTunnelModal()
     }
   }
@@ -715,7 +725,7 @@ export function VenueNetworksTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
-      {isEdgeMvSdLanReady && tunnelModalState.visible &&
+      {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
         <NetworkTunnelActionModal
           {...tunnelModalState}
           onFinish={handleNetworkTunnelActionFinish}

@@ -2,12 +2,12 @@
 import { useEffect, useState } from 'react'
 
 import {  Form, Radio, Row, Select, Space } from 'antd'
+import { DefaultOptionType }                from 'antd/lib/select'
 import _                                    from 'lodash'
 import { useIntl }                          from 'react-intl'
 
-import { useGetSoftGreSelectOptionQuery } from '@acx-ui/rc/services'
-import { SoftGreOption, SoftGreViewData } from '@acx-ui/rc/utils'
-import { useParams }                      from '@acx-ui/react-router-dom'
+import { useGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
+import { useParams }                 from '@acx-ui/react-router-dom'
 
 import { mockSoftGreTable2 } from '../policies/SoftGre/SoftGreForm/__tests__/fixtures'
 import SoftGreDrawer         from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
@@ -29,44 +29,47 @@ interface WiFISoftGreRadioOptionProps {
   networkId?: string
 }
 
-const { useWatch } = Form
-
 export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionProps) {
   const { currentTunnelType, venueId, networkId } = props
   const { $t } = useIntl()
   const params = useParams()
-  const [ softGreDetail, setSoftGreDetail ] = useState<SoftGreViewData>({} as SoftGreViewData)
+  const form = Form.useFormInstance()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
-  const [softGreOption, setSoftGreOption] = useState([] as SoftGreOption[])
+  const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
 
-  const [ softGreProfileId ] = [
-    useWatch<string>('softGreProfile')
-  ]
-  const { data, isLoading } = useGetSoftGreSelectOptionQuery(
-    { params, payload: { ...defaultPayload, current: { networkId, venueId } } }
+  const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
+
+  const optionsDataQuery = useGetSoftGreOptionsQuery(
+    { params,
+      payload: { ...defaultPayload, current: { networkId, venueId } }
+    },
+    { skip: currentTunnelType !== NetworkTunnelTypeEnum.SoftGre }
   )
-  // TODO: sorted activations and then other softGreNames
 
-  const softGreList = mockSoftGreTable2.data.data
+  // const optionsData = mockSoftGreTable2.data.data
 
-  const addOption = (option: SoftGreOption) => {
+  useEffect(() => {
+    if (optionsDataQuery.data) {
+      setSoftGreOption(optionsDataQuery.data.options)
+      if (optionsDataQuery.data.id) {
+        form.setFieldValue(['softGre', 'newProfileId'], optionsDataQuery.data.id)
+        form.setFieldValue(['softGre', 'oldProfileId'], optionsDataQuery.data.id)
+      }
+    }
+  }, [optionsDataQuery])
+
+  useEffect(() => {
+    if (currentTunnelType !== NetworkTunnelTypeEnum.SoftGre) {
+      form.setFieldValue(['softGre', 'newProfileId'], '')
+    }
+  }, [currentTunnelType])
+
+  const addOption = (option: DefaultOptionType) => {
     setSoftGreOption((preState) => {
       return [option, ...preState]
     })
   }
-
-  useEffect(() => {
-    if (!isLoading) {
-      setSoftGreOption((softGreList?.map(item => ({
-        label: item.name, value: item.id
-      })) ?? []) as SoftGreOption[])
-    }
-  }, [isLoading, softGreList])
-
-  useEffect(() => {
-    setSoftGreDetail(softGreList.filter(item => item.id === softGreProfileId) as unknown as SoftGreViewData)
-  }, [softGreProfileId, softGreList])
 
   const handleClickAdd = () => {
     setDetailDrawerVisible(false)
@@ -90,18 +93,18 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
             {$t({ defaultMessage: 'SoftGRE Tunneling' })}
             {currentTunnelType === NetworkTunnelTypeEnum.SoftGre &&
               <><UI.StyledFormItem
-                name={'softGreProfile'}
+                name={['softGre', 'newProfileId']}
+                required={currentTunnelType === NetworkTunnelTypeEnum.SoftGre}
                 children={<Select
                   style={{ width: '150px', marginBottom: '0px' }}
                   size='small'
-                  options={data
-                    ? [{ label: 'Select...', value: '', disable: false }, ...data]
-                    : [{ label: 'Select...', value: '', disable: false }]
-                  }
+                  options={softGreOption}
                   placeholder={$t({ defaultMessage: 'Select...' })}
-                  defaultValue={''} />} /><UI.TextButton
+                  defaultValue={''} />}
+              />
+              <UI.TextButton
                 type='link'
-                disabled={_.isEmpty(softGreProfileId)}
+                disabled={!softGreProfileId}
                 onClick={handleClickProfileDetail}
               >
                 {$t({ defaultMessage: 'Profile details' })}
@@ -120,17 +123,16 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     <SoftGreDrawer
       visible={detailDrawerVisible}
       setVisible={setDetailDrawerVisible}
-      policyId={softGreProfileId as string}
-      policyName={softGreDetail?.name} // TODO: get name from useQuery
+      policyId={softGreProfileId}
       readMode={true}
       editMode={false}
-      callbackFn={addOption}
     />
     <SoftGreDrawer
       visible={addDrawerVisible}
       setVisible={setAddDrawerVisible}
       readMode={false}
       editMode={false}
+      callbackFn={addOption}
     />
   </Row>
 }

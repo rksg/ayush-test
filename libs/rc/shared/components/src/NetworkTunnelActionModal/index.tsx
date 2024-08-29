@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Radio, Space, Typography } from 'antd'
 
 import { Modal }                                                           from '@acx-ui/components'
-import { Features }                                                        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }                                                         from '@acx-ui/utils'
 
@@ -40,6 +40,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
   const { visible, network, onClose, onFinish, cachedActs } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
@@ -127,11 +128,13 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 networkVlanPool={networkVlanPool}
               />
             }
-            <WifiSoftGreRadioOption
-              currentTunnelType={tunnelType}
-              venueId={networkVenueId!}
-              networkId={networkId}
-            />
+            {isSoftGreEnabled && visible &&
+              <WifiSoftGreRadioOption
+                currentTunnelType={tunnelType}
+                venueId={networkVenueId!}
+                networkId={networkId}
+              />
+            }
           </Space>
         </Radio.Group>
       </Form.Item>

@@ -29,7 +29,9 @@ import {
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
-  useNewNetworkVenueTableQuery
+  useNewNetworkVenueTableQuery,
+  useDectivateSoftGreMutation,
+  useActivateSoftGreMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -184,6 +186,7 @@ export function NetworkVenuesTab () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const { $t } = useIntl()
   const networkId = params.networkId
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -243,6 +246,8 @@ export function NetworkVenuesTab () {
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateNetworkTunnel = useUpdateNetworkTunnelAction()
   const { toggleNetwork } = useEdgeMvSdLanActions()
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
+  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
@@ -631,7 +636,7 @@ export function NetworkVenuesTab () {
           (!hasUpdatePermission || systemNetwork))
       }
     },
-    ...(isEdgeMvSdLanReady ? [{
+    ...((isEdgeMvSdLanReady || isSoftGreEnabled) ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
@@ -780,6 +785,13 @@ export function NetworkVenuesTab () {
     const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
      && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
 
+    if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+      formValues.softGre.oldProfileId !== formValues.softGre.newProfileId) {
+      await activateSoftGre({ ...params, policyId: formValues.softGre.newProfileId })
+    } else if (formValues.softGre.oldProfileId) {
+      await dectivateSoftGre({ ...params, policyId: formValues.softGre.oldProfileId })
+    }
+
     if (needSdLanConfigConflictCheck) {
       await new Promise<void>((resolve) => {
         showSdLanGuestFwdConflictModal({
@@ -859,7 +871,7 @@ export function NetworkVenuesTab () {
           onCancel={handleCancel}
         />
       </Form.Provider>
-      {isEdgeMvSdLanReady && tunnelModalState.visible &&
+      {(isEdgeMvSdLanReady || isSoftGreEnabled) && tunnelModalState.visible &&
         <NetworkTunnelActionModal
           {...tunnelModalState}
           onFinish={handleNetworkTunnelActionFinish}
