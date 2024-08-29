@@ -206,7 +206,7 @@ const identifyExistKey = (entityType: EntityType) => {
     case 'transaction':
       return 'switch'
     case 'clientMldMac':
-      return 'ap'
+      return 'client'
     default:
       return entityType
   }
