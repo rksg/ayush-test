@@ -144,7 +144,7 @@ function getScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
 
   if (specialCaseResult) return specialCaseResult
 
-  const targetScope = typeScopeMap[type] || defaultScope || []
+  const targetScope = typeScopeMap[type] || defaultScope
   return targetScope.map(scope => scope + '-' + operScope as ScopeKeys[number])
 }
 
