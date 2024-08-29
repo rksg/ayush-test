@@ -1,3 +1,4 @@
+import { isEmpty }    from 'lodash'
 import io, { Socket } from 'socket.io-client'
 
 import { getJwtToken, websocketServerUrl } from '@acx-ui/config'
@@ -14,22 +15,21 @@ export const initialSocket = (url: string) => {
 
   const tenantId = getTenantId()
 
-  if(!socket){
-    socket = getIndependentSocket(url)
-    socket.on('jwtRefresh', () => {
-      const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
-        : `/activity?tenantId=${tenantId}`
-      console.log(token)
-      socket.off('jwtRefresh')
-      socket.off('activityChangedEvent')
-      socket.close()
-      socket.disconnect()
-      socket = initialSocket(url1)
-    })
-    socket.on('activityChangedEvent', (...messages: string[]) => {
-      callbacks.forEach((callback) => callback(...messages))
-    })
-  }
+  socket = getIndependentSocket(url)
+  socket.on('jwtRefresh', () => {
+    const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
+      : `/activity?tenantId=${tenantId}`
+    socket.off('jwtRefresh')
+    socket.off('activityChangedEvent')
+    socket.close()
+    socket.disconnect()
+    socket = {} as SocketIOClient.Socket
+    initialSocket(url1)
+  })
+  socket.on('activityChangedEvent', (...messages: string[]) => {
+    callbacks.forEach((callback) => callback(...messages))
+  })
+
 
   return socket
 }

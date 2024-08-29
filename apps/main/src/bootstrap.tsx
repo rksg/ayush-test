@@ -26,7 +26,9 @@ import {
   createHttpRequest,
   useLocaleContext,
   LangKey,
-  DEFAULT_SYS_LANG
+  DEFAULT_SYS_LANG,
+  getJwtToken,
+  initialSocket
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -156,6 +158,14 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
+
+  const token = getJwtToken()
+  const tenantId = getTenantId()
+
+  const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
+    : `/activity?tenantId=${tenantId}`
+
+  initialSocket(url1)
 
   root.render(
     <React.StrictMode>
