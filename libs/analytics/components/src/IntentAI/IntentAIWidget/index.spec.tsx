@@ -1,10 +1,13 @@
+import userEvent from '@testing-library/user-event'
+
 import { defaultNetworkPath }           from '@acx-ui/analytics/utils'
 import * as config                      from '@acx-ui/config'
 import { Provider, store, intentAIUrl } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
   render,
-  screen } from '@acx-ui/test-utils'
+  screen
+} from '@acx-ui/test-utils'
 import { PathFilter, DateRange } from '@acx-ui/utils'
 
 import {
@@ -122,6 +125,22 @@ describe('IntentAI dashboard', () => {
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('Operations'))
+  })
+
+  it('render AI operation data hover the icon', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
+      data: intentHighlightsWithOperations
+    })
+    render(<IntentAIWidget pathFilters={pathFilters} />, { route: true, wrapper: Provider })
+
+    expect(await screen.findByText('AI Operations')).toBeVisible()
+    expect(screen.queryByText('AI-Driven RRM')).toBeNull()
+    expect(screen.queryByText('AirFlexAI')).toBeNull()
+    expect(screen.queryAllByRole('link')).toHaveLength(2)
+    const iconElm = await screen.findByTestId('AIOperation')
+    expect(iconElm).toBeVisible()
+    await userEvent.hover(iconElm)
+    expect(await screen.findByRole('tooltip', { hidden: true })).toContainHTML('AI Operations')
   })
 
 })

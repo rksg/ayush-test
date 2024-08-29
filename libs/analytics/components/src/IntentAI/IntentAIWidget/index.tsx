@@ -2,14 +2,15 @@ import { Row, Col }               from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { Loader, Card, ColorPill, NoDataIconOnly }  from '@acx-ui/components'
-import { intlFormats }                              from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI }      from '@acx-ui/icons'
-import { TenantLink, useSearchParams }              from '@acx-ui/react-router-dom'
-import { fixedEncodeURIComponent, type PathFilter } from '@acx-ui/utils'
+import { Loader, Card, ColorPill, NoDataIconOnly, Tooltip } from '@acx-ui/components'
+import { intlFormats }                                      from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI }              from '@acx-ui/icons'
+import { TenantLink, useSearchParams }                      from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent, type PathFilter }         from '@acx-ui/utils'
 
 import { aiFeatures }                                              from '../config'
 import { HighlightItem, IntentHighlight, useIntentHighlightQuery } from '../services'
+import { iconTooltips }                                            from '../Table'
 
 import * as UI from './styledComponents'
 
@@ -46,9 +47,26 @@ function HighlightCard (props: HighlightCardProps) {
   const encodedPath = fixedEncodeURIComponent(
     JSON.stringify({ feature: props.type })
   )
-  return <Card cardIcon={props.icon} title={title} className='highlight-card-title'>
-    <TenantLink to={`/analytics/intentAI?intentTableFilters=${encodedPath}`}>{content}</TenantLink>
-  </Card>
+  return (
+    <Card
+      cardIcon={
+        <Tooltip
+          placement='right'
+          title={iconTooltips[props.type]}
+          overlayInnerStyle={{ width: '345px' }}
+        >
+          <TenantLink to={`/analytics/intentAI?intentTableFilters=${encodedPath}`}>
+            {props.icon}
+          </TenantLink>
+        </Tooltip>
+      }
+      title={title}
+      className='highlight-card-title'>
+      <TenantLink to={`/analytics/intentAI?intentTableFilters=${encodedPath}`}>
+        {content}
+      </TenantLink>
+    </Card>
+  )
 }
 
 function useHighlightList (data: IntentHighlight | undefined) {
@@ -107,7 +125,7 @@ export function IntentAIWidget ({
     <Card title={title}>
       <UI.HighlightCardTitle />
       <UI.ContentWrapper>
-        <AutoSizer>
+        <AutoSizer key='intentAIWidget'>
           {({ width, height }) => (
             !hasData
               ? <div style={{ width, height }}>
@@ -122,17 +140,17 @@ export function IntentAIWidget ({
                 <p>{$t(secondParagraph)}</p>
                 <Row gutter={[12, 12]}>
                   {
-                    highlightList.map((detail, index) => <Col span={12} key={index} >
-                      <HighlightCard
-                        key={index}
-                        icon={detail.icon}
-                        title={detail.title}
-                        new={detail.new}
-                        active={detail.active}
-                        type={detail.type}
-                      />
-                    </Col>)
-
+                    highlightList.map((detail, index) =>
+                      <Col span={12} key={`intentAICardCol${index}`}>
+                        <HighlightCard
+                          key={`intentAICard${index}`}
+                          icon={detail.icon}
+                          title={detail.title}
+                          new={detail.new}
+                          active={detail.active}
+                          type={detail.type}
+                        />
+                      </Col>)
                   }
                 </Row>
               </div>
