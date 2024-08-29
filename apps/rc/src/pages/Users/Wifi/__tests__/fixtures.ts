@@ -163,6 +163,9 @@ export const GuestClients = {
         packetsFromClient: 353909,
         framesDropped: 0,
         totalTraffic: 502505233
+      },
+      radioStatus: {
+        type: 'a/n/ac/ax/be'
       }
     }
   ]
@@ -1050,4 +1053,21 @@ export const validationFailed = {
     url: '/wifiNetworks/cf5dc74b0c5948918718e4e0a800fb39/guestUsers',
     method: 'PATCH'
   }
+}
+
+export const nonRbacClientRadioType = {
+  data: [
+    {
+      clientMac: 'a0:02:a5:43:0e:e0',
+      radio: {
+        mode: 'a/n/ac/ax/be'
+      }
+    }
+  ],
+  subsequentQueries: [],
+  totalCount: 1,
+  fields: [
+    'clientMac',
+    'radio.mode'
+  ]
 }

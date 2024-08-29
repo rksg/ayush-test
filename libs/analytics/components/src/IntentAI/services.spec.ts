@@ -40,7 +40,7 @@ describe('Intent services', () => {
       {
         ...intentListResult.intents.data[0],
         aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        intent: 'Client Density vs Throughput for 5 GHz radio',
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > zone-1 (Venue)`,
@@ -495,7 +495,7 @@ describe('Intent services', () => {
 
       const expectedCommonResult = {
         aiFeature: 'AI-Driven RRM',
-        intent: 'Client Density vs. Throughput for 5 GHz radio',
+        intent: 'Client Density vs Throughput for 5 GHz radio',
         category: 'Wi-Fi Experience',
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`

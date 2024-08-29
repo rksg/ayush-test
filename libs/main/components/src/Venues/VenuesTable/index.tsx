@@ -26,10 +26,10 @@ import {
   TableQuery,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum }   from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, hasPermission, hasRoles } from '@acx-ui/user'
-import { transformToCityListOptions }                                        from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams }                      from '@acx-ui/react-router-dom'
+import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes }    from '@acx-ui/types'
+import { hasCrossVenuesPermission, filterByAccess, hasPermission } from '@acx-ui/user'
+import { transformToCityListOptions }                              from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,
@@ -259,7 +259,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission(),
+    visible: hasCrossVenuesPermission({ needGlobalPermission: true }),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -328,7 +328,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission() && [
+        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>

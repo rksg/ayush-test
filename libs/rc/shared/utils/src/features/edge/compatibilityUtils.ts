@@ -4,6 +4,7 @@ import { EdgeFeatureEnum }         from '../../models/EdgeEnum'
 export const isApRelatedEdgeFeature = (featureName: IncompatibilityFeatures): boolean => {
   switch(featureName) {
     case IncompatibilityFeatures.SD_LAN:
+    case IncompatibilityFeatures.TUNNEL_PROFILE:
       return true
     default:
       return false

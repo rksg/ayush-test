@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { Button, GridCol, GridRow, PageHeader }                                                                                                               from '@acx-ui/components'
 import { PolicyOperation, PolicyType, WifiOperatorConstant, WifiOperatorDetailContextType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                                                              from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                                                                                                     from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission }                                                                                                           from '@acx-ui/user'
 
 import WifiOperatorDetailContent from './WifiOperatorDetailContent'
 import WifiOperatorNetworkDetail from './WifiOperatorNetworkDetail'
@@ -36,17 +36,18 @@ export const WifiOperatorDetailView = () => {
             link: tablePath
           }
         ]}
-        extra={policyName !== WifiOperatorConstant.DefaultProfile ? filterByAccess([
-          <TenantLink to={getPolicyDetailsLink({
-            type: PolicyType.WIFI_OPERATOR,
-            oper: PolicyOperation.EDIT,
-            policyId: params.policyId as string
-          })}>
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button>
-          </TenantLink>
-        ]) : []}
+        extra={(hasCrossVenuesPermission() && policyName !== WifiOperatorConstant.DefaultProfile)?
+          filterByAccess([
+            <TenantLink to={getPolicyDetailsLink({
+              type: PolicyType.WIFI_OPERATOR,
+              oper: PolicyOperation.EDIT,
+              policyId: params.policyId as string
+            })}>
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            </TenantLink>
+          ]) : []}
       />
 
       <GridRow>

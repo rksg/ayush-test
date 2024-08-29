@@ -206,6 +206,22 @@ describe('hasCrossVenuesPermission', () => {
     })
     expect(hasCrossVenuesPermission()).toBe(true)
   })
+
+  it('check permissions for RA standalone', () => {
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
+    expect(hasCrossVenuesPermission()).toBe(true)
+  })
+
+  it('check permissions for needGlobalPermission', () => {
+    const profile = getUserProfile()
+    setUserProfile({
+      ...profile,
+      abacEnabled: true,
+      hasAllVenues: true,
+      isCustomRole: false
+    })
+    expect(hasCrossVenuesPermission({ needGlobalPermission: true })).toBe(true)
+  })
 })
 
 describe('filterByAccess', () => {
@@ -401,6 +417,31 @@ describe('AuthRoute', () => {
     expect(await screen.findByText('test page')).toBeVisible()
   })
 
+  xit('should go to no permissions page for global permission', async () => {
+    setRole(RolesEnum.ADMINISTRATOR, true, false, [], false)
+    render(
+      <Router>
+        <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByTestId('no-permissions')).toBeVisible()
+  })
+
+  it('should go to correct page for for global permission', async () => {
+    setRole(RolesEnum.ADMINISTRATOR, true, false, [], true)
+    render(
+      <Router>
+        <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+          <div>test page</div>
+        </AuthRoute>
+      </Router>
+
+    )
+    expect(await screen.findByText('test page')).toBeVisible()
+  })
 
   it('should go to correct page: custom role', async () => {
     setRole(RolesEnum.READ_ONLY, true, true, [SwitchScopes.UPDATE])
