@@ -98,7 +98,7 @@ export const states = {
   },
   [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to: {errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
@@ -110,7 +110,7 @@ export const states = {
   },
   [DisplayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.pausedReverted]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
@@ -174,7 +174,7 @@ export const failureCodes = {
   'no-ap-mesh-checker': defineMessage({ defaultMessage: 'The network has active Mesh APs, which are currently not supported.' }),
   'sz-version-and-zone-name-checker': defineMessage({ defaultMessage: 'Unsupported SmartZone version or restricted Zone configuration detected.' }),
   'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' }),
-  'channel-5g-is-auto': defineMessage({ defaultMessage: '	The 5GHz radio channel is set to Auto, preventing IntentAI from controlling channel configurations.' }),
+  'channel-5g-is-auto': defineMessage({ defaultMessage: 'The 5GHz radio channel is set to Auto, preventing IntentAI from controlling channel configurations.' }),
   'compare-tx-power-24g-with-min-other-bands': defineMessage({ defaultMessage: 'The minimum transmit (Tx) power of the 2.4GHz radio matches the power of either the 5GHz or 6GHz radio.' }),
   'band-balancing-enabled': defineMessage({ defaultMessage: 'Band Balancing is enabled on this network.' }),
   'channel-select-24g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 2.4Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
@@ -184,7 +184,7 @@ export const failureCodes = {
   'bg-scan-5g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 5Ghz radio.' }),
   'bg-scan-6g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 6Ghz radio.' }),
   'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 2.4Ghz radio.' }),
-  'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: '	Auto Cell Sizing is disabled for 5Ghz radio.' }),
+  'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 5Ghz radio.' }),
   'no-aps': defineMessage({ defaultMessage: 'No APs are detected in the network.' }),
   'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
   'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),

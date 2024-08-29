@@ -23,9 +23,6 @@ import {
   TransitionIntentItem } from './utils'
 
 type Metadata = {
-  error?: {
-    message?: string
-  }
   failures?: (keyof typeof failureCodes)[]
   scheduledAt?: string
   updatedAt?: string
@@ -51,10 +48,10 @@ const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Me
 
   const errMsg: string = metadata.failures?.map(failure => {
     return failureCodes[failure] ? $t(failureCodes[failure]) : failure
-  }).join('\n ') || ''
+  }).join('\n - ') || ''
 
   return $t(stateConfig.tooltip, {
-    errorMessage: errMsg,
+    errorMessage: `\n - ${errMsg}\n\n`,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
