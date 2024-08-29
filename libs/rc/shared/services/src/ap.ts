@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }                   from '@acx-ui/components'
+import { Filter }  from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -75,7 +75,8 @@ import {
   downloadFile,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  NewApGroupViewModelResponseType
+  NewApGroupViewModelResponseType,
+  SystemCommands
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -625,8 +626,17 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.factoryResetAp, params, apiCustomHeader)
-        return {
-          ...req
+        if (enableRbac) {
+          return {
+            ...req,
+            body: JSON.stringify({
+              type: SystemCommands.FACTORY_RESET
+            })
+          }
+        } else {
+          return {
+            ...req
+          }
         }
       }
     }),

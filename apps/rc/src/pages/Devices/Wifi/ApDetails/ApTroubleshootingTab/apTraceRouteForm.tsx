@@ -5,10 +5,10 @@ import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
-import { Button, Loader, Tooltip }                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
-import { useTraceRouteApMutation }                                     from '@acx-ui/rc/services'
-import { targetHostRegExp, WifiTroubleshootingMessages, useApContext } from '@acx-ui/rc/utils'
+import { Button, Loader, Tooltip }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { useTraceRouteApMutation }                                                        from '@acx-ui/rc/services'
+import { targetHostRegExp, WifiTroubleshootingMessages, useApContext, DiagnosisCommands } from '@acx-ui/rc/utils'
 
 export function ApTraceRouteForm () {
   const { $t } = useIntl()
@@ -21,7 +21,7 @@ export function ApTraceRouteForm () {
     try {
       const payload = {
         targetHost: form.getFieldValue('name'),
-        action: 'traceRoute'
+        type: DiagnosisCommands.TRACE_ROUTE
       }
       const traceRouteApResult =
         await traceRouteAp({
