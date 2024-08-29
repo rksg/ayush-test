@@ -3,22 +3,35 @@ import { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, Tooltip, showActionModal }                          from '@acx-ui/components'
-import { useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
-import { FirmwareType, FirmwareVenuePerApModel, useTableQuery }                         from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                   from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                from '@acx-ui/user'
-import { getIntl, noDataDisplay }                                                       from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import {
+  useGetVenueApModelFirmwareListQuery,
+  useSkipVenueSchedulesPerApModelMutation
+} from '@acx-ui/rc/services'
+import { FirmwareType, FirmwareVenuePerApModel, useTableQuery } from '@acx-ui/rc/utils'
+import { RolesEnum, WifiScopes }                                from '@acx-ui/types'
+import {
+  filterByAccess,
+  hasPermission,
+  hasRoles
+}                                                               from '@acx-ui/user'
+import { getIntl, noDataDisplay } from '@acx-ui/utils'
 
 import { isApFirmwareUpToDate }                                                                       from '../..'
 import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
 import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
 import * as UI                                                                                        from '../../styledComponents'
 
-import { ChangeSchedulePerApModelDialog }                                                                                                          from './ChangeScheduleDialog'
-import { DowngradePerApModelDialog }                                                                                                               from './DowngradeDialog'
-import { UpdateNowPerApModelDialog }                                                                                                               from './UpdateNowDialog'
-import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences, useDowngradePerApModel } from './venueFirmwareListPerApModelUtils'
+import { ChangeSchedulePerApModelDialog } from './ChangeScheduleDialog'
+import { DowngradePerApModelDialog }      from './DowngradeDialog'
+import { UpdateNowPerApModelDialog }      from './UpdateNowDialog'
+import {
+  renderCurrentFirmwaresColumn,
+  useChangeScheduleVisiblePerApModel,
+  useUpdateNowPerApModel,
+  useUpgradePerferences,
+  useDowngradePerApModel
+} from './venueFirmwareListPerApModelUtils'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
@@ -120,8 +133,9 @@ export function VenueFirmwareListPerApModel () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         // eslint-disable-next-line max-len
-        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'checkbox', selectedRowKeys }}
-        actions={hasPermission({ scopes: [WifiScopes.UPDATE] }) ? [{
+        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+          { type: 'checkbox', selectedRowKeys }}
+        actions={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setPreferencesModalVisible(true)
         }] : []}
