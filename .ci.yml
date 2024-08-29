@@ -6,7 +6,7 @@ build:
     docker_buildkit: true
     images:
       - image: acx-ui
-        docker_image_name: gcr.io/kumo-scratch/services/acx-ui
+        docker_image_name: acx-ui
         docker_image_tag: SNAPSHOT
         dockerfile: Dockerfile.ui
         sonar:

@@ -148,6 +148,7 @@ describe('Edit SD-LAN service', () => {
   })
 
   it('should correctly edit service', async () => {
+    const originData = mockedSdLanDataListP2[0]
     const mockedDCData = {
       ...mockedDmzData,
       isGuestTunnelEnabled: false
@@ -184,9 +185,9 @@ describe('Edit SD-LAN service', () => {
         networkIds: mockedDCData.activatedNetworks.map(network => network.id),
         tunnelProfileId: mockedDCData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
-        guestEdgeClusterId: mockedDCData.guestEdgeClusterId,
-        guestTunnelProfileId: mockedDCData.guestTunnelProfileId,
-        guestNetworkIds: mockedDCData.activatedGuestNetworks.map(network => network.id!)
+        guestEdgeClusterId: originData.guestEdgeClusterId,
+        guestTunnelProfileId: originData.guestTunnelProfileId,
+        guestNetworkIds: originData.guestNetworkIds
       })
     })
     expect(mockedEditFn).toBeCalledTimes(1)
