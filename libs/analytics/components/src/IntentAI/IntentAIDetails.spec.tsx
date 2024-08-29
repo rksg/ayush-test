@@ -1,8 +1,9 @@
 import { Provider, recommendationUrl }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM } from './AIDrivenRRM/__tests__/fixtures'
-import { IntentAIDetails }  from './IntentAIDetails'
+import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentAIDetails }                      from './IntentAIDetails'
 
 jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
   kpis: [],
@@ -38,13 +39,9 @@ describe('IntentAIDetails', () => {
       unmount()
     }
   })
-  it('should render for AIOperations', async () => {
-    mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
-      data: { intent: mockedIntentCRRM }
-    })
-    const codes = ['i-zonefirmware-upgrade']
 
-    for (const code of codes) {
+  describe('should render for AIOperations', () => {
+    const renderAIOperations = async (code: string) => {
       const { unmount } = render(<IntentAIDetails />, {
         route: { params: { code } },
         wrapper: Provider
@@ -52,5 +49,11 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
       unmount()
     }
+    it('should render for AIOperations', async () => {
+      mockGraphqlQuery(recommendationUrl, 'IntentDetails', {
+        data: { intent: mockedIZoneFirmwareUpgrade } })
+      await renderAIOperations(mockedIZoneFirmwareUpgrade.code)
+    })
+    // TODO: add test for other AIOperations
   })
 })
