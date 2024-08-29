@@ -174,14 +174,14 @@ export const ClientSteering = () => {
 
   const setDataToForm = (data: ApStickyClientSteering ) => {
     form.setFieldValue(enabledFieldName, data.enabled)
-    form.setFieldValue(neighborApPercentageThresholdFieldName, data.snrThreshold)
-    form.setFieldValue(snrThresholdFieldName, data.neighborApPercentageThreshold)
+    form.setFieldValue(snrThresholdFieldName, data.snrThreshold)
+    form.setFieldValue(neighborApPercentageThresholdFieldName, data.neighborApPercentageThreshold)
   }
 
   const turnOffStickyClientSteering = () => {
     form.setFieldValue(enabledFieldName, false)
-    form.setFieldValue(neighborApPercentageThresholdFieldName, undefined)
     form.setFieldValue(snrThresholdFieldName, undefined)
+    form.setFieldValue(neighborApPercentageThresholdFieldName, undefined)
   }
 
 
