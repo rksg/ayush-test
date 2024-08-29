@@ -242,7 +242,8 @@ export function useSwitchFirmwareUtils () {
     return ''
   }
   const getSwitchScheduleTplV1002 = (s: SwitchFirmwareV1002): string => {
-    return s.switchNextSchedule?.version || ''
+    const version = s.switchNextSchedule?.version || ''
+    return _.isString(version) ? parseSwitchVersion(version) : version
   }
 
   const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {

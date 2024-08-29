@@ -902,7 +902,8 @@ export function StackForm () {
           <Loader
             states={[
               {
-                isLoading: isVenuesListLoading || isSwitchDataLoading || isSwitchDetailLoading
+                isLoading: isVenuesListLoading || isSwitchDataLoading
+                  || isSwitchDetailLoading || isVenuesListV1002Loading
               }
             ]}
           >

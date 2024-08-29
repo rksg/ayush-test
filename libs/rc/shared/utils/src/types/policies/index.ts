@@ -17,6 +17,7 @@ export * from './workflow'
 export * from './workflowAction'
 export * from './certificateTemplate'
 export * from './edgeQosProfile'
+export * from './softGre'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'

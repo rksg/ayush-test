@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload } from '@acx-ui/analytics/utils'
-import { dataApi }          from '@acx-ui/store'
+import { getSelectedNodePath } from '@acx-ui/analytics/utils'
+import { dataApi }             from '@acx-ui/store'
 
 import { ImpactedClientsResult, PieChartResult, RequestPayload, WidgetType } from './config'
 
@@ -69,7 +69,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
           }`,
           variables: {
             ...payload,
-            ...getFilterPayload(payload),
+            path: getSelectedNodePath(payload.filter),
             enableSwitchFirmwareFilter: true
           }
         })
@@ -100,7 +100,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
           }`,
           variables: {
             ...payload,
-            ...getFilterPayload(payload),
+            path: getSelectedNodePath(payload.filter),
             enableSwitchFirmwareFilter: true
           }
         })
@@ -148,7 +148,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
           }`,
           variables: {
             ...payload,
-            ...getFilterPayload(payload),
+            path: getSelectedNodePath(payload.filter),
             metric: wiredDevicesMetricMapping[payload.type]
           }
         })

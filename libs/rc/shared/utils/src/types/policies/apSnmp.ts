@@ -356,7 +356,7 @@ export const asyncConvertRbacSnmpPolicyToOldFormat =
   async (policies: Promise<RbacApSnmpPolicy>[], rbacApSnmpViewModel: RbacApSnmpViewModelData[]) : Promise<ApSnmpPolicy[]> => {
     let result: ApSnmpPolicy[] = []
     const all = await Promise.all(policies)
-    all.sort().forEach((policy)=> {
+    all.sort().filter(policy => policy !== undefined).forEach((policy)=> {
       const profile = rbacApSnmpViewModel.find((profile) => profile.id === policy.id)
       const [v2Agents, v3Agents] = convertRbacSnmpAgentToOldFormat(policy)
       let formattedData = {

@@ -6,29 +6,30 @@ import {
   GridRow,
   PageHeader,
   RadioCard,
-  StepsFormLegacy,
-  RadioCardCategory
+  RadioCardCategory,
+  StepsFormLegacy
 } from '@acx-ui/components'
 import {
   Features,
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeReady } from '@acx-ui/rc/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
+  PolicyOperation,
   PolicyType,
+  ServicePolicyCardData,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping,
-  ServicePolicyCardData,
+  hasCloudpathAccess,
   isServicePolicyCardEnabled,
-  hasCloudpathAccess
+  policyTypeDescMapping,
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                  from '@acx-ui/types'
@@ -46,6 +47,7 @@ export default function SelectPolicyForm () {
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,
@@ -68,6 +70,7 @@ export default function SelectPolicyForm () {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -134,6 +137,16 @@ export default function SelectPolicyForm () {
 
   if (isWorkflowEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.WORKFLOW, categories: [RadioCardCategory.WIFI] })
+  }
+  
+  if (isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
+    sets.push({ type: PolicyType.SOFTGRE, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if (isEdgeQosEnabled) {
+    sets.push({
+      type: PolicyType.QOS_BANDWIDTH, categories: [RadioCardCategory.EDGE]
+    })
   }
 
   return (

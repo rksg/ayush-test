@@ -52,7 +52,7 @@ export const mockedFirmwareVenuesPerApModel = {
       name: 'venueCCC-oneApOutdated',
       isApFirmwareUpToDate: false,
       currentApFirmwares: [
-        { apModel: 'R350', firmware: '7.0.0.104.1220' },
+        { apModel: 'R350', firmware: '7.0.0.104.1242' },
         { apModel: 'R550', firmware: '6.2.0.103.486' }
       ],
       lastApFirmwareUpdate: '2022-01-12T14:00:01.099-08:00'

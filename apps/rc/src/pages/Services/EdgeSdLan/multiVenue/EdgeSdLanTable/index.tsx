@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { Row, Space } from 'antd'
 import { find, uniq } from 'lodash'
 import { useIntl }    from 'react-intl'
@@ -7,11 +9,11 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Tooltip,
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight }      from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                                                      from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip, EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useDeleteEdgeSdLanMutation,
@@ -30,7 +32,8 @@ import {
   useTableQuery,
   FILTER,
   SEARCH,
-  EdgeMvSdLanViewData
+  EdgeMvSdLanViewData,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -40,6 +43,8 @@ import {
 } from '@acx-ui/react-router-dom'
 import { EdgeScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
+
+import { CompatibilityCheck } from './CompatibilityCheck'
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -59,6 +64,8 @@ const clusterOptionsDefaultPayload = {
 }
 
 const EdgeMvSdLanTable = () => {
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
@@ -93,6 +100,13 @@ const EdgeMvSdLanTable = () => {
     },
     pagination: { settingsId }
   })
+
+  const currentServiceIds = useMemo(
+    () => tableQuery.data?.data?.map(i => i.id!) ?? [],
+    [tableQuery.data?.data])
+  const skipFetchCompatibilities = !isEdgeCompatibilityEnabled || currentServiceIds.length === 0
+  // eslint-disable-next-line max-len
+  const sdLanCompatibilityData = useEdgeSdLanCompatibilityData(currentServiceIds, skipFetchCompatibilities)
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestEdgeClusterId?.length) {
@@ -143,7 +157,9 @@ const EdgeMvSdLanTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row) => {
-        return (
+        const serviceId = row.id
+
+        return (<Space>
           <TenantLink
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
@@ -153,6 +169,11 @@ const EdgeMvSdLanTable = () => {
           >
             {row.name}
           </TenantLink>
+          {isEdgeCompatibilityEnabled && <CompatibilityCheck
+            serviceId={serviceId!}
+            sdLanCompatibilityData={sdLanCompatibilityData}
+          />}
+        </Space>
         )
       }
     },
@@ -196,15 +217,13 @@ const EdgeMvSdLanTable = () => {
         const venuesCount = venueIds.length
         const venueNames = venueIds.map(id => {
           const name = find(venueOptions, { key: id })?.value
-          return name ? <span key={id}>{name}</span> : undefined
+          return name
         }).filter(i => i)
 
         return venuesCount > 0
-          ? <Tooltip dottedUnderline
-            title={<Space direction='vertical'>
-              {venueNames}
-            </Space>}
-            children={<span data-testid={`venue-names-${row.id}`}>{venuesCount}</span>}
+          ? <CountAndNamesTooltip data={{
+            count: venuesCount, names: venueNames.sort(defaultSort) as string[]
+          }}
           />
           : venuesCount
       }

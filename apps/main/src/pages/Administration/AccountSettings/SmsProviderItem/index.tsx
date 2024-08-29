@@ -25,7 +25,7 @@ import {
 import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
 import { store }                                                        from '@acx-ui/store'
 import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles }                                                     from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasRoles }                           from '@acx-ui/user'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
@@ -74,7 +74,8 @@ const SmsProviderItem = () => {
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
-  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = hasCrossVenuesPermission()
+    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const FREE_SMS_POOL = 100
 
@@ -277,9 +278,14 @@ const SmsProviderItem = () => {
         <div>
           <Form.Item
             colon={false}
-            label={$t({ defaultMessage: 'Auth Token' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.authToken}</h3>
+            label={$t({ defaultMessage: 'Auth Token' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.authToken}
+            style={{ padding: '0px' }}
+          />
         </div>
         <div>
           <Form.Item

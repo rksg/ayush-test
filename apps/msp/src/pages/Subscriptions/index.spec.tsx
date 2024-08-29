@@ -4,7 +4,7 @@ import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                       from '@acx-ui/msp/utils'
-import { LicenseUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, LicenseUrlsInfo }                           from '@acx-ui/rc/utils'
 import { Provider }                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
@@ -50,6 +50,19 @@ const entitlement =
       quantity: 60,
       sku: 'CLD-MW00-1001',
       status: 'EXPIRED'
+    },
+    {
+      name: 'APSW',
+      deviceSubType: 'MSP_APSW',
+      deviceType: 'MSP_APSW',
+      effectiveDate: moment().add(30, 'days'),
+      expirationDate: moment().add(120, 'days'),
+      id: '373419122-1',
+      isTrial: false,
+      lastNotificationDate: null,
+      quantity: 60,
+      sku: 'CLD-MW00-1001',
+      status: 'FUTURE'
     }
   ]
 
@@ -102,6 +115,25 @@ const entitlementSummary =
   ]
 }
 
+const fakeTenantDetails = {
+  id: 'ee87b5336d5d483faeda5b6aa2cbed6f',
+  createdDate: '2023-01-31T04:19:00.241+00:00',
+  updatedDate: '2023-02-15T02:34:21.877+00:00',
+  entitlementId: '140360222',
+  maintenanceState: false,
+  name: 'Dog Company 1551',
+  externalId: '0012h00000NrlYAAAZ',
+  upgradeGroup: 'production',
+  tenantMFA: {
+    mfaStatus: 'DISABLED',
+    recoveryCodes: '["825910","333815","825720","919107","836842"]' },
+  preferences: '{"global":{"mapRegion":"UA"}}',
+  ruckusUser: false,
+  isActivated: true,
+  status: 'active',
+  tenantType: 'REC'
+}
+
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -137,6 +169,10 @@ describe('Subscriptions', () => {
       rest.post(
         LicenseUrlsInfo.getEntitlementSummary.url,
         (req, res, ctx) => res(ctx.json(summary))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getTenantDetails.url,
+        (req, res, ctx) => res(ctx.json(fakeTenantDetails))
       )
     )
     params = {
@@ -184,6 +220,24 @@ describe('Subscriptions', () => {
   })
   it('should render correctly rbac feature flag on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ENTITLEMENT_RBAC_API)
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params, path: '/:tenantId/mspLicenses' }
+      })
+
+    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
+    fireEvent.click(generateUsageButton)
+    const licenseManagementButton =
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
+    fireEvent.click(licenseManagementButton)
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    fireEvent.click(refreshButton)
+  })
+  it('should render correctly virtual SmartEdge feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
     render(
       <Provider>
         <Subscriptions />

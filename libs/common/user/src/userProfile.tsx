@@ -16,6 +16,10 @@ import {
   CustomRoleType
 } from './types'
 
+type Permission = {
+  needGlobalPermission: boolean
+}
+
 type Profile = {
   profile: UserProfile
   allowedOperations: string []
@@ -23,7 +27,8 @@ type Profile = {
   betaEnabled?: boolean
   abacEnabled?: boolean
   scopes?: ScopeKeys
-  isCustomRole?: boolean
+  isCustomRole?: boolean,
+  hasAllVenues?: boolean
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -54,6 +59,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.abacEnabled = profile.abacEnabled
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
+  userProfile.hasAllVenues = profile?.hasAllVenues
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
@@ -187,12 +193,42 @@ export function isCustomAdmin () {
   return false
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function hasCrossVenuesPermission (props?: Permission) {
+  if (get('IS_MLISA_SA')) {
+    return true
+  }
+  /* For testing purposes */
+  // const { abacEnabled, hasAllVenues, isCustomRole } = getUserProfile()
+  // if(!abacEnabled) return true
+  // if(props?.needGlobalPermission) {
+  //   return !isCustomRole && hasAllVenues && hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  // } else {
+  //   return hasAllVenues
+  // }
+
+  /* Comment out the following code for testing purposes. */
+  if(props?.needGlobalPermission) {
+    return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR])
+  }
+  return true
+}
+
 export function AuthRoute (props: {
-    scopes: ScopeKeys,
-    children: ReactElement
+    scopes?: ScopeKeys,
+    children: ReactElement,
+    requireCrossVenuesPermission?: boolean | Permission
   }) {
-  const { scopes, children } = props
-  return !hasScope(scopes) ? <TenantNavigate replace to='/no-permissions' /> : children
+  const { scopes = [], children, requireCrossVenuesPermission } = props
+  if(typeof requireCrossVenuesPermission === 'object') {
+    return hasCrossVenuesPermission(requireCrossVenuesPermission)
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
+  if(requireCrossVenuesPermission) {
+    return hasScope(scopes) && hasCrossVenuesPermission()
+      ? children : <TenantNavigate replace to='/no-permissions' />
+  }
+  return hasScope(scopes) ? children : <TenantNavigate replace to='/no-permissions' />
 }
 
 

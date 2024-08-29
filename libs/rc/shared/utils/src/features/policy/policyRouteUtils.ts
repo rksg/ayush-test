@@ -62,7 +62,8 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
   [PolicyType.CERTIFICATE]: 'certificate',
-  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth'
+  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth',
+  [PolicyType.SOFTGRE]: 'softGre'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

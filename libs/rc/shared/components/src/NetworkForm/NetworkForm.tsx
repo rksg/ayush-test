@@ -11,11 +11,9 @@ import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
   useDeleteNetworkVenuesMutation,
-  useGetNetworkQuery,
   useUpdateNetworkMutation,
   useUpdateNetworkVenuesMutation,
   useAddNetworkTemplateMutation,
-  useGetNetworkTemplateQuery,
   useUpdateNetworkTemplateMutation,
   useAddNetworkVenueTemplatesMutation,
   useActivateWifiOperatorOnWifiNetworkMutation,
@@ -34,7 +32,10 @@ import {
   useAddNetworkVenueTemplateMutation,
   useDeleteNetworkVenueMutation,
   useDeleteNetworkVenueTemplateMutation,
-  useGetNetworkDeepQuery,
+  useActivatePortalMutation,
+  useActivatePortalTemplateMutation,
+  useGetEnhancedPortalProfileListQuery,
+  useGetEnhancedPortalTemplateListQuery,
   useUpdateNetworkVenueMutation
 } from '@acx-ui/rc/services'
 import {
@@ -59,6 +60,7 @@ import {
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
+import { useGetNetwork }                from '../NetworkDetails/services'
 import { useIsEdgeFeatureReady }        from '../useEdgeActions'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
@@ -191,6 +193,7 @@ export function NetworkForm (props:{
 
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const activateDpskPool = useDpskServiceActivation()
+  const activatePortal = useRbacProfileServiceActivation()
   const activateMacRegistrationPool = useMacRegistrationPoolActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
@@ -218,25 +221,28 @@ export function NetworkForm (props:{
     = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
-    if(!editMode&&!saveState.enableAccountingService){
-      delete saveState.accountingRadius
-    }
+    updateSaveState((preState) => {
+      const updateSate = { ...preState }
+      if(!editMode&&!updateSate.enableAccountingService){
+        delete updateSate.accountingRadius
+      }
 
-    // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
-    if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
-        && !saveData.isCloudpathEnabled) {
-      delete saveState.authRadius
-      delete saveState.authRadiusId
-      delete saveData?.authRadius
-      delete saveData?.authRadiusId
-    }
+      // dpsk wpa3/wpa2 mixed mode doesn't support radius server option
+      if (saveData.dpskWlanSecurity === WlanSecurityEnum.WPA23Mixed
+          && !saveData.isCloudpathEnabled) {
+        delete updateSate.authRadius
+        delete updateSate.authRadiusId
+        delete saveData?.authRadius
+        delete saveData?.authRadiusId
+      }
 
-    const newSavedata = { ...saveState, ...saveData }
-    newSavedata.wlan = { ...saveState?.wlan, ...saveData.wlan }
-    updateSaveState({ ...saveState, ...newSavedata })
+      const newSavedata = { ...updateSate, ...saveData }
+      newSavedata.wlan = { ...updateSate?.wlan, ...saveData.wlan }
+      return { ...saveState, ...newSavedata }
+    })
   }
 
-  const { data } = useGetInstance(editMode)
+  const { data } = useGetNetwork()
   const networkVxLanTunnelProfileInfo = useNetworkVxLanTunnelProfileInfo(data ?? null)
   const { certificateTemplateId } = useGetCertificateTemplateNetworkBindingQuery(
     { params: { networkId: data?.id } },
@@ -250,6 +256,24 @@ export function NetworkForm (props:{
     // eslint-disable-next-line max-len
     skip: !enableServiceRbac || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.DPSK),
     extraParams: { networkId: data?.id }
+  })
+
+  const { data: portalService } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEnhancedPortalProfileListQuery,
+    useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
+    // eslint-disable-next-line max-len
+    skip: !isUseWifiRbacApi || !((editMode || cloneMode) && saveState.type === NetworkTypeEnum.CAPTIVEPORTAL &&
+    saveState.guestPortal?.guestNetworkType &&
+    ![GuestNetworkTypeEnum.WISPr, GuestNetworkTypeEnum.Cloudpath]
+      .includes(saveState.guestPortal?.guestNetworkType)),
+    payload: {
+      fields: ['id', 'name'],
+      filters: {
+        wifiNetworkIds: [data?.id]
+      },
+      pageSize: 1
+    },
+    enableRbac: isUseWifiRbacApi
   })
 
   // Config Template related states
@@ -271,23 +295,37 @@ export function NetworkForm (props:{
   }, [saveState])
 
   useEffect(() => {
-    if(data){
-      const resolvedData = deriveFieldsFromServerData(data)
+    if (!data) return
 
-      if (cloneMode) {
-        formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
-      } else if (editMode) {
-        form?.resetFields()
-        form?.setFieldsValue(resolvedData)
-      }
-      updateSaveData({
-        ...resolvedData,
-        certificateTemplateId,
-        ...(dpskService && { dpskServiceProfileId: dpskService.id })
-      })
+    let resolvedData = deriveFieldsFromServerData(data)
+
+    if (cloneMode) {
+      formRef.current?.resetFields()
+      formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+    } else if (editMode) {
+      form?.resetFields()
+      form?.setFieldsValue(resolvedData)
     }
-  }, [data, certificateTemplateId, dpskService])
+
+    if (vlanPoolId) {
+      resolvedData = merge({}, resolvedData,
+        {
+          wlan: {
+            advancedCustomization: {
+              vlanPool: { id: vlanPoolId, name: '', vlanMembers: [] }
+            }
+          }
+        }
+      )
+    }
+
+    updateSaveData({
+      ...resolvedData,
+      certificateTemplateId,
+      ...(dpskService && { dpskServiceProfileId: dpskService.id }),
+      ...(portalService?.data?.[0]?.id && { portalServiceProfileId: portalService.data[0].id })
+    })
+  }, [data, certificateTemplateId, dpskService, portalService, vlanPoolId])
 
   useEffect(() => {
     if (!wifiCallingIds || wifiCallingIds.length === 0) return
@@ -679,7 +717,8 @@ export function NetworkForm (props:{
           'hotspot20Settings.originalOperator',
           'hotspot20Settings.identityProviders',
           'hotspot20Settings.originalProviders',
-          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
+          ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
+          ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
         ]))
     return payload
   }
@@ -690,9 +729,14 @@ export function NetworkForm (props:{
       // eslint-disable-next-line max-len
       const networkResponse = await addNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       const networkId = networkResponse?.response?.id
+      if (isUseWifiRbacApi) {
+        await activatePortal(networkId, formData.portalServiceProfileId)
+      }
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
-      await updateRadiusServer(saveState, data, networkId)
+      if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
+        await updateRadiusServer(saveState, data, networkId)
+      }
       await updateWifiCallingActivation(networkId, saveState)
       await updateAccessControl(saveState, data)
       // eslint-disable-next-line max-len
@@ -766,7 +810,8 @@ export function NetworkForm (props:{
             'hotspot20Settings.wifiOperator',
             'hotspot20Settings.originalOperator',
             'hotspot20Settings.identityProviders',
-            'hotspot20Settings.originalProviders'
+            'hotspot20Settings.originalProviders',
+            ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
       }else{
@@ -778,7 +823,8 @@ export function NetworkForm (props:{
             'isOweMaster',
             'owePairNetworkId',
             'certificateTemplateId',
-            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : []
+            ...(enableServiceRbac) ? ['dpskServiceId', 'macRegistrationPoolId'] : [],
+            ...(isUseWifiRbacApi) ? ['portalServiceProfileId'] : []
           ]
         )
       }
@@ -791,12 +837,20 @@ export function NetworkForm (props:{
       const payload = updateClientIsolationAllowlist(saveContextRef.current as NetworkSaveData)
       await updateNetworkInstance({ params, payload, enableRbac: resolvedRbacEnabled }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
+      if (isUseWifiRbacApi) {
+        await activatePortal(payload.id, formData.portalServiceProfileId)
+      }
       if (enableServiceRbac) {
         await activateDpskPool(formData.dpskServiceProfileId, payload.id)
         await activateMacRegistrationPool(formData.wlan?.macRegistrationListId, payload.id)
       }
       await updateHotspot20NetworkActivations(formData)
-      await updateRadiusServer(formData, data, payload.id)
+      if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
+        // HS 20 Network:
+        // The Radius service is binding on the Identity provider profile
+        // So it doesn't need to do the network and radius service binding
+        await updateRadiusServer(formData, data, payload.id)
+      }
       await updateWifiCallingActivation(payload.id, formData)
 
       // eslint-disable-next-line max-len
@@ -1055,30 +1109,6 @@ function useUpdateInstance () {
   return isTemplate ? updateNetworkTemplate : updateNetwork
 }
 
-function useGetInstance (isEdit: boolean) {
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const networkResult = useGetNetworkQuery({
-    params,
-    enableRbac: isUseWifiRbacApi
-  }, { skip: isTemplate || isUseWifiRbacApi })
-
-
-  const rbacNetworkResult = useGetNetworkDeepQuery({
-    params,
-    enableRbac: isUseWifiRbacApi
-  }, { skip: isTemplate || !isUseWifiRbacApi })
-
-  const networkTemplateResult = useGetNetworkTemplateQuery({
-    params,
-    enableRbac: isConfigTemplateRbacEnabled
-  }, { skip: !isEdit || !isTemplate })
-
-  return isTemplate ? networkTemplateResult : (isUseWifiRbacApi? rbacNetworkResult : networkResult)
-}
-
 function useCertificateTemplateActivation () {
   const [activate] = useActivateCertificateTemplateMutation()
   const activateCertificateTemplate =
@@ -1110,6 +1140,19 @@ function useDpskServiceActivation () {
   return async (dpskServiceId?: string, networkId?: string) => {
     if (dpskServiceId && networkId) {
       return await activate({ params: { networkId, dpskServiceId } }).unwrap()
+    }
+    return null
+  }
+}
+
+function useRbacProfileServiceActivation () {
+  const [activate] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivatePortalMutation,
+    useTemplateMutationFn: useActivatePortalTemplateMutation
+  })
+  return async (networkId?: string, serviceId?: string) => {
+    if (networkId && serviceId) {
+      return await activate({ params: { networkId, serviceId } }).unwrap()
     }
     return null
   }

@@ -16,7 +16,7 @@ import {
 import { SwitchProfileModel, ProfileTypeEnum, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                     from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                             from '@acx-ui/user'
+import { hasCrossVenuesPermission, filterByAccess, hasPermission }   from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -129,8 +129,8 @@ export function ProfilesTab () {
         onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox' }}
-        actions={filterByAccess([{
+        rowSelection={hasCrossVenuesPermission() && isSelectionVisible && { type: 'checkbox' }}
+        actions={hasCrossVenuesPermission() ? filterByAccess([{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
           scopeKey: [SwitchScopes.CREATE],
           onClick: () => navigate(`${linkToProfiles.pathname}/add`)
@@ -141,7 +141,7 @@ export function ProfilesTab () {
           onClick: () => {
             navigate('cli/add', { replace: false })
           }
-        }])}
+        }]) : []}
       />
     </Loader></>
   )

@@ -88,7 +88,6 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
             }
           ]}
           noStyle
-          initialValue={null}
         >
           <Select
             style={{ width: '200px' }}
