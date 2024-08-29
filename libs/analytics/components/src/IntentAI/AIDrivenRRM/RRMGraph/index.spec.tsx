@@ -2,7 +2,7 @@ import userEvent    from '@testing-library/user-event'
 import EChartsReact from 'echarts-for-react'
 
 import { GraphProps }                       from '@acx-ui/components'
-import { Provider, recommendationUrl }      from '@acx-ui/store'
+import { intentAIUrl, Provider }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
@@ -30,7 +30,7 @@ jest.mock('./DownloadRRMComparison', () => ({
 
 describe('CloudRRM', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
   })

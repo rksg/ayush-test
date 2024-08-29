@@ -23,8 +23,7 @@ export function Summary (
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <Form.Item label={$t({ defaultMessage: 'Projected interfering links reduction' })}>
-        {/* TODO: take dataEndTime from intent.metadata.dataEndTime */}
-        {isDataRetained(intent.dataEndTime)
+        {isDataRetained(intent.metadata.dataEndTime)
           ? <IntentAIRRMGraph
             details={intent}
             crrmData={crrmData}

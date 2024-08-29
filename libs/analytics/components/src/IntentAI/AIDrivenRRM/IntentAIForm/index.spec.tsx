@@ -4,7 +4,7 @@ import { message } from 'antd'
 import moment      from 'moment-timezone'
 
 import { get }                                                                                      from '@acx-ui/config'
-import { recommendationUrl, Provider, intentAIUrl, recommendationApi, store }                       from '@acx-ui/store'
+import { Provider, intentAIUrl, store, intentAIApi }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { useIntentContext }                   from '../../IntentContext'
@@ -52,13 +52,13 @@ describe('IntentAIForm', () => {
   window.ResizeObserver = ResizeObserver
 
   beforeEach(() => {
-    store.dispatch(recommendationApi.util.resetApiState())
+    store.dispatch(intentAIApi.util.resetApiState())
 
     moment.tz.setDefault('Asia/Singapore')
     const now = +new Date('2024-08-08T12:00:00.000Z')
     jest.spyOn(Date, 'now').mockReturnValue(now)
 
-    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
     mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
@@ -83,7 +83,11 @@ describe('IntentAIForm', () => {
   })
 
   async function renderAndStepsThruForm () {
-    const params = { recommendationId: mockedIntentCRRM.id, code: mockedIntentCRRM.code }
+    const params = {
+      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+      code: mockedIntentCRRM.code
+    }
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
