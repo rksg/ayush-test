@@ -33,9 +33,13 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { EdgeScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { EdgeScopes, RolesEnum } from '@acx-ui/types'
+import {
+  filterByAccess,
+  hasPermission,
+  hasRoles
+} from '@acx-ui/user'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import {
   compareVersions,
@@ -290,6 +294,9 @@ export function VenueFirmwareList () {
     scopes: [EdgeScopes.UPDATE]
   })
 
+  const isPreferencesVisible
+  = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   return (
     <Loader states={[
       { isLoading: isVenueFirmwareListLoading, isFetching: isVenueFirmwareListLoading }
@@ -300,16 +307,15 @@ export function VenueFirmwareList () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
-        actions={filterByAccess([
-          ...(
-            isScheduleUpdateReady ? [{
-              scopeKey: [EdgeScopes.UPDATE],
-              label: $t({ defaultMessage: 'Preferences' }),
-              onClick: () => setPreferenceModalVisible(true)
-            }]
-              : []
-          )
-        ])}
+        actions={
+          isPreferencesVisible && isScheduleUpdateReady ? [{
+            label: $t({ defaultMessage: 'Preferences' }),
+            onClick: () => setPreferenceModalVisible(true)
+          }]
+            : []
+
+        }
+
       />
       <UpdateNowDialog
         visible={updateModalVisible}
