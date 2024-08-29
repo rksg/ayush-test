@@ -531,13 +531,14 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
+    refreshWiredSummary: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
       minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 80,
+      initialThreshold: 90,
       apiMetric: 'switchCpuUtilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
@@ -577,6 +578,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Uplink Port Utilization Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
+    refreshWiredSummary: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
       minGranularity: 'PT15M'
@@ -653,6 +655,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'MC Traffic' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
+    refreshWiredSummary: true,
     timeseries: {
       apiMetric: 'switchPortStormCountAndPortCount',
       minGranularity: 'PT15M'
@@ -755,9 +758,6 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
       kpis: [
         'switchPortUtilization',
         'switchUplinkPortUtilization'
-        // TODO: revisit these kpis: https://jira.ruckuswireless.com/browse/RSA-6826
-        // 'switchInterfaceAnomalies'
-
       ]
     },
     infrastructure: {
@@ -772,6 +772,7 @@ export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
     }
   }
   if (is10010eKPIsEnabled) {
+    kpis.performance.kpis.push('switchInterfaceAnomalies')
     kpis.performance.kpis.push('switchStormControl')
     kpis.connection.kpis.push('switchDhcp')
   }

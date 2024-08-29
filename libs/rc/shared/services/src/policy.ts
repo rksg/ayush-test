@@ -13,7 +13,7 @@ import {
   transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
-  WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
+  AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
@@ -53,11 +53,6 @@ import {
   downloadCertExtension,
   CertificateAcceptType,
   VlanPoolRbacUrls,
-  VLANPoolViewModelRbacType,
-  Venue,
-  VenueApGroupRbacType,
-  VLANPoolNetworkType,
-  VenueAPGroup,
   RbacApSnmpPolicy,
   ApSnmpRbacUrls,
   RbacApSnmpViewModelData,
@@ -78,9 +73,9 @@ import {
   Network,
   TxStatus
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }               from '@acx-ui/store'
-import { RequestPayload }              from '@acx-ui/types'
-import { batchApi, createHttpRequest } from '@acx-ui/utils'
+import { basePolicyApi }                                 from '@acx-ui/store'
+import { RequestPayload }                                from '@acx-ui/types'
+import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
   commonQueryFn,
@@ -97,7 +92,9 @@ import {
   getEnhancedL2AclProfileListFn,
   getEnhancedL3AclProfileListFn,
   getEnhancedDeviceProfileListFn,
-  getEnhancedApplicationProfileListFn
+  getEnhancedApplicationProfileListFn,
+  getVLANPoolVenuesFn,
+  getVLANPoolPolicyViewModelListFn
 } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
@@ -1601,97 +1598,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
-      // eslint-disable-next-line max-len
-      queryFn: async ( { params, payload, enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicyList:
-          WifiUrlsInfo.getVlanPoolViewModelList
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(url , params, headers)
-        const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
-
-        if (res.error) {
-          return { error: res.error as FetchBaseQueryError }
-        }
-        if (!enableRbac) {
-          return { data: res.data as TableResult<VLANPoolViewModelType> }
-        } else {
-          const data = res.data as TableResult<VLANPoolViewModelRbacType>
-          const networkIds: string[] = [...new Set(data.data.map(v => v.wifiNetworkIds ?? []).flat())]
-          const networkMap = new Map<string, VenueApGroupRbacType[]>()
-          if (networkIds.length > 0) {
-            const networkQuery = await fetchWithBQ({
-              ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, headers),
-              body: JSON.stringify({
-                filters: { id: networkIds },
-                fields: ['id', 'name', 'venueApGroups'],
-                pageSize: 10000
-              })
-            })
-
-            if (networkQuery.error) {
-              return { error: networkQuery.error as FetchBaseQueryError }
-            }
-
-            const networkData = networkQuery.data as TableResult<VLANPoolNetworkType>
-            networkData.data?.forEach(v => {
-              const network = v as VLANPoolNetworkType
-              networkMap.set(network.id, network.venueApGroups)
-            })
-          }
-
-          const aggregated: VLANPoolViewModelType[] = data.data.map( v => {
-            let val = v as VLANPoolViewModelRbacType
-            const venueApGroups: VenueAPGroup[] = []
-            const venueIds: string[] = []
-            val.wifiNetworkIds?.forEach(networkId => {
-              networkMap.get(networkId)?.forEach(group => {
-                if (group.isAllApGroups) {
-                  venueApGroups.push({
-                    id: group.venueId,
-                    apGroups: [{
-                      id: '',
-                      allApGroups: true,
-                      default: true
-                    }]
-                  })
-                  venueIds.push(group.venueId)
-                }
-              })
-            })
-            val.wifiNetworkVenueApGroups?.forEach(group => {
-              venueIds.push(group.venueId)
-              if (!group.isAllApGroups) {
-                venueApGroups.push({
-                  id: group.venueId,
-                  apGroups: group.apGroupIds.map(id => {
-                    return {
-                      id: id,
-                      default: false,
-                      allApGroups: false
-                    }
-                  })
-                })
-              }
-            })
-
-            return {
-              id: val.id,
-              name: val.name,
-              vlanMembers: val.vlanMembers,
-              networkIds: val.wifiNetworkIds,
-              venueApGroups: venueApGroups,
-              venueIds: venueIds
-            } as VLANPoolViewModelType
-          })
-
-          const ret: TableResult<VLANPoolViewModelType> = {
-            totalCount: data.totalCount,
-            data: aggregated,
-            page: data.page
-          }
-          return { data: ret }
-        }
-      },
+      queryFn: getVLANPoolPolicyViewModelListFn(),
       providesTags: [{ type: 'VLANPool', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1764,90 +1671,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getVLANPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
-      // eslint-disable-next-line max-len
-      queryFn: async ({ params, payload ,enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicyList : VlanPoolUrls.getVLANPoolVenues
-          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-          const req = createHttpRequest(url, params, headers)
-          const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-          if (!enableRbac) {
-            return { data: res.data as TableResult<VLANPoolVenues> }
-          } else {
-            const result = res.data as TableResult<VLANPoolViewModelRbacType>
-            if (result.totalCount > 0) {
-              const allApGroupVenueSet = new Set<string> ()
-              if((result.data[0].wifiNetworkIds?.length ?? 0) > 0) {
-                const networkQuery = await fetchWithBQ({
-                  ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, headers),
-                  body: JSON.stringify({
-                    filters: { id: result.data[0].wifiNetworkIds },
-                    fields: ['id', 'name', 'venueApGroups'],
-                    pageSize: 10000
-                  })
-                })
-
-                if (networkQuery.error) {
-                  return { error: networkQuery.error as FetchBaseQueryError }
-                }
-                const networkData = networkQuery.data as TableResult<VLANPoolNetworkType>
-                networkData.data?.forEach(v => {
-                  const val = v as VLANPoolNetworkType
-                  val.venueApGroups.filter(group => group.isAllApGroups)
-                    .forEach(group => allApGroupVenueSet.add(group.venueId))
-                })
-              }
-
-              const venueApGroupMap = new Map<string, VenueApGroupRbacType>()
-              result.data[0].wifiNetworkVenueApGroups
-                .forEach(group => {venueApGroupMap.set(group.venueId, group)})
-              const venueIds = [...venueApGroupMap.keys(), ...allApGroupVenueSet.keys()]
-              if (venueIds.length === 0) {
-                return { data: {} as TableResult<VLANPoolVenues> }
-              }
-
-              const { sortField = 'name', sortOrder } = payload as { sortField?: string, sortOrder?: string }
-              const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params, headers)
-              const venueRes = await fetchWithBQ({ ...venueReq,
-                body: JSON.stringify({
-                  filters: { id: venueIds },
-                  fields: ['id', 'name', 'aggregatedApStatus'],
-                  pageSize: 10000,
-                  ...(['venueName', 'name'].includes(sortField) && sortOrder ? { sortField: 'name', sortOrder } : {})
-                }) })
-              if ( venueRes.error) {
-                return { error: venueRes.error as FetchBaseQueryError }
-              }
-
-              const venues = venueRes.data as TableResult<Venue>
-              return { data: {
-                totalCount: venues.totalCount,
-                page: 1,
-                data: venues.data.map(venue => {
-                  const venueApGroup = venueApGroupMap.get(venue.id)
-                  return {
-                    venueId: venue.id,
-                    venueName: venue.name,
-                    venueApCount: venue.aggregatedApStatus ?
-                      Object.values(venue.aggregatedApStatus).reduce((a, b) => a + b, 0):
-                      0,
-                    apGroupData: allApGroupVenueSet.has(venue.id) ? [
-                      { apGroupName: 'ALL_APS' }
-                    ] : venueApGroup?.apGroupIds.map(id => ({ apGroupId: id }))
-                  } as VLANPoolVenues
-                })
-              } as TableResult<VLANPoolVenues> }
-            } else {
-              return { data: {} as TableResult<VLANPoolVenues> }
-            }
-          }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: getVLANPoolVenuesFn(),
       providesTags: [{ type: 'VLANPool', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -2441,7 +2265,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const rbacApSnmpViewModels = tableResult.data
           const rbacPolicies: Promise<RbacApSnmpPolicy>[] = rbacApSnmpViewModels.map(async (profile) => {
             // eslint-disable-next-line max-len
-            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy, { profileId: profile.id }, apiCustomHeader)
+            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy,
+              { profileId: profile.id },
+              {
+                ...ignoreErrorModal,
+                ...apiCustomHeader
+              })
             const res = await fetchWithBQ(req)
             return res.data as RbacApSnmpPolicy
           })

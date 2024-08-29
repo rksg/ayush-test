@@ -19,7 +19,8 @@ export interface AAAViewModalType {
   primary: string, // Primary server IP:Port
   secondary?: string, // Secondary server IP:Port
   type: 'ACCOUNTING' | 'AUTHENTICATION',
-  networkIds?: string[]
+  networkIds?: string[],
+  hotspot20IdentityProviderIds?: string[]
 }
 export enum AAAPurposeEnum{
   ALL = 'All (Default)',
@@ -33,5 +34,6 @@ export interface AAARbacViewModalType {
   primary: string, // Primary server IP:Port
   secondary?: string, // Secondary server IP:Port
   type: 'ACCOUNTING' | 'AUTHENTICATION',
-  wifiNetworkIds?: string[]
+  wifiNetworkIds?: string[],
+  hotspot20IdentityProviderIds?: string[]
 }

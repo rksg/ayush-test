@@ -62,7 +62,6 @@ export function ClientsTable (props: {
   const params = useParams()
   const { searchable, filterableKeys, settingsId = 'switch-clients-table' } = props
   const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
-  const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -103,8 +102,6 @@ export function ClientsTable (props: {
   }
 
   function getCols (intl: ReturnType<typeof useIntl>) {
-    const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
-
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -307,13 +304,9 @@ export function ClientsTable (props: {
         }
         const deviceType = convertType(type)
 
-        if (isDhcpClientsEnabled) {
-          return <UI.IconContainer>
-            <Tooltip title={deviceType}>{ getDeviceTypeIcon(deviceType as string) }</Tooltip>
-          </UI.IconContainer>
-        } else {
-          return deviceType
-        }
+        return <UI.IconContainer>
+          <Tooltip title={deviceType}>{ getDeviceTypeIcon(deviceType as string) }</Tooltip>
+        </UI.IconContainer>
       }
     }, {
       key: 'dhcpClientModelName',
@@ -325,9 +318,7 @@ export function ClientsTable (props: {
       }
     }]
 
-    return columns.filter(({ key }) => {
-      return isDhcpClientsEnabled ? key : !dhcpClientsColumns.includes(key)
-    })
+    return columns
   }
 
   return (

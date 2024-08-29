@@ -91,6 +91,7 @@ export function ApForm () {
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { tenantId, action, serialNumber='' } = useParams()
+  const isEditMode = action === 'edit'
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
@@ -116,7 +117,8 @@ export function ApForm () {
       venueId: venueData ? venueData.id : ''
     },
     enableRbac: isUseWifiRbacApi
-  })
+  }, { skip: !isEditMode })
+
   const wifiCapabilities = useWifiCapabilitiesQuery({
     params: { tenantId },
     enableRbac: isUseWifiRbacApi
@@ -134,7 +136,6 @@ export function ApForm () {
   const [getVenueApEnhancedKey] = useLazyGetVenueApEnhancedKeyQuery()
   const [moveApToTargetApGroup] = useMoveApToTargetApGroupMutation()
 
-  const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])

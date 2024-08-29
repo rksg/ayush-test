@@ -10,7 +10,7 @@ import { Features, useIsSplitOn }                          from '@acx-ui/feature
 import { ChartData }                                       from '@acx-ui/rc/utils'
 import { TenantLink, useNavigateToPath, useParams }        from '@acx-ui/react-router-dom'
 import { EdgeScopes, RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
-import { filterByAccess, hasRoles }                        from '@acx-ui/user'
+import { filterByAccess, hasRoles, useUserProfileContext } from '@acx-ui/user'
 
 import { useIsEdgeReady } from '../useEdgeActions'
 
@@ -27,10 +27,13 @@ export function DevicesWidget (props: {
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
+  const { isCustomRole } = useUserProfileContext()
 
   const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
+    RolesEnum.ADMINISTRATOR,
+    RolesEnum.READ_ONLY]) || isCustomRole
 
   let numDonut = 2
   if (isEdgeEnabled) {
@@ -110,9 +113,12 @@ export function DevicesWidgetv2 (props: {
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
+  const { isCustomRole } = useUserProfileContext()
   const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
-  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const rwgHasPermission = hasRoles([RolesEnum.PRIME_ADMIN,
+    RolesEnum.ADMINISTRATOR,
+    RolesEnum.READ_ONLY]) || isCustomRole
 
   const {
     apStackedData,
@@ -275,7 +281,7 @@ export function DevicesWidgetv2 (props: {
                     : <UI.LinkContainer
                       key='rwg-linkContainer'
                       style={{ height: (height/2) - 30 }}>
-                      {filterByAccess([<TenantLink to={'/ruckus-wan-gateway/add'}>
+                      {!isCustomRole && filterByAccess([<TenantLink to={'/ruckus-wan-gateway/add'}>
                         {$t({ defaultMessage: 'Add RWG' })}
                       </TenantLink>])}
                     </UI.LinkContainer>

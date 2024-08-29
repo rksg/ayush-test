@@ -6,6 +6,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { get }                  from '@acx-ui/config'
 import { formatter }            from '@acx-ui/formatter'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
@@ -68,7 +69,10 @@ export const ImpactedSwitchesTable = ({
       key: 'name',
       fixed: 'left',
       render: (_, row: SwitchDetails) => (
-        <TenantLink to={`/devices/switch/${row.mac}/serial/details/reports`}>
+        <TenantLink
+          to={`/devices/switch/${row.mac?.toLowerCase()}/serial/details/${get('IS_MLISA_SA')
+            ? 'reports': 'overview'}`
+          }>
           {row.name}
         </TenantLink>
       ),

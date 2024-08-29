@@ -20,6 +20,18 @@ const getUserUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? UserRbacUrlsInfo : UserUrlsInfo
 }
 
+export interface PrivilegeGroup {
+  id?: string,
+  name?: string,
+  type?: string,
+  description?: string,
+  roleName?: string,
+  scope?: string,
+  memberCount?: number,
+  allCustomers?: boolean,
+  allVenues?: boolean
+}
+
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
@@ -190,8 +202,13 @@ export const UserRbacUrlsInfo = {
   },
   toggleBetaStatus: {
     method: 'PATCH',
-    url: '/tenants/settings',
+    url: '/tenants/self',
     oldUrl: '/tenants/betaStatus/:enable',
+    newApi: true
+  },
+  getPrivilegeGroups: {
+    method: 'get',
+    url: '/roleAuthentications/privilegeGroups',
     newApi: true
   }
 }
@@ -222,7 +239,8 @@ export const {
   useDisableMFAMethodMutation,
   useGetBetaStatusQuery,
   useToggleBetaStatusMutation,
-  useFeatureFlagStatesQuery
+  useFeatureFlagStatesQuery,
+  useGetPrivilegeGroupsQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -399,6 +417,15 @@ export const {
         return{
           ...req,
           body: payload
+        }
+      }
+    }),
+    getPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(UserRbacUrlsInfo.getPrivilegeGroups, params)
+        return {
+          ...req
         }
       }
     })

@@ -3,6 +3,8 @@ import React from 'react'
 import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
+import { RolesEnum }                         from '@acx-ui/types'
+import { AuthRoute, hasRoles }               from '@acx-ui/user'
 
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
@@ -36,12 +38,25 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
+
+  const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+
+  const getSpecialRoleRoute = () => {
+    if (isGuestManager) {
+      return <Route index element={<TenantNavigate replace to='/users/guestsManager' />} />
+    } else if (isDPSKAdmin) {
+      return <Route index element={<TenantNavigate replace to='/users/dpskAdmin' />} />
+    } else {
+      return <Route index element={<TenantNavigate replace to='/dashboard' />} />
+    }
+  }
   useStreamActivityMessagesQuery({})
   return rootRoutes(
     <>
       <Route path=':tenantId/t' element={<MFACheck />}>
         <Route path='*' element={<Layout />}>
-          <Route index element={<TenantNavigate replace to='/dashboard' />} />
+          { getSpecialRoleRoute() }
           <Route path='*' element={<PageNotFound />} />
           <Route path='not-found' element={<PageNotFound />} />
           <Route path='no-permissions' element={<PageNoPermissions />} />
@@ -101,7 +116,14 @@ function VenuesRoutes () {
     <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
       <Route path='*' element={<PageNotFound />} />
-      <Route path='add' element={<VenuesForm />} />
+      <Route
+        path='add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <VenuesForm />
+          </AuthRoute>
+        }
+      />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
         path=':venueId/venue-details/:activeTab/:activeSubTab'

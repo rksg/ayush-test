@@ -223,7 +223,7 @@ export function VenueNetworksTab () {
       page: 1,
       pageSize: 10000
     },
-    enableRbac: resolvedRbacEnabled
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
@@ -587,7 +587,7 @@ export function VenueNetworksTab () {
         venueId: payload.venueId,
         networkId: payload.networkId
       },
-      payload: !isTemplate? payload : { newData: payload },
+      payload: payload,
       enableRbac: resolvedRbacEnabled
     }).then(()=>{
       setScheduleModalState({
@@ -600,6 +600,7 @@ export function VenueNetworksTab () {
     if (name === 'networkApGroupForm') {
       let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
+
       updateNetworkVenue({
         params: {
           tenantId: params.tenantId,
@@ -607,7 +608,12 @@ export function VenueNetworksTab () {
           venueId: payload.venueId,
           networkId: payload.networkId
         },
-        payload: !isTemplate? payload : { newData: payload, oldData: oldData },
+        payload: {
+          ...{
+            oldPayload: oldData,
+            newPayload: payload
+          }
+        },
         enableRbac: resolvedRbacEnabled
       }).then(()=>{
         setApGroupModalState({

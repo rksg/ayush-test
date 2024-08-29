@@ -6,6 +6,7 @@ import { AlignType } from 'rc-table/lib/interface'
 import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
 import { tansformSdLanScopedVenueMap }                            from '@acx-ui/rc/components'
 import { useVenuesListQuery }                                     from '@acx-ui/rc/services'
 import {
@@ -19,7 +20,8 @@ import { filterByAccess } from '@acx-ui/user'
 
 import { useEdgeMvSdLanContext } from '../../EdgeMvSdLanContextProvider'
 
-import { NetworksDrawer } from './NetworksDrawer'
+import { CompatibilityCheck } from './CompatibilityCheck'
+import { NetworksDrawer }     from './NetworksDrawer'
 
 export interface VenueTableDataType {
   id: string
@@ -36,12 +38,15 @@ export interface VenueNetworksTableProps {
 }
 
 export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
+  const isEdgeCompatibilityEnabled = useIsSplitOn(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const { $t } = useIntl()
   const { value: activated } = props
   const { form: formRef } = useStepFormContext<EdgeMvSdLanFormModel>()
   const { allSdLans } = useEdgeMvSdLanContext()
 
   const [networkDrawerVenueId, setNetworkDrawerVenueId] = useState<string|undefined>(undefined)
+
   const serviceId = formRef.getFieldValue('id')
 
   // venue list should filter out the venues that already tied to other SDLAN services.
@@ -81,7 +86,15 @@ export const EdgeSdLanVenueNetworksTable = (props: VenueNetworksTableProps) => {
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
     fixed: 'left',
-    sorter: { compare: sortProp('name', defaultSort) }
+    sorter: { compare: sortProp('name', defaultSort) },
+    render: (_, row) => {
+      return isEdgeCompatibilityEnabled
+        ? <Space align='center'>
+          {row.name}
+          <CompatibilityCheck venueId={row.id} venueName={row.name} />
+        </Space>
+        : row.name
+    }
   }, {
     title: $t({ defaultMessage: 'Address' }),
     width: Infinity,

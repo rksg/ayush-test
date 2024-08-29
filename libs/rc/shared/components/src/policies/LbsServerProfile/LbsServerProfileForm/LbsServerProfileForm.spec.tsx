@@ -2,13 +2,14 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { policyApi }   from '@acx-ui/rc/services'
 import {
   LbsServerProfileUrls,
   PolicyOperation,
   PolicyType,
   getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
+import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
@@ -19,6 +20,7 @@ import {
 } from '../__tests__/fixtures'
 
 import { LbsServerProfileForm } from './LbsServerProfileForm'
+
 
 const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })
 const editPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })
@@ -32,6 +34,7 @@ jest.mock('react-router-dom', () => ({
 
 describe('LbsServerProfileForm', () => {
   beforeEach(() => {
+    store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
       rest.post(
         LbsServerProfileUrls.getLbsServerProfileList.url,
@@ -54,8 +57,8 @@ describe('LbsServerProfileForm', () => {
           return res(ctx.json({ response: { id: mockedPolicyId1 } }))
         }
       ),
-      rest.put(
-        LbsServerProfileUrls.updateLbsServerProfile.url,
+      rest.post(
+        LbsServerProfileUrls.addLbsServerProfile.url,
         (_, res, ctx) => {
           return res(ctx.json({ response: { id: mockedPolicyId1 } }))
         }
@@ -113,11 +116,15 @@ describe('LbsServerProfileForm', () => {
       route: { params: { tenantId: mockedTenantId, policyId: mockedPolicyId1 }, path: editPath }
     })
 
+    await userEvent.type(await screen.findByLabelText('LBS Venue Name'), '-2')
     await userEvent.type(await screen.findByLabelText('Port'), '8884')
+
+    await userEvent.type(await screen.findByLabelText('Server Address'), 'abc.venue.ruckuslbs.com')
+    await userEvent.type(await screen.findByLabelText('Password'), 'qwerasdf')
 
     await userEvent.click(await screen.findByText('Finish'))
 
-    await waitFor(async () => expect(editLbsServerProfile).toBeCalledTimes(1))
+    await waitFor(() => expect(editLbsServerProfile).toBeCalledTimes(1))
   })
 
 
@@ -148,4 +155,36 @@ describe('LbsServerProfileForm', () => {
       search: ''
     }, { replace: true })
   })
+
+  it('should popup duplicate message', async () => {
+    const addLbsServerProfile = jest.fn()
+    mockServer.use(
+      rest.post(
+        LbsServerProfileUrls.addLbsServerProfile.url,
+        (_, res, ctx) => {
+          addLbsServerProfile()
+          return res(ctx.json({ response: { id: mockedPolicyId1 } }))
+        }
+      ),
+      rest.put(
+        LbsServerProfileUrls.updateLbsServerProfile.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ response: { id: mockedPolicyId1 } }))
+        }
+      )
+    )
+
+    render(<Provider><LbsServerProfileForm editMode={false} /></Provider>, {
+      route: { params: { tenantId: mockedTenantId, policyId: mockedPolicyId1 }, path: editPath }
+    })
+
+    await userEvent.type(await screen.findByLabelText('Profile Name'), 'test3')
+    await userEvent.type(await screen.findByLabelText('LBS Venue Name'), 'lbsvenue02')
+    await userEvent.type(await screen.findByLabelText('Server Address'), 'xyz.venue.ruckuslbs.com')
+    await userEvent.type(await screen.findByLabelText('Port'), '8883')
+    await userEvent.type(await screen.findByLabelText('Password'), 'qwerasdf')
+
+    await userEvent.click(await screen.findByText('Add'))
+
+    await waitFor(() => expect(screen.queryByText('The LBS Venue Name and Server Address are duplicates of another profile')).toBeVisible()) })
 })

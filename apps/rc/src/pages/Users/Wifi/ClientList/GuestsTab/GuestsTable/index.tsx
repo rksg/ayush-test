@@ -37,10 +37,10 @@ import {
   SEARCH,
   ClientInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
-import { GuestErrorRes, hasRoles, hasPermission }            from '@acx-ui/user'
-import { getIntl  }                                          from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink }                from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes }                            from '@acx-ui/types'
+import { GuestErrorRes, hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
+import { getIntl }                                                          from '@acx-ui/utils'
 
 import { defaultGuestPayload, GuestsDetail, isEnabledGeneratePassword } from '../GuestsDetail'
 import { GenerateNewPasswordModal }                                     from '../GuestsDetail/generateNewPasswordModal'
@@ -72,7 +72,7 @@ export const GuestsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
-  const isReadOnly = hasRoles(RolesEnum.READ_ONLY)
+  const isReadOnly = !hasCrossVenuesPermission() || hasRoles(RolesEnum.READ_ONLY)
   const filters = {
     includeExpired: ['true']
   }
@@ -107,7 +107,7 @@ export const GuestsTable = () => {
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
       {
-        hasPermission({
+        hasCrossVenuesPermission() && hasPermission({
           scopes: [WifiScopes.CREATE]
         }) &&
         <Button type='link'
@@ -338,7 +338,7 @@ export const GuestsTable = () => {
       key: 'downloadInformation',
       label: $t({ defaultMessage: 'Download Information' }),
       scopeKey: [WifiScopes.READ],
-      operationRoles,
+      roles: operationRoles,
       onClick: (selectedRows:Guest[]) => {
         guestAction.showDownloadInformation(selectedRows, params.tenantId)
       }
@@ -447,7 +447,7 @@ export const GuestsTable = () => {
           disabled: allowedNetworkList.length === 0 ? true : false
         }]
           .filter(item =>
-            hasPermission({
+            hasCrossVenuesPermission() && hasPermission({
               scopes: item.scopeKey,
               roles: item.roles
             }))}
