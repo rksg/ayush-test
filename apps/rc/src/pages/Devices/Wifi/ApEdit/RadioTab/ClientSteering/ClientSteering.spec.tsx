@@ -19,7 +19,6 @@ import { ApRadioContext }               from '..'
 import { ApEditContextType }            from '../..'
 import { ApEditContext, ApDataContext } from '../..'
 
-import { ClientSteering } from './ClientSteering'
 import {
   VenueLoadBalancingSettings_LoadBalanceOn,
   VenueLoadBalancingSettings_LoadBalanceOff,
@@ -29,7 +28,8 @@ import {
   ApCapabilities_SupportOff,
   ApDeep,
   Venue
-} from './fixture'
+} from './__tests__/fixture'
+import { ClientSteering } from './ClientSteering'
 
 const params = {
   tenantId: 'tenant-id',
