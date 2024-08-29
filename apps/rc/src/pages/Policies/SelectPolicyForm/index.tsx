@@ -138,7 +138,7 @@ export default function SelectPolicyForm () {
   if (isWorkflowEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.WORKFLOW, categories: [RadioCardCategory.WIFI] })
   }
-  
+
   if (isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.SOFTGRE, categories: [RadioCardCategory.WIFI] })
   }
