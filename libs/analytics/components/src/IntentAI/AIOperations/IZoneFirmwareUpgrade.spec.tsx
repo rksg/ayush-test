@@ -1,25 +1,31 @@
 import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
 
 import { Provider }               from '@acx-ui/store'
 import { render, screen, within } from '@acx-ui/test-utils'
 
 import { useIntentContext } from '../IntentContext'
 import { Statuses }         from '../states'
+import { Intent }           from '../useIntentDetailsQuery'
 
 import { mocked }                                             from './__tests__/mockedIZoneFirmwareUpgrade'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
 
 jest.mock('../IntentContext')
 
+const mockIntentContextWith = (data: Partial<Intent> = {}) => {
+  let intent = mocked
+  intent = _.merge({}, intent, data) as typeof intent
+  jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
+  return {
+    params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
+  }
+}
+
 describe('IntentAIDetails', () => {
   it('should handle when status is paused/na', async () => {
-    jest.mocked(useIntentContext).mockReturnValue({
-      intent: { ...mocked, status: Statuses.paused }, configuration, kpis
-    })
-    render(<IntentAIDetails />, {
-      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
-      wrapper: Provider
-    })
+    const { params } = mockIntentContextWith({ status: Statuses.paused })
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
@@ -32,25 +38,16 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
   it('should show different tooltip based on return value of compareVersion', async () => {
-    jest.mocked(useIntentContext).mockReturnValue({
-      intent: { ...mocked, currentValue: '7.0.0' }, configuration, kpis
-    })
-    render(<IntentAIDetails />, {
-      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
-      wrapper: Provider
-    })
-
+    const { params } = mockIntentContextWith({ currentValue: '7.0.0' })
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     await userEvent.hover(await screen.findByTestId('InformationSolid'))
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
       .toHaveTextContent('Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.')
   })
   it('should render', async () => {
-    jest.mocked(useIntentContext).mockReturnValue({ intent: mocked, configuration, kpis })
-    render(<IntentAIDetails />, {
-      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
-      wrapper: Provider
-    })
+    const { params } = mockIntentContextWith()
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
@@ -71,11 +68,8 @@ describe('IntentAIDetails', () => {
 
 describe('IntentAIForm', () => {
   it('should render when apply', async () => {
-    jest.mocked(useIntentContext).mockReturnValue({ intent: mocked, configuration, kpis })
-    render(<IntentAIForm />, {
-      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
-      wrapper: Provider
-    })
+    const { params } = mockIntentContextWith()
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
@@ -98,11 +92,8 @@ describe('IntentAIForm', () => {
     await userEvent.click(actions.getByRole('button', { name: 'Apply' }))
   })
   it('should render when not apply', async () => {
-    jest.mocked(useIntentContext).mockReturnValue({ intent: mocked, configuration, kpis })
-    render(<IntentAIForm />, {
-      route: { params: { root: mocked.root, sliceId: mocked.sliceId, code: mocked.code } },
-      wrapper: Provider
-    })
+    const { params } = mockIntentContextWith()
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
