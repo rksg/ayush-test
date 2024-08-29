@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -77,14 +76,13 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
     if (isDuplicateProfile(payload)) {
       return
     }
-    saveLbsServerProfile(payload)
+    await saveLbsServerProfile(payload)
   }
 
   const isDuplicateProfile = (payload: LbsServerProfileContext) => {
-    const isDuplicated = _.some(list?.data, function (o) {
-      return payload.lbsVenueName === o.lbsVenueName
-        && payload.serverAddress === o.server.split(':')[0]
-    })
+    const otherProfiles = list?.data?.filter((o) => params?.policyId !== o.id)
+    const isDuplicated = otherProfiles?.some((o) =>
+      payload.lbsVenueName === o.lbsVenueName && payload.serverAddress === o.server.split(':')[0])
 
     if (isDuplicated) {
       // eslint-disable-next-line max-len
@@ -138,9 +136,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
       formRef={formRef}
       editMode={editMode}
       onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
-      onFinish={async (data) => {
-        return handleLbsServerProfile(data)
-      }}
+      onFinish={handleLbsServerProfile}
     >
       <StepsFormLegacy.StepForm>
         <GridRow>

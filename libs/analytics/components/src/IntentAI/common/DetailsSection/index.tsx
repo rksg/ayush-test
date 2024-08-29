@@ -11,8 +11,7 @@ export const DetailsSection: React.FC<{
 } & React.HTMLAttributes<HTMLDivElement>> = ({ title, children, checkDataRetention, ...props }) => {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
-  // TODO: take dataEndTime from intent.metadata.dataEndTime
-  if (checkDataRetention && !isDataRetained(intent.dataEndTime)) {
+  if (checkDataRetention && !isDataRetained(intent.metadata.dataEndTime)) {
     children = $t(dataRetentionText)
   }
   return <UI.Wrapper {...props}>

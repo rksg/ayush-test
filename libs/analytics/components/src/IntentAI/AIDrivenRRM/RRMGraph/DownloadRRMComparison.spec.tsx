@@ -1,4 +1,4 @@
-import { Provider, recommendationUrl }      from '@acx-ui/store'
+import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { useIntentContext }                   from '../../IntentContext'
@@ -11,14 +11,18 @@ jest.mock('../../IntentContext')
 
 describe('DownloadRRMComparison', () => {
   const intent = transformDetailsResponse(mockedIntentCRRM)
-  const params = { recommendationId: intent.id, code: intent.code }
+  const params = {
+    root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+    sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+    code: intent.code
+  }
 
   beforeEach(() => {
     global.URL.createObjectURL = jest.fn().mockReturnValue('blob:csv-url')
     global.URL.revokeObjectURL = jest.fn()
 
     jest.mocked(useIntentContext).mockReturnValue({ intent, kpis: [] })
-    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
   })
