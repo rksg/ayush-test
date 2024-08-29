@@ -4,9 +4,7 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import {
-  useGetFirmwareVersionIdListQuery,
   useGetVenueApModelFirmwareListQuery,
   useSkipVenueSchedulesPerApModelMutation
 } from '@acx-ui/rc/services'
