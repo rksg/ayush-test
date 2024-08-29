@@ -50,7 +50,6 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasDpskAccess,
   hasCloudpathAccess,
   ServiceAuthRoute,
   PolicyAuthRoute
@@ -504,9 +503,12 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.CREATE })}
-      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
-        <AddPersonalIdentitNetwork />
-      </AuthRoute>}
+      element={
+        // eslint-disable-next-line max-len
+        <ServiceAuthRoute serviceType={ServiceType.NETWORK_SEGMENTATION} oper={ServiceOperation.CREATE}>
+          <AddPersonalIdentitNetwork />
+        </ServiceAuthRoute>
+      }
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
@@ -521,9 +523,12 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.EDIT })}
-      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-        <EditPersonalIdentityNetwork />
-      </AuthRoute>}
+      element={
+        // eslint-disable-next-line max-len
+        <ServiceAuthRoute serviceType={ServiceType.NETWORK_SEGMENTATION} oper={ServiceOperation.EDIT}>
+          <EditPersonalIdentityNetwork />
+        </ServiceAuthRoute>
+      }
     />
   </>
 }
@@ -628,18 +633,22 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
         element={<DpskTable />}
       />
-      {hasDpskAccess() &&
-        <>
-          <Route
-            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
-            element={<DpskForm />}
-          />
-          <Route
-            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
-            element={<DpskForm editMode={true} />}
-          />
-        </>
-      }
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.DPSK} oper={ServiceOperation.CREATE}>
+            <DpskForm />
+          </ServiceAuthRoute>
+        }
+      />
+      <Route
+        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.DPSK} oper={ServiceOperation.EDIT}>
+            <DpskForm editMode={true} />
+          </ServiceAuthRoute>
+        }
+      />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
         element={<DpskDetails />}
@@ -650,12 +659,20 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.CREATE })}
-        element={<NetworkSegAuthForm />}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.WEBAUTH_SWITCH} oper={ServiceOperation.CREATE}>
+            <NetworkSegAuthForm />
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
           oper: ServiceOperation.EDIT })}
-        element={<NetworkSegAuthForm editMode={true} />}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.WEBAUTH_SWITCH} oper={ServiceOperation.EDIT}>
+            <NetworkSegAuthForm editMode={true} />
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WEBAUTH_SWITCH,
@@ -740,16 +757,20 @@ function ServiceRoutes () {
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
           oper: ServiceOperation.CREATE })}
-        element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
-          <AddEdgeSdLan />
-        </AuthRoute>}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.EDGE_SD_LAN} oper={ServiceOperation.CREATE}>
+            <AddEdgeSdLan />
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
           oper: ServiceOperation.EDIT })}
-        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
-          <EditEdgeSdLan />
-        </AuthRoute>}
+        element={
+          <ServiceAuthRoute serviceType={ServiceType.EDGE_SD_LAN} oper={ServiceOperation.EDIT}>
+            <EditEdgeSdLan />
+          </ServiceAuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,

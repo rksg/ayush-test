@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
-import { RolesEnum, ScopeKeys }                                                                                        from '@acx-ui/types'
-import { AuthRoute, filterByAccess, getUserProfile, hasCrossVenuesPermission, hasPermission, hasRoles, isCustomAdmin } from '@acx-ui/user'
+import { RolesEnum, ScopeKeys }                                                                           from '@acx-ui/types'
+import { AuthRoute, filterByAccess, goToNoPermission, hasCrossVenuesPermission, hasPermission, hasRoles } from '@acx-ui/user'
 
 import { ServiceType }     from '../../constants'
 import { PolicyType }      from '../../types'
@@ -16,13 +16,8 @@ export function filterByAccessForServicePolicyMutation <Item> (items: Item[]): I
 }
 
 export function hasDpskAccess () {
-  const { hasAllVenues } = getUserProfile()
-
-  if (isCustomAdmin()) {
-    return hasAllVenues
-  }
-
-  return hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.DPSK_ADMIN])
+  return hasCrossVenuesPermission()
+    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.DPSK_ADMIN])
 }
 
 export function isServiceCardEnabled (
@@ -79,6 +74,10 @@ export function ServiceAuthRoute (props: {
       scopes={getScopeKeyByService(serviceType, oper)}
       children={children}
     />
+  }
+
+  if (serviceType === ServiceType.DPSK) {
+    return hasDpskAccess() ? children : goToNoPermission()
   }
 
   return <AuthRoute
