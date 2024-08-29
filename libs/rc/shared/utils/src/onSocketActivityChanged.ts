@@ -8,9 +8,10 @@ import {
 import { Params } from 'react-router-dom'
 
 
-import { getJwtToken, getTenantId, initialSocket, offActivity, onActivity } from '@acx-ui/utils'
+import { getTenantId, initialSocket, offActivity, onActivity } from '@acx-ui/utils'
 
 import { Transaction } from '.'
+import { getJwtToken } from '@acx-ui/config'
 
 type RTKBaseQuery = BaseQueryFn<
   string | FetchArgs,
@@ -42,12 +43,12 @@ export async function onSocketActivityChanged <
   const { cacheDataLoaded, cacheEntryRemoved } = api
 
   const token = getJwtToken()
-
   const tenantId = getTenantId()
 
-  const url = token ? `/activity?token=${token}&tenantId=${tenantId}`
+  const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
     : `/activity?tenantId=${tenantId}`
-  initialSocket(url)
+
+  initialSocket(url1)
 
   await cacheDataLoaded
 

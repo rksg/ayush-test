@@ -14,24 +14,21 @@ export const initialSocket = (url: string) => {
 
   const tenantId = getTenantId()
 
-  socket = initialSocket(url)
-  socket.on('jwtRefresh', () => {
-
-    const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
-      : `/activity?tenantId=${tenantId}`
-    socket.off('jwtRefresh')
-    socket.off('activityChangedEvent')
-    initialSocket(url1)
-  })
-
-
-  socket.on('activityChangedEvent', (...messages: string[]) => {
-    callbacks.forEach((callback) => callback(...messages))
-  })
-
-
   if(!socket){
     socket = getIndependentSocket(url)
+    socket.on('jwtRefresh', () => {
+      const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
+        : `/activity?tenantId=${tenantId}`
+      console.log(token)
+      socket.off('jwtRefresh')
+      socket.off('activityChangedEvent')
+      socket.close()
+      socket.disconnect()
+      socket = initialSocket(url1)
+    })
+    socket.on('activityChangedEvent', (...messages: string[]) => {
+      callbacks.forEach((callback) => callback(...messages))
+    })
   }
 
   return socket
@@ -58,15 +55,15 @@ export function getIndependentSocket (url: string): SocketIOClient.Socket {
   })
 }
 
-export function reConnectSocket (url: string) {
-  if (socket) {
-    // Properly disconnect the existing socket
-    socket.off('activityChangedEvent')
-    socket.close()
-    socket.disconnect()
-    socket = getIndependentSocket(url)
-  }
-}
+// export function reConnectSocket (url: string) {
+//   if (socket) {
+//     // Properly disconnect the existing socket
+//     socket.off('activityChangedEvent')
+//     socket.close()
+//     socket.disconnect()
+//     socket = getIndependentSocket(url)
+//   }
+// }
 
 export function getSocket () {
   return socket
