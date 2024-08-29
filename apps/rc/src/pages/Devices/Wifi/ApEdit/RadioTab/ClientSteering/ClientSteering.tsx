@@ -218,7 +218,7 @@ export const ClientSteering = () => {
               </span>
               :
               <Switch
-                disabled={isUseVenueSettings || stickyClientSteeringDisable}
+                disabled={stickyClientSteeringDisable}
                 data-testid='sticky-client-steering-enabled'
                 onChange={onFormDataChanged} />
             }
