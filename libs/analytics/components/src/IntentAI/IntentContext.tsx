@@ -24,7 +24,7 @@ export function createIntentContextProvider (
   }>
 ) {
   const Component: React.FC = function () {
-    const { root, sliceId, code } = useParams() as {
+    const { tenantId, root, sliceId, code } = useParams() as {
       tenantId?: string
       root: Intent['root']
       sliceId: Intent['sliceId']
