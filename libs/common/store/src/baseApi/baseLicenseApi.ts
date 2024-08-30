@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from './baseQuery'
 
 export const baseLicenseApi = createApi({
   baseQuery: fetchBaseQuery(),
