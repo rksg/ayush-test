@@ -33,7 +33,6 @@ export const SettingsForm = () => {
   const form = Form.useFormInstance()
   const { initialValues } = useStepFormContext<EdgeQosViewData>()
 
-  let validateBandwidthErrMsg : string = ''
   const bandwidthMinAndMaxErrMsg =
   $t({ defaultMessage: 'This value should be between 1 and 100' })
   const guaranteedBandwidthSumErrMsg =
@@ -55,23 +54,20 @@ export const SettingsForm = () => {
     }
 
     if(!checkBandwidthMinAndMaxValue(minBandwidth)) {
-      validateBandwidthErrMsg = bandwidthMinAndMaxErrMsg
-      return Promise.reject()
+      return Promise.reject(bandwidthMinAndMaxErrMsg)
     }
     const trafficClassSettings = form.getFieldValue('trafficClassSettings')
     const trafficClassArray = Object.values(trafficClassSettings) as TrafficClassSetting[]
 
     const otherMinBandwidthSum = sumMinBandWidthExcludeCurrent(index, trafficClassArray)
     if(minBandwidth + otherMinBandwidthSum > 100) {
-      validateBandwidthErrMsg = guaranteedBandwidthSumErrMsg
-      return Promise.reject()
+      return Promise.reject(guaranteedBandwidthSumErrMsg)
     }
 
     if(trafficClassArray!==undefined) {
       const maxBandwidth = trafficClassArray[index].maxBandwidth
       if(!checkMinAndMaxBandwidthCompare(minBandwidth, maxBandwidth)){
-        validateBandwidthErrMsg = bandwidthRangeCompareErrMsg
-        return Promise.reject()
+        return Promise.reject(bandwidthRangeCompareErrMsg)
       }
     }
     return Promise.resolve()
@@ -83,16 +79,14 @@ export const SettingsForm = () => {
     }
 
     if(!checkBandwidthMinAndMaxValue(maxBandwidth)) {
-      validateBandwidthErrMsg = bandwidthMinAndMaxErrMsg
-      return Promise.reject()
+      return Promise.reject(bandwidthMinAndMaxErrMsg)
     }
     const trafficClassSettings = form.getFieldValue('trafficClassSettings')
     const trafficClassArray = Object.values(trafficClassSettings) as TrafficClassSetting[]
     if(trafficClassArray!== undefined) {
       const minBandwidth = trafficClassArray[index].minBandwidth
       if(!checkMinAndMaxBandwidthCompare(minBandwidth, maxBandwidth)){
-        validateBandwidthErrMsg = bandwidthRangeCompareErrMsg
-        return Promise.reject()
+        return Promise.reject(bandwidthRangeCompareErrMsg)
       }
 
     }
@@ -149,9 +143,10 @@ export const SettingsForm = () => {
               dependencies={['trafficClassSettings', index, 'minBandwidth']}
             >
               {({ getFieldError }) => {
-                return getFieldError(['trafficClassSettings', index, 'minBandwidth']).length ?
+                const errors = getFieldError(['trafficClassSettings', index, 'minBandwidth'])
+                return errors.length ?
                   <Tooltip
-                    title={validateBandwidthErrMsg}
+                    title={errors[0]}
                     placement='bottom'
                     overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />
@@ -181,9 +176,10 @@ export const SettingsForm = () => {
               dependencies={['trafficClassSettings', index, 'maxBandwidth']}
             >
               {({ getFieldError }) => {
-                return getFieldError(['trafficClassSettings', index, 'maxBandwidth']).length ?
+                const errors = getFieldError(['trafficClassSettings', index, 'maxBandwidth'])
+                return errors.length ?
                   <Tooltip
-                    title={validateBandwidthErrMsg}
+                    title={errors[0]}
                     placement='bottom'
                     overlayClassName={UI.toolTipClassName}
                     overlayInnerStyle={{ width: 415 }}><UI.WarningCircleRed />

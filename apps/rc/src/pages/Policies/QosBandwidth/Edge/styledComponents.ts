@@ -14,6 +14,9 @@ export const BandwidthStyleFormItem = styled(Form.Item)`
   &.ant-form-item {
       margin-bottom: 0px;
   }
+  &.ant-form-item .ant-form-item-explain-error {
+    display:none
+  }
 `
 
 export const toolTipClassName = 'qos-traffic-class-tooltip-popover'
