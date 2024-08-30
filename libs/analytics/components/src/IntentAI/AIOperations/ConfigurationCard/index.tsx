@@ -4,6 +4,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { Card, Tooltip, cssStr } from '@acx-ui/components'
 
 import { IntentConfigurationConfig } from '../../IntentContext'
+import { Statuses }                  from '../../states'
 import { Intent }                    from '../../useIntentDetailsQuery'
 
 import * as UI from './styledComponents'
@@ -12,7 +13,10 @@ export const ConfigurationCard: React.FC<{
   configuration: IntentConfigurationConfig, intent: Intent
 }> = ({ configuration, intent }) => {
   const { $t } = useIntl()
-
+  const blurData = [
+    Statuses.new,
+    Statuses.paused
+  ].includes(intent.status as Statuses)
   const values = [
     {
       key: 'currentValue',
@@ -39,6 +43,9 @@ export const ConfigurationCard: React.FC<{
                 iconStyle={{ color: cssStr('--acx-neutrals-50') }}
               />
             }
+            style={{
+              filter: blurData ? 'blur(8px)' : 'none'
+            }}
           />
         </Col>)}
     </Row>
