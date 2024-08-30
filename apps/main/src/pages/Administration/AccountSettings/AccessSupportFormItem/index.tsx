@@ -15,7 +15,7 @@ import {
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 }                                    from '@acx-ui/rc/services'
-import { hasCrossVenuesPermission, useUserProfileContext } from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasPermission, useUserProfileContext } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -44,7 +44,7 @@ const getDisplayDateString = (data: string | undefined) => {
 const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: userProfileData, hasAccess } = useUserProfileContext()
+  const { data: userProfileData } = useUserProfileContext()
   const { className, hasMSPEcLabel, canMSPDelegation } = props
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const isRevokeExpired = useRef<boolean>(false)
@@ -108,10 +108,10 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   || isEnableAccessSupportUpdating
   || isDisableAccessSupportUpdating
 
-  const isRksSupportAllowed = hasAccess('POST:/api/tenant/{tenantId}/delegation/support')
+  const isRksSupportAllowed = hasPermission()
   const isSupportUser = Boolean(userProfileData?.support)
-  const isDisabled = !hasCrossVenuesPermission() ||
-    isSupportUser || !isRksSupportAllowed || isUpdating
+  // eslint-disable-next-line max-len
+  const isDisabled = !hasCrossVenuesPermission() || isSupportUser || !isRksSupportAllowed || isUpdating
 
   const supportInfo = isMspDelegatedEC ? ecTenantDelegationData : tenantDelegationData
   const { createdDate, expiryDate, expiryDateString, isAccessSupported } = supportInfo
