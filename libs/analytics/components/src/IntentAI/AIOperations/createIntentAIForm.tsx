@@ -6,11 +6,12 @@ import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { IntentWizardHeader } from '../common/IntentWizardHeader'
+import { IntentWizardHeader }                                             from '../common/IntentWizardHeader'
+import { FormValues, IntentTransitionPayload, createUseIntentTransition } from '../useIntentTransition'
 
-export function createIntentAIForm <FormState, DTO> (config: {
-  useInitialValues: () => Partial<FormState>
-  getFormDTO: (values: FormState) => DTO
+export function createIntentAIForm <Preferences> (config: {
+  useInitialValues: () => Partial<FormValues<Preferences>>
+  getFormDTO: (values: FormValues<Preferences>) => IntentTransitionPayload<Preferences>
 }) {
   const steps: Array<{
     title: MessageDescriptor
@@ -27,16 +28,16 @@ export function createIntentAIForm <FormState, DTO> (config: {
 
   function IntentAIForm () {
     const { $t } = useIntl()
+
+    const useIntentTransition = createUseIntentTransition(config.getFormDTO)
+    const { submit } = useIntentTransition()
     const initialValues = config.useInitialValues()
 
     return (<>
       <IntentWizardHeader />
-      <StepsForm<FormState>
-        // eslint-disable-next-line no-console
-        onFinish={async (values) => console.log(config.getFormDTO(values))}
-        buttonLabel={{
-          submit: $t({ defaultMessage: 'Apply' })
-        }}
+      <StepsForm
+        onFinish={async (values) => { submit(values) }}
+        buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         initialValues={initialValues}
       >
         {steps.map(({ title, Content, SideNote = React.Fragment }) => {
