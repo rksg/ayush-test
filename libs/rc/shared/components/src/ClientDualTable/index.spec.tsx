@@ -26,7 +26,7 @@ describe('ClientDualTable', () => {
       rest.post(
         ClientUrlsInfo.getClientList.url,
         (req, res, ctx) => {
-          mockGetClientList()
+          mockGetClientList(req.body)
           return res(ctx.json({
             totalCount: 0, page: 1, data: []
           }))
@@ -92,5 +92,82 @@ describe('ClientDualTable', () => {
     expect(await screen.findByRole('link', { name: /0 Historical clients/i })).toBeVisible()
 
     fireEvent.click(await screen.findByRole('link', { name: /0 Historical clients/i }))
+  })
+
+  it('should render list correctly(clientMac from path params)', async () => {
+    render(<Provider><ClientDualTable /></Provider>, {
+      route: {
+        params: { ...params, clientMac: '3C:22:FB:97:C7:EF' },
+        path: '/t/:tenantId/users/wifi/clients/search/:clientMac'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockGetClientList).toBeCalledTimes(1))
+    await waitFor(() => {
+      expect(mockGetClientList).toHaveBeenCalledWith(expect.objectContaining({
+        defaultPageSize: 10,
+        fields: [
+          'hostname',
+          'osType',
+          'healthCheckStatus',
+          'clientMac',
+          'ipAddress',
+          'Username',
+          'serialNumber',
+          'venueId',
+          'switchSerialNumber',
+          'ssid',
+          'wifiCallingClient',
+          'sessStartTime',
+          'clientAnalytics',
+          'clientVlan',
+          'deviceTypeStr',
+          'modelName',
+          'totalTraffic',
+          'trafficToClient',
+          'trafficFromClient',
+          'receiveSignalStrength',
+          'rssi',
+          'radio.mode',
+          'cpeMac',
+          'authmethod',
+          'status',
+          'encryptMethod',
+          'packetsToClient',
+          'packetsFromClient',
+          'packetsDropFrom',
+          'radio.channel',
+          'cog',
+          'venueName',
+          'apName',
+          'clientVlan',
+          'networkId',
+          'switchName',
+          'healthStatusReason',
+          'lastUpdateTime',
+          'networkType',
+          'mldAddr',
+          'vni',
+          'apMac'
+        ],
+        filters: {},
+        page: 1,
+        pageSize: 10,
+        searchString: '3C:22:FB:97:C7:EF',
+        searchTargetFields: [
+          'clientMac',
+          'ipAddress',
+          'Username',
+          'hostname',
+          'ssid',
+          'clientVlan',
+          'osType',
+          'vni'
+        ],
+        sortField: 'name',
+        sortOrder: 'ASC',
+        total: 0
+      }))
+    })
   })
 })

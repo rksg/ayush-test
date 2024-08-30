@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
-import { rest }  from 'msw'
+import userEvent        from '@testing-library/user-event'
+import _, { cloneDeep } from 'lodash'
+import { rest }         from 'msw'
 
 import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
@@ -13,7 +13,8 @@ import {
   fireEvent,
   waitFor
 } from '@acx-ui/test-utils'
-import { UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
+import { RolesEnum }                                                                   from '@acx-ui/types'
+import { CustomRoleType, UserProfileContext, UserProfileContextProps, setUserProfile } from '@acx-ui/user'
 
 import { fakeUserProfile, fakeTenantDelegation } from '../__tests__/fixtures'
 
@@ -34,7 +35,7 @@ describe('Access Support Form Item', () => {
   const mockedDisabledReq = jest.fn()
 
   beforeEach(async () => {
-    setUserProfile({ profile: fakeUserProfile, allowedOperations: ['POST:/api/tenant/{tenantId}/delegation/support'] })
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
     mockedDisabledReq.mockClear()
     store.dispatch(administrationApi.util.resetApiState())
 
@@ -199,10 +200,17 @@ describe('Access Support Form Item', () => {
   })
 
   it('should be disabled when RBAC check is not allowed', async () => {
+    const mockNonAdmin = cloneDeep(fakeUserProfile)
+    mockNonAdmin.roles = [RolesEnum.READ_ONLY]
+    mockNonAdmin.customRoleName = RolesEnum.READ_ONLY
+    mockNonAdmin.customRoleType = CustomRoleType.SYSTEM
+
     const notAllowedOperation = {
       ...userProfileContextValues,
+      data: mockNonAdmin,
       hasAccess: () => false
     } as UserProfileContextProps
+    setUserProfile({ profile: mockNonAdmin, allowedOperations: [] })
 
     render(
       <Provider>
