@@ -174,8 +174,10 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
 
   const getDisabledInfo = (_venueId: string,
     row: Network,
-    isGuestActivation: boolean
+    isGuestSwitchBtn: boolean
   ) => {
+    const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
     if (!hasEdgeUpdatePermission) {
       return {
         isDisabled: true,
@@ -184,7 +186,7 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     }
 
     const isSdLanLastNetwork = (tunneledWlans?.length ?? 0) <= 1
-    if (!tunneledWlans || isGuestActivation || !isSdLanLastNetwork) return
+    if (!tunneledWlans || isGuestSwitchBtn || !isSdLanLastNetwork) return
 
     const isTheLastOne = tunneledWlans[0].networkId === row.id
 
@@ -195,8 +197,6 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
         : undefined
     }
   }
-
-  const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
 
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>

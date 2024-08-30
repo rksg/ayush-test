@@ -22,18 +22,25 @@ const mockedSdLanVenueId = mockedEdgeSdLanDmz.tunneledWlans![0].venueId
 
 const mockedActivateNetworkReq = jest.fn()
 const mockedDeactivateNetworkReq = jest.fn()
-const mockedGetData = jest.fn()
+const mockedSubmitData = jest.fn()
+const mockedDisableFnParams = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   EdgeSdLanP2ActivatedNetworksTable: (props:
     { isUpdating: boolean,
+      disabled: Function,
       onActivateChange: (fieldName: string,
-      rowData: Network,
-      checked: boolean,
-      activated: string[])=> void }) => {
+        rowData: Network,
+        checked: boolean,
+        activated: string[])=> void
+    }
+  ) => {
+    const mockedData = mockedSubmitData()
+    const mockedDisableFnParamsData = mockedDisableFnParams()
+    // eslint-disable-next-line max-len
+    const disabledInfo = mockedDisableFnParamsData ? props.disabled.apply(null, mockedDisableFnParamsData) : undefined
 
-    const mockedData = mockedGetData()
     const onClick = () => {
       props.onActivateChange.apply(null, mockedData)
     }
@@ -41,7 +48,10 @@ jest.mock('@acx-ui/rc/components', () => ({
       {
         props.isUpdating
           ? <div data-testid='rc-loading'/>
-          :<button onClick={onClick}>toggle</button>
+          : <>
+            <span>tooltip:{disabledInfo?.tooltip}</span>
+            <button disabled={disabledInfo?.isDisabled} onClick={onClick}>toggle</button>
+          </>
       }
     </div>
   }
@@ -100,7 +110,8 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
   beforeEach(() => {
     mockedActivateNetworkReq.mockReset()
     mockedDeactivateNetworkReq.mockReset()
-    mockedGetData.mockReset()
+    mockedSubmitData.mockReset()
+    mockedDisableFnParams.mockReturnValue(undefined)
   })
 
   it('should render correctly', async () => {
@@ -126,7 +137,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
 
   describe('toggle traffic network', () => {
     it('deactivate non-guest network tunneled to DC', async () => {
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedNetworks',
         _.find(mockNetworkViewmodelList, { id: 'network_1' }),
         false,
@@ -144,7 +155,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
       })
     })
     it('activate non-guest network tunneled to DC', async () => {
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedNetworks',
         _.find(mockNetworkViewmodelList, { id: 'network_2' }),
         true,
@@ -163,7 +174,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
     })
 
     it('deactivate DMZ network', async () => {
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedGuestNetworks',
         guestNetwork,
         false,
@@ -183,7 +194,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
       const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
       mockedNoGuestTraffic.tunneledGuestWlans = []
 
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedGuestNetworks',
         guestNetwork,
         true,
@@ -207,14 +218,17 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
         .filter(item => item.networkId !== guestNetwork?.id)
       mockedNoGuestTraffic.tunneledGuestWlans = []
 
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedGuestNetworks',
         guestNetwork,
         true,
         [guestNetwork]
       ])
 
-      renderTestComponent({ params, sdLan: mockedNoGuestTraffic })
+      renderTestComponent({
+        params,
+        sdLan: mockedNoGuestTraffic
+      })
 
       await basicActsTestToggleNetwork()
       expect(mockedActivateNetworkReq).toBeCalledWith({
@@ -230,11 +244,10 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
         .filter(item => item.networkId !== guestNetwork?.id)
       mockedNoGuestTraffic.tunneledGuestWlans = []
 
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedNetworks',
         guestNetwork,
         true,
-        // network1,4
         ['network_1', 'network_4']
       ])
 
@@ -254,7 +267,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
         venueId: mockedEdgeSdLanDmz.tunneledWlans![0].venueId
       } as EdgeSdLanTunneledWlan)
 
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedNetworks',
         guestNetwork,
         false,
@@ -275,7 +288,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
       const mockedNoDMZGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
       mockedNoDMZGuestTraffic.tunneledGuestWlans = []
 
-      mockedGetData.mockReturnValue([
+      mockedSubmitData.mockReturnValue([
         'activatedNetworks',
         guestNetwork,
         false,
@@ -291,6 +304,118 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
       })
       expect(mockedDeactivateNetworkReq).toBeCalledTimes(1)
       expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+    })
+
+    // eslint-disable-next-line max-len
+    it('should popup confirm when the WLAN is the last one in this venue of current SDLAN', async () => {
+      const mockedEdgeSdLanDc = mockedMvSdLanDataList[1]
+      const targetNetwork = _.find(mockNetworkViewmodelList, { id: 'network_2' })
+      const currentVenueId = mockedEdgeSdLanDc.tunneledWlans![0].venueId
+
+      mockedSubmitData.mockReturnValue([
+        'activatedNetworks',
+        targetNetwork,
+        false,
+        ['network_1']
+      ])
+      mockedDisableFnParams.mockReturnValue([
+        currentVenueId,
+        targetNetwork,
+        false
+      ])
+
+      renderTestComponent({
+        params: { ...params, venueId: currentVenueId },
+        sdLan: mockedEdgeSdLanDc
+      })
+
+      await screen.findByRole('link', { name: 'Mocked_SDLAN_2' })
+      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+      const btn = within(networkTable).getByRole('button')
+      expect(btn).not.toBeDisabled()
+      await userEvent.click(btn)
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toBeVisible()
+      expect(screen.getByText('Confirm venue deassociation')).toBeVisible()
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
+      expect(mockedDeactivateNetworkReq).toBeCalledWith({
+        venueId: currentVenueId,
+        serviceId: mockedEdgeSdLanDc.id,
+        wifiNetworkId: targetNetwork?.id
+      })
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(1)
+      expect(mockedActivateNetworkReq).toBeCalledTimes(0)
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should greyout when the WLAN is the last one in SDLAN', async () => {
+      const mockedEdgeSdLanDc = _.cloneDeep(mockedMvSdLanDataList[1])
+      mockedEdgeSdLanDc.tunneledWlans = mockedEdgeSdLanDc.tunneledWlans!.slice(0, 1)
+      // eslint-disable-next-line max-len
+      const targetNetwork = _.find(mockNetworkViewmodelList, { id: mockedEdgeSdLanDc.tunneledWlans[0].networkId })
+
+      mockedSubmitData.mockReturnValue([
+        'activatedNetworks',
+        targetNetwork,
+        false,
+        ['network_1']
+      ])
+      mockedDisableFnParams.mockReturnValue([
+        'mock_venue',
+        targetNetwork,
+        false
+      ])
+
+      renderTestComponent({ params, sdLan: mockedEdgeSdLanDc })
+
+      await screen.findByRole('link', { name: 'Mocked_SDLAN_2' })
+      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+      expect(within(networkTable).getByRole('button')).toBeDisabled()
+      // eslint-disable-next-line max-len
+      expect(within(networkTable).getByText('tooltip:Cannot deactivate the last WLAN in SD-LAN')).toBeVisible()
+    })
+
+    // eslint-disable-next-line max-len
+    it('should popup conflict when activate guest forward network which is already DC network in another venue', async () => {
+      const mockedNoGuestTraffic = _.cloneDeep(mockedEdgeSdLanDmz)
+      const targetNetworkIdx = mockedNoGuestTraffic.tunneledWlans!
+        .findIndex(item => item.networkId === guestNetwork?.id)
+      mockedNoGuestTraffic.tunneledWlans![targetNetworkIdx].venueId = 'other_venue'
+      mockedNoGuestTraffic.tunneledGuestWlans = []
+
+      mockedSubmitData.mockReturnValue([
+        'activatedGuestNetworks',
+        guestNetwork,
+        true,
+        [guestNetwork]
+      ])
+
+      renderTestComponent({
+        params,
+        sdLan: mockedNoGuestTraffic
+      })
+
+      await screen.findByRole('link', { name: 'Mocked_SDLAN_1' })
+      const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
+      const btn = within(networkTable).getByRole('button')
+      expect(btn).not.toBeDisabled()
+      await userEvent.click(btn)
+      const dialog = await screen.findByRole('dialog')
+      expect(dialog).toBeVisible()
+      expect(screen.queryByText(/setting must be consistent across all venues/)).toBeVisible()
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
+      expect(mockedActivateNetworkReq).toBeCalledTimes(2)
+      expect(mockedActivateNetworkReq).toBeCalledWith({
+        ...defaultExpectedReqParams,
+        wifiNetworkId: guestNetwork?.id
+      }, { isGuestTunnelUtilized: true })
+      expect(mockedActivateNetworkReq).toBeCalledWith({
+        ...defaultExpectedReqParams,
+        venueId: 'other_venue',
+        wifiNetworkId: guestNetwork?.id
+      }, { isGuestTunnelUtilized: true })
+      expect(mockedDeactivateNetworkReq).toBeCalledTimes(0)
+      await waitFor(() => expect(dialog).not.toBeVisible())
     })
   })
 })
