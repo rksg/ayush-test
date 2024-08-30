@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
 import { Typography, Space }                              from 'antd'
@@ -84,7 +85,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
         let newSelectedNetworks = activatedGuestNetworks
         if (impactVenueIds.length !== 0) {
           impactVenueIds.forEach((impactVenueId) => {
-          // eslint-disable-next-line max-len
             newSelectedNetworks = toggleItemFromSelected(checked, impactVenueId, networkData, newSelectedNetworks)
           })
         }
@@ -106,15 +106,12 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     // vlan pooling enabled cannot be a guest network
     const isVlanPooling = !isNil(data.vlanPool)
 
-    // eslint-disable-next-line max-len
     const isGuestNetworkAction = fieldName === 'activatedGuestNetworks' || !(fieldName === 'activatedNetworks' && checked && isVlanPooling)
 
-    // eslint-disable-next-line max-len
     if (isGuestTunnelEnabled && data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && isGuestNetworkAction) {
 
       // deactivate GuestNetworks: only update GuestNetworks
       if (fieldName === 'activatedGuestNetworks' && !checked) {
-        // eslint-disable-next-line max-len
         const newActivatedGuestNetworks = toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
 
         checkGuestFwdConflict(data, checked, {
@@ -125,7 +122,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
 
         const updateData = {
           activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks),
-          // eslint-disable-next-line max-len
           activatedGuestNetworks: toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks)
         }
 
@@ -139,6 +135,9 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
     } else {
       setUpdateContent({
         ...updateContent,
+        ...((data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && fieldName === 'activatedNetworks' && !checked)
+          ? { activatedGuestNetworks: toggleItemFromSelected(checked, venueId, data, activatedGuestNetworks) }
+          :{}),
         activatedNetworks: toggleItemFromSelected(checked, venueId, data, activatedNetworks)
       })
     }
@@ -173,7 +172,6 @@ export const NetworksDrawer = (props: NetworksDrawerProps) => {
           venueId={venueId}
           isGuestTunnelEnabled={isGuestTunnelEnabled}
           activated={updateContent.activatedNetworks?.[venueId]?.map(item => item.id) ?? []}
-          // eslint-disable-next-line max-len
           activatedGuest={updateContent.activatedGuestNetworks?.[venueId]?.map(item => item.id) ?? []}
           onActivateChange={handleActivateChange}
         />

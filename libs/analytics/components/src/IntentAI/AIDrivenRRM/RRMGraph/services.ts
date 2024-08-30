@@ -11,9 +11,9 @@ import {
   pairGraphs,
   trimPairedGraphs
 } from '@acx-ui/components'
-import { BandEnum }          from '@acx-ui/components'
-import { recommendationApi } from '@acx-ui/store'
-import { getIntl }           from '@acx-ui/utils'
+import { BandEnum }    from '@acx-ui/components'
+import { intentAIApi } from '@acx-ui/store'
+import { getIntl }     from '@acx-ui/utils'
 
 export const intentBandMapping = {
   'c-crrm-channel24g-auto': BandEnum._2_4_GHz,
@@ -21,18 +21,25 @@ export const intentBandMapping = {
   'c-crrm-channel6g-auto': BandEnum._6_GHz
 }
 
-const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
+const { useIntentAIRRMGraphQuery } = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIRRMGraph: build.query<{
       data: ReturnType<typeof trimPairedGraphs>
       csv: ReturnType<typeof getCrrmCsvData>
-    }, { id: string, band: BandEnum }>({
+    }, { root: string, sliceId: string, code: string, band: BandEnum }>({
       query: (variables) => ({
         document: gql`
-          query IntentAIRRMGraph($id: String) {
-            intent: recommendation(id: $id) {
+          query IntentAIRRMGraph($root: String!, $sliceId: String!, $code: String!) {
+            intent(root: $root, sliceId: $sliceId, code: $code) {
               graph: kpi(key: "graph", timeZone: "${moment.tz.guess()}") {
-                current projected previous
+                data {
+                  timestamp
+                  result
+                }
+                compareData {
+                  timestamp
+                  result
+                }
               }
             }
           }
@@ -40,15 +47,23 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
         variables
       }),
       transformResponse: (
-        response: { intent: { graph: Record<string, CloudRRMGraph | null> } },
+        response: { intent: { graph: {
+          data: {
+            timestamp: string
+            result: CloudRRMGraph
+          },
+          compareData: {
+            timestamp: string
+            result: CloudRRMGraph
+          }
+        } } },
         _,
         { band }
       ) => {
         const data = response.intent.graph
         const sortedData = {
-          previous: data.previous,
-          current: data.current,
-          projected: data.projected
+          current: data.compareData.result,
+          projected: data.data.result
         }
         const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
@@ -78,12 +93,13 @@ const { useIntentAIRRMGraphQuery } = recommendationApi.injectEndpoints({
 })
 
 export function useIntentAICRRMQuery () {
-  const { recommendationId: id, code } = useParams() as {
-    recommendationId: string
+  const { root, sliceId, code } = useParams() as {
+    root: string
+    sliceId: string
     code: keyof typeof intentBandMapping
   }
   const band = intentBandMapping[code]
-  const queryResult = useIntentAIRRMGraphQuery({ id, band }, {
+  const queryResult = useIntentAIRRMGraphQuery({ root, sliceId, code, band }, {
     selectFromResult: result => {
       const { data = [], csv = '' } = result.data ?? {}
       return { ...result, data, csv }
