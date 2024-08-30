@@ -1,4 +1,5 @@
 import { Form }    from 'antd'
+import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, PageHeader, StepsFormGotoStepFn } from '@acx-ui/components'
@@ -56,9 +57,11 @@ const EditEdgeSdLan = () => {
         networkIds: formData.activatedNetworks.map(network => network.id),
         tunnelProfileId: formData.tunnelProfileId,
         isGuestTunnelEnabled: formData.isGuestTunnelEnabled,
-        guestEdgeClusterId: formData.guestEdgeClusterId,
-        guestTunnelProfileId: formData.guestTunnelProfileId,
-        guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
+        ...(formData.isGuestTunnelEnabled
+          ? { guestEdgeClusterId: formData.guestEdgeClusterId,
+            guestTunnelProfileId: formData.guestTunnelProfileId,
+            guestNetworkIds: formData.activatedGuestNetworks.map(network => network.id!)
+          } : pick(data, ['guestEdgeClusterId', 'guestTunnelProfileId', 'guestNetworkIds']))
       } as EdgeSdLanSettingP2
 
       await new Promise(async (resolve, reject) => {

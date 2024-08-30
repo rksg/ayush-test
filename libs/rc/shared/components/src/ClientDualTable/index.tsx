@@ -3,15 +3,16 @@ import { useState, SyntheticEvent } from 'react'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { Anchor, Tooltip, Table } from '@acx-ui/components'
+import { useParams }              from '@acx-ui/react-router-dom'
 
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
 import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
 import { ClientLink, SearchBarDiv, SearchCountDiv } from './styledComponents'
-
 export function ClientDualTable () {
   const { $t } = useIntl()
-  const [searchValue, setSearchValue] = useState('')
+  const { clientMac } = useParams<{ clientMac?: string }>()
+  const [searchValue, setSearchValue] = useState( clientMac ?? '' )
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
 
@@ -39,6 +40,7 @@ export function ClientDualTable () {
     <div id='ClientsTable'>
       <SearchBarDiv>
         <Table.SearchInput
+          value={searchValue}
           onChange={(e) => {
             const value = e.target.value
             if (value.length === 0 || value.length >= 2) {

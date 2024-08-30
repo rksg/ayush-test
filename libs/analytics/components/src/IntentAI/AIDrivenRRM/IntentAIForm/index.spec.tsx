@@ -2,7 +2,7 @@
 import userEvent from '@testing-library/user-event'
 
 import { get }                                      from '@acx-ui/config'
-import { recommendationUrl, Provider }              from '@acx-ui/store'
+import { intentAIUrl, Provider }                    from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within } from '@acx-ui/test-utils'
 
 import { useIntentContext }                   from '../../IntentContext'
@@ -27,7 +27,7 @@ jest.mock('@acx-ui/config', () => ({
 
 describe('IntentAIForm', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
     jest.spyOn(require('../../utils'), 'isDataRetained')
@@ -38,7 +38,11 @@ describe('IntentAIForm', () => {
   window.ResizeObserver = ResizeObserver
 
   async function renderAndStepsThruForm () {
-    const params = { recommendationId: mockedIntentCRRM.id, code: mockedIntentCRRM.code }
+    const params = {
+      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
+      code: mockedIntentCRRM.code
+    }
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
