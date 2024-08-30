@@ -244,7 +244,7 @@ export function ManageCustomer () {
       pageSize: 10000
     },
     option: {
-      skip: !isEntitlementRbacApiEnabled
+      skip: !isEntitlementRbacApiEnabled || !isEditMode
     }
   })
   const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
@@ -627,7 +627,10 @@ export function ManageCustomer () {
 
         if (isDeviceAgnosticEnabled ) {
           if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
-            const apswAssignId = getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
+            const apswAssignId =
+              isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, false)
+                : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
+
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
@@ -810,10 +813,14 @@ export function ManageCustomer () {
     return license.length > 0 ? license[0].id : 0
   }
 
-  const getDeviceAssignmentId = (deviceType: string, trialAssignment: boolean) => {
-    const license = assignedLicense.filter(en => en.deviceType === deviceType
-     && en.trialAssignment === trialAssignment && en.status === 'VALID')
+  const getDeviceAssignmentId = (deviceType: string, isTrial: boolean) => {
+    const license = isEntitlementRbacApiEnabled
+      ? assignedLicense.filter(en => en.licenseType === deviceType && en.status === 'VALID' &&
+        en.isTrial === isTrial)
+      : assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
+        en.trialAssignment === isTrial)
     return license.length > 0 ? license[0].id : 0
+
   }
 
   const MspAdminsForm = () => {
