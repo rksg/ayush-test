@@ -103,7 +103,7 @@ export default function WlanSelection() {
           })}
         </div>
       }
-      children={available
+      children={wlans
         ?.map(({ id, name }: { id: string, name: string }) =>
           <Select.Option key={id} value={id} children={name} />
         )
