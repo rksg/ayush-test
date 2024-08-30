@@ -664,8 +664,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         const req = createHttpRequest(
           MspUrlsInfo.exportMspEcDeviceInventory,
           { ...params },
-          {},
-          true
+          {}
         )
         return {
           ...req,
