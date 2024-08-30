@@ -129,8 +129,8 @@ function isCardEnabled<T, U> (
 interface GetScopeKeyProps<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> {
   type: T,
   oper: U,
-  operScopeMap: SvcPcyOperMap<U>,
   typeScopeMap: SvcPcyScopeMap<T>,
+  operScopeMap: SvcPcyOperMap<U>,
   defaultScope?: SvcPcyAllowedScope
 }
 
@@ -144,8 +144,8 @@ function getScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
 
   if (specialCaseResult) return specialCaseResult
 
-  const targetScope = typeScopeMap[type] || defaultScope as SvcPcyAllowedScope
-  return targetScope.map(scope => scope + '-' + operScope as ScopeKeys[number])
+  const targetScope = (typeScopeMap[type] || defaultScope) as SvcPcyAllowedScope
+  return targetScope.map(scope => (scope + '-' + operScope) as ScopeKeys[number])
 }
 
 function getSpecialScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
