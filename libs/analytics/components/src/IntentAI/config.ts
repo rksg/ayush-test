@@ -98,7 +98,7 @@ export const states = {
   },
   [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to: {errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
@@ -110,7 +110,7 @@ export const states = {
   },
   [DisplayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.pausedReverted]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
@@ -130,7 +130,7 @@ export const states = {
   },
   [DisplayStates.naConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: {errorMessage}' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
   },
   [DisplayStates.naNoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
@@ -142,7 +142,7 @@ export const states = {
   },
   [DisplayStates.naNotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: {errorMessage}' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
   },
   [DisplayStates.naVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),

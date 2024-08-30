@@ -549,7 +549,10 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Applied Failed',
-          statusTooltip: 'IntentAI recommended changes failed to apply to the Venue zone-1 due to: errMsg from the notification service. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          statusTooltip: `IntentAI recommended changes failed to apply to the Venue zone-1 due to:
+ - errMsg from the notification service
+
+ The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
         },
         {
           ...intentListWithAllStatus.intents.data[7],
@@ -570,7 +573,10 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.paused,
           statusLabel: 'Paused, Revert Failed',
-          statusTooltip: 'The Revert action on the IntentAI recommended change, failed due to the following reason: errMsg from the notification service. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.'
+          statusTooltip: `The Revert action on the IntentAI recommended change, failed due to the following reason:
+ - errMsg from the notification service
+
+ The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.`
         },
         {
           ...intentListWithAllStatus.intents.data[10],
@@ -605,7 +611,10 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Conflicting Configuration',
-          statusTooltip: 'No recommendation was generated. Reason: The network has active Mesh APs, which are currently not supported.'
+          statusTooltip: `No recommendation was generated. Reason:
+ - The network has active Mesh APs, which are currently not supported.
+
+`
         },
         {
           ...intentListWithAllStatus.intents.data[15],
@@ -626,7 +635,10 @@ describe('Intent services', () => {
           ...expectedCommonResult,
           status: Statuses.na,
           statusLabel: 'No Recommendation, Not Enough Data',
-          statusTooltip: 'No recommendation was generated. Reason: Insufficient data on neighboring APs.'
+          statusTooltip: `No recommendation was generated. Reason:
+ - Insufficient data on neighboring APs.
+
+`
         },
         {
           ...intentListWithAllStatus.intents.data[18],
