@@ -15,15 +15,30 @@ import {
 import { SetupSmsProviderDrawer } from './SetupSmsProviderDrawer'
 
 // eslint-disable-next-line max-len
-const validationMessage = 'We are not able to retrieve phone numbers from Twilio - please check the entered account SID and auth token'
+const phoneNumberValidationMessage = 'We are not able to retrieve phone numbers from Twilio - please check the entered account SID and auth token'
+// eslint-disable-next-line max-len
+const servicesValidationMessage = 'We are not able to retrieve messaging services from Twilio - please check the entered account SID and auth token'
+
+const fakeProviderData = {
+  providerType: SmsProviderType.TWILIO,
+  providerData: {
+    accountSid: 'AC76930bb18cb76e44e743bbd1572c5eaa',
+    authToken: '3dc75201133cb439febd5c12e34a91f5',
+    fromNumber: 'MFA[Test]'
+  }
+}
 
 const services = require('@acx-ui/rc/services')
-const mockLazyQuery = jest.fn().mockImplementation(() => Promise.resolve(
-  { data: { incommingPhoneNumbers: [] } }
+const mockLazyPhoneNumberQuery = jest.fn().mockImplementation(() => Promise.resolve(
+  { data: { incommingPhoneNumbers: ['123456789'] } }
+))
+const mockLazyMessagingQuery = jest.fn().mockImplementation(() => Promise.resolve(
+  { data: { messagingServiceResources: [] } }
 ))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useLazyGetTwiliosIncomingPhoneNumbersQuery: () => ([ mockLazyQuery ])
+  useLazyGetTwiliosIncomingPhoneNumbersQuery: () => ([ mockLazyPhoneNumberQuery ]),
+  useLazyGetTwiliosMessagingServicesQuery: () => ([ mockLazyMessagingQuery ])
 }))
 
 describe('Set SMS Provider Drawer', () => {
@@ -59,7 +74,7 @@ describe('Set SMS Provider Drawer', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
-  it('should render edit layout correctly for twililo data', async () => {
+  it('should render edit layout correctly for twilio data', async () => {
     const mockedCloseDrawer = jest.fn()
     const providerData = {
       providerType: SmsProviderType.TWILIO,
@@ -87,17 +102,46 @@ describe('Set SMS Provider Drawer', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
-  it('should render edit layout correctly for twililo data with messaging ff on', async () => {
+  it('should render edit layout correctly for twilio service data w/ messaging ff on', async () => {
     const mockedCloseDrawer = jest.fn()
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const providerData = {
-      providerType: SmsProviderType.TWILIO,
-      providerData: {
-        accountSid: 'sid123',
-        authToken: 'token123',
-        fromNumber: '123456789'
-      }
-    }
+    mockLazyMessagingQuery.mockImplementation(() => Promise.resolve(
+      { data: { messagingServiceResources: ['Default[Test]', 'MFA[Test]'] } }
+    ))
+    render(
+      <Provider>
+        <SetupSmsProviderDrawer
+          visible={true}
+          isEditMode={true}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+          editData={fakeProviderData}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set SMS Provider')).toBeVisible()
+    expect(screen.getByDisplayValue('AC76930bb18cb76e44e743bbd1572c5eaa')).toBeVisible()
+    expect(screen.getByText('Send messages through...')).toBeVisible()
+    expect(screen.getByRole('radio', { name: 'Messaging Service' })).toBeChecked()
+    expect(await screen.findByText('MFA[Test]')).toBeVisible()
+    await userEvent.click(screen.getByRole('radio', { name: 'Phone Number' }))
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'Phone Number' })).toBeChecked())
+    await userEvent.click(screen.getByRole('radio', { name: 'Messaging Service' }))
+    await waitFor(() =>
+      expect(screen.getByRole('radio', { name: 'Messaging Service' })).toBeChecked())
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  })
+  it('should render edit layout correctly for twilio phone data w/ messaging ff on', async () => {
+    const mockedCloseDrawer = jest.fn()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockLazyPhoneNumberQuery.mockImplementation(() => Promise.resolve(
+      { data: { incommingPhoneNumbers: ['111111111', '123456789'] } }
+    ))
+    const providerData = { ...fakeProviderData }
+    providerData.providerData.fromNumber = '123456789'
     render(
       <Provider>
         <SetupSmsProviderDrawer
@@ -112,9 +156,10 @@ describe('Set SMS Provider Drawer', () => {
       })
 
     expect(screen.getByText('Set SMS Provider')).toBeVisible()
-    expect(screen.getByDisplayValue('sid123')).toBeVisible()
+    expect(screen.getByDisplayValue('AC76930bb18cb76e44e743bbd1572c5eaa')).toBeVisible()
     expect(screen.getByText('Send messages through...')).toBeVisible()
     expect(screen.getByRole('radio', { name: 'Phone Number' })).toBeChecked()
+    expect(await screen.findByText('123456789')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
@@ -139,6 +184,31 @@ describe('Set SMS Provider Drawer', () => {
 
     expect(screen.getByText('Set SMS Provider')).toBeVisible()
     expect(screen.getByText('key123')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  })
+  it('should render edit layout correctly for other provider data', async () => {
+    const mockedCloseDrawer = jest.fn()
+    const providerData = {
+      providerType: SmsProviderType.OTHERS,
+      providerData: { apiKey: 'key123', url: 'test.com' }
+    }
+    render(
+      <Provider>
+        <SetupSmsProviderDrawer
+          visible={true}
+          isEditMode={true}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+          editData={providerData}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set SMS Provider')).toBeVisible()
+    expect(screen.getByText('key123')).toBeVisible()
+    expect(screen.getByDisplayValue('test.com')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Save' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
   })
@@ -243,6 +313,10 @@ describe('Set SMS Provider Drawer', () => {
   })
   it('should validate phone number correctly for twilio provider', async () => {
     const mockedCloseDrawer = jest.fn()
+    mockLazyPhoneNumberQuery.mockImplementation(() =>
+      Promise.resolve(
+        { data: { incommingPhoneNumbers: [] } }
+      ))
     render(
       <Provider>
         <SetupSmsProviderDrawer
@@ -266,13 +340,13 @@ describe('Set SMS Provider Drawer', () => {
 
     // Validate Phone Number
     await userEvent.click(await screen.findByLabelText('Phone Number'))
-    expect(await screen.findByText(validationMessage))
+    expect(await screen.findByText(phoneNumberValidationMessage))
       .toBeVisible()
     await waitFor(() => {
       expect(screen.getByLabelText('Phone Number')).not.toBeEnabled()
     })
 
-    mockLazyQuery.mockImplementation(() =>
+    mockLazyPhoneNumberQuery.mockImplementation(() =>
       Promise.resolve(
         { data: { incommingPhoneNumbers: [ '111111111' ] } }
       ))
@@ -285,16 +359,15 @@ describe('Set SMS Provider Drawer', () => {
       expect(screen.getByLabelText('Phone Number')).toBeEnabled()
     })
     await waitFor(() => {
-      expect(screen.queryByText(validationMessage)).toBeNull()
+      expect(screen.queryByText(phoneNumberValidationMessage)).toBeNull()
     })
   })
-  it('should save correctly', async () => {
+  it('should validate messaging service correctly for twilio provider', async () => {
     const mockedCloseDrawer = jest.fn()
-    mockLazyQuery.mockImplementation(() =>
-      Promise.resolve(
-        { data: { incommingPhoneNumbers: [ '111111111' ] } }
-      ))
-
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockLazyMessagingQuery.mockImplementation(() => Promise.resolve(
+      { data: { messagingServiceResources: [] } }
+    ))
     render(
       <Provider>
         <SetupSmsProviderDrawer
@@ -315,10 +388,142 @@ describe('Set SMS Provider Drawer', () => {
       'AC12345678123456781234567812345678')
     await userEvent.type(await screen.findByLabelText('Auth Token'),
       '12345678123456781234567812345678')
-    await userEvent.click(await screen.findByLabelText('Phone Number'))
+
+    // Validate Messaging Service
+    await userEvent.click(await screen.findByRole('radio', { name: 'Messaging Service' }))
+    expect(await screen.findByText(servicesValidationMessage)).toBeVisible()
     await waitFor(() => {
-      expect(screen.getByLabelText('Phone Number')).toBeEnabled()
+      expect(screen.getByRole('combobox', { name: 'Messaging Service' })).not.toBeEnabled()
     })
+
+    mockLazyMessagingQuery.mockImplementation(() =>
+      Promise.resolve(
+        { data: { messagingServiceResources: [ 'MFA[Test]' ] } }
+      ))
+
+    await userEvent.click(await screen.findByRole('radio', { name: 'Phone Number' }))
+    await userEvent.click(await screen.findByRole('radio', { name: 'Messaging Service' }))
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Messaging Service' })).toBeEnabled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByText(servicesValidationMessage)).toBeNull()
+    })
+  })
+  it('should save correctly for twilio with phone number', async () => {
+    const mockedCloseDrawer = jest.fn()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockLazyPhoneNumberQuery.mockImplementation(() => Promise.resolve(
+      { data: { incommingPhoneNumbers: ['123456789'] } }
+    ))
+    render(
+      <Provider>
+        <SetupSmsProviderDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set SMS Provider')).toBeVisible()
+    await userEvent.click(screen.getByRole('combobox'))
+    await userEvent.click(await screen.findByText('Twilio'))
+
+    await userEvent.type(await screen.findByLabelText('Account SID'),
+      'AC12345678123456781234567812345678')
+    await userEvent.type(await screen.findByLabelText('Auth Token'),
+      '12345678123456781234567812345678')
+    await userEvent.click(screen.getByRole('radio', { name: 'Phone Number' }))
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Phone Number' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('combobox', { name: 'Phone Number' }))
+    await userEvent.click((await screen.findAllByText('123456789'))[0])
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(()=>
+      expect(services.useUpdateNotificationSmsProviderMutation).toHaveLastReturnedWith(value))
+  })
+  it('should save correctly for twilio with messaging service', async () => {
+    const mockedCloseDrawer = jest.fn()
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockLazyMessagingQuery.mockImplementation(() => Promise.resolve(
+      { data: { messagingServiceResources: ['MFA[Test]'] } }
+    ))
+    render(
+      <Provider>
+        <SetupSmsProviderDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set SMS Provider')).toBeVisible()
+    await userEvent.click(screen.getByRole('combobox'))
+    await userEvent.click(await screen.findByText('Twilio'))
+
+    await userEvent.type(await screen.findByLabelText('Account SID'),
+      'AC12345678123456781234567812345678')
+    await userEvent.type(await screen.findByLabelText('Auth Token'),
+      '12345678123456781234567812345678')
+    await userEvent.click(screen.getByRole('radio', { name: 'Messaging Service' }))
+    await waitFor(() => {
+      expect(screen.getByRole('combobox', { name: 'Messaging Service' })).toBeEnabled()
+    })
+    await userEvent.click(screen.getByRole('combobox', { name: 'Messaging Service' }))
+    await userEvent.click((await screen.findAllByText('MFA[Test]'))[0])
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(()=>
+      expect(services.useUpdateNotificationSmsProviderMutation).toHaveLastReturnedWith(value))
+  })
+  it('should save correctly for other provider', async () => {
+    const mockedCloseDrawer = jest.fn()
+    render(
+      <Provider>
+        <SetupSmsProviderDrawer
+          visible={true}
+          isEditMode={false}
+          setVisible={mockedCloseDrawer}
+          setSelected={jest.fn()}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('Set SMS Provider')).toBeVisible()
+    await userEvent.click(screen.getByRole('combobox'))
+    await userEvent.click(await screen.findByText('Other'))
+
+    await userEvent.type(await screen.findByLabelText('API Key'),
+      'AC12345678123456781234567812345678')
+    await userEvent.type(await screen.findByLabelText('Send URL'), 'test.com')
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
+      data: { requestId: '123' },
+      status: 'fulfilled'
+    })]
+
+    await waitFor(()=>
+      expect(services.useUpdateNotificationSmsProviderMutation).toHaveLastReturnedWith(value))
   })
 })
 
