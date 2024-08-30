@@ -13,7 +13,8 @@ import {
   EdgeSdLanUrls,
   EdgeGeneralFixtures,
   EdgeSdLanFixtures,
-  EdgeCompatibilityFixtures
+  EdgeCompatibilityFixtures,
+  CountAndNames
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
@@ -59,7 +60,15 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const { click, hover } = userEvent
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  CountAndNamesTooltip: ({ data }:{ data:CountAndNames }) => <>
+    <div data-testid='venue-count'>count:{data.count}</div>
+    <div data-testid='venue-names'>names:{data.names.join(',')}</div>
+  </>
+}))
+
+const { click } = userEvent
 
 describe('Multi-venue SD-LAN Table', () => {
   let params: { tenantId: string }
@@ -114,9 +123,9 @@ describe('Multi-venue SD-LAN Table', () => {
     expect(rows.length).toBe(2)
     screen.getByRole('row', { name: /SE_Cluster 3/i })
     // eslint-disable-next-line max-len
-    expect(rows[0]).toHaveTextContent(new RegExp(`${mockedSdLan1.name}\\s*${mockedSdLan1.edgeClusterName}\\s*${mockedSdLan1.guestEdgeClusterName}\\s*2\\s*Mocked_tunnel-1\\s*Mocked_tunnel-3\\s*Poor`))
+    expect(rows[0]).toHaveTextContent(new RegExp(`${mockedSdLan1.name}\\s*${mockedSdLan1.edgeClusterName}\\s*${mockedSdLan1.guestEdgeClusterName}\\s*count:2.*\\s*Mocked_tunnel-1\\s*Mocked_tunnel-3\\s*Poor`))
     // eslint-disable-next-line max-len
-    expect(rows[1]).toHaveTextContent(new RegExp(`${mockedSdLan2.name}\\s*${mockedSdLan2.edgeClusterName}\\s*1\\s*Mocked_tunnel-2\\s*Good`))
+    expect(rows[1]).toHaveTextContent(new RegExp(`${mockedSdLan2.name}\\s*${mockedSdLan2.edgeClusterName}\\s*count:1.*\\s*Mocked_tunnel-2\\s*Good`))
     const fwWarningIcon = screen.queryAllByTestId('WarningCircleSolid')
     expect(fwWarningIcon.length).toBe(0)
   })
@@ -131,16 +140,18 @@ describe('Multi-venue SD-LAN Table', () => {
     )
 
     await basicCheck()
-    screen.getByRole('row', { name: new RegExp(`${mockedSdLan1.name}`) })
-    const venueNumStr = await screen.findByTestId(`venue-names-${mockedSdLan1.id}`)
-    await hover(venueNumStr)
-    await screen.findByText(mockedVenue1.name)
+    const row1 = screen.getByRole('row', { name: new RegExp(`${mockedSdLan1.name}`) })
+    const venueNumStr = await within(row1).findByTestId('venue-count')
+    expect(venueNumStr.textContent).toBe('count:2')
+    const row1Names = within(row1).getByTestId('venue-names')
+    // eslint-disable-next-line max-len
+    await waitFor(() => expect(row1Names).toHaveTextContent(`${mockedVenue2.name},${mockedVenue1.name}`))
 
-    screen.getByRole('row', { name: new RegExp(`${mockedSdLan2.name}`) })
-    const row2VenueNumStr = await screen.findByTestId(`venue-names-${mockedSdLan2.id}`)
-    await hover(row2VenueNumStr)
-    await screen.findByText(mockedVenue3.name)
-    expect(screen.queryAllByText(mockedVenue3.name).length).toBe(1)
+    const row2 = screen.getByRole('row', { name: new RegExp(`${mockedSdLan2.name}`) })
+    const row2VenueNumStr = await within(row2).findByTestId('venue-count')
+    expect(row2VenueNumStr.textContent).toBe('count:1')
+    const row2Names = within(row2).getByTestId('venue-names')
+    expect(row2Names).toHaveTextContent(mockedVenue3.name)
   })
 
   it('should go edit page', async () => {
@@ -261,9 +272,8 @@ describe('Multi-venue SD-LAN Table', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
-    screen.getByRole('row', { name: /sdLan_good_health/i })
     // eslint-disable-next-line max-len
-    screen.getByRole('row', { name: 'sdLan_good_health SE_Cluster 0 SE_Cluster 3 2 Mocked_tunnel-1 Mocked_tunnel-3 Good' })
+    screen.getByRole('row', { name: /sdLan_good_health SE_Cluster 0 SE_Cluster 3 count:2 .* Mocked_tunnel-1 Mocked_tunnel-3 Good/ })
   })
 
   it('should have compatible warning', async () => {
