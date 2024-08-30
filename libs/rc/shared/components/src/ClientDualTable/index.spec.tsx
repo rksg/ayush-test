@@ -156,6 +156,7 @@ describe('ClientDualTable', () => {
         searchString: '3C:22:FB:97:C7:EF',
         searchTargetFields: [
           'clientMac',
+          'mldAddr',
           'ipAddress',
           'Username',
           'hostname',
