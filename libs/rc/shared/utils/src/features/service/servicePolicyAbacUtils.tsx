@@ -40,7 +40,7 @@ export function isServiceCardSetEnabled (
 }
 
 export function getScopeKeyByService (type: ServiceType, oper: ServiceOperation): ScopeKeys {
-  return getScopeKey({
+  return getScopeKey<ServiceType, ServiceOperation>({
     type,
     oper,
     operScopeMap: serviceOperScopeMap,
@@ -86,7 +86,7 @@ export function isPolicyCardEnabled (
 }
 
 export function getScopeKeyByPolicy (type: PolicyType, oper: PolicyOperation): ScopeKeys {
-  return getScopeKey({
+  return getScopeKey<PolicyType, PolicyOperation>({
     type,
     oper,
     operScopeMap: policyOperScopeMap,
@@ -144,7 +144,7 @@ function getScopeKey<T extends SvcPcyAllowedType, U extends SvcPcyAllowedOper> (
 
   if (specialCaseResult) return specialCaseResult
 
-  const targetScope = typeScopeMap[type] || defaultScope
+  const targetScope = typeScopeMap[type] || defaultScope as SvcPcyAllowedScope
   return targetScope.map(scope => scope + '-' + operScope as ScopeKeys[number])
 }
 

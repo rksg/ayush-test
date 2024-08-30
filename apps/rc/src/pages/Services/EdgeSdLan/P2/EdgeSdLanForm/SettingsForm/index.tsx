@@ -26,7 +26,7 @@ import * as UI from './styledComponents'
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const { form, editMode, initialValues } = useStepFormContext<EdgeSdLanFormModelP2>()
+  const { form, editMode } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
   const helpUrl = useHelpPageLink()
@@ -115,7 +115,7 @@ export const SettingsForm = () => {
   }
 
   const checkCorePortConfigured = (clusterId: string) => {
-    if (findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
+    if (!clusterData || findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
       return Promise.resolve()
     } else
       return Promise.reject(<UI.ClusterSelectorHelper>
@@ -255,7 +255,6 @@ export const SettingsForm = () => {
                         loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
                         options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
                         placeholder={$t({ defaultMessage: 'Select ...' })}
-                        disabled={editMode && !!initialValues?.guestEdgeClusterId}
                         onChange={onDmzClusterChange}
                       />
                     </Form.Item>)

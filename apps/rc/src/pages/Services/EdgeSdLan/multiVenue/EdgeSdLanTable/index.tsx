@@ -9,12 +9,11 @@ import {
   PageHeader,
   Table,
   TableProps,
-  Tooltip,
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                                                      from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip, EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useDeleteEdgeSdLanMutation,
@@ -35,7 +34,8 @@ import {
   SEARCH,
   EdgeMvSdLanViewData,
   filterByAccessForServicePolicyMutation,
-  getScopeKeyByService
+  getScopeKeyByService,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -217,15 +217,13 @@ const EdgeMvSdLanTable = () => {
         const venuesCount = venueIds.length
         const venueNames = venueIds.map(id => {
           const name = find(venueOptions, { key: id })?.value
-          return name ? <span key={id}>{name}</span> : undefined
+          return name
         }).filter(i => i)
 
         return venuesCount > 0
-          ? <Tooltip dottedUnderline
-            title={<Space direction='vertical'>
-              {venueNames}
-            </Space>}
-            children={<span data-testid={`venue-names-${row.id}`}>{venuesCount}</span>}
+          ? <CountAndNamesTooltip data={{
+            count: venuesCount, names: venueNames.sort(defaultSort) as string[]
+          }}
           />
           : venuesCount
       }

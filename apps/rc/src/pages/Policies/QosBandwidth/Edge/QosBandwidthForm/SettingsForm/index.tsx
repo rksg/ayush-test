@@ -30,6 +30,7 @@ export const SettingsForm = () => {
     },
     {
       title: $t({ defaultMessage: 'Priority Scheduling' }),
+      align: 'center',
       render: function (_, row, index) {
         return <Space>
           <Form.Item
@@ -43,6 +44,7 @@ export const SettingsForm = () => {
     },
     {
       title: $t({ defaultMessage: 'Guaranteed Bandwidth' }),
+      align: 'center',
       render: function (_, row, index) {
         return<Form.Item><Space>
           <Form.Item
@@ -60,6 +62,7 @@ export const SettingsForm = () => {
     },
     {
       title: $t({ defaultMessage: 'Max Bandwidth' }),
+      align: 'center',
       render: function (_, row, index) {
         return <Form.Item><Space>
           <Form.Item
@@ -79,12 +82,12 @@ export const SettingsForm = () => {
 
   return (
     <Row>
-      <Col span={14}>
+      <Col >
         <SpaceWrapper full direction='vertical' size={50}>
           <Row>
-            <Col span={24}>
+            <Col >
               <Row>
-                <Col span={13}>
+                <Col span={10}>
                   <Form.Item
                     name='name'
                     label={$t({ defaultMessage: 'Profile Name' })}

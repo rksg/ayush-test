@@ -1327,6 +1327,8 @@ function UserRoutes () {
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/clients'
         element={<WifiClientList tab={WirelessTabsEnum.CLIENTS} />} />
+      <Route path='users/wifi/clients/search/:clientMac'
+        element={<WifiClientList tab={WirelessTabsEnum.CLIENTS} />} />
       <Route path='users/wifi/guests'
         element={<WifiClientList tab={WirelessTabsEnum.GUESTS} />} />
       <Route path='users/wifi/reports/clients'
