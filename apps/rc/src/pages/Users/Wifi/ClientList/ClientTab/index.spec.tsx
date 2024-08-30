@@ -9,15 +9,19 @@ import { ClientTab } from '.'
 
 
 jest.mock('@acx-ui/rc/components', () => ({
-  ClientDualTable: () => <div data-testid={'clientDualTable'}></div>
+  ClientDualTable: ({ clientMac }: { clientMac?: string }) => (
+    <div data-testid={'clientDualTable'}>{clientMac}</div>
+  )
 }))
 
 jest.mock('./CCD', () => ({
   ClientConnectionDiagnosis: () => <div data-testid={'clientConnectionDiagnosis'}></div>
 }))
 
-
 describe('ClientTab', () => {
+  const params = {
+    tenantId: 'f378d3ba5dd44e62bacd9b625ffec681'
+  }
   const mockNavigator: History = {
     replace: jest.fn(),
     push: jest.fn(),
@@ -63,4 +67,15 @@ describe('ClientTab', () => {
 
   })
 
+  it('should render list correctly(clientMac from path params)', async () => {
+    render( <NavigationContext.Provider value={{}}>
+      <ClientTab />
+    </NavigationContext.Provider>, {
+      route: {
+        params: { ...params, clientMac: '3C:22:FB:97:C7:EF' },
+        path: '/t/:tenantId/users/wifi/clients/search/:clientMac'
+      }
+    })
+    expect(await screen.findByTestId('clientDualTable')).toHaveTextContent('3C:22:FB:97:C7:EF')
+  })
 })
