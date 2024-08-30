@@ -46,10 +46,6 @@ export const SettingsForm = () => {
     .flatMap(item => [item.edgeClusterId, item.guestEdgeClusterId])
     .filter(val => !!val)
 
-  const filterSn = editMode ? [initialValues?.edgeClusterId] : []
-  if (editMode && initialValues?.guestEdgeClusterId)
-    filterSn.push(initialValues?.guestEdgeClusterId)
-
   const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
@@ -61,9 +57,7 @@ export const SettingsForm = () => {
         'highAvailabilityMode',
         'firmwareVersion'
       ],
-      ...(filterSn.length === 2
-        ? { filters: { clusterId: filterSn } }
-        : { pageSize: 10000 })
+      pageSize: 10000
     } },
     {
       selectFromResult: ({ data, isLoading }) => {
@@ -100,15 +94,6 @@ export const SettingsForm = () => {
     }
   }, [clusterData, editMode, initialValues])
 
-  useEffect(() => {
-    if (!editMode) {
-      if ((isGuestTunnelEnabled && guestEdgeClusterId) || (!isGuestTunnelEnabled && edgeClusterId))
-        form.validateFields(isGuestTunnelEnabled
-          ? ['edgeClusterId', 'guestEdgeClusterId']
-          : ['edgeClusterId'])
-    }
-  }, [isGuestTunnelEnabled, editMode, edgeClusterId, guestEdgeClusterId])
-
   const onEdgeClusterChange = (val: string) => {
     const edgeData = clusterData?.filter(i => i.clusterId === val)[0]
     form.setFieldsValue({
@@ -126,7 +111,7 @@ export const SettingsForm = () => {
   }
 
   const checkCorePortConfigured = (clusterId: string) => {
-    if (findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
+    if (!clusterData || findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
       return Promise.resolve()
     } else
       return Promise.reject(<UI.ClusterSelectorHelper>
@@ -143,7 +128,7 @@ export const SettingsForm = () => {
     const isDmzClusteAAMode = find(clusterData, { clusterId: dmzClusterId })
       ?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
-    if (isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
+    if (clusterData && isGuestTunnelOn && dmzClusterId && isDmzClusteAAMode) {
       return Promise.reject($t({ defaultMessage: 'DMZ cluster cannot be active-active mode.' }))
     } else {
       return Promise.resolve()
@@ -152,11 +137,11 @@ export const SettingsForm = () => {
 
   const getDmzClusterOpts = () => clusterOptions?.filter(item => {
     // eslint-disable-next-line max-len
-    const isAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+    const isNonAAMode = find(clusterData, { clusterId: item.value })?.highAvailabilityMode !== ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
 
     return item.value !== edgeClusterId &&
           // eslint-disable-next-line max-len
-          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isAAMode || (editMode && item.value === guestEdgeClusterId))))
+          (isHaAaDmzEnabled || (!isHaAaDmzEnabled && (isNonAAMode || (editMode && item.value === guestEdgeClusterId))))
   })
 
   return (
@@ -263,7 +248,6 @@ export const SettingsForm = () => {
                     loading={isClusterOptsLoading}
                     options={getDmzClusterOpts()}
                     placeholder={$t({ defaultMessage: 'Select ...' })}
-                    disabled={editMode && !!initialValues?.guestEdgeClusterId}
                     onChange={onDmzClusterChange}
                   />
                 </Form.Item>
@@ -326,9 +310,9 @@ const ClusterFirmwareInfo = (props: {
       </Typography>
       {(!!fwVersion && isLower) && <Tooltip
         title={<Loader states={[{ isLoading }]}>
-          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster 
-        running firmware version <b>{requiredFw}</b> or higher. You may upgrade your venue firmware
-        from {targetLink}` },
+          {$t({ defaultMessage: `SD-LAN feature requires your SmartEdge cluster
+        running firmware version <b>{requiredFw}</b> or higher. You may upgrade your
+        <venueSingular></venueSingular> firmware from {targetLink}` },
           {
             b: (txt) => <b>{txt}</b>,
             requiredFw,

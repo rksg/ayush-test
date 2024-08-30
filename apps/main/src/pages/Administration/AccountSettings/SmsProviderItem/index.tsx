@@ -25,7 +25,7 @@ import {
 import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
 import { store }                                                        from '@acx-ui/store'
 import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles }                                                     from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasRoles }                           from '@acx-ui/user'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
@@ -79,7 +79,8 @@ const SmsProviderItem = () => {
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
-  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = hasCrossVenuesPermission()
+    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const FREE_SMS_POOL = 100
 
