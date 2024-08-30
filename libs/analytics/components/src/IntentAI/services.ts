@@ -90,10 +90,6 @@ type TransformedFilterOptions = {
   statuses: DisplayOption[]
   zones: DisplayOption[]
 }
-type IntentTableFilter = {
-  feature: string[] | undefined
-}
-
 export const api = intentAIApi.injectEndpoints({
   endpoints: (build) => ({
     intentAIList: build.query<
@@ -338,7 +334,7 @@ type Pagination = {
   defaultPageSize: number,
   total: number
 }
-type Filters = {
+export type Filters = {
   sliceValue: string[] | undefined
   category: string[] | undefined
   aiFeature: string[] | undefined
@@ -392,17 +388,9 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
-  const intentTableFilters = useEncodedParameter<IntentTableFilter>('intentTableFilters')
-  const [featurefromPath, setFeaturefromPath] = useState<string>(
-    intentTableFilters?.read()?.feature ?? ''
-  )
+  const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
+  const filters = intentTableFilters.read() || {}
   const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
-  const [filters, setFilters] = useState<Filters>({
-    sliceValue: undefined,
-    category: undefined,
-    aiFeature: (featurefromPath)? [featurefromPath] : undefined,
-    statusLabel: undefined
-  })
   const handlePageChange: TableProps<IntentListItem>['onChange'] = (
     customPagination
   ) => {
@@ -416,11 +404,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
   const handleFilterChange: TableProps<IntentListItem>['onFilterChange'] = (
     customFilter
   ) => {
-    if (featurefromPath) {
-      customFilter.aiFeature = [featurefromPath]
-      setFeaturefromPath('')
-    }
-    setFilters(customFilter as Filters)
+    intentTableFilters.write({ ...filters, ...customFilter })
     setPagination(DEFAULT_PAGINATION)
   }
   return {

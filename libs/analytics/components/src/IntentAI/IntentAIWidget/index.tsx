@@ -45,7 +45,7 @@ function HighlightCard (props: HighlightCardProps) {
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
   const encodedPath = fixedEncodeURIComponent(
-    JSON.stringify({ feature: props.type })
+    JSON.stringify({ aiFeature: [props.type] })
   )
   return (
     <Card
