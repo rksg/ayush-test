@@ -591,9 +591,10 @@ export function Venues (props: VenuesProps) {
     const networkVenueId = tunnelModalState.network?.venueId
     const { network, venueSdLan } = otherData
 
-
-    if (!networkVenueId || !venueSdLan)
+    if (!networkVenueId || !venueSdLan) {
+      handleCloseTunnelModal()
       return
+    }
 
     // eslint-disable-next-line max-len
     const updateContent = getNetworkTunnelSdLanUpdateData(
@@ -602,7 +603,10 @@ export function Venues (props: VenuesProps) {
       tunnelModalState,
       venueSdLan
     )
-    if (!updateContent) return
+    if (!updateContent) {
+      handleCloseTunnelModal()
+      return
+    }
 
     const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
                     && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
