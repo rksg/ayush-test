@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { gql } from 'graphql-request'
 import _       from 'lodash'
 
-import { formattedPath }                  from '@acx-ui/analytics/utils'
-import { TableProps }                     from '@acx-ui/components'
-import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
-import { intentAIApi, recommendationApi } from '@acx-ui/store'
+import { formattedPath }             from '@acx-ui/analytics/utils'
+import { TableProps }                from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
   computeRangeFilter,
