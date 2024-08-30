@@ -36,7 +36,8 @@ import {
   VLANPoolViewModelRbacType,
   transformWifiNetwork,
   DpskSaveData,
-  CertificateTemplate
+  CertificateTemplate,
+  ExternalWifiProviders
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -869,6 +870,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         return {
           ...externalProvidersReq
         }
+      },
+      transformResponse: (response: ExternalWifiProviders, _meta, arg) => {
+        if(arg.enableRbac) {
+          return { providers: response.wisprProviders } as ExternalProviders
+        }
+        return response as ExternalProviders
       }
     }),
     getCertificateTemplateNetworkBinding: build.query<CertificateTemplate, RequestPayload> ({

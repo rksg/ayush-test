@@ -9,9 +9,9 @@ import {
   useConfigTemplateTenantLink,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }          from '@acx-ui/react-router-dom'
-import { RolesEnum }                                      from '@acx-ui/types'
-import { hasPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink }             from '@acx-ui/react-router-dom'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { hasRaiPermission, hasRoles, useUserProfileContext } from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -87,7 +87,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasPermission() && <Tabs.TabPane
+      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'
       /> }

@@ -4,6 +4,7 @@ import { Col, Row, Space, Table, TableProps } from 'antd'
 import { useIntl }                            from 'react-intl'
 
 import { Descriptions, StepsForm, Subtitle, useStepFormContext }         from '@acx-ui/components'
+import { CheckMark }                                                     from '@acx-ui/icons'
 import { SpaceWrapper }                                                  from '@acx-ui/rc/components'
 import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
@@ -60,7 +61,9 @@ export const SummaryForm = () => {
     {
       title: $t({ defaultMessage: 'Priority Scheduling' }),
       key: 'priorityScheduling',
-      dataIndex: 'priorityScheduling'
+      dataIndex: 'priorityScheduling',render: function (_, row) {
+        return row.priorityScheduling?<CheckMark/>:''
+      }
     },
     {
       title: $t({ defaultMessage: 'Guaranteed Bandwidth' }),
@@ -101,7 +104,7 @@ export const SummaryForm = () => {
         </Space>
       </Col>
 
-      <Col span={15}>
+      <Col span={24}>
         <Subtitle level={4}>
           { $t({ defaultMessage: 'QoS Bandwidth Control:' }) }
         </Subtitle>
