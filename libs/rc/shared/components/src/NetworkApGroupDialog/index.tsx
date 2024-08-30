@@ -13,8 +13,9 @@ import {
   Space,
   Spin
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { useWatch } from 'antd/lib/form/Form'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import {
   Modal,
@@ -97,6 +98,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
 
   const [form] = Form.useForm()
+
+  const selectionType = useWatch('selectionType', form)
 
   const open = !!props.visible
 
@@ -371,24 +374,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
                 <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
               </Radio>
-              <Form.Item noStyle
-                shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
-                { ({ getFieldValue }) => getFieldValue('selectionType') === 0 && (
-                  <UI.FormItemRounded>
-                    <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
-                      {defaultVlanString.vlanText}
-                    </Form.Item>
-                    <Form.Item name='allApGroupsRadioTypes'
-                      label={$t({ defaultMessage: 'Radio Band' })}
-                      rules={[{ required: true },
-                        {
-                          validator: (_, value) => validateRadioBandForDsaeNetwork(value)
-                        }]}
-                      labelCol={{ span: 5 }}>
-                      <RadioSelect />
-                    </Form.Item>
-                  </UI.FormItemRounded>
-                )}
+              <Form.Item noStyle>
+                { selectionType === 0 && <UI.FormItemRounded>
+                  <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
+                    {defaultVlanString.vlanText}
+                  </Form.Item>
+                  <Form.Item name='allApGroupsRadioTypes'
+                    label={$t({ defaultMessage: 'Radio Band' })}
+                    rules={[{ required: true },
+                      {
+                        validator: (_, value) => validateRadioBandForDsaeNetwork(value)
+                      }]}
+                    labelCol={{ span: 5 }}>
+                    <RadioSelect />
+                  </Form.Item>
+                </UI.FormItemRounded>}
               </Form.Item>
 
               <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
@@ -396,24 +396,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
               </Radio>
               <Form.List name='apgroups'>
                 { (fields) => (
-                  <Form.Item noStyle
-                    shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
-                    { ({ getFieldValue }) => getFieldValue('selectionType') === 1 && (
-                      <Row gutter={[4, 0]} style={{ width: '750px' }}>
-                        <Col span={8}></Col>
-                        <Col span={8}>
-                          <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
-                        </Col>
-                        <Col span={8}>
-                          <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
-                        </Col>
-                        { fields.map((field, index) => (
-                          <Form.Item key={field.key} noStyle>
-                            <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
-                          </Form.Item>
-                        ))}
-                      </Row>
-                    )}
+                  <Form.Item noStyle>
+                    { selectionType === 1 && <Row gutter={[4, 0]} style={{ width: '750px' }}>
+                      <Col span={8}></Col>
+                      <Col span={8}>
+                        <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
+                      </Col>
+                      <Col span={8}>
+                        <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
+                      </Col>
+                      { fields.map((field, index) => (
+                        <Form.Item key={field.key} noStyle>
+                          <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
+                        </Form.Item>
+                      ))}
+                    </Row>}
                   </Form.Item>
                 )}
               </Form.List>

@@ -703,7 +703,10 @@ export function NetworkVenuesTab () {
           networkId: payload.networkId
         },
         payload: {
-          ...payload,
+          ...{
+            oldPayload: oldData,
+            newPayload: payload
+          },
           isTemplate: isTemplate
         },
         enableRbac: resolvedRbacEnabled

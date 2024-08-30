@@ -277,7 +277,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenueTemplate: {
     method: 'put',
     url: '/templates/networkActivations/:networkVenueId?quickAck=true',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateNetworkVenueTemplateRbac: {
     method: 'put',
@@ -314,7 +318,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueApGroupsRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/settings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getNetworkVenueTemplateRbac: {
     method: 'get',

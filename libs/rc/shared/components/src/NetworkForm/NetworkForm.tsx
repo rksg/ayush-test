@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState, createContext } from 'react'
 
+import { MutationActionCreatorResult, MutationDefinition }               from '@reduxjs/toolkit/query'
 import { Form }                                                          from 'antd'
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
 import { defineMessage, useIntl }                                        from 'react-intl'
@@ -36,7 +37,13 @@ import {
   useActivatePortalTemplateMutation,
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
-  useUpdateNetworkVenueMutation
+  useUpdateNetworkVenueMutation,
+  useActivateVenueApGroupTemplateMutation,
+  useActivateVenueApGroupMutation,
+  useUpdateVenueApGroupMutation,
+  useUpdateVenueApGroupTemplateMutation,
+  useDeactivateVenueApGroupMutation,
+  useDeactivateVenueApGroupTemplateMutation, apGroupsChangeSet
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -55,7 +62,7 @@ import {
   WlanSecurityEnum,
   useConfigTemplatePageHeaderTitle,
   useConfigTemplateQueryFnSwitcher,
-  NetworkTunnelSdLanAction
+  NetworkTunnelSdLanAction, RadioEnum
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -99,6 +106,9 @@ import {
   useUpdateEdgeSdLanActivations
 } from './utils'
 import { Venues } from './Venues/Venues'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DefaultMutationDefinition = MutationDefinition<any, any, any, any>
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -175,6 +185,20 @@ export function NetworkForm (props:{
   const [ deleteNetworkVenue ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
+
+  // The RBAC APIs for activate/deactivate venueApGroup
+  const [ activateVenueApGroup ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateVenueApGroupMutation,
+    useTemplateMutationFn: useActivateVenueApGroupTemplateMutation
+  })
+  const [ updateVenueApGroup ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueApGroupMutation,
+    useTemplateMutationFn: useUpdateVenueApGroupTemplateMutation
+  })
+  const [ deactivateVenueApGroup ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateVenueApGroupMutation,
+    useTemplateMutationFn: useDeactivateVenueApGroupTemplateMutation
   })
 
   // The RBAC APIs not support the addNetworkVenues, updateNetworkVenues and deleteNetworkVenues.
@@ -621,6 +645,7 @@ export function NetworkForm (props:{
     newNetworkVenues? : NetworkVenue[],
     oldNetworkVenues? : NetworkVenue[]
   )=> {
+
     const added: NetworkVenue[] = []
     const removed: string[] = []
     const update: NetworkVenue[] = []
@@ -660,8 +685,25 @@ export function NetworkForm (props:{
       })
     }
 
-
     if (added.length) {
+      let activateVenueApGroupReqs = [] as MutationActionCreatorResult<DefaultMutationDefinition>[]
+      let updateVenueApGroupReqs = [] as MutationActionCreatorResult<DefaultMutationDefinition>[]
+      added.forEach((networkVenue) => {
+        if (networkVenue?.apGroups?.length && !networkVenue.isAllApGroups) {
+          activateVenueApGroupReqs = networkVenue.apGroups.map((apGroup) => {
+            const params = {
+              venueId: networkVenue.venueId,
+              networkId: networkId,
+              apGroupId: apGroup.id
+            }
+            if (apGroup.radio !== RadioEnum.Both) {
+              // eslint-disable-next-line max-len
+              updateVenueApGroupReqs.push(updateVenueApGroup({ params, payload: apGroup, enableRbac: true }))
+            }
+            return activateVenueApGroup({ params, payload: apGroup, enableRbac: true })
+          })
+        }
+      })
       const addNetworkVenueReqs = added.map((networkVenue) => {
         const params = {
           venueId: networkVenue.venueId,
@@ -671,6 +713,8 @@ export function NetworkForm (props:{
       })
 
       await Promise.allSettled(addNetworkVenueReqs)
+      await Promise.allSettled(activateVenueApGroupReqs)
+      await Promise.allSettled(updateVenueApGroupReqs)
     }
 
     if (removed.length) {
@@ -686,6 +730,61 @@ export function NetworkForm (props:{
     }
 
     if (update.length) {
+      let activateVenueApGroupReqs = [] as MutationActionCreatorResult<DefaultMutationDefinition>[]
+      // eslint-disable-next-line max-len
+      let deactivateVenueApGroupReqs = [] as MutationActionCreatorResult<DefaultMutationDefinition>[]
+      let updateVenueApGroupReqs = [] as MutationActionCreatorResult<DefaultMutationDefinition>[]
+      update.forEach((networkVenue) => {
+        if (networkVenue?.apGroups?.length && !networkVenue.isAllApGroups) {
+          const venueId = networkVenue.venueId
+          // eslint-disable-next-line max-len
+          const oldNetworkVenue = oldNetworkVenues?.find((oldNetworkVenue) => oldNetworkVenue.venueId === venueId)!
+          const {
+            updateApGroups,
+            addApGroups,
+            deleteApGroups
+          } = apGroupsChangeSet(
+            networkVenue,
+            {
+              ...oldNetworkVenue,
+              apGroups: oldNetworkVenue.isAllApGroups ? [] : oldNetworkVenue.apGroups
+            }
+          )
+
+          if (addApGroups.length > 0) {
+            activateVenueApGroupReqs = addApGroups.map((apGroup) => {
+              const params = {
+                venueId: apGroup.venueId,
+                networkId: apGroup.networkId,
+                apGroupId: apGroup.apGroupId
+              }
+              return activateVenueApGroup({ params, payload: apGroup, enableRbac: true })
+            })
+          }
+
+          if (updateApGroups.length > 0) {
+            updateVenueApGroupReqs = updateApGroups.map((apGroup) => {
+              const params = {
+                venueId: apGroup.venueId,
+                networkId: apGroup.networkId,
+                apGroupId: apGroup.apGroupId
+              }
+              return updateVenueApGroup({ params, payload: apGroup, enableRbac: true })
+            })
+          }
+
+          if (deleteApGroups.length > 0) {
+            deactivateVenueApGroupReqs = deleteApGroups.map((apGroup) => {
+              const params = {
+                venueId: apGroup.venueId,
+                networkId: apGroup.networkId,
+                apGroupId: apGroup.apGroupId
+              }
+              return deactivateVenueApGroup({ params, payload: apGroup, enableRbac: true })
+            })
+          }
+        }
+      })
       const updateNetworkVenueReqs = update.map((networkVenue) => {
         const params = {
           venueId: networkVenue.venueId,
@@ -695,6 +794,9 @@ export function NetworkForm (props:{
       })
 
       await Promise.allSettled(updateNetworkVenueReqs)
+      await Promise.allSettled(activateVenueApGroupReqs)
+      await Promise.allSettled(updateVenueApGroupReqs)
+      await Promise.allSettled(deactivateVenueApGroupReqs)
     }
 
   }

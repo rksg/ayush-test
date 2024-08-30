@@ -675,7 +675,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           },
           payload: {
             isTemplate: paramsIsTemplate,
-            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId),
+            filters: { 'venueApGroups.apGroupIds': venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId) }
           }
         }, fetchWithBQ)
 
