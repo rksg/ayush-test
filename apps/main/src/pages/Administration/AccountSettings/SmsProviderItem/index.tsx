@@ -121,7 +121,7 @@ const SmsProviderItem = () => {
       const providerType = smsUsage.data?.provider
       setRuckusOneUsed(usedSms)
       setSmsThreshold(smsUsage.data?.threshold ?? 80)
-      setSmsProviderType(providerType ?? SmsProviderType.RUCKUS_ONE)
+      setSmsProviderType(providerType ?? SmsProviderType.SMSProvider_UNSET)
       setSmsProviderConfigured((providerType && providerType !== SmsProviderType.RUCKUS_ONE &&
         providerType !== SmsProviderType.SMSProvider_UNSET) ? true : false)
       setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
