@@ -19,6 +19,7 @@ import { KpiCard }                  from '../common/KpiCard'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
+import { Statuses }                 from '../states'
 import { getGraphKPIs, getKpiData } from '../useIntentDetailsQuery'
 import { isDataRetained }           from '../utils'
 
@@ -76,6 +77,11 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
     const showData = isDataRetained(intent.dataEndTime)
+    const blurData = [
+      Statuses.na,
+      Statuses.paused
+    ].includes(intent.status as Statuses)
+
     return <Loader states={[queryResult]}>
       <div hidden>
         <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
@@ -128,7 +134,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
             children={<GridRow>
               {getGraphKPIs(intent, kpis).map(kpi => (
                 <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} showData={showData}/>
+                  <KpiCard kpi={kpi} showData={showData} blurData={blurData}/>
                 </GridCol>
               ))}
             </GridRow>}
