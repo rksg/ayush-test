@@ -540,7 +540,7 @@ export function NetworkVenuesTab () {
           .reduce((a, b) => a + b, 0)
       }
     },
-    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady) ? [{
+    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady && !isSoftGreEnabled) ? [{
       key: 'tunneled',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',

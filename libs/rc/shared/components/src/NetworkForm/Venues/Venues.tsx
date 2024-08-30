@@ -674,10 +674,7 @@ export function Venues (props: VenuesProps) {
   ) => {
 
     handleSoftGreTunnelAction(modalFormValues)
-    if (modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan) {
-      await handleSdLanTunnelAction(modalFormValues, otherData)
-    }
-    // Need to check reset to Local Breakout
+    await handleSdLanTunnelAction(modalFormValues, otherData)
   }
 
   return (

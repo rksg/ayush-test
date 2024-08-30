@@ -377,7 +377,7 @@ export function VenueNetworksTab () {
     //   title: $t({ defaultMessage: 'Health' }),
     //   dataIndex: 'health'
     // },
-    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady) ? [{
+    ...((isEdgeSdLanHaReady && !isEdgeMvSdLanReady && !isSoftGreEnabled) ? [{
       key: 'tunneled',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneled',
