@@ -46,11 +46,10 @@ function TestUserProfile (props: {
   ChildComponent?: React.FunctionComponent<TestUserProfileChildComponentProps>
 }) {
   const data = useUserProfileContext()
-  const { data: userProfile, allowedOperations } = data
+  const { data: userProfile } = data
 
   return <>
     <div>{userProfile?.fullName}</div>
-    <div>{JSON.stringify(allowedOperations)}</div>
     {props.ChildComponent && <props.ChildComponent userProfileCtx={data}/>}
   </>
 }
@@ -91,20 +90,6 @@ describe('UserProfileContext', () => {
       return { data: fakedPrivilegeGroupList }
     })
     mockServer.use(
-      rest.get(UserUrlsInfo.wifiAllowedOperations.url.replace('?service=wifi', ''),
-        (_req, res, ctx) => res(ctx.json(['some-operation']))),
-      rest.get(UserUrlsInfo.switchAllowedOperations.url.replace('?service=switch', ''),
-        (_req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.tenantAllowedOperations.url,
-        (_req, res, ctx) => res(ctx.json(['tenantOps']))),
-      rest.get(UserUrlsInfo.venueAllowedOperations.url,
-        (_req, res, ctx) => res(ctx.json(['venueOps']))),
-      rest.get(UserUrlsInfo.guestAllowedOperations.url.replace('?service=guest', ''),
-        (_req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
-        (_req, res, ctx) => res(ctx.json([]))),
-      rest.get(UserUrlsInfo.rcgAllowedOperations.url,
-        (_req, res, ctx) => res(ctx.json(['some-operation', 'venueOps']))),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
@@ -135,11 +120,9 @@ describe('UserProfileContext', () => {
     }
 
     render(<TestUserProfile ChildComponent={TestUndefinedUserName}/>, { wrapper, route })
-    expect(await screen.findByText(/some-operation/)).toBeVisible()
-    expect(await screen.findByText(/venueOps/)).toBeVisible()
+    expect(await screen.findByText('accountTier:Gold')).toBeVisible()
     expect(screen.queryByText('initials:undefined')).toBeVisible()
     expect(screen.queryByText('betaEnabled:false')).toBeVisible()
-    expect(screen.queryByText('accountTier:Gold')).toBeVisible()
   })
 
   it('requests for user profile and stores in context', async () => {
@@ -222,8 +205,8 @@ describe('UserProfileContext', () => {
 
     render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
     await checkDataRendered()
+    expect(await screen.findByText('isCustomRole:true')).toBeVisible()
     expect(screen.queryByText('abacEnabled:true')).toBeVisible()
-    expect(screen.queryByText('isCustomRole:true')).toBeVisible()
   })
 
   it('user profile special abac disabled case with custom role', async () => {
@@ -340,6 +323,4 @@ describe('UserProfileContext', () => {
 
 const checkDataRendered = async () => {
   expect(await screen.findByText('First Last')).toBeVisible()
-  expect(await screen.findByText(/some-operation/)).toBeVisible()
-  expect(await screen.findByText(/venueOps/)).toBeVisible()
 }
