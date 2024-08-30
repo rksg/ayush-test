@@ -285,7 +285,7 @@ export function Subscriptions () {
         summaryData.forEach(summary => {
           quantity += summary.purchasedQuantity + summary.courtesyQuantity
           courtesy += summary.courtesyQuantity
-          used += summary.usedQuantity
+          used += (summary.usedQuantity - summary.usedQuantityForOwnAssignment)
           assigned += summary.usedQuantityForOwnAssignment
         })
 

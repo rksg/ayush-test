@@ -24,9 +24,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { SearchOutlined }            from '@acx-ui/icons'
+import { useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { SearchOutlined }              from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -41,7 +41,7 @@ import {
   useMspAdminListQuery,
   useMspCustomerListQuery,
   usePatchCustomerMutation,
-  useMspRbacAssignmentHistoryQuery
+  useMspRbacEcAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -237,8 +237,12 @@ export function ManageCustomer () {
   const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
     { skip: isEntitlementRbacApiEnabled })
   const { data: rbacAssignment } = useTableQuery({
-    useQuery: useMspRbacAssignmentHistoryQuery,
+    useQuery: useMspRbacEcAssignmentHistoryQuery,
+    apiParams: { tenantId: mspEcTenantId as string },
     defaultPayload: {},
+    pagination: {
+      pageSize: 10000
+    },
     option: {
       skip: !isEntitlementRbacApiEnabled
     }
@@ -297,20 +301,24 @@ export function ManageCustomer () {
         if (ecAdministrators) {
           setMspEcAdmins(ecAdministrators)
         }
-        const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
-        setAssignedLicense(assigned)
+        const assigned = isEntitlementRbacApiEnabled ? licenseAssignment
+          : licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
+        setAssignedLicense(licenseAssignment)
         const wifi = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
         const wLic = wifi.length > 0 ? wifi[0].quantity : 0
         const sw = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_SWITCH && en.status === 'VALID')
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apsw = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW
+        const apsw = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === false)
+          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW
           && en.status === 'VALID' && en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apswTrial = assigned.filter(en =>
-          en.deviceType === EntitlementDeviceType.MSP_APSW
+        const apswTrial = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.status === 'VALID' && en.isTrial === true)
+          : assigned.filter(en =>
+            en.deviceType === EntitlementDeviceType.MSP_APSW
           && en.status === 'VALID' && en.trialAssignment === true)
         const apswTrialLic = apswTrial.length > 0 ?
           apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
