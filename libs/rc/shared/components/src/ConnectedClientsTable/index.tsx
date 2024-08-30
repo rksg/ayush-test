@@ -29,7 +29,7 @@ export const defaultClientPayload = {
 
 export const defaultRbacClientPayload = {
   searchString: '',
-  searchTargetFields: ['macAddress','ipAddress','username','hostname','osType','networkInformation.ssid','networkInformation.vni', 'networkInfornation.vlan'],
+  searchTargetFields: ['macAddress','mldMacAddress','ipAddress','username','hostname','osType','networkInformation.ssid','networkInformation.vni', 'networkInfornation.vlan'],
   filters: {},
   fields: [
     'modelName', 'deviceType', 'osType', 'username', 'hostname',
