@@ -393,7 +393,6 @@ export interface NotificationSmsConfig
   accountSid?: string,
   authToken?: string,
   fromNumber?: string,
-  // fromService?: string,
   // esendex
   apiKey?: string,
   // others
