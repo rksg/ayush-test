@@ -227,17 +227,57 @@ describe('UserProfileContext', () => {
     })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
-      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      const { abacEnabled, isCustomRole, accountTier } = props.userProfileCtx
       return <>
         <div>{`abacEnabled:${abacEnabled}`}</div>
         <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`accountTier:${accountTier}`}</div>
       </>
     }
 
     render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
     await checkDataRendered()
-    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+    expect(await screen.findByText('accountTier:Gold')).toBeVisible()
     expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+  })
+
+  it('user profile special abac disabled case with system redefined role', async () => {
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        role: 'DPSK_ADMIN',
+        roles: ['DPSK_ADMIN'],
+        scopes: ['switch-r'],
+        customRoleName: 'CUSTOM_USER',
+        customRoleType: CustomRoleType.CUSTOM
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': false,
+        'allowed-operations-toggle': false } }
+    })
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole, accountTier, data } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+        <div>{`accountTier:${accountTier}`}</div>
+        <div>{`role:${data?.role}`}</div>
+        <div>{`roles:${data?.roles}`}</div>
+
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(await screen.findByText('accountTier:Gold')).toBeVisible()
+    expect(screen.queryByText('role:DPSK_ADMIN')).toBeVisible()
+    expect(screen.queryByText('roles:DPSK_ADMIN')).toBeVisible()
+    expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
   })
 
   it('user profile special abac disabled case with default role (PRIME_ADMIN)', async () => {
