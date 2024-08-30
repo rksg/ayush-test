@@ -74,7 +74,10 @@ describe('ScheduleTiming', () => {
     })
     it('handle selected date & time, then waited past selected time validation', async () => {
       jest.mocked(useIntentContext).mockReturnValue({
-        intent: { ...mockedIntentCRRMnew, metadata: { scheduledAt: '2024-08-12T10:00:00' } },
+        intent: { ...mockedIntentCRRMnew, metadata: {
+          ...mockedIntentCRRMnew.metadata,
+          scheduledAt: '2024-08-12T10:00:00'
+        } },
         kpis: []
       })
       const { onFinish } = renderForm(<ScheduleTiming/>)
@@ -202,5 +205,12 @@ describe('validateScheduleTiming', () => {
     })).toBeFalsy()
     expect(await screen.findByText('Scheduled time cannot be before 08/12/2024 11:00'))
       .toBeVisible()
+  })
+  it('should pass when intent will be paused', async () => {
+    expect(validateScheduleTiming({
+      status: Statuses.new,
+      settings: { date: moment('2024-08-12'), time: 5 },
+      preferences: { enable: false }
+    })).toBeTruthy()
   })
 })
