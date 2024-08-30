@@ -7,6 +7,8 @@ import { Provider, store }                                                      
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ClientDualTable } from './index'
+import { ClientTab } from '../../../../../../apps/rc/src/pages/Users/Wifi/ClientList/ClientTab';
+import { UNSAFE_NavigationContext as NavigationContext } from 'react-router';
 
 describe('ClientDualTable', () => {
   const mockGetClientList = jest.fn()
@@ -95,7 +97,7 @@ describe('ClientDualTable', () => {
   })
 
   it('should render list correctly(clientMac from path params)', async () => {
-    render(<Provider><ClientDualTable /></Provider>, {
+    render(<Provider><ClientTab/></Provider>, {
       route: {
         params: { ...params, clientMac: '3C:22:FB:97:C7:EF' },
         path: '/t/:tenantId/users/wifi/clients/search/:clientMac'
