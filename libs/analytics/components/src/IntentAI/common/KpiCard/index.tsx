@@ -10,6 +10,10 @@ import { dataRetentionText } from '../../utils'
 
 import * as UI from './styledComponents'
 
+
+const BLURREDKPI = '1/2'
+
+
 export const KpiCard: React.FC<{
   kpi: ReturnType<typeof getGraphKPIs>[number]
   showData: boolean
@@ -23,7 +27,9 @@ export const KpiCard: React.FC<{
     <Space align='center' size={5}>
       <UI.Statistic
         title={!showData && $t(dataRetentionText)}
-        value={showData ? kpi.value : noDataDisplay}
+        value={blurData
+          ? BLURREDKPI
+          : showData ? kpi.value : noDataDisplay}
         suffix={showData && kpi.delta &&
         <TrendPill
           value={kpi.delta.value}

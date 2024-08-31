@@ -8,6 +8,10 @@ import { Intent }                    from '../../useIntentDetailsQuery'
 
 import * as UI from './styledComponents'
 
+
+const BLURREDVALUE = '1.23.45.6'
+const BLURREDLABEL = 'Recommend'
+
 export const ConfigurationCard: React.FC<{
   configuration: IntentConfigurationConfig,
   intent: Intent
@@ -32,8 +36,10 @@ export const ConfigurationCard: React.FC<{
       {values.map(({ key, label, tooltip })=>
         <Col key={key} span={12}>
           <UI.Statistic
-            title={$t(label)}
-            value={configuration.valueFormatter?.(intent[key as keyof Intent])}
+            title={blurData ? BLURREDLABEL : $t(label)}
+            value={blurData
+              ? BLURREDVALUE
+              : configuration.valueFormatter?.(intent[key as keyof Intent])}
             suffix={tooltip &&
               <Tooltip.Info isFilled
                 title={$t(tooltip(intent))}

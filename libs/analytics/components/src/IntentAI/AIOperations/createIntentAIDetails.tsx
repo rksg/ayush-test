@@ -26,7 +26,7 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
     const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
-    const showData = isDataRetained(intent.dataEndTime)
+    const showData = isDataRetained(intent.metadata.dataEndTime)
     const blurData = [
       Statuses.na,
       Statuses.paused

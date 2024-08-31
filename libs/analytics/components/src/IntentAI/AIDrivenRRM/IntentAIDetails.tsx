@@ -76,7 +76,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
-    const showData = isDataRetained(intent.dataEndTime)
+    const showData = isDataRetained(intent.metadata.dataEndTime)
     const blurData = [
       Statuses.na,
       Statuses.paused
