@@ -14,7 +14,7 @@ import {
   mockEdgeSdLanApCompatibilites
 } from '../EdgeCompatibilityDrawer/__test__/fixtures'
 
-import { EdgeSdLanDetailCompatibilityDrawer } from '.'
+import { EdgeDetailCompatibilityDrawer } from '.'
 
 jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
   const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
@@ -35,7 +35,7 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
   }
 })
 
-describe('EdgeSdLanDetailCompatibilityDrawer', () => {
+describe('EdgeDetailCompatibilityDrawer', () => {
   const tenantId = 'mock_tenant_id'
   const mockedCloseDrawer = jest.fn()
   beforeEach(() => {
@@ -60,7 +60,7 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
     const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.SD_LAN)
 
     render(<Provider>
-      <EdgeSdLanDetailCompatibilityDrawer
+      <EdgeDetailCompatibilityDrawer
         title='Incompatibility Details'
         visible={true}
         featureName={IncompatibilityFeatures.SD_LAN}
@@ -97,7 +97,7 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
     const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.TUNNEL_PROFILE)
 
     render(<Provider>
-      <EdgeSdLanDetailCompatibilityDrawer
+      <EdgeDetailCompatibilityDrawer
         title='Incompatibility Details'
         visible={true}
         featureName={IncompatibilityFeatures.TUNNEL_PROFILE}

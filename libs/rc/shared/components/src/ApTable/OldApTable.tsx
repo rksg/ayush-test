@@ -60,9 +60,11 @@ import { filterByAccess }                                                 from '
 import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType } from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }                                 from '../Compatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
+import { useIsEdgeFeatureReady }                                                                         from '../useEdgeActions'
 
 import {
   getGroupableConfig, groupedFields
@@ -86,11 +88,14 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ tableData, setTableData ] = useState([] as (APExtended|APExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
+
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
   const AFC_Featureflag = get('AFC_FEATURE_ENABLED').toLowerCase() === 'true'
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { tenantId: params.tenantId } })
@@ -686,19 +691,28 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           })
         }}
         onClose={() => setImportVisible(false)}/>
-      <ApCompatibilityDrawer
+      {!isEdgeCompatibilityEnabled &&
+        <ApCompatibilityDrawer
+          visible={compatibilitiesDrawerVisible}
+          type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
+          venueId={params.venueId}
+          networkId={params.networkId}
+          queryType={params.venueId ?
+            ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS :
+            ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
+          apIds={selectedApSN ? [selectedApSN] : []}
+          apName={selectedApName}
+          isMultiple
+          onClose={() => setCompatibilitiesDrawerVisible(false)}
+        />
+      }
+      {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
-        type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
-        venueId={params.venueId}
-        networkId={params.networkId}
-        queryType={params.venueId ?
-          ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS :
-          ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
-        apIds={selectedApSN ? [selectedApSN] : []}
-        apName={selectedApName}
         isMultiple
+        type={ApCompatibilityType.VENUE}
+        venueId={params.venueId}
         onClose={() => setCompatibilitiesDrawerVisible(false)}
-      />
+      />}
     </Loader>
   )
 })

@@ -236,7 +236,7 @@ export {
   EdgeCompatibilityDrawer,
   EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
-  EdgeSdLanDetailCompatibilityDrawer,
+  EdgeDetailCompatibilityDrawer,
   CompatibleAlertBanner
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
@@ -260,6 +260,7 @@ export {
   transformApiDataToFormListData
 } from './EdgeFormItem/EdgePortsGeneralBase/utils'
 export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
+// export { EdgeChangeScheduleDialog } from './EdgeFirmware/ChangeScheduleDialog'
 
 export * from './services'
 export * from './policies'

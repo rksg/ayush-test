@@ -47,7 +47,7 @@ export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, v
         icon={<CompatibilityWarningCircleIcon />}
         onClick={() => setOpen(true)}
       />
-      {open && <ApGeneralCompatibilityDrawer
+      <ApGeneralCompatibilityDrawer
         visible={open}
         type={ApCompatibilityType.VENUE}
         venueId={venueId}
@@ -56,7 +56,7 @@ export const CompatibilityCheck = ({ venueId, venueName } : { venueId: string, v
         requiredFeatures={[IncompatibilityFeatures.TUNNEL_PROFILE]}
         isFeatureEnabledRegardless
         onClose={() => setOpen(false)}
-      />}
+      />
     </>
     : null
 }

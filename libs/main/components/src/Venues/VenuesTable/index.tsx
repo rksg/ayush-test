@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { isEmpty } from 'lodash'
-import { useIntl } from 'react-intl'
+import { cloneDeep, findIndex, isEmpty } from 'lodash'
+import { useIntl }                       from 'react-intl'
 
 import {
   Button,
@@ -13,12 +13,13 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useIsEdgeReady }         from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }               from '@acx-ui/rc/components'
 import {
   useVenuesTableQuery,
   useDeleteVenueMutation,
-  useGetVenueCityListQuery
+  useGetVenueCityListQuery,
+  useGetVenueEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
@@ -26,10 +27,10 @@ import {
   TableQuery,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                      from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes }    from '@acx-ui/types'
-import { hasCrossVenuesPermission, filterByAccess, hasPermission } from '@acx-ui/user'
-import { transformToCityListOptions }                              from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams }                                from '@acx-ui/react-router-dom'
+import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum }   from '@acx-ui/types'
+import { hasCrossVenuesPermission, filterByAccess, hasPermission, hasRoles } from '@acx-ui/user'
+import { transformToCityListOptions }                                        from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,
@@ -182,10 +183,19 @@ function useColumns (
       align: 'center',
       render: function (_, row) {
         return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/devices/edge`}
-            children={row.edges ? row.edges : 0}
-          />
+          <>
+            <TenantLink
+              to={`/venues/${row.id}/venue-details/devices/edge`}
+              children={row.edges ? row.edges : 0}
+            />
+            {row?.incompatibleEdges && row.incompatibleEdges > 0 ?
+              <Tooltip.Info isFilled
+                title={$t({ defaultMessage: 'Some SmartEdges may not be compatible with certain features in this <venueSingular></venueSingular>.' })}
+                placement='right'
+                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px', marginLeft: '4px', color: cssStr('--acx-semantics-yellow-50') }}
+              />:[]
+            }
+          </>
         )
       }
     }
@@ -236,10 +246,11 @@ type VenueTableProps = {
   rowSelection?: TableProps<Venue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
+  tableContent?: Venue[]
 }
 
 export const VenueTable = ({ settingsId = 'venues-table',
-  tableQuery, rowSelection, searchable, filterables }: VenueTableProps) => {
+  tableQuery, rowSelection, searchable, filterables, tableContent }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
@@ -259,7 +270,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    visible: hasCrossVenuesPermission({ needGlobalPermission: true }),
+    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission(),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -290,7 +301,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
         settingsId={settingsId}
         columns={columns}
         getAllPagesData={tableQuery.getAllPagesData}
-        dataSource={tableQuery.data?.data}
+        dataSource={tableContent ?? tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
@@ -320,6 +331,23 @@ export function VenuesTable () {
     pagination: { settingsId }
   })
 
+  const { tableContent } = useGetVenueEdgeCompatibilitiesQuery({
+    payload: {
+      filters: { venueIds: tableQuery.data?.data.map(i => i.id) }
+    }
+  }, {
+    skip: !tableQuery.data,
+    selectFromResult: ({ data }) => {
+      const result = cloneDeep(tableQuery.data?.data) ?? []
+      data?.compatibilities.forEach((item) => {
+        const idx = findIndex(tableQuery.data?.data, { id: item.id })
+        if (idx !== -1)
+          result[idx].incompatibleEdges = item.incompatible ?? 0
+      })
+      return { tableContent: result }
+    }
+  })
+
   const { cityFilterOptions } = useGetVenueCityList()
 
   const count = tableQuery?.currentData?.totalCount || 0
@@ -328,7 +356,7 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={hasCrossVenuesPermission({ needGlobalPermission: true }) && [
+        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && hasCrossVenuesPermission() && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
@@ -338,7 +366,9 @@ export function VenuesTable () {
         tableQuery={tableQuery}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
-        filterables={{ city: cityFilterOptions }} />
+        filterables={{ city: cityFilterOptions }}
+        tableContent={tableContent}
+      />
     </>
   )
 }

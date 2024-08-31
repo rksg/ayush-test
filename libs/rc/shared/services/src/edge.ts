@@ -53,6 +53,8 @@ import { baseEdgeApi }                         from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { isPayloadHasField } from './utils'
+
 export type EdgesExportPayload = {
   filters: Filter
   tenantId: string
@@ -104,17 +106,45 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       ]
     }),
     getEdgeList: build.query<TableResult<EdgeStatus>, RequestPayload>({
-      query: ({ payload, params }) => {
-        const req = createHttpRequest(EdgeUrlsInfo.getEdgeList, params)
-        return {
-          ...req,
-          body: payload
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const edgeListReq = {
+          ...createHttpRequest(EdgeUrlsInfo.getEdgeList, arg.params),
+          body: arg.payload
         }
-      },
-      providesTags: [{ type: 'Edge', id: 'LIST' }],
-      transformResponse: (result: TableResult<EdgeStatus>) => {
-        edgeStatusTransformer(result.data)
-        return result
+        const edgeListQuery = await fetchWithBQ(edgeListReq)
+        const edgeList = edgeListQuery.data as TableResult<EdgeStatus>
+        const edgesData = edgeList?.data as EdgeStatus[]
+
+        const edgeIds = edgesData.map(i => i.serialNumber)
+
+        // base on current usecase, no need to support cross venue-edges incompatible check
+        const venueFilter = ((arg.payload as Record<string, unknown>).filters as Record<string, unknown>)['venueId']
+        if (edgeIds.length && venueFilter && isPayloadHasField(arg.payload, 'incompatible')) {
+          try {
+            const compatibilityReq = {
+              ...createHttpRequest(EdgeUrlsInfo.getVenueEdgeCompatibilities, arg.params),
+              body: { filters: { venueIds: venueFilter, edgeIds: edgeIds } }
+            }
+
+            const compatibilityQuery = await fetchWithBQ(compatibilityReq)
+            const compatibilities = compatibilityQuery.data as VenueEdgeCompatibilitiesResponse
+
+            compatibilities.compatibilities.forEach((item) => {
+              const idx = findIndex(edgesData, { serialNumber: item.id })
+              if (idx !== -1)
+                edgesData[idx].incompatible = item.incompatible ?? 0
+            })
+          } catch (e) {
+          // eslint-disable-next-line no-console
+            console.error('venuesTable getEdgeCompatibilitiesVenue error:', e)
+          }
+        }
+
+        edgeStatusTransformer(edgeList.data)
+
+        return edgeListQuery.data
+          ? { data: edgeList }
+          : { error: edgeListQuery.error as FetchBaseQueryError }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import {
   CompatibleAlertBanner,
-  EdgeSdLanDetailCompatibilityDrawer,
+  EdgeDetailCompatibilityDrawer,
   getSdLanDetailsCompatibilitiesDrawerData,
   useEdgeSdLanDetailsCompatibilitiesData
 } from '@acx-ui/rc/components'
@@ -114,12 +114,14 @@ export const CompatibilityCheck = ({ serviceId }: { serviceId: string }) => {
             : null
         })}
       </StyledSpace>
-      {drawerFeature && <EdgeSdLanDetailCompatibilityDrawer
+      <EdgeDetailCompatibilityDrawer
         visible={!!drawerFeature}
         featureName={drawerFeature as IncompatibilityFeatures}
-        data={getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, drawerFeature)}
+        data={drawerFeature
+          ? getSdLanDetailsCompatibilitiesDrawerData(sdLanCompatibilities, drawerFeature)
+          : {}}
         onClose={() => toggleCompatibilityDrawer(undefined)}
-      />}
+      />
     </>
     : null
 }

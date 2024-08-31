@@ -132,13 +132,13 @@ export default function ServiceCatalog () {
           </GridRow>
         </UI.CategoryContainer>
       })}
-      {edgeCompatibilityFeature && <EdgeCompatibilityDrawer
-        visible
+      <EdgeCompatibilityDrawer
+        visible={!!edgeCompatibilityFeature}
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
         featureName={edgeCompatibilityFeature}
         onClose={() => setEdgeCompatibilityFeature(undefined)}
-      />}
+      />
     </>
   )
 }

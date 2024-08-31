@@ -1,7 +1,10 @@
+import { Form }               from 'antd'
 import { intersection, omit } from 'lodash'
 
 import { Tabs }                                                                                                                              from '@acx-ui/components'
 import { ApIncompatibleFeature, CompatibilityDeviceEnum, CompatibilityType, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName } from '@acx-ui/rc/utils'
+
+import { EdgeCompatibilityDetailTable } from '../EdgeCompatibilityDetailTable'
 
 import { CompatibilityItem } from './CompatibilityItem'
 import { useDescription }    from './utils'
@@ -25,19 +28,37 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
 
   const defaultActiveKey = intersection(tabOrder, types)[0]
 
-  return <Tabs defaultActiveKey={defaultActiveKey}>
-    {tabOrder.map((typeName) =>
-      data[typeName]
-        ? <Tabs.TabPane
-          key={typeName}
-          tab={getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
-        >
-          <CompatibilityItem
-            data={data[typeName]}
-            description={description}
-            {...others}
-          />
-        </Tabs.TabPane>
-        : null)}
-  </Tabs>
+  return <>
+    <Form.Item>
+      {description}
+    </Form.Item>
+    {props.deviceType === CompatibilityDeviceEnum.AP
+      ?
+      /* Should be a detail table for AP in the future, like <EdgeCompatibilityDetailTable /> */
+      <Tabs defaultActiveKey={defaultActiveKey}>
+        {tabOrder.map((typeName) =>
+          data[typeName]
+            ? <Tabs.TabPane
+              key={typeName}
+              tab={getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
+            >
+              <CompatibilityItem
+                data={data[typeName]}
+                {...others}
+              />
+            </Tabs.TabPane>
+            : null)}
+      </Tabs>
+      : <EdgeCompatibilityDetailTable
+        requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
+        venueId={props.venueId}
+        data={data[CompatibilityDeviceEnum.EDGE].map(i => ({
+          featureRequirement: {
+            featureName: i.featureName,
+            requiredFw: i.requiredFw!
+          },
+          incompatibleDevices: i.incompatibleDevices ?? []
+        }))}
+      />}
+  </>
 }
