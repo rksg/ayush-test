@@ -103,6 +103,7 @@ interface EcFormData {
     wifiLicense: number,
     switchLicense: number,
     apswLicense: number,
+    apswTrialLicense: number,
     tier: MspEcTierEnum
 }
 
@@ -244,7 +245,7 @@ export function ManageCustomer () {
       pageSize: 10000
     },
     option: {
-      skip: !isEntitlementRbacApiEnabled || !isEditMode
+      skip: !isEntitlementRbacApiEnabled || action !== 'edit'
     }
   })
   const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
@@ -332,6 +333,7 @@ export function ManageCustomer () {
           wifiLicense: wLic,
           switchLicense: sLic,
           apswLicense: apswLic,
+          apswTrialLicense: apswTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
           tier: data?.tier ?? MspEcTierEnum.Professional
         })
@@ -349,6 +351,7 @@ export function ManageCustomer () {
           setWifiLicense(wLic)
           setSwitchLicense(sLic)
         }
+        setServiceType(isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL : ServiceType.PAID)
       }
     }
 
@@ -626,13 +629,30 @@ export function ManageCustomer () {
         }
 
         if (isDeviceAgnosticEnabled ) {
-          if (_.isString(ecFormData.apswLicense) || needUpdateLicense) {
+          if (serviceTypeSelected === ServiceType.PAID &&
+            (_.isString(ecFormData.apswLicense) || needUpdateLicense)) {
             const apswAssignId =
               isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, false)
                 : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, false)
 
             const quantityApsw = _.isString(ecFormData.apswLicense)
               ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+            const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
+            licAssignment.push({
+              quantity: quantityApsw,
+              assignmentId: apswAssignId,
+              action: actionApsw,
+              deviceType: EntitlementDeviceType.MSP_APSW
+            })
+          }
+          if (serviceTypeSelected === ServiceType.EXTENDED_TRIAL &&
+            (_.isString(ecFormData.apswTrialLicense) || needUpdateLicense)) {
+            const apswAssignId =
+              isEntitlementRbacApiEnabled ? getDeviceAssignmentId(EntitlementDeviceType.APSW, true)
+                : getDeviceAssignmentId(EntitlementDeviceType.MSP_APSW, true)
+
+            const quantityApsw = _.isString(ecFormData.apswTrialLicense)
+              ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
             const actionApsw = apswAssignId === 0 ? AssignActionEnum.ADD : AssignActionEnum.MODIFY
             licAssignment.push({
               quantity: quantityApsw,
@@ -1076,6 +1096,46 @@ export function ManageCustomer () {
     </div>
   }
 
+  const ApswSubscriptionExtendedTrial = () => {
+    return <div >
+      <UI.FieldLabelSubs width='275px'>
+        <label>{intl.$t({ defaultMessage: 'Device Networking' })}</label>
+        {serviceTypeSelected === ServiceType.PAID
+          ? <Form.Item
+            name='apswLicense'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true },
+              { validator: (_, value) =>
+                fieldValidator(value, availableApswLicense) }
+            ]}
+            children={<Input type='number'/>}
+            style={{ paddingRight: '20px' }}
+          />
+          : <Form.Item
+            name='apswTrialLicense'
+            label=''
+            initialValue={0}
+            rules={[
+              { required: true },
+              { validator: (_, value) =>
+                fieldValidator(value, availableApswTrialLicense) }
+            ]}
+            children={<Input type='number'/>}
+            style={{ paddingRight: '20px' }}
+          />}
+        <label>
+          {(serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? intl.$t({ defaultMessage: 'licenses out of {availableLicense} available' }, {
+              availableLicense: availableApswTrialLicense })
+            : intl.$t({ defaultMessage: 'licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense }))
+          }
+        </label>
+      </UI.FieldLabelSubs>
+    </div>
+  }
 
   const EnableSupportForm = () => {
     return <>
@@ -1214,7 +1274,7 @@ export function ManageCustomer () {
     </>
   }
 
-  const EditCustomerSubscriptionFormNew = () => {
+  const EditCustomerSubscriptionFormExtendedTrial = () => {
     const trialSubscriptionSubtitle = isTrialActive
       ? intl.$t({ defaultMessage: 'Subscriptions (Trial Mode)' })
       : intl.$t({ defaultMessage: 'Inactive Subscriptions' })
@@ -1244,9 +1304,10 @@ export function ManageCustomer () {
       }
 
       {!isTrialMode && <div>
-        {isTrialEditMode && <Form.Item
+        {(isTrialEditMode || isExtendedTrialEditMode )&& <Form.Item
           name='startSubscriptionMode'
-          initialValue={ServiceType.PAID}
+          initialValue={serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+            ? ServiceType.EXTENDED_TRIAL : ServiceType.EXTENDED_TRIAL}
         >
           <Radio.Group onChange={(e: RadioChangeEvent) => {
             setServiceType(e.target.value)
@@ -1269,14 +1330,10 @@ export function ManageCustomer () {
         </Form.Item>}
 
         <Subtitle level={3}>
-          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL || isExtendedTrialEditMode
+          { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
             ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
             : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
-        {!isDeviceAgnosticEnabled && <div>
-          <WifiSubscription />
-          <SwitchSubscription />
-        </div>}
-        {isDeviceAgnosticEnabled && <ApswSubscription />}
+        {isDeviceAgnosticEnabled && <ApswSubscriptionExtendedTrial />}
 
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
@@ -1445,7 +1502,7 @@ export function ManageCustomer () {
     </>
   }
 
-  const CustomerSubscriptionNew = () => {
+  const CustomerSubscriptionExtendedTrial = () => {
     return <>
       <Subtitle level={3}>{intl.$t({ defaultMessage: 'Start service in' })}</Subtitle>
       <Form.Item
@@ -1505,7 +1562,7 @@ export function ManageCustomer () {
           { serviceTypeSelected === ServiceType.EXTENDED_TRIAL
             ? intl.$t({ defaultMessage: 'Extended Trial Mode' })
             : intl.$t({ defaultMessage: 'Paid Subscriptions' }) }</Subtitle>
-        <ApswSubscription />
+        <ApswSubscriptionExtendedTrial />
         <UI.FieldLabel2 width='275px' style={{ marginTop: '18px' }}>
           <label>{intl.$t({ defaultMessage: 'Service Start Date' })}</label>
           <label>{formatter(DateFormatEnum.DateFormat)(subscriptionStartDate)}</label>
@@ -1737,7 +1794,7 @@ export function ManageCustomer () {
           <Subtitle level={3}>
             { intl.$t({ defaultMessage: 'Customer Administrator' }) }</Subtitle>
           <Form.Item children={displayCustomerAdmins()} />
-          {showExtendedTrial ? <EditCustomerSubscriptionFormNew />
+          {showExtendedTrial ? <EditCustomerSubscriptionFormExtendedTrial />
             : <EditCustomerSubscriptionForm />}
           <EnableSupportForm></EnableSupportForm>
         </StepsFormLegacy.StepForm>}
@@ -1807,7 +1864,7 @@ export function ManageCustomer () {
               return true
             }}
           >
-            {showExtendedTrial ? <CustomerSubscriptionNew /> : <CustomerSubscription />}
+            {showExtendedTrial ? <CustomerSubscriptionExtendedTrial /> : <CustomerSubscription />}
           </StepsFormLegacy.StepForm>
 
           <StepsFormLegacy.StepForm name='summary'
