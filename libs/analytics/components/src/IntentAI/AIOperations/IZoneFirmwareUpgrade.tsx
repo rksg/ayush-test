@@ -1,19 +1,22 @@
 /* eslint-disable max-len */
 import { Form, Typography }                         from 'antd'
+import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
 import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
-import { TradeOff }                                    from '../../TradeOff'
-import { IntroSummary }                                from '../common/IntroSummary'
-import { isIntentActive }                              from '../common/isIntentActive'
-import { KpiField }                                    from '../common/KpiField'
-import { richTextFormatValues }                        from '../common/richTextFormatValues'
-import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
-import { Statuses, StatusReasons }                     from '../states'
-import { getGraphKPIs, Intent, IntentKPIConfig }       from '../useIntentDetailsQuery'
+import { TradeOff }                                           from '../../TradeOff'
+import { IntroSummary }                                       from '../common/IntroSummary'
+import { isIntentActive }                                     from '../common/isIntentActive'
+import { KpiField }                                           from '../common/KpiField'
+import { richTextFormatValues }                               from '../common/richTextFormatValues'
+import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
+import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
+import { getGraphKPIs, Intent, IntentKPIConfig }              from '../useIntentDetailsQuery'
+import { useInitialValues }                                   from '../useIntentTransition'
+import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
 import { ConfigurationField }    from './ConfigurationField'
 import { createIntentAIDetails } from './createIntentAIDetails'
@@ -62,11 +65,50 @@ const useValuesText = createUseValuesText({
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
-export const IntentAIForm = createIntentAIForm({
-  useInitialValues: () => ({ enable: true }),
-  getFormDTO: (values) => values.enable
-    ? { status: Statuses.scheduled }
-    : { status: Statuses.paused, statusReason: StatusReasons.fromInactive }
+
+const options = {
+  yes: {
+    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    content: <FormattedMessage
+      values={richTextFormatValues}
+      defaultMessage={`
+        <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+        <p>IntentAI will continuously monitor these configurations.</p>
+      `}
+    />
+  },
+  no: {
+    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    content: <FormattedMessage
+      values={richTextFormatValues}
+      defaultMessage={`
+        <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
+        <p>For manual control, you may directly change the network configurations.</p>
+        <p>For automated monitoring and control, you can select the "Reset" action, after which IntentAI will resume overseeing the network for this Intent.</p>
+    `} />
+  }
+}
+
+export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
+  useInitialValues: () => {
+    const initialValues = useInitialValues()
+    // always enable = true, because only new, scheduled, active, applyscheduled can open wizard
+    return { ...initialValues, preferences: { enable: true } }
+  },
+  getFormDTO: (values) => {
+    const nextStatus = getTransitionStatus(
+      values.preferences?.enable ? Actions.Optimize : Actions.Pause,
+      values as TransitionIntentItem
+    )
+
+    return {
+      id: values.id,
+      ..._.omit(nextStatus, 'createAt'),
+      ...(values.preferences?.enable && {
+        metadata: { scheduledAt: getScheduledAt(values).utc().toISOString() }
+      })
+    }
+  }
 }).addStep({
   title: defineMessage({ defaultMessage: 'Introduction' }),
   SideNote: () => <Reason
@@ -98,7 +140,7 @@ export const IntentAIForm = createIntentAIForm({
       <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
-      <Form.Item name={'enable'}>
+      <Form.Item name={['preferences','enable']}>
         <TradeOff
           headers={[
             $t({ defaultMessage: 'Intent Priority' }),
@@ -107,31 +149,13 @@ export const IntentAIForm = createIntentAIForm({
           radios={[{
             key: 'yes',
             value: true,
-            children: $t({ defaultMessage: 'Yes, apply the intent' }),
-            columns: [
-              $t({ defaultMessage: 'Yes, apply the intent' }),
-              <FormattedMessage
-                values={richTextFormatValues}
-                defaultMessage={`
-                  <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
-                  <p>IntentAI will continuously monitor these configurations.</p>
-                `}
-              />
-            ]
+            children: $t(options.yes.title),
+            columns: [ $t(options.yes.title), options.yes.content ]
           }, {
             key: 'no',
             value: false,
-            children: $t({ defaultMessage: 'No, do not apply the intent' }),
-            columns: [
-              $t({ defaultMessage: 'No, do not apply the intent' }),
-              <FormattedMessage
-                values={richTextFormatValues}
-                defaultMessage={`
-                  <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
-                  <p>For manual control, you may directly change the network configurations.</p>
-                  <p>For automated monitoring and control, you can select the "Reset" action, after which IntentAI will resume overseeing the network for this Intent.</p>
-              `} />
-            ]
+            children: $t(options.no.title),
+            columns: [ $t(options.no.title), options.no.content ]
           }]}
         />
       </Form.Item>
@@ -140,26 +164,23 @@ export const IntentAIForm = createIntentAIForm({
 }).addStep({
   title: defineMessage({ defaultMessage: 'Settings' }),
   Content: () => {
-    const { $t } = useIntl()
     const { form } = useStepFormContext()
-    const enable = form.getFieldValue('enable')
-    return <>
-      <Typography.Paragraph
-        children={$t({ defaultMessage: 'This intent will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })} />
-      Enabled Calendar: {String(enable)}
-    </>
+    const enable = form.getFieldValue('preferences').enable
+    return <ScheduleTiming disabled={!enable}/>
   }
 }).addStep({
   title: defineMessage({ defaultMessage: 'Summary' }),
   Content: () => {
-    const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
-    return <>
-      {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
-      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
-      <StepsForm.Subtitle>
-        {$t({ defaultMessage: 'Schedule' })}
-      </StepsForm.Subtitle>
-    </>
+    const { form } = useStepFormContext()
+
+    const enable = form.getFieldValue('preferences').enable
+    return enable
+      ? <>
+        {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
+        {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+        <ScheduleTiming.FieldSummary />
+      </>
+      : options.no.content
   }
 }).IntentAIForm

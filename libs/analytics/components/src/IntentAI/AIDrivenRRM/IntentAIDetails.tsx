@@ -113,7 +113,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 />
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.status)}
+                  children={getIntentStatus(intent.displayStatus)}
                 />
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Date' })}

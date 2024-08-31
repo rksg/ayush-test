@@ -15,7 +15,7 @@ import {
   useGetEcTenantDelegationQuery,
   useGetTenantDelegationQuery
 }                                    from '@acx-ui/rc/services'
-import { useUserProfileContext } from '@acx-ui/user'
+import { hasCrossVenuesPermission, useUserProfileContext } from '@acx-ui/user'
 
 import { MessageMapping } from '../MessageMapping'
 
@@ -110,7 +110,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
 
   const isRksSupportAllowed = hasAccess('POST:/api/tenant/{tenantId}/delegation/support')
   const isSupportUser = Boolean(userProfileData?.support)
-  const isDisabled = isSupportUser || !isRksSupportAllowed || isUpdating
+  const isDisabled = !hasCrossVenuesPermission() ||
+    isSupportUser || !isRksSupportAllowed || isUpdating
 
   const supportInfo = isMspDelegatedEC ? ecTenantDelegationData : tenantDelegationData
   const { createdDate, expiryDate, expiryDateString, isAccessSupported } = supportInfo
