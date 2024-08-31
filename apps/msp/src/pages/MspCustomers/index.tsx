@@ -35,7 +35,8 @@ import {
   MspEcAlarmList,
   MspEc,
   MSPUtils,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcAccountType
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -246,9 +247,9 @@ export function MspCustomers () {
         dataIndex: 'status',
         key: 'status',
         sorter: true,
-        width: 80,
+        width: 120,
         render: function (_, row) {
-          return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
+          return $t(mspUtils.getStatus(row))
         }
       },
       {
@@ -480,7 +481,9 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
+          const accType = selectedRows[0].accountType
+          const status = accType === MspEcAccountType.TRIAL ? 'Trial'
+            : (accType === MspEcAccountType.EXTENDED_TRIAL ? 'ExtendedTrial': 'Paid')
           navigate({
             ...basePath,
             pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
@@ -527,7 +530,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Deactivate' }),
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
-            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
+            (selectedRows[0].status === 'Active' &&
+              selectedRows[0].accountType !== MspEcAccountType.TRIAL &&
+              selectedRows[0].accountType !== MspEcAccountType.EXTENDED_TRIAL)) {
             return true
           }
           return false
@@ -557,7 +562,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Reactivate' }),
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
-            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL'))) {
+            (selectedRows[0].status === 'Active' ||
+              selectedRows[0].accountType === MspEcAccountType.TRIAL ||
+              selectedRows[0].accountType === MspEcAccountType.EXTENDED_TRIAL))) {
             return false
           }
           return true

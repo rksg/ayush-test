@@ -4,7 +4,7 @@ import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { RolesEnum }                         from '@acx-ui/types'
-import { hasRoles }                          from '@acx-ui/user'
+import { AuthRoute, hasRoles }               from '@acx-ui/user'
 
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
@@ -116,7 +116,14 @@ function VenuesRoutes () {
     <Route path='/:tenantId/t/venues'>
       <Route index element={<VenuesTable />} />
       <Route path='*' element={<PageNotFound />} />
-      <Route path='add' element={<VenuesForm />} />
+      <Route
+        path='add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <VenuesForm />
+          </AuthRoute>
+        }
+      />
       <Route path=':venueId/venue-details/:activeTab' element={<VenueDetails />} />
       <Route
         path=':venueId/venue-details/:activeTab/:activeSubTab'
@@ -150,7 +157,11 @@ function AdministrationRoutes () {
         element={<EditPrivilegeGroup />} />
       <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
       <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
-      <Route path='onpremMigration/add' element={<MigrationForm />} />
+      <Route path='onpremMigration/add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <MigrationForm />
+          </AuthRoute>} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>
   )

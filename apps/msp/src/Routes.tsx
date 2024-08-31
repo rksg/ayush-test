@@ -241,7 +241,14 @@ export function ConfigTemplatesRoutes () {
           />
         </>}
         {configTemplateVisibilityMap[ConfigTemplateType.VENUE] && <>
-          <Route path='venues/add' element={<VenuesForm />} />
+          <Route
+            path='venues/add'
+            element={
+              <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+                <VenuesForm />
+              </AuthRoute>
+            }
+          />
           <Route path='venues/:venueId/:action/:activeTab' element={<VenueEdit />} />
           <Route path='venues/:venueId/:action/:activeTab/:activeSubTab' element={<VenueEdit />} />
           <Route path='venues/:venueId/venue-details/:activeTab' element={<VenueDetails />} />
@@ -378,7 +385,7 @@ export function ConfigTemplatesRoutes () {
           <Route
             path='networks/wired/profiles/add'
             element={
-              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <AuthRoute scopes={[SwitchScopes.CREATE]} requireCrossVenuesPermission>
                 <ConfigurationProfileForm />
               </AuthRoute>
             }
@@ -386,7 +393,7 @@ export function ConfigTemplatesRoutes () {
           <Route
             path='networks/wired/profiles/regular/:profileId/:action'
             element={
-              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <AuthRoute scopes={[SwitchScopes.UPDATE]} requireCrossVenuesPermission>
                 <ConfigurationProfileForm />
               </AuthRoute>
             }
@@ -395,14 +402,14 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_CLI] && <>
           <Route path='networks/wired/:configType/cli/add'
             element={
-              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+              <AuthRoute scopes={[SwitchScopes.CREATE]} requireCrossVenuesPermission>
                 <CliProfileForm />
               </AuthRoute>
             } />
           <Route
             path='networks/wired/:configType/cli/:profileId/:action'
             element={
-              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+              <AuthRoute scopes={[SwitchScopes.UPDATE]} requireCrossVenuesPermission>
                 <CliProfileForm />
               </AuthRoute>
             }

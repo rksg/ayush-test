@@ -1,6 +1,6 @@
-import { useConfigTemplate }           from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
-import { goToNotFound, hasPermission } from '@acx-ui/user'
+import { useConfigTemplate }              from '@acx-ui/rc/utils'
+import { useParams }                      from '@acx-ui/react-router-dom'
+import { goToNotFound, hasRaiPermission } from '@acx-ui/user'
 
 import { VenueAnalyticsTab } from './VenueAnalyticsTab'
 import { VenueClientsTab }   from './VenueClientsTab'
@@ -26,7 +26,7 @@ export function VenueDetails () {
 
     return {
       overview: VenueOverviewTab,
-      analytics: () => hasPermission() ? <VenueAnalyticsTab/> : null,
+      analytics: () => hasRaiPermission('READ_INCIDENTS') ? <VenueAnalyticsTab/> : null,
       clients: VenueClientsTab,
       devices: VenueDevicesTab,
       networks: VenueNetworksTab,

@@ -23,8 +23,8 @@ export default function PortalServiceDetail () {
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const queryResults = useGetPortalTemplateQuery({
     params,
-    payload: { enableRbac: isEnabledRbacService } }
-  )
+    enableRbac: isEnabledRbacService
+  })
   const breadcrumb = generateConfigTemplateBreadcrumb()
 
   return (

@@ -12,7 +12,7 @@ import { Loader }                                                               
 import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
 import { TenantLink }                                                                from '@acx-ui/react-router-dom'
 import { WifiScopes }                                                                from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                             from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission }                   from '@acx-ui/user'
 import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
 import { useVideoCallQoeTestsQuery, useDeleteCallQoeTestMutation } from '../VideoCallQoe/services'
@@ -219,7 +219,8 @@ export function VideoCallQoeTable () {
         dataSource={meetingList}
         rowActions={filterByAccess(actions)}
         rowKey='id'
-        rowSelection={hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE' }) && { type: 'radio' }}
+        rowSelection={hasCrossVenuesPermission() &&
+          hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE' }) && { type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
