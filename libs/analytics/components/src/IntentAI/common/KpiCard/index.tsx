@@ -20,7 +20,6 @@ export const KpiCard: React.FC<{
   blurData: boolean
 }> = ({ kpi, showData, blurData }) => {
   const { $t } = useIntl()
-  // showData = false
   // TODO: show timestamps on hover
   return <Card>
     <UI.Title>{$t(kpi.label)}</UI.Title>

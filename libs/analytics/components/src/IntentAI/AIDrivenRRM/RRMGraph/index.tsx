@@ -103,11 +103,12 @@ const GraphTitle = ({ details }: { details: Intent }) => {
 }
 
 export const IntentAIRRMGraph = ({
-  details, crrmData, summaryUrlBefore, summaryUrlAfter } : {
+  details, crrmData, summaryUrlBefore, summaryUrlAfter, blurData } : {
     details: Intent,
     crrmData: ProcessedCloudRRMGraph[],
     summaryUrlBefore?: string,
-    summaryUrlAfter?: string
+    summaryUrlAfter?: string,
+    blurData: boolean
   }) => {
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
@@ -117,7 +118,10 @@ export const IntentAIRRMGraph = ({
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
-  return <UI.Wrapper>
+  return <UI.Wrapper
+    style={{
+      filter: blurData ? 'blur(8px)' : 'none'
+    }}>
     <Card>
       <UI.GraphWrapper key={'graph-details'}>
         {useGraph(crrmData, detailsZoomScale, false,

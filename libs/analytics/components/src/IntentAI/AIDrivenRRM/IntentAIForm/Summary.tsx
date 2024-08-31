@@ -7,6 +7,7 @@ import { StepsForm, ProcessedCloudRRMGraph } from '@acx-ui/components'
 import { KpiField }                          from '../../common/KpiField'
 import { ScheduleTiming }                    from '../../common/ScheduleTiming'
 import { useIntentContext }                  from '../../IntentContext'
+import { Statuses }                          from '../../states'
 import { getGraphKPIs }                      from '../../useIntentDetailsQuery'
 import { dataRetentionText, isDataRetained } from '../../utils'
 import { IntentAIRRMGraph }                  from '../RRMGraph'
@@ -18,6 +19,10 @@ export function Summary (
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
   const { intent, kpis } = useIntentContext()
+  const blurData = [
+    Statuses.na,
+    Statuses.paused
+  ].includes(intent.status as Statuses)
 
   return <Row gutter={20}>
     <Col span={16}>
@@ -29,6 +34,7 @@ export function Summary (
             crrmData={crrmData}
             summaryUrlBefore={summaryUrlBefore}
             summaryUrlAfter={summaryUrlAfter}
+            blurData={blurData}
           />
           : $t(dataRetentionText)
         }

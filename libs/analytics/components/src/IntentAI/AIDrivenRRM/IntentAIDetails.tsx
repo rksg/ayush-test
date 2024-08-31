@@ -149,6 +149,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               crrmData={crrmData}
               summaryUrlBefore={summaryUrlBefore}
               summaryUrlAfter={summaryUrlAfter}
+              blurData={blurData}
             />}
           />
 

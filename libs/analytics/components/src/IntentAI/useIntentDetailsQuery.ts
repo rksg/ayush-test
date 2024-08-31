@@ -93,7 +93,6 @@ export function getKpiData (intent: Intent, config: IntentKPIConfig) {
     _.get(kpi, 'compareData.result', null),
     _.get(kpi, 'data.result', null)
   ].filter(value => value !== null)
-
   return {
     data: after,
     compareData: before
@@ -115,7 +114,6 @@ export function getGraphKPIs (
         kpi.valueFormatter || kpi.format
       ) as { value: string; trend: TrendTypeEnum }
       : undefined
-
     return {
       ..._.pick(kpi, ['key', 'label']),
       value: data ? kpi.format(data) : noDataDisplay,
