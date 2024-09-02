@@ -60,13 +60,6 @@ export type Intent = {
   }
 } & Partial<IntentKpi>
 
-export const transformDetailsResponse = (details: Intent) => {
-  return {
-    ...details,
-    preferences: details.preferences || undefined // prevent _.merge({ x: {} }, { x: null })
-  }
-}
-
 const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
   return kpis.map(kpi => {
     const name = `kpi_${_.snakeCase(kpi.key)}`
@@ -147,10 +140,7 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: { root, sliceId, code }
       }),
-      transformResponse: (response: { intent?: Intent }) => {
-        if (!response.intent) return undefined
-        return transformDetailsResponse(response.intent)
-      },
+      transformResponse: (response: { intent?: Intent }) => response.intent,
       providesTags: [{ type: 'Intent', id: 'INTENT_DETAILS' }]
     })
   })
