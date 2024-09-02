@@ -1,7 +1,7 @@
 import { Divider, Form, Row, Space } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { ApCompatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName } from '@acx-ui/rc/utils'
+import { ApCompatibility, CompatibilityDeviceEnum, IncompatibilityFeatures, getCompatibilityDeviceTypeDisplayName, getCompatibilityFeatureDisplayName } from '@acx-ui/rc/utils'
 
 import { CompatibilityItem }           from './CompatibilityItem'
 import { messageMapping }              from './messageMapping'
@@ -36,7 +36,7 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
     {...messageMapping.singleFeatureCrossDeviceType}
     values={{
       b: (txt) => <b>{txt}</b>,
-      featureName: others.featureName,
+      featureName: getCompatibilityFeatureDisplayName(others.featureName),
       deviceTypes: deviceTypesString
     }}
   />

@@ -54,7 +54,8 @@ const defaultPayload = {
     'duration',
     'remoteEdgeId',
     'apModel',
-    'minimumRequiredVersion'
+    'minimumRequiredVersion',
+    'clientMldMac'
   ]
 }
 
