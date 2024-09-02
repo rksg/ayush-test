@@ -1,12 +1,14 @@
 
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Button, Loader, PageHeader, Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteEthernetPortProfileMutation,
   useGetAAAPolicyViewModelListQuery,
-  useGetEthernetPortProfileViewDataListQuery }                     from '@acx-ui/rc/services'
+  useGetEthernetPortProfileViewDataListQuery,
+  useGetVenuesQuery }                     from '@acx-ui/rc/services'
 import {
   AAAViewModalType,
   EthernetPortProfileViewData,
@@ -60,6 +62,24 @@ const EthernetPortProfileTable = () => {
       radiusNameMap: data?.data
         ? data.data.map(radius => ({ key: radius.id!, value: radius.name }))
         : emptyResult
+    })
+  })
+
+  const emptyVenues: { key: string, value: string }[] = []
+  const { venueNameMap } = useGetVenuesQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      venueNameMap: data?.data
+        ? data.data.map(venue => ({ key: venue.id, value: venue.name }))
+        : emptyVenues
     })
   })
 
@@ -145,6 +165,35 @@ const EthernetPortProfileTable = () => {
               policyId: accountingRadiusId })}>
               {radiusNameMap.find(radius => radius.key === accountingRadiusId)?.value || ''}
             </TenantLink>)
+      }
+    },
+    {
+      key: 'apSerialNumbers',
+      title: $t({ defaultMessage: 'APs' }),
+      dataIndex: 'apSerialNumbers',
+      sorter: true,
+      render: (_, row) =>{
+        if (row.isDefault) return '-'
+        if (!row.apSerialNumbers || row.apSerialNumbers.length === 0) return 0
+        return <Tooltip dottedUnderline>{row.apSerialNumbers.length}</Tooltip>
+      }
+    },
+    {
+      key: 'venueIds',
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
+      dataIndex: 'venueIds',
+      filterable: venueNameMap,
+      sorter: true,
+      render: (_, row) =>{
+        if (row.isDefault) return '-'
+        if (!row.venueIds || row.venueIds.length === 0) return 0
+        const venueIds = row.venueIds
+        // eslint-disable-next-line max-len
+        const filterVenues = venueNameMap.filter(v => venueIds!.includes(v.key)).map(v => v)
+        const tooltipItems = filterVenues.map(v => {
+          return $t({ defaultMessage: '{value}' }, { value: v.value })
+        })
+        return <SimpleListTooltip items={tooltipItems} displayText={venueIds.length} />
       }
     }
   ]

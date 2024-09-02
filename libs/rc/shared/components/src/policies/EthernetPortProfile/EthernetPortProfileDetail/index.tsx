@@ -1,9 +1,11 @@
 import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { Button, PageHeader, SummaryCard, Card }                 from '@acx-ui/components'
-import { useAaaPolicyQuery, useGetEthernetPortProfileByIdQuery } from '@acx-ui/rc/services'
+import { Button, PageHeader, SummaryCard, Card }                                                             from '@acx-ui/components'
+import { Unknown }                                                                                           from '@acx-ui/icons'
+import { useAaaPolicyQuery, useGetEthernetPortProfileByIdQuery, useGetEthernetPortProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
+  EthernetPortProfileViewData,
   PolicyOperation,
   PolicyType,
   getEthernetPortAuthTypeString,
@@ -20,9 +22,21 @@ export const EthernetPortProfileDetail = () => {
 
   const { $t } = useIntl()
   const { policyId } = useParams()
-  const { data: ethernetPortProfileData } = useGetEthernetPortProfileByIdQuery(
-    { params: { id: policyId } }
-  )
+  const { ethernetPortProfileData } = useGetEthernetPortProfileViewDataListQuery({
+    payload: {
+      sortField: 'name',
+      sortOrder: 'ASC',
+      filters: {
+        id: [policyId]
+      }
+    }
+  }, {
+    selectFromResult: ({ data: queryResult })=>{
+      return {
+        ethernetPortProfileData: queryResult?.data[0]
+      }
+    }
+  })
 
   const { data: authRadiusData } = useAaaPolicyQuery(
     {
@@ -139,7 +153,9 @@ export const EthernetPortProfileDetail = () => {
             { count: 0 }
           )}
         </Typography.Title>
-        <EthernetPortProfileInstanceTable apIds={[]}/>
+        <EthernetPortProfileInstanceTable
+          apSerialNumbers={ethernetPortProfileData?.apSerialNumbers || []}
+        />
       </Card>
     </Space>
   </>)

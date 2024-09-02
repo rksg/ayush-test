@@ -7,12 +7,12 @@ import { AP, useTableQuery }                 from '@acx-ui/rc/utils'
 import { TenantLink, useParams }             from '@acx-ui/react-router-dom'
 
 interface EthernetPortTableProps {
-  apIds: string[]
+  apSerialNumbers: string[]
 }
 
 export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) => {
   const { $t } = useIntl()
-  const { apIds=[] } = props
+  const { apSerialNumbers=[] } = props
   const { tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const defaultTablePayload = {
@@ -22,7 +22,7 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
       'model',
       'serialNumber'
     ],
-    filters: { serialNumber: apIds }
+    filters: { serialNumber: apSerialNumbers }
   }
 
   const tableQuery = useTableQuery({
@@ -34,10 +34,10 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
     },
     search: {
     },
-    enableRbac: isWifiRbacEnabled
-    // option: {
-    //   skip:apIds.length === 0
-    // }
+    enableRbac: isWifiRbacEnabled,
+    option: {
+      skip: apSerialNumbers.length == 0
+    }
   })
 
   const emptyVenues: { key: string, value: string }[] = []
@@ -102,10 +102,7 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
-        // onChange={tableQuery.handleTableChange}
       />
     </Loader>
   )
 }
-
-// export default EthernetPortProfileInstanceTable
