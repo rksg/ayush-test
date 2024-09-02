@@ -82,7 +82,7 @@ export function Introduction (
       <IntroSummary />
       <StepsForm.TextContent>
         <StepsForm.Subtitle>
-          {$t({ defaultMessage: 'Network Intent plays a crucial role in wireless network design.' })}
+          <FormattedMessage defaultMessage='Network Intent plays a crucial role in wireless network design' />
         </StepsForm.Subtitle>
         <FormattedMessage
           values={richTextFormatValues}

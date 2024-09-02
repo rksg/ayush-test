@@ -62,7 +62,7 @@ const useValuesText = createUseValuesText({
       Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
     </p>
   ` }),
-  summary: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
+  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
@@ -85,7 +85,7 @@ const options = {
       defaultMessage={`
         <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
         <p>For manual control, you may directly change the network configurations.</p>
-        <p>For automated monitoring and control, you can select the "Reset" action, after which IntentAI will resume overseeing the network for this Intent.</p>
+        <p>For automated monitoring and control, you can select the "Resume" action, after which IntentAI will resume overseeing the network for this Intent.</p>
     `} />
   }
 }
@@ -127,7 +127,7 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
   Content: () => (<>
     <IntroSummary />
     <StepsForm.Subtitle>
-      <FormattedMessage defaultMessage='Why is the intent?' />
+      <FormattedMessage defaultMessage='Network Intent plays a crucial role in wireless network design' />
     </StepsForm.Subtitle>
     {useValuesText().introText}
   </>)
