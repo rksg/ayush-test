@@ -1,8 +1,9 @@
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM } from './AIDrivenRRM/__tests__/fixtures'
-import { IntentAIForm }     from './IntentAIForm'
+import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentAIForm }                         from './IntentAIForm'
 
 jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
   kpis: [],
@@ -15,6 +16,11 @@ jest.mock('./AIDrivenRRM/CCrrmChannel5gAuto', () => ({
 jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
   kpis: [],
   IntentAIForm: () => <div data-testid='c-crrm-channel6g-auto-IntentAIForm'/>
+}))
+
+jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='i-zonefirmware-upgrade-IntentAIForm'/>
 }))
 
 describe('IntentAIForm', () => {
@@ -38,5 +44,22 @@ describe('IntentAIForm', () => {
       expect(await screen.findByTestId(`${code}-IntentAIForm`)).toBeVisible()
       unmount()
     }
+  })
+
+  describe('should render for AIOperations', () => {
+    const renderAIOperations = async (code: string) => {
+      const { unmount } = render(<IntentAIForm />, {
+        route: { params: { code } },
+        wrapper: Provider
+      })
+      expect(await screen.findByTestId(`${code}-IntentAIForm`)).toBeVisible()
+      unmount()
+    }
+    it('should render for AIOperations', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedIZoneFirmwareUpgrade } })
+      await renderAIOperations(mockedIZoneFirmwareUpgrade.code)
+    })
+    // TODO: add test for other AIOperations
   })
 })
