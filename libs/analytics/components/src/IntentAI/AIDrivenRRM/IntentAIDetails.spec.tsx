@@ -141,7 +141,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
+      expect(await screen.findByTestId('Why the intent?'))
         .toHaveTextContent(/interfering links from 2 to 0/)
     })
 
@@ -170,7 +170,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
+      expect(await screen.findByTestId('Why the intent?'))
         .toHaveTextContent(/adjust the channel plan, bandwidth and AP transmit power when necessary to/) // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
         .toHaveTextContent(/for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten/) // eslint-disable-line max-len
@@ -201,7 +201,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
+      expect(await screen.findByTestId('Why the intent?'))
         .toHaveTextContent(/adjust the channel plan when necessary to/)
       expect(await screen.findByTestId('Potential trade-off'))
         .toHaveTextContent(/for channel and Auto Channel Selection will potentially be overwritten/)
