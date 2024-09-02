@@ -14,7 +14,6 @@ import { KpiCard }             from '../common/KpiCard'
 import { StatusTrail }         from '../common/StatusTrail'
 import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
-import { Statuses }            from '../states'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 import { isDataRetained }      from '../utils'
 
@@ -27,10 +26,6 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
     const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
     const showData = isDataRetained(intent.metadata.dataEndTime)
-    const blurData = [
-      Statuses.na,
-      Statuses.paused
-    ].includes(intent.status as Statuses)
 
     return <>
       <IntentDetailsHeader />
@@ -74,15 +69,16 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
             children={<GridRow>
               {[
                 <GridCol data-testid='Configuration' key='value' col={{ span: 12 }}>
-                  <ConfigurationCard configuration={configuration!}
-                    intent={intent}
-                    blurData={blurData}/>
+                  <ConfigurationCard
+                    configuration={configuration!}
+                    intent={intent}/>
                 </GridCol>,
                 ...getGraphKPIs(intent, kpis).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                    <KpiCard kpi={kpi}
+                    <KpiCard
+                      kpi={kpi}
                       showData={showData}
-                      blurData={blurData}/>
+                      intent={intent}/>
                   </GridCol>
                 ))]}
             </GridRow>}

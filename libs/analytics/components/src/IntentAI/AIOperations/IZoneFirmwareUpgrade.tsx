@@ -179,7 +179,8 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     return enable
       ? <>
         {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
-        {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key}
+        {getGraphKPIs(intent, kpis).map(kpi => (<KpiField
+          key={kpi.key}
           kpi={kpi}
           showData={showData}/>))}
         <ScheduleTiming.FieldSummary />

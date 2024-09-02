@@ -134,7 +134,10 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
             children={<GridRow>
               {getGraphKPIs(intent, kpis).map(kpi => (
                 <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} showData={showData} blurData={blurData}/>
+                  <KpiCard
+                    kpi={kpi}
+                    showData={showData}
+                    intent={intent}/>
                 </GridCol>
               ))}
             </GridRow>}
