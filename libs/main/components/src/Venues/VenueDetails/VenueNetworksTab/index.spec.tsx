@@ -18,6 +18,7 @@ import {
   ConfigTemplateUrlsInfo,
   EdgeMvSdLanViewData,
   EdgeSdLanFixtures,
+  EdgeSdLanTunneledWlan,
   EdgeSdLanUrls,
   VlanPoolRbacUrls,
   WifiRbacUrlsInfo,
@@ -520,6 +521,49 @@ describe('VenueNetworksTab', () => {
       const radioOpt_sdlan = await within(tunnelNetworkModal).findByRole('radio', { name: /SD-LAN Tunneling/ })
       await within(tunnelNetworkModal).findByText('Mocked_SDLAN_1')
       await waitFor(() => expect(radioOpt_sdlan).toBeChecked())
+    })
+
+    it('should greyout when the WLAN is the last one in SDLAN', async () => {
+      const mockedData = {
+        sdLans: [{
+          ...mockedMvSdLanDataList[0],
+          name: 'Mocked_SDLAN_last_one_test',
+          tunneledWlans: [{
+            networkId: targetNetworkId,
+            networkName: 'test_1',
+            venueId: params.venueId
+          }] as EdgeSdLanTunneledWlan[],
+          tunneledGuestWlans: [] as EdgeSdLanTunneledWlan[]
+        }] as EdgeMvSdLanViewData[],
+        scopedNetworkIds: [targetNetworkId],
+        scopedGuestNetworkIds: []
+      }
+      jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue(mockedData)
+
+      mockServer.use(
+        rest.post(
+          EdgeSdLanUrls.getEdgeSdLanViewDataList.url,
+          (_, res, ctx) => {
+            return res(ctx.json({ data: mockedData.sdLans }))
+          }
+        )
+      )
+
+      render(<Provider><VenueNetworksTab /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/networks' }
+      })
+
+      const activatedRow = await screen.findByRole('row', { name: /test_1/i })
+      screen.getByRole('columnheader', { name: 'Tunnel' })
+      const tunnelBtn = await within(activatedRow).findByRole('button', { name: 'Tunneled (SE_Cluster 0)' })
+      await userEvent.click(tunnelBtn)
+      const tunnelNetworkModal = await screen.findByRole('dialog')
+      const radioOpt_sdlan = await within(tunnelNetworkModal).findByRole('radio', { name: /SD-LAN Tunneling/ })
+      await within(tunnelNetworkModal).findByText('Mocked_SDLAN_last_one_test')
+      await waitFor(() => expect(radioOpt_sdlan).toBeChecked())
+      expect(radioOpt_sdlan).toBeDisabled()
+      const radioOpt_none = within(tunnelNetworkModal).getByRole('radio', { name: /Local Breakout/ })
+      expect(radioOpt_none).toBeDisabled()
     })
 
     it('should correctly display local breakout when the network is not SDLAN selected', async () => {

@@ -8,7 +8,7 @@ import { mockGraphqlMutation, render, renderHook, screen, waitForElementToBeRemo
 
 import { mockedIntentCRRM, mockedIntentCRRMnew }       from './AIDrivenRRM/__tests__/fixtures'
 import { useIntentContext }                            from './IntentContext'
-import { Statuses }                                    from './states'
+import { DisplayStates, Statuses }                     from './states'
 import { createUseIntentTransition, useInitialValues } from './useIntentTransition'
 
 const { click } = userEvent
@@ -37,7 +37,8 @@ describe('createUseIntentTransition', () => {
         id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b7',
         settings: { date: undefined, time: undefined },
         status: Statuses.new,
-        statusReason: undefined
+        statusReason: undefined,
+        displayStatus: DisplayStates.new
       })
     })
     it('handle existing intent with scheduledAt', async () => {
@@ -47,7 +48,8 @@ describe('createUseIntentTransition', () => {
         id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
         settings: { date: moment('2023-07-15T14:15:00.000Z'), time: 22.25 },
         status: Statuses.active,
-        statusReason: undefined
+        statusReason: undefined,
+        displayStatus: DisplayStates.applyScheduled
       })
     })
   })
@@ -80,7 +82,8 @@ describe('createUseIntentTransition', () => {
 
     it('handle submit success', async () => {
       jest.mocked(useIntentContext).mockReturnValue({
-        intent: { ...mockedIntentCRRM, metadata: { scheduledAt: '2024-08-12T13:00:00' } },
+        intent: { ...mockedIntentCRRM, metadata: {
+          ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } },
         kpis: []
       })
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
@@ -94,7 +97,8 @@ describe('createUseIntentTransition', () => {
     })
     it('handle submit error', async () => {
       jest.mocked(useIntentContext).mockReturnValue({
-        intent: { ...mockedIntentCRRM, metadata: { scheduledAt: '2024-08-12T13:00:00' } },
+        intent: { ...mockedIntentCRRM, metadata: {
+          ...mockedIntentCRRM.metadata, scheduledAt: '2024-08-12T13:00:00' } },
         kpis: []
       })
       mockGraphqlMutation(intentAIUrl, 'IntentTransition', {
@@ -106,7 +110,8 @@ describe('createUseIntentTransition', () => {
     })
     it('handle scheduledAt validation', async () => {
       jest.mocked(useIntentContext).mockReturnValue({
-        intent: { ...mockedIntentCRRMnew, metadata: { scheduledAt: '2024-08-12T00:00:00' } },
+        intent: { ...mockedIntentCRRMnew, metadata: {
+          ...mockedIntentCRRMnew.metadata, scheduledAt: '2024-08-12T00:00:00' } },
         kpis: []
       })
       render(<Provider><TestForm /></Provider>)

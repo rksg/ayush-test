@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useEffect } from 'react'
 
 import { Col, Form, Row, Typography } from 'antd'
@@ -85,7 +86,6 @@ export const TunnelScopeForm = () => {
     }
   })
 
-  // eslint-disable-next-line max-len
   const tunnelProfileOptions = getTunnelProfileOptsWithDefault(tunnelProfileData, TunnelTypeEnum.VLAN_VXLAN)
   const dcTunnelProfileOptions = (tunnelProfileData
     ?.map(item => ({ label: item.name!, value: item.id! }))) ?? []
@@ -105,14 +105,11 @@ export const TunnelScopeForm = () => {
     data: Network,
     checked: boolean
   ) => {
-    // const newSelected = activated.map(item => _.pick(item, ['id', 'name']))
     const changedData = _.pick(data, ['id', 'name'])
-    // eslint-disable-next-line max-len
+
     const activatedNetworks = (form.getFieldValue('activatedNetworks') as EdgeSdLanActivatedNetwork[]) ?? []
-    // eslint-disable-next-line max-len
     const activatedGuestNetworks = (form.getFieldValue('activatedGuestNetworks') as EdgeSdLanActivatedNetwork[]) ?? []
 
-    // eslint-disable-next-line max-len
     const affectedNetworks = fieldName === 'activatedNetworks' ? activatedNetworks : activatedGuestNetworks
     let newSelected = _.cloneDeep(affectedNetworks)
     if (checked) newSelected = affectedNetworks.concat([changedData])
@@ -130,7 +127,6 @@ export const TunnelScopeForm = () => {
         // vlan pooling enabled cannot be a guest network
         const isVlanPooling = !_.isNil(data.vlanPool)
         if (!isVlanPooling || (isVlanPooling && !checked)) {
-          // eslint-disable-next-line max-len
           updateContent['activatedGuestNetworks'] = toggleItemFromSelected(checked, data, activatedGuestNetworks)
         }
 
@@ -144,6 +140,10 @@ export const TunnelScopeForm = () => {
       }
     } else {
       form.setFieldValue(fieldName, newSelected)
+
+      if (data.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && fieldName === 'activatedNetworks' && !checked) {
+        form.setFieldValue('activatedGuestNetworks', toggleItemFromSelected(checked, data, activatedGuestNetworks))
+      }
     }
   }
 

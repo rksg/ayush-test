@@ -4,10 +4,10 @@ import _                     from 'lodash'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
-import { kpiDelta, TrendTypeEnum } from '@acx-ui/analytics/utils'
-import { formatter }               from '@acx-ui/formatter'
-import { intentAIApi }             from '@acx-ui/store'
-import { NetworkPath, NodeType }   from '@acx-ui/utils'
+import { kpiDelta, TrendTypeEnum }              from '@acx-ui/analytics/utils'
+import { formatter }                            from '@acx-ui/formatter'
+import { intentAIApi }                          from '@acx-ui/store'
+import { NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
 import { DisplayStates, Statuses, StatusReasons } from './states'
 import { IntentWlan }                             from './utils'
@@ -25,11 +25,11 @@ export type IntentKpi = Record<`kpi_${string}`, {
   data: {
     timestamp: string | null
     result: number | [number, number]
-  }
+  } | null
   compareData: {
     timestamp: string | null
     result: number | [number, number]
-  }
+  } | null
 }>
 
 export type IntentConfigurationValue =
@@ -89,8 +89,10 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
 export function getKpiData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
   const kpi = intent[key] as IntentKpi[`kpi_${string}`]
-  const [before, after] = [kpi.compareData.result, kpi.data.result]
-    .filter(value => value !== null)
+  const [before, after] = [
+    _.get(kpi, 'compareData.result', null),
+    _.get(kpi, 'data.result', null)
+  ].filter(value => value !== null)
 
   return {
     data: after,
@@ -116,8 +118,8 @@ export function getGraphKPIs (
 
     return {
       ..._.pick(kpi, ['key', 'label']),
-      value: kpi.format(data),
-      delta
+      value: data ? kpi.format(data) : noDataDisplay,
+      delta: data ? delta : undefined
     }
   })
 }
