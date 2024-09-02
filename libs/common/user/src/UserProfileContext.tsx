@@ -10,7 +10,6 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useRcgAllowedOperationsQuery,
   useGetPrivilegeGroupsQuery,
   useGetVenuesListQuery
 } from './services'
@@ -68,9 +67,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 
-  const { data: rcgAllowedOperations } = useRcgAllowedOperationsQuery(tenantId!,
-    { skip: !Boolean(profile) })
-  const allowedOperations = rcgAllowedOperations
+  // TODO: should remove in future
+  const allowedOperations = [] as string[]
 
   const getHasAllVenues = () => {
     if(pgList) {
@@ -121,7 +119,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     value={{
       data: profile,
       isUserProfileLoading: isUserProfileFetching,
-      allowedOperations: allowedOperations || [],
+      allowedOperations: allowedOperations,
       hasRole,
       isPrimeAdmin,
       hasAccess,

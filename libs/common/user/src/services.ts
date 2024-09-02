@@ -89,50 +89,6 @@ export const UserUrlsInfo = {
     oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
     newApi: true
   },
-  wifiAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=wifi',
-    oldUrl: '/api/tenant/:tenantId/wifi/allowed-operations',
-    newApi: true
-  },
-  switchAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=switch',
-    oldUrl: '/api/switch/tenant/:tenantId/allowed-operations',
-    newApi: true
-  },
-  edgeAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=edge',
-    newApi: true
-  },
-  tenantAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowed-operations',
-    oldUrl: '/api/tenant/:tenantId/allowed-operations',
-    newApi: true
-  },
-  venueAllowedOperations: {
-    method: 'get',
-    url: '/api/tenant/:tenantId/venue/allowed-operations'
-  },
-  guestAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=guest',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/allowed-operations',
-    newApi: true
-  },
-  upgradeAllowedOperations: {
-    method: 'get',
-    url: '/tenants/allowedOperations?service=upgradeConfig',
-    oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
-    newApi: true
-  },
-  rcgAllowedOperations: {
-    method: 'get',
-    url: '/rcg/api/allowedOperations',
-    newApi: true
-  },
   getMfaTenantDetails: {
     method: 'get',
     url: '/mfa/tenant/:tenantId'
@@ -231,8 +187,6 @@ export const UserRbacUrlsInfo = {
 }
 
 export const {
-  useAllowedOperationsQuery,
-  useRcgAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
@@ -321,32 +275,6 @@ export const {
     }),
     getPlmMessageBanner: build.query<PlmMessageBanner, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getCloudMessageBanner, params)
-    }),
-    allowedOperations: build.query<string[], string>({
-      async queryFn (tenantId, _api, _extraOptions, query) {
-        const params = { tenantId }
-        const responses = await Promise.all([
-          createHttpRequest(UserUrlsInfo.wifiAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.switchAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.tenantAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.venueAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.guestAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.edgeAllowedOperations, params)
-        ].map(query))
-
-        return { data: responses.flatMap(response => (response.data as string[])) }
-      }
-    }),
-    rcgAllowedOperations: build.query<string[], string>({
-      async queryFn (tenantId, _api, _extraOptions, query) {
-        const params = { tenantId }
-        const responses = await Promise.all([
-          createHttpRequest(UserUrlsInfo.rcgAllowedOperations, params)
-        ].map(query))
-
-        return { data: responses.flatMap(response => (response.data as string[])) }
-      }
     }),
     getMfaTenantDetails: build.query<MfaDetailStatus, RequestPayload>({
       query: ({ params }) => createHttpRequest(UserUrlsInfo.getMfaTenantDetails, params ),

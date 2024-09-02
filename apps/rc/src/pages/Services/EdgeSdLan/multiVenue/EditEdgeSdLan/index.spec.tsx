@@ -1,6 +1,6 @@
-import userEvent     from '@testing-library/user-event'
-import { transform } from 'lodash'
-import { rest }      from 'msw'
+import userEvent              from '@testing-library/user-event'
+import { groupBy, transform } from 'lodash'
+import { rest }               from 'msw'
 
 import { edgeApi, edgeSdLanApi } from '@acx-ui/rc/services'
 import {
@@ -159,6 +159,7 @@ describe('Edit SD-LAN service', () => {
   })
 
   it('should correctly edit service', async () => {
+    const originData = mockedMvSdLanDataList[0]
     const mockedDCData = {
       ...mockedDmzData,
       isGuestTunnelEnabled: false
@@ -187,6 +188,12 @@ describe('Edit SD-LAN service', () => {
       .toHaveTextContent('network_1,network_4')
 
     await click(within(form).getByRole('button', { name: 'Submit' }))
+    const originGuestNetworks: EdgeMvSdLanNetworks = {}
+    Object.entries(groupBy(originData.tunneledGuestWlans, 'venueId'))
+      .forEach(([venueId, wlans]) => {
+        originGuestNetworks[venueId] = wlans.map(wlan => wlan.networkId)
+      })
+
     await waitFor(() => {
       expect(mockedEditFn).toBeCalledWith({
         id: mockedCdId,
@@ -197,12 +204,9 @@ describe('Edit SD-LAN service', () => {
         }, {} as EdgeMvSdLanNetworks),
         tunnelProfileId: mockedDCData.tunnelProfileId,
         isGuestTunnelEnabled: mockedDCData.isGuestTunnelEnabled,
-        guestEdgeClusterId: mockedDCData.guestEdgeClusterId,
-        guestEdgeClusterVenueId: mockedDCData.venueId,
-        guestTunnelProfileId: mockedDCData.guestTunnelProfileId,
-        guestNetworks: transform(mockedDCData.activatedGuestNetworks, (result, value, key) => {
-          result[key] = value.map(v => v.id)
-        }, {} as EdgeMvSdLanNetworks)
+        guestEdgeClusterId: originData.guestEdgeClusterId,
+        guestTunnelProfileId: originData.guestTunnelProfileId,
+        guestNetworks: originGuestNetworks
       })
     })
     expect(mockedEditFn).toBeCalledTimes(1)
