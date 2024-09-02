@@ -1,9 +1,10 @@
-import { isNil, transform } from 'lodash'
+import { groupBy, isNil, transform } from 'lodash'
 
-import { Features }                                                                                                 from '@acx-ui/feature-toggle'
-import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                               from '@acx-ui/react-router-dom'
-import { getIntl }                                                                                                  from '@acx-ui/utils'
+import { showActionModal }                                                                                                                 from '@acx-ui/components'
+import { Features }                                                                                                                        from '@acx-ui/feature-toggle'
+import { EdgeMvSdLanExtended, EdgeMvSdLanFormModel, EdgeMvSdLanNetworks, EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                      from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                                         from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -104,4 +105,26 @@ export const tansformSdLanScopedVenueMap = (sdLans?: EdgeMvSdLanViewData[]): Rec
   })
 
   return resultMap
+}
+
+// eslint-disable-next-line max-len
+export const isSdLanLastNetworkInVenue = (tunneledWlans?: EdgeSdLanTunneledWlan[], venueId?: string) => {
+  const grouped = groupBy(tunneledWlans, 'venueId')
+  return venueId && grouped[venueId] ? grouped[venueId].length <= 1 : false
+}
+
+export const showSdLanVenueDissociateModal = (onOk: () => Promise<void>, onCancel?: () => void) => {
+  const { $t } = getIntl()
+
+  showActionModal({
+    type: 'confirm',
+    title: $t({ defaultMessage: 'Confirm <venueSingular></venueSingular> deassociation' }),
+    content: $t({ defaultMessage:
+      // eslint-disable-next-line max-len
+      'After deactivated, this <venueSingular></venueSingular> will not tunneled by SD-LAN anymore. Are you sure you want to continue ?'
+    }),
+    okText: $t({ defaultMessage: 'Continue' }),
+    onOk,
+    onCancel
+  })
 }
