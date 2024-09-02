@@ -55,7 +55,7 @@ const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfi
       <div>
         <Form.Item
           name='lbsServerVenueName'
-          label={$t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' })}
+          label={$t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular> Name' })}
           rules={[
             { required: true },
             { min: 2 },
