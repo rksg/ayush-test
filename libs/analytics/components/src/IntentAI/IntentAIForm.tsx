@@ -4,6 +4,7 @@ import * as CCrrmChannel6gAuto         from './AIDrivenRRM/CCrrmChannel6gAuto'
 import * as CProbeFlex5g               from './AirFlexAI/CProbeFlex5g'
 import * as CProbeFlex24g              from './AirFlexAI/CProbeFlex24g'
 import * as CProbeFlex6g               from './AirFlexAI/CProbeFlex6g'
+import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
 import { createIntentContextProvider } from './IntentContext'
 
 export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
@@ -12,5 +13,6 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-crrm-channel6g-auto': CCrrmChannel6gAuto,
   'c-probeflex-5g': CProbeFlex5g,
   'c-probeflex-24g': CProbeFlex24g,
-  'c-probeflex-6g': CProbeFlex6g
+  'c-probeflex-6g': CProbeFlex6g,
+  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade
 })
