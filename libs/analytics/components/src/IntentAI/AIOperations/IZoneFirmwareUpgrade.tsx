@@ -61,7 +61,7 @@ const useValuesText = createUseValuesText({
       Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
     </p>
   ` }),
-  summary: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
+  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
