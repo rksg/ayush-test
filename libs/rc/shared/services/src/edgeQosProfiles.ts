@@ -1,3 +1,4 @@
+
 import {
   CommonResult,
   EdgeQosConfig,
@@ -7,9 +8,9 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeQosProfilesApi }              from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseEdgeQosProfilesApi } from '@acx-ui/store'
+import { RequestPayload }         from '@acx-ui/types'
+import { createHttpRequest }      from '@acx-ui/utils'
 
 import { serviceApi } from './service'
 
@@ -18,9 +19,7 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
   endpoints: (build) => ({
     createEdgeQosProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeQosProfilesUrls.createEdgeQosProfile, undefined, {
-          ...ignoreErrorModal
-        })
+        const req = createHttpRequest(EdgeQosProfilesUrls.addEdgeQosProfile, undefined)
         return {
           ...req,
           body: payload
@@ -41,10 +40,7 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           EdgeQosProfilesUrls.updateEdgeQosProfile,
-          params,
-          {
-            ...ignoreErrorModal
-          }
+          params
         )
         return {
           ...req,
@@ -74,9 +70,11 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Add Edge Qos',
-            'Update Edge Qos',
-            'Delete Edge Qos'
+            'Create HQoS',
+            'Update HQoS',
+            'Delete HQoS',
+            'Activate HQoS',
+            'Deactivate HQoS'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
@@ -88,8 +86,21 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    activateQosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(EdgeQosProfilesUrls.activateEdgeCluster, params)
+        }
+      }
+    }),
+    deactivateQosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(EdgeQosProfilesUrls.deactivateEdgeCluster, params)
+        }
+      }
     })
-
   })
 })
 
@@ -98,5 +109,7 @@ export const {
   useGetEdgeQosProfileByIdQuery,
   useCreateEdgeQosProfileMutation,
   useDeleteEdgeQosProfileMutation,
-  useUpdateEdgeQosProfileMutation
+  useUpdateEdgeQosProfileMutation,
+  useActivateQosOnEdgeClusterMutation,
+  useDeactivateQosOnEdgeClusterMutation
 } = edgeQosProfilesApi

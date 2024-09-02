@@ -33,7 +33,8 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  SoftGreForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -102,11 +103,16 @@ import LbsServerProfileTable                                            from './
 import MacRegistrationListDetails                                       from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable                                        from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                                                       from './pages/Policies/MyPolicies'
+import AddEdgeQosBandwidth                                              from './pages/Policies/QosBandwidth/Edge/AddQosBandwidth'
+import EditEdgeQosBandwidth                                             from './pages/Policies/QosBandwidth/Edge/EditQosBandwidth'
+import EdgeQosBandwidthDetail                                           from './pages/Policies/QosBandwidth/Edge/QosBandwidthDetail'
 import EdgeQosBandwidthTable                                            from './pages/Policies/QosBandwidth/Edge/QosBandwidthTable'
 import SelectPolicyForm                                                 from './pages/Policies/SelectPolicyForm'
 import SnmpAgentDetail                                                  from './pages/Policies/SnmpAgent/SnmpAgentDetail/SnmpAgentDetail'
 import SnmpAgentForm                                                    from './pages/Policies/SnmpAgent/SnmpAgentForm/SnmpAgentForm'
 import SnmpAgentTable                                                   from './pages/Policies/SnmpAgent/SnmpAgentTable/SnmpAgentTable'
+import SoftGreDetail                                                    from './pages/Policies/SoftGre/SoftGreDetail'
+import SoftGreTable                                                     from './pages/Policies/SoftGre/SoftGreTable'
 import SyslogTable                                                      from './pages/Policies/Syslog/SyslogTable/SyslogTable'
 import AddTunnelProfile                                                 from './pages/Policies/TunnelProfile/AddTunnelProfile'
 import EditTunnelProfile                                                from './pages/Policies/TunnelProfile/EditTunnelProfile'
@@ -676,13 +682,15 @@ function ServiceRoutes () {
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.CREATE })}
-        element={<ResidentPortalForm />}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><ResidentPortalForm /></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({
           type: ServiceType.RESIDENT_PORTAL,
           oper: ServiceOperation.EDIT })}
-        element={<ResidentPortalForm editMode={true} />}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}>
+          <ResidentPortalForm editMode={true} />
+        </AuthRoute>}
       />
 
       {(isEdgeHaReady && isEdgeDhcpHaReady)
@@ -1058,6 +1066,18 @@ function PolicyRoutes () {
         </AuthRoute>}
       />
       <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.CREATE })}
+        element={<AddEdgeQosBandwidth />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.EDIT })}
+        element={<EditEdgeQosBandwidth />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.DETAIL })}
+        element={<EdgeQosBandwidthDetail />}
+      />
+      <Route
         path={getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })}
         element={<EdgeQosBandwidthTable />}
       />
@@ -1205,6 +1225,34 @@ function PolicyRoutes () {
         />
       </>
       }
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}
+            requireCrossVenuesPermission={{ needGlobalPermission: true }}
+          >
+            <SoftGreForm editMode={false} />
+          </AuthRoute>
+        } />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })}
+        element={<SoftGreTable />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.DETAIL })}
+        element={<SoftGreDetail />}
+      />
+      <Route
+        path={getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT })}
+        element={
+          <AuthRoute
+            scopes={[WifiScopes.UPDATE]}
+            requireCrossVenuesPermission={{ needGlobalPermission: true }}
+          >
+            <SoftGreForm editMode={true} />
+          </AuthRoute>}
+      />
+      {/* </>} */}
     </Route>
   )
 }
@@ -1220,6 +1268,8 @@ function UserRoutes () {
       <Route path='users' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi' element={<TenantNavigate replace to='/users/wifi/clients' />} />
       <Route path='users/wifi/clients'
+        element={<WifiClientList tab={WirelessTabsEnum.CLIENTS} />} />
+      <Route path='users/wifi/clients/search/:clientMac'
         element={<WifiClientList tab={WirelessTabsEnum.CLIENTS} />} />
       <Route path='users/wifi/guests'
         element={<WifiClientList tab={WirelessTabsEnum.GUESTS} />} />

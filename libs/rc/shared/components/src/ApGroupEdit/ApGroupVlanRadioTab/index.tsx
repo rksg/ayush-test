@@ -211,6 +211,7 @@ export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
   const { tenantId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
     vlanPoolingNameMap: data?.data
       ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
@@ -236,7 +237,8 @@ export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
 
   const vlanPoolingTemplate: VlanPoolNameMapType = useGetEnhancedVlanPoolPolicyTemplateListQuery({
     params: { tenantId },
-    payload: vlanPoolPayload
+    payload: vlanPoolPayload,
+    enableRbac: enableTemplateRbac
   }, {
     skip: skipQuery || !isTemplate,
     selectFromResult: transformVlanPoolData

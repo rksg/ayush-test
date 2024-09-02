@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 
+import { get }                                from '@acx-ui/config'
 import { Provider }                           from '@acx-ui/store'
 import { render, screen, waitFor, fireEvent } from '@acx-ui/test-utils'
-import { RolesEnum }                          from '@acx-ui/types'
-import { getUserProfile, setUserProfile }     from '@acx-ui/user'
+import { RaiPermissions, setRaiPermissions  } from '@acx-ui/user'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApTabs           from './ApTabs'
@@ -22,6 +22,10 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
 }))
 
 describe('ApTabs', () => {
@@ -59,11 +63,9 @@ describe('ApTabs', () => {
     })
   })
 
-  it('should hide analytics when role is READ_ONLY', async () => {
-    setUserProfile({
-      allowedOperations: [],
-      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
-    })
+  it('should hide analytics when READ_INCIDENTS permission is false', async () => {
+    mockGet.mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
     render(<Provider>
       <ApTabs apDetail={apDetailData} />
     </Provider>, { route: { params } })
