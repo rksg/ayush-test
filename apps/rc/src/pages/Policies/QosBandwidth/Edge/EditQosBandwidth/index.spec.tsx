@@ -38,6 +38,7 @@ jest.mock('../QosBandwidthForm', () => ({
   ...jest.requireActual('../QosBandwidthForm'),
   default: (props: {
     onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+    onCancel: () => void
     editMode: boolean
     editData: EdgeQosViewData
   }) => {
@@ -46,6 +47,9 @@ jest.mock('../QosBandwidthForm', () => ({
       <button onClick={() => {
         props.onFinish(submitData)
       }}>Submit</button>
+      <button onClick={() => {
+        props.onCancel()
+      }}>Cancel</button>
     </div>
   }
 }))
@@ -174,6 +178,24 @@ describe('Edit Edge QoS Profile', () => {
         pathname: '/t-id/t/'+targetPath,
         search: ''
       }, { replace: true })
+    })
+  })
+
+  it('should navigate to service list when click cancel', async () => {
+    render(<Provider>
+      <EditEdgeQosBandwidth />
+    </Provider>, {
+      route: { params }
+    })
+
+    expect(await screen.findByTestId('rc-QosBandwidthForm')).toBeVisible()
+    await click(screen.getByRole('button', { name: 'Cancel' }))
+    await waitFor(() => {
+      expect(mockedNavigate).toBeCalledWith({
+        hash: '',
+        pathname: '/t-id/t/'+targetPath,
+        search: ''
+      })
     })
   })
 

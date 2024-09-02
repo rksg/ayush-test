@@ -1,6 +1,6 @@
-import { Form }            from 'antd'
-import { omit, transform } from 'lodash'
-import { useIntl }         from 'react-intl'
+import { Form }       from 'antd'
+import { omit, pick } from 'lodash'
+import { useIntl }    from 'react-intl'
 
 import { Loader, PageHeader, StepsFormGotoStepFn }               from '@acx-ui/components'
 import { edgeSdLanFormRequestPreProcess, useEdgeMvSdLanActions } from '@acx-ui/rc/components'
@@ -11,9 +11,7 @@ import {
   getServiceRoutePath,
   ServiceOperation,
   ServiceType,
-  EdgeMvSdLanFormModel,
-  EdgeMvSdLanNetworks
-} from '@acx-ui/rc/utils'
+  EdgeMvSdLanFormModel } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import EdgeMvSdLanForm       from '../Form'
@@ -54,12 +52,8 @@ const EditEdgeMvSdLan = () => {
       const payload = {
         ...omit(edgeSdLanFormRequestPreProcess(formData), 'edgeClusterId'),
         id: params.serviceId,
-        guestEdgeClusterId: formData.guestEdgeClusterId,
-        guestEdgeClusterVenueId: formData.guestEdgeClusterVenueId,
-        guestTunnelProfileId: formData.guestTunnelProfileId,
-        guestNetworks: transform(formData.activatedGuestNetworks, (result, value, key) => {
-          result[key] = value.map(v => v.id)
-        }, {} as EdgeMvSdLanNetworks)
+        ...(formData.isGuestTunnelEnabled
+          ? {} : pick(data, ['guestEdgeClusterId', 'guestTunnelProfileId', 'guestNetworks']))
       } as EdgeMvSdLanExtended
 
       await new Promise(async (resolve, reject) => {

@@ -219,7 +219,9 @@ export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
   tansformSdLanScopedVenueMap,
-  isSdLanGuestUtilizedOnDiffVenue
+  isSdLanGuestUtilizedOnDiffVenue,
+  isSdLanLastNetworkInVenue,
+  showSdLanVenueDissociateModal
 } from './EdgeSdLan/edgeSdLanUtils'
 export * from './NetworkTunnelActionModal'
 export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'

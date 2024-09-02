@@ -53,8 +53,8 @@ export default function AnalyticsRoutes () {
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
       <Route path='analytics/intentAI'>
         <Route index element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
-        <Route path=':recommendationId/:code' element={<IntentAIDetails />} />
-        <Route path=':recommendationId/:code/edit' element={<IntentAIForm />} />
+        <Route path=':sliceId/:code' element={<IntentAIDetails />} />
+        <Route path=':sliceId/:code/edit' element={<IntentAIForm />} />
       </Route>
       <Route path='analytics/health' element={HealthComponent} />
       <Route path='analytics/health/:activeSubTab' element={HealthComponent}>
@@ -64,6 +64,8 @@ export default function AnalyticsRoutes () {
         // Below routes are used for Health page loaded as top level tabs
         isSwitchHealthEnabled && !canUseAnltAdv &&
         <Route path='analytics/health/'>
+          {/* Below index route is added for Backward compatibility */}
+          <Route index element={<HealthPageWithTabs tab={HealthTabEnum.WIRELESS} />} />
           {Object.values(HealthTabEnum).map(tab => (
             <Route key={tab} path={tab} element={<HealthPageWithTabs tab={tab}/>}>
               <Route path='tab/:categoryTab' element={<HealthPageWithTabs tab={tab}/>} />

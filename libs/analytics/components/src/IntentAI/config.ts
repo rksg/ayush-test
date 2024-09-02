@@ -98,7 +98,7 @@ export const states = {
   },
   [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
@@ -110,7 +110,7 @@ export const states = {
   },
   [DisplayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
   [DisplayStates.pausedReverted]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
@@ -130,11 +130,11 @@ export const states = {
   },
   [DisplayStates.naConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the <VenueSingular></VenueSingular>.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
   },
   [DisplayStates.naNoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: No APs are detected in the network.' })
   },
   [DisplayStates.naNotEnoughLicense]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
@@ -142,7 +142,7 @@ export const states = {
   },
   [DisplayStates.naNotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than 4 days of data in the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
   },
   [DisplayStates.naVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),
@@ -150,7 +150,7 @@ export const states = {
   },
   [DisplayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.' })
   }
 } as Record<DisplayStates, StateInfo>
 
@@ -165,6 +165,32 @@ export const groupedStates = [
   }
 ]
 
+export const failureCodes = {
+  'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
+  'sufficient-aps-crrm': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
+  'sufficient-aps-pf': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
+  'dual-5g-disabled-or-no-R760': defineMessage({ defaultMessage: 'The network has one or more APs with dual 5GHz radios, which are not currently supported.' }),
+  'for-country-us': defineMessage({ defaultMessage: 'The network\'s country code is set to a region other than the US, which is not supported.' }),
+  'no-ap-mesh-checker': defineMessage({ defaultMessage: 'The network has active Mesh APs, which are currently not supported.' }),
+  'sz-version-and-zone-name-checker': defineMessage({ defaultMessage: 'Unsupported SmartZone version or restricted Zone configuration detected.' }),
+  'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' }),
+  'channel-5g-is-auto': defineMessage({ defaultMessage: 'The 5GHz radio channel is set to Auto, preventing IntentAI from controlling channel configurations.' }),
+  'compare-tx-power-24g-with-min-other-bands': defineMessage({ defaultMessage: 'The minimum transmit (Tx) power of the 2.4GHz radio matches the power of either the 5GHz or 6GHz radio.' }),
+  'band-balancing-enabled': defineMessage({ defaultMessage: 'Band Balancing is enabled on this network.' }),
+  'channel-select-24g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 2.4Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
+  'channel-select-5g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 5Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
+  'channel-select-6g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 6Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
+  'bg-scan-24g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 2.4Ghz radio.' }),
+  'bg-scan-5g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 5Ghz radio.' }),
+  'bg-scan-6g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 6Ghz radio.' }),
+  'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 2.4Ghz radio.' }),
+  'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 5Ghz radio.' }),
+  'no-aps': defineMessage({ defaultMessage: 'No APs are detected in the network.' }),
+  'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
+  'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
+  'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighboring APs.' }),
+  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' })
+}
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
