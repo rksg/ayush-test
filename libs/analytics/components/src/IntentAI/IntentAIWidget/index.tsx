@@ -2,13 +2,16 @@ import { Row, Col }               from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 import AutoSizer                  from 'react-virtualized-auto-sizer'
 
-import { Loader, Card, ColorPill, NoDataIconOnly } from '@acx-ui/components'
-import { intlFormats }                             from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI }     from '@acx-ui/icons'
-import { TenantLink, useSearchParams }             from '@acx-ui/react-router-dom'
-import type { PathFilter }                         from '@acx-ui/utils'
+import { Loader, Card, ColorPill, NoDataIconOnly, Tooltip } from '@acx-ui/components'
+import { intlFormats }                                      from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI }              from '@acx-ui/icons'
+import { TenantLink, useSearchParams }                      from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent, type PathFilter }         from '@acx-ui/utils'
 
+import { aiFeatures }                                              from '../config'
 import { HighlightItem, IntentHighlight, useIntentHighlightQuery } from '../services'
+import { DisplayStates }                                           from '../states'
+import { iconTooltips }                                            from '../Table'
 
 import * as UI from './styledComponents'
 
@@ -20,7 +23,8 @@ type IntentAIWidgetProps = {
 
 type HighlightCardProps = HighlightItem & {
   title: string,
-  icon: JSX.Element
+  icon: JSX.Element,
+  type: aiFeatures
 }
 
 function HighlightCard (props: HighlightCardProps) {
@@ -32,7 +36,8 @@ function HighlightCard (props: HighlightCardProps) {
       value={$t(countFormat, { value: props.new })}
     />
   }
-  const content = props.active > 0
+  const isActive = props.active > 0
+  const content = isActive
     ? $t(
       { defaultMessage: `{activeCount} {activeCount, plural,
         one {Intent is}
@@ -41,10 +46,33 @@ function HighlightCard (props: HighlightCardProps) {
       { activeCount: props.active }
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
-
-  return <Card cardIcon={props.icon} title={title} className='highlight-card-title'>
-    <TenantLink to='/analytics/intentAI'>{content}</TenantLink>
-  </Card>
+  const iconEncodedPath = fixedEncodeURIComponent( JSON.stringify({ aiFeature: [props.type] }) )
+  const encodedPath = fixedEncodeURIComponent(
+    JSON.stringify({
+      aiFeature: [props.type],
+      ...((isActive) ? { statusLabel: [DisplayStates.active] } : {})
+    })
+  )
+  return (
+    <Card
+      cardIcon={
+        <Tooltip
+          placement='right'
+          title={iconTooltips[props.type]}
+          overlayInnerStyle={{ width: '345px' }}
+        >
+          <TenantLink to={`/analytics/intentAI?intentTableFilters=${iconEncodedPath}`}>
+            {props.icon}
+          </TenantLink>
+        </Tooltip>
+      }
+      title={title}
+      className='highlight-card-title'>
+      <TenantLink to={`/analytics/intentAI?intentTableFilters=${encodedPath}`}>
+        {content}
+      </TenantLink>
+    </Card>
+  )
 }
 
 function useHighlightList (data: IntentHighlight | undefined) {
@@ -54,21 +82,24 @@ function useHighlightList (data: IntentHighlight | undefined) {
     highlightList.push({
       ...data.rrm,
       title: $t({ defaultMessage: 'AI-Driven RRM' }),
-      icon: <AIDrivenRRM />
+      icon: <AIDrivenRRM />,
+      type: aiFeatures.RRM
     })
   }
   if (data?.airflex) {
     highlightList.push({
       ...data.airflex,
       title: $t({ defaultMessage: 'AirFlexAI' }),
-      icon: <AirFlexAI />
+      icon: <AirFlexAI />,
+      type: aiFeatures.AirFlexAI
     })
   }
   if (data?.ops) {
     highlightList.push({
       ...data.ops,
       title: $t({ defaultMessage: 'AI Operations' }),
-      icon: <AIOperation />
+      icon: <AIOperation />,
+      type: aiFeatures.AIOps
     })
   }
   return highlightList
@@ -100,7 +131,7 @@ export function IntentAIWidget ({
     <Card title={title}>
       <UI.HighlightCardTitle />
       <UI.ContentWrapper>
-        <AutoSizer>
+        <AutoSizer key='intentAIWidget'>
           {({ width, height }) => (
             !hasData
               ? <div style={{ width, height }}>
@@ -115,16 +146,17 @@ export function IntentAIWidget ({
                 <p>{$t(secondParagraph)}</p>
                 <Row gutter={[12, 12]}>
                   {
-                    highlightList.map((detail, index) => <Col span={12} key={index} >
-                      <HighlightCard
-                        key={index}
-                        icon={detail.icon}
-                        title={detail.title}
-                        new={detail.new}
-                        active={detail.active}
-                      />
-                    </Col>)
-
+                    highlightList.map((detail, index) =>
+                      <Col span={12} key={`intentAICardCol${index}`}>
+                        <HighlightCard
+                          key={`intentAICard${index}`}
+                          icon={detail.icon}
+                          title={detail.title}
+                          new={detail.new}
+                          active={detail.active}
+                          type={detail.type}
+                        />
+                      </Col>)
                   }
                 </Row>
               </div>
