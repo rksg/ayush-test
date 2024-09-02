@@ -45,12 +45,9 @@ export async function onSocketActivityChanged <
 
   const onActivityChangedEvent = (data: string) => handler(JSON.parse(data))
 
-  // socket.on('onActivity', onActivityChangedEvent)
   onActivity(onActivityChangedEvent)
 
   await cacheEntryRemoved
 
   offActivity(onActivityChangedEvent)
-
-  // socket.off('activityChangedEvent', onActivityChangedEvent)
 }

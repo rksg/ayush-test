@@ -48,13 +48,3 @@ export function getIndependentSocket (url: string): SocketIOClient.Socket {
     reconnectionDelayMax: 5000
   })
 }
-
-export function reConnectActivitySocket () {
-  if (socket && socket.connected) {
-    socket.off('activityChangedEvent')
-    socket.disconnect()
-    socket.close()
-    socket = {} as SocketIOClient.Socket
-    initialSocket()
-  }
-}
