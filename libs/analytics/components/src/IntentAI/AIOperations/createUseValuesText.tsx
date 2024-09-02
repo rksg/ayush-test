@@ -11,7 +11,7 @@ export function createUseValuesText (config: {
   action: MessageDescriptor
   reason: MessageDescriptor
   tradeoff: MessageDescriptor
-  summary: MessageDescriptor
+  inactive: MessageDescriptor
 }) {
   return function useValuesText () {
     const { intent } = useIntentContext()
@@ -21,14 +21,14 @@ export function createUseValuesText (config: {
       recommendedValue: intent.recommendedValue,
       scope: incidentScope(intent)
     }
-    config.summary = [ Statuses.paused, Statuses.na ]
-      .includes(intent.status as Statuses) ? config.summary : config.action
+    const summary = [ Statuses.paused, Statuses.na ]
+      .includes(intent.status as Statuses) ? config.inactive : config.action
     return {
       actionText: <FormattedMessage {...config.action} values={values} />,
       reasonText: <FormattedMessage {...config.reason} values={values} />,
       tradeoffText: <FormattedMessage {...config.tradeoff} values={values} />,
       introText: <FormattedMessage {...config.intro} values={values} />,
-      summary: <FormattedMessage {...config.summary} values={values} />
+      summary: <FormattedMessage {...summary} values={values} />
     }
   }
 }

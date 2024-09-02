@@ -193,7 +193,8 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     return {
       isDisabled: isTheLastOne,
       tooltip: isTheLastOne
-        ? $t({ defaultMessage: 'Cannot deactivate the last WLAN in SD-LAN' })
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
         : undefined
     }
   }

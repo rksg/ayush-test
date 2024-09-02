@@ -17,7 +17,7 @@ import { RbacClientsTable } from './RbacClientsTable'
 
 export const defaultClientPayload = {
   searchString: '',
-  searchTargetFields: ['clientMac','ipAddress','Username','hostname','ssid','clientVlan','osType','vni'],
+  searchTargetFields: ['clientMac','mldAddr','ipAddress','Username','hostname','ssid','clientVlan','osType','vni'],
   filters: {},
   fields: [
     'hostname','osType','healthCheckStatus','clientMac','ipAddress','Username','serialNumber','venueId','switchSerialNumber',
@@ -29,7 +29,7 @@ export const defaultClientPayload = {
 
 export const defaultRbacClientPayload = {
   searchString: '',
-  searchTargetFields: ['macAddress','ipAddress','username','hostname','osType','networkInformation.ssid','networkInformation.vni', 'networkInfornation.vlan'],
+  searchTargetFields: ['macAddress','mldMacAddress','ipAddress','username','hostname','osType','networkInformation.ssid','networkInformation.vni', 'networkInfornation.vlan'],
   filters: {},
   fields: [
     'modelName', 'deviceType', 'osType', 'username', 'hostname',
