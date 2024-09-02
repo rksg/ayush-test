@@ -8,7 +8,7 @@ import { DateFormatEnum, formatter }                                            
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
-import { noDataDisplay, PathFilter }                                                           from '@acx-ui/utils'
+import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
 import { Icon }                                        from './common/IntentIcon'
 import { aiFeatures, codes, IntentListItem }           from './config'
@@ -17,6 +17,8 @@ import { DisplayStates }                               from './states'
 import * as UI                                         from './styledComponents'
 import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
 import { Actions, getDefaultTime, isVisibledByAction } from './utils'
+
+import type { Filters } from './services'
 
 type IconTooltipProps = {
   title: MessageDescriptor
@@ -201,7 +203,9 @@ export function IntentAITable (
     }
   ]
 
-  const { aiFeatures = [], categories =[], statuses = [], zones = [] } = filterOptions?.data || {}
+  const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
+  const selectedFilters = intentTableFilters.read() || {}
+  const { aiFeatures = [], categories = [], statuses = [], zones = [] } = filterOptions?.data || {}
   const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
     {
@@ -210,6 +214,7 @@ export function IntentAITable (
       dataIndex: 'aiFeature',
       key: 'aiFeature',
       filterable: aiFeatures,
+      filteredValue: selectedFilters.aiFeatures,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All AI Features' }),
       render: (_: ReactNode, row: IntentListItem) => <AIFeature {...row} />
@@ -226,6 +231,7 @@ export function IntentAITable (
       dataIndex: 'category',
       key: 'category',
       filterable: categories,
+      filteredValue: selectedFilters.categories,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Categories' })
     },
@@ -237,6 +243,7 @@ export function IntentAITable (
       dataIndex: 'sliceValue',
       key: 'sliceValue',
       filterable: zones,
+      filteredValue: selectedFilters.zones,
       filterSearch: true,
       filterPlaceholder: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'All Zones' })
@@ -257,6 +264,7 @@ export function IntentAITable (
       dataIndex: 'statusLabel',
       key: 'statusLabel',
       filterable: statuses,
+      filteredValue: selectedFilters.statuses,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Status' }),
       render: (_, row: IntentListItem ) => {
@@ -303,6 +311,7 @@ export function IntentAITable (
         filterableWidth={200}
         onChange={onPageChange}
         pagination={{ ...pagination, total: queryResults?.data?.total || 0 }}
+        selectedFilters={selectedFilters}
         onFilterChange={onFilterChange}
         enableApiFilter={true}
       />
