@@ -25,13 +25,13 @@ exports[`Intent services should return intentHighlight 1`] = `
 
 exports[`Intent services should return intentHighlight 2`] = `
 Object {
-  "endDate": "2024-09-02T05:02:00Z",
+  "endDate": "2023-06-16T16:00:00Z",
   "path": Array [
     Object {
       "name": "Network",
       "type": "network",
     },
   ],
-  "startDate": "2024-09-01T05:02:00Z",
+  "startDate": "2023-06-09T16:00:00Z",
 }
 `;

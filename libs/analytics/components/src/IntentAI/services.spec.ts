@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
-import { DateRange, PathFilter }                                           from '@acx-ui/utils'
+import { DateRange }                                                       from '@acx-ui/utils'
 
 import {
   intentHighlights,
@@ -20,13 +20,6 @@ import { Actions }                                                from './utils'
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
 describe('Intent services', () => {
-  const props = {
-    startDate: '2023-06-10T00:00:00+08:00',
-    endDate: '2023-06-17T00:00:00+08:00',
-    range: DateRange.last24Hours,
-    path: defaultNetworkPath
-  } as PathFilter
-
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
@@ -703,10 +696,15 @@ describe('Intent services', () => {
       data: intentHighlights
     }, true)
 
-    const { status, data, error } = await store.dispatch(
-      api.endpoints.intentHighlight.initiate(props)
-    )
 
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.intentHighlight.initiate({
+        startDate: '2023-06-10T00:00:00+08:00',
+        endDate: '2023-06-17T00:00:00+08:00',
+        range: DateRange.custom,
+        path: defaultNetworkPath
+      })
+    )
     const expectedResult = {
       rrm: {
         new: 4,
