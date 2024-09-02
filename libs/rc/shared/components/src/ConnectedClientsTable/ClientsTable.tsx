@@ -263,7 +263,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
             return <Tooltip title={mac}>
               {mac || noDataDisplay}
             </Tooltip>
-          }, (row) => row.mldAddr === undefined)
+          }, (row) => row.mldAddr === undefined && row.apName === undefined && row.venueName === undefined)
         }
       }] : []),
       {
