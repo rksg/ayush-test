@@ -2,6 +2,7 @@ import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedCTxpowerSame }         from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { IntentAIForm }                         from './IntentAIForm'
 
@@ -21,6 +22,10 @@ jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
 jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
   kpis: [],
   IntentAIForm: () => <div data-testid='i-zonefirmware-upgrade-IntentAIForm'/>
+}))
+jest.mock('./AIOperations/CTxpowerSame', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-txpower-same-IntentAIForm'/>
 }))
 
 describe('IntentAIForm', () => {
@@ -55,11 +60,15 @@ describe('IntentAIForm', () => {
       expect(await screen.findByTestId(`${code}-IntentAIForm`)).toBeVisible()
       unmount()
     }
-    it('should render for AIOperations', async () => {
+    it('should render for IZoneFirmwareUpgrade', async () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
         data: { intent: mockedIZoneFirmwareUpgrade } })
       await renderAIOperations(mockedIZoneFirmwareUpgrade.code)
     })
-    // TODO: add test for other AIOperations
+    it('should render for CTxpowerSame', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCTxpowerSame } })
+      await renderAIOperations(mockedCTxpowerSame.code)
+    })
   })
 })

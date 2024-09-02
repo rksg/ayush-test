@@ -1,6 +1,6 @@
-import { Typography }                from 'antd'
-import moment                        from 'moment-timezone'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Typography }                                   from 'antd'
+import moment                                           from 'moment-timezone'
+import { FormattedMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
 import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
@@ -19,7 +19,15 @@ import { getGraphKPIs }        from '../useIntentDetailsQuery'
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
 
-export function createIntentAIDetails (useValuesText: ReturnType<typeof createUseValuesText>) {
+export function createIntentAIDetails (messages: {
+  intro: MessageDescriptor;
+  action: MessageDescriptor;
+  reason: MessageDescriptor;
+  tradeoff: MessageDescriptor;
+  inactive: MessageDescriptor;
+}) {
+  const useValuesText = createUseValuesText(messages)
+
   return function IntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
