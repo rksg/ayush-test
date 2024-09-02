@@ -10,6 +10,7 @@ import { fixedEncodeURIComponent, type PathFilter }         from '@acx-ui/utils'
 
 import { aiFeatures }                                              from '../config'
 import { HighlightItem, IntentHighlight, useIntentHighlightQuery } from '../services'
+import { DisplayStates }                                           from '../states'
 import { iconTooltips }                                            from '../Table'
 
 import * as UI from './styledComponents'
@@ -35,7 +36,8 @@ function HighlightCard (props: HighlightCardProps) {
       value={$t(countFormat, { value: props.new })}
     />
   }
-  const content = props.active > 0
+  const isActive = props.active > 0
+  const content = isActive
     ? $t(
       { defaultMessage: `{activeCount} {activeCount, plural,
         one {Intent is}
@@ -45,7 +47,10 @@ function HighlightCard (props: HighlightCardProps) {
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
   const encodedPath = fixedEncodeURIComponent(
-    JSON.stringify({ aiFeature: [props.type] })
+    JSON.stringify({
+      aiFeature: [props.type],
+      ...((isActive) ? { statusLabel: [DisplayStates.active] } : {})
+    })
   )
   return (
     <Card

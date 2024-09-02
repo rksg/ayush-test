@@ -97,6 +97,7 @@ describe('IntentAI dashboard', () => {
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('AI-Driven'))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('active'))
   })
 
   it('render AirFlex data when intentHighlights only have AirFlex fields', async () => {
@@ -111,6 +112,7 @@ describe('IntentAI dashboard', () => {
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('AirFlexAI'))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('active'))
   })
 
   it('render AI operation data when intentHighlights only have AI operation fields', async () => {
@@ -125,6 +127,7 @@ describe('IntentAI dashboard', () => {
     const linkElm = await screen.findByRole('link', { name: /Intents/ })
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('intentTableFilters='))
     expect(linkElm).toHaveAttribute('href', expect.stringContaining('Operations'))
+    expect(linkElm).toHaveAttribute('href', expect.stringContaining('active'))
   })
 
   it('render AI operation data hover the icon', async () => {
