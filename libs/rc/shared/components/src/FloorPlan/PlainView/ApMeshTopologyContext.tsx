@@ -3,10 +3,14 @@ import { createContext } from 'react'
 import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { useGetApMeshTopologyQuery, useGetFloorPlanMeshApsQuery } from '@acx-ui/rc/services'
-import { FloorPlanMeshAP, APMeshRole, ApMeshLink }                from '@acx-ui/rc/utils'
-import { TABLE_QUERY_POLLING_INTERVAL }                           from '@acx-ui/utils'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import {
+  useGetApMeshTopologyQuery,
+  useGetFloorPlanMeshApsQuery,
+  useGetRbacFloorPlanMeshApsQuery
+} from '@acx-ui/rc/services'
+import { FloorPlanMeshAP, APMeshRole, ApMeshLink } from '@acx-ui/rc/utils'
+import { TABLE_QUERY_POLLING_INTERVAL }            from '@acx-ui/utils'
 
 export interface ApMeshTopologyDevice {
   serialNumber: string
@@ -43,7 +47,7 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
 
   const apMeshListPayload = {
     fields: ['name', 'serialNumber', 'apMac', 'downlink', 'apDownRssis', 'uplink', 'apUpRssi',
-      'meshRole', 'hops', 'apRssis', 'xPercent', 'yPercent', 'floorplanId'],
+      'meshRole', 'hops', 'apRssis', 'xPercent', 'yPercent', 'floorplanId', 'meshStatus'],
     pageSize: 10000,
     page: 1,
     filters: {
@@ -52,10 +56,13 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
     }
   }
 
-  // eslint-disable-next-line max-len
-  const { apMeshTopologyDeviceList } = useGetFloorPlanMeshApsQuery({
-    params, payload: apMeshListPayload,
-    enableRbac: isWifiRbacEnabled
+  const getFloorPlanMeshApsQueryFn = isWifiRbacEnabled
+    ? useGetRbacFloorPlanMeshApsQuery
+    : useGetFloorPlanMeshApsQuery
+
+  const { apMeshTopologyDeviceList } = getFloorPlanMeshApsQueryFn({
+    params,
+    payload: apMeshListPayload
   }, {
     selectFromResult ({ data }) {
       return {

@@ -1,5 +1,5 @@
-import { Radio, Col, RadioProps, RadioGroupProps } from 'antd'
-import _                                           from 'lodash'
+import { Space, Radio, Col, RadioProps, RadioGroupProps } from 'antd'
+import _                                                  from 'lodash'
 
 import { TradeOffWrapper, HeaderWrapper, RowWrapper, DividerWrapper } from './styledComponents'
 
@@ -42,8 +42,11 @@ export function TradeOff <Value extends string | number = string> (props: TradeO
   return (
     <TradeOffWrapper>
       <Radio.Group {...inputProps} onChange={e => onChange?.(e.target.value)}>
-        {radios.map((radioProps) =>
-          (<div key={`tradeR_${radioProps.key}`}><Radio {...radioProps} /></div>))}
+        <Space direction='vertical'>
+          {radios.map((radioProps) =>
+            (<div key={`tradeR_${radioProps.key}`}><Radio {...radioProps} /></div>))
+          }
+        </Space>
       </Radio.Group>
       <HeaderWrapper>
         {headers.map((header, hIndex) => (

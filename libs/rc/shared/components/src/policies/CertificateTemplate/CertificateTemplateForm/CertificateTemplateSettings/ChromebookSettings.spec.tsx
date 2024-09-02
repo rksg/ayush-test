@@ -27,7 +27,6 @@ describe('ChromebookSettings', () => {
     expect(screen.getByText('Enable Chromebook Enrollment')).toBeVisible()
     expect(screen.getByText('Enrollment Type')).toBeVisible()
     expect(screen.getByText('Existing Certificates')).toBeVisible()
-    expect(screen.getByText('App ID To Notify')).toBeVisible()
     expect(screen.getByText('Google API Key')).toBeVisible()
     expect(screen.getByText('Service Account JSON Private Key')).toBeVisible()
     expect(screen.getByText('Device')).toBeVisible()
@@ -45,18 +44,15 @@ describe('ChromebookSettings', () => {
     render(<Provider><Form form={formRef.current}><ChromebookSettings /></Form></Provider>)
     const enableChromebookInput = screen.getByLabelText('Enable Chromebook Enrollment')
     await userEvent.click(enableChromebookInput)
-    const notifyAppIdInput = screen.getByLabelText('App ID To Notify')
     const apiKeyInput = screen.getByLabelText('Google API Key')
     const credential = screen.getByTestId('credential')
 
-    await userEvent.type(notifyAppIdInput, 'testAppId')
     await userEvent.type(apiKeyInput, 'testApiKey')
     // eslint-disable-next-line max-len
     const file = new File(['{"type":"service_account","project_id":"test","private_key_id":"123","private_key":"123","client_email":"123","client_id":"123","auth_uri":"123","token_uri":"123"}'], 'public.json', { type: 'application/json' })
     await userEvent.upload(credential, file)
 
     expect(enableChromebookInput).toBeChecked()
-    expect(notifyAppIdInput).toHaveValue('testAppId')
     expect(apiKeyInput).toHaveValue('testApiKey')
     expect(await screen.findByText('public.json')).toBeVisible()
   })

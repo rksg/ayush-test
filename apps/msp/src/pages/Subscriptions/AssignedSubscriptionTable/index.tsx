@@ -33,11 +33,12 @@ export function AssignedSubscriptionTable () {
   const { tenantId } = useParams()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
-  const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Subscription' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Services' })
+        : $t({ defaultMessage: 'Subscription' }),
       dataIndex: 'name',
       key: 'name',
       sorter: { compare: sortProp('name', defaultSort) }
@@ -56,7 +57,7 @@ export function AssignedSubscriptionTable () {
       }
     ]),
     {
-      title: isComplianceEnabled ? $t({ defaultMessage: 'Assigned Licenses' })
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Assigned Licenses' })
         : $t({ defaultMessage: 'Assigned Devices' }),
       dataIndex: 'quantity',
       key: 'quantity',
@@ -170,7 +171,8 @@ export function AssignedSubscriptionTable () {
         }
       })
       : queryResults.data?.map(response => {
-        const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
+        const type = isvSmartEdgeEnabled ? $t({ defaultMessage: 'Device Networking' })
+          : EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
         return {
           ...response,
           name: isDeviceAgnosticEnabled ? (response?.trialAssignment

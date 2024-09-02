@@ -1,5 +1,8 @@
 import { NetworkPath } from '@acx-ui/utils'
 
+import { aiFeatures }     from '../config'
+import { AIFeatureProps } from '../Table'
+
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {
   id: '19',
@@ -37,7 +40,6 @@ export const notEnoughLicenses = {
   preferences: null
 }
 
-
 export const noAps = {
   id: '24',
   code: 'c-bgscan24g-enable',
@@ -65,6 +67,119 @@ export const noAps = {
   ] as NetworkPath,
   preferences: null
 }
+
+export const mockAIDrivenRow = {
+  id: '15',
+  code: 'c-crrm-channel24g-auto',
+  status: 'new',
+  statusReason: '',
+  displayStatus: 'new',
+  createdAt: '2023-06-13T07:05:08.638Z',
+  updatedAt: '2023-06-16T06:05:02.839Z',
+  sliceType: 'zone',
+  sliceValue: 'zone-1',
+  metadata: { algorithmData: { isCrrmFullOptimization: false } },
+  path: [
+    { type: 'system', name: 'vsz612' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  idPath: [
+    { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+    { type: 'zone', name: 'EDU-MeshZone_S12348' }
+  ] as NetworkPath,
+  preferences: { crrmFullOptimization: true },
+  statusTrail: [
+    { status: 'new' },
+    { status: 'applyscheduled' },
+    { status: 'applyscheduleinprogress' },
+    { status: 'applied' }
+  ],
+  trigger: 'daily'
+}
+
+export const mockAirflexRows = [
+  {
+    id: '16',
+    code: 'c-probeflex-24g',
+    status: 'new',
+    statusReason: '',
+    displayStatus: 'new',
+    createdAt: '2023-06-13T07:05:08.638Z',
+    updatedAt: '2023-06-16T06:05:02.839Z',
+    sliceType: 'zone',
+    sliceValue: 'zone-1',
+    metadata: {},
+    path: [
+      { type: 'system', name: 'vsz612' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    idPath: [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    statusTrail: [
+      { status: 'new' },
+      { status: 'applyscheduled' },
+      { status: 'applyscheduleinprogress' },
+      { status: 'applied' }
+    ],
+    trigger: 'daily'
+  },
+  {
+    id: '17',
+    code: 'c-probeflex-5g',
+    status: 'new',
+    statusReason: '',
+    displayStatus: 'new',
+    createdAt: '2023-06-13T07:05:08.638Z',
+    updatedAt: '2023-06-16T06:05:02.839Z',
+    sliceType: 'zone',
+    sliceValue: 'zone-2',
+    metadata: {},
+    path: [
+      { type: 'system', name: 'vsz612' },
+      { type: 'zone', name: 'EDU-MeshZone_S12349' }
+    ] as NetworkPath,
+    idPath: [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    statusTrail: [
+      { status: 'new' },
+      { status: 'applyscheduled' },
+      { status: 'applyscheduleinprogress' },
+      { status: 'applied' }
+    ],
+    trigger: 'daily'
+  },
+  {
+    id: '18',
+    code: 'c-probeflex-6g',
+    status: 'new',
+    statusReason: '',
+    displayStatus: 'new',
+    createdAt: '2023-06-13T07:05:08.638Z',
+    updatedAt: '2023-06-16T06:05:02.839Z',
+    sliceType: 'zone',
+    sliceValue: 'zone-1',
+    metadata: {},
+    path: [
+      { type: 'system', name: 'vsz612' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    idPath: [
+      { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c7' },
+      { type: 'zone', name: 'EDU-MeshZone_S12348' }
+    ] as NetworkPath,
+    statusTrail: [
+      { status: 'new' },
+      { status: 'applyscheduled' },
+      { status: 'applyscheduleinprogress' },
+      { status: 'applied' }
+    ],
+    trigger: 'daily'
+  }
+]
 
 export const intentListResult = {
   intents: { data: [
@@ -200,9 +315,7 @@ export const intentListWithAllStatus = {
       statusReason: 'apply-failed',
       displayStatus: 'paused-apply-failed',
       metadata: {
-        error: {
-          message: 'unknown error'
-        }
+        failures: ['errMsg from the notification service']
       }
     },
     {
@@ -226,9 +339,7 @@ export const intentListWithAllStatus = {
       statusReason: 'revert-failed',
       displayStatus: 'paused-revert-failed',
       metadata: {
-        error: {
-          message: 'unknown error'
-        }
+        failures: ['errMsg from the notification service']
       }
     },
     {
@@ -257,6 +368,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
+      metadata: {
+        failures: ['no-ap-mesh-checker']
+      },
       status: 'na',
       statusReason: 'conflicting-configuration',
       displayStatus: 'na-conflicting-configuration'
@@ -275,6 +389,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
+      metadata: {
+        failures: ['no-ap-peer-data']
+      },
       status: 'na',
       statusReason: 'not-enough-data',
       displayStatus: 'na-not-enough-data'
@@ -367,3 +484,31 @@ export const intentHighlightsWithOperations = {
     }
   }
 }
+
+export const aiFeatureWithRRM = {
+  code: 'c-crrm-channel5g-auto',
+  aiFeature: aiFeatures.RRM,
+  root: 'root1',
+  sliceId: 'sliceId1'
+} as AIFeatureProps
+
+export const aiFeatureWithAirFlexAI = {
+  code: 'c-probeflex-6g',
+  aiFeature: aiFeatures.AirFlexAI,
+  root: 'root2',
+  sliceId: 'sliceId2'
+} as AIFeatureProps
+
+export const aiFeatureWithAIOps = {
+  code: 'c-bgscan24g-enable',
+  aiFeature: aiFeatures.AIOps,
+  root: 'root3',
+  sliceId: 'sliceId3'
+} as AIFeatureProps
+
+export const aiFeatureWithEcoFlexAI = {
+  code: 'eco-flex-code',  //EcoFlexAI code is not defined
+  aiFeature: aiFeatures.EcoFlexAI,
+  root: 'root4',
+  sliceId: 'sliceId4'
+} as AIFeatureProps

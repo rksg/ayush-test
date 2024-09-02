@@ -16,6 +16,7 @@ export * from './lbsServerProfile'
 export * from './certificateTemplate'
 export * from './ethernetPortProfile'
 export * from './edgeQosProfile'
+export * from './softGre'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'

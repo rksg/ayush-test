@@ -180,7 +180,7 @@ describe('Notification List', () => {
   })
 
   it('should show preferences button if feature flag on', async () => {
-    mspUtils.isOnboardedMsp = jest.fn().mockReturnValue(true)
+    jest.spyOn(mspUtils, 'MSPUtils').mockReturnValue({ isOnboardedMsp: () => true })
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>

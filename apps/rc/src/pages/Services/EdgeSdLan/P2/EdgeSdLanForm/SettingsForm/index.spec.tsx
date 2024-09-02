@@ -317,7 +317,7 @@ describe('Edge SD-LAN form: settings', () => {
     await checkBasicSettings()
 
     const alert = await within(formBody).findByRole('alert')
-    expect(alert).toHaveTextContent('selected cluster must set up a Core port or LAG')
+    expect(alert).toHaveTextContent('selected cluster must set up a Core port or Core LAG')
   })
 })
 

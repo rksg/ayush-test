@@ -3,7 +3,7 @@ import { rest } from 'msw'
 import { CertificateUrls }                                       from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { WifiScopes }                                            from '@acx-ui/types'
+import { RolesEnum, WifiScopes }                                 from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                        from '@acx-ui/user'
 
 import { certificateAuthority, certificateList, certificateTemplate } from '../__test__/fixtures'
@@ -53,12 +53,12 @@ describe('CertificateTemplateDetail', () => {
     expect(screen.getByText('Chromebook Enrollment')).toBeInTheDocument()
   })
 
-  it('should render abac conrrectly with wifi-u permission', async () => {
+  it('should render abac conrrectly with prime admin', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
-      isCustomRole: true,
-      scopes: [WifiScopes.READ, WifiScopes.UPDATE]
+      isCustomRole: false,
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
     render(
@@ -76,12 +76,13 @@ describe('CertificateTemplateDetail', () => {
     expect(screen.getByRole('button', { name: 'Configure' })).toBeInTheDocument()
   })
 
-  it('should render abac conrrectly with wifi-r permission', async () => {
+  it('should render abac conrrectly with read only permission', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
       isCustomRole: true,
-      scopes: [WifiScopes.READ]
+      scopes: [WifiScopes.READ],
+      profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
 
     render(

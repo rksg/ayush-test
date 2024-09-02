@@ -104,7 +104,7 @@ const apDetail = {
   deviceGroupId: '00dd4e142110489b9c21bcb1a2a5e93e',
   deviceGroupName: '',
   deviceModelType: 'Indoor',
-  downLinkCount: 2
+  downlinkCount: 2
 }
 
 const apDetailWithNullTraffic = {

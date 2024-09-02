@@ -616,6 +616,7 @@ export const {
   useAiOpsListQuery,
   useRecommendationListQuery,
   useRecommendationWlansQuery,
+  useLazyRecommendationWlansQuery,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
   useCancelRecommendationMutation,

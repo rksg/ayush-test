@@ -13,7 +13,7 @@ import type { AnalyticsFilter } from '@acx-ui/utils'
 import {
   Stages,
   stageLabels,
-  showTopResult,
+  showTopNPieChartResult,
   DrilldownSelection,
   topImpactedClientLimit,
   stageNameToCodeMap
@@ -138,7 +138,9 @@ export const ImpactedClientsTable = ({
         {$t({ defaultMessage: `{count} Impacted {totalCount, plural,
           one {Client}
           other {Clients}
-        }` }, { count: showTopResult($t, totalCount, topImpactedClientLimit), totalCount })}
+        }` }, {
+          count: showTopNPieChartResult($t, totalCount, topImpactedClientLimit), totalCount
+        })}
       </TableHeading>
       <Table
         columns={columns}

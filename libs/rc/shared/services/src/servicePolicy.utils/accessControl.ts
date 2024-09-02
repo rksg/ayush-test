@@ -378,7 +378,7 @@ export function addAccessControlProfileFn (isTemplate: boolean = false) : QueryF
       const addProfileQuery = {
         // eslint-disable-next-line max-len
         ...createHttpRequest(enableRbac ? apis.addAccessControlProfileRbac : apis.addAccessControlProfile, params),
-        body: enableRbac ? JSON.stringify(payload) : payload
+        body: JSON.stringify(payload)
       }
       const addProfileQueryRes = await fetchWithBQ(addProfileQuery)
       const profileData = addProfileQueryRes.data as CommonResult
@@ -674,7 +674,7 @@ export function getEnhancedApplicationProfileListFn (isTemplate: boolean = false
     const apis = isTemplate ? PoliciesConfigTemplateUrlsInfo : AccessControlUrls
     const applicationPolicyListInfo = {
       // eslint-disable-next-line max-len
-      ...createHttpRequest(enableRbac ? AccessControlUrls.getApplicationPolicyListQuery : AccessControlUrls.getEnhancedApplicationPolicies, params),
+      ...createHttpRequest(enableRbac ? apis.getApplicationPolicyListQuery : apis.getEnhancedApplicationPolicies, params),
       body: enableRbac ? JSON.stringify(payload) : payload
     }
 

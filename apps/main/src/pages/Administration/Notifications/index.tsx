@@ -24,8 +24,12 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }         from '@acx-ui/react-router-dom'
+import {
+  filterByAccess,
+  hasAccess,
+  hasCrossVenuesPermission
+} from '@acx-ui/user'
 
 import { AINotificationDrawer } from './AINotificationDrawer'
 import { PreferenceDrawer }     from './PreferenceDrawer'
@@ -47,7 +51,6 @@ export const NotificationsTable = () => {
   const [showDialog, setShowDialog] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
-  const allowIncidentsEmail = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
@@ -176,12 +179,10 @@ export const NotificationsTable = () => {
       label: $t({ defaultMessage: 'Add Recipient' }),
       onClick: handleClickAddRecipient
     },
-    ...(allowIncidentsEmail
-      ? [{
-        label: titleNotification,
-        onClick: handleEnableIncidents
-      }]
-      : [])
+    {
+      label: titleNotification,
+      onClick: handleEnableIncidents
+    }
   ]
 
   const isLoading = deleteOneState.isLoading || deleteMultipleState.isLoading
@@ -196,8 +197,8 @@ export const NotificationsTable = () => {
           dataSource={notificationList.data}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
-          actions={filterByAccess(tableActions)}
+          rowSelection={hasCrossVenuesPermission() && hasAccess() && { type: 'checkbox' }}
+          actions={hasCrossVenuesPermission() ? filterByAccess(tableActions) : []}
         />
       </Loader>
 

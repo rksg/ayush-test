@@ -8,7 +8,7 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useRcgAllowedOperationsQuery
+  useGetPrivilegeGroupsQuery
 } from './services'
 import { UserProfile }                         from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -24,6 +24,7 @@ export interface UserProfileContextProps {
   betaEnabled?: boolean
   abacEnabled?: boolean
   isCustomRole?: boolean
+  hasAllVenues?: boolean
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -50,6 +51,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       { skip: !Boolean(profile) }
     )
   const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
+  abacEnabled = featureFlagStates?.[abacFF] ?? false
+
+  const { data: pgList } = useGetPrivilegeGroupsQuery({}, { skip: !abacEnabled })
 
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: ptenantRbacEnable },
@@ -60,13 +64,21 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 
-  const { data: rcgAllowedOperations } = useRcgAllowedOperationsQuery(tenantId!,
-    { skip: !Boolean(profile) })
-  const allowedOperations = rcgAllowedOperations
+  // TODO: should remove in future
+  const allowedOperations = [] as string[]
+
+  const getHasAllVenues = () => {
+    if(pgList) {
+      const pg = pgList.find(item => item.name === profile?.role)
+      return pg?.allVenues
+    }
+    return true
+  }
+
+  const hasAllVenues = getHasAllVenues()
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
-    abacEnabled = featureFlagStates?.[abacFF] ?? false
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
@@ -82,7 +94,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       isCustomRole,
-      scopes: profile?.scopes
+      scopes: profile?.scopes,
+      hasAllVenues
     })
   }
 
@@ -90,14 +103,15 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     value={{
       data: profile,
       isUserProfileLoading: isUserProfileFetching,
-      allowedOperations: allowedOperations || [],
+      allowedOperations: allowedOperations,
       hasRole,
       isPrimeAdmin,
       hasAccess,
       accountTier: accountTier,
       betaEnabled,
       abacEnabled,
-      isCustomRole
+      isCustomRole,
+      hasAllVenues
     }}
     children={props.children}
   />

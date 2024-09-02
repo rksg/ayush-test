@@ -110,3 +110,15 @@ export enum ClusterHaLoadDistributionEnum {
   RANDOM = 'RANDOM',
   AP_GROUP = 'AP_GROUP'
 }
+
+export enum EdgeFeatureEnum {
+  SD_LAN = 'SD-LAN',
+  TUNNEL_PROFILE = 'Tunnel Profile',
+  HA_AA = 'HA-AA'
+}
+
+export enum CompatibilityEntityTypeEnum {
+  VENUE = 'venue',
+  CLUSTER = 'cluster',
+  DEVICE = 'device'
+}

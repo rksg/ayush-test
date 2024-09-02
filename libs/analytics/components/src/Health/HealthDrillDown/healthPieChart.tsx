@@ -24,7 +24,7 @@ import {
   stageLabels,
   DrilldownSelection,
   stageNameToCodeMap,
-  showTopResult
+  showTopNPieChartResult
 } from './config'
 import { ImpactedEntities, usePieChartQuery } from './services'
 import * as UI                                from './styledComponents'
@@ -204,7 +204,7 @@ export const HealthPieChart = ({
       value: key,
       children: getHealthPieChart(data, valueFormatter)
     }))
-  const count = showTopResult(
+  const count = showTopNPieChartResult(
     $t,
     tabsList.find((tab) => tab.key === chartKey)?.data.length as number,
     topCount

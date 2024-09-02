@@ -185,7 +185,6 @@ describe('Summary', () => {
           enabled: true,
           enrollmentType: 'DEVICE',
           certRemovalType: 'NONE',
-          notifyAppId: 'appId123',
           apiKey: 'apiKey123'
         }
       })
@@ -195,7 +194,6 @@ describe('Summary', () => {
     render(<Form form={formRef.current}><Summary /></Form>)
     expect(screen.getByText('Enabled')).toBeVisible()
     expect(screen.getByText('Device')).toBeVisible()
-    expect(screen.getByText('appId123')).toBeVisible()
     expect(screen.getByText('apiKey123')).toBeVisible()
   })
 })

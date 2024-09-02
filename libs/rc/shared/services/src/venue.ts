@@ -104,6 +104,7 @@ import { RequestPayload }                                from '@acx-ui/types'
 import { batchApi, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions } from './apUtils'
+import { fetchRbacAllApGroupNetworkVenueList }                     from './networkVenueUtils'
 import {
   getVenueDHCPProfileFn,
   getVenueRoguePolicyFn,
@@ -113,6 +114,7 @@ import {
 import { handleCallbackWhenActivitySuccess, isPayloadHasField }                          from './utils'
 import {
   convertToApMeshDataList,
+  convertToMeshTopologyDataList,
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
 }   from './venue.utils'
@@ -292,7 +294,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'AddNetworkVenue',
             'DeleteNetworkVenue',
             'ActivateWifiNetworkOnVenue',
-            'DeactivateWifiNetworkOnVenue'
+            'ActivateWifiNetworkTemplateOnVenue',
+            'DeactivateWifiNetworkOnVenue',
+            'DeactivateWifiNetworkTemplateOnVenue'
           ]
           const CONFIG_TEMPLATE_USE_CASES = [
             'DeleteNetworkVenueTemplate',
@@ -429,19 +433,34 @@ export const venueApi = baseVenueApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+      query: ({ params, payload }) => {
+        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+        return {
+          ...venueMeshReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    getRbacFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
+      queryFn: async ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const newPayload = JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
 
-        const newPayload = enableRbac
-          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
-          : payload
-        const apListReq = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
+        const apListReq = createHttpRequest(CommonRbacUrlsInfo.getMeshAps, params, GetApiVersionHeader(ApiVersionEnum.v1))
         const apListRes = await fetchWithBQ({ ...apListReq, body: newPayload })
-        const apListData = apListRes.data as TableResult<FloorPlanMeshAP>
+        const rbacApListData = apListRes.data as TableResult<RbacAPMesh>
+        const apMeshData = [] as FloorPlanMeshAP[]
 
+        rbacApListData.data?.forEach((rbacApMesh) => {
+          const { root, members=[] } = rbacApMesh
+          const newApMesh = convertToMeshTopologyDataList([root], members) as FloorPlanMeshAP[]
+
+          apMeshData.push(newApMesh[0])
+        })
+
+        const apListData = { data: apMeshData, totalCount: rbacApListData.totalCount } as TableResult<FloorPlanMeshAP>
         // fetch ap position data
-        if (enableRbac && (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent'))) {
+        if (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent')) {
           await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
         }
 
@@ -481,7 +500,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
 
         const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
@@ -506,8 +525,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
               ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
-              : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
-            body: apGroupPayload
+              : WifiUrlsInfo.getApGroupsList, params),
+            body: JSON.stringify(apGroupPayload)
           }
 
           const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
@@ -584,6 +603,125 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return networkVenuesApGroupQuery.data
           ? { data: aggregatedList }
           : { error: networkVenuesApGroupQuery.error as FetchBaseQueryError }
+      }
+    }),
+    getRbacNetworkApGroups: build.query<NetworkVenue[], RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const filters = payloadData.map(item => ({
+          venueId: item.venueId,
+          networkId: item.networkId
+        }))
+
+        const venueIds = uniq(filters.map(item => item.venueId))
+        let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+        let networkVenuesApGroupList = [] as NetworkVenue[]
+
+        for (let venueId of venueIds) {
+          // get apGroup list filter by venueId
+          const apGroupPayload = {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: { venueId: [venueId] }
+          }
+
+          const apGroupListInfo = {
+            ...createHttpRequest(payloadData[0].isTemplate
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsListRbac
+              : WifiRbacUrlsInfo.getApGroupsList, params),
+            body: JSON.stringify(apGroupPayload)
+          }
+
+          const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
+          const apGroupListData = apGroupsQuery.data as {
+            data: {
+              id: string,
+              name: string
+            }[]
+          }
+
+          const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+            return {
+              apGroupId: d.id,
+              ...(d.name && { apGroupName: d.name }),
+              isDefault: !d.name,
+              radio: 'Both',
+              radioTypes: ['2.4-GHz', '5-GHz'],
+              validationError: false,
+              validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+              validationErrorReachedMaxConnectedNetworksLimit: false,
+              validationErrorSsidAlreadyActivated: false
+            } as NetworkApGroup
+          })
+
+          venueApgroupMap.set(venueId, apgroupsDefaultValue)
+        }
+
+        const paramsVenueId = payloadData[0].venueId
+        const paramsNetworkId = payloadData[0].networkId
+        const paramsIsTemplate = payloadData[0].isTemplate
+
+        const {
+          error: apGroupNetworkListQueryError,
+          networkList,
+          networkDeepListList
+        } = await fetchRbacAllApGroupNetworkVenueList({
+          params: {
+            ...params,
+            venueId: paramsVenueId
+          },
+          payload: {
+            isTemplate: paramsIsTemplate,
+            apGroupIds: venueApgroupMap.get(paramsVenueId)?.map(item => item.apGroupId)
+          }
+        }, fetchWithBQ)
+
+        networkVenuesApGroupList = networkDeepListList.response
+          .flatMap(networkInfo => networkInfo.venues)
+          .filter(networkVenue => networkVenue.networkId === paramsNetworkId) as NetworkVenue[]
+
+        let aggregatedList: NetworkVenue[] | undefined
+
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+          const venueId = filters[0].venueId
+          const networkVenueData = networkVenuesApGroupList[0]
+          const networkVenue = omit(networkVenueData, ['networkId', 'id'])
+
+          aggregatedList = [{
+            ...networkVenue,
+            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+          }]
+
+        } else {
+          aggregatedList = networkVenuesApGroupList.map(networkVenue => {
+            const { venueId, apGroups=[] } = networkVenue
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+
+            const newApgroups = cloneDeep(apGroups)
+
+            currentApGroupsDefaultValue?.forEach(apGroup => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+              const customApGroupIndex = apGroups.findIndex(item => item.apGroupId === apGroup.apGroupId)
+              if (!customApGroup) {
+                newApgroups.push(cloneDeep(apGroup))
+              } else {
+                newApgroups[customApGroupIndex] = { ...customApGroup, ...apGroup }
+              }
+            })
+
+            return {
+              ...networkVenue,
+              apGroups: newApgroups
+            }
+          })
+        }
+
+        return networkList.data
+          ? { data: aggregatedList }
+          : { error: apGroupNetworkListQueryError as FetchBaseQueryError }
       }
     }),
     getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
@@ -845,6 +983,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
+    }),
+    getDefaultVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
+      query: ({ params }) => {
+        const rbacApiVersion = ApiVersionEnum.v1
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(CommonRbacUrlsInfo.getDefaultVenueLanPorts, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
     }),
     getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -1852,9 +2000,11 @@ export const {
   useMeshApsQuery,
   useRbacMeshApsQuery,
   useGetFloorPlanMeshApsQuery,
+  useGetRbacFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
+  useGetRbacNetworkApGroupsQuery,
   useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
@@ -1875,6 +2025,7 @@ export const {
   useGetVenueApModelBandModeSettingsQuery,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
+  useGetDefaultVenueLanPortsQuery,
   useGetVenueLanPortsQuery,
   useLazyGetVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,

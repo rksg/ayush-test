@@ -218,7 +218,7 @@ function LocaleProvider (props: LocaleProviderProps) {
       setUpIntl({
         locale: lang,
         messages: message,
-        defaultRichTextElements: getReSkinningElements(props.supportReSkinning, {
+        defaultRichTextElements: getReSkinningElements({
           lang: lang, messages: message
         })
       })
@@ -241,10 +241,9 @@ const generateLangLabel = (lang: string, defaultLang?: LangKey): string | undefi
   return languageNames.of(lang)
 }
 
-export const useSupportedLangs = (isSupportDeZh: boolean, defaultLang?: string) => {
+export const useSupportedLangs = (defaultLang?: string) => {
   return Object.keys(localeLoaders)
     .filter(val => val !== 'zh-CN')
-    .filter(val => isSupportDeZh || !(val.includes('de') || val.includes('zh')))
     .map(val => ({
       label: generateLangLabel(val, defaultLang as LangKey),
       value: val

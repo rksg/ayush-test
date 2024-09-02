@@ -16,8 +16,9 @@ import {
   ServiceType,
   useTableQuery
 }   from '@acx-ui/rc/utils'
-import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { TenantLink, useParams }         from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import AddMdnsProxyInstanceDrawer from './AddMdnsProxyInstanceDrawer'
 import ChangeMdnsProxyDrawer      from './ChangeMdnsProxyDrawer'
@@ -48,6 +49,7 @@ export default function MdnsProxyInstances () {
   const rowActions: TableProps<MdnsProxyAp>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Change' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (rows: MdnsProxyAp[]) => {
         setSelectedApIds(rows.map(r => r.serialNumber))
         setSelectedServiceId(rows[0].serviceId)
@@ -56,6 +58,7 @@ export default function MdnsProxyInstances () {
     },
     {
       label: $t({ defaultMessage: 'Remove' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (rows: MdnsProxyAp[], clearSelection) => {
         doDelete(rows, clearSelection)
       }
@@ -107,6 +110,7 @@ export default function MdnsProxyInstances () {
       render: function (_, row) {
         return <Switch
           checked={true}
+          disabled={!hasPermission({ scopes: [WifiScopes.UPDATE] })}
           onChange={checked => {
             if (checked) return
 
@@ -153,7 +157,9 @@ export default function MdnsProxyInstances () {
           onChange={tableQuery.handleTableChange}
           rowKey='serialNumber'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'radio' }
+          }
         />
       </Loader>
       <AddMdnsProxyInstanceDrawer

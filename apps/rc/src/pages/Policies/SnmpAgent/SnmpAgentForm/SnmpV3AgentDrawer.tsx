@@ -4,7 +4,8 @@ import { Form, Input, Select } from 'antd'
 import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Tooltip, PasswordInput }                                               from '@acx-ui/components'
+import { Drawer, Tooltip, PasswordInput, PasswordInputStrength }                        from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                       from '@acx-ui/feature-toggle'
 import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -30,7 +31,8 @@ type SnmpV3AgentDrawerProps = {
 const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SnmpAgentFormContext)
-
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
   const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
@@ -49,6 +51,28 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const saveButtonText = isEditMode
     ? $t({ defaultMessage: 'Apply' })
     : $t({ defaultMessage: 'Add' })
+
+  const RULE_REGEX = [
+    /^[A-Za-z\d~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]{1,}$/, // No invalid characters
+    /^(?!~).{1,}/,                                            // ~ cannot be the first character
+    /^(?!.*[`]).{1,}/,                                        // ` is not valid in the password
+    /^(?!.*\$\().{1,}/                                        // $( is not valid in the password
+  ]
+
+  const RULE_MESSAGES = [
+    // eslint-disable-next-line
+    $t({ defaultMessage: 'No other characters are allowed except uppercase, lowercase, digits and special characters, valid special characters are ~!@#$%^&*_-+=|\()\'{}[]:;"\'<>,.?/' }),
+    $t({ defaultMessage: '~ cannot be used as the first character of the password' }),
+    $t({ defaultMessage: '` is not valid to be part of the password' }),
+    $t({ defaultMessage: 'The sequence of $( is not valid to be part of the password' })
+  ]
+
+  const RULE_REGEX_NO_MESSAGE = [
+    /^.{8,32}$/,
+    /(?=.*[a-z])(?=.*[A-Z])/,
+    /(?=.*\d)/,
+    /(?=.*[~!@#\$%^&*_\-+=|\(\)\{\}\[\]:;\"'<>,.?/]).{1,}/   // At least one valid special character
+  ]
 
   useEffect(() => {
     if (visible && form) {
@@ -119,10 +143,47 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         style={{ width: '350px' }}
         rules={[
           { required: true },
-          { min: 8 },
-          { max: 32 }
+          /* eslint-disable */
+          ...(isSNMPv3PassphraseOn ? [
+            {
+              validator: (_ : any, value: string) => {
+                const errors: number[] = []
+                RULE_REGEX.forEach((regex, index) => {
+                  if(value && !regex.test(value)) {
+                    errors.push(index)
+                  }
+                })
+                if(errors.length > 0 || !value) {
+                  return Promise.reject(RULE_MESSAGES[errors[0]])
+                }
+                return Promise.resolve()
+              } },
+              {
+                validator: (_ : any, value: string) => {
+                  const errors: number[] = []
+                  RULE_REGEX_NO_MESSAGE.forEach((regex, index) => {
+                    if(value && !regex.test(value)) {
+                      errors.push(index)
+                    }
+                  })
+                  if(errors.length > 0 || !value) {
+                    return Promise.reject()
+                  }
+                  return Promise.resolve()
+                } }
+          /* eslint-enable */
+          ] : [
+            { min: 8 },
+            { max: 32 }
+          ])
         ]}
-        children={<PasswordInput />}
+        children={
+          (isSNMPv3PassphraseOn ?
+            <PasswordInputStrength
+              data-testid={'password-input-strength'}/> :
+            <PasswordInput />
+          )
+        }
       />
       <Form.Item
         name='privacyProtocol'

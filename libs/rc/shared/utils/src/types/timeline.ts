@@ -26,7 +26,8 @@ export const eventTypeMapping = {
   CLIENT: defineMessage({ defaultMessage: 'Client' }),
   SWITCH: defineMessage({ defaultMessage: 'Switch' }),
   NETWORK: defineMessage({ defaultMessage: 'Network' }),
-  EDGE: defineMessage({ defaultMessage: 'SmartEdge' })
+  EDGE: defineMessage({ defaultMessage: 'SmartEdge' }),
+  PROFILE: defineMessage({ defaultMessage: 'Profile' })
 }
 
 export const eventProductMapping = {
@@ -114,6 +115,8 @@ export interface EventBase {
   venueId: string
   clientMac?: string
   clientName?: string
+  remoteEdgeId?: string
+  clientMldMac?: string
 }
 
 export interface EventMeta {
@@ -126,6 +129,7 @@ export interface EventMeta {
   isSwitchExists: boolean
   isVenueExists: boolean,
   isUnitExists: boolean,
+  isRemoteedgeExists: boolean,
   networkId?: string
   networkName?: string
   switchMac?: string
@@ -133,7 +137,9 @@ export interface EventMeta {
   venueName: string
   tableKey?: string
   edgeName: string,
-  unitName: string
+  remoteedgeName: string,
+  unitName: string,
+  profileName: string
 }
 
 export type EventExportSchedule = {

@@ -3,6 +3,7 @@ import { FetchArgs } from '@reduxjs/toolkit/query'
 import {
   ApiVersionEnum,
   APMesh,
+  FloorPlanMeshAP,
   GetApiVersionHeader,
   NewAPModel,
   VenueConfigTemplateUrlsInfo,
@@ -76,7 +77,7 @@ export const convertToApMeshDataList = (newApModels: NewAPModel[], members: NewA
   return newApModels.map((newApModel) => {
     const { name, macAddress, serialNumber, model,
       meshRole, meshStatus, networkStatus, venueId, clientCount } = newApModel
-    const { uplinks, downlinks, hopCount } = meshStatus || {}
+    const { uplinks, downlinks, hopCount, radios } = meshStatus || {}
 
     const newApMesh = {
       name,
@@ -87,7 +88,8 @@ export const convertToApMeshDataList = (newApModels: NewAPModel[], members: NewA
       IP: networkStatus?.ipAddress,
       clientCount,
       hops: hopCount,
-      venueId
+      venueId,
+      meshBand: radios?.flatMap(r => r.band).join(', ')
     } as APMesh
 
     if (Array.isArray(uplinks) && uplinks.length > 0) {
@@ -107,6 +109,49 @@ export const convertToApMeshDataList = (newApModels: NewAPModel[], members: NewA
             apDownRssi: downlinks.find(downlinkAp => downlinkAp.macAddress === macAddress)?.rssi
           }
         })
+      }
+    }
+
+    return newApMesh
+  })
+}
+
+export const convertToMeshTopologyDataList = (newApModels: NewAPModel[], members: NewAPModel[]) => {
+  return newApModels.map((newApModel) => {
+    const { name, macAddress, serialNumber,
+      meshRole, meshStatus,
+      venueId, floorplanId } = newApModel
+
+    const { uplinks, downlinks, hopCount } = meshStatus || {}
+
+    const newApMesh = {
+      name,
+      apMac: macAddress,
+      serialNumber,
+      meshRole,
+      hops: hopCount,
+      venueId,
+      floorplanId
+    } as FloorPlanMeshAP
+
+    if (Array.isArray(uplinks) && uplinks.length > 0) {
+      newApMesh.apUpRssi = uplinks[0].rssi
+    }
+
+    if (Array.isArray(downlinks) && downlinks.length > 0) {
+      const downlinkApMacList = downlinks.map(downlink => downlink.macAddress)
+      const downLinkAps = members.filter(member => downlinkApMacList.includes(member.macAddress!))
+      if (downLinkAps.length) {
+        const children = convertToMeshTopologyDataList(downLinkAps, members)
+
+        newApMesh.downlink = children.map(child => {
+          const macAddress = child.apMac
+          return {
+            ...child,
+            apDownRssi: downlinks.find(downlinkAp => downlinkAp.macAddress === macAddress)?.rssi
+          }
+        })
+        newApMesh.downlinkCount = children.length
       }
     }
 

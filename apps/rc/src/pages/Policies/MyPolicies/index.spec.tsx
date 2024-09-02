@@ -200,6 +200,18 @@ describe('MyPolicies', () => {
       rest.post(
         EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
     render(

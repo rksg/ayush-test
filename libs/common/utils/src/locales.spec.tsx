@@ -248,7 +248,7 @@ describe('useSupportedLangs', () => {
       { label: 'Deutsch', value: 'de-DE' },
       { label: '繁體中文', value: 'zh-TW' }
     ]
-    const { result } = renderHook(() => useSupportedLangs(true))
+    const { result } = renderHook(() => useSupportedLangs())
     expect(result.current).toStrictEqual(langList)
   })
 })

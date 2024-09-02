@@ -74,20 +74,18 @@ function Layout () {
     defaultPayload: invitationPayload
   })
   const delegationCount = invitationTableQuery.data?.totalCount ?? 0
-  const nonVarDelegation =
-    useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE) && delegationCount > 0
+  const nonVarDelegation = delegationCount > 0
 
-  const showHomeButton = nonVarDelegation ||
-    isDelegationMode() || userProfile?.var || tenantType === AccountType.MSP_NON_VAR ||
-    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const showHomeButton = nonVarDelegation || isDelegationMode() || tenantType === AccountType.MSP
+      || tenantType === AccountType.VAR || tenantType === AccountType.MSP_NON_VAR
+      || tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
-  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
-    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
+  const isHospitality = getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
   const userProfileBasePath = useTenantLink('/userprofile')

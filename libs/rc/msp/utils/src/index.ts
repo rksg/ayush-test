@@ -1,4 +1,5 @@
-import moment from 'moment'
+import moment            from 'moment'
+import { defineMessage } from 'react-intl'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
@@ -10,7 +11,8 @@ import {
   MspEc,
   MspEcProfile,
   MspProfile,
-  MspRecCustomer
+  MspRecCustomer,
+  MspEcAccountType
 } from './types'
 
 export * from './types'
@@ -29,7 +31,7 @@ export const MSPUtils = () => {
   }
 
   const isOnboardedMsp = (msp: MspProfile | undefined): boolean => {
-    if (msp?.msp_label !== '') {
+    if (!!msp?.msp_label) {
       return true
     }
 
@@ -108,9 +110,17 @@ export const MSPUtils = () => {
   }
 
   const getStatus = (row: MspEc) => {
-    const isTrial = row.accountType === 'TRIAL'
-    const value = row.status === 'Active' ? (isTrial ? 'Trial' : row.status) : 'Inactive'
-    return value
+    if (row.status === 'Active') {
+      switch(row.accountType) {
+        case MspEcAccountType.TRIAL:
+          return defineMessage({ defaultMessage: 'Trial' })
+        case MspEcAccountType.EXTENDED_TRIAL:
+          return defineMessage({ defaultMessage: 'Extended Trial' })
+      }
+      return defineMessage({ defaultMessage: 'Active' })
+    } else {
+      return defineMessage({ defaultMessage: 'Inactive' })
+    }
   }
 
   const transformApEntitlement = (row: MspEc) => {

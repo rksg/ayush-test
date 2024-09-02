@@ -304,7 +304,7 @@ describe('Network utils test', () => {
         ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
       )
       // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
       // eslint-disable-next-line max-len
@@ -318,7 +318,7 @@ describe('Network utils test', () => {
         ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
       )
       // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
       // eslint-disable-next-line max-len
@@ -332,7 +332,7 @@ describe('Network utils test', () => {
         ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
       )
       // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
       // eslint-disable-next-line max-len
@@ -346,7 +346,7 @@ describe('Network utils test', () => {
         ff === Features.SERVICES || ff === Features.POLICIES || ff === Features.CONFIG_TEMPLATE
       )
       // eslint-disable-next-line max-len
-      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.BETA_CONFIG_TEMPLATE)
+      jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === TierFeatures.CONFIG_TEMPLATE)
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
       // eslint-disable-next-line max-len

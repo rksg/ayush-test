@@ -189,10 +189,10 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                             },
                             {
                               type: 'number',
-                              min: 68,
+                              min: 576,
                               max: 1450,
                               message: $t({
-                                defaultMessage: 'Path MTU size must be between 68 and 1450'
+                                defaultMessage: 'Path MTU size must be between 576 and 1450'
                               })
                             }
                           ]}

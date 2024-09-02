@@ -1,9 +1,9 @@
 import { Col, Select, Form, Row, Typography } from 'antd'
 import { useIntl }                            from 'react-intl'
 
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { usePreference }                                                  from '@acx-ui/rc/components'
 import { TenantLink, useLocation }                                        from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission }                                       from '@acx-ui/user'
 import { LangKey, useLocaleContext, DEFAULT_SYS_LANG, useSupportedLangs } from '@acx-ui/utils'
 
 
@@ -12,7 +12,6 @@ import { MessageMapping } from '../MessageMapping'
 const DefaultSystemLanguageFormItem = () => {
   const { $t } = useIntl()
   const location = useLocation()
-  const isSupportDeZh = useIsSplitOn(Features.I18N_DE_ZH_TOGGLE)
 
   const userProfileLink = <TenantLink
     state={{ from: location.pathname }}
@@ -25,7 +24,7 @@ const DefaultSystemLanguageFormItem = () => {
     getReqState,
     updateReqState
   } = usePreference()
-  const supportedLangs = useSupportedLangs(isSupportDeZh, currentDefaultLang)
+  const supportedLangs = useSupportedLangs(currentDefaultLang)
 
   const locale = useLocaleContext()
   const handleDefaultLangChange = async (langCode: string) => {
@@ -59,7 +58,7 @@ const DefaultSystemLanguageFormItem = () => {
             onChange={handleDefaultLangChange}
             showSearch
             optionFilterProp='children'
-            disabled={isUpdatingPreference || isLoadingPreference}
+            disabled={!hasCrossVenuesPermission() || isUpdatingPreference || isLoadingPreference}
             style={{ textTransform: 'capitalize' }}
           >
             {supportedLangs.map(({ label, value }) =>

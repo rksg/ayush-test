@@ -4,7 +4,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
-  ANY_3RDPARTY_INVITE_TOGGLE = 'removable-ff',
   AP_GPS = 'ap-gps-toggle',
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
@@ -13,7 +12,6 @@ export enum Features {
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
-  BETA_FLAG = 'acx-ui-beta-flag-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
@@ -24,7 +22,6 @@ export enum Features {
   CONNECTION_METERING = 'connection-metering-enabled',
   CRRM_PARTIAL = 'acx-ui-recommendations-crrm-partial-toggle',
   DATA_PLANE = 'dataPlane',
-  DELEGATION_TIERING = 'acx-ui-delegation-tiering-toggle',
   DELETE_SOLO = 'ap-delete-with-solo-image-toggle',
   DEVICE_AGNOSTIC = 'entitlement-device-agnostic-sku-toggle',
   DPSK_PER_BOUND_PASSPHRASE_ALLOWED_DEVICE_INCREASED_LIMIT = 'dpsk-per-bound-passphrase-allowed-device-increased-limit',
@@ -44,8 +41,13 @@ export enum Features {
   EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   EDGE_SD_LAN_MV_TOGGLE = 'edge-sdlan-mv-toggle',
   EDGE_QOS_TOGGLE = 'edge-qos-toggle',
+  EDGE_COMPATIBILITY_CHECK_TOGGLE = 'edge-compatibility-check-toggle',
+  EDGE_HA_AA_FALLBACK_TOGGLE = 'edge-ha-aa-fallback-toggle',
+  EDGE_HA_AA_DMZ_TOGGLE = 'edge-ha-aa-dmz-toggle',
+  ENTITLEMENT_EXTENDED_TRIAL_TOGGLE = 'entitlement-acx-extended-trial-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
+  ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE= 'entitlement-license-compliance-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
   ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE = 'entitlement-virtual-smart-edge-toggle',
   EOL_AP_2022_12_PHASE_2_TOGGLE = 'eol-ap-2022-12-phase-2-toggle',
@@ -59,12 +61,8 @@ export enum Features {
   HELP_SUPPORT = 'acx-ui-help-support',
   HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
   I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
-  I18N_DE_ZH_TOGGLE = 'acx-ui-i18n-de-zh-toggle',
-  I18N_PHASE2_TOGGLE = 'acx-ui-i18n-phase2-toggle',
-  I18N_TOGGLE = 'acx-ui-i18n-toggle',
   IDM_APPLICATION_KEY_TOGGLE = 'ptenant-application-key-toggle',
   IDM_DECOUPLING = 'ptenant-admin-authentication-enabled',
-  INCIDENTS_EMAIL_NOTIFICATION_TOGGLE = 'acx-ui-incidents-notification-toggle',
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
@@ -89,6 +87,7 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
+  NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE = 'nuvo-notification-channel-api-changes',
   NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
@@ -105,17 +104,18 @@ export enum Features {
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
+  HEALTH_WIRED_TOPN_WITH_OTHERS = 'acx-ui-health-wired-topn-with-others-toggle',
+  RUCKUS_AI_SWITCH_HEALTH_10010E_TOGGLE = 'ruckus-ai-switch-health-10010e-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
   SSO = 'ADMN-SSO',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'removable-ff',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',
-  SWITCH_ADMIN_PASSWORD = 'removable-ff',
   SWITCH_BLINK_LED = 'switch-consumer-blink-led-toggle',
-  SWITCH_DHCP_CLIENTS = 'removable-ff',
   SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE = 'removable-ff',
   SWITCH_HEALTH_TOGGLE = 'acx-ui-switch-health-toggle',
+  SWITCH_HEALTH_10010E_TOGGLE = 'acx-ui-switch-health-10010e-toggle',
   SWITCH_LEVEL_VLAN = 'switch-level-vlan',
   SWITCH_PORT_HYPERLINK = 'switch-port-hyperlink-toggle',
   SWITCH_RBAC_API = 'acx-ui-rbac-api-switch-toggle',
@@ -127,10 +127,10 @@ export enum Features {
   SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
   SWITCH_FIRMWARE_V1002_TOGGLE= 'switch-firmware-management-for-10010d-toggle',
   SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
+  SWITCH_NTP_SERVER = 'switch-consumer-apply-ntp-server-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
-  VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
@@ -148,6 +148,7 @@ export enum Features {
   WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE = 'wifi-trunk-port-untagged-vlan-toggle',
   WIFI_RBAC_API = 'acx-ui-rbac-api-wifi-toggle',
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
+  WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE = 'wifi-softgre-over-wireless-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
   EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
@@ -169,14 +170,17 @@ export enum Features {
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
   RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle',
   WIFI_EDA_WIFI7_MLO_3LINK_TOGGLE='wifi-eda-wifi7-mlo-3link-toggle',
-  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle'
+  WIFI_MESH_CONFIGURATION_FOR_5G_6G_ONLY = 'wifi-mesh-configuration-for-5g-6g-only-toggle',
+  SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
+  WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle',
+  WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
   AP_70 = 'AP-70',
   BETA_DPSK3 = 'BETA-DPSK3',
   SMART_EDGES = 'PLCY-EDGE',
-  BETA_CONFIG_TEMPLATE = 'BETA-CONFIG-TEMPLATE'
+  CONFIG_TEMPLATE = 'CONFIG-TEMPLATE'
 }
 
 interface BetaList {
@@ -195,5 +199,5 @@ export const BetaListDetails:BetaList[] = [
   { key: TierFeatures.BETA_DPSK3, description: defineMessage({ defaultMessage: 'DPSK3: Dynamic Preshared Keys working with WPA3-DSAE. Users connect their devices to a WPA2/WPA3 network with DPSK and are automatically moved to the WPA3 WLAN, allowing DPSK operation with WiFi 6e or WiFi7. DPSK3 allows the customer to take advantage of the flexibility of DPSK with the security of WPA3.' }), status: true },
   { key: TierFeatures.AP_70, description: defineMessage({ defaultMessage: 'AP-70: Wi-Fi 7 - Wi-Fi 7 UI configuration available for early adopters and customers provided with advance units of the R770. Contact your reseller for more information on availability of the new R770!' }), status: true },
   { key: TierFeatures.SMART_EDGES, description: defineMessage({ defaultMessage: 'SmartEdge: RUCKUS SmartEdge is a platfrom to run RUCKUS services on. Network administrators can utilize SD-LAN service or Personal Identity Networking service on a SmartEdge. SD-LAN provides WLAN tunnelling using VXLAN. This will provide end users a seamless roaming experience across a network. The Personal Identity Networking service provides individual networks for users which is typically used in a multi-dwelling facility.' }), status: true },
-  { key: TierFeatures.BETA_CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
+  { key: TierFeatures.CONFIG_TEMPLATE, description: defineMessage({ defaultMessage: 'Config Template: It allows MSP users to create templates for networks, <venuePlural></venuePlural>, services, and policies. These templates can then be applied to multiple customers, providing a centralized and efficient solution for managing RUCKUS brand network equipment across properties.' }), status: true }
 ]
