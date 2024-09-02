@@ -14,8 +14,8 @@ import {
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent } from './config'
-import { DisplayStates }                                                         from './states'
+import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent, failureCodes } from './config'
+import { DisplayStates }                                                                       from './states'
 import {
   Actions,
   IntentWlan,
@@ -23,9 +23,7 @@ import {
   TransitionIntentItem } from './utils'
 
 type Metadata = {
-  error?: {
-    message?: string
-  }
+  failures?: (keyof typeof failureCodes)[]
   scheduledAt?: string
   updatedAt?: string
   oneClickOptimize?: boolean
@@ -61,8 +59,13 @@ const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Me
   const { $t } = getIntl()
 
   const stateConfig = states[state]
+
+  const errMsg: string = metadata.failures?.map(failure => {
+    return failureCodes[failure] ? $t(failureCodes[failure]) : failure
+  }).join('\n - ') || ''
+
   return $t(stateConfig.tooltip, {
-    errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
+    errorMessage: `\n - ${errMsg}\n\n`,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
