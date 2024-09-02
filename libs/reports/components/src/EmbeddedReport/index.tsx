@@ -380,17 +380,16 @@ export function EmbeddedReport (props: ReportProps) {
   }
 
   const isRoleReadOnly = () => {
-    const { isApReport, isSwitchReport } = getReportType(reportName)
-    const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
     const systemRolesWithWritePermissions = [RolesEnumR1.PRIME_ADMIN, RolesEnumR1.ADMINISTRATOR]
-
-    if (scopes) {
-      const hasWriteScope = scopes.some(scope => regex.test(scope))
-      return !hasWriteScope
-    } else if (customRoleType === CustomRoleType.SYSTEM) {
+    if (customRoleType === CustomRoleType.SYSTEM) {
       return !systemRolesWithWritePermissions.includes(customRoleName as RolesEnumR1)
     }
-
+    if (scopes) {
+      const { isApReport, isSwitchReport } = getReportType(reportName)
+      const regex = scopeRegexMapping[isApReport ? 'ap' : isSwitchReport ? 'switch' : 'both']
+      const hasWriteScope = scopes.some(scope => regex.test(scope))
+      return !hasWriteScope
+    }
     return !systemRolesWithWritePermissions.some(role => roles.includes(role))
   }
 

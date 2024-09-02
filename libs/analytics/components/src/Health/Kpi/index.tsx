@@ -137,7 +137,12 @@ export function KpiSection (props: {
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
               <Histogram
-                filters={filters}
+                filters={{
+                  ...filters,
+                  startDate: timeWindow[0] as string,
+                  endDate: timeWindow[1] as string
+                }
+                }
                 kpi={kpi as keyof typeof kpiConfig}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}

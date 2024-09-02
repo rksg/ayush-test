@@ -193,19 +193,19 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcSupport: {
     method: 'get',
-    url: '/tenants/:mspEcTenantId/tenantDelegations',
+    url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
     newApi: true
   },
   enableMspEcSupport: {
-    method: 'post',
-    url: '/tenants/:mspEcTenantId/tenantDelegations',
+    method: 'put',
+    url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
     newApi: true
   },
   disableMspEcSupport: {
     method: 'delete',
-    url: '/tenants/:mspEcTenantId/tenantDelegations',
+    url: '/tenantActivations/supportStatus/:mspEcTenantId',
     oldUrl: '/mspCustomers/:mspEcTenantId/delegations',
     newApi: true
   },
