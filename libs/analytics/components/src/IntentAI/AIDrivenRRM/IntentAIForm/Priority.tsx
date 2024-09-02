@@ -65,7 +65,6 @@ export function Priority () {
           rules={[{ required: true, message: $t({ defaultMessage: 'Please select intent priority' }) }]}
           children={<IntentTradeOff radios={radios} />}
         />
-        <FormattedMessage defaultMessage='Note: First option is default.' />
       </StepsForm.TextContent>
     </Col>
     <Col span={7} offset={2}>
