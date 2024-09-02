@@ -701,7 +701,7 @@ describe('Intent services', () => {
   it('should return intentHighlight', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
       data: intentHighlights
-    })
+    }, true)
 
     const { status, data, error } = await store.dispatch(
       api.endpoints.intentHighlight.initiate(props)
