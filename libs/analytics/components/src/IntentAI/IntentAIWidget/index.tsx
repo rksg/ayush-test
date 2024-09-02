@@ -46,6 +46,7 @@ function HighlightCard (props: HighlightCardProps) {
       { activeCount: props.active }
     )
     : $t({ defaultMessage: 'Click here to view available Intents in the network.' })
+  const iconEncodedPath = fixedEncodeURIComponent( JSON.stringify({ aiFeature: [props.type] }) )
   const encodedPath = fixedEncodeURIComponent(
     JSON.stringify({
       aiFeature: [props.type],
@@ -60,7 +61,7 @@ function HighlightCard (props: HighlightCardProps) {
           title={iconTooltips[props.type]}
           overlayInnerStyle={{ width: '345px' }}
         >
-          <TenantLink to={`/analytics/intentAI?intentTableFilters=${encodedPath}`}>
+          <TenantLink to={`/analytics/intentAI?intentTableFilters=${iconEncodedPath}`}>
             {props.icon}
           </TenantLink>
         </Tooltip>
