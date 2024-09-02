@@ -89,13 +89,9 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
 export function getKpiData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
   const kpi = intent[key] as IntentKpi[`kpi_${string}`]
-  const [before, after] = [
-    _.get(kpi, 'compareData.result', null),
-    _.get(kpi, 'data.result', null)
-  ].filter(value => value !== null)
   return {
-    data: after,
-    compareData: before
+    data: _.get(kpi, 'data.result', null),
+    compareData: _.get(kpi, 'compareData.result', null)
   }
 }
 
