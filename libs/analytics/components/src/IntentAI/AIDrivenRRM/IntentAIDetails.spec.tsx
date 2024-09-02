@@ -1,10 +1,10 @@
 import _ from 'lodash'
 
-import { recommendationUrl, Provider, store, recommendationApi } from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, within }              from '@acx-ui/test-utils'
+import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
 
-import { useIntentContext }                 from '../IntentContext'
-import { Intent, transformDetailsResponse } from '../useIntentDetailsQuery'
+import { useIntentContext } from '../IntentContext'
+import { Intent }           from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
 import * as CCrrmChannel24gAuto               from './CCrrmChannel24gAuto'
@@ -23,21 +23,22 @@ jest.mock('./RRMGraph/DownloadRRMComparison', () => ({
 }))
 
 const mockIntentContextWith = (data: Partial<Intent>) => {
-  let intent = transformDetailsResponse(mockedIntentCRRM)
+  let intent = mockedIntentCRRM
   intent = _.merge({}, intent, data) as typeof intent
   jest.mocked(useIntentContext).mockReturnValue({ intent, kpis })
   return {
     params: {
       code: mockedIntentCRRM.code,
-      recommendationId: mockedIntentCRRM.id
+      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
     }
   }
 }
 
 describe('IntentAIDetails', () => {
   beforeEach(() => {
-    store.dispatch(recommendationApi.util.resetApiState())
-    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+    store.dispatch(intentAIApi.util.resetApiState())
+    mockGraphqlQuery(intentAIUrl, 'IntentAIRRMGraph', {
       data: { intent: mockedCRRMGraphs }
     })
   })
@@ -46,7 +47,16 @@ describe('IntentAIDetails', () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
       status: 'applied',
-      kpi_number_of_interfering_links: { current: 2, previous: null, projected: 0 },
+      kpi_number_of_interfering_links: {
+        data: {
+          timestamp: null,
+          result: 0
+        },
+        compareData: {
+          timestamp: '2024-08-14T00:00:00.000Z',
+          result: 2
+        }
+      },
       metadata: {
         algorithmData: { isCrrmFullOptimization: true }
       } as unknown as Intent['metadata']
@@ -110,7 +120,16 @@ describe('IntentAIDetails', () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
         status: 'new',
-        kpi_number_of_interfering_links: { current: 2, previous: null, projected: 0 },
+        kpi_number_of_interfering_links: {
+          data: {
+            timestamp: null,
+            result: 0
+          },
+          compareData: {
+            timestamp: '2024-08-14T00:00:00.000Z',
+            result: 2
+          }
+        },
         metadata: {
           algorithmData: { isCrrmFullOptimization: true }
         } as unknown as Intent['metadata']
@@ -122,7 +141,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
+      expect(await screen.findByTestId('Why the intent?'))
         .toHaveTextContent(/interfering links from 2 to 0/)
     })
 
@@ -130,7 +149,16 @@ describe('IntentAIDetails', () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
         status: 'applied',
-        kpi_number_of_interfering_links: { current: 2, previous: null, projected: 0 },
+        kpi_number_of_interfering_links: {
+          data: {
+            timestamp: null,
+            result: 0
+          },
+          compareData: {
+            timestamp: '2024-08-14T00:00:00.000Z',
+            result: 2
+          }
+        },
         metadata: {
           algorithmData: { isCrrmFullOptimization: true }
         } as unknown as Intent['metadata']
@@ -142,7 +170,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
+      expect(await screen.findByTestId('Why the intent?'))
         .toHaveTextContent(/adjust the channel plan, bandwidth and AP transmit power when necessary to/) // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
         .toHaveTextContent(/for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten/) // eslint-disable-line max-len
@@ -152,7 +180,16 @@ describe('IntentAIDetails', () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
         status: 'applied',
-        kpi_number_of_interfering_links: { current: 2, previous: null, projected: 0 },
+        kpi_number_of_interfering_links: {
+          data: {
+            timestamp: null,
+            result: 0
+          },
+          compareData: {
+            timestamp: '2024-08-14T00:00:00.000Z',
+            result: 2
+          }
+        },
         metadata: {
           algorithmData: { isCrrmFullOptimization: false }
         } as unknown as Intent['metadata']
@@ -164,7 +201,7 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why this recommendation?'))
+      expect(await screen.findByTestId('Why the intent?'))
         .toHaveTextContent(/adjust the channel plan when necessary to/)
       expect(await screen.findByTestId('Potential trade-off'))
         .toHaveTextContent(/for channel and Auto Channel Selection will potentially be overwritten/)

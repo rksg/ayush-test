@@ -59,8 +59,9 @@ const UserPrivileges = () => {
   const privilegeGroupCount = privilegeGroupList.data?.length! || 0
   const customRoleCount = customRoleList.data?.length! || 0
 
-  const isVAR = userProfileData?.var && !userProfileData?.support
   const tenantType = tenantDetailsData.data?.tenantType
+  const isVAR = tenantType === TenantType.VAR && !userProfileData?.support
+  const isMsp = (tenantType === TenantType.MSP)
   const isNonVarMsp = (tenantType === TenantType.MSP_NON_VAR)
   let isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
   let currentUserMail = userProfileData?.email
@@ -85,7 +86,7 @@ const UserPrivileges = () => {
 
 
   const isPrimeAdminUser = isPrimeAdmin()
-  const isDelegationReady = (!isVAR && !isNonVarMsp) || isMspEc
+  const isDelegationReady = (!isVAR && !isMsp && !isNonVarMsp) || isMspEc
 
   const tabs = {
     users: {

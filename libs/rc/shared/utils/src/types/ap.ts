@@ -542,7 +542,19 @@ export interface LanPortStatusProperties {
 }
 
 export interface VxlanStatus {
-  vxlanMtu: number
+  vxlanMtu: number,
+  tunStatus: VxlanTunnelStatus,
+  primaryRvtepInfo: VxlanRvtepInfo,
+  activeRvtepInfo: VxlanRvtepInfo
+}
+
+export enum VxlanTunnelStatus {
+  CONNECTED = 'VxLAN_TUN_STATUS_CONNECTED',
+  DISCONNECTED = 'VxLAN_TUN_STATUS_DISCONNECTED'
+}
+
+export interface VxlanRvtepInfo {
+  deviceId: string
 }
 
 export enum GpsFieldStatus {

@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 import { Tabs }                                             from '@acx-ui/components'
 import { ApDetailHeader, ApDeviceStatusEnum, useApContext } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                       from '@acx-ui/react-router-dom'
-import { hasPermission }                                    from '@acx-ui/user'
+import { hasRaiPermission }                                 from '@acx-ui/user'
 
 function ApTabs (props:{ apDetail: ApDetailHeader }) {
   const { $t } = useIntl()
@@ -24,7 +24,7 @@ function ApTabs (props:{ apDetail: ApDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasPermission() && <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='analytics' /> }
+      { hasRaiPermission('READ_INCIDENTS') && <Tabs.TabPane tab={$t({ defaultMessage: 'AI Analytics' })} key='analytics' /> }
       {currentApOperational &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}

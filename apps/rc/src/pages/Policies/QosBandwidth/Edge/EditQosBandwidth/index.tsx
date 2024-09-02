@@ -29,11 +29,11 @@ const EditEdgeQosBandwidth = () => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
-  const cfListRoute = getPolicyRoutePath({
+  const qosListRoute = getPolicyRoutePath({
     type: PolicyType.QOS_BANDWIDTH,
     oper: PolicyOperation.LIST
   })
-  const linkToServiceList = useTenantLink(cfListRoute)
+  const linkToProfileList = useTenantLink(qosListRoute)
   const [updateEdgeQosProfile] = useUpdateEdgeQosProfileMutation()
   const [activateEdgeCluster] = useActivateQosOnEdgeClusterMutation()
   const [deactivateEdgeCluster] = useDeactivateQosOnEdgeClusterMutation()
@@ -87,7 +87,7 @@ const EditEdgeQosBandwidth = () => {
       && !isChangedTrafficClassSettings(
         reqConfig.trafficClassSettings??[], dbConfig.trafficClassSettings??[])
     ) {
-      navigate(linkToServiceList, { replace: true })
+      navigate(linkToProfileList, { replace: true })
       return
     }
 
@@ -99,7 +99,7 @@ const EditEdgeQosBandwidth = () => {
       }
 
       await updateEdgeQosProfile({ params, payload }).unwrap()
-      navigate(linkToServiceList, { replace: true })
+      navigate(linkToProfileList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
       console.log(err)
@@ -111,14 +111,14 @@ const EditEdgeQosBandwidth = () => {
     const activateChangedClustersInfo = formData.activateChangedClustersInfo??{}
     const reqClusterIds = viewData.edgeClusterIds??[]
     if(!activateChangedClusters ) {
-      navigate(linkToServiceList, { replace: true })
+      navigate(linkToProfileList, { replace: true })
       return
     }
 
     const changedKeys = Object.keys(activateChangedClusters)
     const activateClusterIds = changedKeys.filter(k => activateChangedClusters[k] === true)
     if(_.isEqual(reqClusterIds, activateClusterIds)) {
-      navigate(linkToServiceList, { replace: true })
+      navigate(linkToProfileList, { replace: true })
       return
     }
 
@@ -159,7 +159,7 @@ const EditEdgeQosBandwidth = () => {
           { text: $t({ defaultMessage: 'Network Control' }) },
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'QoS Bandwidth' }), link: cfListRoute }
+          { text: $t({ defaultMessage: 'QoS Bandwidth' }), link: qosListRoute }
         ]}
       />
       <Loader states={[{ isLoading }]}>
@@ -168,6 +168,7 @@ const EditEdgeQosBandwidth = () => {
           steps={steps}
           onFinish={handleFinish}
           editData={viewData}
+          onCancel={() => navigate(linkToProfileList)}
         />
       </Loader>
     </>

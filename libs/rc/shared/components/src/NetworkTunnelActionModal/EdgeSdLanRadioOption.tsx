@@ -28,6 +28,10 @@ interface SdLanRadioOptionProps {
   networkType: NetworkTypeEnum
   venueSdLan: EdgeMvSdLanViewData | undefined
   networkVlanPool?: VLANPoolViewModelType
+  disabledInfo?: {
+    isDisabled: boolean,
+    tooltip: string
+  }
 }
 
 export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
@@ -38,7 +42,8 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
   const {
     networkId, networkVenueId, networkType,
     tunnelTypeInitVal, currentTunnelType,
-    venueSdLan, networkVlanPool
+    venueSdLan, networkVlanPool,
+    disabledInfo
   } = props
 
   const sdLanTunneled = currentTunnelType === NetworkTunnelTypeEnum.SdLan
@@ -79,7 +84,7 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
   return <Row>
     <Form.Item
       help={<UI.RadioSubTitle>
-        <Form.Item dependencies={['sdLan', 'isGuestTunnelEnabled']}>
+        <Form.Item noStyle dependencies={['sdLan', 'isGuestTunnelEnabled']}>
           {({ getFieldValue }) => {
             const isFormGuestTunnelEnabled = getFieldValue(['sdLan', 'isGuestTunnelEnabled'])
 
@@ -105,8 +110,12 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
           }}
         </Form.Item>
       </UI.RadioSubTitle>}
+      tooltip={'testing'}
     >
-      <Radio value={NetworkTunnelTypeEnum.SdLan} disabled={!isVenueSdLanExist}>
+      <Radio
+        value={NetworkTunnelTypeEnum.SdLan}
+        disabled={disabledInfo?.isDisabled || !isVenueSdLanExist}
+      >
         {$t({ defaultMessage: 'SD-LAN Tunneling{info}' }, {
           info: (sdlanName ? $t({ defaultMessage: '({sdlanName})' }, { sdlanName }) : sdlanName)
         })}

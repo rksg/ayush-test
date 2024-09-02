@@ -12,9 +12,9 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { get }                           from '@acx-ui/config'
-import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { get }                                                     from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }                                from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
 import { WebhookForm }                                                                from './WebhookForm'
@@ -142,9 +142,10 @@ export const useWebhooks = () => {
       columns={columns}
       dataSource={webhooks}
       searchableWidth={450}
-      actions={filterByAccess(actions)}
+      actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
+      rowSelection={hasCrossVenuesPermission() &&
+        hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
         type: 'radio',
         selectedRowKeys: selectedId ? [selectedId] : []
       }}

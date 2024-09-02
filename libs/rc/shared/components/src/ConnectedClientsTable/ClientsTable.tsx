@@ -80,9 +80,15 @@ function GetNetworkFilterOptions (tenantId: string|undefined) {
   return networkFilterOptions
 }
 
-const AsyncLoadingInColumn = (row: ClientList, callBack: Function) : React.ReactNode => {
-  const { apName, venueName } = row
-  if(apName === undefined && venueName === undefined) {
+const AsyncLoadingInColumn = (
+  row: ClientList,
+  callBack: Function,
+  loadingCondition?: (row: ClientList) => boolean
+): React.ReactNode => {
+  const defaultCondition = (row: ClientList) =>
+    row.apName === undefined && row.venueName === undefined
+
+  if ((loadingCondition ?? defaultCondition)(row)) {
     return <AsyncColumnLoader />
   }
   return callBack()
@@ -257,7 +263,7 @@ export const ClientsTable = (props: ClientsTableProps<ClientList>) => {
             return <Tooltip title={mac}>
               {mac || noDataDisplay}
             </Tooltip>
-          })
+          }, (row) => row.mldAddr === undefined && row.apName === undefined && row.venueName === undefined)
         }
       }] : []),
       {
