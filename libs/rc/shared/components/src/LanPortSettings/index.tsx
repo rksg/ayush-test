@@ -183,6 +183,10 @@ export function LanPortSettings (props: {
       <Form.Item
         name={['lan', index, 'ethernetPortProfileId']}
         label={$t({ defaultMessage: 'Ethernet Port Profile' })}
+        rules={[
+          { required: true }
+        ]}
+        initialValue={ethernetPortProfileId ?? ''}
         children={<Select
           disabled={readOnly
           || isDhcpEnabled
@@ -197,6 +201,7 @@ export function LanPortSettings (props: {
           ...ethernetPortDropdownItems
           ]}
           onChange={() => onChangedByCustom('ethernetPortProfileId')}
+          style={{ width: '220px' }}
         />}
       />
       <EthernetPortProfileDrawer

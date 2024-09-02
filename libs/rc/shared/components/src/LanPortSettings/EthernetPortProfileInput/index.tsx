@@ -35,7 +35,7 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
 
   return (<>
     <StepsForm.FieldLabel width={'200px'}>
-      {$t({ defaultMessage: 'Port type' })}
+      {$t({ defaultMessage: 'Port Type' })}
       <label>
         {getEthernetPortTypeString(currentEthernetPortData?.type)}
       </label>
