@@ -159,13 +159,7 @@ export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
 
-  const token = getJwtToken()
-  const tenantId = getTenantId()
-
-  const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
-    : `/activity?tenantId=${tenantId}`
-
-  initialSocket(url1)
+  initialSocket()
 
   root.render(
     <React.StrictMode>

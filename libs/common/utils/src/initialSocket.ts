@@ -1,4 +1,3 @@
-import { isEmpty }    from 'lodash'
 import io, { Socket } from 'socket.io-client'
 
 import { getJwtToken, websocketServerUrl } from '@acx-ui/config'
@@ -9,23 +8,22 @@ let socket: typeof Socket
 
 let callbacks: ((...data: string[]) => void)[] = []
 
-export const initialSocket = (url: string) => {
+export const initialSocket = () => {
 
-  const token = getJwtToken()
 
   const tenantId = getTenantId()
+  const jwtToken = getJwtToken()
+  const url = jwtToken ? `/activity?token=${jwtToken}&tenantId=${tenantId}`
+    : `/activity?tenantId=${tenantId}`
 
   socket = getIndependentSocket(url)
-  socket.on('jwtRefresh', () => {
-    const url1 = token ? `/activity?token=${token}&tenantId=${tenantId}`
-      : `/activity?tenantId=${tenantId}`
-    socket.off('jwtRefresh')
-    socket.off('activityChangedEvent')
-    socket.close()
-    socket.disconnect()
-    socket = {} as SocketIOClient.Socket
-    initialSocket(url1)
-  })
+  // socket.on('jwtRefresh', () => {
+  //   socket.off('jwtRefresh')
+  //   socket.off('activityChangedEvent')
+  //   socket.disconnect()
+  //   socket = {} as SocketIOClient.Socket
+  //   initialSocket()
+  // })
   socket.on('activityChangedEvent', (...messages: string[]) => {
     callbacks.forEach((callback) => callback(...messages))
   })
@@ -65,6 +63,12 @@ export function getIndependentSocket (url: string): SocketIOClient.Socket {
 //   }
 // }
 
-export function getSocket () {
-  return socket
+export function reConnectSocket () {
+  if (socket && socket.connected) {
+    socket.off('activityChangedEvent')
+    socket.disconnect()
+    socket.close()
+    socket = {} as SocketIOClient.Socket
+    initialSocket()
+  }
 }
