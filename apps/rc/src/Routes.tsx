@@ -34,7 +34,6 @@ import {
   IdentityProviderForm,
   LbsServerProfileForm,
   ApGroupDetails,
-  useIsEdgeFeatureReady,
   SoftGreForm,
   useIsEdgeFeatureReady,
   AddEthernetPortProfile,
