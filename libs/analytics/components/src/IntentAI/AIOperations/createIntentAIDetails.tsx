@@ -80,8 +80,8 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
           <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection
-                data-testid='Why is this intent?'
-                title={$t({ defaultMessage: 'Why is this intent?' })}
+                data-testid='Why the intent?'
+                title={$t({ defaultMessage: 'Why the intent?' })}
                 children={<Card>{valuesText.reasonText}</Card>}
               />
             </GridCol>
