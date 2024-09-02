@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { Form }                      from 'antd'
+import _                             from 'lodash'
 import moment, { Moment }            from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -18,9 +19,9 @@ const fieldName = 'settings'
 const dateName = [fieldName, 'date']
 const timeName = [fieldName, 'time']
 
-interface FormValues { status: Statuses, settings: SettingsType }
+interface FormValues { status: Statuses, settings: SettingsType, preferences?: unknown }
 
-export function ScheduleTiming () {
+export function ScheduleTiming ({ disabled = false }: { disabled?: boolean }) {
   const { intent } = useIntentContext()
   const showDate = isDateVisible(intent.status as Statuses)
 
@@ -55,21 +56,22 @@ export function ScheduleTiming () {
 
   return <>
     {summary}
-    {isDateVisible(intent.status as Statuses) && <ScheduleDate />}
-    <ScheduleTime />
+    {isDateVisible(intent.status as Statuses) && <ScheduleDate disabled={disabled} />}
+    <ScheduleTime disabled={disabled}/>
   </>
 }
 
-function ScheduleDate () {
+function ScheduleDate ({ disabled = false }: { disabled?: boolean }) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
   return <Form.Item
     name={dateName}
     label={<FormattedMessage defaultMessage='Start Date' />}
-    rules={[{ required: true, message: $t({ defaultMessage: 'Please select date' }) }]}
+    rules={[{ required: !disabled, message: $t({ defaultMessage: 'Please select date' }) }]}
     children={
       <DatePicker
+        disabled={disabled}
         style={{ width: '100%' }}
         picker='date'
         showTime={false}
@@ -81,7 +83,7 @@ function ScheduleDate () {
   />
 }
 
-function ScheduleTime () {
+function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
   const { $t } = useIntl()
   const { intent } = useIntentContext()
   const showDate = isDateVisible(intent.status as Statuses)
@@ -113,9 +115,10 @@ function ScheduleTime () {
     name={timeName}
     label={label}
     rules={[
-      { required: true, message: $t({ defaultMessage: 'Please select time' }) },
+      { required: !disabled, message: $t({ defaultMessage: 'Please select time' }) },
       {
         validator (_, time) {
+          if(disabled) return Promise.resolve(true)
           let values = form.getFieldsValue(['status', fieldName])
           values = { ...values, settings: { ...values.settings, time } }
 
@@ -127,6 +130,7 @@ function ScheduleTime () {
     ]}
     children={
       <TimeDropdownPlain
+        disabled={disabled}
         placeholder={$t({ defaultMessage: 'Select time' })}
         disabledDateTime={{ disabledStrictlyBefore: getDisabledTime(date) }}
       />
@@ -199,6 +203,9 @@ function isScheduleAtValid (values: FormValues) {
   const showDate = isDateVisible(values.status)
   // logic to move date to next day if scheduledAt <= current in `getScheduledAt`
   if (!showDate) return true
+
+  // no need to validate if intent
+  if(_.get(values, 'preferences.enable') === false) return true
 
   const scheduledAt = getScheduledAt(values)
   const current = getFutureTime(moment().seconds(0).milliseconds(0))

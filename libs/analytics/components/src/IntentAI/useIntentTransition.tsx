@@ -10,11 +10,11 @@ import { intentAIApi }       from '@acx-ui/store'
 
 import { states } from '../Recommendations/states'
 
-import { validateScheduleTiming }         from './common/ScheduleTiming'
-import { aiFeaturesLabel, codes, Intent } from './config'
-import { useIntentContext }               from './IntentContext'
-import { Statuses, StatusReasons }        from './states'
-import { IntentWlan }                     from './utils'
+import { validateScheduleTiming }                 from './common/ScheduleTiming'
+import { aiFeaturesLabel, codes, Intent }         from './config'
+import { useIntentContext }                       from './IntentContext'
+import { DisplayStates, Statuses, StatusReasons } from './states'
+import { IntentWlan }                             from './utils'
 
 type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
 
@@ -27,6 +27,7 @@ export type FormValues <Preferences> = {
   id: string
   status: Statuses
   statusReason?: StatusReasons
+  displayStatus?: DisplayStates
   preferences?: Preferences
   settings: SettingsType
 }
@@ -95,10 +96,11 @@ export function recToIntentStatues (intent: Pick<Intent, 'status'>) {
 }
 
 export function useInitialValues <Preferences> () {
-  const { id, metadata, status } = useIntentContext().intent as unknown as Intent
+  const { id, metadata, status, displayStatus } = useIntentContext().intent as unknown as Intent
   return {
     id,
     ...recToIntentStatues({ status }),
+    displayStatus,
     settings: metadata?.scheduledAt ? {
       date: moment(metadata.scheduledAt),
       time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()

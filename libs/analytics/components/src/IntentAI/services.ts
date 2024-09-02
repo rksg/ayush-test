@@ -292,9 +292,9 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentHighlight(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput]
         ) {
-          highlights(start: $start, end: $end, path: $path) {
+          highlights(start: $startDate, end: $endDate, path: $path) {
             rrm {
               new
               active
