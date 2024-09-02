@@ -1,4 +1,6 @@
 /* eslint-disable max-len */
+import { useState, useEffect } from 'react'
+
 import { cloneDeep, findIndex, isEmpty } from 'lodash'
 import { useIntl }                       from 'react-intl'
 
@@ -13,13 +15,13 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useIsEdgeReady }               from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useVenuesTableQuery,
   useDeleteVenueMutation,
   useGetVenueCityListQuery,
-  useGetVenueEdgeCompatibilitiesQuery
+  useLazyGetVenueEdgeCompatibilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
@@ -246,11 +248,11 @@ type VenueTableProps = {
   rowSelection?: TableProps<Venue>['rowSelection'],
   searchable?: boolean
   filterables?: { [key: string]: ColumnType['filterable'] }
-  tableContent?: Venue[]
+  tableData?: Venue[]
 }
 
 export const VenueTable = ({ settingsId = 'venues-table',
-  tableQuery, rowSelection, searchable, filterables, tableContent }: VenueTableProps) => {
+  tableQuery, rowSelection, searchable, filterables, tableData }: VenueTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
@@ -301,7 +303,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
         settingsId={settingsId}
         columns={columns}
         getAllPagesData={tableQuery.getAllPagesData}
-        dataSource={tableContent ?? tableQuery.data?.data}
+        dataSource={tableData ?? tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
@@ -331,24 +333,9 @@ export function VenuesTable () {
     pagination: { settingsId }
   })
 
-  const { tableContent } = useGetVenueEdgeCompatibilitiesQuery({
-    payload: {
-      filters: { venueIds: tableQuery.data?.data.map(i => i.id) }
-    }
-  }, {
-    skip: !tableQuery.data,
-    selectFromResult: ({ data }) => {
-      const result = cloneDeep(tableQuery.data?.data) ?? []
-      data?.compatibilities.forEach((item) => {
-        const idx = findIndex(tableQuery.data?.data, { id: item.id })
-        if (idx !== -1)
-          result[idx].incompatibleEdges = item.incompatible ?? 0
-      })
-      return { tableContent: result }
-    }
-  })
 
   const { cityFilterOptions } = useGetVenueCityList()
+  const tableData = useVenueEdgeCompatibilities(tableQuery)
 
   const count = tableQuery?.currentData?.totalCount || 0
 
@@ -364,10 +351,10 @@ export function VenuesTable () {
       />
       <VenueTable settingsId={settingsId}
         tableQuery={tableQuery}
+        tableData={tableData}
         rowSelection={{ type: 'checkbox' }}
         searchable={true}
         filterables={{ city: cityFilterOptions }}
-        tableContent={tableContent}
       />
     </>
   )
@@ -394,4 +381,36 @@ function useGetVenueCityList () {
   })
 
   return venueCityList
+}
+
+const useVenueEdgeCompatibilities = (tableQuery: TableQuery<Venue, RequestPayload<unknown>, unknown>) => {
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+  const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
+
+  const [tableData, setTableData] = useState<Venue[]>()
+
+  useEffect(() => {
+    const fetchVenueEdgeCompatibilities = async (tableData: Venue[]) => {
+      const res = await getVenueEdgeCompatibilities({
+        payload: {
+          filters: { venueIds: tableData.map(i => i.id) }
+        }
+      }).unwrap()
+
+      const result = cloneDeep(tableData) ?? []
+      res?.compatibilities.forEach((item) => {
+        const idx = findIndex(tableQuery.data?.data, { id: item.id })
+        if (idx !== -1)
+          result[idx].incompatibleEdges = item.incompatible ?? 0
+      })
+
+      setTableData(result)
+    }
+
+    if (isEdgeCompatibilityEnabled && tableQuery.data)
+      fetchVenueEdgeCompatibilities(tableQuery.data.data)
+
+  }, [isEdgeCompatibilityEnabled, tableQuery.data?.data])
+
+  return tableData
 }
