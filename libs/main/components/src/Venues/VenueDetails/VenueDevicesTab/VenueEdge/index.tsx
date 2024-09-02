@@ -49,7 +49,7 @@ export const VenueEdge = () => {
       venueIds: [params.venueId]
     }
   } }, {
-    skip: !params.venueId
+    skip: !isEdgeCompatibilityEnabled || !params.venueId
   })
 
   const featureIncompatible = retrievedEdgeCompatibilitiesOptions(edgeCompatibilities)
@@ -72,7 +72,7 @@ export const VenueEdge = () => {
       tableQuery={tableQuery}
       filterColumns={['venue']}
       settingsId={settingsId}
-      incompatibleCheck
+      incompatibleCheck={isEdgeCompatibilityEnabled}
       filterables={{
         featureIncompatible: featureIncompatible.compatibilitiesFilterOptions
       }}
