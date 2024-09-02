@@ -3,14 +3,14 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                                                         from '@acx-ui/store'
+import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
 
 import { useIntentContext } from '../IntentContext'
 import { Statuses }         from '../states'
 import { Intent }           from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedIZoneFirmwareUpgrade'
+import { mocked, mockedIntentAps }                            from './__tests__/mockedIZoneFirmwareUpgrade'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
 
 const { click, selectOptions, hover } = userEvent
@@ -76,6 +76,10 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 }
 
 describe('IntentAIDetails', () => {
+  beforeEach(() => {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', { data: { intent: { aps: mockedIntentAps } } })
+  })
+
   it('should handle when status is paused/na', async () => {
     const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
@@ -97,6 +101,24 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('tooltip', { hidden: true }))
       // eslint-disable-next-line max-len
       .toHaveTextContent('Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.')
+  })
+  it('should render correctly for firmware drawer', async () => {
+    const { params } = mockIntentContextWith()
+    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
+    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+    const affectedAps = await screen.findByText('3 of 3 APs (100 %)')
+    userEvent.click(affectedAps)
+    const tableTitle = await screen.findByText('3 Impacted APs')
+    expect(tableTitle).toBeVisible()
+    expect(await screen.findByText('B4:79:C8:3E:7E:50')).toBeVisible()
+    expect(await screen.findByText('28:B3:71:27:38:E0')).toBeVisible()
+    expect(await screen.findByText('C8:84:8C:3E:46:B0')).toBeVisible()
+    const closeButton = screen.queryByRole('button', { name: 'Close' })
+    expect(closeButton).not.toBeNull()
+    userEvent.click(closeButton!)
+    await waitFor(async () => {
+      expect(screen.queryByText('3 Impacted APs')).not.toBeVisible()
+    })
   })
   it('should render', async () => {
     const { params } = mockIntentContextWith()

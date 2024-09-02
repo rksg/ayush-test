@@ -10,9 +10,9 @@ import {
   intentHighlights,
   intentListResult,
   intentListWithAllStatus,
-  filterOptions,
-  mockedIntentApFirmware
+  filterOptions
 } from './__tests__/fixtures'
+import { mockedIntentAps }                                                  from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { IntentListItem }                                                   from './config'
 import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAp } from './services'
 import { DisplayStates, Statuses, StatusReasons }                           from './states'
@@ -667,7 +667,7 @@ describe('Intent services', () => {
     mockGraphqlQuery(intentAIUrl, 'GetAps', {
       data: {
         intent: {
-          aps: mockedIntentApFirmware
+          aps: mockedIntentAps
         }
       }
     })

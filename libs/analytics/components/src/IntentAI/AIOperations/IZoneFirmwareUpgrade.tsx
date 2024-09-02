@@ -42,7 +42,8 @@ export const kpis: IntentKPIConfig[] = [{
   valueAccessor: ([x, y]: number[]) => x / y,
   valueFormatter: formatter('percentFormat'),
   deltaSign: '+',
-  format: formatter('ratioFormat')
+  format: formatter('ratioFormat'),
+  showAps: true
 }]
 
 const useValuesText = createUseValuesText({

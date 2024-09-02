@@ -7,6 +7,7 @@ import { FormattedMessage, useIntl } from 'react-intl'
 import { Card, Descriptions, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
 
+import { DescriptionRow }      from '../../DescriptionSection'
 import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
 import { DetailsSection }      from '../common/DetailsSection'
 import { getIntentStatus }     from '../common/getIntentStatus'
@@ -30,7 +31,7 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
     const valuesText = useValuesText()
     const [drawerVisible, setDrawerVisible] = useState(false)
 
-    const hasAp = true // Boolean(kpis.filter(kpi => kpi.showAps).length)
+    const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
     const impactedApsQuery = useGetApsQuery({
       code: intent.code,
       root: intent.root,
@@ -70,9 +71,9 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
                 {(impactedApsQuery.data) && <Descriptions.Item
                   label={$t({ defaultMessage: 'AP Impact Count' })}
                   children={
-                    <span
+                    <DescriptionRow
+                      label=''
                       onClick={() => setDrawerVisible(true)}
-                      style={{ cursor: 'pointer', color: '#1890ff' }}
                     >
                       {$t(
                         {
@@ -84,7 +85,7 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
                           percent: formatter('percent')(100)
                         }
                       )}
-                    </span>
+                    </DescriptionRow>
                   }
                 />}
               </Descriptions>
