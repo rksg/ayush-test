@@ -11,10 +11,10 @@ export const StatusTrail = () => {
 
   return <Card>
     <UI.Wrapper>
-      {intent.statusTrail.map(({ status, createdAt }, index) => (
+      {intent.statusTrail.map(({ displayStatus, createdAt }, index) => (
         <div key={index}>
           <UI.DateLabel children={formatter(DateFormatEnum.DateTimeFormat)(createdAt)} />
-          {getIntentStatus(status)}
+          {getIntentStatus(displayStatus)}
         </div>
       ))}
     </UI.Wrapper>

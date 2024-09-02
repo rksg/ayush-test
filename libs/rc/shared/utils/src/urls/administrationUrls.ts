@@ -331,5 +331,10 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/notifications/sms/providers/twilios/incomingPhoneNumbers',
     newApi: true
+  },
+  getTwiliosMessagingServices: {
+    method: 'post',
+    url: '/notifications/sms/providers/twilios/messagingServices',
+    newApi: true
   }
 }

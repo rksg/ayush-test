@@ -76,7 +76,7 @@ const codeToRadio: Record<string, RadioTypeEnum> = {
   'c-probeflex-6g': RadioTypeEnum._6_GHz
 }
 
-const getFutureTime = (value: Moment) => {
+export const getFutureTime = (value: Moment) => {
   const bufferedTime = value.clone().add(15, 'minutes')
   const remainder = 15 - (bufferedTime.minute() % 15)
   return bufferedTime.clone().add(remainder, 'minutes')

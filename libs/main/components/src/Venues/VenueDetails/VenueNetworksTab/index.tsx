@@ -32,7 +32,9 @@ import {
   isSdLanGuestUtilizedOnDiffVenue,
   NetworkTunnelTypeEnum,
   showSdLanGuestFwdConflictModal,
-  useEdgeMvSdLanActions
+  useEdgeMvSdLanActions,
+  isSdLanLastNetworkInVenue,
+  showSdLanVenueDissociateModal
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -649,36 +651,42 @@ export function VenueNetworksTab () {
       await dectivateSoftGre({ ...params, policyId: formValues.softGre.oldProfileId })
     }
 
-    if (needSdLanConfigConflictCheck) {
-      await new Promise<void>((resolve) => {
-        showSdLanGuestFwdConflictModal({
-          currentNetworkVenueId: network?.venueId!,
-          currentNetworkId: network?.id!,
-          currentNetworkName: '',
-          activatedGuest: formValues.sdLan.isGuestTunnelEnabled,
-          tunneledWlans: venueSdLan!.tunneledWlans,
-          tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
-          onOk: async (impactVenueIds: string[]) => {
-            if (impactVenueIds.length) {
-              // has conflict and confirmed
-              const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
-              actions.push(...impactVenueIds.map(impactVenueId =>
-                toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
-              await Promise.all(actions)
-            } else {
-              await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
-            }
-
-            resolve()
-            handleCloseTunnelModal()
-          },
-          onCancel: () => resolve()
-        })
+    if (formValues.tunnelType === NetworkTunnelTypeEnum.None && isSdLanLastNetworkInVenue(venueSdLan?.tunneledWlans, network!.venueId)) {
+      showSdLanVenueDissociateModal(async () => {
+        await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+        handleCloseTunnelModal()
       })
     } else {
-      await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+      if (needSdLanConfigConflictCheck) {
+        await new Promise<void>((resolve) => {
+          showSdLanGuestFwdConflictModal({
+            currentNetworkVenueId: network?.venueId!,
+            currentNetworkId: network?.id!,
+            currentNetworkName: '',
+            activatedGuest: formValues.sdLan.isGuestTunnelEnabled,
+            tunneledWlans: venueSdLan!.tunneledWlans,
+            tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
+            onOk: async (impactVenueIds: string[]) => {
+              if (impactVenueIds.length) {
+              // has conflict and confirmed
+                const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
+                actions.push(...impactVenueIds.map(impactVenueId =>
+                  toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
+                await Promise.all(actions)
+              } else {
+                await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+              }
 
-      handleCloseTunnelModal()
+              resolve()
+              handleCloseTunnelModal()
+            },
+            onCancel: () => resolve()
+          })
+        })
+      } else {
+        await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
+        handleCloseTunnelModal()
+      }
     }
   }
 

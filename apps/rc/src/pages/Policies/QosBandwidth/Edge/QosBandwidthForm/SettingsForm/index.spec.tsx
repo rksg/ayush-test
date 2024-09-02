@@ -1,10 +1,12 @@
 /* eslint-disable max-len */
+
 import {
   renderHook,
   waitFor,
   within
 } from '@testing-library/react'
-import { Form } from 'antd'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import {
@@ -64,6 +66,45 @@ describe('QoS Settings Form', () => {
     await waitFor(()=>{
       expect(rows.length).toBe(2)
     })
+  })
+
+  it('validate bandwidth value range return error', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+      editMode={false}
+
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    const rows = await screen.findAllByRole('row', { name: /Video/i })
+    const bandwidthElems = await within(rows[0]).findAllByRole('spinbutton')
+    await waitFor(()=>{
+      expect(bandwidthElems.length).toBe(2)
+    })
+
+    await userEvent.type(bandwidthElems[0], '1000')
+    const waringSolid = await within(rows[0]).findByTestId('WarningCircleSolid')
+    expect(waringSolid).toBeVisible()
+
+  })
+
+  it('validate bandwidth compare return error', async () => {
+    const { result: stepFormRef } = renderHook(useMockedFormHook)
+    render(<MockedTargetComponent
+      form={stepFormRef.current}
+      editMode={false}
+
+    />, { route: { params: { tenantId: 't-id' } } })
+
+    const rows = await screen.findAllByRole('row', { name: /Video/i })
+    const bandwidthElems = await within(rows[0]).findAllByRole('spinbutton')
+    await waitFor(()=>{
+      expect(bandwidthElems.length).toBe(2)
+    })
+
+    await userEvent.type(bandwidthElems[0], '20')
+    await userEvent.type(bandwidthElems[1], '10')
+    expect(await within(rows[0]).findByTestId('WarningCircleSolid')).toBeVisible()
   })
 
 

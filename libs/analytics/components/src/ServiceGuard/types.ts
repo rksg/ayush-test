@@ -1,12 +1,12 @@
 import { TypedUseMutationResult } from '@reduxjs/toolkit/dist/query/react'
 import _                          from 'lodash'
 
-import { TimeDropdownTypes }           from '@acx-ui/components'
+import { DayAndTimeDropdownTypes }     from '@acx-ui/components'
 import { ServiceGuardBaseQuery }       from '@acx-ui/store'
 import { FilterListNode, NetworkPath } from '@acx-ui/utils'
 
-export { TimeDropdownTypes as ScheduleFrequency }
-type ScheduleFrequency = TimeDropdownTypes
+export { DayAndTimeDropdownTypes as ScheduleFrequency }
+type ScheduleFrequency = DayAndTimeDropdownTypes
 
 type UUID = string
 

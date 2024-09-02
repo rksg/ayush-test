@@ -106,7 +106,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 />
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.status)}
+                  children={getIntentStatus(intent.displayStatus)}
                 />
                 <Descriptions.Item
                   label={$t({ defaultMessage: 'Date' })}
@@ -148,8 +148,8 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection
-                data-testid='Why this recommendation?'
-                title={$t({ defaultMessage: 'Why this recommendation?' })}
+                data-testid='Why the intent?'
+                title={$t({ defaultMessage: 'Why the intent?' })}
                 children={<Card>{valuesText.reasonText}</Card>}
               />
             </GridCol>
