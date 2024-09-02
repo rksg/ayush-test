@@ -70,11 +70,11 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
-            'Create QoS',
-            'Update QoS',
-            'Delete QoS',
-            'Activate QoS',
-            'Deactivate QoS'
+            'Create HQoS',
+            'Update HQoS',
+            'Delete HQoS',
+            'Activate HQoS',
+            'Deactivate HQoS'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }

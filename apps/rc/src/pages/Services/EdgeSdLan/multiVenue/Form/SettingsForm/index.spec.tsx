@@ -195,7 +195,7 @@ describe('Edge SD-LAN form: settings', () => {
     })
     expect(screen.queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
   })
-  it('should be able to configure guest cluster when it is empty in edit mode', async () => {
+  it('should be able to configure/change guest cluster', async () => {
     const expectedClusterId = 'clusterId_5'
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -301,7 +301,8 @@ describe('Edge SD-LAN form: settings', () => {
     const formBody = await screen.findByTestId('steps-form-body')
     await waitForElementToBeRemoved(await within(formBody)
       .findAllByTestId('loadingIcon'))
-    await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' })
+    const dmzCluster = await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' })
+    expect(dmzCluster).not.toBeDisabled()
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     const alerts = await within(formBody).findAllByRole('alert')
     expect(alerts.length).toBe(1)
