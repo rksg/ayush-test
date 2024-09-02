@@ -86,7 +86,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
 
     if (isDuplicated) {
       // eslint-disable-next-line max-len
-      const errorMessage = $t({ defaultMessage: 'The LBS Venue Name and Server Address are duplicates of another profile' })
+      const errorMessage = $t({ defaultMessage: 'The LBS <VenueSingular></VenueSingular> Name and Server Address are duplicates of another profile' })
       showActionModal({
         type: 'error',
         content: errorMessage
