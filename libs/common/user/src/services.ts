@@ -20,6 +20,17 @@ const getUserUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? UserRbacUrlsInfo : UserUrlsInfo
 }
 
+interface VenueData {
+  id?: string
+}
+
+interface Venue {
+  data: VenueData[],
+  fields: string[],
+  page: number,
+  totalCount: number
+}
+
 export interface PrivilegeGroup {
   id?: string,
   name?: string,
@@ -172,6 +183,12 @@ export const UserUrlsInfo = {
     method: 'post',
     url: '/featureFlagStates',
     newApi: true
+  },
+  getVenuesList: {
+    method: 'post',
+    url: '/venues/query',
+    oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
+    newApi: true
   }
 }
 
@@ -240,7 +257,8 @@ export const {
   useGetBetaStatusQuery,
   useToggleBetaStatusMutation,
   useFeatureFlagStatesQuery,
-  useGetPrivilegeGroupsQuery
+  useGetPrivilegeGroupsQuery,
+  useGetVenuesListQuery
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
@@ -426,6 +444,16 @@ export const {
           createHttpRequest(UserRbacUrlsInfo.getPrivilegeGroups, params)
         return {
           ...req
+        }
+      }
+    }),
+    getVenuesList: build.query<Venue, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(UserUrlsInfo.getVenuesList, params)
+        return {
+          ...req,
+          body: payload
         }
       }
     })

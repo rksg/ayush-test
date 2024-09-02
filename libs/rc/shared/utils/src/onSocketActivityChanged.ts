@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
+import { getUserProfile }           from '@acx-ui/user'
 import { getJwtToken, getTenantId } from '@acx-ui/utils'
 
 import { initialSocket } from './initialSocket'
@@ -52,7 +53,15 @@ export async function onSocketActivityChanged <
 
   await cacheDataLoaded
 
-  const onActivityChangedEvent = (data: string) => handler(JSON.parse(data))
+  const onActivityChangedEvent = (data: string) => {
+    const userProfile = getUserProfile()
+    const jsonData = JSON.parse(data)
+    const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
+      (id: string) => userProfile.venuesList?.includes(id))
+    if(userProfile.hasAllVenues || hasPermittedVenue){
+      handler(jsonData)
+    }
+  }
 
   socket.on('activityChangedEvent', onActivityChangedEvent)
 
