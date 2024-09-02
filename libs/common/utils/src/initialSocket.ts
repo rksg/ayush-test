@@ -19,13 +19,7 @@ export const initialSocket = () => {
     : `/activity?tenantId=${tenantId}`
 
   socket = getIndependentSocket(url)
-  // socket.on('jwtRefresh', () => {
-  //   socket.off('jwtRefresh')
-  //   socket.off('activityChangedEvent')
-  //   socket.disconnect()
-  //   socket = {} as SocketIOClient.Socket
-  //   initialSocket()
-  // })
+
   socket.on('activityChangedEvent', (...messages: string[]) => {
     callbacks.forEach((callback) => callback(...messages))
   })
@@ -55,17 +49,7 @@ export function getIndependentSocket (url: string): SocketIOClient.Socket {
   })
 }
 
-// export function reConnectSocket (url: string) {
-//   if (socket) {
-//     // Properly disconnect the existing socket
-//     socket.off('activityChangedEvent')
-//     socket.close()
-//     socket.disconnect()
-//     socket = getIndependentSocket(url)
-//   }
-// }
-
-export function reConnectSocket () {
+export function reConnectActivitySocket () {
   if (socket && socket.connected) {
     socket.off('activityChangedEvent')
     socket.disconnect()

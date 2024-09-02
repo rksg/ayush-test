@@ -27,8 +27,7 @@ import {
   useLocaleContext,
   LangKey,
   DEFAULT_SYS_LANG,
-  getJwtToken,
-  initialSocket
+  initializeSockets
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -157,7 +156,7 @@ export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
 
-  initialSocket()
+  initializeSockets()
 
   root.render(
     <React.StrictMode>
