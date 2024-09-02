@@ -1,12 +1,14 @@
 import io, { Socket } from 'socket.io-client'
 
-import { getJwtToken, websocketServerUrl } from '@acx-ui/config'
+import { getJwtToken } from '@acx-ui/config'
 
 import { getTenantId } from './getTenantId'
 
 let socket: typeof Socket
 
 let callbacks: ((...data: string[]) => void)[] = []
+
+export const websocketServerUrl = '/api/websocket/socket.io'
 
 export const initialSocket = () => {
 
