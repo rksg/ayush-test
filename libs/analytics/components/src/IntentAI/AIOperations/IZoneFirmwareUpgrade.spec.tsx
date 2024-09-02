@@ -120,7 +120,7 @@ describe('IntentAIDetails', () => {
 })
 
 describe('IntentAIForm', () => {
-  it('should render when apply', async () => {
+  it('should render when active', async () => {
     const { params } = mockIntentContextWith()
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -152,7 +152,7 @@ describe('IntentAIForm', () => {
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
-  it('should render when not apply', async () => {
+  it('should render when paused', async () => {
     const { params } = mockIntentContextWith()
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -170,11 +170,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
-    await selectOptions(
-      await screen.findByRole('combobox', { name: 'Schedule Time' }),
-      '12:30 (UTC+08)'
-    )
-    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toHaveValue('12.5')
+    expect(await screen.findByRole('combobox', { name: 'Schedule Time' })).toBeDisabled()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()

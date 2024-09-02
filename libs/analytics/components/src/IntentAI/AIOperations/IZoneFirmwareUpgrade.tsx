@@ -163,7 +163,11 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
   }
 }).addStep({
   title: defineMessage({ defaultMessage: 'Settings' }),
-  Content: () => <ScheduleTiming />
+  Content: () => {
+    const { form } = useStepFormContext()
+    const enable = form.getFieldValue('preferences').enable
+    return <ScheduleTiming disabled={!enable}/>
+  }
 }).addStep({
   title: defineMessage({ defaultMessage: 'Summary' }),
   Content: () => {
