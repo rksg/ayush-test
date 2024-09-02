@@ -407,9 +407,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
   const handleFilterChange: TableProps<IntentListItem>['onFilterChange'] = (
     customFilter
   ) => {
-    if (!_.isEmpty(customFilter) || !_.isEmpty(filters)) {
-      intentTableFilters.write({ ...filters, ...customFilter })
-    }
+    intentTableFilters.write(customFilter as Filters)
     setPagination(DEFAULT_PAGINATION)
   }
   return {
