@@ -117,13 +117,13 @@ export default function MyPolicies () {
           })
         }
       </GridRow>
-      <EdgeCompatibilityDrawer
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
         visible={!!edgeFeatureName}
         type={EdgeCompatibilityType.ALONE}
         title={$t({ defaultMessage: 'Compatibility Requirement' })}
         featureName={edgeFeatureName}
         onClose={() => setEdgeFeatureName(undefined)}
-      />
+      />}
     </>
   )
 }
