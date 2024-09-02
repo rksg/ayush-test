@@ -51,7 +51,6 @@ export const SameDeviceTypeCompatibility = (props: SameDeviceTypeCompatibilityPr
       </Tabs>
       : <EdgeCompatibilityDetailTable
         requirementOnly={props.compatibilityType === CompatibilityType.DEVICE}
-        venueId={props.venueId}
         data={data[CompatibilityDeviceEnum.EDGE].map(i => ({
           featureRequirement: {
             featureName: i.featureName,
