@@ -119,7 +119,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         const edgeIds = edgesData.map(i => i.serialNumber)
 
         // base on current usecase, no need to support cross venue-edges incompatible check
-        const venueFilter = ((arg.payload as Record<string, unknown>).filters as Record<string, unknown>)['venueId']
+        const venueFilter = ((arg.payload as Record<string, unknown>).filters as Record<string, unknown>)?.['venueId']
         if (edgeIds.length && venueFilter && isPayloadHasField(arg.payload, 'incompatible')) {
           try {
             const compatibilityReq = {

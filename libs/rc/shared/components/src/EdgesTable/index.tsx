@@ -354,7 +354,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         } : undefined}
         {...otherProps}
       />
-      <EdgeCompatibilityDrawer
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
         visible={!!compatibilitiesDrawerEdgeId}
         title={$t({ defaultMessage: 'Incompatibility Details: {edgeName}' },
           { edgeName:
@@ -362,9 +362,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
           })}
         type={EdgeCompatibilityType.VENUE}
         onClose={() => setCompatibilitiesDrawerEdgeId(undefined)}
+        // eslint-disable-next-line max-len
+        venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}
         edgeId={compatibilitiesDrawerEdgeId}
         width={600}
-      />
+      />}
     </Loader>
   )
 }
