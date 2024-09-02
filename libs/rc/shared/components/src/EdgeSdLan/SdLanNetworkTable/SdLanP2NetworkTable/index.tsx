@@ -64,13 +64,22 @@ const getRowDisabledInfo = (
   return { disabled, tooltip }
 }
 
+type SdLanActivatedNetworksIsDisableFn = (
+  venueId: string,
+  row: Network,
+  isGuestActivation: boolean
+) => {
+  isDisabled: boolean,
+  tooltip?: string
+} | undefined
+
 export interface ActivatedNetworksTableP2Props {
   venueId: string,
   isGuestTunnelEnabled: boolean
   columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[],
   activated?: string[],
   activatedGuest?: string[],
-  disabled?: boolean,
+  disabled?: boolean | SdLanActivatedNetworksIsDisableFn,
   toggleButtonTooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
   isUpdating?: boolean
@@ -148,38 +157,51 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     width: 80,
     render: (_: unknown, row: Network) => {
       const disabledInfo = getRowDisabledInfo(venueId, row, false, dsaeOnboardNetworkIds)
+      let isDisabled = disabled
+      let tooltip = toggleButtonTooltip
+      if (typeof disabled === 'function') {
+        isDisabled = disabled(venueId, row, false)?.isDisabled
+        tooltip = disabled(venueId, row, false)?.tooltip
+      }
 
       return <ActivateNetworkSwitchButtonP2
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
-        disabled={disabled || disabledInfo.disabled}
-        tooltip={toggleButtonTooltip || disabledInfo.tooltip}
+        disabled={(isDisabled as boolean) || disabledInfo.disabled}
+        tooltip={tooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
   }, ...(isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'Forward Guest Traffic to DMZ' }),
-    tooltip: !detailDrawerVisible ? $t(dmzTunnelColumnHeaderTooltip, {
-      detailLink: <Button type='link' onClick={showMoreDetails} style={{ fontSize: 'inherit' }}>
-        {$t({ defaultMessage: 'More details about the feature.' })}
-      </Button>
-    }) : undefined,
+    tooltip: !detailDrawerVisible
+      ? $t(dmzTunnelColumnHeaderTooltip, {
+        detailLink: <Button type='link' onClick={showMoreDetails} style={{ fontSize: 'inherit' }}>
+          {$t({ defaultMessage: 'More details about the feature.' })}
+        </Button>
+      })
+      : undefined,
     key: 'action2',
     dataIndex: 'action2',
     align: 'center' as AlignType,
     width: 120,
     render: (_: unknown, row: Network) => {
-      // eslint-disable-next-line max-len
       const disabledInfo = getRowDisabledInfo(venueId, row, true, dsaeOnboardNetworkIds)
+      let isDisabled = disabled
+      let tooltip = toggleButtonTooltip
+      if (typeof disabled === 'function') {
+        isDisabled = disabled(venueId, row, true)?.isDisabled
+        tooltip = disabled(venueId, row, true)?.tooltip
+      }
 
       return row.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
         ? <ActivateNetworkSwitchButtonP2
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
-          disabled={disabled || disabledInfo.disabled}
-          tooltip={toggleButtonTooltip || disabledInfo.tooltip}
+          disabled={(isDisabled as boolean) || disabledInfo.disabled}
+          tooltip={tooltip || disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
