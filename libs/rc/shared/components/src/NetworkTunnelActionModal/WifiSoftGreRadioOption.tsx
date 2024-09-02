@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react'
 
 import {  Form, Radio, Row, Select, Space } from 'antd'
 import { DefaultOptionType }                from 'antd/lib/select'
-import _                                    from 'lodash'
 import { useIntl }                          from 'react-intl'
 
 import { useGetSoftGreOptionsQuery } from '@acx-ui/rc/services'
 import { useParams }                 from '@acx-ui/react-router-dom'
 
-import { mockSoftGreTable2 } from '../policies/SoftGre/SoftGreForm/__tests__/fixtures'
-import SoftGreDrawer         from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
+import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
 import * as UI                   from './styledComponents'
 import { NetworkTunnelTypeEnum } from './types'
@@ -46,8 +44,6 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
     },
     { skip: currentTunnelType !== NetworkTunnelTypeEnum.SoftGre }
   )
-
-  // const optionsData = mockSoftGreTable2.data.data
 
   useEffect(() => {
     if (optionsDataQuery.data) {

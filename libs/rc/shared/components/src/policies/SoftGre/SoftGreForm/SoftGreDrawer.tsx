@@ -3,9 +3,9 @@ import {  Col, Form, Row }   from 'antd'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Drawer }                                             from '@acx-ui/components'
-import { useCreateSoftGreMutation, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
-import { useParams }                                          from '@acx-ui/react-router-dom'
+import { Drawer }                   from '@acx-ui/components'
+import { useCreateSoftGreMutation } from '@acx-ui/rc/services'
+import { useParams }                from '@acx-ui/react-router-dom'
 
 import { SoftGreSettingForm } from './SoftGreSettingForm'
 
@@ -25,16 +25,13 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
   const { $t } = useIntl()
   const params = useParams()
   const [form] = Form.useForm()
-  const [ updateSoftGre ] = useUpdateSoftGreMutation()
   const [ createSoftGre ] = useCreateSoftGreMutation()
 
   const handleAdd = async () => {
     try {
-      await form.validateFields()
-      const values = form.getFieldsValue()
-      if (editMode) {
-        await updateSoftGre({ params, payload: values }).unwrap()
-      } else {
+      if (!editMode && !readMode) {
+        await form.validateFields()
+        const values = form.getFieldsValue()
         const resData = await createSoftGre({ params, payload: values }).unwrap()
         if (resData.response?.id) {
           const newOption = {

@@ -1,4 +1,5 @@
 import userEvent from '@testing-library/user-event'
+import { Modal } from 'antd'
 import { rest }  from 'msw'
 
 import { softGreApi }                                                     from '@acx-ui/rc/services'
@@ -8,8 +9,7 @@ import { Provider, store }                                                from '
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {  mockSoftGreTable } from './__tests__/fixtures'
-
-import { SoftGreForm } from '.'
+import SoftGreDrawer         from './SoftGreDrawer'
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -24,26 +24,32 @@ jest.mock('react-router-dom', () => ({
   useTenantLink: ():Path => mockedTenantPath
 }))
 
-const editViewPath = '/:tenantId/t/policies/SoftGre/:policyId/edit'
+const readViewPath = '/:tenantId/t/policies/SoftGre/:policyId'
 const createViewPath = '/:tenantId/t/policies/SoftGre/create'
+const policyName = 'softGreName'
 
 const params = {
   tenantId: 'tenantId',
   policyId: 'test-policyId'
 }
 
-describe('SoftGreForm', () => {
+describe('SoftGreDrawer', () => {
   const user = userEvent.setup()
-  describe('addSoftGreForm', () => {
+  const mockedCallBack = jest.fn()
+  const mockedSetVisible = jest.fn()
+  describe('AddSoftGreDrawer', () => {
     const addFn = jest.fn()
     beforeEach(() => {
+      addFn.mockClear()
+      mockedCallBack.mockClear()
+      mockedSetVisible.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
       mockServer.use(
         rest.post(
           SoftGreUrls.createSoftGre.url,
           (req, res, ctx) => {
             addFn(req.body)
-            return res(ctx.status(202))
+            return res(ctx.json({ response: { id: 'createSoftGre' } }))
           }
         ),
         rest.post(
@@ -53,22 +59,20 @@ describe('SoftGreForm', () => {
       )
     })
 
-    it('should render breadcrumb correctly', async () => {
-      render(
-        <Provider>
-          <SoftGreForm editMode={false} />
-        </Provider>,
-        { route: { path: createViewPath, params } }
-      )
-      expect(await screen.findByText('Network Control')).toBeVisible()
-      expect(await screen.findByRole('link', { name: 'Policies & Profiles' })).toBeVisible()
-      expect(await screen.findByRole('link', { name: 'SoftGRE' })).toBeVisible()
+    afterEach(() => {
+      Modal.destroyAll()
     })
 
-    it('should create SoftGre successfully and go back to list page', async () => {
+    it('should create SoftGre successfully', async () => {
       render(
         <Provider>
-          <SoftGreForm editMode={false}/>
+          <SoftGreDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            editMode={false}
+            readMode={false}
+            callbackFn={mockedCallBack}
+          />
         </Provider>,
         { route: { path: createViewPath, params } }
       )
@@ -91,26 +95,25 @@ describe('SoftGreForm', () => {
           primaryGatewayAddress: '128.0.0.1'
         }))
       })
-      await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/policies/softGre/list`,
-        hash: '',
-        search: ''
-      }))
+      await waitFor(() => expect(mockedCallBack).toBeCalledTimes(1))
+      await waitFor(() => expect(mockedSetVisible).toBeCalledTimes(1))
     })
 
-    it('should click cancel button and go back to list page', async () => {
+    it('should click cancel button and close drawer', async () => {
       render(
         <Provider>
-          <SoftGreForm editMode={false} />
+          <SoftGreDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            editMode={false}
+            readMode={false}
+            callbackFn={mockedCallBack}
+          />
         </Provider>,
         { route: { path: createViewPath, params } }
       )
       await user.click(screen.getByRole('button', { name: 'Cancel' }))
-      await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/policies/softGre/list`,
-        hash: '',
-        search: ''
-      }))
+      await waitFor(() => expect(mockedSetVisible).toBeCalledTimes(1))
     })
 
     it('should correctly display update error message', async () => {
@@ -131,7 +134,13 @@ describe('SoftGreForm', () => {
       )
       render(
         <Provider>
-          <SoftGreForm editMode={false} />
+          <SoftGreDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            editMode={false}
+            readMode={false}
+            callbackFn={mockedCallBack}
+          />
         </Provider>,
         { route: { path: createViewPath, params } }
       )
@@ -152,22 +161,17 @@ describe('SoftGreForm', () => {
     })
   })
 
-  describe('EditSoftGre', () => {
+  describe('ReadSoftGreDrawer', () => {
     const updateFn = jest.fn()
     beforeEach(() => {
+      updateFn.mockClear()
+      mockedSetVisible.mockClear()
       store.dispatch(softGreApi.util.resetApiState())
 
       mockServer.use(
         rest.post(
           SoftGreUrls.createSoftGre.url,
           (_, res, ctx) => res(ctx.status(202))
-        ),
-        rest.put(
-          SoftGreUrls.updateSoftGre.url,
-          (req, res, ctx) => {
-            updateFn(req.body)
-            return res(ctx.status(202))
-          }
         ),
         rest.post(
           SoftGreUrls.getSoftGreViewDataList.url,
@@ -176,49 +180,34 @@ describe('SoftGreForm', () => {
       )
     })
 
+    afterEach(() => {
+      Modal.destroyAll()
+    })
+
     // eslint-disable-next-line max-len
     it('should successfully fetch data from the API, edit it, and navigate back to the list page', async () => {
       render(
         <Provider>
-          <SoftGreForm editMode={true} />
+          <SoftGreDrawer
+            visible={true}
+            setVisible={mockedSetVisible}
+            editMode={false}
+            readMode={true}
+            policyId={params.policyId}
+            policyName={policyName}
+          />
         </Provider>,
-        { route: { path: editViewPath, params } }
+        { route: { path: readViewPath, params } }
       )
 
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-      const descriptionField = await screen.findByLabelText(/Description/i)
-      await user.clear(descriptionField)
-      await user.type(descriptionField, 'update profileName and primaryGatewayAdress')
+      expect(await screen.findByText('Profile Details: softGreName')).toBeVisible()
+      expect(await screen.findByText('128.0.0.1')).toBeVisible()
+      expect(await screen.findByText('128.0.0.0')).toBeVisible()
 
-      const profileNameField = await screen.findByLabelText(/Profile Name/i)
-      await user.clear(profileNameField)
-      await user.type(profileNameField, 'testEditSoftGre')
-
-      // eslint-disable-next-line max-len
-      const primaryGatewayField = await screen.findByLabelText(/Tunnel Primary Gateway Address/i)
-      await user.clear(primaryGatewayField)
-      await user.type(primaryGatewayField, '128.0.0.3')
-
-      await user.click(await screen.findByRole('button', { name: 'Apply' }))
-      await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
-      await waitFor(() => {
-        expect(updateFn).toHaveBeenCalledWith(expect.objectContaining({
-          name: 'testEditSoftGre',
-          description: 'update profileName and primaryGatewayAdress',
-          mtuType: 'MANUAL',
-          keepAliveInterval: 100,
-          keepAliveRetryTimes: 8,
-          mtuSize: 1450,
-          disassociateClientEnabled: false,
-          primaryGatewayAddress: '128.0.0.3'
-        }))
-      })
-      await waitFor(() => expect(mockedUseNavigate).toHaveBeenCalledWith({
-        pathname: `/${params.tenantId}/t/policies/softGre/list`,
-        hash: '',
-        search: ''
-      }))
+      await user.click(screen.getByLabelText('Close'))
+      await waitFor(() => expect(mockedSetVisible).toBeCalledTimes(1))
     })
   })
 })

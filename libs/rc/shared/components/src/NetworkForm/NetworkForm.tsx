@@ -880,9 +880,10 @@ export function NetworkForm (props:{
         await updateEdgeSdLanActivations(payload.id, form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[], payload.venues)
       }
 
-      if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && networkId && payload.venues) {
+      // eslint-disable-next-line max-len
+      if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         // eslint-disable-next-line max-len
-        await updateeSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
+        await updateeSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
       }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
