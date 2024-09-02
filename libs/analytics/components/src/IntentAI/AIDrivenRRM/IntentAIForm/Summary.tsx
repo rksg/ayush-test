@@ -19,6 +19,7 @@ export function Summary (
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
   const { intent, kpis } = useIntentContext()
+  const showData = isDataRetained(intent.metadata.dataEndTime)
   const blurData = [
     Statuses.na,
     Statuses.paused
@@ -28,7 +29,7 @@ export function Summary (
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <Form.Item label={$t({ defaultMessage: 'Projected interfering links reduction' })}>
-        {isDataRetained(intent.metadata.dataEndTime)
+        {showData
           ? <IntentAIRRMGraph
             details={intent}
             crrmData={crrmData}
@@ -39,7 +40,10 @@ export function Summary (
           : $t(dataRetentionText)
         }
       </Form.Item>
-      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
+      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField
+        key={kpi.key}
+        kpi={kpi}
+        showData={showData}/>))}
       <ScheduleTiming.FieldSummary />
     </Col>
     <Col span={7} offset={1}>
