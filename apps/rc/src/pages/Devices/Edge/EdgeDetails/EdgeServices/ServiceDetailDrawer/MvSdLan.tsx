@@ -72,7 +72,7 @@ export const MvSdLanDetails = (props: SdLanDetailsProps) => {
         />
       }
       <Form.Item
-        label={$t({ defaultMessage: 'Tunneled Venues' })}
+        label={$t({ defaultMessage: 'Tunneled <VenuePlural></VenuePlural>' })}
         children={tunneledVenueIds.length}
       />
       {isGuestTunnelEnabled &&

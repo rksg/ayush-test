@@ -5,6 +5,8 @@ import { Form, Radio, Space, Typography } from 'antd'
 import { Modal }                                                           from '@acx-ui/components'
 import { Features }                                                        from '@acx-ui/feature-toggle'
 import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                      from '@acx-ui/types'
+import { hasPermission }                                                   from '@acx-ui/user'
 import { getIntl }                                                         from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
@@ -33,6 +35,8 @@ export interface NetworkTunnelActionModalProps {
     }
   ) => Promise<void>
   cachedActs?: NetworkTunnelSdLanAction[]
+  disableAll?: boolean
+  radioOptTooltip?: string
 }
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
@@ -49,6 +53,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const networkType = network?.type
   const networkVenueId = network?.venueId
   const networkVenueName = network?.venueName
+
   const { getVenueSdLan, networkVlanPool } = useEdgeMvSdLanData({
     sdLanQueryOptions: {
       filters: { 'tunneledWlans.venueId': [networkVenueId!] },
@@ -78,11 +83,16 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelTypeInitVal])
 
+  const isDisabledAll = getIsDisabledAll(venueSdLanInfo)
+  const hasChangePermission = hasPermission({ scopes: [
+    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : [])
+  ] })
+
   return <Modal
     visible={visible}
     title={$t({ defaultMessage: 'Tunnel' })}
     okText={$t({ defaultMessage: 'Apply' })}
-    okButtonProps={{ disabled: isSubmitting || !venueSdLanInfo }}
+    okButtonProps={{ disabled: !hasChangePermission || isSubmitting || !venueSdLanInfo }}
     maskClosable={false}
     keyboard={false}
     width={600}
@@ -110,7 +120,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 }
               </UI.RadioSubTitle>}
             >
-              <Radio value={NetworkTunnelTypeEnum.None}>
+              <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
                 {$t({ defaultMessage: 'Local Breakout' })}
               </Radio>
             </Form.Item>
@@ -124,6 +134,13 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 networkType={networkType!}
                 venueSdLan={venueSdLanInfo}
                 networkVlanPool={networkVlanPool}
+                disabledInfo={isDisabledAll
+                  ? {
+                    isDisabled: true,
+                    // eslint-disable-next-line max-len
+                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last WLAN of this SD-LAN' })
+                  }
+                  : undefined}
               />
             }
           </Space>
@@ -139,4 +156,10 @@ export {
   NetworkTunnelInfoButton,
   NetworkTunnelActionModal,
   useUpdateNetworkTunnelAction
+}
+
+const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined): boolean => {
+  if(!sdlanInfo) return false
+
+  return (sdlanInfo.tunneledWlans?.length ?? 0) <= 1
 }
