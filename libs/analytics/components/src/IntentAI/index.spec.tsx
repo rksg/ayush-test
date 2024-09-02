@@ -219,7 +219,7 @@ describe('IntentAITabContent', () => {
       expect(mockedUsedNavigate).toBeCalledWith({
         hash: '',
         pathname: '/ai/intentAI/root/sliceId/c-crrm-channel24g-auto/edit',
-        search: ''
+        search: '?intentTableFilters=%257B%257D'
       })
     )
   })
@@ -259,7 +259,7 @@ describe('IntentAITabContent', () => {
       expect(mockedUsedNavigate).toBeCalledWith({
         hash: '',
         pathname: '/tenant-id/t/analytics/intentAI/sliceId/c-crrm-channel24g-auto/edit',
-        search: ''
+        search: '?intentTableFilters=%257B%257D'
       })
     )
   })
