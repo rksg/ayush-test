@@ -20,12 +20,6 @@ export const TradeOffWrapper = styled.div`
     font-size: var(--acx-body-3-font-size);
     font-weight: var(--acx-body-font-weight-bold);
   }
-
-  label.ant-radio-wrapper {
-    line-height: var(--acx-body-3-line-height);
-    font-size: var(--acx-body-3-font-size);
-    padding-bottom: 6px;
-  }
 `
 
 export const HeaderWrapper = styled(Row)`

@@ -54,7 +54,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   const { data: list } = useGetLbsServerProfileListQuery({
     params,
     payload: {
-      fields: ['id', 'name', 'lbsVenueName', 'server'], sortField: 'name',
+      fields: ['id', 'name', 'lbsServerVenueName', 'server'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
   })
@@ -82,11 +82,12 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   const isDuplicateProfile = (payload: LbsServerProfileContext) => {
     const otherProfiles = list?.data?.filter((o) => params?.policyId !== o.id)
     const isDuplicated = otherProfiles?.some((o) =>
-      payload.lbsVenueName === o.lbsVenueName && payload.serverAddress === o.server.split(':')[0])
+      // eslint-disable-next-line max-len
+      payload.lbsServerVenueName === o.lbsServerVenueName && payload.serverAddress === o.server.split(':')[0])
 
     if (isDuplicated) {
       // eslint-disable-next-line max-len
-      const errorMessage = $t({ defaultMessage: 'The LBS Venue Name and Server Address are duplicates of another profile' })
+      const errorMessage = $t({ defaultMessage: 'The LBS Server <VenueSingular></VenueSingular> Name and Server Address are duplicates of another profile' })
       showActionModal({
         type: 'error',
         content: errorMessage

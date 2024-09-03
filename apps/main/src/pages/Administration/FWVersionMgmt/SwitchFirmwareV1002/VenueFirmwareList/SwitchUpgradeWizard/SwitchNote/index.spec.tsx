@@ -11,18 +11,21 @@ import {
   icx7150C08pGroupedData
 } from '../../__test__/fixtures'
 
-import { Switch7150C08Note } from '.'
+import { NotesEnum, SwitchNote } from '.'
 
 
-describe('Switch7150C08Note', () => {
+describe('SwitchNote', () => {
   const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
 
-  it('render Switch7150C08Note', async () => {
+  it('render SwitchNote', async () => {
     render(
       <Provider>
         <Form>
-          <Switch7150C08Note
-            icx7150C08pGroupedData={icx7150C08pGroupedData as SwitchFirmwareV1002[][]} />
+          <SwitchNote
+            notes={[{
+              type: NotesEnum.NOTE7150_1,
+              data: icx7150C08pGroupedData as SwitchFirmwareV1002[][]
+            }]} />
         </Form>
       </Provider>
       , {
