@@ -29,6 +29,6 @@ export const mocked = {
     data: { timestamp: '2024-08-29T08:30:00.000Z', result: 0 },
     compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: 0 }
   },
-  currentValue: 'false',
+  currentValue: 'Disabled',
   recommendedValue: '--'
 } as unknown as Intent

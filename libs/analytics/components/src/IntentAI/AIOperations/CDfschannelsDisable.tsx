@@ -26,7 +26,7 @@ import { Tradeoff }              from './SideNotes/Tradeoff'
 
 export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'DFS Channels' }),
-  valueFormatter: formatter('noFormat')
+  valueFormatter: formatter('enabledFormat')
 }
 
 export const kpis: IntentKPIConfig[] = [{
