@@ -1,12 +1,14 @@
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
-import { mocked as mockedCAclbEnable }          from './AIOperations/__tests__/mockedCAclbEnable'
-import { mocked as mockedCDfschannelsDisable }  from './AIOperations/__tests__/mockedCDfschannelsDisable'
-import { mocked as mockedCTxpowerSame }         from './AIOperations/__tests__/mockedCTxpowerSame'
-import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { IntentAIForm }                         from './IntentAIForm'
+import { mockedIntentCRRM }                            from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedCAclbEnable }                 from './AIOperations/__tests__/mockedCAclbEnable'
+import { mocked as mockedCBandbalancingEnable }        from './AIOperations/__tests__/mockedCBandbalancingEnable'
+import { mocked as mockedCBandbalancingEnableBelow61 } from './AIOperations/__tests__/mockedCBandbalancingEnableBelow61'
+import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__tests__/mockedCDfschannelsDisable'
+import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
+import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentAIForm }                                from './IntentAIForm'
 
 jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
   kpis: [],
@@ -62,6 +64,7 @@ describe('IntentAIForm', () => {
   })
 
   describe('should render for AIOperations', () => {
+    const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
     const renderAIOperations = async (code: string) => {
       const { unmount } = render(<IntentAIForm />, {
         route: { params: { code } },
@@ -89,6 +92,24 @@ describe('IntentAIForm', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
         data: { intent: mockedCAclbEnable } })
       await renderAIOperations(mockedCAclbEnable.code)
+    })
+    it('should render for CBandbalancingEnable', async () => {
+      jest.spyOn(CBandbalancingEnable(), 'IntentAIForm').mockImplementation(() => (
+        <div data-testid='c-bandbalancing-enable-IntentAIForm' />
+      ))
+
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCBandbalancingEnable } })
+      await renderAIOperations(mockedCBandbalancingEnable.code)
+    })
+    it('should render for CBandbalancingEnableBelow61', async () => {
+      jest.spyOn(CBandbalancingEnable(), 'IntentAIForm').mockImplementation(() => (
+        <div data-testid='c-bandbalancing-enable-below-61-IntentAIForm' />
+      ))
+
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCBandbalancingEnableBelow61 } })
+      await renderAIOperations(mockedCBandbalancingEnableBelow61.code)
     })
   })
 })
