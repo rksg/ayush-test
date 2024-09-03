@@ -42,14 +42,14 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
-type IntentApPayload = {
+type IntentAPPayload = {
   code: string
   root: string
   sliceId: string
   search: string
 }
 
-export type IntentAp = {
+export type IntentAP = {
   name: string
   mac: string
   model: string
@@ -335,7 +335,7 @@ export const api = intentAIApi.injectEndpoints({
         response.highlights,
       providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
     }),
-    getAps: build.query<IntentAp[], IntentApPayload>({
+    getAps: build.query<IntentAP[], IntentAPPayload>({
       query: (payload) => ({
         document: gql`
           query GetAps(
@@ -344,28 +344,17 @@ export const api = intentAIApi.injectEndpoints({
             $sliceId: String!
             $n: Int
             $search: String
-            $key: String
           ) {
             intent(code: $code, root: $root, sliceId: $sliceId) {
-              aps: aps(n: $n, search: $search, key: $key) {
-                name
-                mac
-                model
-                version
+              aps: aps(n: $n, search: $search) {
+                name mac model version
               }
             }
           }
           `,
-        variables: {
-          code: payload.code,
-          root: payload.root,
-          sliceId: payload.sliceId,
-          search: payload.search,
-          n: 100,
-          key: 'aps-on-latest-fw-version'
-        }
+        variables: { ...payload, n: 100 }
       }),
-      transformResponse: (response: { intent: { aps: IntentAp[] } }) =>
+      transformResponse: (response: { intent: { aps: IntentAP[] } }) =>
         response.intent.aps
     })
   })

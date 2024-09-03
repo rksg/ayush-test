@@ -5,15 +5,15 @@ import { useParams } from 'react-router-dom'
 
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 
-import { IntentAp, useGetApsQuery } from '../services'
+import { IntentAP, useGetApsQuery } from '../services'
 
 export const ImpactedApsDrawer = ({ aps, visible, onClose } :
-  { aps: IntentAp[], visible: boolean, onClose: () => void }) => {
+  { aps: IntentAP[], visible: boolean, onClose: () => void }) => {
   const { $t } = useIntl()
   const { code, root, sliceId } = useParams()
   const [search, setSearch] = useState('')
   const impactedApsQuery = useGetApsQuery({ code: code!, root: root!, sliceId: sliceId!, search })
-  const columns: TableProps<IntentAp>['columns'] = [
+  const columns: TableProps<IntentAP>['columns'] = [
     {
       key: 'name',
       dataIndex: 'name',
@@ -53,7 +53,7 @@ export const ImpactedApsDrawer = ({ aps, visible, onClose } :
     visible={visible}
     children={
       <Loader states={[impactedApsQuery]}>
-        <Table<IntentAp>
+        <Table<IntentAP>
           rowKey='mac'
           columns={columns}
           onFilterChange={(_, { searchString }) => setSearch(searchString || '')}
