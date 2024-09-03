@@ -3,8 +3,9 @@ import _                                    from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 import { FormattedMessage }                 from 'react-intl'
 
-import { get }        from '@acx-ui/config'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { TenantLink }             from '@acx-ui/react-router-dom'
 
 import { IncidentCode }               from './constants'
 import { Incident, IncidentMetadata } from './types/incidents'
@@ -39,6 +40,31 @@ type RecommendationsFunction = (
 interface RootCauseAndRecommendation {
   rootCauses: MessageDescriptor | RootCausesFunction
   recommendations: MessageDescriptor | RecommendationsFunction
+}
+
+const TenantLinkWrapper = ({ checks, params, linkType }: {
+    checks : (AirtimeRxChecks)[],
+    params: AirtimeParams,
+    linkType: string
+  }) => {
+  const checkTrue = checkTrueParams(checks)
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
+  let path =''
+  if (isIntentAIEnabled) {
+    const intent = params.crrm ?? params.aclb
+    path = `/intentAI/${get('IS_MLISA_SA') ? intent!.root : ''}/${intent!.sliceId}/${intent!.code}`
+  } else {
+    const id = checkTrue.includes('isCRRMRaised') ? params.crrmId :
+      checkTrue.includes('isAclbRaised') ? params.aclbId : params.recommendationId
+    path = `/recommendations/${linkType}/${id}`
+  }
+  return (
+    <TenantLink to={path}>
+      <FormattedMessage defaultMessage={'here'} />
+    </TenantLink>)
 }
 
 const commonRecommendations = defineMessage({
@@ -138,9 +164,20 @@ export type AirtimeTxChecks = {
 
 export type AirtimeArray = (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxChecks)[]
 
+export type IntentQueryParams = {
+  code:string,
+  root:string,
+  sliceId:string,
+  intentId:string
+}
+
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
-  recommendationId: string
+  recommendationId: string,
+  crrm?:IntentQueryParams,
+  crrmId?:string
+  aclb?:IntentQueryParams,
+  aclbId?:string,
 }
 
 export const htmlValues: FormatMessageValues = {
@@ -244,6 +281,7 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
   const { ssidCountPerRadioSlice, recommendationId } = params
   const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
   const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
+  // const crrmLink = getTenantLink(checks, params, 'crrm')
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
