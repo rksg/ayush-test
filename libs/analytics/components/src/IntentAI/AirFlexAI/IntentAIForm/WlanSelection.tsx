@@ -1,7 +1,6 @@
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Form }                   from 'antd'
-import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Select }                   from '@acx-ui/components'
@@ -9,6 +8,7 @@ import { get }                              from '@acx-ui/config'
 import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
 import { RadioTypeEnum }                    from '@acx-ui/rc/utils'
 
+// eslint-disable-next-line import/order
 import {
   useRecommendationWlansQuery
 } from '../../../Recommendations/services'

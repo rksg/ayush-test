@@ -1,22 +1,15 @@
-import React from 'react'
 
 import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { StepsForm, ProcessedCloudRRMGraph } from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 
-import { KpiField }                          from '../../common/KpiField'
-import { useIntentContext }                  from '../../IntentContext'
-import { getGraphKPIs }                      from '../../useIntentDetailsQuery'
-import { dataRetentionText, isDataRetained } from '../../utils'
-
-import * as SideNotes from './SideNotes'
+import { useIntentContext } from '../../IntentContext'
 
 export function Summary (
-  { summaryUrlBefore, summaryUrlAfter, crrmData } :
-  { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
+) {
   const { $t } = useIntl()
-  const { intent, kpis } = useIntentContext()
+  useIntentContext()
 
   return <Row gutter={20}>
     <Col span={16}>

@@ -1,5 +1,3 @@
-import React, { useState } from 'react'
-
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
@@ -11,7 +9,6 @@ import { useIntentContext }   from '../../IntentContext'
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
 import { Settings }     from './Settings'
-import { Summary }      from './Summary'
 
 export function IntentAIForm () {
   const { intent } = useIntentContext()

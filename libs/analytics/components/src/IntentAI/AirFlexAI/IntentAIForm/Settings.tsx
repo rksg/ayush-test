@@ -3,8 +3,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import * as SideNotes from './SideNotes'
-import WlanSelection  from './WlanSelection'
+import WlanSelection from './WlanSelection'
 
 export function Settings () {
   const { $t } = useIntl()

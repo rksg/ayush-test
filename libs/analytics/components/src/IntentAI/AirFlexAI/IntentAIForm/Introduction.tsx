@@ -5,9 +5,7 @@ import { useIntl }              from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { Icon }         from '../../common/IntentIcon'
 import { IntroSummary } from '../../common/IntroSummary'
-import { aiFeatures }   from '../../config'
 
 import * as SideNotes from './SideNotes'
 

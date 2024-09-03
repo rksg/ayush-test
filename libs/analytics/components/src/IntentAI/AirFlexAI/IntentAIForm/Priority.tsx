@@ -10,7 +10,7 @@ import { TradeOff }           from '../../../TradeOff'
 import { isStandaloneSwitch } from '../../common/isStandaloneSwitch'
 import { useIntentContext }   from '../../IntentContext'
 
-import * as SideNotes from './SideNotes'
+// import * as SideNotes from './SideNotes'
 
 const name = ['preferences', 'crrmFullOptimization'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
@@ -64,7 +64,7 @@ export function Priority () {
       </Form.Item>
     </Col>
     <Col span={7} offset={2}>
-      <SideNotes.Priority />
+      {/* <SideNotes.Priority /> */}
     </Col>
   </Row>
 }
