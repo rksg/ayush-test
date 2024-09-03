@@ -43,7 +43,8 @@ import {
   SWITCH_DEFAULT_VLAN_NAME,
   ProfileTypeEnum,
   PortSettingModel,
-  Vlan
+  Vlan,
+  isVerGEVer
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { store }         from '@acx-ui/store'
@@ -351,7 +352,8 @@ export function EditPortDrawer ({
 
       let portSpeed = getPortSpeed(selectedPorts)
       if (!isSwitch785048CPortSpeedEnabled &&
-        selectedPorts.every(port => port.switchModel === 'ICX7850-48C')) {
+        selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
+        switchDetail?.firmware && !isVerGEVer(switchDetail?.firmware, '10010e', false)) {
         portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
       }
 
