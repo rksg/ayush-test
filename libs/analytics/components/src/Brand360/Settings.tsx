@@ -6,6 +6,8 @@ import { defineMessage, useIntl }  from 'react-intl'
 import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/analytics/services'
 import { Settings }                                           from '@acx-ui/analytics/utils'
 import { Drawer, Button, Tooltip, Loader }                    from '@acx-ui/components'
+import { WifiScopes }                                         from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission }            from '@acx-ui/user'
 import { truthy }                                             from '@acx-ui/utils'
 
 import { Setting as UI } from './styledComponents'
@@ -93,7 +95,12 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
     (lspValue !== lspName),
     (propertyValue !== propertyName)
   ].some(hasChanged => hasChanged)
-  const isDisabled = isInvalid || !hasChanged
+  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({
+    // permission: 'READ_BRAND360', // need WRITE_BRAND360 ?
+    scopes: [WifiScopes.UPDATE]
+  }))
+  const isDisabled = isInvalid || !hasChanged || isReadOnly
+
 
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
   const saveSettings = useCallback(() => {
@@ -179,7 +186,7 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
               max: 100,
               message: $t({ defaultMessage: 'Input exceeds 100 characters!' })
             }]}
-            children={<Input data-testid={field} />} />
+            children={<Input data-testid={field} readOnly={isReadOnly}/>} />
           )}
           <UI.Line />
           <Typography.Text strong>{$t({ defaultMessage: 'Compliance Rules' })}</Typography.Text>
@@ -210,7 +217,7 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
                 {linesCount, plural, one {a} other {}} valid Java Regular Expression!` },
                 { msg: failureLines.join(','), linesCount: failureLines.length })
             }]}
-            children={<Input.TextArea data-testid='ssidRegex' />}
+            children={<Input.TextArea data-testid='ssidRegex' readOnly={isReadOnly}/>}
           />
         </Form>
       </Loader>

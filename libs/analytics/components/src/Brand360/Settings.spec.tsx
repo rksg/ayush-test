@@ -5,6 +5,8 @@ import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/anal
 import type { Settings }                                      from '@acx-ui/analytics/utils'
 import { Provider }                                           from '@acx-ui/store'
 import { screen, render, fireEvent }                          from '@acx-ui/test-utils'
+import { WifiScopes }                                         from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                     from '@acx-ui/user'
 
 import { ConfigSettings } from './Settings'
 
@@ -128,5 +130,23 @@ describe('ConfigSettings Drawer', () => {
     fireEvent.change(await screen.findByTestId('ssidRegex'), { target: { value: spaceRegex } })
     await userEvent.click(await screen.findByText('Save'))
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
+  })
+
+  it('should readOnly settings', async () => {
+    const userProfile = getUserProfile()
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+    const settings = {
+      'brand-ssid-compliance-matcher': ''
+    }
+    render(<ConfigSettings settings={settings as Settings} />, { wrapper: Provider, route })
+    await userEvent.click(await screen.findByTestId('settings'))
+    expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
+      .toBeVisible()
+    expect(await screen.findByText('Save')).toBeDisabled()
   })
 })
