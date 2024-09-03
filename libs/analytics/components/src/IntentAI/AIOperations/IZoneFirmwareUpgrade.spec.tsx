@@ -127,7 +127,7 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(2)
+    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
@@ -159,7 +159,7 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(2)
+    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
