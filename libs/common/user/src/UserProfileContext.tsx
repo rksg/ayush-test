@@ -86,11 +86,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     pageSize: 10000
   }
 
-  const { data: venues } = useGetVenuesListQuery({ params, payload })
+  const { data: venues } = useGetVenuesListQuery({ params, payload },
+    { skip: !abacEnabled && hasAllVenues })
 
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
-
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
