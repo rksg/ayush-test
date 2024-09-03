@@ -160,7 +160,7 @@ export function EditPortDrawer ({
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitch785048CPortSpeedEnabled =
-    useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE) || true
+    useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
 
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
