@@ -1,21 +1,18 @@
 /* eslint-disable max-len */
-
-import { Col, Row, Typography } from 'antd'
-import { useIntl }              from 'react-intl'
+import { Col, Row }                  from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Loader, StepsForm } from '@acx-ui/components'
 
 import { CompareSlider }        from '../../../CompareSlider'
 import { Icon }                 from '../../common/IntentIcon'
 import { IntroSummary }         from '../../common/IntroSummary'
+import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { aiFeatures }           from '../../config'
-import { intentPriority }       from '../common'
 import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import * as SideNotes from './SideNotes'
 import * as UI        from './styledComponents'
-
-const { Paragraph } = Typography
 
 export const SliderBefore = (props: { image: string }) => {
   const { $t } = useIntl()
@@ -85,14 +82,24 @@ export function Introduction (
       <IntroSummary />
       <StepsForm.TextContent>
         <StepsForm.Subtitle>
-          {$t({ defaultMessage: 'Network Intent plays a crucial role in wireless network design' })}
+          <FormattedMessage defaultMessage='Network Intent plays a crucial role in wireless network design' />
         </StepsForm.Subtitle>
-        <Paragraph>
-          <b>{$t(intentPriority.full.title)}:</b> <span>{$t(intentPriority.full.content)}</span>
-        </Paragraph>
-        <Paragraph>
-          <b>{$t(intentPriority.partial.title)}:</b> <span>{$t(intentPriority.partial.content)}</span>
-        </Paragraph>
+        <FormattedMessage
+          values={richTextFormatValues}
+          defaultMessage={`
+            <p><b>Optimize Channel Plan for:</b></p>
+            <p>
+              <b>High number of clients in a dense network:</b>
+              High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
+            </p>
+
+            <p>
+              <b>High client throughput in sparse network:</b>
+              In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
+            </p>
+            <br></br>
+          `}
+        />
       </StepsForm.TextContent>
       {compareSlider}
     </Col>
