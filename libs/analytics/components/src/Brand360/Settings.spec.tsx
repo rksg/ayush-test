@@ -4,7 +4,7 @@ import { range } from 'lodash'
 import { useUpdateTenantSettingsMutation, useBrand360Config } from '@acx-ui/analytics/services'
 import type { Settings }                                      from '@acx-ui/analytics/utils'
 import { Provider }                                           from '@acx-ui/store'
-import { screen, render, fireEvent }                          from '@acx-ui/test-utils'
+import { screen, render, fireEvent, waitFor }                 from '@acx-ui/test-utils'
 import { WifiScopes }                                         from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                     from '@acx-ui/user'
 
@@ -147,6 +147,8 @@ describe('ConfigSettings Drawer', () => {
     await userEvent.click(await screen.findByTestId('settings'))
     expect(await screen.findByText('Choose a pattern to validate Brand SSID compliance'))
       .toBeVisible()
-    expect(await screen.findByText('Save')).toBeDisabled()
+    await waitFor(async () =>
+      expect(await screen.findByRole('button', { name: 'Save' })).toBeDisabled()
+    )
   })
 })
