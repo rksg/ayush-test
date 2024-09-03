@@ -129,7 +129,9 @@ export const IntentAIRRMGraph = ({
   return <UI.Wrapper
     style={{
       filter: blurData ? 'blur(8px)' : 'none'
-    }}>
+    }}
+    data-testid='graph-wrapper'
+  >
     <Card>
       <UI.GraphWrapper key={'graph-details'}>
         {useGraph(crrmData, detailsZoomScale, false,
