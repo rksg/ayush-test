@@ -33,7 +33,7 @@ describe('intentAI services', () => {
       expect(getKpiData({
         ...mockedIntentCRRM,
         kpi_number_of_interfering_links: { data: null, compareData: null }
-      }, kpis[0])).toEqual({ compareData: undefined, data: undefined })
+      }, kpis[0])).toEqual({ compareData: null, data: null })
     })
   })
   describe('getGraphKPIs', () => {

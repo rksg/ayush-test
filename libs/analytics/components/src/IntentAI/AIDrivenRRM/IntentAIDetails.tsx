@@ -20,6 +20,7 @@ import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
 import { getGraphKPIs, getKpiData } from '../useIntentDetailsQuery'
+import { isDataRetained }           from '../utils'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
@@ -74,6 +75,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
+    const showData = isDataRetained(intent.metadata.dataEndTime)
 
     return <Loader states={[queryResult]}>
       <div hidden>
@@ -127,7 +129,10 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
             children={<GridRow>
               {getGraphKPIs(intent, kpis).map(kpi => (
                 <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
+                  <KpiCard
+                    kpi={kpi}
+                    showData={showData}
+                    intent={intent}/>
                 </GridCol>
               ))}
             </GridRow>}
