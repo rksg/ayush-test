@@ -173,7 +173,8 @@ export enum Features {
   SWITCH_AP_PORT_HYPERLINK ='switch-ap-port-hyperlink-toggle',
   WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE = 'wifi-snmp-v3-agent-passphrase-complexity-toggle',
   WIFI_RESET_AP_LAN_PORT_TOGGLE = 'wifi-reset-ap-port-setting-toggle',
-  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle'
+  WIFI_AP_STICKY_CLIENT_STEERING_TOGGLE = 'wifi-ap-sticky-client-steering-toggle',
+  WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE = 'wifi-over-the-ds-ft-support-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
