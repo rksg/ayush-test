@@ -22,7 +22,8 @@ import { EdgesTable } from '.'
 
 // eslint-disable-next-line max-len
 const mockEdgeCompatibilitiesVenue = cloneDeep(EdgeCompatibilityFixtures.mockEdgeCompatibilitiesVenue)
-mockEdgeCompatibilitiesVenue.compatibilities[0].id = mockEdgeList.data[0].serialNumber
+// mockEdgeList.data[4] is operational
+mockEdgeCompatibilitiesVenue.compatibilities[0].id = mockEdgeList.data[4].serialNumber
 mockEdgeCompatibilitiesVenue.compatibilities[1].id = mockEdgeList.data[1].serialNumber
 
 const mockedUsedNavigate = jest.fn()
@@ -391,14 +392,14 @@ describe('Edge Table', () => {
         route: { params, path: '/:tenantId/devices/edge' }
       })
 
-    await screen.findByRole('cell', { name: 'Smart Edge 1' })
-    const row1 = screen.getByRole('row', { name: /Smart Edge 1 / })
+    await screen.findByRole('cell', { name: 'Smart Edge 5' })
+    const row1 = screen.getByRole('row', { name: /Smart Edge 5 / })
     await user.click(screen.getByTestId('SettingsOutlined'))
     await userEvent.click(await screen.findByText('Feature Compatibility'))
 
     const btn = await within(row1).findByRole('button', { name: 'Partially incompatible' })
     await user.click(btn)
     const dialog = await screen.findByRole('dialog')
-    within(dialog).getByText('Incompatibility Details: Smart Edge 1')
+    within(dialog).getByText('Incompatibility Details: Smart Edge 5')
   })
 })

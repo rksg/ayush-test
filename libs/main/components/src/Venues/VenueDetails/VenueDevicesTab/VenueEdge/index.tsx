@@ -37,6 +37,7 @@ export const VenueEdge = () => {
         'ports',
         'tags',
         'firmwareVersion',
+        'venueId',
         'incompatible'
       ],
       filters: { venueId: [params.venueId] }

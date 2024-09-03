@@ -234,16 +234,13 @@ describe('EdgeCompatibilityDrawer', () => {
       })
 
     expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
-    const features = screen.getAllByTestId('FeatureItem')
-    expect(features.length).toBe(2)
 
-    const f1 = features[0]
-    expect(await within(f1).findByText('SD-LAN')).toBeInTheDocument()
-    expect(within(f1).getByText('2.1.0.200')).toBeValid()
+    const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
+    expect(sdlanRow).toBeVisible()
+    expect(within(sdlanRow).getByText('2.1.0.200')).toBeValid()
 
-    const f2 = features[1]
-    expect(within(f2).getByText('Tunnel Profile')).toBeValid()
-    expect(within(f2).getByText('2.1.0.400')).toBeValid()
+    const tunnelProfileRow = screen.getByRole('row', { name: /Tunnel Profile/ })
+    expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
     await userEvent.click(screen.getByTestId('CloseSymbol'))
     expect(mockedCloseDrawer).toBeCalledTimes(1)
   })

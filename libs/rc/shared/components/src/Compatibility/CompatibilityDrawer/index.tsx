@@ -85,7 +85,7 @@ const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
 
   if ((isCrossDevices && deviceType === CompatibilityDeviceEnum.AP)
   // eslint-disable-next-line max-len
-  || (deviceType === CompatibilityDeviceEnum.EDGE && props.compatibilityType === CompatibilityType.VENUE )) {
+  || (deviceType === CompatibilityDeviceEnum.EDGE && (props.compatibilityType === CompatibilityType.VENUE || props.compatibilityType === CompatibilityType.DEVICE))) {
     return <SameDeviceTypeCompatibility
       key={data.id}
       types={deviceTypes}

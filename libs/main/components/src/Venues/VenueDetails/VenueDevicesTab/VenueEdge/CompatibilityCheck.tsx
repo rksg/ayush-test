@@ -40,7 +40,7 @@ export const CompatibilityCheck = ({ data }: { data: EntityCompatibility[] }) =>
         type={EdgeCompatibilityType.VENUE}
         data={data}
         onClose={() => toggleCompatibilityDrawer(false)}
-        width={600}
+        width={700}
       />
     </>
     : null

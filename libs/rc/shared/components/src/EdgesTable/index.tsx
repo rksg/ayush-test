@@ -250,7 +250,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,
       dataIndex: 'incompatible',
-      filterKey: 'fwVersion',
+      filterKey: 'firmwareVersion',
       width: 200,
       filterableWidth: 200,
       // eslint-disable-next-line max-len
@@ -261,6 +261,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       render: (_: React.ReactNode, row: EdgeStatus) => {
         return (<ApCompatibilityFeature
           count={row?.incompatible}
+          deviceStatus={row?.deviceStatus}
           onClick={() => {
             setCompatibilitiesDrawerEdgeId(row.serialNumber)
           }} />
@@ -365,7 +366,6 @@ export const EdgesTable = (props: EdgesTableProps) => {
         // eslint-disable-next-line max-len
         venueId={find(tableQuery?.data?.data, { serialNumber: compatibilitiesDrawerEdgeId })?.venueId}
         edgeId={compatibilitiesDrawerEdgeId}
-        width={600}
       />}
     </Loader>
   )

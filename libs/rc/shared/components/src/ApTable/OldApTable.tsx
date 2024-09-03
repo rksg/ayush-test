@@ -482,6 +482,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       render: (_: React.ReactNode, row: APExtended) => {
         return (<ApCompatibilityFeature
           count={row?.incompatible}
+          deviceStatus={row?.deviceStatus}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
             setSelectedApName(row?.name ?? '')
