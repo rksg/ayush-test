@@ -133,7 +133,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             compatibilities.compatibilities.forEach((item) => {
               const idx = findIndex(edgesData, { serialNumber: item.id })
               if (idx !== -1)
-                edgesData[idx].incompatible = item.incompatible ?? 0
+                edgesData[idx].incompatible = item.incompatibleFeatures?.length ?? 0
             })
           } catch (e) {
           // eslint-disable-next-line no-console
