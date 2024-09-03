@@ -2,6 +2,7 @@ import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedCAclbEnable }          from './AIOperations/__tests__/mockedCAclbEnable'
 import { mocked as mockedCDfschannelsDisable }  from './AIOperations/__tests__/mockedCDfschannelsDisable'
 import { mocked as mockedCTxpowerSame }         from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
@@ -31,6 +32,10 @@ jest.mock('./AIOperations/CTxpowerSame', () => ({
 jest.mock('./AIOperations/CDfschannelsDisable', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-dfschannels-disable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CAclbEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-aclb-enable-IntentAIDetails'/>
 }))
 
 describe('IntentAIDetails', () => {
@@ -79,6 +84,11 @@ describe('IntentAIDetails', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
         data: { intent: mockedCDfschannelsDisable } })
       await renderAIOperations(mockedCDfschannelsDisable.code)
+    })
+    it('should render for CAclbEnable', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCAclbEnable } })
+      await renderAIOperations(mockedCAclbEnable.code)
     })
   })
 })
