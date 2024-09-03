@@ -1221,7 +1221,8 @@ export const mockEthProfiles = {
     'type',
     'untagId',
     'vlanMembers',
-    'isDefault'
+    'isDefault',
+    'apSerialNumbers'
   ],
   totalCount: 2,
   page: 1,
@@ -1232,7 +1233,13 @@ export const mockEthProfiles = {
       type: 'TRUNK',
       untagId: 1,
       vlanMembers: '1-4094',
-      isDefault: true
+      isDefault: true,
+      apSerialNumbers: ['serial-number'],
+      apActivations: [
+        {
+          portId: 1
+        }
+      ]
     },
     {
       id: 'd17d0b68b34249ff85376ebfaa8a87d5',
@@ -1240,7 +1247,13 @@ export const mockEthProfiles = {
       type: 'ACCESS',
       untagId: 1,
       vlanMembers: '1',
-      isDefault: true
+      isDefault: true,
+      apSerialNumbers: ['serial-number'],
+      apActivations: [
+        {
+          portId: 2
+        }
+      ]
     }
   ]
 }

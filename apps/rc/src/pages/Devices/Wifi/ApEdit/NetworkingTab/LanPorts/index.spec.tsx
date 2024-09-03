@@ -70,10 +70,6 @@ describe('AP Lan port settings', () => {
       rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(WifiUrlsInfo.resetApLanPorts.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockEthProfiles))),
-      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -198,6 +194,42 @@ describe('AP Lan port settings', () => {
     expect(venueLink).toBeInTheDocument()
     await userEvent.click(venueLink)
     expect(mockedUsedNavigate).toBeCalled()
+  })
+})
+
+describe('AP Ethernet Port Profile', () => {
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE,
+    venueData
+  }
+
+  beforeEach(() => {
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(apApi.util.resetApiState())
+
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getVenueSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSetting))),
+      rest.get(CommonUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(CommonRbacUrlsInfo.getVenueLanPorts.url,
+        (_, res, ctx) => res(ctx.json(venueLanPorts))),
+      rest.get(WifiUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
+      rest.get(WifiRbacUrlsInfo.getApLanPorts.url,
+        (_, res, ctx) => res(ctx.json(ApLanPorts_T750SE))),
+      rest.put(WifiUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.put(WifiRbacUrlsInfo.updateApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.delete(WifiUrlsInfo.resetApLanPorts.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockEthProfiles))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json({})))
+    )
   })
 
   it ('Should render ethernet profile correctly with AP model T750SE', async () => {

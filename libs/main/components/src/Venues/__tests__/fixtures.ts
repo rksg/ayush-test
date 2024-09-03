@@ -328,6 +328,7 @@ export const mockEthProfiles = {
     'untagId',
     'vlanMembers',
     'isDefault',
+    'venueIds',
     'venueActivations'
   ],
   totalCount: 2,
@@ -340,10 +341,11 @@ export const mockEthProfiles = {
       untagId: 1,
       vlanMembers: '1-4094',
       isDefault: true,
+      venueIds: ['venue-id'],
       venueActivations: [
         {
-          venueId: '123',
-          apModel: 'T670',
+          venueId: 'venue-id',
+          apModel: 'T750',
           portId: 1
         }
       ]
@@ -355,10 +357,11 @@ export const mockEthProfiles = {
       untagId: 1,
       vlanMembers: '1',
       isDefault: true,
+      venueIds: ['venue-id'],
       venueActivations: [
         {
-          venueId: '123',
-          apModel: 'T670',
+          venueId: 'venue-id',
+          apModel: 'T750',
           portId: 2
         }
       ]

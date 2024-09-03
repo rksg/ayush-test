@@ -22,15 +22,13 @@ import {
   useUpdateApLanPortsMutation,
   useResetApLanPortsMutation,
   useLazyGetDHCPProfileListViewModelQuery,
-  useGetDefaultApLanPortsQuery,
-  useGetEthernetPortProfileViewDataListQuery
+  useGetDefaultApLanPortsQuery
 } from '@acx-ui/rc/services'
 import {
   LanPort,
   WifiApSetting,
   CapabilitiesApModel,
-  VenueLanPorts,
-  EthernetPortProfileViewData
+  VenueLanPorts
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -118,9 +116,6 @@ export function LanPorts () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
-  const [ethPortProfileData, setEthPortProfileData] = useState([] as EthernetPortProfileViewData[])
-
-  const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
@@ -172,12 +167,6 @@ export function LanPorts () {
       lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
     })
   }, [lanData])
-
-  useEffect(() => {
-    if (!isEthListLoading && serialNumber && ethList?.data) {
-      setEthPortProfileData(ethList?.data)
-    }
-  }, [ethList?.data])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
