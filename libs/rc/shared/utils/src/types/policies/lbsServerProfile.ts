@@ -1,7 +1,7 @@
 export interface LbsServerProfileViewModel {
     id: string
     name: string
-    lbsVenueName: string
+    lbsServerVenueName: string
     server: string
     venueIds?: string[]
     serverConnected?: boolean
@@ -10,7 +10,7 @@ export interface LbsServerProfileViewModel {
 export interface LbsServerProfile {
     id: string
     name: string
-    lbsVenueName: string
+    lbsServerVenueName: string
     serverAddress: string
     serverPort: number
     password: string
@@ -19,7 +19,7 @@ export interface LbsServerProfile {
 export interface LbsServerProfileContext {
     id?: string,
     profileName: string,
-    lbsVenueName: string
+    lbsServerVenueName: string
     serverAddress: string
 }
 

@@ -4,7 +4,7 @@ import { useIntl }                  from 'react-intl'
 import { PasswordInput }      from '@acx-ui/components'
 import {
   checkObjectNotExists,
-  lbsVenueNameRegExp,
+  lbsServerVenueNameRegExp,
   servicePolicyNameRegExp,
   networkWifiSecretRegExp,
   domainNameRegExp,
@@ -54,13 +54,13 @@ const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfi
       />
       <div>
         <Form.Item
-          name='lbsVenueName'
-          label={$t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' })}
+          name='lbsServerVenueName'
+          label={$t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular> Name' })}
           rules={[
             { required: true },
             { min: 2 },
             { max: 16 },
-            { validator: (_, value) => lbsVenueNameRegExp(value) }
+            { validator: (_, value) => lbsServerVenueNameRegExp(value) }
           ]}
           initialValue={''}
           children={<Input />}
