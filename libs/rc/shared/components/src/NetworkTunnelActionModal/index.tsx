@@ -138,7 +138,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                   ? {
                     isDisabled: true,
                     // eslint-disable-next-line max-len
-                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last WLAN of this SD-LAN' })
+                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
                   }
                   : undefined}
               />

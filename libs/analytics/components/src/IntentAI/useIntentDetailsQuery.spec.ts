@@ -1,9 +1,9 @@
 import { intentAIUrl, store } from '@acx-ui/store'
 import { mockGraphqlQuery }   from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM } from './AIDrivenRRM/__tests__/fixtures'
-import { kpis }             from './AIDrivenRRM/common'
-import { api }              from './useIntentDetailsQuery'
+import { mockedIntentCRRM }              from './AIDrivenRRM/__tests__/fixtures'
+import { kpis }                          from './AIDrivenRRM/common'
+import { api, getGraphKPIs, getKpiData } from './useIntentDetailsQuery'
 
 describe('intentAI services', () => {
   describe('intent details', () => {
@@ -22,34 +22,39 @@ describe('intentAI services', () => {
       )
       expect(status).toBe('fulfilled')
       expect(error).toBeUndefined()
-      expect(data).toStrictEqual({
-        code: 'c-crrm-channel24g-auto',
-        id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6',
-        metadata: {
-          dataEndTime: '2023-06-26T00:00:25.772Z'
-        },
-        path: [
-          { name: 'vsz34', type: 'system' },
-          { name: '21_US_Beta_Samsung', type: 'domain' },
-          { name: '21_US_Beta_Samsung', type: 'zone' }
-        ],
-        updatedAt: '2023-06-26T06:04:00.000Z',
-        sliceType: 'zone',
-        sliceValue: '21_US_Beta_Samsung',
-        displayStatus: 'applyscheduled',
+      expect(data).toStrictEqual(mockedIntentCRRM)
+    })
+  })
+  describe('getKpiData', () => {
+    it('should return correct data', () => {
+      expect(getKpiData(mockedIntentCRRM, kpis[0])).toEqual({ compareData: 2, data: 0 })
+    })
+    it('should handle null', () => {
+      expect(getKpiData({
+        ...mockedIntentCRRM,
+        kpi_number_of_interfering_links: { data: null, compareData: null }
+      }, kpis[0])).toEqual({ compareData: undefined, data: undefined })
+    })
+  })
+  describe('getGraphKPIs', () => {
+    it('should return correct data', () => {
+      const [ result ] = getGraphKPIs({
+        ...mockedIntentCRRM,
         kpi_number_of_interfering_links: {
-          data: {
-            timestamp: null,
-            result: 0
-          },
-          compareData: {
-            timestamp: '2023-06-26T00:00:25.772Z',
-            result: 2
-          }
-        },
-        statusTrail: mockedIntentCRRM.statusTrail,
-        preferences: undefined
-      })
+          data: { timestamp: null, result: 2 },
+          compareData: { timestamp: null, result: 5 }
+        }
+      }, kpis)
+      expect(result.value).toEqual('2')
+      expect(result.delta).toEqual({ trend: 'positive', value: '-60%' })
+    })
+    it('should handle null', () => {
+      const [ result ] = getGraphKPIs({
+        ...mockedIntentCRRM,
+        kpi_number_of_interfering_links: { data: null, compareData: null }
+      }, kpis)
+      expect(result.value).toEqual('--')
+      expect(result.delta).toEqual(undefined)
     })
   })
 })
