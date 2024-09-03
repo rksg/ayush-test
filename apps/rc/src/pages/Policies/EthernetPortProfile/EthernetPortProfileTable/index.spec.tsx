@@ -3,6 +3,7 @@ import { rest }  from 'msw'
 
 import {
   AaaUrls,
+  CommonUrlsInfo,
   EthernetPortProfileUrls,
   PolicyOperation,
   PolicyType,
@@ -12,7 +13,7 @@ import {
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId } from '../__tests__/fixtures'
+import { dummayRadiusServiceList, dummyTableResult, mockEthernetPortProfileId, mockedVenuesResult } from '../__tests__/fixtures'
 
 import EthernetPortProfileTable from '.'
 
@@ -63,6 +64,11 @@ describe('EthernetPortProfileTable', ()=>{
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(dummayRadiusServiceList))
+      ),
+
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
       )
 
     )

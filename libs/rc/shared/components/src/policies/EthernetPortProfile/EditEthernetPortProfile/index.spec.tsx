@@ -1,19 +1,47 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls, ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortProfileUrls, PolicyOperation, PolicyType, getEthernetPortAuthTypeString, getEthernetPortTypeString, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                                                                                       from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi, policyApi } from '@acx-ui/rc/services'
+import { AaaUrls,
+  EthernetPortAuthType,
+  EthernetPortProfileUrls,
+  PolicyOperation,
+  PolicyType,
+  getEthernetPortAuthTypeString,
+  getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { dummayRadiusServiceList, dummyAccounting, dummyAuthRadius, dummyEthernetPortProfileAccessPortBased, dummyEthernetPortProfileTrunkSupplicant, mockAuthRadiusId, mockAuthRadiusName, mockAuthRadiusName2 } from '../__tests__/fixtures'
+import {
+  dummyRadiusServiceList,
+  dummyAccounting,
+  dummyAuthRadius,
+  dummyEthernetPortProfileAccessPortBased,
+  dummyEthernetPortProfileTrunkSupplicant,
+  mockAuthRadiusId,
+  mockAuthRadiusName,
+  mockAuthRadiusName2,
+  mockEthernetPortProfileId,
+  dummyEthernetPortProfileTrunk,
+  mockEthernetPortProfileId6,
+  dummyEthernetPortProfileAccess,
+  dummyRadiusServiceByEthernetList } from '../__tests__/fixtures'
 
-import EditEthernetPortProfile from '.'
+import { EditEthernetPortProfile } from '.'
+
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+// jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+jest.mocked(useIsSplitOn).mockImplementation(
+  ff => ff === Features.ETHERNET_PORT_PROFILE_DVLAN_TOGGLE
+)
 
 let params: { tenantId: string, policyId: string }
 const editViewPath = '/:tenantId/' + getPolicyRoutePath({
@@ -35,6 +63,11 @@ describe('EditEthernetPortProfile', () => {
     mockedMainEthernetProfile.mockClear()
     mockedDeleteRadiusId.mockClear()
     mockedUpdateRadiusId.mockClear()
+    mockedUsedNavigate.mockClear()
+
+    store.dispatch(ethernetPortProfileApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+
 
     mockServer.use(
       rest.put(
@@ -47,7 +80,15 @@ describe('EditEthernetPortProfile', () => {
 
       rest.get(
         EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileTrunkSupplicant))
+        (req, res, ctx) => {
+          if (req.params.id === mockEthernetPortProfileId) {
+            return res(ctx.json(dummyEthernetPortProfileTrunk))
+          } else if (req.params.id === mockEthernetPortProfileId6) {
+            return res(ctx.json(dummyEthernetPortProfileAccess))
+          } else {
+            return res(ctx.json(dummyEthernetPortProfileTrunkSupplicant))
+          }
+        }
       ),
 
       rest.delete(
@@ -68,7 +109,7 @@ describe('EditEthernetPortProfile', () => {
 
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
-        (req, res, ctx) => res(ctx.json(dummayRadiusServiceList))
+        (req, res, ctx) => res(ctx.json(dummyRadiusServiceList))
       ),
 
       rest.get(
@@ -80,7 +121,16 @@ describe('EditEthernetPortProfile', () => {
             return res(ctx.json(dummyAccounting))
           }
         }
+      ),
+
+      rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => {
+          // console.log(req.body)
+          return res(ctx.json(dummyRadiusServiceByEthernetList))
+        }
       )
+
     )
   })
 
@@ -93,9 +143,8 @@ describe('EditEthernetPortProfile', () => {
       , { route: { path: editViewPath, params } }
     )
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const policyNameField = screen.getByRole('textbox', { name: 'Profile Name' })
-    await user.type(policyNameField, '1')
+    const policyNameField = await screen.findByRole('textbox', { name: 'Profile Name' })
+    await user.type(policyNameField, 'ab')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/ethernetPortProfile/list`,
@@ -128,7 +177,9 @@ describe('EditEthernetPortProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await user.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/policies/ethernetPortProfile/list`,
       hash: '',
@@ -136,30 +187,16 @@ describe('EditEthernetPortProfile', () => {
     })
   })
 
-
-  it('If select access type the supplicant options should be hidden', async () => {
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EditEthernetPortProfile />
-      </Provider>
-      , { route: { path: editViewPath, params } }
-    )
-
-    const typeCombo = await screen.findByRole('combobox', { name: 'Port Type' })
-    await user.click(typeCombo)
-    await user.click(
-      await screen.findByText(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS))
-    )
-
-    const vlanUntagIdField = screen.getByRole('spinbutton', { name: 'VLAN Untag ID' })
-    await user.type(vlanUntagIdField, '3')
-
-    expect(screen.queryByRole('combobox', { name: 'Credential Type' })).not.toBeInTheDocument()
-  })
-
   // eslint-disable-next-line max-len
-  it('If select access type and enable 802.1x and select Auth service will with Auth service api call', async () => {
+  it('If enable 802.1x and select Auth service will with Auth service api call', async () => {
+
+    mockServer.use(
+      rest.get(
+        EthernetPortProfileUrls.getEthernetPortProfile.url,
+        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileAccess))
+      )
+    )
+
     const user = userEvent.setup()
     render(
       <Provider>
@@ -168,15 +205,9 @@ describe('EditEthernetPortProfile', () => {
       , { route: { path: editViewPath, params } }
     )
 
-    const typeCombo = await screen.findByRole('combobox', { name: 'Port Type' })
-    await user.click(typeCombo)
-    await user.click(
-      await screen.findByText(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS))
-    )
+    await user.click(await screen.findByRole('switch', { name: '802.1X Authentication' }))
 
-    await user.click(screen.getByRole('switch', { name: '802.1X Authentication' }))
-
-    const _8021XCombo = screen.getByRole('combobox', { name: '802.1X Role' })
+    const _8021XCombo = await screen.findByRole('combobox', { name: '802.1X Role' })
     await user.click(_8021XCombo)
     await user.click(
       // eslint-disable-next-line max-len
@@ -190,13 +221,13 @@ describe('EditEthernetPortProfile', () => {
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => expect(mockedMainEthernetProfile).toBeCalledWith({
-      name: 'ethernetPortProfile_2',
+      name: mockEthernetPortProfileId6,
       type: 'ACCESS',
       untagId: 1,
       vlanMembers: 1,
       authRadiusId: '__Auth_Radius_ID__',
       enableAuthProxy: false,
-      enableAccountingService: false,
+      accountingEnabled: false,
       authType: 'PORT_BASED_AUTHENTICATOR'
     }))
 
@@ -219,7 +250,8 @@ describe('EditEthernetPortProfile', () => {
       </Provider>
       , { route: { path: editViewPath, params } }
     )
-
+    // await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // const authServerCombo = screen.getByRole('combobox', { name: 'Authentication Server' })
     const authServerCombo = await screen.findByText(mockAuthRadiusName)
     await user.click(authServerCombo)
     await user.click(await screen.findByText(mockAuthRadiusName2))
@@ -237,22 +269,23 @@ describe('EditEthernetPortProfile', () => {
       <Provider>
         <EditEthernetPortProfile />
       </Provider>
-      , { route: { path: editViewPath, params } }
+      , { route: {
+        path: editViewPath,
+        params: {
+          tenantId: params.tenantId,
+          policyId: mockEthernetPortProfileId6
+        }
+      }
+      }
     )
 
-    const typeCombo = await screen.findByRole('combobox', { name: 'Port Type' })
-    await user.click(typeCombo)
-    await user.click(
-      await screen.findByText(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS))
-    )
-
-    await user.click(screen.getByRole('switch', { name: '802.1X Authentication' }))
+    await user.click(await screen.findByRole('switch', { name: '802.1X Authentication' }))
 
     const _8021XCombo = screen.getByRole('combobox', { name: '802.1X Role' })
     await user.click(_8021XCombo)
     await user.click(
       // eslint-disable-next-line max-len
-      (await screen.findAllByText(getEthernetPortAuthTypeString(EthernetPortAuthType.MAC_BASED)))[0]
+      await screen.findByText(getEthernetPortAuthTypeString(EthernetPortAuthType.MAC_BASED))
     )
 
     const authServerCombo = await screen.findByText('Select RADIUS')
@@ -268,13 +301,13 @@ describe('EditEthernetPortProfile', () => {
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
     await waitFor(() => expect(mockedMainEthernetProfile).toBeCalledWith({
-      name: 'ethernetPortProfile_2',
+      name: mockEthernetPortProfileId6,
       type: 'ACCESS',
       untagId: 1,
       vlanMembers: 1,
       authRadiusId: '__Auth_Radius_ID__',
       enableAuthProxy: false,
-      enableAccountingService: false,
+      accountingEnabled: false,
       authType: 'MAC_BASED_AUTHENTICATOR',
       dynamicVlanEnabled: true,
       unauthenticatedGuestVlan: 3

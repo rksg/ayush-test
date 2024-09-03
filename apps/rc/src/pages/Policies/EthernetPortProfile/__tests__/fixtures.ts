@@ -17,6 +17,32 @@ export const mockAccountingRadiusId = '__Accounting_Radius_ID_1__'
 export const mockAccountingRadiusId2 = '__Accounting_Radius_ID_2__'
 export const mockAccuntingRadiusName = '__Accounting_Radius_Name_1__'
 
+export const mockVenueId = '__Venue_ID_1__'
+export const mockVenueId2 = '__Venue_ID_2__'
+export const mockVenueId3 = '__Venue_ID_3__'
+
+export const mockVenueName = '__Venue_ID_Name_1__'
+export const mockVenueName2 = '__Venue_ID_Name_2__'
+export const mockVenueName3 = '__Venue_ID_Name_3__'
+
+export const mockApSerialNumber = 'mock_AP_Serial_number__'
+
+export const mockedVenuesResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: mockVenueId,
+    name: mockVenueName
+  },{
+    id: mockVenueId2,
+    name: mockVenueName2
+  },{
+    id: mockVenueId3,
+    name: mockVenueName3
+  }]
+}
+
+
 export const dummyEthernetPortProfileTrunk = {
   id: mockEthernetPortProfileId,
   name: mockEthernetPortProfileId,
@@ -27,7 +53,9 @@ export const dummyEthernetPortProfileTrunk = {
   type: ApLanPortTypeEnum.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
-  isDefault: false
+  isDefault: false,
+  apSerialNumbers: [],
+  venueIds: [mockVenueId, mockVenueId3]
 }
 
 export const dummyEthernetPortProfileTrunkSupplicant = {
@@ -62,10 +90,10 @@ export const dummyEthernetPortProfileAccessPortBased = {
   accountingRadiusId: mockAccountingRadiusId,
   authRadiusId: mockAuthRadiusId,
   isDefault: false,
-  untagId:
-  1,
-  vlanMembers:
-  '1'
+  untagId: 1,
+  vlanMembers: '1',
+  apSerialNumbers: [mockApSerialNumber],
+  venueIds: [mockVenueId]
 }
 
 export const dummyDefaultEthernetPortProfileTrunk = {
@@ -78,7 +106,9 @@ export const dummyDefaultEthernetPortProfileTrunk = {
   type: ApLanPortTypeEnum.TRUNK,
   untagId: 1,
   vlanMembers: '1-4094',
-  isDefault: true
+  isDefault: true,
+  apSerialNumbers: [mockApSerialNumber],
+  venueIds: [mockVenueId2]
 }
 
 

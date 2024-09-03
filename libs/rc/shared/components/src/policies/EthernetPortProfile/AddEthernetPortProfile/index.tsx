@@ -26,7 +26,6 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
       const createResult =
         await createEthernetPortProfile({ payload }).unwrap()
       const createId = createResult.response?.id
-
       if (createId) {
         if (payload.authRadiusId) {
           updateEthernetPortProfileRadiusId({ params: {
@@ -59,8 +58,8 @@ export const AddEthernetPortProfile = (props: AddEthernetPortProfileFormProps) =
           submitButtonLabel={$t({ defaultMessage: 'Add' })}
           onFinish={handleAddEthernetPortProfile}
           form={form}
-          onCancel={(onClose)? onClose : undefined}
-          isNoPageHeader={(isNoPageHeader)? isNoPageHeader : undefined}
+          onCancel={onClose}
+          isNoPageHeader={isNoPageHeader}
         />
       </Col>
     </Row>

@@ -8,10 +8,12 @@ import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import {
-  dummayAccounting,
-  dummayRadiusServiceList,
+  dummyAccounting,
+  dummyRadiusServiceList,
   dummyAuthRadius,
-  mockAuthRadiusId
+  mockAuthRadiusId,
+  mockAuthRadiusName,
+  mockAccuntingRadiusName
 } from '../__tests__/fixtures'
 
 import { EthernetPortAAASettings } from './EthernetPortAAASettings'
@@ -24,7 +26,7 @@ describe('EthernetPortProfile AAASetting', () => {
     mockServer.use(
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
-        (_, res, ctx) => res(ctx.json(dummayRadiusServiceList))
+        (_, res, ctx) => res(ctx.json(dummyRadiusServiceList))
       ),
       rest.get(
         AaaUrls.getAAAPolicy.url,
@@ -32,7 +34,7 @@ describe('EthernetPortProfile AAASetting', () => {
           const { policyId } = req.params
           return (policyId === mockAuthRadiusId)
             ? res(ctx.json(dummyAuthRadius))
-            : res(ctx.json(dummayAccounting))
+            : res(ctx.json(dummyAccounting))
         }
       )
     )
@@ -50,7 +52,7 @@ describe('EthernetPortProfile AAASetting', () => {
 
     const authCombo = await screen.findByRole('combobox')
     await userEvent.click(authCombo)
-    await userEvent.click(await screen.findByText('auth-1'))
+    await userEvent.click(await screen.findByText(mockAuthRadiusName))
     await waitFor(() => {
       expect(screen.queryByText('192.168.0.100:1812')).toBeVisible()
     })
@@ -63,7 +65,7 @@ describe('EthernetPortProfile AAASetting', () => {
     expect(comboboxes.length).toBe(2)
 
     await userEvent.click(comboboxes[1])
-    await userEvent.click(await screen.findByText('accounting-1'))
+    await userEvent.click(await screen.findByText(mockAccuntingRadiusName))
     await waitFor(() => {
       expect(screen.queryByText('192.168.0.201:1813')).toBeVisible()
     })

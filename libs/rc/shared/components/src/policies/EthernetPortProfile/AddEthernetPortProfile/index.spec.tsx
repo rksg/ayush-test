@@ -1,14 +1,30 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls, ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortProfileUrls, PolicyOperation, PolicyType, getEthernetPortAuthTypeString, getEthernetPortTypeString, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                                                                                  from '@acx-ui/test-utils'
+import {
+  AaaUrls,
+  ApLanPortTypeEnum,
+  EthernetPortAuthType,
+  EthernetPortProfileUrls,
+  PolicyOperation,
+  PolicyType,
+  getEthernetPortAuthTypeString,
+  getEthernetPortTypeString,
+  getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider }                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 
-import { dummayRadiusServiceList, dummyAuthRadius, mockAccuntingRadiusName, mockAuthRadiusName, mockEthernetPortProfileId } from '../__tests__/fixtures'
+import {
+  dummyRadiusServiceList,
+  dummyAuthRadius,
+  mockAccuntingRadiusName,
+  mockAuthRadiusName,
+  mockEthernetPortProfileId } from '../__tests__/fixtures'
 
-import AddEthernetPortProfile from '.'
+import { AddEthernetPortProfile } from '.'
+
+
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -40,7 +56,9 @@ describe('AddEthernetPortProfile', () => {
         (req, res, ctx) => {
           mockedMainEthernetProfile(req.body)
           return res(ctx.json({
-            id: mockEthernetPortProfileId
+            response: {
+              id: mockEthernetPortProfileId
+            }
           }))
         }
       ),
@@ -55,7 +73,7 @@ describe('AddEthernetPortProfile', () => {
 
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
-        (req, res, ctx) => res(ctx.json(dummayRadiusServiceList))
+        (req, res, ctx) => res(ctx.json(dummyRadiusServiceList))
       ),
 
       rest.get(
@@ -165,7 +183,7 @@ describe('AddEthernetPortProfile', () => {
       authRadiusId: '__Auth_Radius_ID__',
       accountingRadiusId: '__Accounting_Radius_ID_1__',
       enableAuthProxy: false,
-      enableAccountingService: true,
+      accountingEnabled: true,
       enableAccountingProxy: false,
       authType: 'PORT_BASED_AUTHENTICATOR'
     }))
@@ -212,5 +230,28 @@ describe('AddEthernetPortProfile', () => {
         username: 'customAuthName'
       }
     }))
+  })
+
+  it('If select access type the supplicant options should be hidden', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <AddEthernetPortProfile />
+      </Provider>
+      , { route: { path: createViewPath, params } }
+    )
+
+    await user.click(screen.getByRole('switch', { name: '802.1X Authentication' }))
+
+    const typeCombo = await screen.findByRole('combobox', { name: 'Port Type' })
+    await user.click(typeCombo)
+    await user.click(
+      await screen.findByText(getEthernetPortTypeString(ApLanPortTypeEnum.ACCESS))
+    )
+
+    const vlanUntagIdField = screen.getByRole('spinbutton', { name: 'VLAN Untag ID' })
+    await user.type(vlanUntagIdField, '3')
+
+    expect(screen.queryByRole('combobox', { name: 'Credential Type' })).not.toBeInTheDocument()
   })
 })

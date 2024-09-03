@@ -1,22 +1,25 @@
 import { rest } from 'msw'
 
-import { ethernetPortProfileApi }                                                            from '@acx-ui/rc/services'
-import { AaaUrls, EthernetPortProfileUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                   from '@acx-ui/store'
-import { mockServer, render, screen }                                                        from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
+import { ethernetPortProfileApi }                                                                                                from '@acx-ui/rc/services'
+import { AaaUrls, CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                       from '@acx-ui/store'
+import { mockServer, render, screen }                                                                                            from '@acx-ui/test-utils'
 
 import {
-  dummayRadiusServiceList,
+  dummyRadiusServiceList,
   dummyAccounting,
   dummyAuthRadius,
-  dummyEthernetPortProfileAccessPortBased,
-  dummyEthernetPortProfileTrunk,
   mockAccuntingRadiusName,
   mockAuthRadiusId,
   mockAuthRadiusName,
-  mockEthernetPortProfileId3 } from '../__tests__/fixtures'
+  mockEthernetPortProfileId3,
+  mockedVenuesResult,
+  dummyTableResultWithSingle,
+  mockedVenueApsList } from '../__tests__/fixtures'
 
-import EthernetPortProfileDetail from '.'
+import { EthernetPortProfileDetail } from '.'
+
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 
@@ -24,6 +27,8 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue(tenantId)
 }))
+
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 
 let params: { tenantId: string, policyId: string }
 const detailPath = '/:tenantId/' + getPolicyRoutePath({
@@ -39,19 +44,15 @@ describe('EthernetPortProfileDetail', () => {
 
     store.dispatch(ethernetPortProfileApi.util.resetApiState())
     mockServer.use(
-      rest.post(
-        EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileTrunk))
-      ),
 
-      rest.get(
-        EthernetPortProfileUrls.getEthernetPortProfile.url,
-        (req, res, ctx) => res(ctx.json(dummyEthernetPortProfileAccessPortBased))
+      rest.post(
+        EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(dummyTableResultWithSingle))
       ),
 
       rest.post(
         AaaUrls.getAAAPolicyViewModelList.url,
-        (req, res, ctx) => res(ctx.json(dummayRadiusServiceList))
+        (req, res, ctx) => res(ctx.json(dummyRadiusServiceList))
       ),
 
       rest.get(
@@ -63,7 +64,18 @@ describe('EthernetPortProfileDetail', () => {
             return res(ctx.json(dummyAccounting))
           }
         }
+      ),
+
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json(mockedVenuesResult))
+      ),
+
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueApsList))
       )
+
     )
   })
 
@@ -75,7 +87,7 @@ describe('EthernetPortProfileDetail', () => {
         route: { params, path: detailPath }
       })
     await screen.findByText(mockEthernetPortProfileId3)
-    await screen.findByText('ON (Port-based Authenticator)')
+    await screen.findByText('On (Port-based Authenticator)')
     await screen.findByText(mockAuthRadiusName)
     await screen.findAllByText(mockAccuntingRadiusName)
   })

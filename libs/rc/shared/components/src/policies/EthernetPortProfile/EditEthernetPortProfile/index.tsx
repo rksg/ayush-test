@@ -115,7 +115,6 @@ export const EditEthernetPortProfile = () => {
         }
       })
     }
-
     form.setFieldsValue(sourceData)
   }, [ethernetPortProfileData, aaaRadiusList])
 
