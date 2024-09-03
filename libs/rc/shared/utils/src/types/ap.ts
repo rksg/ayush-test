@@ -519,7 +519,8 @@ export interface CapabilitiesApModel {
   defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
-  defaultBandCombination?: BandModeEnum
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
@@ -897,4 +898,14 @@ export enum DiagnosisCommands {
 export enum SystemCommands {
   REBOOT = 'REBOOT',
   FACTORY_RESET = 'FACTORY_RESET'
+}
+
+export interface StickyClientSteering {
+  enabled?: boolean
+  snrThreshold?: number
+  neighborApPercentageThreshold?: number
+}
+
+export interface ApStickyClientSteering extends StickyClientSteering {
+  useVenueSettings?: boolean
 }

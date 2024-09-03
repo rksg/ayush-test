@@ -336,7 +336,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
       await userEvent.click(btn)
       const dialog = await screen.findByRole('dialog')
       expect(dialog).toBeVisible()
-      expect(screen.getByText('Confirm venue deassociation')).toBeVisible()
+      expect(screen.getByText('SD-LAN Removal')).toBeVisible()
       await userEvent.click(within(dialog).getByRole('button', { name: 'Continue' }))
       expect(mockedDeactivateNetworkReq).toBeCalledWith({
         venueId: currentVenueId,
@@ -372,7 +372,7 @@ describe('Venue Edge SD-LAN Service - Multi-venue', () => {
       const networkTable = screen.getByTestId('EdgeSdLanP2ActivatedNetworksTable')
       expect(within(networkTable).getByRole('button')).toBeDisabled()
       // eslint-disable-next-line max-len
-      expect(within(networkTable).getByText('tooltip:Cannot deactivate the last WLAN in SD-LAN')).toBeVisible()
+      expect(within(networkTable).getByText('tooltip:Cannot deactivate the last network at this venue')).toBeVisible()
     })
 
     // eslint-disable-next-line max-len
