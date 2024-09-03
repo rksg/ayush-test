@@ -756,8 +756,8 @@ export interface VenueLoadBalancing {
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum,
   stickyClientSteeringEnabled?: boolean,
-  stickyClientSnrThreshold: number,
-  stickyClientNbrApPercentageThreshold: number
+  stickyClientSnrThreshold?: number,
+  stickyClientNbrApPercentageThreshold?: number
 }
 
 export interface VenueBssColoring {
