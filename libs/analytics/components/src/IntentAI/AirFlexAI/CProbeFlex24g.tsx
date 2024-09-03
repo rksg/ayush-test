@@ -1,6 +1,14 @@
 /* eslint-disable max-len */
-import { defineMessage } from 'react-intl'
-
-export { kpis } from './common'
+import { commonAirFlexDetails }  from './common'
+import { createIntentAIDetails } from './IntentAIDetails'
+export { configuration, kpis } from './common'
 export { IntentAIForm } from './IntentAIForm'
-export const IntentAIDetails = <></> as unknown as React.ComponentType
+
+export const IntentAIDetails = createIntentAIDetails({
+  reason: commonAirFlexDetails.reason,
+  tradeoff: commonAirFlexDetails.tradeoff,
+  action: {
+    active: commonAirFlexDetails.action.active,
+    inactive: commonAirFlexDetails.action.inactive
+  }
+})

@@ -2,9 +2,9 @@ import { FormattedMessage, MessageDescriptor } from 'react-intl'
 
 import { incidentScope } from '@acx-ui/analytics/utils'
 
+import { isIntentInactive }     from '../common/isIntentActive'
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { useIntentContext }     from '../IntentContext'
-import { Statuses }             from '../states'
 
 export function createUseValuesText (config: {
   intro: MessageDescriptor
@@ -21,8 +21,7 @@ export function createUseValuesText (config: {
       recommendedValue: intent.recommendedValue,
       scope: incidentScope(intent)
     }
-    const summary = [ Statuses.paused, Statuses.na ]
-      .includes(intent.status as Statuses) ? config.inactive : config.action
+    const summary = isIntentInactive(intent) ? config.inactive : config.action
     return {
       actionText: <FormattedMessage {...config.action} values={values} />,
       reasonText: <FormattedMessage {...config.reason} values={values} />,

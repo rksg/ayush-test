@@ -3,6 +3,7 @@ import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
 import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentAirFlex }                  from './AirFlexAI/__tests__/fixtures'
 import { IntentAIDetails }                      from './IntentAIDetails'
 
 jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
@@ -21,6 +22,19 @@ jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
 jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='i-zonefirmware-upgrade-IntentAIDetails'/>
+}))
+
+jest.mock('./AirFlexAI/CProbeFlex24g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-24g-IntentAIDetails'/>
+}))
+jest.mock('./AirFlexAI/CProbeFlex5g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-5g-IntentAIDetails'/>
+}))
+jest.mock('./AirFlexAI/CProbeFlex6g.tsx', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-probeflex-6g-IntentAIDetails'/>
 }))
 
 describe('IntentAIDetails', () => {
@@ -61,5 +75,27 @@ describe('IntentAIDetails', () => {
       await renderAIOperations(mockedIZoneFirmwareUpgrade.code)
     })
     // TODO: add test for other AIOperations
+  })
+
+  it('should render for AirFlexAI', async () => {
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+      data: { intent: mockedIntentAirFlex }
+    })
+    const codes = ['c-probeflex-24g', 'c-probeflex-5g', 'c-probeflex-6g']
+
+    for (const code of codes) {
+      const { unmount } = render(<IntentAIDetails />, {
+        route: {
+          params: {
+            code,
+            root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+            sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
+          }
+        },
+        wrapper: Provider
+      })
+      expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
+      unmount()
+    }
   })
 })

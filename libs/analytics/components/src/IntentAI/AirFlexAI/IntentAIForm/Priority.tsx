@@ -31,7 +31,7 @@ export function Priority () {
       columns: [
         $t({ defaultMessage: 'Reduce Management traffic in dense network' }),
         $t({ defaultMessage: `Leverage AirFlexAI, available only through IntentAI for intelligent handling of probe request/response and optimize management traffic in a dense network.
-        For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.` }),
+        For improved performance, this option will disable the Air Time Decongestion (ATD) feature if previously enabled for this network.` })
       ]
     },
     {
@@ -41,7 +41,7 @@ export function Priority () {
       columns: [
         $t({ defaultMessage: 'Standard Management traffic in a sparse network' }),
         $t({ defaultMessage: `This option will disable AirFlexAI feature and the network shall continue using current configuration if any for handling probe request/response in the network.
-        For manual control, you may directly change the network configurations.` }),
+        For manual control, you may directly change the network configurations.` })
       ]
     }
   ]

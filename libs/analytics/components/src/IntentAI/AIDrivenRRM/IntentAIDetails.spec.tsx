@@ -4,6 +4,7 @@ import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
 
 import { useIntentContext } from '../IntentContext'
+import { Statuses }         from '../states'
 import { Intent }           from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
@@ -46,7 +47,7 @@ describe('IntentAIDetails', () => {
   it('handle beyond data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: Statuses.active,
       kpi_number_of_interfering_links: {
         data: {
           timestamp: null,
@@ -119,7 +120,7 @@ describe('IntentAIDetails', () => {
     it('handle new rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'new',
+        status: Statuses.new,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -148,7 +149,7 @@ describe('IntentAIDetails', () => {
     it('handle active full rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -179,7 +180,7 @@ describe('IntentAIDetails', () => {
     it('handle active partial rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,

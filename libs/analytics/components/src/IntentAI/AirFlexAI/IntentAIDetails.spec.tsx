@@ -1,0 +1,231 @@
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
+import { rest }  from 'msw'
+
+import { get }                                                  from '@acx-ui/config'
+import { networkApi }                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                       from '@acx-ui/rc/utils'
+import { Provider, store, intentAIApi, intentAIUrl }            from '@acx-ui/store'
+import { mockGraphqlQuery, mockServer, render, screen, within } from '@acx-ui/test-utils'
+
+import { useIntentContext } from '../IntentContext'
+import { Statuses }         from '../states'
+import { Intent }           from '../useIntentDetailsQuery'
+
+import { mockedAirFlexKpi, mockedIntentAirFlex, mockWifiNetworkList } from './__tests__/fixtures'
+import { configuration, kpis }                                        from './common'
+import * as CProbeFlex24g                                             from './CProbeFlex24g'
+import * as CProbeFlex5g                                              from './CProbeFlex5g'
+import * as CProbeFlex6g                                              from './CProbeFlex6g'
+
+jest.mock('../IntentContext')
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+const mockGet = get as jest.Mock
+
+const mockIntentContextWith = (data: Partial<Intent>) => {
+  let intent = mockedIntentAirFlex
+  intent = _.merge({}, intent, data) as typeof intent
+  jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
+  return {
+    ...intent,
+    params: {
+      code: mockedIntentAirFlex.code,
+      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
+      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
+    }
+  }
+}
+
+describe('IntentAIDetails', () => {
+  beforeEach(() => {
+    store.dispatch(intentAIApi.util.resetApiState())
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+      data: { intent: mockedAirFlexKpi }
+    })
+
+    store.dispatch(networkApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiNetworkList))
+      )
+    )
+  })
+
+  it('handle beyond data retention', async () => {
+    const { params } = mockIntentContextWith({
+      code: 'c-probeflex-5g',
+      status: Statuses.active
+    })
+    render(
+      <CProbeFlex5g.IntentAIDetails />,
+      { route: { params }, wrapper: Provider }
+    )
+
+    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+    expect(await screen.findByTestId('Details'))
+      .toHaveTextContent('Beyond data retention period')
+  })
+
+  describe('renders correctly', () => {
+    beforeEach(() => {
+      jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
+      mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
+    })
+
+    async function assertRenderCorrectly () {
+      expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
+
+      expect(await screen.findByTestId('Why this recommendation?'))
+        .toHaveTextContent(/from APs to reduce the management traffic overhead and steer clients/)
+      expect(await screen.findByTestId('Potential trade-off'))
+        // eslint-disable-next-line max-len
+        .toHaveTextContent(/include increased complexity in network management, potential delays in connecting lesser-priority devices/)
+      expect(await screen.findByTestId('Status Trail')).toBeVisible()
+
+      const details = await screen.findByTestId('Details')
+      expect(await within(details).findAllByTestId('Configuration')).toHaveLength(1)
+      expect(await within(details).findAllByTestId('KPI')).toHaveLength(1)
+
+      await userEvent.hover(await screen.findByTestId('InformationSolid'))
+      expect(await screen.findByRole('tooltip', { hidden: true }))
+        // eslint-disable-next-line max-len
+        .toHaveTextContent('Enabling AirFlexAI will disable Airtime Decongestion')
+    }
+
+    it('handle 2.4 GHz for airFlex', async () => {
+      const { params } = mockIntentContextWith({ code: 'c-probeflex-24g' })
+      render(
+        <CProbeFlex24g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+    })
+
+    it('handle 5 GHz for airFlex', async () => {
+      const { params } = mockIntentContextWith({ code: 'c-probeflex-5g' })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+    })
+
+    it('handle 6 GHz for airFlex', async () => {
+      const { params } = mockIntentContextWith({ code: 'c-probeflex-6g' })
+      render(
+        <CProbeFlex6g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+    })
+
+    it('handle active airFlex with currentValue is enabled', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'c-probeflex-5g',
+        status: Statuses.applyScheduled,
+        currentValue: true
+      })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+
+      expect(await screen.findByTestId('Overview text'))
+        // eslint-disable-next-line max-len
+        .toHaveTextContent(/is currently enabled. This is a RF feature that is only available via RUCKUS AI,/)
+    })
+
+    it('handle active airFlex with currentValue is not enabled', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'c-probeflex-5g',
+        status: Statuses.applyScheduled,
+        currentValue: false
+      })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+
+      expect(await screen.findByTestId('Overview text'))
+        // eslint-disable-next-line max-len
+        .toHaveTextContent(/is currently not enabled. This is a RF feature that is only available via RUCKUS AI,/)
+    })
+
+    it('handle inactive airFlex', async () => {
+      const { params } = mockIntentContextWith({
+        code: 'c-probeflex-5g',
+        status: Statuses.na
+      })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+
+      expect(await screen.findByTestId('Overview text'))
+        // eslint-disable-next-line max-len
+        .toHaveTextContent(/When activated, this Intent takes over the automatic probe request/)
+    })
+
+    it('handle airFlex without wlans', async () => {
+      const { params } = mockIntentContextWith({ code: 'c-probeflex-5g' })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+
+      expect(screen.queryByText('Networks')).toBeNull()
+    })
+
+    it('handle airFlex with wlans in RAI', async () => {
+      mockGet.mockReturnValue('true') // get('IS_MLISA_SA')
+      const { params, metadata } = mockIntentContextWith({
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: mockWifiNetworkList.data
+        } as unknown as Intent['metadata']
+      })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+
+      expect(await screen.findByText(`${metadata.wlans?.length} networks selected`)).toBeVisible()
+    })
+
+    it('handle airFlex with wlans in R1', async () => {
+      mockGet.mockReturnValue('false') // get('IS_MLISA_SA')
+      const { params, metadata } = mockIntentContextWith({
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: mockWifiNetworkList.data
+        } as unknown as Intent['metadata']
+      })
+      render(
+        <CProbeFlex5g.IntentAIDetails />,
+        { route: { params }, wrapper: Provider }
+      )
+
+      await assertRenderCorrectly()
+
+      expect(await screen.findByText(`${metadata.wlans?.length} networks selected`)).toBeVisible()
+    })
+
+  })
+})
+

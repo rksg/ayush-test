@@ -5,8 +5,8 @@ import { useIntl } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { IntentWizardHeader }                                                         from '../../common/IntentWizardHeader'
-import { useIntentContext }                                                           from '../../IntentContext'
+import { IntentWizardHeader } from '../../common/IntentWizardHeader'
+import { useIntentContext }   from '../../IntentContext'
 
 import { Introduction } from './Introduction'
 import { Priority }     from './Priority'
@@ -19,7 +19,7 @@ export function IntentAIForm () {
 
   //const queryResult = useIntentAICRRMQuery()
   //const crrmData = queryResult.data!
-  
+
 
   const defaultValue = {
     preferences: {
@@ -29,7 +29,7 @@ export function IntentAIForm () {
 
   return (<>
     <IntentWizardHeader />
-    
+
     <StepsForm
       buttonLabel={{
         submit: $t({ defaultMessage: 'Apply' })
