@@ -6,7 +6,6 @@ import {
   CommonUrlsInfo,
   MdnsProxyUrls,
   ServiceType,
-  websocketServerUrl,
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
@@ -19,6 +18,7 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { websocketServerUrl } from '@acx-ui/utils'
 
 import {
   mockedTenantId,
