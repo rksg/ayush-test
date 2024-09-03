@@ -353,7 +353,8 @@ export function EditPortDrawer ({
       let portSpeed = getPortSpeed(selectedPorts)
       if (!isSwitch785048CPortSpeedEnabled &&
         selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
-        switchDetail?.firmware && !isVerGEVer(switchDetail?.firmware, '10010e', false)) {
+        switchDetail?.firmwareVersion &&
+        !isVerGEVer(switchDetail?.firmwareVersion, '10010e', false)) {
         portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
       }
 
