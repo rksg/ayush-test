@@ -755,7 +755,7 @@ export interface VenueLoadBalancing {
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: number,
   steeringMode: SteeringModeEnum,
-  stickyClientSteeringEnabled: boolean,
+  stickyClientSteeringEnabled?: boolean,
   stickyClientSnrThreshold: number,
   stickyClientNbrApPercentageThreshold: number
 }
