@@ -55,7 +55,8 @@ export function LanPortSettings (props: {
   isDhcpEnabled?: boolean,
   isTrunkPortUntaggedVlanEnabled?: boolean,
   readOnly?: boolean,
-  useVenueSettings?: boolean
+  useVenueSettings?: boolean,
+  ethPortProfileConfig?: EthernetPortProfileViewData[]
 }) {
   const { $t } = useIntl()
   const {

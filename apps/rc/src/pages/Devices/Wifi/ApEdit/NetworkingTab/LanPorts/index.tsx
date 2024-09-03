@@ -29,7 +29,8 @@ import {
   LanPort,
   WifiApSetting,
   CapabilitiesApModel,
-  VenueLanPorts
+  VenueLanPorts,
+  EthernetPortProfileViewData
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -117,6 +118,7 @@ export function LanPorts () {
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const [ethPortProfileData, setEthPortProfileData] = useState([] as EthernetPortProfileViewData[])
 
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
@@ -137,9 +139,9 @@ export function LanPorts () {
     filters: { serialNumber: [serialNumber] }
   }
 
-  // const { data: ethList, isLoading: isEthListLoading }
-  //   = useGetEthernetPortProfileViewDataListQuery(
-  //     { payload: defaultPayload }, { skip: !isEthernetPortProfileEnabled })
+  const { data: ethList, isLoading: isEthListLoading }
+    = useGetEthernetPortProfileViewDataListQuery(
+      { payload: defaultPayload }, { skip: !isEthernetPortProfileEnabled })
 
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
@@ -187,6 +189,12 @@ export function LanPorts () {
       lanPorts: formRef?.current?.getFieldsValue()?.lan as LanPort[]
     })
   }, [lanData])
+
+  useEffect(() => {
+    if (!isEthListLoading && serialNumber && ethList) {
+      setEthPortProfileData(ethList?.data.filter(item => serialNumber in item.apSerialNumbers))
+    }
+  })
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -377,6 +385,7 @@ export function LanPorts () {
                           isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
+                          ethPortProfileConfig={ethPortProfileData}
                         />
                       </Col>
                     </Row>
