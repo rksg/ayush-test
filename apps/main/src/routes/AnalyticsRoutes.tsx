@@ -64,6 +64,8 @@ export default function AnalyticsRoutes () {
         // Below routes are used for Health page loaded as top level tabs
         isSwitchHealthEnabled && !canUseAnltAdv &&
         <Route path='analytics/health/'>
+          {/* Below index route is added for Backward compatibility */}
+          <Route index element={<HealthPageWithTabs tab={HealthTabEnum.WIRELESS} />} />
           {Object.values(HealthTabEnum).map(tab => (
             <Route key={tab} path={tab} element={<HealthPageWithTabs tab={tab}/>}>
               <Route path='tab/:categoryTab' element={<HealthPageWithTabs tab={tab}/>} />
