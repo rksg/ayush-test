@@ -197,7 +197,7 @@ export function StackForm () {
     }, { skip: isSwitchFirmwareV1002Enabled })
 
   const { data: venuesListV1002, isLoading: isVenuesListV1002Loading } =
-    useGetSwitchVenueVersionListV1002Query({
+    useGetSwitchVenueVersionListV1001Query({
       params: { tenantId },
       payload: {
         firmwareType: '',

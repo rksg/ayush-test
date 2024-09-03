@@ -10,7 +10,7 @@ import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
-  useGetSwitchDefaultFirmwareListV1002Query,
+  useGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchVenueVersionListV1001Query,
@@ -50,7 +50,7 @@ const FWVersionMgmt = () => {
       { skip: isSwitchFirmwareV1002Enabled })
 
   const { data: recommendedSwitchReleaseVersions } =
-    useGetSwitchDefaultFirmwareListV1002Query( { params },
+    useGetSwitchDefaultFirmwareListV1001Query( { params },
       { skip: !isSwitchFirmwareV1002Enabled })
 
   const { data: switchVenueVersionList } =

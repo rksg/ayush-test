@@ -16,9 +16,9 @@ import {
   useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchFirmwarePredownloadQuery,
   useGetSwitchVenueVersionListV1001Query,
-  useGetSwitchAvailableFirmwareListV1002Query,
-  useGetSwitchCurrentVersionsV1002Query,
-  useGetSwitchDefaultFirmwareListV1002Query
+  useGetSwitchAvailableFirmwareListV1001Query,
+  useGetSwitchCurrentVersionsV1001Query,
+  useGetSwitchDefaultFirmwareListV1001Query
 
 } from '@acx-ui/rc/services'
 import {
@@ -74,7 +74,7 @@ export function VenueFirmwareList () {
     }
   })
 
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1002Query({ params }, {
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1001Query({ params }, {
     selectFromResult ({ data }) {
       const filterOptions = []
       for (const key in SwitchFirmwareModelGroup) {
@@ -98,7 +98,7 @@ export function VenueFirmwareList () {
 
 
   const { getSwitchNextScheduleTplTooltipV1002 } = useSwitchFirmwareUtils()
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1001Query({ params })
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
     params, enableRbac: true })
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
@@ -135,7 +135,7 @@ export function VenueFirmwareList () {
   }
 
   const { data: recommendedSwitchReleaseVersions } =
-    useGetSwitchDefaultFirmwareListV1002Query({ params })
+    useGetSwitchDefaultFirmwareListV1001Query({ params })
   const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
