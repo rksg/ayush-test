@@ -70,6 +70,32 @@ const fakedPrivilegeGroupList =
     }
   ]
 
+const fakedVenueList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      id: '31331a644e454c75911467cdd6933af2'
+    },
+    {
+      id: '9148ca1e5eeb425dae5d04af38e8e1b2'
+    },
+    {
+      id: '4d0fe96778b7478a829bc6e7d81319e2'
+    },
+    {
+      id: '7bdda584ada34de991a8081e4c59da89'
+    },
+    {
+      id: '05b61055a7cf499eb153f414eb7230f4'
+    }
+  ]
+}
+
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -95,7 +121,9 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
         res(ctx.status(200))),
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
-        (_req, res, ctx) => res(ctx.json({})))
+        (_req, res, ctx) => res(ctx.json({}))),
+      rest.put(UserUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(fakedVenueList)))
     )
   })
 
