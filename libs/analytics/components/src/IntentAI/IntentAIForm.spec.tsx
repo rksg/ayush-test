@@ -2,6 +2,7 @@ import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedCDfschannelsDisable }  from './AIOperations/__tests__/mockedCDfschannelsDisable'
 import { mocked as mockedCTxpowerSame }         from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { IntentAIForm }                         from './IntentAIForm'
@@ -26,6 +27,10 @@ jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
 jest.mock('./AIOperations/CTxpowerSame', () => ({
   kpis: [],
   IntentAIForm: () => <div data-testid='c-txpower-same-IntentAIForm'/>
+}))
+jest.mock('./AIOperations/CDfschannelsDisable', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-dfschannels-disable-IntentAIForm'/>
 }))
 
 describe('IntentAIForm', () => {
@@ -69,6 +74,11 @@ describe('IntentAIForm', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
         data: { intent: mockedCTxpowerSame } })
       await renderAIOperations(mockedCTxpowerSame.code)
+    })
+    it('should render for CDfschannelsDisable', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCDfschannelsDisable } })
+      await renderAIOperations(mockedCDfschannelsDisable.code)
     })
   })
 })

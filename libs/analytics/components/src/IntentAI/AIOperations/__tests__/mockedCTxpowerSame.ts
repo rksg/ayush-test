@@ -22,8 +22,8 @@ export const mocked = {
     { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
   ],
   kpi_session_time_on_24GHz: {
-    data: { timestamp: '2024-08-29T08:30:00.000Z', result: [ 0, 0 ] },
-    compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: [ 0, 0 ] }
+    data: { timestamp: '2024-08-29T08:30:00.000Z', result: 0.0 },
+    compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: 0.0 }
   },
   currentValue: '_FULL',
   recommendedValue: '_1DB'
