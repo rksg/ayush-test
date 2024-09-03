@@ -29,7 +29,8 @@ import {
   VenueObjectList,
   excludeSpaceRegExp,
   specialCharactersRegExp,
-  systemDefinedNameValidator
+  systemDefinedNameValidator,
+  TenantType
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -44,6 +45,8 @@ import * as UI            from '../styledComponents'
 
 import { SelectCustomerDrawer } from './SelectCustomerDrawer'
 import { SelectVenuesDrawer }   from './SelectVenuesDrawer'
+
+import { PrivilegeGroupSateProps } from '.'
 
 interface PrivilegeGroupData {
   name?: string,
@@ -76,13 +79,16 @@ export function AddPrivilegeGroup () {
   const [displayMspScope, setDisplayMspScope] = useState(false)
 
   const navigate = useNavigate()
-  const location = useLocation().state as boolean
+  const location = useLocation().state as PrivilegeGroupSateProps
   const [groupNames, setGroupNames] = useState([] as RolesEnum[])
 
   const linkToPrivilegeGroups = useTenantLink('/administration/userPrivileges/privilegeGroups', 't')
   const [form] = Form.useForm()
   const [addPrivilegeGroup] = useAddPrivilegeGroupMutation()
-  const isOnboardedMsp = location ?? false
+  const isOnboardedMsp = location.isOnboardedMsp ?? false
+  const tenantType = location?.tenantType as TenantType
+  const isTechPartner =
+    tenantType === TenantType.MSP_INSTALLER || tenantType === TenantType.MSP_INTEGRATOR
 
   const { data: privilegeGroupList } = useGetPrivilegeGroupsQuery({})
   useEffect(() => {
@@ -130,7 +136,7 @@ export function AddPrivilegeGroup () {
         name: formValues.name,
         description: formValues.description,
         roleName: formValues.role,
-        delegation: false
+        delegation: isTechPartner ? true : false
       }
       const policies = [] as PrivilegePolicy[]
       selectedVenues.forEach((venue: Venue) => {

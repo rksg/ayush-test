@@ -10,7 +10,9 @@ import {
   EdgeServiceStatusLight,
   SdLanTopologyDiagram,
   SpaceWrapper,
+  isSdLanLastNetworkInVenue,
   showSdLanGuestFwdConflictModal,
+  showSdLanVenueDissociateModal,
   useEdgeMvSdLanActions
 } from '@acx-ui/rc/components'
 import {
@@ -115,57 +117,87 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     const networkId = rowData.id!
     setIsActivateUpdating(true)
 
-    try {
-      // network with vlan pooling enabled cannot be a SD-LAN guest network
-      const isVlanPooling = !isNil(rowData.vlanPool)
-      // eslint-disable-next-line max-len
-      const isGuestNetworkAction = fieldName === 'activatedGuestNetworks' || (fieldName === 'activatedNetworks' && checked && !isVlanPooling)
-
-      if ( isGuestTunnelEnabled && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL
-        && isGuestNetworkAction
-      ) {
-
-        const isFwdGuest = !(fieldName === 'activatedGuestNetworks' && !checked)
-
-        showSdLanGuestFwdConflictModal({
-          currentNetworkVenueId: sdLanVenueId!,
-          currentNetworkId: networkId,
-          currentNetworkName: rowData.name!,
-          activatedGuest: checked,
-          tunneledWlans,
-          tunneledGuestWlans,
-          onOk: async (impactVenueIds: string[]) => {
-
-            if (impactVenueIds.length !== 0) {
-              // eslint-disable-next-line max-len
-              const actions = [toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest)]
-              actions.push(...impactVenueIds.map(impactVenueId =>
-                toggleNetwork(serviceId!, impactVenueId, networkId, true, isFwdGuest)))
-              await Promise.all(actions)
-
-              setIsActivateUpdating(false)
-            } else {
-              // eslint-disable-next-line max-len
-              await toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest, () => {
-                setIsActivateUpdating(false)
-              })
-            }
-          },
-          onCancel: () => setIsActivateUpdating(false)
-        })
-      } else {
-        await toggleNetwork(serviceId!, sdLanVenueId!, networkId, checked, false, () => {
-          setIsActivateUpdating(false)
-        })
-      }
-    } catch(err) {
+    const handleFinally = () => {
       setIsActivateUpdating(false)
-      // eslint-disable-next-line no-console
-      console.error(err)
+    }
+
+    // eslint-disable-next-line max-len
+    if ((fieldName === 'activatedNetworks' && !checked) && isSdLanLastNetworkInVenue(tunneledWlans, sdLanVenueId)) {
+      showSdLanVenueDissociateModal(async () => {
+        await toggleNetwork(serviceId!, sdLanVenueId!, networkId, checked, false, handleFinally)
+      }, handleFinally)
+    } else {
+      try {
+      // network with vlan pooling enabled cannot be a SD-LAN guest network
+        const isVlanPooling = !isNil(rowData.vlanPool)
+        // eslint-disable-next-line max-len
+        const isGuestNetworkAction = fieldName === 'activatedGuestNetworks' || (fieldName === 'activatedNetworks' && checked && !isVlanPooling)
+
+        // eslint-disable-next-line max-len
+        if ( isGuestTunnelEnabled && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL && isGuestNetworkAction) {
+          const isFwdGuest = !(fieldName === 'activatedGuestNetworks' && !checked)
+
+          showSdLanGuestFwdConflictModal({
+            currentNetworkVenueId: sdLanVenueId!,
+            currentNetworkId: networkId,
+            currentNetworkName: rowData.name!,
+            activatedGuest: checked,
+            tunneledWlans,
+            tunneledGuestWlans,
+            onOk: async (impactVenueIds: string[]) => {
+
+              if (impactVenueIds.length !== 0) {
+              // eslint-disable-next-line max-len
+                const actions = [toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest)]
+                actions.push(...impactVenueIds.map(impactVenueId =>
+                  toggleNetwork(serviceId!, impactVenueId, networkId, true, isFwdGuest)))
+                await Promise.all(actions)
+
+                handleFinally()
+              } else {
+              // eslint-disable-next-line max-len
+                await toggleNetwork(serviceId!, sdLanVenueId!, networkId, true, isFwdGuest, handleFinally)
+              }
+            },
+            onCancel: handleFinally
+          })
+        } else {
+          await toggleNetwork(serviceId!, sdLanVenueId!, networkId, checked, false, handleFinally)
+        }
+      } catch(err) {
+        handleFinally()
+        // eslint-disable-next-line no-console
+        console.error(err)
+      }
     }
   }
 
-  const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  const getDisabledInfo = (_venueId: string,
+    row: Network,
+    isGuestSwitchBtn: boolean
+  ) => {
+    const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
+    if (!hasEdgeUpdatePermission) {
+      return {
+        isDisabled: true,
+        tooltip: $t({ defaultMessage: 'No permission on this' })
+      }
+    }
+
+    const isSdLanLastNetwork = (tunneledWlans?.length ?? 0) <= 1
+    if (!tunneledWlans || isGuestSwitchBtn || !isSdLanLastNetwork) return
+
+    const isTheLastOne = tunneledWlans[0].networkId === row.id
+
+    return {
+      isDisabled: isTheLastOne,
+      tooltip: isTheLastOne
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+        : undefined
+    }
+  }
 
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>
@@ -200,10 +232,7 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
             activatedGuest={tunneledGuestWlans
               ?.filter(network => network.venueId === sdLanVenueId)
               .map(network => network.networkId)}
-            disabled={!hasEdgeUpdatePermission}
-            toggleButtonTooltip={!hasEdgeUpdatePermission
-              ? $t({ defaultMessage: 'No permission on this' })
-              : undefined}
+            disabled={getDisabledInfo}
             onActivateChange={handleActivateChange}
             isUpdating={isActivateUpdating}
           />

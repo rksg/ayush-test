@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useMemo } from 'react'
 
 import { difference, flatMap, uniq, groupBy, intersection, isNil, isEqual, pick } from 'lodash'
@@ -32,7 +33,7 @@ import { getIntl } from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-// return the networks NOT included in `b`
+// return the networks NOT included in `second`
 const differenceVenueNetworks = (first: EdgeMvSdLanNetworks, second: EdgeMvSdLanNetworks) => {
   const diffResult: EdgeMvSdLanNetworks = {}
 
@@ -103,9 +104,7 @@ export const useEdgeMvSdLanActions = () => {
   const [activateNetwork] = useActivateEdgeMvSdLanNetworkMutation()
   const [deactivateNetwork] = useDeactivateEdgeMvSdLanNetworkMutation()
 
-  const toggleGuestNetwork =
-  // eslint-disable-next-line max-len
-  (venueId: string, serviceId: string, networkId: string, activated: boolean): Promise<CommonResult> => {
+  const toggleGuestNetwork = (venueId: string, serviceId: string, networkId: string, activated: boolean): Promise<CommonResult> => {
     return activateNetwork({
       params: {
         venueId,
@@ -172,14 +171,12 @@ export const useEdgeMvSdLanActions = () => {
     // or editMode guestTunnelEnabled changed
     const isGuestTunnelChanged = originData?.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled
     if (isGuestTunnelChanged) {
-      // doesn't need to handle deactivateDmzCluster when isGuestTunnelEnabled changed into false
 
       const requiredActions = []
       // DC scenario into DMZ scenario
       // or addMode DMZ scenario
       if (payload.isGuestTunnelEnabled) {
-        if (!originData?.guestEdgeClusterId) {
-          // eslint-disable-next-line max-len
+        if (originData?.guestEdgeClusterId !== payload.guestEdgeClusterId) {
           requiredActions.push(activateGuestEdgeCluster(serviceId, { ...payload, venueId: payload.guestEdgeClusterVenueId }))
         }
 
@@ -201,10 +198,13 @@ export const useEdgeMvSdLanActions = () => {
         actions.push(toggleGuestTunnelEnable(serviceId, payload.isGuestTunnelEnabled))
       }
     } else {
-      // for change guest tunnel: only need to do PUT
-      // eslint-disable-next-line max-len
-      if (!isAddMode && originData?.guestTunnelProfileId !== payload.guestTunnelProfileId) {
-        actions.push(activateGuestTunnel(serviceId, payload))
+      if (!isAddMode && payload.isGuestTunnelEnabled) {
+        if (originData?.guestEdgeClusterId !== payload.guestEdgeClusterId) {
+          actions.push(activateGuestEdgeCluster(serviceId, { ...payload, venueId: payload.guestEdgeClusterVenueId }))
+        }
+
+        if (originData?.guestTunnelProfileId !== payload.guestTunnelProfileId)
+          actions.push(activateGuestTunnel(serviceId, payload))
       }
     }
 
@@ -214,29 +214,21 @@ export const useEdgeMvSdLanActions = () => {
 
     let addGuestNetworks: EdgeMvSdLanNetworks = {}
     if (payload.isGuestTunnelEnabled) {
-      // eslint-disable-next-line max-len
       addGuestNetworks = differenceVenueNetworks(payload.guestNetworks, originData!.guestNetworks)
 
-      // eslint-disable-next-line max-len
       const rmGuestNetworks = differenceVenueNetworks(originData!.guestNetworks, payload.guestNetworks)
       const deactivateDmzNetworks = differenceVenueNetworks(rmGuestNetworks, rmNetworks)
 
       // handle guestNetworkIds changes
-      // eslint-disable-next-line max-len
       actions.push(...getActivateActionsFromType(serviceId, addGuestNetworks, ActivationType.activate, true))
-      // eslint-disable-next-line max-len
       actions.push(...getActivateActionsFromType(serviceId, deactivateDmzNetworks, ActivationType.deactivate, true))
     } else {
-      addGuestNetworks = isAddMode
-        ? {} as EdgeMvSdLanNetworks
-        : differenceVenueNetworks(payload.guestNetworks, originData!.guestNetworks)
+      addGuestNetworks = {} as EdgeMvSdLanNetworks
     }
 
     const activateDcNetworks = differenceVenueNetworks(addNetworks, addGuestNetworks)
 
-    // eslint-disable-next-line max-len
     actions.push(...getActivateActionsFromType(serviceId, activateDcNetworks, ActivationType.activate, false))
-    // eslint-disable-next-line max-len
     actions.push(...getActivateActionsFromType(serviceId, rmNetworks, ActivationType.deactivate, false))
 
     try {
@@ -468,7 +460,6 @@ export const useEdgeSdLanActions = () => {
     const { payload, callback } = req
     const serviceId = payload.id
 
-    // eslint-disable-next-line max-len
     const isGuestTunnelChanged = originData.isGuestTunnelEnabled !== payload.isGuestTunnelEnabled
     const actions = []
     const allResults = []
@@ -494,7 +485,7 @@ export const useEdgeSdLanActions = () => {
 
       // DC scenario into DMZ scenario
       if (payload.isGuestTunnelEnabled) {
-        if (!originData.guestEdgeClusterId)
+        if (originData.guestEdgeClusterId !== payload.guestEdgeClusterId)
           requiredActions.push(activateGuestEdgeCluster(serviceId!, payload))
 
         if (originData?.guestTunnelProfileId !== payload.guestTunnelProfileId)
@@ -523,9 +514,14 @@ export const useEdgeSdLanActions = () => {
         }).unwrap())
       }
 
-      // for change guest tunnel: only need to do PUT
-      if (originData.guestTunnelProfileId !== payload.guestTunnelProfileId) {
-        actions.push(activateGuestTunnel(serviceId!, payload))
+      if (payload.isGuestTunnelEnabled) {
+        if( originData.guestEdgeClusterId !== payload.guestEdgeClusterId)
+          actions.push(activateGuestEdgeCluster(serviceId!, payload))
+
+        // for change guest tunnel: only need to do PUT
+        if (originData.guestTunnelProfileId !== payload.guestTunnelProfileId) {
+          actions.push(activateGuestTunnel(serviceId!, payload))
+        }
       }
     }
 
@@ -655,7 +651,6 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
   const result = useMemo(() => {
     if (isEdgeMvSdLanReady) {
       const mvSdlans = data?.data as EdgeMvSdLanViewData[]
-      // eslint-disable-next-line max-len
       const sdLansVenueMap: { [venueId in string]: (EdgeSdLanViewDataP2 | EdgeMvSdLanViewData)[] } = {}
       const guestNetworkVenueIds: string[] = []
 
@@ -685,7 +680,6 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         networkVenueIds: data?.data?.map(item => item.venueId),
         guestNetworkVenueIds: data?.data
           ?.map(item =>
-            // eslint-disable-next-line max-len
             item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
           .filter(i => !!i)
       } as SdLanScopedNetworkVenuesData
@@ -714,9 +708,7 @@ export const checkSdLanScopedNetworkDeactivateAction =
         type: 'confirm',
         title: $t({ defaultMessage: 'Deactivate network' }),
         content: selectedIds!.length === 1
-          // eslint-disable-next-line max-len
           ? $t({ defaultMessage: 'This network is running the SD-LAN service on this <venueSingular></venueSingular>. Are you sure you want to deactivate it?' })
-          // eslint-disable-next-line max-len
           : $t({ defaultMessage: 'The SD-LAN service is running on one or some of the selected <venuePlural></venuePlural>. Are you sure you want to deactivate?' }),
         okText: $t({ defaultMessage: 'Deactivate' }),
         onOk: () => {

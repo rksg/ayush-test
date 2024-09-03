@@ -1,9 +1,9 @@
 import { FormattedMessage } from 'react-intl'
 
-import { useGetVenueQuery }                           from '@acx-ui/rc/services'
-import { CompatibilityDeviceEnum, CompatibilityType } from '@acx-ui/rc/utils'
-import { TenantLink }                                 from '@acx-ui/react-router-dom'
-import { getIntl }                                    from '@acx-ui/utils'
+import { useGetVenueQuery }                                                                                        from '@acx-ui/rc/services'
+import { CompatibilityDeviceEnum, CompatibilityType, getCompatibilityFeatureDisplayName, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                              from '@acx-ui/react-router-dom'
+import { getIntl }                                                                                                 from '@acx-ui/utils'
 
 import { messageMapping } from './messageMapping'
 
@@ -42,8 +42,9 @@ export const useDescription = (props: Pick<CompatibilityDrawerProps, 'compatibil
   const {
     compatibilityType,
     deviceType = CompatibilityDeviceEnum.AP,
-    featureName,
     venueId, venueName } = props
+  // eslint-disable-next-line max-len
+  const featureName = getCompatibilityFeatureDisplayName(props.featureName as IncompatibilityFeatures)
   const isVenueLevel = compatibilityType === CompatibilityType.VENUE
   const isFeatureLevel = compatibilityType === CompatibilityType.FEATURE
 
