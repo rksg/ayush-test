@@ -126,23 +126,6 @@ export function LanPorts () {
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
-  const defaultPayload = {
-    fields: [
-      'id',
-      'name',
-      'type',
-      'untagId',
-      'vlanMembers',
-      'authType',
-      'apSerialNumbers'
-    ],
-    filters: { serialNumber: [serialNumber] }
-  }
-
-  const { data: ethList, isLoading: isEthListLoading }
-    = useGetEthernetPortProfileViewDataListQuery(
-      { payload: defaultPayload }, { skip: !isEthernetPortProfileEnabled })
-
   useEffect(() => {
     if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
       // eslint-disable-next-line max-len
@@ -191,10 +174,10 @@ export function LanPorts () {
   }, [lanData])
 
   useEffect(() => {
-    if (!isEthListLoading && serialNumber && ethList) {
-      setEthPortProfileData(ethList?.data.filter(item => serialNumber in item.apSerialNumbers))
+    if (!isEthListLoading && serialNumber && ethList?.data) {
+      setEthPortProfileData(ethList?.data)
     }
-  })
+  }, [ethList?.data])
 
   const onTabChange = (tab: string) => {
     const tabIndex = Number(tab.split('-')[1]) - 1
@@ -385,7 +368,6 @@ export function LanPorts () {
                           isTrunkPortUntaggedVlanEnabled={supportTrunkPortUntaggedVlan}
                           index={index}
                           useVenueSettings={useVenueSettings}
-                          ethPortProfileConfig={ethPortProfileData}
                         />
                       </Col>
                     </Row>

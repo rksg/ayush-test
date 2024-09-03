@@ -18,7 +18,9 @@ export interface EthernetPortProfileViewData {
     enableAuthProxy?: boolean
     enableAccountingProxy?: boolean,
     apSerialNumbers: string[],
-    venueIds: string[]
+    venueIds: string[],
+    venueActivations?: VenueActivation[],
+    apActivations?: ApActivation[]
   }
 
 export interface EthernetPortProfile {
@@ -46,3 +48,15 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     accountingRadius?: Radius
     accountingEnabled?: boolean
   }
+
+export interface VenueActivation {
+  venueId?: string
+  apModel?: string
+  portId?: number
+}
+
+export interface ApActivation {
+  venueId?: string
+  apSerialNumber?: string
+  portId?: number
+}

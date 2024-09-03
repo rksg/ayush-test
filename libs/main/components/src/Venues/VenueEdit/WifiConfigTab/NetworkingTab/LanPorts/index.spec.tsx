@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, EthernetPortProfileUrls, WifiUrlsInfo }         from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -13,7 +13,8 @@ import { VenueUtilityContext } from '../..'
 import {
   venueData,
   venueCaps,
-  venueLanPorts
+  venueLanPorts,
+  mockEthProfiles
 } from '../../../../__tests__/fixtures'
 
 import { LanPorts } from './index'
@@ -54,7 +55,9 @@ describe('LanPortsForm', () => {
         (_, res, ctx) => res(ctx.json(venueLanPorts))),
       rest.get(
         CommonUrlsInfo.getVenueSettings.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(EthernetPortProfileUrls.getEthernetPortProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockEthProfiles)))
     )
   })
 
