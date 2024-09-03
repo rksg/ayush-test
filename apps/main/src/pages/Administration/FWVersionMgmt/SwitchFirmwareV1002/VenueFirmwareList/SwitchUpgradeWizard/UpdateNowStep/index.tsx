@@ -10,7 +10,7 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
-import { useGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
+import { useGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   compareSwitchVersion,
   SwitchFirmwareVersion1002,
@@ -54,7 +54,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
+  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1001Query({
     payload: {
       venueIdList: upgradeVenueList.map(item => item.venueId),
       searchFilter: 'ICX7150-C08P',

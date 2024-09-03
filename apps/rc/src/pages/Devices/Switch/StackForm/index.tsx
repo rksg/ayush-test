@@ -49,7 +49,7 @@ import {
   useLazyGetSwitchListQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
-  useGetSwitchVenueVersionListV1002Query
+  useGetSwitchVenueVersionListV1001Query
 } from '@acx-ui/rc/services'
 import {
   Switch,

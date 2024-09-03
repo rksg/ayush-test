@@ -15,7 +15,7 @@ import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchVenueVersionListV1002Query,
+  useGetSwitchVenueVersionListV1001Query,
   useGetSwitchAvailableFirmwareListV1002Query,
   useGetSwitchCurrentVersionsV1002Query,
   useGetSwitchDefaultFirmwareListV1002Query
@@ -67,7 +67,7 @@ export function VenueFirmwareList () {
   const params = useParams()
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenueV1002>({
-    useQuery: useGetSwitchVenueVersionListV1002Query,
+    useQuery: useGetSwitchVenueVersionListV1001Query,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]

@@ -7,7 +7,7 @@ import { useIntl }                                          from 'react-intl'
 
 import { Subtitle, useStepFormContext }       from '@acx-ui/components'
 import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
-import { useGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
+import { useGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   AVAILABLE_SLOTS,
   compareSwitchVersion,
@@ -86,7 +86,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
-  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
+  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1001Query({
     payload: {
       venueIdList: upgradeVenueList.map(item => item.venueId),
       searchFilter: 'ICX7150-C08P',

@@ -318,9 +318,9 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
-    getSwitchVenueVersionListV1002: build.query<TableResult<FirmwareSwitchVenueV1002>, RequestPayload>({
+    getSwitchVenueVersionListV1001: build.query<TableResult<FirmwareSwitchVenueV1002>, RequestPayload>({
       query: ({ params, payload }) => {
-        const headers = v1_2Header
+        const headers = v1_1Header
         // eslint-disable-next-line max-len
         const queryString = payload as { searchString: string, filters: { filterModelVersion: string[] } }
         const request =
@@ -503,7 +503,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as unknown as TableResult<SwitchFirmware>
       }
     }),
-    getSwitchFirmwareListV1002: build.query<TableResult<SwitchFirmwareV1002>, RequestPayload>({
+    getSwitchFirmwareListV1001: build.query<TableResult<SwitchFirmwareV1002>, RequestPayload>({
       query: ({ params, payload }) => {
         const headers = v1_2Header
         const req = createHttpRequest(FirmwareRbacUrlsInfo.getSwitchFirmwareList, params, headers)
@@ -805,8 +805,8 @@ export const {
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListQuery,
-  useGetSwitchVenueVersionListV1002Query,
-  useLazyGetSwitchVenueVersionListV1002Query,
+  useGetSwitchVenueVersionListV1001Query,
+  useLazyGetSwitchVenueVersionListV1001Query,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchAvailableFirmwareListV1002Query,
   useGetSwitchCurrentVersionsQuery,
@@ -825,8 +825,8 @@ export const {
   useLazyGetVenueEdgeFirmwareListQuery,
   useGetSwitchFirmwareListQuery,
   useLazyGetSwitchFirmwareListQuery,
-  useGetSwitchFirmwareListV1002Query,
-  useLazyGetSwitchFirmwareListV1002Query,
+  useGetSwitchFirmwareListV1001Query,
+  useLazyGetSwitchFirmwareListV1001Query,
   useGetSwitchFirmwareStatusListQuery,
   useLazyGetSwitchFirmwareStatusListQuery,
   useGetScheduledFirmwareQuery,
