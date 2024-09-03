@@ -176,7 +176,7 @@ describe('Brand360', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 
-  it('readOnly SLAs', async () => {
+  it('displays read only SLAs', async () => {
     const userProfile = getUserProfile()
     setUserProfile({
       ...userProfile,

@@ -132,7 +132,7 @@ describe('ConfigSettings Drawer', () => {
     expect(mockedUpdateTenantSettingsMutation).not.toHaveBeenCalled()
   })
 
-  it('should readOnly settings', async () => {
+  it('shows read only settings', async () => {
     const userProfile = getUserProfile()
     setUserProfile({
       ...userProfile,

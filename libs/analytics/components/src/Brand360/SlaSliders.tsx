@@ -29,10 +29,7 @@ export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas }: {
     defaultValue={parseInt(currentSlas[name]!, 10)}
     onAfterChange={(value: number) => setCurrentSlas({ ...currentSlas, [name]: value.toString() })}
   />
-  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({
-    // permission: 'READ_BRAND360', // need WRITE_BRAND360 ?
-    scopes: [WifiScopes.UPDATE]
-  }))
+  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.UPDATE] }))
   const disabled = isEqual(savedSlas, currentSlas) || isReadOnly
   return <SliderWrapper>
     <Loader states={[result]}>
