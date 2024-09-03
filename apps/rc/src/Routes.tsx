@@ -1147,18 +1147,28 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
           element={<ConnectionMeteringDetail/>}
         />
-        { hasCloudpathAccess() && <>
-          <Route
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
-            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
-          />
-          <Route
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute
+              policyType={PolicyType.CONNECTION_METERING}
+              oper={PolicyOperation.CREATE}
+              children={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+            />
+          }
+        />
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
-            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
-          />
-        </>}
+          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
+          element={
+            <PolicyAuthRoute
+              policyType={PolicyType.CONNECTION_METERING}
+              oper={PolicyOperation.EDIT}
+              children={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+            />
+          }
+        />
       </>}
       {isCloudpathBetaEnabled && <>
         <Route
