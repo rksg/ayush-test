@@ -40,7 +40,7 @@ export default function EthernetPortProfileDrawer (props:{
         <Button type='link'
           onClick={()=>setDetailVisible(true)}
           disabled={disabled}>
-          {$t({ defaultMessage: 'Show Profile' })}
+          {$t({ defaultMessage: 'Profile Details' })}
         </Button>
         <Button type='link'
           onClick={()=>setFormVisible(true)}

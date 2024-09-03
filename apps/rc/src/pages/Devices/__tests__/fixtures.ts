@@ -1214,6 +1214,37 @@ export const apLanPorts = [
   }
 ]
 
+export const mockEthProfiles = {
+  fields: [
+    'id',
+    'name',
+    'type',
+    'untagId',
+    'vlanMembers',
+    'isDefault'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: 'ed4b396d848e465d8044064ff3da9d33',
+      name: 'Default Trunk',
+      type: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      isDefault: true
+    },
+    {
+      id: 'd17d0b68b34249ff85376ebfaa8a87d5',
+      name: 'Default Access',
+      type: 'ACCESS',
+      untagId: 1,
+      vlanMembers: '1',
+      isDefault: true
+    }
+  ]
+}
+
 export const venueSetting = {
   tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
   wifiFirmwareVersion: '6.2.0.103.486',
