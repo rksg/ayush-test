@@ -44,7 +44,6 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
   const [selectedICX82Version, setSelecteedICX82Version] = useState('')
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
   const ICX71Count = availableVersions?.filter(
