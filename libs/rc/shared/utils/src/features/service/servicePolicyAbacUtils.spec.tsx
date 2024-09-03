@@ -100,11 +100,15 @@ describe('servicePolicyAbacUtils', () => {
     })
 
     it('should return an empty array if hasCrossVenuesPermission returns false', () => {
-      const profile = getUserProfile()
+      const userProfile = getUserProfile()
       setUserProfile({
-        ...profile,
+        ...userProfile,
         abacEnabled: true,
-        hasAllVenues: false
+        hasAllVenues: false,
+        profile: {
+          ...userProfile.profile,
+          roles: ['My-Custom-Role']
+        }
       })
       const items = [{ id: 1 }, { id: 2 }]
       const result = filterByAccessForServicePolicyMutation(items)
