@@ -22,11 +22,15 @@ async function loadResidentPortalImage (url: ApiInfo, params:Params) {
       credentials: request.credentials,
       method: request.method })
 
-  const blob = await response.blob()
+  let blob:(Blob | undefined) = undefined
+
+  if(response.status >= 200 && response.status <= 299) {
+    blob = await response.blob()
+  }
 
   const reader = new FileReader()
   return new Promise<string>((resolve, reject) => {
-    if(blob) {
+    if(blob && blob.size > 0) {
       reader.onloadend = () => resolve(reader.result as string)
       reader.readAsDataURL(blob)
     }  else {
