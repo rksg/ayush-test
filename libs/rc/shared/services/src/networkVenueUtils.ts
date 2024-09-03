@@ -895,12 +895,18 @@ function resolveRbacVenuesListFetchArgs (queryArgs: RequestPayload<{ isTemplate?
 
   const venueTemplateListInfo = {
     ...createHttpRequest(ConfigTemplateUrlsInfo.getVenuesTemplateListRbac, params),
-    body: JSON.stringify(payload)
+    body: JSON.stringify({
+      ...payload,
+      pageSize: 10000
+    })
   }
 
   const networkVenuesListInfo = {
     ...createHttpRequest(CommonUrlsInfo.getVenuesList, params),
-    body: payload
+    body: {
+      ...payload,
+      pageSize: 10000
+    }
   }
 
   return payload?.isTemplate ? venueTemplateListInfo : networkVenuesListInfo
