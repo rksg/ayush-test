@@ -5,6 +5,7 @@ import { GraphProps }                       from '@acx-ui/components'
 import { intentAIUrl, Provider }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
+import { Statuses }                           from '../../states'
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 
 import { mockCrrmData } from './__tests__/fixtures'
@@ -35,13 +36,23 @@ describe('CloudRRM', () => {
     })
   })
 
-  it('should render correctly', async () => {
+  it('should render correctly for active states', async () => {
     const details = mockedIntentCRRM
     render(<IntentAIRRMGraph details={details} crrmData={mockCrrmData}/>, { wrapper: Provider })
     expect(await screen.findByText('View More')).toBeVisible()
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
     expect(screen.getByRole('img', { name: 'summary-before' })).toBeVisible()
     expect(screen.getByRole('img', { name: 'summary-after' })).toBeVisible()
+  })
+
+  it('should render correctly for non-active states', async () => {
+    const details = {
+      ...mockedIntentCRRM,
+      status: 'na' as Statuses
+    }
+    render(<IntentAIRRMGraph details={details} crrmData={mockCrrmData}/>, { wrapper: Provider })
+    expect(screen.queryByTestId('graph-wrapper')).toHaveStyle('filter: blur(8px)')
+    expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
 
   it('should handle drawer', async () => {
