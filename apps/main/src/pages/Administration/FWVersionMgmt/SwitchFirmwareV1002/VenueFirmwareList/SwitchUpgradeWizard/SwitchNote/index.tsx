@@ -29,7 +29,11 @@ export function SwitchNote (props: SwitchNoteProps) {
         // eslint-disable-next-line max-len
         defaultMessage: 'The following switches will not be upgraded because the ICX7150-C08P/PT models do not support FastIron versions 10.0.x. You can still upgrade them to the desired 09.0.10x version by selecting these switches separately.'
       }),
-    [NotesEnum.NOTE8200_1]: '' //TODO
+    [NotesEnum.NOTE8200_1]:
+      $t({
+        // eslint-disable-next-line max-len
+        defaultMessage: 'The following switches will not be upgraded because the ICX8200-AV models only support version 10.0.10e and above. You can still upgrade them to 10.0.10e and above by selecting the switches separately.'
+      })
   }
 
   return (

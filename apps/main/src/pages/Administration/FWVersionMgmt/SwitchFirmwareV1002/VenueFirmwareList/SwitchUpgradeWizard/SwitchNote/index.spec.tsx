@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  icx7150C08pGroupedData
+  icx8200AvGroupedData
 } from '../../__test__/fixtures'
 
 import { NotesEnum, SwitchNote } from '.'
@@ -23,16 +23,14 @@ describe('SwitchNote', () => {
         <Form>
           <SwitchNote
             notes={[{
-              type: NotesEnum.NOTE7150_1,
-              data: icx7150C08pGroupedData as SwitchFirmwareV1002[][]
+              type: NotesEnum.NOTE8200_1,
+              data: icx8200AvGroupedData as SwitchFirmwareV1002[][]
             }]} />
         </Form>
       </Provider>
       , {
         route: { params, path: '/:tenantId/administration/fwVersionMgmt/switchFirmware' }
       })
-    expect(screen.getByText(/09.0.10x/i)).toBeInTheDocument()
+    expect(screen.getByText(/10.0.10e/i)).toBeInTheDocument()
   })
-
-
 })

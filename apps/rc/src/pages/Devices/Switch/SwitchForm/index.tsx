@@ -47,6 +47,8 @@ import {
   checkVersionAtLeast09010h,
   convertInputToUppercase,
   SWITCH_SERIAL_PATTERN_INCLUDED_8100,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV,
   FirmwareSwitchVenueVersionsV1002
 } from '@acx-ui/rc/utils'
 import {
@@ -79,6 +81,7 @@ export enum FIRMWARE {
 export function SwitchForm () {
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { $t } = useIntl()
@@ -406,8 +409,11 @@ export function SwitchForm () {
     // Only 7150-C08P/C08PT are Switch Only.
     // Only 7850 all models are Router Only.
     const modelOnlyFirmware = ['ICX7150-C08P', 'ICX7150-C08PT', 'ICX7850']
-    const re = isSupport8100 ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100) :
-      new RegExp(SWITCH_SERIAL_PATTERN)
+    // eslint-disable-next-line max-len
+    const re = isSupport8100 && isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100_8200AV) :
+      isSupport8100 ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8100) :
+        isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8200AV) :
+          new RegExp(SWITCH_SERIAL_PATTERN)
     if (value && !re.test(value)) {
       return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
     }

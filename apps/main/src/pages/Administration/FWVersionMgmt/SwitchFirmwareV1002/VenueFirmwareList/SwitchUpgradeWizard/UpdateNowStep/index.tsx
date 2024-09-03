@@ -9,6 +9,7 @@ import {
   Subtitle,
   useStepFormContext
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
 import { useGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
@@ -16,7 +17,8 @@ import {
   SwitchFirmwareVersion1002,
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
-  SwitchFirmwareV1002
+  SwitchFirmwareV1002,
+  invalidVersionFor82Av
 } from '@acx-ui/rc/utils'
 
 import * as UI                              from '../../styledComponents'
@@ -39,6 +41,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const { availableVersions, hasVenue, setShowSubTitle,
     upgradeVenueList, upgradeSwitchList } = props
   const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
@@ -78,6 +81,21 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       }
     }
 
+    // NotesEnum.NOTE8200_1
+    if (isSupport8200AV) {
+      const upgradeSwitchListOfRodanAv = upgradeSwitchList.filter(s =>
+        s.model === 'ICX8200-24PV' || s.model === 'ICX8200-C08PFV')
+      if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
+        const switchList = upgradeSwitchListOfRodanAv.concat(getSwitchFirmwareList?.data || [])
+        const groupedObject = _.groupBy(switchList, 'venueId')
+        const icxRodanAvGroupedData = Object.values(groupedObject)
+
+        if (icx82hasVersionBelow10010eOr10020b && icxRodanAvGroupedData.length > 0) {
+          noteData.push({ type: NotesEnum.NOTE8200_1, data: icxRodanAvGroupedData })
+        }
+      }
+    }
+
     setSwitchNoteData(noteData)
   }, [getSwitchFirmwareList])
 
@@ -114,6 +132,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
 
   const icx71hasVersionStartingWith100 =
     getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
+
+  const icx82hasVersionBelow10010eOr10020b =
+    getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.some(v => invalidVersionFor82Av(v.id))
 
   useEffect(() => {
     setShowSubTitle(false)
@@ -183,10 +204,13 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             onChange={handleICX82Change}
             value={selectedICX82Version}>
             <Space direction={'vertical'}>
-              { getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
-                <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                  {getVersionOptionV1002(intl, v)}
-                </Radio>) }
+              { // eslint-disable-next-line max-len
+                getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                    {getVersionOptionV1002(intl, v,
+                      (isSupport8200AV && invalidVersionFor82Av(v.id) ?
+                        getNoteButton(NotesEnum.NOTE8200_1) : null))}
+                  </Radio>)}
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
               </Radio>

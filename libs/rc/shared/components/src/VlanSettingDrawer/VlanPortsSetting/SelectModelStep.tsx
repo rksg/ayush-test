@@ -5,6 +5,7 @@ import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, 
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
 import { Card, Tooltip }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
 
@@ -46,6 +47,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const [optionListForSlot2, setOptionListForSlot2] = useState<ModelsType[]>([])
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
+
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const [switchFamilyModels, setSwitchFamilyModels] =
     useState<SwitchModelPortData>({
@@ -200,7 +203,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
     const modelsData = Object.keys(modelsList ?? {})?.map(key => {
       return { label: key, value: key }
     })
-    setModels(modelsData)
+    if (!isSupport8200AV && index === 'ICX8200') {
+      // eslint-disable-next-line max-len
+      const modelDataWithout82Av = modelsData.filter(model => model.value !== '24PV' && model.value !== 'C08PFV')
+      setModels(modelDataWithout82Av)
+    } else {
+      setModels(modelsData)
+    }
   }
 
   const onModelChange = (e: RadioChangeEvent) => {

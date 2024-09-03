@@ -709,3 +709,32 @@ export const icx7150C08pGroupedData = [
     }
   ]
 ]
+
+export const icx8200AvGroupedData = [
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce3645b',
+      venueName: 'My-Venue',
+      switchId: 'c0:c5:20:82:52:68',
+      switchName: 'FNF4349S00S',
+      isStack: false,
+      model: 'ICX8200_48',
+      currentFirmware: '10010d_cd1_rc5',
+      preDownload: false,
+      isSwitchLevelSchedule: false
+    }
+  ],
+  [
+    {
+      venueId: '81e0fac39cee430992e9f770fce36453',
+      venueName: 'My-Venue2',
+      switchId: '80:f0:cf:34:9a:a2',
+      switchName: 'FPG4324V00H Switch - test',
+      isStack: false,
+      model: 'ICX8200_24PV',
+      currentFirmware: '10010e_b399',
+      preDownload: true,
+      isSwitchLevelSchedule: false
+    }
+  ]
+]

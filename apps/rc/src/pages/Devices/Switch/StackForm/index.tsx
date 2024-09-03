@@ -70,7 +70,8 @@ import {
   getStackUnitsMinLimitation,
   convertInputToUppercase,
   FirmwareSwitchVenueVersionsV1002,
-  getStackUnitsMinLimitationV1002
+  getStackUnitsMinLimitationV1002,
+  SWITCH_SERIAL_PATTERN_INCLUDED_8200AV
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -101,9 +102,11 @@ const defaultPayload = {
 
 const modelNotSupportStack = ['ICX7150-C08P', 'ICX7150-C08PT']
 
-export const validatorSwitchModel = (serialNumber: string, activeSerialNumber?: string) => {
+export const validatorSwitchModel = (serialNumber: string, isSupport8200AV: boolean,
+  activeSerialNumber?: string ) => {
   const { $t } = getIntl()
-  const re = new RegExp(SWITCH_SERIAL_PATTERN)
+  const re = isSupport8200AV ? new RegExp(SWITCH_SERIAL_PATTERN_INCLUDED_8200AV)
+    : new RegExp(SWITCH_SERIAL_PATTERN)
   if (serialNumber && !re.test(serialNumber)) {
     return Promise.reject($t({ defaultMessage: 'Serial number is invalid' }))
   }
@@ -149,6 +152,7 @@ export function StackForm () {
   const enableSwitchStackNameDisplayFlag = useIsSplitOn(Features.SWITCH_STACK_NAME_DISPLAY_TOGGLE)
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+  const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
   const [getSwitchList] = useLazyGetSwitchListQuery()
 
@@ -640,7 +644,7 @@ export function StackForm () {
               message: $t({ defaultMessage: 'This field is required' })
             },
             {
-              validator: (_, value) => validatorSwitchModel(value,
+              validator: (_, value) => validatorSwitchModel(value, isSupport8200AV,
                 activeRow === row.key ? value : activeSerialNumber)
             },
             {
