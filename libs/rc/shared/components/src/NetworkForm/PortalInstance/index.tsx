@@ -171,8 +171,6 @@ const PortalInstance = (props: {
     }
     if (networkData?.portalServiceProfileId &&
       networkData?.portalServiceProfileId !== portalServiceID) {
-        console.info('networkData?.portalServiceProfileId:', networkData?.portalServiceProfileId)
-        console.info('portalServiceID:', portalServiceID)
       form.setFieldValue(
         'portalServiceProfileId',
         networkData.portalServiceProfileId
