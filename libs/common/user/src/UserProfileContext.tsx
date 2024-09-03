@@ -87,7 +87,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   }
 
   const { data: venues } = useGetVenuesListQuery({ params, payload },
-    { skip: !abacEnabled && hasAllVenues })
+    { skip: !abacEnabled || hasAllVenues })
 
   const venuesList: string[] = (venues?.data.map(item => item.id)
     .filter((id): id is string => id !== undefined)) || []
