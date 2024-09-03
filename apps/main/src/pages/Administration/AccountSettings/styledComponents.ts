@@ -1,4 +1,5 @@
-import { css } from 'styled-components/macro'
+import { Space }       from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 import { StepsForm } from '@acx-ui/components'
 
@@ -35,3 +36,8 @@ export const styles = css`
   ${darkGreyTextStyles}
 `
 
+export const ProviderWrapper = styled(Space)`
+  .ant-form-item {
+    margin-bottom: -5px;
+  }
+`
