@@ -122,7 +122,7 @@ describe('UserProfileContext', () => {
         res(ctx.status(200))),
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
         (_req, res, ctx) => res(ctx.json({}))),
-      rest.put(UserUrlsInfo.getVenuesList.url,
+      rest.post(UserUrlsInfo.getVenuesList.url,
         (_req, res, ctx) => res(ctx.json(fakedVenueList)))
     )
   })
