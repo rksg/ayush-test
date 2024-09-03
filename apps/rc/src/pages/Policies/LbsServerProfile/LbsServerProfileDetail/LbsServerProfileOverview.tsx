@@ -10,8 +10,8 @@ export function LbsServerProfileOverview (props: { data: LbsServerProfileViewMod
 
   const lbsServerProfileInfo = [
     {
-      title: $t({ defaultMessage: 'LBS <VenueSingular></VenueSingular>' }),
-      content: data.lbsVenueName
+      title: $t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular>' }),
+      content: data.lbsServerVenueName
     },
     {
       title: $t({ defaultMessage: 'Server' }),

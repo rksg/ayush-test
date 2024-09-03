@@ -9,7 +9,7 @@ export const mockedPolicyId2 = '__Policy_ID_2__'
 
 export const newEmptyData = {
   name: '',
-  lbsVenueName: '',
+  lbsServerVenueName: '',
   serverAddress: '',
   serverPort: '',
   password: ''
@@ -18,7 +18,7 @@ export const newEmptyData = {
 export const editData = {
   ...newEmptyData,
   name: 'test1',
-  lbsVenueName: 'lbsVenueName',
+  lbsServerVenueName: 'lbsServerVenueName',
   serverAddress: 'ruckus.cloud',
   serverPort: '8883',
   password: 'qwerasdf',
@@ -29,7 +29,7 @@ export const editData = {
 export const dummyLbsServerProfileData = {
   id: mockedPolicyId1,
   name: 'LBS 1',
-  lbsVenueName: 'lbsvenue01',
+  lbsServerVenueName: 'lbsvenue01',
   serverAddress: 'abc.venue.ruckuslbs.com',
   serverPort: '8883',
   password: 'qwerasdf',
@@ -39,14 +39,14 @@ export const dummyLbsServerProfileData = {
 export const dummyLbsServerProfileViewmodel1 = {
   id: mockedPolicyId1,
   name: 'LBS 1',
-  lbsVenueName: 'lbsvenue01',
+  lbsServerVenueName: 'lbsvenue01',
   server: 'abc.venue.ruckuslbs.com:8883'
 }
 
 export const dummyLbsServerProfileViewmodel2 = {
   id: mockedPolicyId2,
   name: 'LBS 2',
-  lbsVenueName: 'lbsvenue02',
+  lbsServerVenueName: 'lbsvenue02',
   server: 'xyz.venue.ruckuslbs.com:8883'
 }
 

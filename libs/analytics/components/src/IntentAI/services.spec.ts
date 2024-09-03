@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import { defaultNetworkPath }                                              from '@acx-ui/analytics/utils'
 import { intentAIUrl, store, Provider }                                    from '@acx-ui/store'
 import { mockGraphqlQuery, mockGraphqlMutation, renderHook, act, waitFor } from '@acx-ui/test-utils'
-import { DateRange, PathFilter }                                           from '@acx-ui/utils'
+import { DateRange }                                                       from '@acx-ui/utils'
 
 import {
   intentHighlights,
@@ -20,13 +20,6 @@ import { Actions }                                                from './utils'
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
 describe('Intent services', () => {
-  const props = {
-    startDate: '2023-06-10T00:00:00+08:00',
-    endDate: '2023-06-17T00:00:00+08:00',
-    range: DateRange.last24Hours,
-    path: defaultNetworkPath
-  } as PathFilter
-
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
   })
@@ -125,7 +118,7 @@ describe('Intent services', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAI', {
         data: filterOptions
       })
-      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       const customPagination = { current: 1, pageSize: 10 }
       act(() => {
         result.current.onPageChange(
@@ -150,7 +143,7 @@ describe('Intent services', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAI', {
         data: filterOptions
       })
-      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       const customFilter = {
         sliceValue: ['1'],
         category: ['Wi-Fi Experience'],
@@ -209,7 +202,7 @@ describe('Intent services', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentAI', {
         data: filterOptions
       })
-      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider })
+      const { result } = renderHook(useIntentAITableQuery, { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       const customFilter = {
         sliceValue: null,
         category: null,
@@ -222,12 +215,48 @@ describe('Intent services', () => {
       expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([])
     })
 
+    it('handleFilterChange should handle feature filter case from url(AirFlexAI)', () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+        data: intentListResult
+
+      })
+      mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+        data: filterOptions
+      })
+      const { result } = renderHook(useIntentAITableQuery,
+        {
+          wrapper: Provider,
+          route: {
+            params: { tenantId: 'tenant-id' },
+            search: '?selectedTenants=tenantId&intentTableFilters=%7B%22feature%22%3A%22AirFlexAI%22%7D',
+            path: '/intentAI'
+          }
+        })
+      const customFilter = {
+        sliceValue: null,
+        category: null,
+        aiFeature: ['AirFlexAI'],
+        statusLabel: null
+      }
+      act(() => {
+        result.current.onFilterChange(customFilter, {})
+      })
+      expect(result.current.tableQuery.originalArgs?.filterBy).toEqual([{
+        col: 'code',
+        values: [
+          'c-probeflex-24g',
+          'c-probeflex-5g',
+          'c-probeflex-6g'
+        ]
+      }])
+    })
+
     it('should mutation TransitionIntent(Actions.One_Click_Optimize)', async () => {
       const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.transitionIntent.useMutation(),
-      { wrapper: Provider }
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } }
       )
       act(() => {
         result.current[0]({
@@ -255,7 +284,7 @@ describe('Intent services', () => {
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.transitionIntent.useMutation(),
-      { wrapper: Provider }
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } }
       )
       act(() => {
         result.current[0]({
@@ -283,7 +312,7 @@ describe('Intent services', () => {
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.transitionIntent.useMutation(),
-      { wrapper: Provider }
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } }
       )
       act(() => {
         result.current[0]({
@@ -312,7 +341,7 @@ describe('Intent services', () => {
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.transitionIntent.useMutation(),
-      { wrapper: Provider }
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } }
       )
       act(() => {
         result.current[0]({
@@ -342,7 +371,7 @@ describe('Intent services', () => {
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.transitionIntent.useMutation(),
-      { wrapper: Provider }
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } }
       )
       act(() => {
         result.current[0]({
@@ -408,7 +437,7 @@ describe('Intent services', () => {
       mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
       const { result } = renderHook(() =>
         api.endpoints.transitionIntent.useMutation(),
-      { wrapper: Provider }
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } }
       )
       act(() => {
         result.current[0]({
@@ -665,12 +694,17 @@ describe('Intent services', () => {
   it('should return intentHighlight', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentHighlight', {
       data: intentHighlights
-    })
+    }, true)
+
 
     const { status, data, error } = await store.dispatch(
-      api.endpoints.intentHighlight.initiate(props)
+      api.endpoints.intentHighlight.initiate({
+        startDate: '2023-06-10T00:00:00+08:00',
+        endDate: '2023-06-17T00:00:00+08:00',
+        range: DateRange.custom,
+        path: defaultNetworkPath
+      })
     )
-
     const expectedResult = {
       rrm: {
         new: 4,
