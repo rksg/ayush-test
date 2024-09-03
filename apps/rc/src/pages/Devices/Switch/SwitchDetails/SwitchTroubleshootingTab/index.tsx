@@ -47,10 +47,10 @@ export function SwitchTroubleshootingTab () {
       const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
       /*
       Only support the firmware versions listed below:
-      1. > 10010f < 10020
+      1. > 10010e < 10020
       2. > 10020b
       */
-      return isVerGEVer(fwVersion, '10010f', false) &&
+      return isVerGEVer(fwVersion, '10010e', false) &&
       (!isVerGEVer(fwVersion, '10020', false) || isVerGEVer(fwVersion, '10020b', false))
     }else{
       return false
