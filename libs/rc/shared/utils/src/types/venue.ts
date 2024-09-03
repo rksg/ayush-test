@@ -754,7 +754,10 @@ export interface VenueLoadBalancing {
   loadBalancingMethod: LoadBalancingMethodEnum,
   bandBalancingEnabled: true,
   bandBalancingClientPercent24G: number,
-  steeringMode: SteeringModeEnum
+  steeringMode: SteeringModeEnum,
+  stickyClientSteeringEnabled?: boolean,
+  stickyClientSnrThreshold: number,
+  stickyClientNbrApPercentageThreshold: number
 }
 
 export interface VenueBssColoring {
