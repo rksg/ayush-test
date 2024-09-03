@@ -12,7 +12,7 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useAddNetworkVenueMutation,
   useAddNetworkVenuesMutation,
@@ -29,7 +29,7 @@ import {
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
-  useNewNetworkVenueTableQuery
+  useNewNetworkVenueTableQuery, useNetworkDetailHeaderQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -208,6 +208,11 @@ export function NetworkVenuesTab () {
   const [systemNetwork, setSystemNetwork] = useState(false)
 
   const networkQuery = useGetNetwork()
+
+  const { data: networkDetailHeader } = useNetworkDetailHeaderQuery({
+    params: params,
+    payload: { isTemplate }
+  })
 
   const [
     addNetworkVenue,
@@ -831,7 +836,7 @@ export function NetworkVenuesTab () {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       {
-        !networkQuery.data?.venues?.length &&
+        !networkDetailHeader?.activeVenueCount &&
         <Alert message={$t(notificationMessage)} type='info' showIcon closable />
       }
       <Table
