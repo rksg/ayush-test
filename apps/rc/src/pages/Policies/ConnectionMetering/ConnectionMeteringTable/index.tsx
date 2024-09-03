@@ -33,7 +33,7 @@ import {
   SEARCH,
   PropertyConfigs,
   PropertyConfigQuery,
-  hasCloudpathAccess
+  hasCloudpathAccess, getScopeKeyByPolicy, filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -41,7 +41,6 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -171,6 +170,7 @@ export default function ConnectionMeteringTable () {
 
   const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -186,6 +186,7 @@ export default function ConnectionMeteringTable () {
       disabled: (selectedItems => selectedItems.length > 1)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
@@ -255,7 +256,7 @@ export default function ConnectionMeteringTable () {
       <Table
         enableApiFilter
         columns={useColumns(venueMap, propertyMap)}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={filterByAccessForServicePolicyMutation(rowActions)}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

@@ -10,14 +10,17 @@ import {
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation, getPolicyRoutePath,
-  hasCloudpathAccess
+  hasCloudpathAccess, getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { DataConsumptionLabel }  from '../DataConsumptionHelper'
 import { RateLimitingTableCell } from '../RateLimitingHelper'
 
 import { ConnectionMeteringInstanceTable } from './ConnectionMeteringInstanceTable'
+
 
 
 export default function ConnectionMeteringDetail () {
@@ -60,12 +63,14 @@ export default function ConnectionMeteringDetail () {
             })
           }
         ]}
-        extra={hasCloudpathAccess() && [
-          <TenantLink to={getPolicyDetailsLink({
-            policyId: policyId!,
-            type: PolicyType.CONNECTION_METERING,
-            oper: PolicyOperation.EDIT
-          })}
+        extra={hasCloudpathAccess() && hasPermission({ scopes: [WifiScopes.UPDATE] }) && [
+          <TenantLink
+            to={getPolicyDetailsLink({
+              policyId: policyId!,
+              type: PolicyType.CONNECTION_METERING,
+              oper: PolicyOperation.EDIT
+            })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

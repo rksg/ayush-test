@@ -7,11 +7,13 @@ import { Button, GridCol, GridRow, PageHeader }                                 
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useGetAccessControlProfileQuery, useGetAccessControlProfileTemplateQuery } from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, useConfigTemplateQueryFnSwitcher, usePolicyListBreadcrumb
+  PolicyType,
+  useConfigTemplateQueryFnSwitcher,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
@@ -37,9 +39,9 @@ export function AccessControlDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
             type={PolicyType.ACCESS_CONTROL}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}
