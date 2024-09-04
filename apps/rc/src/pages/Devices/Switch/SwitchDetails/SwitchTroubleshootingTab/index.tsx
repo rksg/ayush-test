@@ -43,8 +43,8 @@ export function SwitchTroubleshootingTab () {
 
 
   const isSupportMacAddress = function () {
-    if(switchDetailsContextData.switchDetailHeader?.firmwareVersion){
-      const fwVersion = switchDetailsContextData.switchDetailHeader?.firmwareVersion
+    if(switchDetailsContextData.switchDetailHeader?.firmware){
+      const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
       /*
       Only support the firmware versions listed below:
       1. > 10010f < 10020
