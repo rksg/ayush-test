@@ -59,7 +59,8 @@ export default function RadiusAttributeGroupTable () {
             policyId: selectedRows[0].id!
           })
         })
-      }
+      },
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -87,7 +88,8 @@ export default function RadiusAttributeGroupTable () {
               })
           }
         )
-      }
+      },
+      scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.DELETE)
     }]
 
     function useColumns () {
