@@ -56,9 +56,13 @@ export async function onSocketActivityChanged <
   const onActivityChangedEvent = (data: string) => {
     const userProfile = getUserProfile()
     const jsonData = JSON.parse(data)
-    const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
-      (id: string) => userProfile.venuesList?.includes(id))
-    if(userProfile.hasAllVenues || hasPermittedVenue){
+    if(userProfile.abacEnabled){
+      const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
+        (id: string) => userProfile.venuesList?.includes(id))
+      if(userProfile.hasAllVenues || hasPermittedVenue){
+        handler(jsonData)
+      }
+    } else {
       handler(jsonData)
     }
   }
