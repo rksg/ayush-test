@@ -40,8 +40,8 @@ export function SwitchNote (props: SwitchNoteProps) {
     <UI.Description>
       <b>{$t({ defaultMessage: 'Note' })}</b>
       <ol>
-        {props.notes.map(note => (<div id={note.type}>
-          <li>  {noteMesage[note.type]}
+        {props.notes.map(note => (<div key={note.type}>
+          <li key={note.type}>  {noteMesage[note.type]}
             <ul>
               {note.data.map((switchList, index) => (
                 <li key={index}>
