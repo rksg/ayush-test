@@ -46,7 +46,7 @@ jest.mock('./../VenueStatusDrawer', () => ({
 
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
-  useGetSwitchCurrentVersionsV1002Query: () => ({
+  useGetSwitchCurrentVersionsV1001Query: () => ({
     data: mockSwitchCurrentVersionsV1002
   })
 }))
