@@ -195,7 +195,9 @@ describe('MyPolicies', () => {
   })
 
   it('should render edge qos bandwidth correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+
     mockServer.use(
       rest.post(
         EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,

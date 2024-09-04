@@ -1,10 +1,11 @@
-import { Col } from 'antd'
-import styled  from 'styled-components/macro'
+import { Col }         from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 import {
   CheckMarkCircleSolid,
   WarningTriangleSolid,
-  Unknown
+  Unknown,
+  MinusCircleSolid
 } from '@acx-ui/icons'
 
 export const StyledWrapper = styled.div`
@@ -12,16 +13,18 @@ export const StyledWrapper = styled.div`
     min-height: 13px;
   }
 `
-export const CheckMarkCircleSolidIcon = styled(CheckMarkCircleSolid)`
+
+const iconStyle = css`
   width: 16px;
   height: 16px;
   margin-bottom: -3px;
 `
+export const CheckMarkCircleSolidIcon = styled(CheckMarkCircleSolid)`
+  ${iconStyle}
+`
 
 export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
-  width: 16px;
-  height: 16px;
-  margin-bottom: -3px;
+  ${iconStyle}
   path:nth-child(1) {
     fill: var(--acx-semantics-yellow-50)
   }
@@ -31,9 +34,17 @@ export const WarningTriangleSolidIcon = styled(WarningTriangleSolid)`
 `
 
 export const UnknownIcon = styled(Unknown)`
-  width: 16px;
-  height: 16px;
-  margin-bottom: -3px;
+  ${iconStyle}
+`
+
+export const UnavailableIcon = styled(MinusCircleSolid)`
+  ${iconStyle}
+  path:nth-child(1) {
+    fill: var(--acx-neutrals-50)
+  }
+  path:nth-child(2) {
+    stroke: var(--acx-neutrals-50);
+  }
 `
 
 export const TableStyleWrapper = styled.div`
