@@ -2,10 +2,42 @@ import React from 'react'
 
 import { uniqueId } from 'lodash'
 
-import { Table, TableProps } from '@acx-ui/components'
-import { APExtended }        from '@acx-ui/rc/utils'
+import { Table, TableProps } from '..'
 
-export type APExtendedGroupedResponse = {
+interface APExtended {
+  serialNumber: string
+  name?: string
+  model: string
+  fwVersion: string
+  venueId: string
+  venueName: string
+  IP: string
+  apMac: string
+  apStatusData: {
+    APRadio: {
+      Rssi: string | null,
+      txPower?: string | null,
+      channel: string | number,
+      band?: string,
+      radioId?: number,
+      operativeChannelBandwidth?: string
+    }[]
+  }
+  meshRole: string
+  deviceGroupName: string
+  deviceStatus: string
+  deviceGroupId: string
+  clients: number
+  networks?: {
+    count: number
+    names: string[]
+  }
+  members?: number
+  incidents?: number
+  tags: string
+}
+
+type APExtendedGroupedResponse = {
   networks: {
     count: number
     names: string[]
