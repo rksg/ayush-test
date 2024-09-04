@@ -27,8 +27,6 @@ import {
   Network,
   hasServicePermission } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { hasPermission }         from '@acx-ui/user'
 
 interface EdgeSdLanServiceProps {
   data: EdgeMvSdLanViewData;
