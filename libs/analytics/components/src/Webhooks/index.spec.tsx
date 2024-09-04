@@ -211,5 +211,31 @@ describe('WebhooksTable', () => {
       expect(await screen
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
     })
+    describe('when role = READ_ONLY', () => {
+      beforeEach(() => {
+        const profile = getUserProfile()
+        setUserProfile({ ...profile, profile: {
+          ...profile.profile, roles: [RolesEnum.READ_ONLY]
+        } })
+      })
+      it('should hide actions', async () => {
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
+      })
+      it('should hide row actions', async () => {
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+      })
+    })
   })
 })
