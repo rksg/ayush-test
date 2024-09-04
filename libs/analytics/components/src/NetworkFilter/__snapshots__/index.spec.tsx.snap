@@ -29,24 +29,37 @@ exports[`Network Filter should list only venues having APs 1`] = `
 }
 
 .c10 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c10.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c10[disabled] svg path,
 .c10.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
 .c10[disabled].ant-btn-default svg path,
 .c10.ant-btn-disabled.ant-btn-default svg path,
 .c10[disabled].ant-btn-primary svg path,
 .c10.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c3 {
@@ -560,24 +573,37 @@ exports[`Network Filter should list only venues having Switches 1`] = `
 }
 
 .c7 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c7.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c7.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c7.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c7.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c7[disabled] svg path,
 .c7.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c7[disabled].ant-btn-link svg path,
+.c7.ant-btn-disabled.ant-btn-link svg path,
 .c7[disabled].ant-btn-default svg path,
 .c7.ant-btn-disabled.ant-btn-default svg path,
 .c7[disabled].ant-btn-primary svg path,
 .c7.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c3 {
@@ -963,24 +989,37 @@ exports[`Network Filter should select network node and bands 1`] = `
 }
 
 .c10 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c10.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c10[disabled] svg path,
 .c10.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
 .c10[disabled].ant-btn-default svg path,
 .c10.ant-btn-disabled.ant-btn-default svg path,
 .c10[disabled].ant-btn-primary svg path,
 .c10.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c3 {
@@ -1701,24 +1740,37 @@ exports[`Network Filter should select network node and bands with onApplyFn 1`] 
 }
 
 .c10 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c10.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c10.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c10.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c10.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c10[disabled] svg path,
 .c10.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c10[disabled].ant-btn-link svg path,
+.c10.ant-btn-disabled.ant-btn-link svg path,
 .c10[disabled].ant-btn-default svg path,
 .c10.ant-btn-disabled.ant-btn-default svg path,
 .c10[disabled].ant-btn-primary svg path,
 .c10.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c3 {
@@ -2286,24 +2338,37 @@ exports[`Network Filter with incident severity should not show any severity circ
 }
 
 .c4 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c4.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c4.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c4.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c4.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c4[disabled] svg path,
 .c4.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c4[disabled].ant-btn-link svg path,
+.c4.ant-btn-disabled.ant-btn-link svg path,
 .c4[disabled].ant-btn-default svg path,
 .c4.ant-btn-disabled.ant-btn-default svg path,
 .c4[disabled].ant-btn-primary svg path,
 .c4.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c2 .ant-select-focused .ant-select-selection-placeholder {
