@@ -17,7 +17,7 @@ const useValuesText = createUseValuesText({
   action: defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this <VenueSingular></VenueSingular>. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
   reason: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
   tradeoff: defineMessage({ defaultMessage: `
-    <p>More frequent scans may lead to increased power consumption and brief connectivity interruptions, potentially disrupting real-time applications, such as audio and video calls, and impacting overall network stability and user experience.</p>
+    <p>Auto channel selection and background scan may occasionally cause brief connectivity disruptions during channel switching and might not always account for specific network policies or user preferences.</p>
   ` }),
   intro: defineMessage({ defaultMessage: `
     <p>
