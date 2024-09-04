@@ -9,7 +9,8 @@ import {
 import { useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
   ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY,
-  ApCompatibility
+  ApCompatibility,
+  isEdgeCompatibilityFeature
 } from '@acx-ui/rc/utils'
 
 
@@ -35,6 +36,8 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
   }
 
   const incompatibleCount = Number(apVenueCompatibilities?.incompatible)
+  const hasEdgeFeature = apVenueCompatibilities?.incompatibleFeatures
+    ?.some(item => isEdgeCompatibilityFeature(item.featureName))
 
   return !isLoading && incompatibleCount > 0
     ? <>
@@ -43,10 +46,11 @@ export const CompatibilityCheck = ({ venueId }: { venueId: string }) => {
           defaultMessage: `{apCount} { apCount, plural,
                   one {access point is}
                   other {access points are}
-                } not compatible with certain Wi-Fi & SmartEdge features.`
+                } not compatible with certain Wi-Fi{edgeText} features.`
         },
         {
-          apCount: incompatibleCount
+          apCount: incompatibleCount,
+          edgeText: hasEdgeFeature ? $t({ defaultMessage: ' & SmartEdge' }) : ''
         })}
         cacheKey={ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY}
         onClick={() => toggleCompatibilityDrawer(true)}

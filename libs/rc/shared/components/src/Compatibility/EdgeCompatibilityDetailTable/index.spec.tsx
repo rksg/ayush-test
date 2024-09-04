@@ -149,6 +149,39 @@ describe('EdgeCompatibilityDetailTable', () => {
     await waitFor(() => expect(submitBtn).not.toBeVisible())
   })
 
+  it('should not have action button when available version is lower', async () => {
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_req, res, ctx) => res(ctx.json(EdgeFirmwareFixtures.mockedVenueFirmwareList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
+        (_req, res, ctx) => res(ctx.json(EdgeFirmwareFixtures.mockAvailableVersions))
+      )
+    )
+
+    render(
+      <Provider>
+        <EdgeCompatibilityDetailTable
+          data={mockEdgeCompatibilitiesVenue.compatibilities[0].incompatibleFeatures}
+          venueId='mock_venue_id'
+        />
+      </Provider>
+    )
+
+    const rows = await basicCheck()
+    expect(rows.length).toBe(3) // including header
+    expect(screen.getByRole('columnheader', { name: 'Incompatible SmartEdges' })).toBeVisible()
+
+    const row1 = screen.getByRole('row', { name: /SD-LAN 1 2.1.0.200/i })
+    screen.getByRole('row', { name: /Tunnel Profile 2 2.1.0.400/i })
+    await userEvent.click(within(row1).getByRole('checkbox'))
+
+    expect(screen.queryByRole('button', { name: 'Update Version Now' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Schedule Version Update' })).toBeNull()
+  })
+
   it('should not have incompatible count when requirementOnly', async () => {
     render(
       <Provider>
