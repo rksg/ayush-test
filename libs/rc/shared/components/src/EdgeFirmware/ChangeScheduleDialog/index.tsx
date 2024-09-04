@@ -17,7 +17,7 @@ import * as UI from '../styledComponents'
 
 import type { RangePickerProps } from 'antd/es/date-picker'
 
-export interface ChangeScheduleDialogProps {
+export interface EdgeChangeScheduleDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: EdgeUpdateScheduleRequest) => void,

@@ -12,7 +12,7 @@ enum VersionsSelectMode {
   Dropdown
 }
 
-export interface UpdateApNowDialogProps {
+export interface EdgeUpdateApNowDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: string) => void,

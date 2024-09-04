@@ -262,8 +262,12 @@ export {
   transformApiDataToFormListData
 } from './EdgeFormItem/EdgePortsGeneralBase/utils'
 export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
-export { EdgeChangeScheduleDialog } from './EdgeFirmware/ChangeScheduleDialog'
-export { EdgeUpdateNowDialog } from './EdgeFirmware/UpdateNowDialog'
+export {
+  EdgeChangeScheduleDialog, EdgeChangeScheduleDialogProps
+} from './EdgeFirmware/ChangeScheduleDialog'
+export {
+  EdgeUpdateNowDialog, EdgeUpdateApNowDialogProps
+} from './EdgeFirmware/UpdateNowDialog'
 
 export * from './services'
 export * from './policies'
