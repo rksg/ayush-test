@@ -6,6 +6,7 @@ import { MessageDescriptor } from 'react-intl'
 
 import { kpiDelta, TrendTypeEnum }              from '@acx-ui/analytics/utils'
 import { formatter }                            from '@acx-ui/formatter'
+import { useParams }                            from '@acx-ui/react-router-dom'
 import { intentAIApi }                          from '@acx-ui/store'
 import { NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
@@ -68,6 +69,21 @@ export type Intent = {
   currentValue: IntentConfigurationValue
   recommendedValue: IntentConfigurationValue
 } & Partial<IntentKpi>
+
+export const useIntentParams = () => {
+  const { tenantId, root, ...params } = useParams() as {
+    tenantId?: string
+    root?: Intent['root']
+    sliceId: Intent['sliceId']
+    code: string
+  }
+
+  return { ...params, root: (root || tenantId)! } as {
+    root: Intent['root']
+    sliceId: Intent['sliceId']
+    code: string
+  }
+}
 
 const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
   return kpis.map(kpi => {
