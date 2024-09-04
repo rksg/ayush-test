@@ -1,7 +1,5 @@
 import styled from 'styled-components/macro'
 
-import { DeleteOutlinedIcon } from '@acx-ui/icons'
-
 export const TableContainer = styled.div`
   .ant-pro-table .ant-table-thead > tr:first-child > th,
   .ant-pro-table .ant-table-thead > tr:last-child > th {
@@ -26,17 +24,8 @@ export const TableContainer = styled.div`
   .ant-pro-table .ant-table-tbody > tr > td:nth-child(4) {
     text-align: center;
   }
-  .ant-pro-table .ant-table-tbody > tr > td:nth-child(5) {
-    top: 3px;
-  }
   button{
-    align-items: start;
-    vertical-align: baseline;
-  }
-`
-
-export const DisabledDeleteOutlinedIcon = styled(DeleteOutlinedIcon)`
-  svg path{
-    stroke: var(--acx-neutrals-40);
+    align-items: center;
+    vertical-align: middle;
   }
 `
