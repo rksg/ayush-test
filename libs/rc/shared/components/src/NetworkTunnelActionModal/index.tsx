@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { Form, Radio, Space, Typography } from 'antd'
 
-import { Modal }                                                           from '@acx-ui/components'
-import { Features }                                                        from '@acx-ui/feature-toggle'
-import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                      from '@acx-ui/types'
-import { hasPermission }                                                   from '@acx-ui/user'
-import { getIntl }                                                         from '@acx-ui/utils'
+import { Modal }                                                                                                                from '@acx-ui/components'
+import { Features }                                                                                                             from '@acx-ui/feature-toggle'
+import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum, ServiceOperation, ServiceType, hasServicePermission } from '@acx-ui/rc/utils'
+import { getIntl }                                                                                                              from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
@@ -84,9 +82,8 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   }, [visible, tunnelTypeInitVal])
 
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo)
-  const hasChangePermission = hasPermission({ scopes: [
-    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : [])
-  ] })
+  // eslint-disable-next-line max-len
+  const hasChangePermission = isEdgeSdLanMvEnabled && hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
 
   return <Modal
     visible={visible}
