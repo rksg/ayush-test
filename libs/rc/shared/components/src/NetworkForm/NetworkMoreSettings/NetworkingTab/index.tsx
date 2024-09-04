@@ -36,6 +36,7 @@ export function NetworkingTab (props: {
     are enabled or disabled separately.` })
 
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
+  const enableDSSupport = useIsSplitOn(Features.WIFI_OVER_THE_DS_FT_SUPPORT_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
@@ -194,7 +195,7 @@ export function NetworkingTab (props: {
         />
       }
 
-      {enableFastRoaming && <>
+      {(enableFastRoaming && enableDSSupport) && <>
         <UI.FieldLabel width={labelWidth}>
           <Space>
             {$t({ defaultMessage: 'Over-the-DS' })}
