@@ -39,7 +39,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const intl = useIntl()
   const { form, current } = useStepFormContext()
   const { availableVersions, hasVenue, setShowSubTitle,
-    upgradeVenueList } = props
+    upgradeVenueList, upgradeSwitchList } = props
   const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
   const isSupport8200AV = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8200AV)
 
