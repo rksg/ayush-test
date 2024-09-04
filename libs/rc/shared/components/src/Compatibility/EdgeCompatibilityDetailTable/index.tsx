@@ -51,8 +51,8 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
   const { $t } = useIntl()
 
   const { data, requirementOnly = false, venueId } = props
-  const [updateNowVisible, setUpdateNowVisible] = useState<string|undefined>()
-  const [scheduleUpdateVisible, setScheduleUpdateVisible] = useState<string|undefined>()
+  const [updateNowFwVer, setUpdateNowFwVer] = useState<string|undefined>()
+  const [scheduleUpdateFwVer, setScheduleUpdateFwVer] = useState<string|undefined>()
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
 
   const [updateNow] = useUpdateEdgeFirmwareNowMutation()
@@ -106,7 +106,7 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     },
     onClick: (selectedRows: EdgeCompatibilityDetailTableData[]) => {
       const maxTargetVersion = getMaxMinVersion(selectedRows)
-      setUpdateNowVisible(maxTargetVersion)
+      setUpdateNowFwVer(maxTargetVersion)
     }
   }, {
     label: $t({ defaultMessage: 'Schedule Version Update' }),
@@ -122,7 +122,7 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     },
     onClick: (selectedRows: EdgeCompatibilityDetailTableData[]) => {
       const maxTargetVersion = getMaxMinVersion(selectedRows)
-      setScheduleUpdateVisible(maxTargetVersion)
+      setScheduleUpdateFwVer(maxTargetVersion)
     }
   }]
 
@@ -146,16 +146,16 @@ export const EdgeCompatibilityDetailTable = (props: EdgeCompatibilityDetailTable
     />
 
     <EdgeUpdateNowDialog
-      visible={!!updateNowVisible}
-      onCancel={() => setUpdateNowVisible(undefined)}
+      visible={!!updateNowFwVer}
+      onCancel={() => setUpdateNowFwVer(undefined)}
       onSubmit={handleUpdateNowSubmit}
-      availableVersions={getFilteredVersions(availableVersions, updateNowVisible)}
+      availableVersions={getFilteredVersions(availableVersions, updateNowFwVer)}
     />
     <EdgeChangeScheduleDialog
-      visible={!!scheduleUpdateVisible}
-      onCancel={() => setScheduleUpdateVisible(undefined)}
+      visible={!!scheduleUpdateFwVer}
+      onCancel={() => setScheduleUpdateFwVer(undefined)}
       onSubmit={handleScheduleSubmit}
-      availableVersions={getFilteredVersions(availableVersions, scheduleUpdateVisible)}
+      availableVersions={getFilteredVersions(availableVersions, scheduleUpdateFwVer)}
     />
   </>
 }
