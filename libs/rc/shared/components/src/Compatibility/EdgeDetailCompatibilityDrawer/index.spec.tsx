@@ -1,20 +1,18 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { edgeApi }                                                      from '@acx-ui/rc/services'
-import { EdgeUrlsInfo, IncompatibilityFeatures }                        from '@acx-ui/rc/utils'
-import { store, Provider }                                              from '@acx-ui/store'
-import { act, mockServer, render, screen, within, renderHook, waitFor } from '@acx-ui/test-utils'
+import { edgeApi }                                                          from '@acx-ui/rc/services'
+import { EdgeCompatibilityFixtures, EdgeUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
+import { store, Provider }                                                  from '@acx-ui/store'
+import { act, mockServer, render, screen, within, renderHook, waitFor }     from '@acx-ui/test-utils'
 
 import { getSdLanDetailsCompatibilitiesDrawerData, useEdgeSdLanDetailsCompatibilitiesData } from '../../useEdgeActions/compatibility'
 import { CompatibilityItemProps }                                                           from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }                                                                 from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
-import {
-  mockEdgeSdLanCompatibilities,
-  mockEdgeSdLanApCompatibilites
-} from '../EdgeCompatibilityDrawer/__test__/fixtures'
 
-import { EdgeSdLanDetailCompatibilityDrawer } from '.'
+import { EdgeDetailCompatibilityDrawer } from '.'
+
+const { mockEdgeSdLanCompatibilities, mockEdgeSdLanApCompatibilites } = EdgeCompatibilityFixtures
 
 jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
   const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
@@ -35,7 +33,7 @@ jest.mock('../CompatibilityDrawer/CompatibilityItem/FeatureItem', () => {
   }
 })
 
-describe('EdgeSdLanDetailCompatibilityDrawer', () => {
+describe('EdgeDetailCompatibilityDrawer', () => {
   const tenantId = 'mock_tenant_id'
   const mockedCloseDrawer = jest.fn()
   beforeEach(() => {
@@ -60,7 +58,7 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
     const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.SD_LAN)
 
     render(<Provider>
-      <EdgeSdLanDetailCompatibilityDrawer
+      <EdgeDetailCompatibilityDrawer
         title='Incompatibility Details'
         visible={true}
         featureName={IncompatibilityFeatures.SD_LAN}
@@ -97,7 +95,7 @@ describe('EdgeSdLanDetailCompatibilityDrawer', () => {
     const sdlanData = getSdLanDetailsCompatibilitiesDrawerData(result.current.sdLanCompatibilities, IncompatibilityFeatures.TUNNEL_PROFILE)
 
     render(<Provider>
-      <EdgeSdLanDetailCompatibilityDrawer
+      <EdgeDetailCompatibilityDrawer
         title='Incompatibility Details'
         visible={true}
         featureName={IncompatibilityFeatures.TUNNEL_PROFILE}

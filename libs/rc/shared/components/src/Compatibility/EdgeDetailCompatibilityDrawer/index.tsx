@@ -1,12 +1,12 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Loader }                            from '@acx-ui/components'
+import { Drawer, Loader, cssStr }                    from '@acx-ui/components'
 import {  ApCompatibility, IncompatibilityFeatures } from '@acx-ui/rc/utils'
 
 import { FeatureCrossDeviceTypeCompatibility } from '../CompatibilityDrawer/FeatureCrossDeviceTypeCompatibility'
 
-export type EdgeSdLanDetailCompatibilityDrawerProps = {
+export type EdgeDetailCompatibilityDrawerProps = {
   visible: boolean,
   featureName: IncompatibilityFeatures,
   data: Record<string, ApCompatibility>,
@@ -15,8 +15,7 @@ export type EdgeSdLanDetailCompatibilityDrawerProps = {
   isLoading?: boolean,
 }
 
-// eslint-disable-next-line max-len
-export const EdgeSdLanDetailCompatibilityDrawer = (props: EdgeSdLanDetailCompatibilityDrawerProps) => {
+export const EdgeDetailCompatibilityDrawer = (props: EdgeDetailCompatibilityDrawerProps) => {
   const { $t } = useIntl()
   const {
     visible,
@@ -37,7 +36,7 @@ export const EdgeSdLanDetailCompatibilityDrawer = (props: EdgeSdLanDetailCompati
       width={'500px'}
     >
       <Loader states={[ { isLoading } ]}>
-        <Form layout='vertical'>
+        <Form layout='vertical' style={{ paddingBottom: cssStr('--acx-content-vertical-space') }}>
           <FeatureCrossDeviceTypeCompatibility
             data={data}
             featureName={featureName}
