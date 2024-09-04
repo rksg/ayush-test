@@ -164,6 +164,7 @@ export function Venues (props: VenuesProps) {
   const { cloneMode, data, setData, editMode } = useContext(NetworkFormContext)
 
   const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
+  const softGreAssociationUpdate = Form.useWatch('softGreAssociationUpdate')
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
@@ -456,6 +457,7 @@ export function Venues (props: VenuesProps) {
               currentNetwork={currentNetwork}
               sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
               softGreVenueMap={softGreVenueMap}
+              softGreAssociationUpdate={softGreAssociationUpdate}
               onClick={handleClickNetworkTunnel}
             />
           </Form.Item>
@@ -679,7 +681,6 @@ export function Venues (props: VenuesProps) {
       ...softGreAssociationUpdate,
       [`${networkVenueId}`]: { ...modalFormValues.softGre }
     }
-    console.info('SoftGre updateContent', updateContent)
     form.setFieldValue('softGreAssociationUpdate', updateContent)
   }
 

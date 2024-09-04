@@ -180,16 +180,21 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
             label: item.name
           }
         }) ?? [] as DefaultOptionType[]
-        if (venueTotal === 3) {
+        if (venueTotal >= 3) {
           return {
-            data: { options: options, id: softGreProfileId } as SoftGreOptionsData
+            data: {
+              options: options,
+              id: softGreProfileId,
+              isLockedOptions: true
+            } as SoftGreOptionsData
           }
         }
         return {
           data: {
             options: options.map((item) =>
               ({ value: item.id, label: item.label, disable: false })) ,
-            id: softGreProfileId
+            id: softGreProfileId,
+            isLockedOptions: false
           } as SoftGreOptionsData
         }
       },

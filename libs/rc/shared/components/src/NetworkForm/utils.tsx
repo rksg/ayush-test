@@ -837,16 +837,16 @@ export const useUpdateSoftGreActivations = () => {
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   // eslint-disable-next-line max-len
-  const updateeSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[]) => {
+  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[]) => {
     const actions = Object.keys(updates).filter(venueId => {
       return _.find(activatedVenues, { venueId })
     }).map((venueId) => {
       // eslint-disable-next-line max-len
       const action = updates[venueId]
       if (action.newProfileId === '' && !action.oldProfileId) {
-        return dectivateSoftGre({ networkId, policyId: action.oldProfileId })
-      } else if (action.newProfileId !== action.oldProfileId) {
-        return activateSoftGre({ networkId, policyId: action.oldProfileId })
+        return dectivateSoftGre({ params: { venueId, networkId, policyId: action.oldProfileId } })
+      } else if (action.newProfileId !== '' && action.newProfileId !== action.oldProfileId) {
+        return activateSoftGre({ params: { venueId, networkId, policyId: action.newProfileId } })
       }
       return Promise.resolve()
     })
@@ -854,7 +854,7 @@ export const useUpdateSoftGreActivations = () => {
     return await Promise.all(actions)
   }
 
-  return updateeSoftGreActivations
+  return updateSoftGreActivations
 }
 
 

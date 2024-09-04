@@ -34,6 +34,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   const { $t } = useIntl()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)
+  const [ isLocked, setIsLocked ] = useState<boolean>(false)
   const [ softGreOption, setSoftGreOption ] = useState<DefaultOptionType[]>([])
 
   const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
@@ -47,10 +48,14 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
 
   useEffect(() => {
     if (optionsDataQuery.data) {
-      setSoftGreOption(optionsDataQuery.data.options)
-      if (optionsDataQuery.data.id) {
-        form.setFieldValue(['softGre', 'newProfileId'], optionsDataQuery.data.id)
-        form.setFieldValue(['softGre', 'oldProfileId'], optionsDataQuery.data.id)
+      const { options, isLockedOptions } = optionsDataQuery.data
+      setSoftGreOption(options)
+      setIsLocked(isLockedOptions)
+      const profileId = optionsDataQuery.data.id
+      if (profileId) {
+        form.setFieldValue(['softGre', 'newProfileId'], profileId)
+        form.setFieldValue(['softGre', 'oldProfileId'], profileId)
+        form.setFieldValue(['softGre', 'newProfileName'], options.find(item => item.value === profileId)?.label)
       }
     }
   }, [form, optionsDataQuery])
@@ -58,15 +63,22 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
   useEffect(() => {
     if (currentTunnelType !== NetworkTunnelTypeEnum.SoftGre) {
       form.setFieldValue(['softGre', 'newProfileId'], '')
+      form.setFieldValue(['softGre', 'newProfileName'], '')
     }
   }, [form, currentTunnelType])
 
   const addOption = (option: DefaultOptionType) => {
     setSoftGreOption((preState) => {
-      return [option, ...preState]
+      return [{ ...option, disabled: isLocked }, ...preState]
     })
     form.setFieldValue(['softGre', 'newProfileId'], option.value)
+    form.setFieldValue(['softGre', 'newProfileName'], option.label)
   }
+
+  const onChange = (value:string) => {
+    form.setFieldValue(['softGre', 'newProfileName'], softGreOption?.find(item => item.value === value)?.label)
+  }
+
 
   const handleClickAdd = () => {
     setDetailDrawerVisible(false)
@@ -96,6 +108,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
                   initialValue=''
                   children={<Select
                     style={{ width: '150px' }}
+                    onChange={onChange}
                     options={[
                       {
                         label: $t({ defaultMessage: 'Select...' }), value: ''

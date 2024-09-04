@@ -264,6 +264,7 @@ export interface NetworkTunnelSdLanAction {
 export interface NetworkTunnelSoftGreAction {
   [name:string]: {
     newProfileId: string,
+    newProfileName: string,
     oldProfileId: string
   }
 }

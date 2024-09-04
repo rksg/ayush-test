@@ -204,7 +204,7 @@ export function NetworkForm (props:{
   const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
   const updateEdgeSdLanActivations = useUpdateEdgeSdLanActivations()
-  const updateeSoftGreActivations = useUpdateSoftGreActivations()
+  const updateSoftGreActivations = useUpdateSoftGreActivations()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -767,7 +767,7 @@ export function NetworkForm (props:{
 
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && networkId && payload.venues) {
         // eslint-disable-next-line max-len
-        await updateeSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
+        await updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
       }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
@@ -883,7 +883,7 @@ export function NetworkForm (props:{
       // eslint-disable-next-line max-len
       if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && payload.id && payload.venues) {
         // eslint-disable-next-line max-len
-        await updateeSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
+        await updateSoftGreActivations(payload.id, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
       }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {

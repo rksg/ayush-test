@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 
-import { NetworkSaveData, Venue, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
+import { NetworkSaveData, Venue, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { SoftGreNetworkTunnel }         from '../../NetworkTunnelActionModal'
@@ -12,8 +12,9 @@ interface NetworkTunnelInfoButtonFormItemProps {
   value?: NetworkTunnelSdLanAction[]
   currentVenue: Venue
   currentNetwork: NetworkSaveData
-  sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData,
+  sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
   softGreVenueMap: Record<string, SoftGreNetworkTunnel[]>
+  softGreAssociationUpdate: NetworkTunnelSoftGreAction
   onClick: (currentVenue: Venue, currentNetwork: NetworkSaveData) => void
 }
 
@@ -24,6 +25,7 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     currentNetwork,
     sdLanScopedNetworkVenues,
     softGreVenueMap,
+    softGreAssociationUpdate,
     onClick
   } = props
 
@@ -53,8 +55,19 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
   })
 
   const networkId = currentNetwork.id ?? ''
-  const venueSoftGre = softGreVenueMap[currentVenue.id]?.find(sg =>
-    sg.networkIds.includes(networkId))
+
+  const getVenueSoftGre = () => {
+    if (softGreAssociationUpdate?.[currentVenue.id]) {
+      const { newProfileId, newProfileName } = softGreAssociationUpdate[currentVenue.id]
+      return {
+        venueId: currentVenue.id,
+        networkIds: [TMP_NETWORK_ID],
+        profileId: newProfileId,
+        profileName: newProfileName
+      } as SoftGreNetworkTunnel
+    }
+    return softGreVenueMap?.[currentVenue.id]?.find(sg => sg.networkIds.includes(networkId))
+  }
 
   return <NetworkTunnelInfoButton
     network={{
@@ -63,7 +76,7 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     }}
     currentVenue={currentVenue}
     venueSdLan={sdLanNetworkVenues.sdLansVenueMap?.[currentVenue.id]?.[0]}
-    venueSoftGre={venueSoftGre}
+    venueSoftGre={getVenueSoftGre()}
     onClick={handleClick}
   />
 }

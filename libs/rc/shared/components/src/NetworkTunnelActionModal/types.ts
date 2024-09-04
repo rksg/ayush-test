@@ -11,6 +11,7 @@ export interface NetworkTunnelActionForm {
   },
   softGre: {
     newProfileId: string,
+    newProfileName: string,
     oldProfileId: string
   }
 }

@@ -45,5 +45,6 @@ export interface SoftGreActivation {
 
 export interface SoftGreOptionsData {
   options: DefaultOptionType[],
-  id?: string
+  id?: string,
+  isLockedOptions: boolean
 }
