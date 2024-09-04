@@ -6,36 +6,31 @@ import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
 
-import {
-  Button,
-  Drawer,
-  GridCol,
-  GridRow,
-  showToast,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
+import { Button, Drawer, GridCol, GridRow, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { DeleteSolid, DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
+  useAddL2AclPolicyTemplateMutation,
   useGetEnhancedL2AclProfileListQuery,
   useGetL2AclPolicyQuery,
-  useUpdateL2AclPolicyMutation
-} from '@acx-ui/rc/services'
-import {
-  useAddL2AclPolicyTemplateMutation,
   useGetL2AclPolicyTemplateListQuery,
   useGetL2AclPolicyTemplateQuery,
+  useUpdateL2AclPolicyMutation,
   useUpdateL2AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
   defaultSort,
+  hasPolicyPermission,
   L2AclPolicy,
   MacAddressFilterRegExp,
-  sortProp, TableResult, useConfigTemplate,
+  PolicyOperation,
+  PolicyType,
+  sortProp,
+  TableResult,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -642,7 +637,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.EDIT }) &&
           <Button type='link'
             disabled={visible || !l2AclPolicyId}
             onClick={() => {
@@ -658,7 +653,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
           <Button type='link'
             disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
             onClick={() => {

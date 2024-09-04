@@ -1,48 +1,49 @@
-
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import {
-  Checkbox,
-  Form,
-  Select,
-  Slider,
-  Space,
-  Switch
-} from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import _, { get }              from 'lodash'
-import { useIntl }             from 'react-intl'
+import { Checkbox, Form, Select, Slider, Space, Switch } from 'antd'
+import { CheckboxChangeEvent }                           from 'antd/lib/checkbox'
+import _, { get }                                        from 'lodash'
+import { useIntl }                                       from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
   useAddAccessControlProfileMutation,
   useAddAccessControlProfileTemplateMutation,
-  useGetL2AclPolicyTemplateListQuery,
-  useGetL3AclPolicyTemplateListQuery,
-  useGetDevicePolicyTemplateListQuery,
-  useGetAppPolicyTemplateListQuery,
   useGetAccessControlProfileTemplateListQuery,
+  useGetAppPolicyTemplateListQuery,
+  useGetDevicePolicyTemplateListQuery,
   useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery,
   useGetEnhancedL2AclProfileListQuery,
   useGetEnhancedL3AclProfileListQuery,
-  useGetEnhancedApplicationProfileListQuery,
-  useGetEnhancedDeviceProfileListQuery
+  useGetL2AclPolicyTemplateListQuery,
+  useGetL3AclPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlFormFields, AccessControlInfoType,
-  AccessControlProfile, AccessControlProfileTemplate,
-  AclEmbeddedObject, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+  AccessControlFormFields,
+  AccessControlInfoType,
+  AccessControlProfile,
+  AccessControlProfileTemplate,
+  AclEmbeddedObject,
+  hasPolicyPermission,
+  PolicyOperation,
+  PolicyType,
+  transformDisplayText,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }            from '@acx-ui/react-router-dom'
-import { WifiScopes }           from '@acx-ui/types'
-import { hasPermission }        from '@acx-ui/user'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import {
   AccessControlSettingForm,
-  ApplicationDrawer, convertToPayload,
-  DeviceOSDrawer, genAclPayloadObject,
+  ApplicationDrawer,
+  convertToPayload,
+  DeviceOSDrawer,
+  genAclPayloadObject,
   Layer2Drawer,
   Layer3Drawer
 } from '../../policies/AccessControlForm'
@@ -305,7 +306,8 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
     uplinkLimit, downlinkLimit//, modalStatus.visible
   ])
 
-  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
+  // eslint-disable-next-line max-len
+  if (!hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })) return null
 
   const handleOnClick = () => {
     setModalStatus({
@@ -472,7 +474,7 @@ function SelectAccessProfileProfile (props: {
           children={accessControlProfileSelectOptions} />
       </Form.Item>
 
-      {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+      {hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
         <Button type='link'
           onClick={handleOnAddClick}
           children={$t({ defaultMessage: 'Add' })}

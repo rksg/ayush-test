@@ -40,7 +40,19 @@ export const policyTypeScopeMap: SvcPcyScopeMap<PolicyType>= {
   [PolicyType.CERTIFICATE]: ['wifi'],
   [PolicyType.CERTIFICATE_AUTHORITY]: ['wifi'],
   [PolicyType.CERTIFICATE_TEMPLATE]: ['wifi'],
-  [PolicyType.SOFTGRE]: ['wifi']
+  [PolicyType.SOFTGRE]: ['wifi'],
+  [PolicyType.TUNNEL_PROFILE]: ['wifi', 'edge'],
+  [PolicyType.ROGUE_AP_DETECTION]: ['wifi'],
+  [PolicyType.SYSLOG]: ['wifi'],
+  [PolicyType.CONNECTION_METERING]: ['wifi'],
+  [PolicyType.ACCESS_CONTROL]: ['wifi'],
+  [PolicyType.LAYER_2_POLICY]: ['wifi'],
+  [PolicyType.LAYER_3_POLICY]: ['wifi'],
+  [PolicyType.APPLICATION_POLICY]: ['wifi'],
+  [PolicyType.DEVICE_POLICY]: ['wifi'],
+  [PolicyType.VLAN_POOL]: ['wifi'],
+  [PolicyType.CLIENT_ISOLATION]: ['wifi'],
+  [PolicyType.WIFI_OPERATOR]: ['wifi']
 }
 
 export const policyOperScopeMap: SvcPcyOperMap<PolicyOperation> = {

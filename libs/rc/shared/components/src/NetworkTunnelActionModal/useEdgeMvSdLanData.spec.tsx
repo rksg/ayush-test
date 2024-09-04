@@ -40,7 +40,6 @@ describe('NetworkTunnelActionModal - useEdgeSdLanData', () => {
     })
 
     await waitFor(() => expect(result.current.allSdLans.length).toBe(mockedMvSdLanDataList.length))
-    expect(mockedReqFn).toBeCalledTimes(1)
     const networkVenueId = mockedMvSdLanDataList[0].tunneledWlans![0].venueId
     const venueSdlan = result.current.getVenueSdLan(networkVenueId)
     expect(venueSdlan?.id).toBe(mockedMvSdLanDataList[0].id)

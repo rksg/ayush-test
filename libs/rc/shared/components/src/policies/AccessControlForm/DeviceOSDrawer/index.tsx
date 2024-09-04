@@ -9,7 +9,9 @@ import {
   Button,
   ContentSwitcher,
   ContentSwitcherProps,
-  Drawer, GridCol, GridRow,
+  Drawer,
+  GridCol,
+  GridRow,
   showActionModal,
   Table,
   TableProps
@@ -17,30 +19,32 @@ import {
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAddDevicePolicyMutation,
-  useGetDevicePolicyQuery,
-  useGetEnhancedDeviceProfileListQuery,
-  useUpdateDevicePolicyMutation
-} from '@acx-ui/rc/services'
-import {
   useAddDevicePolicyTemplateMutation,
+  useGetDevicePolicyQuery,
   useGetDevicePolicyTemplateListQuery,
   useGetDevicePolicyTemplateQuery,
+  useGetEnhancedDeviceProfileListQuery,
+  useUpdateDevicePolicyMutation,
   useUpdateDevicePolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
-  DeviceRule,
-  OsVendorEnum,
   defaultSort,
+  DevicePolicy,
+  DeviceRule,
+  hasPolicyPermission,
+  OsVendorEnum,
+  PolicyOperation,
+  PolicyType,
   sortProp,
+  TableResult,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
-  TableResult, DevicePolicy, useConfigTemplate
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
-import { WifiScopes }                               from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddModeProps, editModeProps }                            from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_DEVICE_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
@@ -662,7 +666,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.EDIT }) &&
           <Button type='link'
             disabled={visible || !devicePolicyId}
             onClick={() => {
@@ -678,7 +682,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.DEVICE_POLICY, oper: PolicyOperation.CREATE }) &&
           <Button type='link'
             disabled={visible || deviceList.length >= PROFILE_MAX_COUNT_DEVICE_POLICY}
             onClick={() => {
@@ -692,9 +696,6 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       </AclGridCol>
     </GridRow>
   }
-
-  // eslint-disable-next-line max-len
-  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>

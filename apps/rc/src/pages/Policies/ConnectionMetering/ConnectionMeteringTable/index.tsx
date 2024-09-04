@@ -171,6 +171,7 @@ export default function ConnectionMeteringTable () {
 
   const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -186,6 +187,7 @@ export default function ConnectionMeteringTable () {
       disabled: (selectedItems => selectedItems.length > 1)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
