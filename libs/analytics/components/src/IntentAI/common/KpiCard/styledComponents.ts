@@ -13,6 +13,6 @@ export const Value = styled.span`
   color: var(--acx-primary-black);
   // body typography does not have large enough size
   font-size: 26px;
-  line-height: 1em;
+  line-height: 1.3em;
   font-weight: var(--acx-body-font-weight-bold);
 `

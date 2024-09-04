@@ -21,6 +21,7 @@ interface LicenseCardProps {
 
 interface ComplianceProps {
   isMsp: boolean
+  isExtendedTrial?: boolean
 }
 
 enum TrialType {
@@ -90,7 +91,9 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
             ${data.nextPaidExpirationDate})`}</label>}
       </UI.FieldLabelSubs2>
       {trialType && <UI.FieldLabelSubs2 width='275px'>
-        <label>{$t({ defaultMessage: 'Active Trial Licenses' })}</label>
+        <label>{trialType === TrialType.EXTENDED_TRIAL
+          ? $t({ defaultMessage: 'Active Extended Trial Licenses' })
+          : $t({ defaultMessage: 'Active Trial Licenses' })}</label>
         <label>{data.totalActiveTrialLicenseCount}</label>
         {data.totalActiveTrialLicenseCount > 0 &&
           <label style={{ textAlign: 'left', marginLeft: '10px', color: '#ec7100' }}>
@@ -108,19 +111,16 @@ const DeviceNetworkingCard = (props: LicenseCardProps) => {
           <label>{data.totalActiveTrialAssignedLicenseCount}</label>
         </UI.FieldLabelSubs2>
       </div>}
-      <UI.FieldLabelSubs2 width='275px'>
+      <UI.FieldLabelSubs2 style={{ marginTop: '10px' }} width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Used' })}</label>
         <label>{data.licensesUsed}</label>
       </UI.FieldLabelSubs2>
       <UI.FieldLabelSubs2 width='275px'>
         <label>{$t({ defaultMessage: 'Licenses Available / Gap' })}</label>
         <label>
-          {(trialType ? data.licenseGap :
-            (data.licenseGap - data.totalActiveTrialLicenseCount )) >= 0
-            ? <UI.LicenseAvailable>{trialType ? data.licenseGap :
-              (data.licenseGap - data.totalActiveTrialLicenseCount )}</UI.LicenseAvailable>
-            : <UI.LicenseGap>{trialType ? data.licenseGap :
-              (data.licenseGap - data.totalActiveTrialLicenseCount )}</UI.LicenseGap>}</label>
+          {data.licenseGap >= 0
+            ? <UI.LicenseAvailable>{data.licenseGap}</UI.LicenseAvailable>
+            : <UI.LicenseGap>{data.licenseGap}</UI.LicenseGap>}</label>
       </UI.FieldLabelSubs2>
     </Card>
   </Col>
@@ -130,7 +130,7 @@ export const LicenseCompliance = (props: ComplianceProps) => {
   const params = useParams()
   const [selfData, setSelfData] = useState(emptyCompliance as ComplianceData)
   const [ecSummaryData, setEcSummaryData] = useState(emptyCompliance as ComplianceData)
-  const { isMsp } = props
+  const { isMsp, isExtendedTrial } = props
 
   const RecPayload = {
     filters: {
@@ -171,7 +171,9 @@ export const LicenseCompliance = (props: ComplianceProps) => {
         title='Device Networking Subscriptions'
         subTitle='MSP Customers License Expiration'
         isMsp={false}
-        data={ecSummaryData} />
+        data={ecSummaryData}
+        trialType={isExtendedTrial ? TrialType.EXTENDED_TRIAL : undefined}
+      />
     </UI.ComplianceContainer>
     : <DeviceNetworkingCard
       title='Device Networking Subscriptions'

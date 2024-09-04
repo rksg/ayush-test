@@ -14,11 +14,11 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
-import { get }                              from '@acx-ui/config'
-import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
-import { hasPermission }                    from '@acx-ui/user'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, Button }        from '@acx-ui/components'
+import { get }                                     from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }                from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import type { AnalyticsFilter }                    from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -137,17 +137,22 @@ export function KpiSection (props: {
           <GridCol col={{ span: 8 }} style={{ height: '160px' }}>
             {Object(kpiConfig[kpi as keyof typeof kpiConfig])?.histogram ? (
               <Histogram
-                filters={filters}
+                filters={{
+                  ...filters,
+                  startDate: timeWindow[0] as string,
+                  endDate: timeWindow[1] as string
+                }
+                }
                 kpi={kpi as keyof typeof kpiConfig}
                 threshold={kpiThreshold[kpi as keyof KpiThresholdType]}
                 setKpiThreshold={setKpiThreshold}
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
-                disabled={!hasPermission({
+                disabled={!(hasCrossVenuesPermission() && hasPermission({
                   permission: 'WRITE_HEALTH',
                   scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
-                })}
+                }))}
               />
             ) : (
               <BarChart

@@ -3,24 +3,26 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { venueApi, edgeApi }                                                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                     from '@acx-ui/store'
-import { act, mockServer, render, screen, within }                             from '@acx-ui/test-utils'
+import { venueApi, edgeApi }                                                                              from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures, EdgeCompatibilityFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                from '@acx-ui/store'
+import { act, mockServer, render, screen, within }                                                        from '@acx-ui/test-utils'
 
 import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
 
 import {
-  mockEdgeCompatibilitiesVenue,
-  mockEdgeSdLanCompatibilities,
-  mockEdgeSdLanApCompatibilites,
-  mockEdgeFeatureCompatibilities,
   mockApFeatureCompatibilities
 } from './__test__/fixtures'
 
 import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '.'
 
+const {
+  mockEdgeCompatibilitiesVenue,
+  mockEdgeSdLanCompatibilities,
+  mockEdgeSdLanApCompatibilites,
+  mockEdgeFeatureCompatibilities
+} = EdgeCompatibilityFixtures
 
 jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
   const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
@@ -79,7 +81,7 @@ describe('EdgeCompatibilityDrawer', () => {
     )
   })
 
-  it('should fetch and display render venue correctly', async () => {
+  it('should fetch and display render venue compatibility in table', async () => {
     render(
       <Provider>
         <EdgeCompatibilityDrawer
@@ -95,17 +97,10 @@ describe('EdgeCompatibilityDrawer', () => {
       })
 
     await screen.findByText('Testing Title')
-    await screen.findByTestId('CompatibilityItem')
-    const features = screen.getAllByTestId('FeatureItem')
-    expect(features.length).toBe(2)
-
-    const f1 = features[0]
-    expect(await within(f1).findByText('SD-LAN')).toBeInTheDocument()
-    expect(within(f1).getByText('2.1.0.200')).toBeValid()
-
-    const f2 = features[1]
-    expect(within(f2).getByText('Tunnel Profile')).toBeValid()
-    expect(within(f2).getByText('2.1.0.400')).toBeValid()
+    const sdlanRow = await screen.findByRole('row', { name: /SD-LAN/ })
+    expect(sdlanRow).toBeVisible()
+    expect(screen.getByRole('row', { name: 'SD-LAN 1 2.1.0.200' })).toBeValid()
+    expect(screen.getByRole('row', { name: 'Tunnel Profile 2 2.1.0.400' })).toBeValid()
     expect(screen.getByTestId('CloseSymbol')).toBeVisible()
   })
 
@@ -126,22 +121,23 @@ describe('EdgeCompatibilityDrawer', () => {
           title='Testing Title'
           type={EdgeCompatibilityType.SD_LAN}
           serviceId={serviceId}
+          featureName={IncompatibilityFeatures.SD_LAN}
           onClose={mockedCloseDrawer}
         />
       </Provider>, {
         route: { params: { tenantId }, path: '/:tenantId' }
       })
 
+    expect(await screen.findByText('SD-LAN')).toBeInTheDocument()
     const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
     expect(compatibilityDevices.length).toBe(2)
     const features = screen.getAllByTestId('FeatureItem')
     expect(features.length).toBe(2)
 
     const edgeBlock = compatibilityDevices[0]
-    expect(await within(edgeBlock).findByText('SD-LAN')).toBeInTheDocument()
     expect(within(edgeBlock).getByText('2.1.0.200')).toBeValid()
     within(edgeBlock).getByText(/Incompatible SmartEdges/)
-    expect(within(edgeBlock).getByText('7 / 14')).toBeValid()
+    expect(within(edgeBlock).getByText('5 / 14')).toBeValid()
 
     const wifiBlock = compatibilityDevices[1]
     expect(within(wifiBlock).getByText('7.0.0.0.234')).toBeValid()
@@ -170,22 +166,25 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
+
     const compatibilityDevices = await screen.findAllByTestId('CompatibilityItem')
+    expect(screen.getByText('SD-LAN')).toBeValid()
+    expect(screen.getByText('SmartEdge')).toBeValid()
+    expect(screen.getByText('Wi-Fi')).toBeValid()
+
     expect(compatibilityDevices.length).toBe(2)
     const features = screen.getAllByTestId('FeatureItem')
     expect(features.length).toBe(2)
 
     const edgeBlock = compatibilityDevices[0]
-    expect(await within(edgeBlock).findByText('SD-LAN')).toBeInTheDocument()
     expect(within(edgeBlock).getByText('2.1.0.600')).toBeValid()
 
     const wifiBlock = compatibilityDevices[1]
-    expect(within(wifiBlock).getByText('SD-LAN')).toBeValid()
     expect(within(wifiBlock).getByText('7.0.0.0')).toBeValid()
     expect(screen.getByTestId('CloseSymbol')).toBeVisible()
   })
 
-  it('should direct display render correctly(Devices of Venue banner) with given data', async () => {
+  it('should render Venue compatibilities correctly with given data', async () => {
     mockedCloseDrawer.mockClear()
 
     render(
@@ -193,25 +192,22 @@ describe('EdgeCompatibilityDrawer', () => {
         <EdgeCompatibilityDrawer
           visible={true}
           title='Testing render with given data'
-          data={mockEdgeCompatibilitiesVenue.compatibilities}
+          data={mockEdgeCompatibilitiesVenue.compatibilities.slice(0, 1)}
           onClose={mockedCloseDrawer}
         />
       </Provider>, {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    const descriptions = await screen.findAllByText(/The following features are unavailable on specific SmartEdges/)
+    const descriptions = await screen.findAllByText(/The following features are unavailable on certain SmartEdges in this venue due /)
     expect(descriptions.length).toBe(1)
-    const features = screen.getAllByTestId('FeatureItem')
-    expect(features.length).toBe(2)
 
-    const f1 = features[0]
-    expect(await within(f1).findByText('SD-LAN')).toBeInTheDocument()
-    expect(within(f1).getByText('2.1.0.200')).toBeValid()
+    const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
+    expect(sdlanRow).toBeVisible()
+    expect(within(sdlanRow).getByText('2.1.0.200')).toBeValid()
 
-    const f2 = features[1]
-    expect(within(f2).getByText('Tunnel Profile')).toBeValid()
-    expect(within(f2).getByText('2.1.0.400')).toBeValid()
+    const tunnelProfileRow = screen.getByRole('row', { name: /Tunnel Profile/ })
+    expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
     await userEvent.click(screen.getByTestId('CloseSymbol'))
     expect(mockedCloseDrawer).toBeCalledTimes(1)
   })
@@ -237,17 +233,14 @@ describe('EdgeCompatibilityDrawer', () => {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
 
-    expect(await screen.findByText(/The following features are not enabled on this SmartEdge/)).toBeInTheDocument()
-    const features = screen.getAllByTestId('FeatureItem')
-    expect(features.length).toBe(2)
+    expect(await screen.findByText(/The following features are not enabled on this SmartEdge /)).toBeInTheDocument()
 
-    const f1 = features[0]
-    expect(await within(f1).findByText('SD-LAN')).toBeInTheDocument()
-    expect(within(f1).getByText('2.1.0.200')).toBeValid()
+    const sdlanRow = screen.getByRole('row', { name: /SD-LAN/ })
+    expect(sdlanRow).toBeVisible()
+    expect(within(sdlanRow).getByText('2.1.0.200')).toBeValid()
 
-    const f2 = features[1]
-    expect(within(f2).getByText('Tunnel Profile')).toBeValid()
-    expect(within(f2).getByText('2.1.0.400')).toBeValid()
+    const tunnelProfileRow = screen.getByRole('row', { name: /Tunnel Profile/ })
+    expect(within(tunnelProfileRow).getByText('2.1.0.400')).toBeValid()
     await userEvent.click(screen.getByTestId('CloseSymbol'))
     expect(mockedCloseDrawer).toBeCalledTimes(1)
   })

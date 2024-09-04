@@ -181,7 +181,8 @@ export {
 export {
   useEdgeSdLanCompatibilityData,
   useEdgeCompatibilityRequirementData,
-  useEdgeSdLanDetailsCompatibilitiesData
+  useEdgeSdLanDetailsCompatibilitiesData,
+  getSdLanDetailsCompatibilitiesDrawerData
 } from './useEdgeActions/compatibility'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
@@ -218,7 +219,9 @@ export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
   tansformSdLanScopedVenueMap,
-  isSdLanGuestUtilizedOnDiffVenue
+  isSdLanGuestUtilizedOnDiffVenue,
+  isSdLanLastNetworkInVenue,
+  showSdLanVenueDissociateModal
 } from './EdgeSdLan/edgeSdLanUtils'
 export * from './NetworkTunnelActionModal'
 export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'
@@ -233,8 +236,9 @@ export {
 export {
   ApGeneralCompatibilityDrawer,
   EdgeCompatibilityDrawer,
+  EdgeCompatibilityType,
   CompatibilityWarningCircleIcon,
-  EdgeSdLanDetailCompatibilityDrawer,
+  EdgeDetailCompatibilityDrawer,
   CompatibleAlertBanner
 } from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
@@ -258,6 +262,7 @@ export {
   transformApiDataToFormListData
 } from './EdgeFormItem/EdgePortsGeneralBase/utils'
 export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
+// export { EdgeChangeScheduleDialog } from './EdgeFirmware/ChangeScheduleDialog'
 
 export * from './services'
 export * from './policies'

@@ -98,6 +98,7 @@ const AddEdgeQosBandwidth = () => {
         form={form}
         steps={steps}
         onFinish={handleFinish}
+        onCancel={() => navigate(linkToProfileList)}
       />
     </>
   )

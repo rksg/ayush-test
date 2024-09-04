@@ -141,24 +141,26 @@ export function WISPrForm () {
     }
   },[mspEcProfileData])
 
-  /* eslint-disable */
   useEffect(()=> {
-    console.log(`PSK or OWE: ${networkSecurity}, protocol: ${wlanSecurity}, `)
-    const transNetworkSecurity = WisprSecurityEnum[networkSecurity as keyof typeof WisprSecurityEnum]
-    const transWlanSecurity = PskWlanSecurityEnum[wlanSecurity as keyof typeof PskWlanSecurityEnum]
+    const transNetworkSecurity =
+    WisprSecurityEnum[networkSecurity as keyof typeof WisprSecurityEnum]
+    const transWlanSecurity =
+    PskWlanSecurityEnum[wlanSecurity as keyof typeof PskWlanSecurityEnum]
     const MLOEffectiveCondition = [
-      (transNetworkSecurity === WisprSecurityEnum.PSK && transWlanSecurity === PskWlanSecurityEnum.WPA23Mixed),
-      (transNetworkSecurity === WisprSecurityEnum.PSK && transWlanSecurity === PskWlanSecurityEnum.WPA3),
+      (transNetworkSecurity === WisprSecurityEnum.PSK &&
+        transWlanSecurity === PskWlanSecurityEnum.WPA23Mixed),
+      (transNetworkSecurity === WisprSecurityEnum.PSK &&
+        transWlanSecurity === PskWlanSecurityEnum.WPA3),
       (transNetworkSecurity === WisprSecurityEnum.OWE)
     ].some(Boolean)
-    
+
     disableMLO(!MLOEffectiveCondition)
 
     if (!MLOEffectiveCondition) {
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [wlanSecurity, networkSecurity])
-  /* eslint-enable */
+
   useEffect(()=>{
     if(providerData.data){
       const providers = providerData.data.providers
@@ -248,6 +250,7 @@ export function WISPrForm () {
       (!data?.wlan?.bypassCPUsingMacAddressAuthentication)
     ].every(Boolean)) {dispatch(statesCollection.useOnlyAuth)}
   },[])
+
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })

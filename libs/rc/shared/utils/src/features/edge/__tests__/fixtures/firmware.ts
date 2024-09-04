@@ -82,3 +82,24 @@ export const mockedLatestEdgeFirmwares = [
     updatedDate: null
   }
 ]
+
+export const mockAvailableVersions = [
+  {
+    name: '1.0.0.1710',
+    category: FirmwareCategory.RECOMMENDED,
+    id: '1.0.0.1710',
+    onboardDate: '2023-02-23T09:16:05.388+0000'
+  },
+  {
+    name: '1.0.0.1711',
+    category: FirmwareCategory.RECOMMENDED,
+    id: '1.0.0.1711',
+    onboardDate: '2023-02-23T09:16:05.388+0000'
+  },
+  {
+    name: '1.0.0.1712',
+    category: FirmwareCategory.RECOMMENDED,
+    id: '1.0.0.1712',
+    onboardDate: '2023-02-23T09:16:05.388+0000'
+  }
+]
