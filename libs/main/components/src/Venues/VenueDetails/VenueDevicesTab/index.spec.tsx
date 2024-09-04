@@ -164,7 +164,9 @@ describe('VenueWifi', () => {
   })
 
   it('should render Ap Compatibilities Note correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ![Features.WIFI_RBAC_API, Features.EDGE_COMPATIBILITY_CHECK_TOGGLE].includes(ff as Features))
+
     render(<Provider><VenueDevicesTab /></Provider>, {
       route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/:activeTab/:activeSubTab' }
     })
@@ -221,5 +223,4 @@ describe('Venue device tab', () => {
       search: ''
     })
   })
-
 })
