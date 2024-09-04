@@ -220,7 +220,7 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 }
 
 // eslint-disable-next-line max-len
-export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
@@ -304,7 +304,7 @@ export function useRadiusServer () {
 
 
   // eslint-disable-next-line max-len
-  const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -313,7 +313,7 @@ export function useRadiusServer () {
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
       const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = oldSaveData?.[radiusKey]
+      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
 
       if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
         const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
@@ -340,9 +340,9 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
     return Promise.all([
-      updateProfile(saveData, oldSaveData, networkId),
+      updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
     ])
   }
@@ -378,7 +378,7 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
     const venueData = saveState?.venues?.map(v => ({ ...v,
       clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
     const fullNetworkSaveData = { ...saveState, venues: venueData }
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData
