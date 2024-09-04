@@ -137,6 +137,9 @@
 
     &.ant-btn-background-ghost {
       border: 0;
+      &[ant-click-animating-without-extra-node='true']::after{
+        display:none;
+      }
     }
 
     &[disabled], &.ant-btn-disabled {
