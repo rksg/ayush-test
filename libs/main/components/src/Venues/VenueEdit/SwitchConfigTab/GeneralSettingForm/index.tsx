@@ -5,7 +5,7 @@ import { isEqual }                                           from 'lodash'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance }     from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { ConfigurationOutlined }                                        from '@acx-ui/icons'
+import { DeleteOutlined, ConfigurationOutlined }                        from '@acx-ui/icons-new'
 import { useConfigTemplateVisibilityMap, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
@@ -32,11 +32,11 @@ import { getIntl }                from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext } from '../../index'
 
-import { CliProfileDetailModal }                       from './CliProfileDetailModal'
-import { ConfigProfileModal }                          from './ConfigProfileModal'
-import { RegularProfileDetailModal }                   from './RegularProfileDetailModal'
-import { ButtonWrapper, DeleteOutlinedIcon, RowStyle } from './styledComponents'
-import { SyslogServerModal }                           from './SyslogServerModal'
+import { CliProfileDetailModal }     from './CliProfileDetailModal'
+import { ConfigProfileModal }        from './ConfigProfileModal'
+import { RegularProfileDetailModal } from './RegularProfileDetailModal'
+import { ButtonWrapper, RowStyle }   from './styledComponents'
+import { SyslogServerModal }         from './SyslogServerModal'
 
 export interface FormState {
   changeModalvisible: boolean,
@@ -310,7 +310,10 @@ export function GeneralSettingForm () {
                           size='small'
                           disabled={formState?.cliApplied}
                           suffix={
-                            !formState?.cliApplied && <DeleteOutlinedIcon
+                            !formState?.cliApplied && <DeleteOutlined
+                              style={{ cursor: 'pointer' }}
+                              color='var(--acx-accents-blue-50)'
+                              size='sm'
                               role='deleteBtn'
                               onClick={() => {
                                 const dns = formRef?.current?.getFieldsValue()?.dns
@@ -341,9 +344,10 @@ export function GeneralSettingForm () {
                       }}
                     />
                   </Tooltip>
-                  <Button ghost
+                  <Button
+                    ghost
                     role='configBtn'
-                    icon={<ConfigurationOutlined />}
+                    icon={<ConfigurationOutlined size='sm' />}
                     onClick={() => {
                       setFormState({
                         ...formState,

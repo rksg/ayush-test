@@ -29,24 +29,37 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
 }
 
 .c0 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c0.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c0[disabled] svg path,
 .c0.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
 .c0[disabled].ant-btn-default svg path,
 .c0.ant-btn-disabled.ant-btn-default svg path,
 .c0[disabled].ant-btn-primary svg path,
 .c0.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 <div
@@ -381,24 +394,37 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
 }
 
 .c1 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c1[disabled] svg path,
 .c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
 .c1[disabled].ant-btn-default svg path,
 .c1.ant-btn-disabled.ant-btn-default svg path,
 .c1[disabled].ant-btn-primary svg path,
 .c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c0 {
@@ -527,24 +553,37 @@ exports[`Floor Plan Plain View drag new AP 1`] = `
 }
 
 .c1 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c1[disabled] svg path,
 .c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
 .c1[disabled].ant-btn-default svg path,
 .c1.ant-btn-disabled.ant-btn-default svg path,
 .c1[disabled].ant-btn-primary svg path,
 .c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c6.device-container {
@@ -944,24 +983,37 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
 }
 
 .c0 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c0.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c0.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c0.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c0.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c0[disabled] svg path,
 .c0.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c0[disabled].ant-btn-link svg path,
+.c0.ant-btn-disabled.ant-btn-link svg path,
 .c0[disabled].ant-btn-default svg path,
 .c0.ant-btn-disabled.ant-btn-default svg path,
 .c0[disabled].ant-btn-primary svg path,
 .c0.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 <div
@@ -1296,24 +1348,37 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
 }
 
 .c1 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c1[disabled] svg path,
 .c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
 .c1[disabled].ant-btn-default svg path,
 .c1.ant-btn-disabled.ant-btn-default svg path,
 .c1[disabled].ant-btn-primary svg path,
 .c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c0 {
@@ -1442,24 +1507,37 @@ exports[`Floor Plan Plain View should render correctly Plain View 1`] = `
 }
 
 .c1 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c1[disabled] svg path,
 .c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
 .c1[disabled].ant-btn-default svg path,
 .c1.ant-btn-disabled.ant-btn-default svg path,
 .c1[disabled].ant-btn-primary svg path,
 .c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c6.device-container {
@@ -2030,24 +2108,37 @@ exports[`Floor Plan Plain View show single floorplan 1`] = `
 }
 
 .c1 svg path {
-  stroke: var(--acx-primary-black);
+  color: var(--acx-primary-black);
+}
+
+.c1.ant-btn-link svg path {
+  color: var(--acx-accents-blue-50);
+}
+
+.c1.ant-btn-link:hover {
+  color: var(--acx-accents-blue-60);
+}
+
+.c1.ant-btn-link:hover svg path {
+  color: var(--acx-accents-blue-60);
 }
 
 .c1.ant-btn-primary svg path {
-  stroke: var(--acx-primary-white) !important;
-  fill: var(--acx-primary-white) !important;
+  color: var(--acx-primary-white) !important;
 }
 
 .c1[disabled] svg path,
 .c1.ant-btn-disabled svg path {
-  stroke: var(--acx-primary-white);
+  color: var(--acx-primary-white);
 }
 
+.c1[disabled].ant-btn-link svg path,
+.c1.ant-btn-disabled.ant-btn-link svg path,
 .c1[disabled].ant-btn-default svg path,
 .c1.ant-btn-disabled.ant-btn-default svg path,
 .c1[disabled].ant-btn-primary svg path,
 .c1.ant-btn-disabled.ant-btn-primary svg path {
-  stroke: var(--acx-neutrals-40);
+  color: var(--acx-neutrals-40);
 }
 
 .c0 {
