@@ -95,13 +95,8 @@ export function ConfigSettings ({ settings }: { settings: Settings }) {
     (lspValue !== lspName),
     (propertyValue !== propertyName)
   ].some(hasChanged => hasChanged)
-  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({
-    // permission: 'READ_BRAND360', // need WRITE_BRAND360 ?
-    scopes: [WifiScopes.UPDATE]
-  }))
+  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.UPDATE] }))
   const isDisabled = isInvalid || !hasChanged || isReadOnly
-
-
   const [updateSettings, result] = useUpdateTenantSettingsMutation()
   const saveSettings = useCallback(() => {
     updateSettings({

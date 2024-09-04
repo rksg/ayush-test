@@ -24,7 +24,7 @@ import {
 import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { Provider }                       from '@acx-ui/store'
 import { render, screen }                 from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
+import { RolesEnum, WifiScopes }          from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures               from './__tests__/fixtures'
@@ -338,6 +338,20 @@ describe('Test', () => {
         setUserProfile({ ...profile, profile: {
           ...profile.profile, roles: [RolesEnum.READ_ONLY]
         } })
+        const params = { incidentId: test.fakeIncident.id }
+        render(<Provider>
+          <test.component {...test.fakeIncident} />
+        </Provider>, { route: { params } })
+        expect(screen.queryByTestId('muteIncident')).not.toBeInTheDocument()
+      })
+      it.only(`should hide mute for ${test.component.name} when scope has no wifi update`, () => {
+        jest.mocked(useIsSplitOn).mockReturnValue(true)
+        setUserProfile({
+          ...getUserProfile(),
+          abacEnabled: true,
+          isCustomRole: true,
+          scopes: [WifiScopes.READ]
+        })
         const params = { incidentId: test.fakeIncident.id }
         render(<Provider>
           <test.component {...test.fakeIncident} />

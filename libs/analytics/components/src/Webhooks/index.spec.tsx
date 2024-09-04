@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 import { get }                                                                      from '@acx-ui/config'
 import { notificationApi, Provider, rbacApi, store }                                from '@acx-ui/store'
 import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
-import { RolesEnum }                                                                from '@acx-ui/types'
+import { RolesEnum, WifiScopes }                                                    from '@acx-ui/types'
 import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile }        from '@acx-ui/user'
 
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
@@ -210,6 +210,34 @@ describe('WebhooksTable', () => {
       expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
       expect(await screen
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
+    })
+    describe('when missing wifi-u', () => {
+      beforeEach(() => {
+        setUserProfile({
+          ...getUserProfile(),
+          abacEnabled: true,
+          isCustomRole: true,
+          scopes: [WifiScopes.READ]
+        })
+      })
+      it('should hide actions', async () => {
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
+      })
+      it('should hide row actions', async () => {
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+      })
     })
     describe('when role = READ_ONLY', () => {
       beforeEach(() => {

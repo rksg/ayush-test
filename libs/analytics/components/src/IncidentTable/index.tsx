@@ -25,6 +25,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath }                                                       from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes }                                                            from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile }                         from '@acx-ui/utils'
 
@@ -282,7 +283,10 @@ export function IncidentTable ({ filters }: {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
         rowSelection={hasCrossVenuesPermission() &&
-          (hasPermission({ permission: 'WRITE_INCIDENTS' }) || !get('IS_MLISA_SA')) && {
+          (hasPermission({
+            permission: 'WRITE_INCIDENTS',
+            scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+          }) || !get('IS_MLISA_SA')) && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
