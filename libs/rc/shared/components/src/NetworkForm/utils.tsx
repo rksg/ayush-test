@@ -872,7 +872,7 @@ export const getNetworkTunnelSdLanUpdateData = (
   const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
   const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
 
-  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, [], venueSdLanInfo)
   const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
   let isNeedUpdate: boolean = false
 

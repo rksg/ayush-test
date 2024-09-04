@@ -82,8 +82,8 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             validateFirst
             hasFeedback
             initialValue={''}
-            children={readMode ? softGreData?.name : <Input/>}
             validateTrigger={'onBlur'}
+            children={readMode ? softGreData?.name : <Input/>}
           />
           <Form.Item
             name='description'
@@ -91,7 +91,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             initialValue=''
             rules={readMode? [] : [{ max: 64 } ]}
             children={
-              readMode ? softGreData?.description ?? noDataDisplay
+              readMode ? softGreData?.description || noDataDisplay
                 : <Input.TextArea rows={2} />
             }
           />
@@ -102,11 +102,11 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               { required: true },
               { validator: (_, value) => networkWifiIpRegExp(value) }
             ]}
+            validateFirst
+            hasFeedback
             children={
               readMode ? softGreData?.primaryGatewayAddress : <Input />
             }
-            validateFirst
-            hasFeedback
           />
           <Form.Item
             name='secondaryGatewayAddress'
@@ -120,11 +120,11 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                   Promise.resolve()
               } }
             ]}
-            children={
-              readMode ? softGreData?.secondaryGatewayAddress : <Input/>
-            }
             validateFirst
             hasFeedback
+            children={readMode ? softGreData?.secondaryGatewayAddress || noDataDisplay :
+              <Input/>
+            }
           />
         </Col>
         <Col span={24}>
@@ -145,9 +145,12 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             }
             children={
               readMode ?
-              // eslint-disable-next-line max-len
-                softGreData?.mtuType !== MtuTypeEnum.MANUAL ? $t({ defaultMessage: 'Auto' }) : $t({ defaultMessage: 'Manual' })
-                : <Radio.Group>
+                (
+                  softGreData?.mtuType === MtuTypeEnum.AUTO ?
+                    $t({ defaultMessage: 'Auto' }) :
+                    $t({ defaultMessage: 'Manual ({mtuSize})' }, { mtuSize: softGreData?.mtuSize })
+                )
+                : (<Radio.Group>
                   <Space direction='vertical'>
                     <Radio value={MtuTypeEnum.AUTO} >
                       {$t({ defaultMessage: 'Auto' })}
@@ -157,112 +160,122 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                         <div>
                           {$t({ defaultMessage: 'Manual' })}
                         </div>
-                        {
-                          mtuType === MtuTypeEnum.MANUAL &&
-                      <Space>
-                        <Form.Item
-                          name='mtuSize'
-                          rules={[
-                            {
-                              required: mtuType === MtuTypeEnum.MANUAL,
-                              message: 'Please enter Gateway Path MTU Mode'
-                            },
-                            {
-                              type: 'number', min: 850, max: 9018,
-                              message: $t({
-                                defaultMessage: 'Gateway Path MTU Mode must be between 850 and 9018'
-                              })
-                            }
-                          ]}
-                          children={
-                            <InputNumber style={{ width: '125px' }} placeholder='850-9018'/>}
-                          validateFirst
-                          noStyle
-                          hasFeedback
-                        />
-                        <div>{$t({ defaultMessage: 'bytes' })}</div>
-                      </Space>
+                        {mtuType === MtuTypeEnum.MANUAL &&
+                          <Space>
+                            <Form.Item
+                              name='mtuSize'
+                              rules={[
+                                {
+                                  required: mtuType === MtuTypeEnum.MANUAL,
+                                  message: 'Please enter Gateway Path MTU Mode'
+                                },
+                                {
+                                  type: 'number', min: 850, max: 9018,
+                                  message: $t({
+                                    // eslint-disable-next-line max-len
+                                    defaultMessage: 'Gateway Path MTU Mode must be between 850 and 9018'
+                                  })
+                                }
+                              ]}
+                              children={
+                                <InputNumber style={{ width: '125px' }} placeholder='850-9018'/>}
+                              validateFirst
+                              noStyle
+                              hasFeedback
+                            />
+                            <div>{$t({ defaultMessage: 'bytes' })}</div>
+                          </Space>
                         }
                       </Space>
                     </Radio>
                   </Space>
-                </Radio.Group>
+                </Radio.Group>)
             }
           />
         </Col>
-        <Col span={24}>
-          <Form.Item
-            style={{ marginBottom: '10px' }}
-            label={<>
-              { $t({ defaultMessage: 'ICMP Keep Alive Interval' }) }
-              {readMode ? null
-                : <Tooltip.Question
-                  title={$t(messageMapping.keep_alive_interval_tooltip)}
-                  placement='bottom'/>}
-            </>}
-            required={!readMode}
-          >
-            <Space>
-              <Form.Item
-                name='keepAliveInterval'
-                initialValue={10}
-                rules={readMode ? [] : [
-                  {
-                    required: true,
-                    message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Interval' })
-                  },
-                  {
-                    type: 'number', min: 1, max: 180,
-                    message: $t({
-                      defaultMessage: 'ICMP Keep Alive Interval must be between 1 and 180'
-                    })
-                  }
-                ]}
-                children={
-                  readMode ? softGreData?.mtuSize ?? noDataDisplay
-                    : <InputNumber style={{ width: '60px' }}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              {!readMode && <div>{$t({ defaultMessage: 'seconds' })}</div>}
-            </Space>
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item
-            style={{ marginBottom: '10px' }}
-            label={<>
-              { $t({ defaultMessage: 'ICMP Keep Alive Retries' }) }
-              {readMode ? null
-                : <Tooltip.Question
-                  title={$t(messageMapping.keep_alive_retry_tooltip)}
-                  placement='bottom'/>}
-            </>}
-            required={!readMode}
-          >
-            <Space>
-              <Form.Item
-                name='keepAliveRetryTimes'
-                initialValue={5}
-                rules={readMode ? [] : [
-                  {
-                    required: true,
-                    message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Retries' })
-                  },
-                  { type: 'number', min: 2, max: 10 }
-                ]}
-                children={
-                  readMode ? softGreData?.keepAliveRetryTimes ?? noDataDisplay
-                    : <InputNumber style={{ width: '60px' }}/>}
-                validateFirst
-                noStyle
-                hasFeedback
-              />
-              {!readMode && <div>{$t({ defaultMessage: 'retries' })}</div>}
-            </Space>
-          </Form.Item>
-        </Col>
+        {readMode && (
+          <Col span={24}>
+            <Form.Item
+              label={$t({ defaultMessage: 'ICMP Keep Alive' })}
+              children={$t({ defaultMessage: '{seconds} seconds/ {times} retries' },
+                { seconds: softGreData?.keepAliveInterval || noDataDisplay,
+                  times: softGreData?.keepAliveRetryTimes || noDataDisplay
+                })}
+            />
+          </Col>
+        )}
+        {!readMode && (
+          <Col span={24}>
+            <Form.Item
+              label={<>
+                { $t({ defaultMessage: 'ICMP Keep Alive Interval' }) }
+                {readMode ? null
+                  : <Tooltip.Question
+                    title={$t(messageMapping.keep_alive_interval_tooltip)}
+                    placement='bottom'/>}
+              </>}
+              required={!readMode}
+            >
+              <Space>
+                <Form.Item
+                  name='keepAliveInterval'
+                  initialValue={10}
+                  rules={[
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Interval' })
+                    },
+                    {
+                      type: 'number', min: 1, max: 180,
+                      message: $t({
+                        defaultMessage: 'ICMP Keep Alive Interval must be between 1 and 180'
+                      })
+                    }
+                  ]}
+                  validateFirst
+                  noStyle
+                  children={<InputNumber style={{ width: '60px' }}/>}
+                />
+                <div>{$t({ defaultMessage: 'seconds' })}</div>
+              </Space>
+            </Form.Item>
+          </Col>
+        )}
+        {!readMode && (
+          <Col span={24}>
+            <Form.Item
+              label={<>
+                { $t({ defaultMessage: 'ICMP Keep Alive Retries' }) }
+                {readMode ? null
+                  : <Tooltip.Question
+                    title={$t(messageMapping.keep_alive_retry_tooltip)}
+                    placement='bottom'/>}
+              </>}
+              required={!readMode}
+            >
+              <Space>
+                <Form.Item
+                  name='keepAliveRetryTimes'
+                  initialValue={5}
+                  rules={readMode ? [] : [
+                    {
+                      required: true,
+                      message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Retries' })
+                    },
+                    { type: 'number', min: 2, max: 10 }
+                  ]}
+                  children={
+                    readMode ? softGreData?.keepAliveRetryTimes ?? noDataDisplay
+                      : <InputNumber style={{ width: '60px' }}/>}
+                  validateFirst
+                  noStyle
+                  hasFeedback
+                />
+                <div>{$t({ defaultMessage: 'retries' })}</div>
+              </Space>
+            </Form.Item>
+          </Col>
+        )}
         <Col span={isDrawerMode ? 16 : 11} >
           <UI.StyledSpace style={{
             display: readMode ? 'block' : 'flex',

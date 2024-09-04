@@ -45,7 +45,9 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           const activities = [
             'AddSoftGreProfile',
             'UpdateSoftGreProfile',
-            'DeleteSoftGreProfile'
+            'DeleteSoftGreProfile',
+            'ActivateSoftGreProfileOnVenueWifiNetwork',
+            'DeactivateSoftGreProfileOnVenueWifiNetwork'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(
@@ -185,7 +187,8 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
         }
         return {
           data: {
-            options: options.map((item) => ({ id: item.id, label: item.label, disable: false })) ,
+            options: options.map((item) =>
+              ({ value: item.id, label: item.label, disable: false })) ,
             id: softGreProfileId
           } as SoftGreOptionsData
         }
@@ -197,13 +200,13 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.activateSoftGre, params)
       },
-      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
     }),
     dectivateSoftGre: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(SoftGreUrls.dectivateSoftGre, params)
       },
-      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
     })
   })
 })

@@ -31,7 +31,8 @@ const defaultPayload = {
     'mtuType',
     'mtuSize',
     'keepAliveInterval',
-    'keepAliveRetryTimes'
+    'keepAliveRetryTimes',
+    'disassociateClientEnabled'
   ],
   searchString: '',
   filters: {},
@@ -78,7 +79,7 @@ export default function SoftGreTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Policy' }),
+            entityName: $t({ defaultMessage: 'Profile' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },

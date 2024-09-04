@@ -5,19 +5,20 @@ import { Form, Radio, Space, Typography } from 'antd'
 import { Modal }                                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                      from '@acx-ui/types'
+import { EdgeScopes, WifiScopes }                                          from '@acx-ui/types'
 import { hasPermission }                                                   from '@acx-ui/user'
 import { getIntl }                                                         from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-import { EdgeSdLanRadioOption }                                                   from './EdgeSdLanRadioOption'
-import { NetworkTunnelInfoButton }                                                from './NetworkTunnelInfoButton'
-import * as UI                                                                    from './styledComponents'
-import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                         from './types'
-import { useEdgeMvSdLanData }                                                     from './useEdgeMvSdLanData'
-import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction } from './utils'
-import WifiSoftGreRadioOption                                                     from './WifiSoftGreRadioOption'
+import { EdgeSdLanRadioOption }                                                           from './EdgeSdLanRadioOption'
+import { NetworkTunnelInfoButton }                                                        from './NetworkTunnelInfoButton'
+import * as UI                                                                            from './styledComponents'
+import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                                 from './types'
+import { useEdgeMvSdLanData }                                                             from './useEdgeMvSdLanData'
+import { SoftGreNetworkTunnel, useGetSoftGreScopeVenueMap, useGetSoftGreScopeNetworkMap } from './useSoftGreTunnelActions'
+import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction }         from './utils'
+import WifiSoftGreRadioOption                                                             from './WifiSoftGreRadioOption'
 
 export interface NetworkTunnelActionModalProps {
   visible: boolean
@@ -36,20 +37,24 @@ export interface NetworkTunnelActionModalProps {
     }
   ) => Promise<void>
   cachedActs?: NetworkTunnelSdLanAction[]
+  cachedSoftGre: SoftGreNetworkTunnel[]
   disableAll?: boolean
   radioOptTooltip?: string
 }
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
-  const { visible, network, onClose, onFinish, cachedActs } = props
+  const { visible, network, onClose, onFinish, cachedActs, cachedSoftGre } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [isValidSoftGre, setIsValidSoftGre] = useState<boolean>(true)
 
   const [form] = Form.useForm()
   const tunnelType = Form.useWatch(['tunnelType'], form)
+  const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
   const networkId = network?.id
   const networkType = network?.type
@@ -68,7 +73,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   if (venueSdLanInfo && cachedActs)
     venueSdLanInfo = mergeSdLanCacheAct(venueSdLanInfo, cachedActs)
 
-  const tunnelTypeInitVal = getNetworkTunnelType(network, venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(network, cachedSoftGre, venueSdLanInfo)
 
   const handleApply = async () => {
     if (!networkVenueId)  return
@@ -85,16 +90,28 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelTypeInitVal])
 
+  useEffect(() => {
+    if (visible) {
+      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
+        setIsValidSoftGre(!!softGreProfileId)
+      } else {
+        setIsValidSoftGre(true)
+      }
+    }
+  }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
+
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo)
   const hasChangePermission = hasPermission({ scopes: [
-    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : [])
+    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : []),
+    ...(isSoftGreEnabled ? [WifiScopes.UPDATE] : [])
   ] })
 
   return <Modal
     visible={visible}
     title={$t({ defaultMessage: 'Tunnel' })}
     okText={$t({ defaultMessage: 'Apply' })}
-    okButtonProps={{ disabled: !hasChangePermission || isSubmitting || !venueSdLanInfo }}
+    okButtonProps={{ disabled: !hasChangePermission || isSubmitting ||
+      (isEdgeSdLanMvEnabled && !venueSdLanInfo) || !isValidSoftGre }}
     maskClosable={false}
     keyboard={false}
     width={600}
@@ -147,6 +164,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
             }
             {isSoftGreEnabled && visible &&
               <WifiSoftGreRadioOption
+                form={form}
                 currentTunnelType={tunnelType}
                 venueId={networkVenueId!}
                 networkId={networkId}
@@ -164,7 +182,10 @@ export {
   type NetworkTunnelActionForm,
   NetworkTunnelInfoButton,
   NetworkTunnelActionModal,
-  useUpdateNetworkTunnelAction
+  useUpdateNetworkTunnelAction,
+  type SoftGreNetworkTunnel,
+  useGetSoftGreScopeVenueMap,
+  useGetSoftGreScopeNetworkMap
 }
 
 const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined): boolean => {

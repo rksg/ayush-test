@@ -3,6 +3,7 @@ import { cloneDeep } from 'lodash'
 import { NetworkSaveData, Venue, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { SoftGreNetworkTunnel }         from '../../NetworkTunnelActionModal'
 import { NetworkTunnelInfoButton }      from '../../NetworkTunnelActionModal/NetworkTunnelInfoButton'
 import { mergeSdLanCacheAct }           from '../../NetworkTunnelActionModal/utils'
 import { TMP_NETWORK_ID }               from '../utils'
@@ -11,7 +12,8 @@ interface NetworkTunnelInfoButtonFormItemProps {
   value?: NetworkTunnelSdLanAction[]
   currentVenue: Venue
   currentNetwork: NetworkSaveData
-  sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
+  sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData,
+  softGreVenueMap: Record<string, SoftGreNetworkTunnel[]>
   onClick: (currentVenue: Venue, currentNetwork: NetworkSaveData) => void
 }
 
@@ -21,6 +23,7 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     currentVenue,
     currentNetwork,
     sdLanScopedNetworkVenues,
+    softGreVenueMap,
     onClick
   } = props
 
@@ -49,6 +52,10 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     }
   })
 
+  const networkId = currentNetwork.id ?? ''
+  const venueSoftGre = softGreVenueMap[currentVenue.id]?.find(sg =>
+    sg.networkIds.includes(networkId))
+
   return <NetworkTunnelInfoButton
     network={{
       ...currentNetwork,
@@ -56,6 +63,7 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     }}
     currentVenue={currentVenue}
     venueSdLan={sdLanNetworkVenues.sdLansVenueMap?.[currentVenue.id]?.[0]}
+    venueSoftGre={venueSoftGre}
     onClick={handleClick}
   />
 }

@@ -11,12 +11,17 @@ import { NetworkTunnelActionModalProps } from '.'
 
 export const getNetworkTunnelType = (
   network: NetworkTunnelActionModalProps['network'],
+  softGreInfo: NetworkTunnelActionModalProps['cachedSoftGre'],
   venueSdLanInfo?: EdgeMvSdLanViewData
 ) => {
   const isSdLanTunneled = Boolean(venueSdLanInfo?.tunneledWlans?.find(wlan =>
     wlan.networkId === network?.id && wlan.venueId === network?.venueId))
 
-  return isSdLanTunneled ? NetworkTunnelTypeEnum.SdLan : NetworkTunnelTypeEnum.None
+  const isSoftGreTunneled = Boolean(softGreInfo?.find(sg =>
+    sg.venueId === network?.venueId && sg.networkIds.includes(network?.id!)))
+
+  return isSdLanTunneled ? NetworkTunnelTypeEnum.SdLan :
+    (isSoftGreTunneled ? NetworkTunnelTypeEnum.SoftGre : NetworkTunnelTypeEnum.None)
 }
 
 export const useUpdateNetworkTunnelAction = () => {
@@ -42,7 +47,7 @@ export const useUpdateNetworkTunnelAction = () => {
     const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
     const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled
 
-    const tunnelTypeInitVal = getNetworkTunnelType(network, venueSdLanInfo)
+    const tunnelTypeInitVal = getNetworkTunnelType(network, [], venueSdLanInfo)
 
     const triggerSdLanOperations = async () => {
       await toggleNetwork(

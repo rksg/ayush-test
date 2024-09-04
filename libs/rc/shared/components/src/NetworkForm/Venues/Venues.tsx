@@ -39,7 +39,7 @@ import { isSdLanGuestUtilizedOnDiffVenue, isSdLanLastNetworkInVenue, showSdLanVe
 import { showSdLanGuestFwdConflictModal }                                                            from '../../EdgeSdLan/SdLanGuestFwdConflictModal'
 import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues }                      from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                                      from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps }                                   from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, useGetSoftGreScopeVenueMap }       from '../../NetworkTunnelActionModal'
 import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                                            from '../../NetworkTunnelActionModal/types'
 import { NetworkVenueScheduleDialog }                                                                from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling }                                        from '../../pipes/apGroupPipes'
@@ -188,6 +188,7 @@ export function Venues (props: VenuesProps) {
   } as NetworkTunnelActionModalProps)
   const isDefaultVenueSetted = useRef(false)
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(params.networkId)
+  const softGreVenueMap = useGetSoftGreScopeVenueMap()
 
   useEffect(() => {
     // need to make sure table data is ready.
@@ -454,6 +455,7 @@ export function Venues (props: VenuesProps) {
               currentVenue={row}
               currentNetwork={currentNetwork}
               sdLanScopedNetworkVenues={sdLanScopedNetworkVenues}
+              softGreVenueMap={softGreVenueMap}
               onClick={handleClickNetworkTunnel}
             />
           </Form.Item>
@@ -671,10 +673,14 @@ export function Venues (props: VenuesProps) {
 
   const handleSoftGreTunnelAction = async (modalFormValues: NetworkTunnelActionForm) => {
     const networkVenueId = tunnelModalState.network?.venueId
-    const updateContent = form.getFieldValue('softGreAssociationUpdate') ??
+    const softGreAssociationUpdate = form.getFieldValue('softGreAssociationUpdate') ??
     {} as NetworkTunnelSoftGreAction
-    form.setFieldValue('softGreAssociationUpdate',
-      { ...updateContent, [`${networkVenueId}`]: { ...modalFormValues.softGre } })
+    const updateContent = {
+      ...softGreAssociationUpdate,
+      [`${networkVenueId}`]: { ...modalFormValues.softGre }
+    }
+    console.info('SoftGre updateContent', updateContent)
+    form.setFieldValue('softGreAssociationUpdate', updateContent)
   }
 
   const handleNetworkTunnelActionFinish = async (
@@ -685,8 +691,13 @@ export function Venues (props: VenuesProps) {
     }
   ) => {
 
-    handleSoftGreTunnelAction(modalFormValues)
-    await handleSdLanTunnelAction(modalFormValues, otherData)
+    try{
+      handleSoftGreTunnelAction(modalFormValues)
+      await handleSdLanTunnelAction(modalFormValues, otherData)
+    }catch (e) {
+      console.error('Error on handleNetworkTunnelActionFinish', e)  // eslint-disable-line no-console
+      handleCloseTunnelModal()
+    }
   }
 
   return (
@@ -739,7 +750,7 @@ export function Venues (props: VenuesProps) {
           }
         </Loader>
       </Form.Item>
-      {isSoftGreEnabled && <Form.Item noStyle name={['softGreAssociationUpdate']}></Form.Item>}
+      {isSoftGreEnabled && <Form.Item hidden name={['softGreAssociationUpdate']}></Form.Item>}
     </>
   )
 }
