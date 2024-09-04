@@ -40,9 +40,9 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   } = props
   const form = Form.useFormInstance()
 
-  const data = GetAclPolicyInstance(editMode)
+  const data = useGetAclPolicyInstance(editMode)
 
-  const aclProfileList : AccessControlInfoType[] = GetAclPolicyListInstance(editMode)
+  const aclProfileList : AccessControlInfoType[] = useGetAclPolicyListInstance(editMode)
 
   useEffect(() => {
     if (data) {
@@ -157,7 +157,7 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   )
 }
 
-const GetAclPolicyListInstance = (editMode: boolean) => {
+const useGetAclPolicyListInstance = (editMode: boolean) => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
@@ -187,7 +187,7 @@ const GetAclPolicyListInstance = (editMode: boolean) => {
   return isTemplate ? useAclPolicyTemplateList : (useAclPolicyList ?? [])
 }
 
-const GetAclPolicyInstance = (editMode: boolean) => {
+const useGetAclPolicyInstance = (editMode: boolean) => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 

@@ -27,7 +27,7 @@ export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
 
-  const data = GetAclPolicyInstance()
+  const data = useGetAclPolicyInstance()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
 
   return (
@@ -61,7 +61,7 @@ export function AccessControlDetail () {
   )
 }
 
-const GetAclPolicyInstance = () => {
+const useGetAclPolicyInstance = () => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
