@@ -84,7 +84,7 @@ const options = {
       defaultMessage={`
         <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
         <p>For manual control, you may directly change the network configurations.</p>
-        <p>For automated monitoring and control, you can select the "Resume" action, after which IntentAI will resume overseeing the network for this Intent.</p>
+        <p>For automated monitoring and control, you can select the "Reset" action, after which IntentAI will resume overseeing the network for this Intent.</p>
     `} />
   }
 }
