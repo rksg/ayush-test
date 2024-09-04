@@ -12,9 +12,7 @@ import { dataRetentionText, isDataRetained } from '../../utils'
 
 import * as SideNotes from './SideNotes'
 
-export function Summary (
-  { summaryUrlBefore, summaryUrlAfter, crrmData } :
-  { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
+export function Summary () {
   const { $t } = useIntl()
   const { intent, kpis } = useIntentContext()
 

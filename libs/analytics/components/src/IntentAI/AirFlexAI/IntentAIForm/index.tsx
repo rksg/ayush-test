@@ -48,14 +48,10 @@ export function IntentAIForm () {
         title={$t({ defaultMessage: 'Settings' })}
         children={<Settings />}
       />
-      {/* <StepsForm.StepForm
+      <StepsForm.StepForm
         title={$t({ defaultMessage: 'Summary' })}
-        children={<Summary
-          summaryUrlBefore={summaryUrlBefore}
-          summaryUrlAfter={summaryUrlAfter}
-          crrmData={crrmData}
-        />}
-      /> */}
+        children={<Summary />}
+      />
     </StepsForm>
   </>)
 }

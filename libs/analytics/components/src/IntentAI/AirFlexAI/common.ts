@@ -6,7 +6,7 @@ import { formatter } from '@acx-ui/formatter'
 import { IntentKPIConfig } from '../useIntentDetailsQuery'
 
 export const kpis: IntentKPIConfig[] = [{
-  key: 'curr-avg-mgmt-traffic-per-client',
+  key: 'avg-mgmt-traffic-per-client',
   label: defineMessage({ defaultMessage: 'Current average management traffic per client' }),
   format: formatter('bytesFormat'),
   deltaSign: '-'
