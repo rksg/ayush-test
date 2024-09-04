@@ -25,7 +25,6 @@ import {
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  hasCloudpathAccess,
   isPolicyCardEnabled,
   policyTypeDescMapping,
   policyTypeLabelMapping
@@ -122,12 +121,12 @@ export default function SelectPolicyForm () {
     {
       type: PolicyType.CONNECTION_METERING,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      disabled: !(isConnectionMeteringEnabled && hasCloudpathAccess())
+      disabled: !isConnectionMeteringEnabled
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,
       categories: [RadioCardCategory.WIFI],
-      disabled: !(isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
+      disabled: !isCertificateTemplateEnabled
     },
     {
       type: PolicyType.SOFTGRE,
