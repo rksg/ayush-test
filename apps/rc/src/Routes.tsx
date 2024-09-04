@@ -50,7 +50,6 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasCloudpathAccess,
   ServiceAuthRoute,
   PolicyAuthRoute
 } from '@acx-ui/rc/utils'
@@ -1158,18 +1157,26 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
         />
-        {hasCloudpathAccess() && <>
-          <Route
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
-            element={<RadiusAttributeGroupForm />}
-          />
-          <Route
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.RADIUS_ATTRIBUTE_GROUP} oper={PolicyOperation.CREATE}>
+              <RadiusAttributeGroupForm />
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
-            element={<RadiusAttributeGroupForm editMode={true}/>}
-          />
-        </>}
+          path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.RADIUS_ATTRIBUTE_GROUP} oper={PolicyOperation.EDIT}>
+              <RadiusAttributeGroupForm editMode={true}/>
+            </PolicyAuthRoute>
+          }
+        />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
@@ -1180,33 +1187,47 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
         />
-        {hasCloudpathAccess() && <>
-          <Route
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
-            element={<AdaptivePolicyForm/>}
-          />
-          <Route
-            path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
-            element={<AdaptivePolicyForm editMode={true}/>}
-          />
-        </> }
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY} oper={PolicyOperation.CREATE}>
+              <AdaptivePolicyForm/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
+          path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
+          element={
+            <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY} oper={PolicyOperation.EDIT}>
+              <AdaptivePolicyForm editMode={true}/>
+            </PolicyAuthRoute>
+          }
+        />
         <Route
           path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
           element={<AdaptivePolicyDetail/>}
         />
-        {hasCloudpathAccess() && <>
-          <Route
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
-            element={<AdaptivePolicySetForm/>}
-          />
-          <Route
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY_SET} oper={PolicyOperation.CREATE}>
+              <AdaptivePolicySetForm/>
+            </PolicyAuthRoute>
+          }
+        />
+        <Route
           // eslint-disable-next-line max-len
-            path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
-            element={<AdaptivePolicySetForm editMode={true}/>}
-          />
-        </>}
+          path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
+          element={
+            // eslint-disable-next-line max-len
+            <PolicyAuthRoute policyType={PolicyType.ADAPTIVE_POLICY_SET} oper={PolicyOperation.EDIT}>
+              <AdaptivePolicySetForm editMode={true}/>
+            </PolicyAuthRoute>
+          }
+        />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}

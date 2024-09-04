@@ -9,14 +9,13 @@ import {
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  FILTER,
-  getPolicyDetailsLink, getPolicyRoutePath, hasCloudpathAccess,
+  FILTER, filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink, getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, RadiusAttributeGroup, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
 
 export default function RadiusAttributeGroupTable () {
   const { $t } = useIntl()
@@ -143,6 +142,8 @@ export default function RadiusAttributeGroupTable () {
       tableQuery.setPayload(payload)
     }
 
+    const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
     return (
       <Loader states={[
         tableQuery,
@@ -156,10 +157,12 @@ export default function RadiusAttributeGroupTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
+          rowActions={allowedRowActions}
           onFilterChange={handleFilterChange}
-          rowSelection={hasCloudpathAccess() && { type: 'radio' }}
-          actions={filterByAccess( hasCloudpathAccess() ? [{
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          actions={filterByAccessForServicePolicyMutation([{
+            // eslint-disable-next-line max-len
+            scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
             label: $t({ defaultMessage: 'Add Group' }),
             onClick: () => {
               navigate({
@@ -170,7 +173,7 @@ export default function RadiusAttributeGroupTable () {
                 })
               })
             }
-          }] : [])}
+          }])}
         />
       </Loader>
     )
