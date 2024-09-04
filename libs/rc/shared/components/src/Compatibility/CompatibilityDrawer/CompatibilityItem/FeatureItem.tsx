@@ -19,7 +19,7 @@ export const FeatureItem = (props: FeatureItemProps) => {
 
   return <UI.StyledWrapper>
     {isMultiple &&
-      <Form.Item>
+      <Form.Item noStyle>
         <UI.StyledFeatureName>
           {getCompatibilityFeatureDisplayName(data.featureName as IncompatibilityFeatures)}
         </UI.StyledFeatureName>
