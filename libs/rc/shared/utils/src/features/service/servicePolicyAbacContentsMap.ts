@@ -37,9 +37,7 @@ export const serviceOperScopeMap: SvcPcyOperMap<ServiceOperation> = {
 
 export const policyTypeScopeMap: SvcPcyScopeMap<PolicyType>= {
   [PolicyType.AAA]: ['wifi'],
-  [PolicyType.CERTIFICATE]: ['wifi'],
-  [PolicyType.CERTIFICATE_AUTHORITY]: ['wifi'],
-  [PolicyType.CERTIFICATE_TEMPLATE]: ['wifi'],
+  [PolicyType.CERTIFICATE_TEMPLATE]: [],
   [PolicyType.SOFTGRE]: ['wifi'],
   [PolicyType.TUNNEL_PROFILE]: ['wifi', 'edge'],
   [PolicyType.ROGUE_AP_DETECTION]: ['wifi'],
