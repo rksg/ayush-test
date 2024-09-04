@@ -96,8 +96,7 @@ const EdgeSdLanDetail = () => {
               serviceId={params.serviceId}
             />
           </Col>
-        </Row>
-        }
+        </Row>}
         {isDMZEnabled
           ? <DmzSdLanDetailContent data={edgeSdLanData} />
           : <DcSdLanDetailContent data={edgeSdLanData} />
