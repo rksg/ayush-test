@@ -3,7 +3,7 @@ export class FastRoamingOptions {
   reassociationTimeout?: number
 
   constructor () {
-    this.statisticsOverDistributedSystemEnabled = true
+    this.statisticsOverDistributedSystemEnabled = false
     this.reassociationTimeout = 20
   }
 
