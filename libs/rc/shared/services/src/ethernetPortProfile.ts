@@ -102,6 +102,24 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
         }
       },
       invalidatesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }]
+    }),
+    getEthernetPortProfileSettingsByApPortId: build.query<EthernetPortProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(EthernetPortProfileUrls.getEthernetPortSettingsByApPortId, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateEthernetPortProfileOnApPortId: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId, params
+        )
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -114,5 +132,7 @@ export const {
   useGetEthernetPortProfileByIdQuery,
   useUpdateEthernetPortProfileMutation,
   useUpdateEthernetPortProfileRadiusIdMutation,
-  useDeleteEthernetPortProfileRadiusIdMutation
+  useDeleteEthernetPortProfileRadiusIdMutation,
+  useGetEthernetPortProfileSettingsByApPortIdQuery,
+  useActivateEthernetPortProfileOnApPortIdMutation
 } = ethernetPortProfileApi
