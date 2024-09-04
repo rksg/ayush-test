@@ -1,12 +1,11 @@
-
 import userEvent from '@testing-library/user-event'
 
+import { EdgeFirmwareFixtures }    from '@acx-ui/rc/utils'
 import { render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { availableVersions } from '../__tests__/fixtures'
+import { EdgeUpdateNowDialog } from '.'
 
-import { UpdateNowDialog } from './UpdateNowDialog'
-
+const { mockAvailableVersions } = EdgeFirmwareFixtures
 const mockedCancelFn = jest.fn()
 const mockedSubmitFn = jest.fn()
 
@@ -14,10 +13,10 @@ describe('Edge firmware update now dialog', () => {
 
   it('should render successfully', async () => {
     render(
-      <UpdateNowDialog
+      <EdgeUpdateNowDialog
         onCancel={mockedCancelFn}
         onSubmit={mockedSubmitFn}
-        availableVersions={availableVersions}
+        availableVersions={mockAvailableVersions}
         visible
       />
     )
@@ -31,10 +30,10 @@ describe('Edge firmware update now dialog', () => {
 
   it('should cancel successfully', async () => {
     render(
-      <UpdateNowDialog
+      <EdgeUpdateNowDialog
         onCancel={mockedCancelFn}
         onSubmit={mockedSubmitFn}
-        availableVersions={availableVersions}
+        availableVersions={mockAvailableVersions}
         visible
       />
     )
@@ -44,10 +43,10 @@ describe('Edge firmware update now dialog', () => {
 
   it('should submit successfully', async () => {
     render(
-      <UpdateNowDialog
+      <EdgeUpdateNowDialog
         onCancel={mockedCancelFn}
         onSubmit={mockedSubmitFn}
-        availableVersions={availableVersions}
+        availableVersions={mockAvailableVersions}
         visible
       />
     )

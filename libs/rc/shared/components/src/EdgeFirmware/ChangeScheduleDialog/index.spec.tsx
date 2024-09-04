@@ -2,12 +2,12 @@
 import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 
+import { EdgeFirmwareFixtures }            from '@acx-ui/rc/utils'
 import { render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { availableVersions } from '../__tests__/fixtures'
+import { EdgeChangeScheduleDialog } from './'
 
-import { ChangeScheduleDialog } from './ChangeScheduleDialog'
-
+const { mockAvailableVersions } = EdgeFirmwareFixtures
 const mockedCancelFn = jest.fn()
 const mockedSubmitFn = jest.fn()
 
@@ -19,10 +19,10 @@ describe('Edge firmware schedule update dialog', () => {
 
   it('should render successfully', async () => {
     render(
-      <ChangeScheduleDialog
+      <EdgeChangeScheduleDialog
         onCancel={mockedCancelFn}
         onSubmit={mockedSubmitFn}
-        availableVersions={availableVersions}
+        availableVersions={mockAvailableVersions}
         visible
       />
     )
@@ -37,10 +37,10 @@ describe('Edge firmware schedule update dialog', () => {
 
   it('should cancel successfully', async () => {
     render(
-      <ChangeScheduleDialog
+      <EdgeChangeScheduleDialog
         onCancel={mockedCancelFn}
         onSubmit={mockedSubmitFn}
-        availableVersions={availableVersions}
+        availableVersions={mockAvailableVersions}
         visible
       />
     )
@@ -50,10 +50,10 @@ describe('Edge firmware schedule update dialog', () => {
 
   it('should submit successfully', async () => {
     render(
-      <ChangeScheduleDialog
+      <EdgeChangeScheduleDialog
         onCancel={mockedCancelFn}
         onSubmit={mockedSubmitFn}
-        availableVersions={availableVersions}
+        availableVersions={mockAvailableVersions}
         visible
       />
     )

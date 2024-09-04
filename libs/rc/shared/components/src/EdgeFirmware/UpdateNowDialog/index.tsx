@@ -2,26 +2,24 @@ import { Form, Radio, Space, Typography } from 'antd'
 import { useForm, useWatch }              from 'antd/lib/form/Form'
 import { useIntl }                        from 'react-intl'
 
-import { Modal }               from '@acx-ui/components'
-import { EdgeFirmwareVersion } from '@acx-ui/rc/utils'
+import { Modal }                                        from '@acx-ui/components'
+import { EdgeFirmwareVersion, getFirmwareVersionLabel } from '@acx-ui/rc/utils'
 
-import { getVersionLabel } from '../../FirmwareUtils'
-
-import * as UI from './styledComponents'
+import * as UI from '../styledComponents'
 
 enum VersionsSelectMode {
   Radio,
   Dropdown
 }
 
-export interface UpdateApNowDialogProps {
+export interface EdgeUpdateApNowDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: string) => void,
   availableVersions?: EdgeFirmwareVersion[],
 }
 
-export function UpdateNowDialog (props: UpdateApNowDialogProps) {
+export function EdgeUpdateNowDialog (props: EdgeUpdateApNowDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const [form] = useForm()
@@ -103,7 +101,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
               >
                 <Space direction={'vertical'}>
                   <Radio value={VersionsSelectMode.Radio}>
-                    {getVersionLabel(intl, versionOptions[0])}
+                    {getFirmwareVersionLabel(intl, versionOptions[0])}
                   </Radio>
                   {
                     // first GA just support one firmware version
