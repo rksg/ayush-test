@@ -1,6 +1,9 @@
+import _                                   from 'lodash'
 import { FormattedMessage, defineMessage } from 'react-intl'
+import { MemoryRouter }                    from 'react-router-dom'
 
 import { get }            from '@acx-ui/config'
+import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { render, screen } from '@acx-ui/test-utils'
 
 import { IncidentCode } from './constants'
@@ -12,7 +15,8 @@ import {
   ccd80211RootCauseRecommendations,
   htmlValues,
   AirtimeParams,
-  AirtimeArray
+  AirtimeArray,
+  TenantLinkWrapper
 } from './rootCauseRecommendation'
 
 jest.mock('@acx-ui/config', () => ({
@@ -49,6 +53,104 @@ const airtimeTxIncident = fakeIncident({
   endTime: '2022-08-19T00:03:00.000Z',
   code: 'p-airtime-tx-24g-high',
   path: [{ type: 'zone', name: 'Venue 4' }]
+})
+
+describe('TenantLinkWrapper', () => {
+  const baseParams = {
+    ssidCountPerRadioSlice: 1,
+    recommendationId: '270bf212-85e4-470a-b721-4eef78b8e7ae',
+    crrmId: 'cf66ed04-fcc8-4f9c-8b60-5699339b5f19',
+    crrm: {
+      code: 'c-crrm-channel24g-auto',
+      root: '204fa5c7-4d45-4315-848d-9c54460ae8d7',
+      sliceId: 'cc36f41d-e6e8-4763-a28d-a38aebb500b2',
+      intentId: '3c61bda8-85ba-4356-b955-691b755cf6f8'
+    },
+    aclbId: '743da2c1-8c9a-4c21-95f2-374defc5076a',
+    aclb: {
+      code: 'c-aclb-enable',
+      root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
+      sliceId: 'dff976ca-a4ea-4f6c-ab63-cb8e4a886df6',
+      intentId: '49033f10-eeae-4318-bae2-5cf52ebc0319'
+    }
+  } as AirtimeParams
+
+  it('renders the correct link when Intent AI is enabled for RA', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(get).mockReturnValue('true')
+    const newParams = { ..._.pick(baseParams, 'ssidCountPerRadioSlice', 'crrm') }
+
+    render(
+      <MemoryRouter>
+        <TenantLinkWrapper params={newParams} linkType='crrm' />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: /here/i })
+      .getAttribute('href'))
+      .toContain(
+        `/intentAI/${baseParams.crrm!.root}/${baseParams.crrm!.sliceId}/${baseParams.crrm!.code}`)
+
+  })
+  it('renders the correct link when Intent AI is enabled for R1', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(get).mockReturnValue('')
+    const newParams = { ..._.pick(baseParams, 'ssidCountPerRadioSlice', 'aclb') }
+
+    render(
+      <MemoryRouter>
+        <TenantLinkWrapper params={newParams} linkType='aiops' />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: /here/i })
+      .getAttribute('href'))
+      .toContain(`/intentAI/${baseParams.aclb!.sliceId}/${baseParams.aclb!.code}`)
+
+  })
+
+  it('renders the correct link when Intent AI is not enabled for crrm', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <MemoryRouter>
+        <TenantLinkWrapper params={baseParams} linkType='crrm' />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: /here/i })
+      .getAttribute('href'))
+      .toContain(`/recommendations/crrm/${baseParams.crrmId}`)
+  })
+
+  it('renders the correct link when Intent AI is not enabled for aiops', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
+    render(
+      <MemoryRouter>
+        <TenantLinkWrapper params={baseParams} linkType='aiops' />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: /here/i })
+      .getAttribute('href'))
+      .toContain(`/recommendations/aiops/${baseParams.aclbId}`)
+  })
+
+  it('renders the correct link when Intent AI is not enabled for fallback', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    const newParams = { ..._.pick(baseParams, 'ssidCountPerRadioSlice', 'recommendationId') }
+
+    render(
+      <MemoryRouter>
+        <TenantLinkWrapper params={newParams} linkType='aiops' />
+      </MemoryRouter>
+    )
+
+    expect(screen.getByRole('link', { name: /here/i })
+      .getAttribute('href'))
+      .toContain(`/recommendations/aiops/${baseParams.recommendationId}`)
+  })
 })
 
 describe('getRootCauseAndRecommendations', () => {
@@ -270,6 +372,78 @@ describe('getRootCauseAndRecommendations', () => {
   })
 
   describe('airtime Rx Incident', () => {
+    it('should return correct data if feature flag is on RA', () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(get).mockReturnValue('true')
+      const checks = [
+        { isHighDensityWifiDevices: true },
+        { isAclbRaised: true },
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: true },
+        { isCRRMRaised: true },
+        { isChannelFlyEnabled: true },
+        { isHighLegacyWifiDevicesCount: true }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 1,
+        crrm: {
+          code: 'c-crrm-channel24g-auto',
+          root: '204fa5c7-4d45-4315-848d-9c54460ae8d7',
+          sliceId: 'cc36f41d-e6e8-4763-a28d-a38aebb500b2',
+          intentId: '3c61bda8-85ba-4356-b955-691b755cf6f8'
+        },
+        aclb: {
+          code: 'c-aclb-enable',
+          root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
+          sliceId: 'dff976ca-a4ea-4f6c-ab63-cb8e4a886df6',
+          intentId: '49033f10-eeae-4318-bae2-5cf52ebc0319'
+        }
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
+    it('should return correct data if feature flag is on for R1', () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(get).mockReturnValue('')
+      const checks = [
+        { isHighDensityWifiDevices: true },
+        { isAclbRaised: true },
+        { isLargeMgmtFrameCount: true },
+        { isHighSsidCountPerRadio: true },
+        { isCRRMRaised: true },
+        { isChannelFlyEnabled: true },
+        { isHighLegacyWifiDevicesCount: true }
+      ] as unknown as AirtimeArray
+      const params = {
+        ssidCountPerRadioSlice: 1,
+        crrm: {
+          code: 'c-crrm-channel24g-auto',
+          root: '204fa5c7-4d45-4315-848d-9c54460ae8d7',
+          sliceId: 'cc36f41d-e6e8-4763-a28d-a38aebb500b2',
+          intentId: '3c61bda8-85ba-4356-b955-691b755cf6f8'
+        },
+        aclb: {
+          code: 'c-aclb-enable',
+          root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
+          sliceId: 'dff976ca-a4ea-4f6c-ab63-cb8e4a886df6',
+          intentId: '49033f10-eeae-4318-bae2-5cf52ebc0319'
+        }
+      } as AirtimeParams
+      const incident = fakeIncident({
+        ...airtimeRxIncident,
+        metadata: {
+          dominant: {},
+          rootCauseChecks: { checks, params }
+        }
+      })
+      expect(getRootCauseAndRecommendations(incident)).toMatchSnapshot()
+    })
     it('should return correct data for all true', () => {
       const checks = [
         { isHighDensityWifiDevices: true },

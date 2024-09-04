@@ -42,7 +42,7 @@ interface RootCauseAndRecommendation {
   recommendations: MessageDescriptor | RecommendationsFunction
 }
 
-const TenantLinkWrapper = ({ params, linkType }: {
+export const TenantLinkWrapper = ({ params, linkType }: {
     params: AirtimeParams,
     linkType: string
   }) => {
@@ -172,7 +172,7 @@ export type IntentQueryParams = {
 
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
-  recommendationId: string,
+  recommendationId?: string,
   crrm?:IntentQueryParams,
   crrmId?:string
   aclb?:IntentQueryParams,
