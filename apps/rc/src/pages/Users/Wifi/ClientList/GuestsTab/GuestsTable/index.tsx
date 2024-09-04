@@ -37,10 +37,10 @@ import {
   SEARCH,
   ClientInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink }                from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload, WifiScopes }                            from '@acx-ui/types'
-import { GuestErrorRes, hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
-import { getIntl }                                                          from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasRoles, hasPermission } from '@acx-ui/user'
+import { getIntl }                                           from '@acx-ui/utils'
 
 import { defaultGuestPayload, GuestsDetail, isEnabledGeneratePassword } from '../GuestsDetail'
 import { GenerateNewPasswordModal }                                     from '../GuestsDetail/generateNewPasswordModal'
@@ -50,7 +50,6 @@ import {
   AddGuestDrawer,
   GuestFields,
   GuestResponse,
-  showGuestErrorModal,
   showNoSendConfirm,
   useHandleGuestPassResponse
 } from './addGuestDrawer'
