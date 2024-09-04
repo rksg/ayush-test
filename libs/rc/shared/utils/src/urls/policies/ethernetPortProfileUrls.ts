@@ -36,5 +36,35 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/ethernetPortProfiles/:id/radiusServerProfiles/:radiusId',
     newApi: true
+  },
+  getEthernetPortSettingsByVenueApModel: {
+    method: 'get',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/settings',
+    newApi: true
+  },
+  updateEthernetPortSettingsByVenueApModel: {
+    method: 'put',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/settings',
+    newApi: true
+  },
+  activateEthernetPortProfileOnVenueApModelPortId: {
+    method: 'put',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/ethernetPortProfiles/:id',
+    newApi: true
+  },
+  getEthernetPortSettingsByApPortId: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
+    newApi: true
+  },
+  updateEthernetPortSettingsByApPortId: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/settings',
+    newApi: true
+  },
+  activateEthernetPortProfileOnApPortId: {
+    method: 'put',
+    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/ethernetPortProfiles/:id',
+    newApi: true
   }
 }

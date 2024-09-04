@@ -151,14 +151,14 @@ export function LanPortSettings (props: {
     let ethProfileId = null
     if (venueId) {
       ethProfileId = ethernetPortList?.filter(
-        m => m.venueIds.includes(venueId) &&
+        m => m.venueIds && m.venueIds.includes(venueId) &&
         m.venueActivations?.filter(v => v.apModel === (selectedModel as VenueLanPorts).model &&
-      v.portId === index))?.[0].id
+      v.portId === index))?.[0]?.id ?? null
     } else if (serialNumber) {
       ethProfileId = ethernetPortList?.filter(
-        m => m.apSerialNumbers.includes(serialNumber) &&
+        m => m.apSerialNumbers && m.apSerialNumbers.includes(serialNumber) &&
         m.apActivations?.filter(a => a.portId === index)
-      )?.[0].id
+      )?.[0]?.id ?? null
     }
     return ethProfileId
   }
@@ -220,7 +220,10 @@ export function LanPortSettings (props: {
               || !lan?.enabled
               || selectedPortCaps?.trunkPortOnly
               || lan?.vni > 0}
-            options={ethernetPortDropdownItems}
+            options={[
+              { label: $t({ defaultMessage: 'No ethernet port profile selected' }), value: null },
+              ...ethernetPortDropdownItems
+            ]}
             onChange={() => onChangedByCustom('ethernetPortProfileId')}
           />} />
         <EthernetPortProfileDrawer
@@ -228,9 +231,11 @@ export function LanPortSettings (props: {
             form.setFieldValue(['lan', index, 'ethernetPortProfileId'], createId)
           }}
           currentEthernetPortData={currentEthernetPortData} />
-      </Space><EthernetPortProfileInput
+      </Space>
+      <EthernetPortProfileInput
         currentEthernetPortData={currentEthernetPortData}
-        currentIndex={index} /></>) :
+        currentIndex={index}
+        isEditable={!!serialNumber} /></>) :
       (<>
         <Form.Item
           name={['lan', index, 'type']}
