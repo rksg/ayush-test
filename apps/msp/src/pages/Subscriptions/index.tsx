@@ -285,6 +285,7 @@ export function Subscriptions () {
         summaryData.forEach(summary => {
           quantity += summary.purchasedQuantity + summary.courtesyQuantity
           courtesy += summary.courtesyQuantity
+          // usedQuantity includes used by EC and MSP
           used += (summary.usedQuantity - summary.usedQuantityForOwnAssignment)
           assigned += summary.usedQuantityForOwnAssignment
         })

@@ -104,7 +104,8 @@ interface EcFormData {
     switchLicense: number,
     apswLicense: number,
     apswTrialLicense: number,
-    tier: MspEcTierEnum
+    tier: MspEcTierEnum,
+    subscriptionMode: string
 }
 
 enum ServiceType {
@@ -335,7 +336,9 @@ export function ManageCustomer () {
           apswLicense: apswLic,
           apswTrialLicense: apswTrialLic,
           service_expiration_date: moment(data?.service_expiration_date),
-          tier: data?.tier ?? MspEcTierEnum.Professional
+          tier: data?.tier ?? MspEcTierEnum.Professional,
+          subscriptionMode: isExtendedTrialEditMode ? ServiceType.EXTENDED_TRIAL
+            : ServiceType.PAID
         })
         setOriginalTier(data?.tier ?? '')
         formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
@@ -658,6 +661,7 @@ export function ManageCustomer () {
               quantity: quantityApsw,
               assignmentId: apswAssignId,
               action: actionApsw,
+              isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
               deviceType: EntitlementDeviceType.MSP_APSW
             })
           }
@@ -1304,10 +1308,11 @@ export function ManageCustomer () {
       }
 
       {!isTrialMode && <div>
-        {(isTrialEditMode || isExtendedTrialEditMode )&& <Form.Item
-          name='startSubscriptionMode'
+        {(isTrialEditMode || isExtendedTrialEditMode || (isEditMode && showExtendedTrial) ) &&
+        <Form.Item
+          name='subscriptionMode'
           initialValue={serviceTypeSelected === ServiceType.EXTENDED_TRIAL
-            ? ServiceType.EXTENDED_TRIAL : ServiceType.EXTENDED_TRIAL}
+            ? ServiceType.EXTENDED_TRIAL : ServiceType.PAID}
         >
           <Radio.Group onChange={(e: RadioChangeEvent) => {
             setServiceType(e.target.value)
