@@ -101,6 +101,7 @@ export interface Venue {
   clients?: number
   edges?: number,
   incompatible?: number
+  incompatibleEdges?: number // GUI only
 }
 
 export interface AlarmBase {
