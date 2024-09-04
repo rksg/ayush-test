@@ -144,10 +144,8 @@ export const useWebhooks = () => {
       searchableWidth={450}
       actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasCrossVenuesPermission() && hasPermission({
-        permission: 'WRITE_WEBHOOKS',
-        scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
-      }) && {
+      rowSelection={hasCrossVenuesPermission() &&
+        hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
         type: 'radio',
         selectedRowKeys: selectedId ? [selectedId] : []
       }}
