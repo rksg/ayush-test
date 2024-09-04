@@ -119,8 +119,7 @@ export function LanPortSettings (props: {
       payload: {
         sortField: 'name',
         sortOrder: 'ASC'
-      },
-      skip: !isEthernetPortProfileEnabled
+      }
     }, {
       selectFromResult: ({ data: queryResult })=>{
 
@@ -130,7 +129,8 @@ export function LanPortSettings (props: {
             [],
           ethernetPortListQuery: queryResult
         }
-      }
+      },
+      skip: !isEthernetPortProfileEnabled
     })
 
   useEffect(()=> {
