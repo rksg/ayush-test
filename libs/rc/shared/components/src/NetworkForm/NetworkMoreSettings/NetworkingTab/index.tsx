@@ -145,7 +145,22 @@ export function NetworkingTab (props: {
 
       {isFastBssVisible() &&
         <UI.FieldLabel width={labelWidth}>
-          {$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })}
+          <Space>
+            {$t({ defaultMessage: 'Enable 802.11r Fast BSS Transition' })}
+            <Tooltip.Question
+              title={$t({
+                // eslint-disable-next-line max-len
+                defaultMessage: `When enabled, 802.11r Fast BSS 
+                Transition improves the efficiency of handoff processes 
+                between access points (APs) within the same network. 
+                This feature reduces the time required for a client 
+                device to authenticate with a new AP, ensuring smoother transitions 
+                and maintaining continuous connectivity.`
+              })}
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
           <Form.Item
             data-testid='enableFastRoaming-full-block'
             name={['wlan', 'advancedCustomization', 'enableFastRoaming']}
@@ -177,6 +192,59 @@ export function NetworkingTab (props: {
               style={{ width: '150px' }}
             />}
         />
+      }
+
+      {enableFastRoaming && <>
+        <UI.FieldLabel width={labelWidth}>
+          <Space>
+            {$t({ defaultMessage: 'Over-the-DS' })}
+            <Tooltip.Question
+              title={$t({
+                // eslint-disable-next-line max-len
+                defaultMessage: 'Enable or disable the Over-the-DS (Distribution System) option for Fast BSS Transition (802.11r).'
+              })}
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            // eslint-disable-next-line max-len
+            name={['wlan','advancedCustomization','fastRoamingOptions', 'statisticsOverDistributedSystemEnabled']}
+            data-testid='over-the-ds-full-block'
+            style={{ marginBottom: '15px' }}
+            valuePropName='checked'
+            initialValue={false}
+            children={<Switch data-testid='over-the-ds-input' />}
+          />
+        </UI.FieldLabel>
+        <Form.Item
+          name={['wlan','advancedCustomization','fastRoamingOptions', 'reassociationTimeout']}
+          label={<>
+            {$t({ defaultMessage: 'Re-association Timeout' })}
+            <Tooltip.Question
+              // eslint-disable-next-line max-len
+              title={'Timeout duration for re-association attempts during Fast BSS Transition (802.11r). Range: 1-100 seconds'}
+              placement='right'
+            />
+          </>
+          }
+          data-testid='reassociation-timeout-full-block'
+          initialValue={20}
+          rules={[
+            {
+              type: 'number', max: 100, min: 1, transform: Number,
+              message: $t({
+                defaultMessage: 'Re-association Timeout must be between 1 and 100'
+              })
+            }
+          ]}
+          style={{ marginBottom: '15px' }}
+          children={
+            <Input data-testid='reassociation-timeout-input'
+              style={{ width: '150px' }}
+            />}
+        />
+      </>
       }
 
       <div style={{ display: 'grid', gridTemplateColumns: '0px 1fr' }}>
