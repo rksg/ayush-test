@@ -21,7 +21,6 @@ import {
 import {
   AssociatedResource,
   EditPropertyConfigMessages,
-  hasCloudpathAccess,
   hasServicePermission,
   PropertyConfigs,
   PropertyConfigStatus,
@@ -29,6 +28,7 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
 import { TemplateSelector }                       from '../TemplateSelector'
@@ -98,6 +98,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const personaGroupId = Form.useWatch('personaGroupId', form)
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
+  const hasAddPersonaGroupPermission = hasCrossVenuesPermission({ needGlobalPermission: true })
   const hasAddResidentPortalPermission = hasServicePermission({
     type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
   })
@@ -341,7 +342,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
             checked={isPropertyEnable}
             onChange={handlePropertyEnable}
             style={{ marginLeft: '20px' }}
-            disabled={!hasCloudpathAccess()}
           />
           <Tooltip.Question
             title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
@@ -356,7 +356,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         onCancel={onCancel}
         buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
         initialValues={initialValues}
-        disabled={!hasCloudpathAccess()}
       >
         <StepsForm.StepForm>
           {isPropertyEnable &&
@@ -391,18 +390,21 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                       />
                   }
                 </Form.Item>
-                <Form.Item
-                  noStyle
-                  hidden={personaGroupHasBound}
-                >
-                  <Button
-                    type={'link'}
-                    size={'small'}
-                    onClick={() => setPersonaGroupVisible(true)}
+
+                {hasAddPersonaGroupPermission &&
+                  <Form.Item
+                    noStyle
+                    hidden={personaGroupHasBound}
                   >
-                    {$t({ defaultMessage: 'Add Identity Group' })}
-                  </Button>
-                </Form.Item>
+                    <Button
+                      type={'link'}
+                      size={'small'}
+                      onClick={() => setPersonaGroupVisible(true)}
+                    >
+                      {$t({ defaultMessage: 'Add Identity Group' })}
+                    </Button>
+                  </Form.Item>
+                }
 
                 <Form.Item noStyle name={['unitConfig', 'type']}>
                   <Input type='hidden' />
