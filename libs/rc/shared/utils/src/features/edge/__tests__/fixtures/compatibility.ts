@@ -1,5 +1,5 @@
-import { CompatibilityEntityTypeEnum }                                                           from '../../../../models/EdgeEnum'
-import { EdgeFeatureSets, EdgeSdLanCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse } from '../../../../types/edge'
+import { CompatibilityEntityTypeEnum }                                                                                             from '../../../../models/EdgeEnum'
+import { EdgeFeatureSets, EdgeSdLanCompatibilitiesResponse, EdgeSdLanApCompatibilitiesResponse, VenueEdgeCompatibilitiesResponse } from '../../../../types/edge'
 
 export const mockEdgeFeatureCompatibilities: EdgeFeatureSets = {
   featureSets: [
@@ -198,6 +198,91 @@ export const mockEdgeSdLanApCompatibilites: EdgeSdLanApCompatibilitiesResponse =
           incompatible: 3
         }
       ]
+    }
+  ]
+}
+
+export const mockEdgeCompatibilitiesVenue: VenueEdgeCompatibilitiesResponse ={
+  compatibilities: [
+    {
+      identityType: CompatibilityEntityTypeEnum.VENUE,
+      id: 'venue-1',
+      incompatibleFeatures: [
+        {
+          featureRequirement: {
+            featureName: 'SD-LAN',
+            requiredFw: '2.1.0.200'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            }
+          ]
+        },
+        {
+          featureRequirement: {
+            featureName: 'Tunnel Profile',
+            requiredFw: '2.1.0.400'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.300',
+              count: 1
+            }
+          ]
+        }
+      ],
+      total: 6,
+      incompatible: 2
+    },
+    {
+      identityType: CompatibilityEntityTypeEnum.VENUE,
+      id: 'venue-3',
+      incompatibleFeatures: [
+        {
+          featureRequirement: {
+            featureName: 'SD-LAN',
+            requiredFw: '2.1.0.200'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.150',
+              count: 3
+            }
+          ]
+        },
+        {
+          featureRequirement: {
+            featureName: 'Tunnel Profile',
+            requiredFw: '2.1.0.400'
+          },
+          incompatibleDevices: [
+            {
+              firmware: '2.1.0.100',
+              count: 1
+            },
+            {
+              firmware: '2.1.0.150',
+              count: 3
+            },
+            {
+              firmware: '2.1.0.200',
+              count: 1
+            }
+          ]
+        }
+      ],
+      total: 8,
+      incompatible: 5
     }
   ]
 }
