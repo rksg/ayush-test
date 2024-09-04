@@ -383,7 +383,8 @@ export const {
           ...req,
           body: payload
         }
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'LIST' }]
     })
   })
 })
