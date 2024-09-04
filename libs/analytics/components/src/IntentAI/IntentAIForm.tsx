@@ -3,6 +3,7 @@ import * as CCrrmChannel5gAuto         from './AIDrivenRRM/CCrrmChannel5gAuto'
 import * as CCrrmChannel6gAuto         from './AIDrivenRRM/CCrrmChannel6gAuto'
 import * as CAclbEnable                from './AIOperations/CAclbEnable'
 import * as CBandbalancingEnable       from './AIOperations/CBandbalancingEnable'
+import * as CBandbalancingProactive    from './AIOperations/CBandbalancingProactive'
 import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
@@ -17,5 +18,6 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-dfschannels-disable': CDfschannelsDisable,
   'c-aclb-enable': CAclbEnable,
   'c-bandbalancing-enable': CBandbalancingEnable,
-  'c-bandbalancing-enable-below-61': CBandbalancingEnable
+  'c-bandbalancing-enable-below-61': CBandbalancingEnable,
+  'c-bandbalancing-proactive': CBandbalancingProactive
 })

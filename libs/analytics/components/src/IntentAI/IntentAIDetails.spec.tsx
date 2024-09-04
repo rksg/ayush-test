@@ -5,6 +5,7 @@ import { mockedIntentCRRM }                            from './AIDrivenRRM/__tes
 import { mocked as mockedCAclbEnable }                 from './AIOperations/__tests__/mockedCAclbEnable'
 import { mocked as mockedCBandbalancingEnable }        from './AIOperations/__tests__/mockedCBandbalancingEnable'
 import { mocked as mockedCBandbalancingEnableBelow61 } from './AIOperations/__tests__/mockedCBandbalancingEnableBelow61'
+import { mocked as mockedCBandbalancingProactive }     from './AIOperations/__tests__/mockedCBandbalancingProactive'
 import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__tests__/mockedCDfschannelsDisable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
@@ -38,6 +39,10 @@ jest.mock('./AIOperations/CDfschannelsDisable', () => ({
 jest.mock('./AIOperations/CAclbEnable', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-aclb-enable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CBandbalancingProactive', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bandbalancing-proactive-IntentAIDetails'/>
 }))
 
 describe('IntentAIDetails', () => {
@@ -110,6 +115,11 @@ describe('IntentAIDetails', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
         data: { intent: mockedCBandbalancingEnableBelow61 } })
       await renderAIOperations(mockedCBandbalancingEnableBelow61.code)
+    })
+    it('should render for CBandbalancingProactive', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCBandbalancingProactive } })
+      await renderAIOperations(mockedCBandbalancingProactive.code)
     })
   })
 })
