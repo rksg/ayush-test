@@ -174,9 +174,6 @@ export const GuestsTable = () => {
       setImportVisible(false)
       handleGuestPassResponse(importResult.data as GuestResponse)
     }
-    if (importResult.isError && importResult?.error && 'data' in importResult.error) {
-      showGuestErrorModal(importResult?.error.data as GuestErrorRes)
-    }
   },[importResult])
 
   const importRequestHandler = (formData: FormData, values: Guest) => {
