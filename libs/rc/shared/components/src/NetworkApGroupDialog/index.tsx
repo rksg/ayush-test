@@ -85,6 +85,37 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
   tenantId?: string
 }
 
+type RadioSelectProps = SelectProps & {
+  isSupport6G: boolean
+}
+
+const RadioSelect = (props: RadioSelectProps) => {
+  const { $t } = useIntl()
+  const { isSupport6G, ...otherProps } = props
+  const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
+  if (!isSupport6G) {
+    _.remove(otherProps.value, (v) => v === RadioTypeEnum._6_GHz)
+  }
+  return (
+    <Select
+      {...otherProps}
+      mode='multiple'
+      showArrow
+      style={{ width: '220px' }}
+    >
+      <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
+      <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
+      <Select.Option
+        value={RadioTypeEnum._6_GHz}
+        disabled={!isSupport6G}
+        title={!isSupport6G ? disabledBandTooltip : ''}
+      >
+        {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
+      </Select.Option>
+    </Select>
+  )
+}
+
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
 
@@ -93,6 +124,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
+  const isSupport6G = IsNetworkSupport6g(network)
 
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
@@ -189,31 +221,6 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     }
   },[instanceListResult])
 
-  const RadioSelect = (props: SelectProps) => {
-    const isSupport6G = IsNetworkSupport6g(network)
-    const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
-    if (!isSupport6G) {
-      _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
-    }
-    return (
-      <Select
-        {...props}
-        mode='multiple'
-        showArrow
-        style={{ width: '220px' }}
-      >
-        <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
-        <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
-        <Select.Option
-          value={RadioTypeEnum._6_GHz}
-          disabled={!isSupport6G}
-          title={!isSupport6G ? disabledBandTooltip : ''}
-        >
-          {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
-        </Select.Option>
-      </Select>
-    )
-  }
 
   const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
     const apGroupName = apgroup?.isDefault ? $t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
@@ -304,7 +311,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 }
               }
             ]}>
-            { selected ? <RadioSelect /> : <Input type='hidden' /> }
+            { selected ? <RadioSelect isSupport6G={isSupport6G}/> : <Input type='hidden' /> }
           </UI.FormItemRounded>
         </Col>
       </>
@@ -386,7 +393,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                         validator: (_, value) => validateRadioBandForDsaeNetwork(value)
                       }]}
                     labelCol={{ span: 5 }}>
-                    <RadioSelect />
+                    <RadioSelect isSupport6G={isSupport6G}/>
                   </Form.Item>
                 </UI.FormItemRounded>}
               </Form.Item>
