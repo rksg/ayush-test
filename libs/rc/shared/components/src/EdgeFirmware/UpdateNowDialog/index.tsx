@@ -19,7 +19,7 @@ export interface EdgeUpdateApNowDialogProps {
   availableVersions?: EdgeFirmwareVersion[],
 }
 
-export function EdgeUpdateNowDialog (props: UpdateApNowDialogProps) {
+export function EdgeUpdateNowDialog (props: EdgeUpdateApNowDialogProps) {
   const { $t } = useIntl()
   const intl = useIntl()
   const [form] = useForm()

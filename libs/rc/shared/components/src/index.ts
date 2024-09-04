@@ -263,11 +263,13 @@ export {
 } from './EdgeFormItem/EdgePortsGeneralBase/utils'
 export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
 export {
-  EdgeChangeScheduleDialog, EdgeChangeScheduleDialogProps
+  EdgeChangeScheduleDialog
 } from './EdgeFirmware/ChangeScheduleDialog'
+export type { EdgeChangeScheduleDialogProps } from './EdgeFirmware/ChangeScheduleDialog'
 export {
-  EdgeUpdateNowDialog, EdgeUpdateApNowDialogProps
+  EdgeUpdateNowDialog
 } from './EdgeFirmware/UpdateNowDialog'
+export type { EdgeUpdateApNowDialogProps } from './EdgeFirmware/UpdateNowDialog'
 
 export * from './services'
 export * from './policies'

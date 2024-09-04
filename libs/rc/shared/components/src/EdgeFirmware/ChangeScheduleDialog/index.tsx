@@ -24,7 +24,7 @@ export interface EdgeChangeScheduleDialogProps {
   availableVersions?: EdgeFirmwareVersion[]
 }
 
-export function EdgeChangeScheduleDialog (props: ChangeScheduleDialogProps) {
+export function EdgeChangeScheduleDialog (props: EdgeChangeScheduleDialogProps) {
   const intl = useIntl()
   const { $t } = useIntl()
   const [form] = useForm()
