@@ -20,7 +20,6 @@ export type IntentKPIConfig = {
   deltaSign: '+' | '-' | 'none';
   valueAccessor?: (value: number[]) => number;
   valueFormatter?: ReturnType<typeof formatter>;
-  showAps?: boolean;
 }
 
 export type IntentKpi = Record<`kpi_${string}`, {

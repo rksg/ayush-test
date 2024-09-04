@@ -3,8 +3,8 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                                                         from '@acx-ui/store'
-import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
+import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { useIntentContext } from '../IntentContext'
 import { Statuses }         from '../states'
@@ -106,19 +106,15 @@ describe('IntentAIDetails', () => {
     const { params } = mockIntentContextWith()
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    const affectedAps = await screen.findByText('3 of 3 APs (100 %)')
-    userEvent.click(affectedAps)
-    const tableTitle = await screen.findByText('3 Impacted APs')
-    expect(tableTitle).toBeVisible()
-    expect(await screen.findByText('B4:79:C8:3E:7E:50')).toBeVisible()
-    expect(await screen.findByText('28:B3:71:27:38:E0')).toBeVisible()
-    expect(await screen.findByText('C8:84:8C:3E:46:B0')).toBeVisible()
-    const closeButton = screen.queryByRole('button', { name: 'Close' })
-    expect(closeButton).not.toBeNull()
-    userEvent.click(closeButton!)
-    await waitFor(async () => {
-      expect(screen.queryByText('3 Impacted APs')).not.toBeVisible()
-    })
+    await userEvent.click(await screen.findByText('3 of 3 APs (100 %)'))
+    const drawerEl = await screen.findByRole('dialog')
+    const drawer = within(drawerEl)
+    expect(await drawer.findByText('3 Impacted APs')).toBeVisible()
+    expect(await drawer.findByText('B4:79:C8:3E:7E:50')).toBeVisible()
+    expect(await drawer.findByText('28:B3:71:27:38:E0')).toBeVisible()
+    expect(await drawer.findByText('C8:84:8C:3E:46:B0')).toBeVisible()
+    await userEvent.click(drawer.getByRole('button', { name: 'Close' }))
+    expect(drawerEl).not.toBeVisible()
   })
   it('should render', async () => {
     const { params } = mockIntentContextWith()

@@ -1,13 +1,10 @@
-import { useState } from 'react'
-
 import { Typography }                from 'antd'
 import moment                        from 'moment-timezone'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
+import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
+import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
 
-import { DescriptionRow }      from '../../DescriptionSection'
 import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
 import { DetailsSection }      from '../common/DetailsSection'
 import { getIntentStatus }     from '../common/getIntentStatus'
@@ -17,29 +14,22 @@ import { KpiCard }             from '../common/KpiCard'
 import { StatusTrail }         from '../common/StatusTrail'
 import { codes }               from '../config'
 import { useIntentContext }    from '../IntentContext'
-import { useGetApsQuery }      from '../services'
 import { getGraphKPIs }        from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
-import { ImpactedApsDrawer }   from './ImpactedApsDrawer'
+import { ImpactedAPCount }     from './ImpactedAPCount'
 
-export function createIntentAIDetails (useValuesText: ReturnType<typeof createUseValuesText>) {
+export function createIntentAIDetails (
+  useValuesText: ReturnType<typeof createUseValuesText>,
+  options: { showImpactedAPs?: boolean } = {}
+) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
-    const [drawerVisible, setDrawerVisible] = useState(false)
 
-    const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
-    const impactedApsQuery = useGetApsQuery({
-      code: intent.code,
-      root: intent.root,
-      sliceId: intent.sliceId,
-      search: ''
-    }, { skip: !hasAp })
-
-    return <Loader states={[impactedApsQuery]}>
+    return <>
       <IntentDetailsHeader />
       <GridRow>
         <GridCol col={{ span: 6, xxl: 4 }}>
@@ -68,35 +58,12 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
                   label={$t({ defaultMessage: 'Date' })}
                   children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
                 />
-                {(impactedApsQuery.data) && <Descriptions.Item
+                {options.showImpactedAPs ? <Descriptions.Item
                   label={$t({ defaultMessage: 'AP Impact Count' })}
-                  children={
-                    <DescriptionRow
-                      label=''
-                      onClick={() => setDrawerVisible(true)}
-                    >
-                      {$t(
-                        {
-                          defaultMessage:
-                          '{count} of {count} {count, plural, one {AP} other {APs}} ({percent})'
-                        },
-                        {
-                          count: impactedApsQuery.data.length,
-                          percent: formatter('percent')(100)
-                        }
-                      )}
-                    </DescriptionRow>
-                  }
-                />}
+                  children={<ImpactedAPCount />} /> : null}
               </Descriptions>
-              <br />
             </div>)}
           </FixedAutoSizer>
-          <ImpactedApsDrawer
-            aps={impactedApsQuery.data!}
-            visible={drawerVisible}
-            onClose={() => setDrawerVisible(false)}
-          />
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
           <DetailsSection
@@ -140,6 +107,6 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
           />
         </GridCol>
       </GridRow>
-    </Loader>
+    </>
   }
 }
