@@ -1,8 +1,8 @@
 import { ReactNode, useEffect } from 'react'
 
-import { Form, Radio, Row, Space, Switch, Tooltip, Typography } from 'antd'
-import { isNil }                                                from 'lodash'
-import { useIntl }                                              from 'react-intl'
+import { Form, Radio, RadioProps, Row, Space, Switch, Tooltip, Typography } from 'antd'
+import { isNil }                                                            from 'lodash'
+import { useIntl }                                                          from 'react-intl'
 
 import { cssStr }   from '@acx-ui/components'
 import {
@@ -112,17 +112,12 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
         </Form.Item>
       </UI.RadioSubTitle>}
     >
-      {disabledInfo?.isDisabled
-        ? <Tooltip title={disabledInfo.tooltip}>
-          <EdgeSdLanRadioButton
-            disabled={disabledInfo?.isDisabled || !isVenueSdLanExist}
-            sdlanName={sdlanName}
-          />
-        </Tooltip>
-        : <EdgeSdLanRadioButton
+      <Tooltip title={disabledInfo?.tooltip}>
+        <EdgeSdLanRadioButton
           disabled={disabledInfo?.isDisabled || !isVenueSdLanExist}
           sdlanName={sdlanName}
-        />}
+        />
+      </Tooltip>
     </Form.Item>
     <UI.SwitchContainer>
       <Space size={10} style={{ marginTop: cssStr('--acx-content-vertical-space') }}>
@@ -141,16 +136,17 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
   </Row>
 }
 
-const EdgeSdLanRadioButton = (props: {
+const EdgeSdLanRadioButton = (props: RadioProps & {
   disabled: boolean,
   sdlanName?: ReactNode | string
 }) => {
   const { $t } = useIntl()
-  const { disabled, sdlanName } = props
+  const { disabled, sdlanName, ...otherProps } = props
 
   return <Radio
     value={NetworkTunnelTypeEnum.SdLan}
     disabled={disabled}
+    {...otherProps}
   >
     {$t({ defaultMessage: 'SD-LAN Tunneling{info}' }, {
       info: (sdlanName ? $t({ defaultMessage: '({sdlanName})' }, { sdlanName }) : sdlanName)

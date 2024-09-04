@@ -124,13 +124,12 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 }
               </UI.RadioSubTitle>}
             >
-              {isDisabledAll
+              <Tooltip title={isDisabledAll
                 // eslint-disable-next-line max-len
-                ? <Tooltip title={$t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })}>
-                  {localBreakoutRadio}
-                </Tooltip>
-                : localBreakoutRadio
-              }
+                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                : undefined}>
+                {localBreakoutRadio}
+              </Tooltip>
             </Form.Item>
 
             {network && visible && isEdgeSdLanMvEnabled &&
