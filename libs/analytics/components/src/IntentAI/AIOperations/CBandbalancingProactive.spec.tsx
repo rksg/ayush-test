@@ -98,7 +98,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Steering mode for Venue: 26-US-CA-D26-Leslie-Mother-home is set as Basic. It is recommended to change the mode to PROACTIVE.')).toBeVisible()
+    expect(await screen.findByText('Steering mode for Venue: 26-US-CA-D26-Leslie-Mother-home is set as BASIC. It is recommended to change the mode to PROACTIVE.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     const kpiElements = await screen.findAllByTestId('KPI')
@@ -111,7 +111,7 @@ describe('IntentAIDetails', () => {
 
 describe('IntentAIForm', () => {
   it('should render when active', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.active })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -136,14 +136,14 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
-    expect(await screen.findByText('Recommended Configuration: Proactive')).toBeVisible()
+    expect(await screen.findByText('Recommended Configuration: PROACTIVE')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
   it('should render when paused', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))

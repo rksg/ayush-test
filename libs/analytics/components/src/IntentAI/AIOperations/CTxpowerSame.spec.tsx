@@ -109,7 +109,7 @@ describe('IntentAIDetails', () => {
 
 describe('IntentAIForm', () => {
   it('should render when active', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.active })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -141,7 +141,7 @@ describe('IntentAIForm', () => {
     expect(mockNavigate).toBeCalled()
   })
   it('should render when paused', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))

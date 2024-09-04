@@ -104,14 +104,14 @@ describe('IntentAIDetails', () => {
 
   it('should show different action based on environment', async () => {
     process.env.NX_IS_MLISA_SA = 'false'
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     // eslint-disable-next-line max-len
     expect(await screen.findByText('There is a significant high detection of DFS Radar signals in the Zone: AlphaNet_5_1, it is recommended to disable DFS Channels on this Venue.')).toBeVisible()
   })
 
   it('should render', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
@@ -129,7 +129,7 @@ describe('IntentAIDetails', () => {
 
 describe('IntentAIForm', () => {
   it('should render when active', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.active })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -161,7 +161,7 @@ describe('IntentAIForm', () => {
     expect(mockNavigate).toBeCalled()
   })
   it('should render when paused', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))

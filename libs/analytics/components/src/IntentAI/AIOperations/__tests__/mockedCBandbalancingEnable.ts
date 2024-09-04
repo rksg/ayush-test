@@ -6,25 +6,45 @@ export const mocked = {
   code: 'c-bandbalancing-enable',
   sliceId: 'f3f207c0-776c-4ce7-9e6f-d12d9b9f0fe1',
   status: 'active',
-  metadata: {},
-  sliceType: 'zoneName',
+  metadata: { failures: ['band-balancing-disabled-zone-6.1'], dataEndTime: 1722902400000 },
+  sliceType: 'zone',
   sliceValue: '14-US-CA-D14-Ken-Home',
-  updatedAt: '2024-09-02T00:00:00.000Z',
-  dataEndTime: '2024-09-02T00:00:00.000Z',
+  updatedAt: '2024-09-02T06:05:18.015Z',
   path: [
-    { type: 'system', name: 'e6b60f6a-d5eb-4e46-b9d9-10ce752181c8' },
+    { type: 'system', name: 'vsz34' },
+    { type: 'domain', name: '14-US-CA-D14-Ken-Home' },
     { type: 'zone', name: '14-US-CA-D14-Ken-Home' }
   ],
   statusTrail: [
-    { status: 'applied', createdAt: '2024-06-14T08:30:39.214Z' },
-    { status: 'applyscheduleinprogress', createdAt: '2024-06-14T08:30:02.362Z' },
-    { status: 'applyscheduled', createdAt: '2024-06-04T08:06:00.791Z' },
-    { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }
+    {
+      status: 'active',
+      statusReason: null,
+      displayStatus: 'active',
+      createdAt: '2024-08-07T04:30:33.273Z'
+    },
+    {
+      status: 'applyscheduleinprogress',
+      statusReason: null,
+      displayStatus: 'applyscheduleinprogress',
+      createdAt: '2024-08-07T04:30:02.196Z'
+    },
+    {
+      status: 'applyscheduled',
+      statusReason: null,
+      displayStatus: 'applyscheduled',
+      createdAt: '2024-08-07T04:13:18.596Z'
+    },
+    {
+      status: 'new',
+      statusReason: null,
+      displayStatus: 'new',
+      createdAt: '2024-07-30T06:05:09.787Z'
+    }
   ],
   kpi_client_ratio: {
-    data: { timestamp: '2024-08-29T08:30:00.000Z', result: 0 },
-    compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: 0 }
+    data: { timestamp: '2024-09-04T07:04:53.000Z', result: 1 },
+    compareData: { timestamp: '2024-08-06T00:00:00.000Z', result: 1 }
   },
-  currentValue: 'Enabled',
-  recommendedValue: 'Disabled'
+  currentValue: true,
+  recommendedValue: true
 } as unknown as Intent
