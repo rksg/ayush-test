@@ -72,7 +72,8 @@ export function useApActions () {
           handler: () => {
             rebootAp({
               params: { tenantId: tenantId, serialNumber, venueId },
-              payload: { type: SystemCommands.REBOOT },
+              payload: {
+                ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT } : { action: 'reboot' }) },
               enableRbac: isUseWifiRbacApi
             })
             callBack && callBack()
@@ -214,7 +215,8 @@ export function useApActions () {
   ) => {
     blinkLedAp({
       params: { tenantId, serialNumber, venueId },
-      payload: { type: DiagnosisCommands.BLINK_LED },
+      payload: {
+        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.BLINK_LED } :{ action: 'blinkLed' }) },
       enableRbac: isUseWifiRbacApi
     })
       .unwrap().then(() => {

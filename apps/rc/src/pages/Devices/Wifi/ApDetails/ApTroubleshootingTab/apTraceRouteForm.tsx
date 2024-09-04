@@ -21,7 +21,7 @@ export function ApTraceRouteForm () {
     try {
       const payload = {
         targetHost: form.getFieldValue('name'),
-        type: DiagnosisCommands.TRACE_ROUTE
+        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.TRACE_ROUTE } : { action: 'traceRoute' })
       }
       const traceRouteApResult =
         await traceRouteAp({

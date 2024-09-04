@@ -22,7 +22,7 @@ export function ApPingForm () {
     try {
       const payload = {
         targetHost: pingForm.getFieldValue('name'),
-        type: DiagnosisCommands.PING
+        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.PING } : { action: 'ping' })
       }
       const pingApResult = await pingAp({
         params: { tenantId, serialNumber, venueId },
