@@ -6,7 +6,8 @@ import {
   useLazyGetSdLanEdgeCompatibilitiesQuery,
   useLazyGetSdLanApCompatibilitiesQuery,
   useLazyGetEdgeFeatureSetsQuery,
-  useLazyGetApFeatureSetsQuery
+  useLazyGetApFeatureSetsQuery,
+  useLazyGetVenueEdgeCompatibilitiesQuery
 }   from '@acx-ui/rc/services'
 import {
   ApCompatibility,
@@ -17,8 +18,12 @@ import {
   CompatibilityDeviceEnum,
   EdgeSdLanApCompatibility,
   EdgeSdLanCompatibility,
-  ApIncompatibleDevice
+  ApIncompatibleDevice,
+  ApIncompatibleFeature,
+  EntityCompatibility
 } from '@acx-ui/rc/utils'
+
+import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
 
 // eslint-disable-next-line max-len
 export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
@@ -243,4 +248,76 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
 
   return useMemo(() => ({ featureInfos: data, isLoading: isInitializing }),
     [data, isInitializing])
+}
+
+// eslint-disable-next-line max-len
+export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDrawerProps, 'visible'|'title'| 'onClose'>, skip: boolean = false) => {
+  const { data, type = EdgeCompatibilityType.VENUE, featureName, venueId, edgeId } = props
+  const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
+  const [ edgeCompatibilities, setEdgeCompatibilities ] = useState<ApCompatibility[]>([])
+
+  const [getEdgeFeatureSets] = useLazyGetEdgeFeatureSetsQuery()
+  const [getVenueEdgeCompatibilities] = useLazyGetVenueEdgeCompatibilitiesQuery()
+
+  const fetchEdgeCompatibilities = async () => {
+    try {
+      const featureNames = [featureName] ?? []
+      let edgeCompatibilitiesResponse: ApCompatibility[] = []
+
+      if (type === EdgeCompatibilityType.VENUE) {
+        const venueEdgeCompatibilities = await getVenueEdgeCompatibilities({ payload: {
+          filters: {
+            ...(venueId ? { venueIds: [venueId] } : undefined),
+            ...(edgeId ? { edgeIds: [edgeId] } : undefined)
+          } }
+        }).unwrap()
+        // eslint-disable-next-line max-len
+        edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
+      } else if (type === EdgeCompatibilityType.ALONE) {
+        const edgeFeatureSets = await getEdgeFeatureSets({
+          payload: { filters: { featureNames } }
+        }).unwrap()
+
+        edgeCompatibilitiesResponse = edgeFeatureSets.featureSets.map(item => {
+          return {
+            id: `EdgeFeature_${item.featureName}`,
+            incompatibleFeatures: [
+              { ...item, incompatibleDevices: [] } as ApIncompatibleFeature
+            ],
+            incompatible: 0,
+            total: 0
+          } as ApCompatibility
+        })
+      }
+
+      setEdgeCompatibilities(edgeCompatibilitiesResponse)
+      setIsInitializing(false)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('EdgeCompatibilityDrawer api error:', e)
+      setIsInitializing(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!skip)
+      fetchEdgeCompatibilities()
+  }, [skip])
+
+  return useMemo(() => ({ edgeCompatibilities, isLoading: isInitializing }),
+    [edgeCompatibilities, isInitializing])
+}
+
+// eslint-disable-next-line max-len
+const sdLanToApCompatibilityData = (data: EntityCompatibility[]): ApCompatibility[] => {
+  return data.map(item => ({
+    id: item.id,
+    total: item.total,
+    incompatible: item.incompatible,
+    incompatibleFeatures: item.incompatibleFeatures?.map(incompatibleFeature => ({
+      featureName: incompatibleFeature.featureRequirement.featureName,
+      requiredFw: incompatibleFeature.featureRequirement.requiredFw,
+      incompatibleDevices: incompatibleFeature.incompatibleDevices as ApIncompatibleDevice[]
+    } as ApIncompatibleFeature))
+  } as ApCompatibility))
 }
