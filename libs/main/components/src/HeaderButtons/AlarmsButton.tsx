@@ -52,6 +52,6 @@ export default function AlarmsHeaderButton () {
         }}
       />}
     />
-    <AlarmsDrawer visible={visible} setVisible={setVisible}/>
+    { visible && <AlarmsDrawer visible={visible} setVisible={setVisible}/> }
   </>
 }
