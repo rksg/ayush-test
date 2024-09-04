@@ -1,4 +1,5 @@
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Provider }                                 from '@acx-ui/store'
 import {
   render,
   screen
@@ -32,10 +33,11 @@ describe('ServiceCatalog', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-    render(
-      <ServiceCatalog />, {
-        route: { params, path }
-      }
+    render(<Provider>
+      <ServiceCatalog />
+    </Provider>, {
+      route: { params, path }
+    }
     )
 
     expect(await screen.findByText('Personal Identity Network')).toBeVisible()
@@ -58,15 +60,16 @@ describe('ServiceCatalog', () => {
   })
 
   it('should not render edge-dhcp service with the HA-FF ON and dhcp-HA-FF OFF', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(featureFlag => {
-      return featureFlag === Features.EDGE_HA_TOGGLE
-        || featureFlag !== Features.EDGE_DHCP_HA_TOGGLE
+    jest.mocked(useIsSplitOn).mockImplementation(ff => {
+      return ff === Features.EDGE_HA_TOGGLE
+        || (ff !== Features.EDGE_DHCP_HA_TOGGLE && ff !== Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
     })
 
-    render(
-      <ServiceCatalog />, {
-        route: { params, path }
-      }
+    render(<Provider>
+      <ServiceCatalog />
+    </Provider>, {
+      route: { params, path }
+    }
     )
 
     expect(screen.queryByText('DHCP for SmartEdge')).toBeNull()
