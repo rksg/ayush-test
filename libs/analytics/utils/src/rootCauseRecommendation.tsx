@@ -278,7 +278,7 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
     .filter(check => Array.from([check]).flat().every(property => checkTrue.includes(property)))
     .length === 0
   const { ssidCountPerRadioSlice } = params
-  const aiOpsLink = <TenantLinkWrapper params={params} linkType='aclb' />
+  const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
   const crrmLink = <TenantLinkWrapper params={params} linkType='crrm' />
   const highDensityWifi = checkTrue.includes('isAclbRaised')
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
