@@ -18,8 +18,8 @@ import {
   useEdgeSdLanDetailsCompatibilitiesData,
   getSdLanDetailsCompatibilitiesDrawerData
 } from '../../useEdgeActions/compatibility'
-import { CompatibilityDrawer }                from '../CompatibilityDrawer'
-import { EdgeSdLanDetailCompatibilityDrawer } from '../EdgeSdLanDetailCompatibilityDrawer'
+import { CompatibilityDrawer }           from '../CompatibilityDrawer'
+import { EdgeDetailCompatibilityDrawer } from '../EdgeDetailCompatibilityDrawer'
 
 export enum EdgeCompatibilityType {
   SD_LAN = 'SD-LAN',
@@ -29,8 +29,8 @@ export enum EdgeCompatibilityType {
 
 export type EdgeCompatibilityDrawerProps = {
   visible: boolean,
-  title: string,
   onClose: () => void
+  title?: string,
   type?: EdgeCompatibilityType,
   venueId?: string,
   venueName?: string,
@@ -38,6 +38,7 @@ export type EdgeCompatibilityDrawerProps = {
   edgeId?: string,
   serviceId?: string,
   data?: EntityCompatibility[],
+  width?: number
 }
 
 export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => {
@@ -49,30 +50,31 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
     venueId, venueName,
     edgeId,
     featureName,
-    onClose
+    onClose,
+    width
   } = props
 
-  const skipFetchCompatibilities = type !== EdgeCompatibilityType.VENUE
+  const skipFetchCompatibilities = !visible || type !== EdgeCompatibilityType.VENUE
   const {
     edgeCompatibilities, isLoading
   } = useVenueEdgeCompatibilitiesData(props, skipFetchCompatibilities)
 
   // eslint-disable-next-line max-len
-  const skipFetchSdLanDetailCompatibilities = type !== EdgeCompatibilityType.SD_LAN || !props.serviceId
+  const skipFetchSdLanDetailCompatibilities = !visible || type !== EdgeCompatibilityType.SD_LAN || !props.serviceId
   const {
     sdLanCompatibilities,
     isLoading: isDetailCompatibilitiesLoading
   } = useEdgeSdLanDetailsCompatibilitiesData(props.serviceId!, skipFetchSdLanDetailCompatibilities)
 
-  const skipFetchFeatureInfo = type !== EdgeCompatibilityType.ALONE || !featureName
+  const skipFetchFeatureInfo = !visible || type !== EdgeCompatibilityType.ALONE || !featureName
   const {
     featureInfos,
     isLoading: isFeatureInfoLoading
   } = useEdgeCompatibilityRequirementData(featureName!, skipFetchFeatureInfo)
 
-  return (type === EdgeCompatibilityType.SD_LAN || type === EdgeCompatibilityType.ALONE)
-    ? <EdgeSdLanDetailCompatibilityDrawer
-      visible={true}
+  return type !== EdgeCompatibilityType.VENUE
+    ? <EdgeDetailCompatibilityDrawer
+      visible={visible}
       featureName={featureName!}
       title={type === EdgeCompatibilityType.ALONE
         ? $t({ defaultMessage: 'Compatibility Requirement' })
@@ -91,7 +93,7 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
     : <CompatibilityDrawer
       data-testid={'edge-compatibility-drawer'}
       visible={visible}
-      title={title}
+      title={title ?? ''}
       compatibilityType={edgeId
         ? CompatibilityType.DEVICE
         : (featureName ? CompatibilityType.FEATURE : CompatibilityType.VENUE)
@@ -104,6 +106,7 @@ export const EdgeCompatibilityDrawer = (props: EdgeCompatibilityDrawerProps) => 
       venueId={venueId}
       venueName={venueName}
       featureName={featureName}
+      width={width}
     />
 }
 
@@ -122,6 +125,12 @@ const useVenueEdgeCompatibilitiesData = (props: EdgeCompatibilityDrawerProps, sk
       let edgeCompatibilitiesResponse: ApCompatibility[] = []
 
       if (type === EdgeCompatibilityType.VENUE) {
+        if (data?.length) {
+          edgeCompatibilitiesResponse = sdLanToApCompatibilityData(data)
+          setEdgeCompatibilities(edgeCompatibilitiesResponse)
+          return
+        }
+
         const venueEdgeCompatibilities = await getVenueEdgeCompatibilities({ payload: {
           filters: {
             ...(venueId ? { venueIds: [venueId] } : undefined),
