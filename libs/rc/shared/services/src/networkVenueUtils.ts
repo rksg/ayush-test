@@ -492,11 +492,12 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
       activatedNetworkIds.push(networkId)
 
       item.venueApGroups?.forEach(venueApGroup => {
-        const { apGroupIds } = venueApGroup
-
-        apGroupIds?.forEach(apGroupId => {
-          networkApGroupParamsList.push({ venueId, networkId, apGroupId })
-        })
+        const { apGroupIds, isAllApGroups } = venueApGroup
+        if (!isAllApGroups) {
+          apGroupIds?.forEach(apGroupId => {
+            networkApGroupParamsList.push({ venueId, networkId, apGroupId })
+          })
+        }
       })
     }
   })
@@ -654,14 +655,6 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
   const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
   const venueIds:string[] = networkVenuesList.data?.map(v => v.id) || []
-  /*
-  const venueIds:string[] = networkVenuesList.data?.filter(v => {
-    if (v.aggregatedApStatus) {
-      return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
-    }
-    return false
-  }).map(v => v.id) || []
-  */
 
   const isTemplate = payload?.isTemplate
   const networkId = params?.networkId
@@ -687,13 +680,6 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
 
     const activatedVenueIds: string[] = networkVenuesList.data?.filter(v => {
       return v.networks?.names? v.networks.names.includes(networkViewmodel.name) : false
-      /*
-      if (v.aggregatedApStatus) {
-        const isActivated = v.networks?.names? v.networks.names.includes(networkViewmodel.name) : false
-        return isActivated && Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
-      }
-      return false
-      */
     }).map(v => v.id) || []
 
     if (activatedVenueIds.length > 0) {
@@ -715,11 +701,12 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
 
       // Get "select specific AP Groups" settings
       networkViewmodel.venueApGroups?.forEach(venueApGroup => {
-        const { apGroupIds, venueId } = venueApGroup
-
-        apGroupIds?.forEach(apGroupId => {
-          networkApGroupParamsList.push({ venueId, networkId, apGroupId })
-        })
+        const { apGroupIds, venueId, isAllApGroups } = venueApGroup
+        if (!isAllApGroups) {
+          apGroupIds?.forEach(apGroupId => {
+            networkApGroupParamsList.push({ venueId, networkId, apGroupId })
+          })
+        }
       })
       const networkApGroupReqs = networkApGroupParamsList.map(params => {
         return fetchWithBQ(createHttpRequest(
