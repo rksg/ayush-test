@@ -49,6 +49,12 @@ export interface EthernetPortProfileFormType extends EthernetPortProfile {
     accountingEnabled?: boolean
   }
 
+export interface EhternetPortSettings {
+  enabled?: boolean
+  overwriteUntagId?: number
+  overwriteVlanMembers?: string
+}
+
 export interface VenueActivation {
   venueId?: string
   apModel?: string

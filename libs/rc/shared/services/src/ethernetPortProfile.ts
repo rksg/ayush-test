@@ -5,7 +5,8 @@ import {
   TableResult,
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
-  EthernetPortProfile
+  EthernetPortProfile,
+  EhternetPortSettings
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -103,11 +104,22 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       },
       invalidatesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }]
     }),
-    getEthernetPortProfileSettingsByApPortId: build.query<EthernetPortProfile, RequestPayload>({
+    getEthernetPortProfileSettingsByApPortId: build.query<EhternetPortSettings, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EthernetPortProfileUrls.getEthernetPortSettingsByApPortId, params)
         return {
           ...req
+        }
+      }
+    }),
+    updateEthernetPortProfileSettingsByApPortId: build.mutation<EhternetPortSettings, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, params
+        )
+        return {
+          ...req,
+          body: payload
         }
       }
     }),
@@ -134,5 +146,6 @@ export const {
   useUpdateEthernetPortProfileRadiusIdMutation,
   useDeleteEthernetPortProfileRadiusIdMutation,
   useGetEthernetPortProfileSettingsByApPortIdQuery,
+  useUpdateEthernetPortProfileSettingsByApPortIdMutation,
   useActivateEthernetPortProfileOnApPortIdMutation
 } = ethernetPortProfileApi
