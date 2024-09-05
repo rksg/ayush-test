@@ -21,7 +21,8 @@ const entityTypes
     'transaction',
     'edge',
     'remoteedge',
-    'unit'
+    'unit',
+    'clientMldMac'
   ] as const
 const configurationUpdate = 'Configuration Update' as const
 
@@ -43,6 +44,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
     network: {
       path: 'networks/wireless/:networkId/network-details/overview',
       params: ['networkId']
+    },
+    clientMldMac: {
+      path: 'users/wifi/clients/search/:clientMldMac',
+      params: ['clientMldMac']
     },
     switch: {
       path: 'devices/switch/:switchMac/:serialNumber/details/overview',
@@ -69,8 +74,13 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       params: ['venueId']
     }
   }
+  let entity: EntityType
 
-  const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  if (entityTypes.includes(entityKey as EntityType)) {
+    entity = entityKey as EntityType
+  } else {
+    [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  }
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
@@ -170,7 +180,6 @@ export const getDetail = (data: Event) => {
 
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
-
     return <FormatMessage
       id='events-detailedDescription-template'
       // escape ' by replacing with '' as it is special character of formatjs
@@ -193,5 +202,12 @@ const extraHandle = (entityType: EntityType) => {
 }
 
 const identifyExistKey = (entityType: EntityType) => {
-  return 'transaction' === entityType ? 'switch' : entityType
+  switch (entityType) {
+    case 'transaction':
+      return 'switch'
+    case 'clientMldMac':
+      return 'client'
+    default:
+      return entityType
+  }
 }

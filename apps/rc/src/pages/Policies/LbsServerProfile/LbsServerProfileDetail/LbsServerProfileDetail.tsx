@@ -12,8 +12,8 @@ import {
   getPolicyDetailsLink,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { LbsServerProfileInstancesTable } from './LbsServerProfileInstancesTable'
 import { LbsServerProfileOverview }       from './LbsServerProfileOverview'
@@ -28,7 +28,7 @@ const LbsServerProfileDetail = () => {
   const { data: lbsServerProfileList } = useGetLbsServerProfileListQuery({
     params,
     payload: {
-      fields: ['id', 'name', 'lbsVenueName', 'server', 'venueIds', 'serverConnected'],
+      fields: ['id', 'name', 'lbsServerVenueName', 'server', 'venueIds', 'serverConnected'],
       searchString: '',
       filters: { id: [policyId] }
     }
@@ -47,7 +47,7 @@ const LbsServerProfileDetail = () => {
     <PageHeader
       title={data?.name || ''}
       breadcrumb={breadcrumb}
-      extra={filterByAccess([
+      extra={hasCrossVenuesPermission() && filterByAccess([
         <TenantLink to={getPolicyDetailsLink({
           type: PolicyType.LBS_SERVER_PROFILE,
           oper: PolicyOperation.EDIT,

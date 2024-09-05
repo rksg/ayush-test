@@ -1,15 +1,18 @@
+import { useState } from 'react'
+
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }             from '@acx-ui/components'
-import { RadioCardCategory }                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader }                                                                  from '@acx-ui/components'
+import { RadioCardCategory }                                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   ServicePolicyCardData,
   ServiceType,
   isServicePolicyCardSetEnabled,
-  isServicePolicyCardEnabled
+  isServicePolicyCardEnabled,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
 import { EdgeScopes } from '@acx-ui/types'
 
@@ -29,6 +32,10 @@ export default function ServiceCatalog () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   const sets: { title: string, items: ServicePolicyCardData<ServiceType>[] }[] = [
     {
@@ -49,6 +56,13 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+          helpIcon: isEdgeCompatibilityEnabled
+            ? <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
+            />
+            : undefined,
           disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
           scopeKeysMap: {
             create: [EdgeScopes.CREATE],
@@ -111,12 +125,20 @@ export default function ServiceCatalog () {
                   categories={item.categories}
                   type={'button'}
                   scopeKeysMap={item.scopeKeysMap}
+                  helpIcon={item.helpIcon}
                 />
               </GridCol>
             })}
           </GridRow>
         </UI.CategoryContainer>
       })}
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!edgeCompatibilityFeature}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
+      />}
     </>
   )
 }

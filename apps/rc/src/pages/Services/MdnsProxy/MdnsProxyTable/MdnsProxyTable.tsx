@@ -94,8 +94,8 @@ export default function MdnsProxyTable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
-            <Button scopeKey={[WifiScopes.CREATE]} type='primary'>
+          <TenantLink scopeKey={[WifiScopes.CREATE]} to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
+            <Button type='primary'>
               {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
         ])}

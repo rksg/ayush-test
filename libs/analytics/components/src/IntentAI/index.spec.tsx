@@ -14,7 +14,8 @@ import {
   screen,
   waitForElementToBeRemoved,
   within,
-  waitFor
+  waitFor,
+  mockGraphqlMutation
 } from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 import { DateRange, setUpIntl }              from '@acx-ui/utils'
@@ -22,22 +23,10 @@ import { DateRange, setUpIntl }              from '@acx-ui/utils'
 import { intentListResult, mockAIDrivenRow, filterOptions } from './__tests__/fixtures'
 import {
   api,
-  IntentListItem
+  TransitionMutationResponse
 } from './services'
 
 import { IntentAITabContent } from './index'
-
-const mockedShowOneClickOptimize = jest.fn()
-
-jest.mock('./useIntentAIActions', () => ({
-  ...jest.requireActual('./useIntentAIActions'),
-  useIntentAIActions: () => ({
-    showOneClickOptimize: (_: IntentListItem[], callbackFun: () => void) => {
-      mockedShowOneClickOptimize()
-      callbackFun && callbackFun()
-    }
-  })
-}))
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -53,6 +42,12 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 setUpIntl({ locale: 'en-US', messages: {} })
 //Refer to libs/analytics/components/src/Recommendations/index.spec.tsx
 describe('IntentAITabContent', () => {
@@ -62,6 +57,8 @@ describe('IntentAITabContent', () => {
     range: DateRange.last24Hours,
     filter: {}
   }
+
+  const resp = { t1: { success: true, errorMsg: '' , errorCode: '' } } as TransitionMutationResponse
 
   beforeEach(() => {
     setRaiPermissions({ WRITE_AI_OPERATIONS: true, WRITE_INTENT_AI: true } as RaiPermissions)
@@ -76,9 +73,7 @@ describe('IntentAITabContent', () => {
     })
 
     jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
-
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
-
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
@@ -150,15 +145,17 @@ describe('IntentAITabContent', () => {
     expect(screen.getByTestId('intentAI')).toBeVisible()
   })
 
-  it('should render 1-click-optimize', async () => {
+  it('should render One_Click_Optimize', async () => {
     const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
       aiFeature: 'AI-Driven RRM',
       intent: 'Client Density vs. Throughput for 2.4 GHz radio',
       category: 'Wi-Fi Experience',
       scope: `vsz611 (SZ Cluster)
     > EDU-MeshZone_S12348 (Venue)`,
-      status: 'New',
-      statusTooltip: 'IntentAI is active and has successfully applied the changes to the zone-1.'
+      status: 'new',
+      statusTooltip: 'statusTooltip'
     }
     mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
       data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
@@ -166,6 +163,7 @@ describe('IntentAITabContent', () => {
     mockGraphqlQuery(intentAIUrl, 'IntentAI', {
       data: filterOptions
     })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
     jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
     render(<IntentAITabContent/>, {
       route: {},
@@ -176,11 +174,242 @@ describe('IntentAITabContent', () => {
     const table = await screen.findByRole('table')
     expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
     await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Optimize' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Pause' })).toBeVisible()
     expect(await screen.findByRole('button', { name: '1-Click Optimize' })).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: '1-Click Optimize' }))
-    expect(mockedShowOneClickOptimize).toBeCalledTimes(1)
+    await userEvent.click((await screen.findAllByText('Yes, Optimize!'))[0])
     await waitFor(() =>
       expect(screen.queryByRole('button', { name: '1-Click Optimize' })).toBeNull()
+    )
+  })
+
+  it('should render Optimize', async () => {
+    const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'new',
+      statusTooltip: 'statusTooltip'
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
+    render(<IntentAITabContent/>, {
+      route: { params: { tenantId: 'tenant-id' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Optimize' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Optimize' }))
+    await waitFor(() =>
+      expect(mockedUsedNavigate).toBeCalledWith({
+        hash: '',
+        pathname: '/ai/intentAI/root/sliceId/c-crrm-channel24g-auto/edit',
+        search: '?intentTableFilters=%257B%257D'
+      })
+    )
+  })
+
+  it('should render Optimize(RAI)', async () => {
+    const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'new',
+      statusTooltip: 'statusTooltip'
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+    jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
+    render(<IntentAITabContent/>, {
+      route: { params: { tenantId: 'tenant-id' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Optimize' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Optimize' }))
+    await waitFor(() =>
+      expect(mockedUsedNavigate).toBeCalledWith({
+        hash: '',
+        pathname: '/tenant-id/t/analytics/intentAI/sliceId/c-crrm-channel24g-auto/edit',
+        search: '?intentTableFilters=%257B%257D'
+      })
+    )
+  })
+
+  it('should render Pause', async () => {
+    const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'new',
+      statusTooltip: 'statusTooltip'
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
+    render(<IntentAITabContent/>, {
+      route: {},
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Pause' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Pause' }))
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'Pause' })).toBeNull()
+    )
+  })
+
+  it('should render Revert', async () => {
+    const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'revertscheduled',
+      displayStatus: 'revertscheduled',
+      statusTooltip: 'statusTooltip'
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
+    render(<IntentAITabContent/>, {
+      route: {},
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
+    expect(await screen.findByText('Revert')).toBeVisible()
+    await userEvent.click((await screen.findAllByText('Revert'))[0])
+    await userEvent.click((await screen.findAllByText('Apply'))[0])
+    await waitFor(() =>
+      expect(screen.queryByText('Revert')).toBeNull()
+    )
+  })
+
+  it('should render Cancel', async () => {
+    const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'revertscheduled',
+      displayStatus: 'revertscheduled',
+      statusTooltip: 'statusTooltip'
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
+    render(<IntentAITabContent/>, {
+      route: {},
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull()
+    )
+  })
+
+  it('should render Resume', async () => {
+    const extractItem = {
+      root: 'root',
+      sliceId: 'sliceId',
+      aiFeature: 'AI-Driven RRM',
+      intent: 'Client Density vs. Throughput for 2.4 GHz radio',
+      category: 'Wi-Fi Experience',
+      scope: `vsz611 (SZ Cluster)
+    > EDU-MeshZone_S12348 (Venue)`,
+      status: 'paused',
+      displayStatus: 'paused-reverted',
+      statusTooltip: 'statusTooltip'
+    }
+    mockGraphqlQuery(intentAIUrl, 'IntentAIList', {
+      data: { intents: { data: [{ ...mockAIDrivenRow, ...extractItem }], total: 1 } }
+    })
+    mockGraphqlQuery(intentAIUrl, 'IntentAI', {
+      data: filterOptions
+    })
+    mockGraphqlMutation(intentAIUrl, 'TransitionIntent', { data: resp })
+    jest.mocked(get).mockReturnValue('true') // get('IS_MLISA_SA')
+    render(<IntentAITabContent/>, {
+      route: {},
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByTestId('AIDrivenRRM')).toBeVisible()
+    await userEvent.click(await within(table).findByTestId('AIDrivenRRM'))
+    expect(await screen.findByRole('button', { name: 'Resume' })).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Resume' }))
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: 'Resume' })).toBeNull()
     )
   })
 

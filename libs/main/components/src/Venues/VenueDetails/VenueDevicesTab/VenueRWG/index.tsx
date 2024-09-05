@@ -6,7 +6,7 @@ import { useRwgActions }                                                        
 import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
 import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink }                                                  from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess, useUserProfileContext }                                                   from '@acx-ui/user'
 
 
 function useColumns (
@@ -99,6 +99,7 @@ export function VenueRWG () {
   const navigate = useNavigate()
   const { tenantId, venueId } = useParams()
   const rwgActions = useRwgActions()
+  const { isCustomRole } = useUserProfileContext()
 
   const rwgPayload = {
     filters: {}
@@ -194,7 +195,7 @@ export function VenueRWG () {
         pagination={{ total: tableQuery?.data?.totalCount }}
         onFilterChange={tableQuery.handleFilterChange}
         rowKey='rowId'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
         rowSelection={hasAccess() && { ...rowSelection() }}
         onChange={handleTableChange}
       />

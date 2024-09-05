@@ -14,6 +14,7 @@ interface TabDetail {
 
 export interface ContentSwitcherProps {
   defaultValue?: string
+  formInitValue?: string
   tabDetails: Array<TabDetail>
   size?: 'small' | 'large'
   align?: 'left' | 'right' | 'center'
@@ -29,8 +30,10 @@ const sizeSpaceMap = {
 }
 
 export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
-  const { tabDetails, defaultValue, size, align, value, onChange, extra, noPadding } = props
+  const { tabDetails, defaultValue, formInitValue, size, align, value, onChange,
+    extra, noPadding } = props
 
+  const initValue = defaultValue || formInitValue
   const options: SelectionControlOptionProps[] = tabDetails.map(tabDetail=>{
     return {
       label: tabDetail.label,
@@ -40,8 +43,8 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
       tooltip: tabDetail.tooltip
     }
   })
-  const isDefaultOptionVisible = options.find(o => o.value === defaultValue)
-  const defaultActiveContent = isDefaultOptionVisible ? defaultValue : options[0].value
+  const isDefaultOptionVisible = options.find(o => o.value === initValue)
+  const defaultActiveContent = isDefaultOptionVisible ? initValue : options[0].value
   const [activeContent, setActiveContent] = useState(defaultActiveContent)
   const padding = size === 'small'
     ? `${sizeSpaceMap[size!]} 0 calc(${sizeSpaceMap[size!]} * 2)`
@@ -57,7 +60,7 @@ export const ContentSwitcher: FC<ContentSwitcherProps> = (props) => {
     <>
       <div style={{ textAlign: align, padding }}>
         <SelectionControl options={options}
-          defaultValue={defaultValue || options[0].value}
+          defaultValue={initValue || options[0].value}
           size={size}
           value={value || activeContent}
           onChange={handleChange}

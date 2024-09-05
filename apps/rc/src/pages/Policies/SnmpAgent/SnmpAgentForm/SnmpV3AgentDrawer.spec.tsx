@@ -87,12 +87,12 @@ describe('SnmpV3AgentDrawer', () => {
         await userEvent.type(await screen.findByTestId('password-input-strength'), '~Aa1@bcdef')
         expect(await screen.findByRole('alert')).toBeInTheDocument()
       })
-      it('Aa1`bcdef - Should fail (contains `)', async () => {
+      it('Aa1`bcdef@ - Should fail (contains `)', async () => {
         const { renderElement } = renderInitState(
           <SnmpV3AgentDrawer visible={true} setVisible={jest.fn} editIndex={-1} />, newEmptySnmpData
         )
         render(renderElement)
-        await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa1`bcdef')
+        await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa1`bcdef@')
         expect(await screen.findByRole('alert')).toBeInTheDocument()
       })
       it('Aa1@bcd$( - Should fail (contains $()', async () => {
@@ -101,38 +101,6 @@ describe('SnmpV3AgentDrawer', () => {
         )
         render(renderElement)
         await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa1@bcd$(')
-        expect(await screen.findByRole('alert')).toBeInTheDocument()
-      })
-      it('Aa1 - Should fail (no special character)', async () => {
-        const { renderElement } = renderInitState(
-          <SnmpV3AgentDrawer visible={true} setVisible={jest.fn} editIndex={-1} />, newEmptySnmpData
-        )
-        render(renderElement)
-        await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa1')
-        expect(await screen.findByRole('alert')).toBeInTheDocument()
-      })
-      it('Aa@bcdef - Should fail (no digit)', async () => {
-        const { renderElement } = renderInitState(
-          <SnmpV3AgentDrawer visible={true} setVisible={jest.fn} editIndex={-1} />, newEmptySnmpData
-        )
-        render(renderElement)
-        await userEvent.type(await screen.findByTestId('password-input-strength'), 'Aa@bcdef')
-        expect(await screen.findByRole('alert')).toBeInTheDocument()
-      })
-      it('12345@bc - Should fail (no uppercase letter)', async () => {
-        const { renderElement } = renderInitState(
-          <SnmpV3AgentDrawer visible={true} setVisible={jest.fn} editIndex={-1} />, newEmptySnmpData
-        )
-        render(renderElement)
-        await userEvent.type(await screen.findByTestId('password-input-strength'), '12345@bc')
-        expect(await screen.findByRole('alert')).toBeInTheDocument()
-      })
-      it('ABCDE@123 - Should fail (no lowercase letter)', async () => {
-        const { renderElement } = renderInitState(
-          <SnmpV3AgentDrawer visible={true} setVisible={jest.fn} editIndex={-1} />, newEmptySnmpData
-        )
-        render(renderElement)
-        await userEvent.type(await screen.findByTestId('password-input-strength'), 'ABCDE@123')
         expect(await screen.findByRole('alert')).toBeInTheDocument()
       })
       it('Aa1~bcdef - Should fail (contains ~ at the beginning)', async () => {

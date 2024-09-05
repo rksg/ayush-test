@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Radio, Row, Space } from 'antd'
 import TextArea                                                                                    from 'antd/lib/input/TextArea'
@@ -16,16 +16,21 @@ import {
 import {
   ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
+  EdgeFeatureEnum,
   EdgeStatusEnum,
+  IncompatibilityFeatures,
   deriveEdgeModel,
   edgeSerialNumberValidator,
   isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 import { compareVersions } from '@acx-ui/utils'
 
-import { showDeleteModal, useIsEdgeFeatureReady } from '../../useEdgeActions'
 
-import { RadioDescription, FwDescription, FwVersion } from './styledComponents'
+import { ApCompatibilityToolTip }                         from '../../ApCompatibility/ApCompatibilityToolTip'
+import { EdgeCompatibilityDrawer, EdgeCompatibilityType } from '../../Compatibility/EdgeCompatibilityDrawer'
+import { showDeleteModal, useIsEdgeFeatureReady }         from '../../useEdgeActions'
+
+import { FwDescription, FwVersion, RadioDescription } from './styledComponents'
 
 interface EdgeClusterSettingFormProps {
   editData?: EdgeClusterStatus
@@ -79,7 +84,8 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     params: { tenantId }, payload: haAaFeatureRequirementPayload }, {
     selectFromResult: ({ data, isLoading }) => {
       return {
-        requiredFw: data?.featureSets?.find(item => item.featureName === 'HA-AA')?.requiredFw,
+        requiredFw: data?.featureSets
+          ?.find(item => item.featureName === EdgeFeatureEnum.HA_AA)?.requiredFw,
         isLoading
       }
     }
@@ -95,6 +101,9 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   }
 
   const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
+
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
 
   useEffect(() => {
     if(editData) {
@@ -251,6 +260,11 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                       value={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
                       id={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}>
                       {$t({ defaultMessage: 'Active-Active' })}
+                      <ApCompatibilityToolTip
+                        title={''}
+                        visible={true}
+                        onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.HA_AA)}
+                      />
                       <RadioDescription>{activeActiveMessage}</RadioDescription>
                     </Radio>
                     <Radio
@@ -324,6 +338,13 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
           }
         </Col>
       </Row>
+      {edgeCompatibilityFeature && <EdgeCompatibilityDrawer
+        visible
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
+      />}
     </>
   )
 }

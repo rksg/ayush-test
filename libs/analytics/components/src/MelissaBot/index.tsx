@@ -3,15 +3,21 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Input, InputRef } from 'antd'
 import { defer, get }      from 'lodash'
+import moment              from 'moment-timezone'
 import { useIntl }         from 'react-intl'
 import { useLocation }     from 'react-router-dom'
 
 import { Conversation, FulfillmentMessage, Content,
-  ContentSwitcher, ContentSwitcherProps, Mode } from '@acx-ui/components'
+  ContentSwitcher, ContentSwitcherProps, Mode,
+  cssStr } from '@acx-ui/components'
 import { MelissaHeaderIcon, MelissaIcon } from '@acx-ui/icons'
 
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
 import { MelissaDrawer, SubTitle, Title }              from './styledComponents'
+
+let lastAccessedInterval:NodeJS.Timer
+
+export const DEFAULT_DF_SESSION_TIMEOUT_IN_SECS = 10 * 60 // 10 mins
 
 export const BOT_NAME = 'Melissa'
 
@@ -41,9 +47,15 @@ const initialState:MelissaBotState = {
 }
 
 
-export function MelissaBot (){
+export function MelissaBot ({ sessionTimeoutInSecs = DEFAULT_DF_SESSION_TIMEOUT_IN_SECS }:{ sessionTimeoutInSecs?:number }){
   const { $t } = useIntl()
   const GENERIC_ERROR_MSG= $t({ defaultMessage: 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.' })
+  const subTitleText = $t({ defaultMessage: 'with Generative AI' })
+  const askAnythingNetwork = $t({ defaultMessage: 'Ask me anything about your network...' })
+  const askAnythingGeneral = $t({ defaultMessage: 'Ask me anything about Ruckus products and technical information...' })
+  const sessionTimeoutText = $t({ defaultMessage: 'Session Timed out.' })
+  const doneText = $t({ defaultMessage: 'done!' })
+  const betaSuperScriptText = 'ᴮᴱᵀᴬ'
   const { pathname, search } = useLocation()
   const inputRef = useRef<InputRef>(null)
   const isSummaryLatest = useRef(false)
@@ -53,6 +65,7 @@ export function MelissaBot (){
   const [messages,setMessages] = useState<Content[]>([])
   const [fileName, setFileName] = useState('')
   const [mode,setMode] = useState<Mode>('my-network')
+  const [lastAccessed,setLastAccessed] = useState<Date|null>(null)
 
   const showDrawer = () => {
     setState({ ...state,isOpen: true })
@@ -62,6 +75,38 @@ export function MelissaBot (){
       }
     })
   }
+
+  useEffect(()=>{
+    clearInterval(lastAccessedInterval)
+    lastAccessedInterval=setInterval(()=>{
+      const now=moment(new Date())
+      const start = moment(lastAccessed)
+      const diffInSecs = now.diff(start,'seconds')
+      if(state.isOpen && mode === 'general' && diffInSecs > sessionTimeoutInSecs){
+        setLastAccessed(new Date())
+        const timeoutMessage: Content = {
+          type: 'bot',
+          contentList: [{ text: { text: [sessionTimeoutText] } }]
+        }
+        messages.push(timeoutMessage)
+        setMessages(messages)
+        setMode('my-network')
+        askMelissa({
+          queryInput: {
+            event: {
+              languageCode: 'en',
+              name: 'data-mode'
+            }
+          },
+          queryParams: {
+            resetContexts: true
+          }
+        },true)
+        defer(scrollToBottom)
+      }
+    },1000)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[lastAccessed,state.isOpen])
 
   const onClose = () => {
     setState({ ...state,isOpen: false })
@@ -103,7 +148,7 @@ export function MelissaBot (){
       })
       const confirmMessage: Content = {
         type: 'bot',
-        contentList: [{ text: { text: ['done!'] } }]
+        contentList: [{ text: { text: [doneText] } }]
       }
       messages.push(confirmMessage)
       setMessages(messages)
@@ -119,12 +164,11 @@ export function MelissaBot (){
       }
     })
   }
-  const subTitleText = $t({ defaultMessage: 'with Generative AI' })
-  const askAnything = $t({ defaultMessage: 'Ask Anything' })
-  const betaSuperScriptText = 'ᴮᴱᵀᴬ'
+
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText} {betaSuperScriptText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody,isModeDisable:boolean=false) => {
     queryAskMelissa(body).then(async (json)=>{
+      setLastAccessed(new Date())
       isSummaryLatest.current = false
       setState({ ...state,
         responseCount: state.responseCount+1,
@@ -243,10 +287,10 @@ export function MelissaBot (){
   },[])
   const tabDetails:ContentSwitcherProps['tabDetails']=[
     { label: $t({ defaultMessage: 'My Network' }),
-      tooltip: $t({ defaultMessage: 'Provides AI assistance to retrieve network-specific information by interpreting your request, analyzing your network data, and delivering insightful responses and recommendations.' }),
+      tooltip: $t({ defaultMessage: 'Use power of RUCKUS Network Intelligence, to interpret your network data and generate meaningful insights.' }),
       children: <div/>, value: 'my-network' },
     { label: $t({ defaultMessage: 'General' }),
-      tooltip: $t({ defaultMessage: 'Provides generative AI assistance by interpreting your request and retrieving product-focused technical information and usage guidelines from published RUCKUS AI resources.' }),
+      tooltip: $t({ defaultMessage: 'Use power of Generative AI to get RUCKUS product details and technical knowledge.' }),
       children: <div/>, value: 'general' }
   ]
   return (<>{state.showFloatingButton && <MelissaIcon
@@ -268,6 +312,7 @@ export function MelissaBot (){
     footer={
       <div style={{ display: 'block', width: '100%' }}>
         <ContentSwitcher tabDetails={tabDetails}
+          value={mode}
           align='center'
           size='small'
           onChange={(key)=>{
@@ -297,11 +342,12 @@ export function MelissaBot (){
             }
             defer(doAfterResponse)
           }}/>
-        <Input ref={inputRef}
-          placeholder={askAnything}
+        <Input.TextArea ref={inputRef}
+          placeholder={mode === 'my-network' ? askAnythingNetwork : askAnythingGeneral}
           value={inputValue}
           disabled={state.isInputDisabled}
-          style={{ height: '52px' }}
+          autoSize={{ minRows: 2, maxRows: 3 }}
+          style={{ height: '52px', borderColor: cssStr('--acx-neutrals-25') }}
           onChange={(e) => {
             setInputValue(e.target.value)
           }}

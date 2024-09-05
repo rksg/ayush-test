@@ -315,9 +315,7 @@ export const intentListWithAllStatus = {
       statusReason: 'apply-failed',
       displayStatus: 'paused-apply-failed',
       metadata: {
-        error: {
-          message: 'unknown error'
-        }
+        failures: ['errMsg from the notification service']
       }
     },
     {
@@ -341,9 +339,7 @@ export const intentListWithAllStatus = {
       statusReason: 'revert-failed',
       displayStatus: 'paused-revert-failed',
       metadata: {
-        error: {
-          message: 'unknown error'
-        }
+        failures: ['errMsg from the notification service']
       }
     },
     {
@@ -372,6 +368,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
+      metadata: {
+        failures: ['no-ap-mesh-checker']
+      },
       status: 'na',
       statusReason: 'conflicting-configuration',
       displayStatus: 'na-conflicting-configuration'
@@ -390,6 +389,9 @@ export const intentListWithAllStatus = {
     },
     {
       ...intentStatus,
+      metadata: {
+        failures: ['no-ap-peer-data']
+      },
       status: 'na',
       statusReason: 'not-enough-data',
       displayStatus: 'na-not-enough-data'
@@ -510,3 +512,4 @@ export const aiFeatureWithEcoFlexAI = {
   root: 'root4',
   sliceId: 'sliceId4'
 } as AIFeatureProps
+

@@ -3,6 +3,7 @@ import { useIntl }                            from 'react-intl'
 
 import { usePreference }                                                  from '@acx-ui/rc/components'
 import { TenantLink, useLocation }                                        from '@acx-ui/react-router-dom'
+import { hasCrossVenuesPermission }                                       from '@acx-ui/user'
 import { LangKey, useLocaleContext, DEFAULT_SYS_LANG, useSupportedLangs } from '@acx-ui/utils'
 
 
@@ -57,7 +58,7 @@ const DefaultSystemLanguageFormItem = () => {
             onChange={handleDefaultLangChange}
             showSearch
             optionFilterProp='children'
-            disabled={isUpdatingPreference || isLoadingPreference}
+            disabled={!hasCrossVenuesPermission() || isUpdatingPreference || isLoadingPreference}
             style={{ textTransform: 'capitalize' }}
           >
             {supportedLangs.map(({ label, value }) =>

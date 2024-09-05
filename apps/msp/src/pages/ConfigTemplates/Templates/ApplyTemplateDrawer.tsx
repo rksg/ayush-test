@@ -114,7 +114,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       key: 'status',
       sorter: true,
       render: function (_, row) {
-        return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
+        return $t(mspUtils.getStatus(row))
       }
     },
     {

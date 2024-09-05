@@ -28,7 +28,7 @@ import {
   useLazyGetVlansByVenueQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
-  useGetSwitchVenueVersionListV1002Query
+  useGetSwitchVenueVersionListV1001Query
 } from '@acx-ui/rc/services'
 import {
   SwitchMessages,
@@ -100,7 +100,7 @@ export function SwitchForm () {
     enableRbac: isSwitchRbacEnabled
   }, { skip: isSwitchFirmwareV1002Enabled })
 
-  const venuesListV1002 = useGetSwitchVenueVersionListV1002Query({
+  const venuesListV1001 = useGetSwitchVenueVersionListV1001Query({
     params: { tenantId: tenantId },
     payload: {
       firmwareType: '',
@@ -227,8 +227,8 @@ export function SwitchForm () {
 
 
   useEffect(() => {
-    if (isSwitchFirmwareV1002Enabled && !venuesListV1002.isLoading) {
-      const venues = venuesListV1002?.data?.data?.map(item => ({
+    if (isSwitchFirmwareV1002Enabled && !venuesListV1001.isLoading) {
+      const venues = venuesListV1001?.data?.data?.map(item => ({
         label: item.venueName,
         value: item.venueId
       })) ?? []
@@ -242,14 +242,14 @@ export function SwitchForm () {
       const sortedVenueOption = _.sortBy(venues, (v) => v.label)
       setVenueOption(sortedVenueOption)
     }
-  }, [venuesList, venuesListV1002, isSwitchFirmwareV1002Enabled])
+  }, [venuesList, venuesListV1001, isSwitchFirmwareV1002Enabled])
 
   const handleVenueChange = async (value: string) => {
     setVenueId(value)
 
     if (isSwitchFirmwareV1002Enabled) {
-      if (venuesListV1002 && venuesListV1002.data) {
-        const venueVersions = venuesListV1002.data?.data?.find(
+      if (venuesListV1001 && venuesListV1001.data) {
+        const venueVersions = venuesListV1001.data?.data?.find(
           venue => venue['venueId'] === value)?.versions
         setCurrentFirmwareV1002(venueVersions || [])
       }
@@ -485,7 +485,8 @@ export function SwitchForm () {
         }}
       >
         <Loader states={[{
-          isLoading: venuesList.isLoading || isSwitchDataLoading || isSwitchDetailLoading
+          isLoading: venuesList.isLoading || isSwitchDataLoading
+            || isSwitchDetailLoading || venuesListV1001.isLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>

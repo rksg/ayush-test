@@ -9,8 +9,8 @@ import {
   useGetRadiusServerSettingQuery,
   useUpdateRadiusClientConfigMutation
 } from '@acx-ui/rc/services'
-import { ClientConfig }              from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { ClientConfig }                                        from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { IpAddressDrawer } from './IpAddressDrawer'
 
@@ -147,6 +147,7 @@ export function RadiusServerForm () {
                 </Form.Item>
                 { !changePassword ?
                   <Button type='link'
+                    disabled={!hasCrossVenuesPermission()}
                     onClick={() => setChangePassword(true)}>
                     {$t({ defaultMessage: 'Change' })}</Button>
                   : <>
@@ -184,16 +185,17 @@ export function RadiusServerForm () {
                 // eslint-disable-next-line max-len
                 dataSource={queryResultData?.ipAddress?.map( e => { return { key: e, ipAddress: e }})}
                 showHeader={false}
-                rowSelection={hasAccess() && { type: 'radio' }}
+                rowSelection={hasCrossVenuesPermission() &&
+                  hasAccess() && { type: 'radio' }}
                 rowActions={filterByAccess(ipTableRowActions)}
                 type={'form'}
-                actions={filterByAccess([{
+                actions={hasCrossVenuesPermission() ? filterByAccess([{
                   label: $t({ defaultMessage: 'Add IP Address' }),
                   onClick: () => {
                     setVisible(true)
                     setIsEditMode(false)
                   }
-                }])}
+                }]) : []}
               />
             </Form.Item>
           </Form>

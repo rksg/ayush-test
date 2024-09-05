@@ -17,7 +17,7 @@ import {
   Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useConfigTemplateQueryFnSwitcher,
   useTableQuery,
   WifiCallingActionPayload,
-  WifiCallingActionTypes
+  WifiCallingActionTypes, WifiNetwork
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
@@ -74,7 +74,9 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       key: 'venues',
       sorter: true,
       render: (_, row) => {
-        return row.venues.count
+        return (enableWifiRbac || enableTemplateRbac)
+          ? (row as WifiNetwork).venueApGroups.length
+          : row.venues.count
       }
     },
     {

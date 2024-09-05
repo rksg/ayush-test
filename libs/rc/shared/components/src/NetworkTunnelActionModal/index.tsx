@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, Space, Typography } from 'antd'
+import { Form, Radio, Space, Typography, Tooltip } from 'antd'
 
 import { Modal }                                                           from '@acx-ui/components'
 import { Features }                                                        from '@acx-ui/feature-toggle'
 import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                      from '@acx-ui/types'
+import { hasPermission }                                                   from '@acx-ui/user'
 import { getIntl }                                                         from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
@@ -33,6 +35,8 @@ export interface NetworkTunnelActionModalProps {
     }
   ) => Promise<void>
   cachedActs?: NetworkTunnelSdLanAction[]
+  disableAll?: boolean
+  radioOptTooltip?: string
 }
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
@@ -49,6 +53,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const networkType = network?.type
   const networkVenueId = network?.venueId
   const networkVenueName = network?.venueName
+
   const { getVenueSdLan, networkVlanPool } = useEdgeMvSdLanData({
     sdLanQueryOptions: {
       filters: { 'tunneledWlans.venueId': [networkVenueId!] },
@@ -78,11 +83,20 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelTypeInitVal])
 
+  const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
+  const hasChangePermission = hasPermission({ scopes: [
+    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : [])
+  ] })
+
+  const localBreakoutRadio = <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
+    {$t({ defaultMessage: 'Local Breakout' })}
+  </Radio>
+
   return <Modal
     visible={visible}
     title={$t({ defaultMessage: 'Tunnel' })}
     okText={$t({ defaultMessage: 'Apply' })}
-    okButtonProps={{ disabled: isSubmitting || !venueSdLanInfo }}
+    okButtonProps={{ disabled: !hasChangePermission || isSubmitting || !venueSdLanInfo }}
     maskClosable={false}
     keyboard={false}
     width={600}
@@ -110,9 +124,12 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 }
               </UI.RadioSubTitle>}
             >
-              <Radio value={NetworkTunnelTypeEnum.None}>
-                {$t({ defaultMessage: 'Local Breakout' })}
-              </Radio>
+              <Tooltip title={isDisabledAll
+                // eslint-disable-next-line max-len
+                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                : undefined}>
+                {localBreakoutRadio}
+              </Tooltip>
             </Form.Item>
 
             {network && visible && isEdgeSdLanMvEnabled &&
@@ -124,6 +141,13 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 networkType={networkType!}
                 venueSdLan={venueSdLanInfo}
                 networkVlanPool={networkVlanPool}
+                disabledInfo={isDisabledAll
+                  ? {
+                    isDisabled: true,
+                    // eslint-disable-next-line max-len
+                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                  }
+                  : undefined}
               />
             }
           </Space>
@@ -139,4 +163,15 @@ export {
   NetworkTunnelInfoButton,
   NetworkTunnelActionModal,
   useUpdateNetworkTunnelAction
+}
+
+// eslint-disable-next-line max-len
+const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNetworkId: string | undefined): boolean => {
+  const dcNetworkCount = sdlanInfo?.tunneledWlans?.length ?? 0
+  if(dcNetworkCount === 0 || !currentNetworkId) return false
+
+  const isSdLanLastNetwork = sdlanInfo!.tunneledWlans!.length <= 1
+  if (!isSdLanLastNetwork) return false
+
+  return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }

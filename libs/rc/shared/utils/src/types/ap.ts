@@ -519,7 +519,8 @@ export interface CapabilitiesApModel {
   defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
-  defaultBandCombination?: BandModeEnum
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
@@ -541,7 +542,19 @@ export interface LanPortStatusProperties {
 }
 
 export interface VxlanStatus {
-  vxlanMtu: number
+  vxlanMtu: number,
+  tunStatus: VxlanTunnelStatus,
+  primaryRvtepInfo: VxlanRvtepInfo,
+  activeRvtepInfo: VxlanRvtepInfo
+}
+
+export enum VxlanTunnelStatus {
+  CONNECTED = 'VxLAN_TUN_STATUS_CONNECTED',
+  DISCONNECTED = 'VxLAN_TUN_STATUS_DISCONNECTED'
+}
+
+export interface VxlanRvtepInfo {
+  deviceId: string
 }
 
 export enum GpsFieldStatus {
@@ -874,4 +887,14 @@ export interface SupportCcdApGroup {
   venueId: string,
   members: number,
   aps: APExtended[]
+}
+
+export interface StickyClientSteering {
+  enabled?: boolean
+  snrThreshold?: number
+  neighborApPercentageThreshold?: number
+}
+
+export interface ApStickyClientSteering extends StickyClientSteering {
+  useVenueSettings?: boolean
 }

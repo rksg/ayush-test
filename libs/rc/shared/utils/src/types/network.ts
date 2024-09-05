@@ -160,6 +160,7 @@ export interface NetworkSaveData {
   authRadius?: Radius
   accountingRadius?: Radius
   dpskServiceProfileId?: string
+  useDpskService?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string
   maxRate?: MaxRateEnum
@@ -183,6 +184,10 @@ export enum MaxRateEnum {
 
 export interface ExternalProviders{
   providers: Providers[]
+}
+
+export interface ExternalWifiProviders extends ExternalProviders{
+  wisprProviders: Providers[]
 }
 export interface Providers{
   customExternalProvider: boolean,
