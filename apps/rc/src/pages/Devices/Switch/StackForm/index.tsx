@@ -36,7 +36,8 @@ import {
   showToast
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, Drag }        from '@acx-ui/icons'
+import { Drag }                            from '@acx-ui/icons'
+import { DeleteOutlined }                  from '@acx-ui/icons-new'
 import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
 import {
   switchApi,
@@ -88,7 +89,6 @@ import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../
 
 import {
   TableContainer,
-  DisabledDeleteOutlinedIcon,
   RequiredDotSpan,
   StepFormTitle,
   TypographyText
@@ -731,13 +731,7 @@ export function StackForm () {
           type='link'
           key='delete'
           role='deleteBtn'
-          icon={
-            tableData.length <= 1 ? (
-              <DisabledDeleteOutlinedIcon />
-            ) : (
-              <DeleteOutlinedIcon />
-            )
-          }
+          icon={<DeleteOutlined size='sm' />}
           disabled={tableData.length <= 1 || (editMode && activeRow === row.key)}
           hidden={row.disabled}
           onClick={() => handleDelete(row)}
