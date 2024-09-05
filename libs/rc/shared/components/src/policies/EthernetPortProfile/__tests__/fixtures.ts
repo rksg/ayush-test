@@ -44,10 +44,15 @@ export const mockedVenuesResult = {
 }
 
 export const mockedVenueApsList = {
-  fields: ['meshRole', 'serialNumber'],
-  totalCount: 0,
+  totalCount: 1,
   page: 1,
-  data: []
+  data: [{
+    model: 'R550',
+    name: 'AP1',
+    serialNumber: mockApSerialNumber,
+    venueId: mockVenueId,
+    venueName: mockVenueName
+  }]
 }
 
 export const dummyAuthRadius: AAAPolicyType = {

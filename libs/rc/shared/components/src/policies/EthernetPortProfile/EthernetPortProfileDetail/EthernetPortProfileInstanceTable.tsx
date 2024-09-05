@@ -12,7 +12,7 @@ interface EthernetPortTableProps {
 
 export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) => {
   const { $t } = useIntl()
-  const { apSerialNumbers=[] } = props
+  const { apSerialNumbers } = props
   const { tenantId } = useParams()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const defaultTablePayload = {
@@ -36,7 +36,7 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
     },
     enableRbac: isWifiRbacEnabled,
     option: {
-      skip: apSerialNumbers.length == 0
+      skip: apSerialNumbers.length === 0
     }
   })
 
@@ -78,9 +78,6 @@ export const EthernetPortProfileInstanceTable = (props: EthernetPortTableProps) 
       title: $t({ defaultMessage: 'Model' }),
       key: 'model',
       dataIndex: 'model'
-      // searchable: true,
-      // sorter: true,
-      // defaultSortOrder: 'ascend',
     }, {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
