@@ -14,7 +14,8 @@ import {
   Tooltip,
   useStepFormContext,
   TimeDropdown,
-  getDisplayTime
+  getDisplayTime,
+  DayTimeDropdown
 } from '@acx-ui/components'
 
 import * as contents     from '../../contents'
@@ -68,15 +69,21 @@ export function Schedule () {
       <Row align='middle' justify='center'>
         {
           typeWithSchedule === ScheduleFrequency.Daily &&
-          <TimeDropdown type={ScheduleFrequency.Daily} name={name} />
+          <TimeDropdown name={[name, 'hour']} spanLength={24} />
         }
         {
           typeWithSchedule === ScheduleFrequency.Weekly &&
-          <TimeDropdown type={ScheduleFrequency.Weekly} name={name} />
+          <DayTimeDropdown type={ScheduleFrequency.Weekly}
+            name={name}
+            spanLength={11}
+          />
         }
         {
           typeWithSchedule === ScheduleFrequency.Monthly &&
-          <TimeDropdown type={ScheduleFrequency.Monthly} name={name} />
+          <DayTimeDropdown type={ScheduleFrequency.Monthly}
+            name={name}
+            spanLength={11}
+          />
         }
       </Row>
     </Form.Item>

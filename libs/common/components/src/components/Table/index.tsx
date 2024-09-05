@@ -75,6 +75,7 @@ export interface TableProps <RecordType>
     enableApiFilter?: boolean
     floatRightFilters?: boolean
     alwaysShowFilters? : boolean
+    selectedFilters?: Filter,
     onFilterChange?: (
       filters: Filter,
       search: { searchString?: string, searchTargetFields?: string[] },
@@ -149,7 +150,7 @@ function useSelectedRowKeys <RecordType> (
 function Table <RecordType extends Record<string, any>> ({
   type = 'tall', columnState, enableApiFilter, iconButton, onFilterChange, settingsId,
   enableResizableColumn = true, onDisplayRowChange, stickyHeaders, stickyPagination,
-  enablePagination = false, ...props
+  enablePagination = false, selectedFilters = {}, ...props
 }: TableProps<RecordType>) {
   const { dataSource, filterableWidth, searchableWidth, style } = props
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -157,7 +158,7 @@ function Table <RecordType extends Record<string, any>> ({
   const rowKey = (props.rowKey ?? 'key')
   const intl = useIntl()
   const { $t } = intl
-  const [filterValues, setFilterValues] = useState<Filter>({})
+  const [filterValues, setFilterValues] = useState<Filter>(selectedFilters)
   const [searchValue, setSearchValue] = useState<string>('')
   const [groupByValue, setGroupByValue] = useState<string | undefined>(undefined)
   const onFilter = useRef(onFilterChange)

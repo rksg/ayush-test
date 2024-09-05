@@ -13,7 +13,9 @@ import {
   useLazyGetApQuery,
   useLazyGetGuestsListQuery,
   useLazyGetNetworkQuery,
-  useLazyGetVenueQuery
+  useLazyGetVenueQuery,
+  useLazyGetClientListQuery,
+  useLazyGetClientsQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -42,7 +44,23 @@ interface ClientExtended extends Client {
   hasSwitch: boolean,
   enableLinkToAp: boolean,
   enableLinkToVenue: boolean,
-  enableLinkToNetwork: boolean
+  enableLinkToNetwork: boolean,
+  radioType: string
+}
+
+// eslint-disable-next-line
+const getRadioTypeFromRbacAndNonRbacAPI = (nonRbacRadioType: any, rbacRadioType: any, ff: boolean) : string => {
+  let radioType = undefined
+  if (ff) {
+    radioType = rbacRadioType?.data.data[0]?.radioStatus?.type
+  } else {
+    radioType = nonRbacRadioType?.data?.data[0]?.radio?.mode
+  }
+
+  if(radioType === undefined || radioType === '') {
+    radioType = '--'
+  }
+  return radioType
 }
 
 export function ClientProperties ({ clientStatus, clientDetails }: {
@@ -57,15 +75,19 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
   const [getVenue] = useLazyGetVenueQuery()
   const [getNetwork] = useLazyGetNetworkQuery()
   const [getGuestsList] = useLazyGetGuestsListQuery()
+  const [getClientNonRbac] = useLazyGetClientListQuery()
+  const [getClientRbac] = useLazyGetClientsQuery()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [isExternalDpskClient, setIsExternalDpskClient] = useState(false)
 
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   useEffect(() => {
     if (Object.keys(clientDetails)?.length) {
       let apData = null as unknown as ApDeep
       let venueData = null as unknown as VenueExtended
       let networkData = null as NetworkSaveData | null
+      let radioType = null as string | null
       const serialNumber = clientDetails?.apSerialNumber || clientDetails?.serialNumber
 
       const getGuestData = async () => {
@@ -95,13 +117,30 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             ...( shouldGetVenue
               ? [getVenue({ params: { tenantId, venueId: clientDetails?.venueId } }, true)] : [[]]
             ),
-            getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true)
-          ]).then(([ ap, venue, network ]) => {
+            getNetwork({ params: { tenantId, networkId: clientDetails?.networkId } }, true),
+            ...(!isWifiRbacEnabled ? [getClientNonRbac({ payload: {
+              fields: [
+                'clientMac','radio.mode'
+              ],
+              filters: {
+                clientMac: [clientDetails.clientMac]
+              }
+            } })]: [[]]),
+            ...(isWifiRbacEnabled ? [getClientRbac({ payload: {
+              fields: [
+                'macAddress','radioStatus.type'
+              ],
+              filters: {
+                macAddress: [clientDetails.clientMac]
+              }
+            } })] : [[]])
+          ]).then(([ ap, venue, network, nonRbacRadioType, rbacRadioType ]) => {
             /* eslint-disable @typescript-eslint/no-explicit-any */
             setData(
               ((ap as any)?.data ?? null) as unknown as ApDeep,
               ((venue as any)?.data ?? null) as unknown as VenueExtended,
-              ((network as any)?.data ?? null) as unknown as NetworkSaveData
+              ((network as any)?.data ?? null) as unknown as NetworkSaveData,
+              getRadioTypeFromRbacAndNonRbacAPI(nonRbacRadioType, rbacRadioType, isWifiRbacEnabled)
             )
             /* eslint-enable @typescript-eslint/no-explicit-any */
           }).catch((error) => {
@@ -109,11 +148,14 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
           })
 
         } catch {
-          setData(apData, venueData, networkData)
+          setData(apData, venueData, networkData, radioType)
         }
       }
 
-      const setData = (apData: ApDeep, venueData: VenueExtended, networkData: NetworkSaveData | null
+      const setData = (apData: ApDeep,
+        venueData: VenueExtended,
+        networkData: NetworkSaveData | null,
+        clientMacAndRadioType: string | null
       ) => {
         setNetworkType(networkData?.type)
         setGuestType(networkData?.guestPortal?.guestNetworkType)
@@ -127,7 +169,8 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
             !!clientDetails.isApExists : !!apData,
           enableLinkToVenue: clientDetails.hasOwnProperty('isVenueExists') ?
             !!clientDetails.isVenueExists : !!venueData,
-          enableLinkToNetwork: !!networkData
+          enableLinkToNetwork: !!networkData,
+          radioType: (clientMacAndRadioType === null ? '--' : clientMacAndRadioType)
         })
         setIsExternalDpskClient(!networkData?.dpskServiceProfileId)
 
@@ -447,7 +490,10 @@ function OperationalData ({ client }: { client: ClientExtended }) {
           </Tooltip>
         </Space>}
       />
-
+      <Descriptions.Item
+        label={intl.$t({ defaultMessage: 'Radio Type' })}
+        children={client?.radioType ? client?.radioType : '--'}
+      />
     </Descriptions>
   </>
 }

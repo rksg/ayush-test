@@ -178,6 +178,12 @@ export {
   useIsEdgeFeatureReady,
   useIsEdgeReady
 } from './useEdgeActions'
+export {
+  useEdgeSdLanCompatibilityData,
+  useEdgeCompatibilityRequirementData,
+  useEdgeSdLanDetailsCompatibilitiesData,
+  getSdLanDetailsCompatibilitiesDrawerData
+} from './useEdgeActions/compatibility'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
 export { AdaptivePolicySetForm } from './AdaptivePolicySetForm'
@@ -213,7 +219,9 @@ export {
   useGetNetworkTunnelInfo,
   edgeSdLanFormRequestPreProcess,
   tansformSdLanScopedVenueMap,
-  isSdLanGuestUtilizedOnDiffVenue
+  isSdLanGuestUtilizedOnDiffVenue,
+  isSdLanLastNetworkInVenue,
+  showSdLanVenueDissociateModal
 } from './EdgeSdLan/edgeSdLanUtils'
 export * from './NetworkTunnelActionModal'
 export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'
@@ -225,6 +233,14 @@ export {
   ApCompatibilityFeature,
   ApCompatibilityToolTip,
   ApCompatibilityDrawer } from './ApCompatibility'
+export {
+  ApGeneralCompatibilityDrawer,
+  EdgeCompatibilityDrawer,
+  EdgeCompatibilityType,
+  CompatibilityWarningCircleIcon,
+  EdgeDetailCompatibilityDrawer,
+  CompatibleAlertBanner
+} from './Compatibility'
 export { EdgeClusterCommonForm } from './EdgeFormItem/EdgeClusterCommonForm'
 export { useEdgeClusterActions } from './useEdgeClusterActions'
 export { usePersonaListQuery } from './usePersonaListQuery'
@@ -246,6 +262,14 @@ export {
   transformApiDataToFormListData
 } from './EdgeFormItem/EdgePortsGeneralBase/utils'
 export { EdgeStaticRouteTable } from './EdgeStaticRouteTable'
+export {
+  EdgeChangeScheduleDialog
+} from './EdgeFirmware/ChangeScheduleDialog'
+export type { EdgeChangeScheduleDialogProps } from './EdgeFirmware/ChangeScheduleDialog'
+export {
+  EdgeUpdateNowDialog
+} from './EdgeFirmware/UpdateNowDialog'
+export type { EdgeUpdateApNowDialogProps } from './EdgeFirmware/UpdateNowDialog'
 
 export * from './services'
 export * from './policies'
@@ -273,3 +297,4 @@ export {
 } from './useRwgActions'
 export * from './SwitchLagDrawer/SwitchLagModal'
 export { isOperationalSwitchPort, isStackPort } from './SwitchPortTable'
+export { TrafficClassSettingsTable } from './EdgeQos/TrafficClassSettingsTable'

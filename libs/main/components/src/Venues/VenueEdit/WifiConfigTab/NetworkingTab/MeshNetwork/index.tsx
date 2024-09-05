@@ -7,7 +7,6 @@ import { useParams }                                                   from 'rea
 
 import { Loader, StepsFormLegacy, Tooltip, showActionModal, AnchorContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { SupportRadioChannelsContext, ApRadioTypeEnum }                     from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
@@ -17,10 +16,12 @@ import {
   useGetVenueMeshQuery,
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
-  useGetVenueTemplateMeshQuery
+  useGetVenueTemplateMeshQuery,
+  useVenueDefaultRegulatoryChannelsQuery,
+  useGetVenueTemplateDefaultRegulatoryChannelsQuery
 } from '@acx-ui/rc/services'
-import { APMeshRole, DHCPSaveData, Mesh, VenueSettings, generateAlphanumericString, useConfigTemplate } from '@acx-ui/rc/utils'
-import { validationMessages }                                                                           from '@acx-ui/utils'
+import { APMeshRole, DHCPSaveData, Mesh, VenueSettings, generateAlphanumericString, useConfigTemplate, VenueDefaultRegulatoryChannels } from '@acx-ui/rc/utils'
+import { validationMessages }                                                                                                           from '@acx-ui/utils'
 
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }                                                                from '../../../index'
@@ -28,6 +29,11 @@ import { VenueEditContext }                                                     
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
 const LABEL_WIDTH = '180px'
+
+const isSupport6G = (channels?: VenueDefaultRegulatoryChannels) : boolean => {
+  if (!channels || !channels['6GChannels']) return false
+  return Object.keys(channels['6GChannels']).length > 0
+}
 
 const MeshInfoIcon = () => {
   const { $t } = useIntl()
@@ -116,8 +122,6 @@ export function MeshNetwork () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { bandwidthRadioOptions } = useContext(SupportRadioChannelsContext)
-
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
@@ -150,7 +154,15 @@ export function MeshNetwork () {
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
   const wifiSettingsData = useVenueWifiSettings(params.venueId)
-  const isSupport6GRadio = bandwidthRadioOptions ? bandwidthRadioOptions[ApRadioTypeEnum.Radio6G]?.length > 0 : false
+
+  // available channels from this venue country code
+  const { data: supportChannelsData } =
+    useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>({
+      useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
+      useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
+      enableRbac: isWifiRbacEnabled
+    })
+  const isSupport6GRadio = isSupport6G(supportChannelsData)
 
   useEffect(() => {
     if (wifiSettingsData) {
@@ -499,9 +511,15 @@ export function MeshNetwork () {
                 <Radio value='5-6-GHz' data-testid='radio56'>
                   {$t({ defaultMessage: '5 & 6 GHz' })}
                 </Radio>
-                <Radio value='5-GHz' data-testid='radio5'>
-                  {$t({ defaultMessage: '5 GHz' })}
-                </Radio>
+                <Tooltip
+                  title={$t({
+                    defaultMessage: 'When selecting the 5GHz radio to link other mesh APs, 2R APs (2/6) will form mesh on the 5GHz band.'
+                  })}
+                >
+                  <Radio value='5-GHz' data-testid='radio5'>
+                    {$t({ defaultMessage: '5 GHz' })}
+                  </Radio>
+                </Tooltip>
                 {
                   isSupport6GRadio ? (
                     <Radio value='6-GHz' data-testid='radio6'>

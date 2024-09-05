@@ -2,8 +2,8 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import { rest }    from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { switchApi, venueApi }    from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { firmwareApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   FirmwareRbacUrlsInfo,
@@ -50,7 +50,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetSwitchCurrentVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   }),
-  useGetSwitchCurrentVersionsV1002Query: () => ({
+  useGetSwitchCurrentVersionsV1001Query: () => ({
     data: mockSwitchCurrentVersionsV1002
   })
 }))
@@ -58,8 +58,10 @@ jest.mock('@acx-ui/rc/services', () => ({
 describe('Add switch form', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
   beforeEach(() => {
+    store.dispatch(firmwareApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -130,7 +132,7 @@ describe('Add switch form', () => {
         path: '/:tenantId/t/devices/switch/:action'
       }
     })
-    // await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/add switch/i)).toBeVisible()
 
     await userEvent.click(screen.getByRole('combobox', {

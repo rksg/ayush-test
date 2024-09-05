@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { RadioProps }                                from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
@@ -22,7 +24,7 @@ export enum RadioCardCategory {
 
 export type RadioCardProps = RadioProps & {
   type?: RadioCardType
-  title: string
+  title: string | ReactNode,
   description: string
   value: string
   categories?: RadioCardCategory[]

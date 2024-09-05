@@ -35,6 +35,7 @@ export interface ServicePolicyCardData<T> {
   disabled?: boolean
   scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
   isBetaFeature?: boolean
+  helpIcon?: React.ReactNode
 }
 // eslint-disable-next-line max-len
 export function isServicePolicyCardEnabled<T> (cardItem: ServicePolicyCardData<T>, oper: ServicePolicyScopeKeyOper): boolean {

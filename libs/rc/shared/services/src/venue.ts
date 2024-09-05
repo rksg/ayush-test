@@ -984,6 +984,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'BandModeSettings' }]
     }),
+    getDefaultVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
+      query: ({ params }) => {
+        const rbacApiVersion = ApiVersionEnum.v1
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(CommonRbacUrlsInfo.getDefaultVenueLanPorts, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
     getVenueLanPorts: build.query<VenueLanPorts[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
@@ -2015,6 +2025,7 @@ export const {
   useGetVenueApModelBandModeSettingsQuery,
   useLazyGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
+  useGetDefaultVenueLanPortsQuery,
   useGetVenueLanPortsQuery,
   useLazyGetVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,

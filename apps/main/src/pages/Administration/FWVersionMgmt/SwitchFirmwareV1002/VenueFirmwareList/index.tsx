@@ -15,10 +15,10 @@ import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
   useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchVenueVersionListV1002Query,
-  useGetSwitchAvailableFirmwareListV1002Query,
-  useGetSwitchCurrentVersionsV1002Query,
-  useGetSwitchDefaultFirmwareListV1002Query
+  useGetSwitchVenueVersionListV1001Query,
+  useGetSwitchAvailableFirmwareListV1001Query,
+  useGetSwitchCurrentVersionsV1001Query,
+  useGetSwitchDefaultFirmwareListV1001Query
 
 } from '@acx-ui/rc/services'
 import {
@@ -33,12 +33,12 @@ import {
   compareSwitchVersion,
   SwitchModelGroupDisplayText
 } from '@acx-ui/rc/utils'
-import { useParams }                    from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { useParams }                               from '@acx-ui/react-router-dom'
+import { RequestPayload, RolesEnum, SwitchScopes } from '@acx-ui/types'
 import {
   filterByAccess,
   hasPermission,
-  useUserProfileContext
+  hasRoles
 } from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -65,17 +65,16 @@ export function VenueFirmwareList () {
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
-  const { isCustomRole } = useUserProfileContext()
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenueV1002>({
-    useQuery: useGetSwitchVenueVersionListV1002Query,
+    useQuery: useGetSwitchVenueVersionListV1001Query,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
     }
   })
 
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1002Query({ params }, {
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1001Query({ params }, {
     selectFromResult ({ data }) {
       const filterOptions = []
       for (const key in SwitchFirmwareModelGroup) {
@@ -99,7 +98,7 @@ export function VenueFirmwareList () {
 
 
   const { getSwitchNextScheduleTplTooltipV1002 } = useSwitchFirmwareUtils()
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1001Query({ params })
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
     params, enableRbac: true })
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
@@ -136,7 +135,7 @@ export function VenueFirmwareList () {
   }
 
   const { data: recommendedSwitchReleaseVersions } =
-    useGetSwitchDefaultFirmwareListV1002Query({ params })
+    useGetSwitchDefaultFirmwareListV1001Query({ params })
   const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -339,6 +338,9 @@ export function VenueFirmwareList () {
     scopes: [SwitchScopes.UPDATE]
   })
 
+  const isPreferencesVisible
+  = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -353,7 +355,7 @@ export function VenueFirmwareList () {
         rowKey='venueId'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox' }}
-        actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole ? [{
+        actions={isPreferencesVisible ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
         }] : []}

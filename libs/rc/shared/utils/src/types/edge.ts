@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                       from '..'
-import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import { ApCompatibility, FirmwareCategory, SkippedVersion }                                                                                                                                                                                                                                                                   from '..'
+import { ClusterHaFallbackScheduleTypeEnum, ClusterHaLoadDistributionEnum, ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, CompatibilityEntityTypeEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -64,6 +64,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   clusterNodeStatus?: ClusterNodeStatusEnum
   clusterId?: string
   hasCorePort?: boolean
+  incompatible?: number // UI only
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -367,11 +368,48 @@ export interface EdgeCluster {
   }
 }
 
+interface EdgeFeatureRequirement {
+  featureName: string
+  requiredFw: string
+}
 export interface EdgeFeatureSets {
-  featureSets: {
-    featureName: string
-    requiredFw: string
-  }[]
+  featureSets: EdgeFeatureRequirement[]
+}
+
+export interface EntityCompatibility {
+  identityType: CompatibilityEntityTypeEnum
+  id: string
+  incompatibleFeatures: {
+    featureRequirement: EdgeFeatureRequirement,
+    incompatibleDevices: {
+        firmware: string
+        count: number
+      }[]
+  }[],
+  total: number
+  incompatible: number
+}
+export interface VenueEdgeCompatibilitiesResponse {
+  compatibilities: EntityCompatibility[]
+}
+
+export interface EdgeSdLanCompatibility {
+  serviceId: string
+  clusterEdgeCompatibilities: EntityCompatibility[]
+}
+export interface EdgeSdLanCompatibilitiesResponse {
+  compatibilities: EdgeSdLanCompatibility[]
+}
+
+export type VenueSdLanApCompatibility = Omit<ApCompatibility, 'id'> & {
+  venueId: string
+}
+export interface EdgeSdLanApCompatibility {
+  serviceId: string
+  venueSdLanApCompatibilities: VenueSdLanApCompatibility[]
+}
+export interface EdgeSdLanApCompatibilitiesResponse {
+  compatibilities: EdgeSdLanApCompatibility[]
 }
 
 export interface VirtualIpSetting {
@@ -395,6 +433,7 @@ export interface EdgeClusterStatus {
   description?: string
   hasCorePort?: boolean,
   highAvailabilityMode?: ClusterHighAvailabilityModeEnum
+  firmwareVersion?: string
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,

@@ -521,3 +521,9 @@ export interface MspCompliances {
     mspEcSummary?: ComplianceData
   }[]
 }
+
+export enum MspEcAccountType {
+  PAID = 'PAID',
+  TRIAL = 'TRIAL',
+  EXTENDED_TRIAL = 'EXTENDED_TRIAL'
+}

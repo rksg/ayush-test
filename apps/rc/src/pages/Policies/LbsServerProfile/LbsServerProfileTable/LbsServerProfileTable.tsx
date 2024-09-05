@@ -24,10 +24,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'lbsVenueName', 'server', 'venueIds'],
+  fields: ['id', 'name', 'tenantId', 'lbsServerVenueName', 'server', 'venueIds'],
   searchString: '',
   filters: {}
 }
@@ -99,7 +99,7 @@ export default function LbsServerProfileTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={hasCrossVenuesPermission() && filterByAccess([
           <TenantLink
             scopeKey={[WifiScopes.CREATE]}
             to={getPolicyRoutePath({
@@ -123,7 +123,7 @@ export default function LbsServerProfileTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasPermission() && { type: 'checkbox' }}
+          rowSelection={hasCrossVenuesPermission() && hasPermission() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -175,9 +175,9 @@ function useColumns () {
       )
     },
     {
-      key: 'lbsVenueName',
-      title: $t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' }),
-      dataIndex: 'lbsVenueName',
+      key: 'lbsServerVenueName',
+      title: $t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular> Name' }),
+      dataIndex: 'lbsServerVenueName',
       sorter: true
     },
     {

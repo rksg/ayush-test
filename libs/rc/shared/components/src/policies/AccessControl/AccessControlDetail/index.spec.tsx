@@ -1,24 +1,16 @@
 import { rest } from 'msw'
 
-import { AccessControlUrls, CommonUrlsInfo, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
+import { AccessControlUrls, CommonUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { AccessControlDetail } from './index'
+import { enhancedAccessControlList } from '../__tests__/fixtures'
 
-const aclDetail = {
-  l3AclPolicy: {
-    id: '233d3182a1aa49ee9f50aeb039347021',
-    enabled: true
-  },
-  name: 'acl-test',
-  id: 'c9c0667abfe74ab7803999a793fd2bbe',
-  networkIds: ['d1a4ab014ca84d55a0e07c6565f3d06b']
-}
+import { AccessControlDetail } from './index'
 
 const networksResponse = {
   fields: [
@@ -46,10 +38,10 @@ const networksResponse = {
 describe('Access Control Detail Page', () => {
   beforeEach(async () => {
     mockServer.use(
-      rest.get(AccessControlUrls.getAccessControlProfile.url,
-        (_, res, ctx) => res(ctx.json(aclDetail))),
-      rest.get(PoliciesConfigTemplateUrlsInfo.getAccessControlProfile.url,
-        (_, res, ctx) => res(ctx.json(aclDetail))),
+      rest.post(
+        AccessControlUrls.getEnhancedAccessControlProfiles.url,
+        (req, res, ctx) => res(ctx.json(enhancedAccessControlList))
+      ),
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(networksResponse)))
     )
@@ -65,7 +57,7 @@ describe('Access Control Detail Page', () => {
         }
       })
 
-    await screen.findByText('acl-test')
+    await screen.findByText(enhancedAccessControlList.data[0].name)
 
     expect(screen.getByText('Layer 2')).toBeInTheDocument()
     expect(screen.getByText('Layer 3')).toBeInTheDocument()
@@ -73,7 +65,7 @@ describe('Access Control Detail Page', () => {
     expect(screen.getByText('Applications')).toBeInTheDocument()
     expect(screen.getByText('Client Rate Limit')).toBeInTheDocument()
 
-    await screen.findByText('test-psk')
+    expect(await screen.findByText('test-psk')).toBeInTheDocument()
   })
 
   it('should render breadcrumb correctly', async () => {

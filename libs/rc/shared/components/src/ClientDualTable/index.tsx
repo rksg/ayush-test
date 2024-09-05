@@ -9,9 +9,13 @@ import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
 import { ClientLink, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
-export function ClientDualTable () {
+type ClientDualTableProps = {
+  clientMac?: string;
+}
+
+export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
   const { $t } = useIntl()
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState( clientMac ?? '' )
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
 
@@ -39,6 +43,7 @@ export function ClientDualTable () {
     <div id='ClientsTable'>
       <SearchBarDiv>
         <Table.SearchInput
+          value={searchValue}
           onChange={(e) => {
             const value = e.target.value
             if (value.length === 0 || value.length >= 2) {

@@ -1,9 +1,46 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { displayStates, statuses as stateType } from './states'
+import { NetworkPath } from '@acx-ui/utils'
 
-export type StatusTrail = Array<{ status: stateType, createdAt?: string }>
+import { DisplayStates, Statuses, StatusReasons } from './states'
+
+export type StatusTrailItem = { status: Statuses, statusReason?: StatusReasons, createdAt?: string }
+export type StatusTrail = Array<StatusTrailItem>
+
+export type Intent = {
+  id: string
+  code: string
+  root: string
+  status: Statuses
+  statusReason: StatusReasons
+  displayStatus: DisplayStates
+  createdAt: string
+  updatedAt: string
+  sliceType: string
+  sliceValue: string
+  sliceId: string
+  metadata: object & {
+    scheduledAt: string
+  }
+  path: NetworkPath
+  idPath: NetworkPath
+  statusTrail: StatusTrail
+  trigger: string
+}
+
+export type IntentListItem = Intent & {
+  aiFeature: string
+  intent: string
+  scope: string
+  type?: string
+  category: string
+  statusLabel: string
+  statusTooltip: string,
+  preferences?: {
+    crrmFullOptimization: boolean
+  }
+}
 
 export enum aiFeatures {
   RRM = 'AI-Driven RRM',
@@ -38,99 +75,125 @@ const categories = {
 }
 
 export const states = {
-  [displayStates.new]: {
+  [DisplayStates.new]: {
     text: defineMessage({ defaultMessage: 'New' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI has analyzed the data and generated a change recommendations, awaiting your approval. To review the details, specify Intent priority, and apply the recommendations, click "Optimize." Alternatively, use "1-Click Optimize" to instantly apply the changes with default priority.' })
   },
-  [displayStates.scheduled]: {
+  [DisplayStates.scheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "Optimize".' }) //TODO: initiated by the user {userName}
   },
-  [displayStates.scheduledOneClick]: {
+  [DisplayStates.scheduledOneClick]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been scheduled via the user action "1-Click Optimize".' }) //TODO: initiated by the user {userName}
   },
-  [displayStates.applyScheduled]: {
+  [DisplayStates.applyScheduled]: {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The change recommendation has been automatically scheduled by IntentAI.' })
   },
-  [displayStates.applyScheduleInProgress]: {
+  [DisplayStates.applyScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Apply In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting applied to the <VenueSingular></VenueSingular> {zoneName}.' })
   },
-  [displayStates.active]: {
+  [DisplayStates.active]: {
     text: defineMessage({ defaultMessage: 'Active' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI is active and has successfully applied the changes to the <VenueSingular></VenueSingular> {zoneName}.' }) //TODO: The new configuration is: {newConfig}.
   },
-  [displayStates.pausedApplyFailed]: {
+  [DisplayStates.pausedApplyFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Applied Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes failed to apply to the <VenueSingular></VenueSingular> {zoneName} due to:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [displayStates.revertScheduled]: {
+  [DisplayStates.revertScheduled]: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'The Revert of the IntentAI recommended changes are scheduled for {scheduledAt}, via user action "Revert".' }) //TODO: initiated by the user {userName}
   },
-  [displayStates.revertScheduleInProgress]: {
+  [DisplayStates.revertScheduleInProgress]: {
     text: defineMessage({ defaultMessage: 'Revert In Progress' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI recommended changes are getting reverted, to the earlier configuration, on the <VenueSingular></VenueSingular> {zoneName}.' })
   },
-  [displayStates.pausedRevertFailed]: {
+  [DisplayStates.pausedRevertFailed]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Failed' }),
-    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason: {errorMessage}. The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
+    tooltip: defineMessage({ defaultMessage: 'The Revert action on the IntentAI recommended change, failed due to the following reason:{errorMessage} The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [displayStates.pausedReverted]: {
+  [DisplayStates.pausedReverted]: {
     text: defineMessage({ defaultMessage: 'Paused, Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'The intent is currently paused. To process new data and generate updated recommendations using ML algorithms, please select the "Resume" action.' })
   },
-  [displayStates.pausedFromInactive]: {
+  [DisplayStates.pausedFromInactive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },
-  [displayStates.pausedFromActive]: {
+  [DisplayStates.pausedFromActive]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is paused by the user action "Pause". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' }) //TODO: initiated by the user {userName}
   },
-  [displayStates.pausedByDefault]: {
+  [DisplayStates.pausedByDefault]: {
     text: defineMessage({ defaultMessage: 'Paused' }),
     tooltip: defineMessage({ defaultMessage: 'The Intent is in default state of "Paused". A Paused Intent will refrain from executing any tasks, including KPI measurement, ML model generations, recommendation generation and configuration changes.' })
   },
-  [displayStates.naConflictingConfiguration]: {
+  [DisplayStates.naConflictingConfiguration]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Conflicting Configuration' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI detected conflicting configurations. Conflict: Mesh APs are present in the <VenueSingular></VenueSingular>.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
   },
-  [displayStates.naNoAps]: {
+  [DisplayStates.naNoAps]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, No APs' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found no APs in the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: No APs are detected in the network.' })
   },
-  [displayStates.naNotEnoughLicense]: {
+  [DisplayStates.naNotEnoughLicense]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough License' }),
     tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI did not find sufficient licenses for the <VenueSingular></VenueSingular> {zoneName}.' })
   },
-  [displayStates.naNotEnoughData]: {
+  [DisplayStates.naNotEnoughData]: {
     text: defineMessage({ defaultMessage: 'No Recommendation, Not Enough Data' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated because IntentAI found less than 4 days of data in the <VenueSingular></VenueSingular> {zoneName}.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason:{errorMessage}' })
   },
-  [displayStates.naVerified]: {
+  [DisplayStates.naVerified]: {
     text: defineMessage({ defaultMessage: 'Verified' }),
     tooltip: defineMessage({ defaultMessage: 'IntentAI has validated the <VenueSingular></VenueSingular> {zoneName} configurations. No new changes have been recommended.' })
   },
-  [displayStates.naWaitingForEtl]: {
+  [DisplayStates.naWaitingForEtl]: {
     text: defineMessage({ defaultMessage: 'No Recommendation' }),
-    tooltip: defineMessage({ defaultMessage: 'No recommendation available. Awaiting data processing and recommendation generation by ML algorithms.' })
+    tooltip: defineMessage({ defaultMessage: 'No recommendation was generated. Reason: Awaiting data processing and recommendation generation by ML algorithms.' })
   }
-} as Record<displayStates, StateInfo>
+} as Record<DisplayStates, StateInfo>
 
 export const groupedStates = [
   {
     group: defineMessage({ defaultMessage: 'Scheduled' }),
-    states: [displayStates.scheduled, displayStates.scheduledOneClick, displayStates.applyScheduled] as unknown as string[]
+    states: [DisplayStates.scheduled, DisplayStates.scheduledOneClick, DisplayStates.applyScheduled] as unknown as string[]
   },
   {
     group: defineMessage({ defaultMessage: 'Paused' }),
-    states: [displayStates.pausedFromInactive, displayStates.pausedFromActive, displayStates.pausedByDefault] as unknown as string[]
+    states: [DisplayStates.pausedFromInactive, DisplayStates.pausedFromActive, DisplayStates.pausedByDefault] as unknown as string[]
   }
 ]
 
+export const failureCodes = {
+  'probeflex-support-fw-version': defineMessage({ defaultMessage: 'AP firmware version is unsupported.' }),
+  'sufficient-aps-crrm': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
+  'sufficient-aps-pf': defineMessage({ defaultMessage: 'The network has an insufficient number of APs to meet the minimum requirements.' }),
+  'dual-5g-disabled-or-no-R760': defineMessage({ defaultMessage: 'The network has one or more APs with dual 5GHz radios, which are not currently supported.' }),
+  'for-country-us': defineMessage({ defaultMessage: 'The network\'s country code is set to a region other than the US, which is not supported.' }),
+  'no-ap-mesh-checker': defineMessage({ defaultMessage: 'The network has active Mesh APs, which are currently not supported.' }),
+  'sz-version-and-zone-name-checker': defineMessage({ defaultMessage: 'Unsupported SmartZone version or restricted Zone configuration detected.' }),
+  'zone-version-is-equal-to-sz-version': defineMessage({ defaultMessage: 'Detected a mismatch between the Zone firmware version and the SmartZone version.' }),
+  'channel-5g-is-auto': defineMessage({ defaultMessage: 'The 5GHz radio channel is set to Auto, preventing IntentAI from controlling channel configurations.' }),
+  'compare-tx-power-24g-with-min-other-bands': defineMessage({ defaultMessage: 'The minimum transmit (Tx) power of the 2.4GHz radio matches the power of either the 5GHz or 6GHz radio.' }),
+  'band-balancing-enabled': defineMessage({ defaultMessage: 'Band Balancing is enabled on this network.' }),
+  'channel-select-24g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 2.4Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
+  'channel-select-5g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 5Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
+  'channel-select-6g-is-channel-fly-or-bg-scan': defineMessage({ defaultMessage: 'Auto Channel Selection for 6Ghz radio is set to Channel Fly or Background (BG) Scan.' }),
+  'bg-scan-24g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 2.4Ghz radio.' }),
+  'bg-scan-5g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 5Ghz radio.' }),
+  'bg-scan-6g-enabled': defineMessage({ defaultMessage: 'Background Scanning is enabled for 6Ghz radio.' }),
+  'auto-cell-sizing-24g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 2.4Ghz radio.' }),
+  'auto-cell-sizing-5g-disabled': defineMessage({ defaultMessage: 'Auto Cell Sizing is disabled for 5Ghz radio.' }),
+  'no-aps': defineMessage({ defaultMessage: 'No APs are detected in the network.' }),
+  'not-enough-license': defineMessage({ defaultMessage: 'The network contains unlicensed APs.' }),
+  'invalid-aggregation-interval': defineMessage({ defaultMessage: 'SmartZone data interval is too long; recommended interval is 3 minutes or less.' }),
+  'no-ap-peer-data': defineMessage({ defaultMessage: 'Insufficient data on neighboring APs.' }),
+  'no-channel-range-for-aps': defineMessage({ defaultMessage: 'Insufficient channel range data for one or more APs.' })
+}
 
 //For original codes, please refer to libs/analytics/components/src/Recommendations/config.ts
 export const codes = {
@@ -201,32 +264,32 @@ export const codes = {
   },
   'c-crrm-channel24g-auto': {
     aiFeature: aiFeatures.RRM,
-    intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 2.4 GHz radio' }),
+    intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 2.4 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel5g-auto': {
     aiFeature: aiFeatures.RRM,
-    intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 5 GHz radio' }),
+    intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 5 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-crrm-channel6g-auto': {
     aiFeature: aiFeatures.RRM,
-    intent: defineMessage({ defaultMessage: 'Client Density vs. Throughput for 6 GHz radio' }),
+    intent: defineMessage({ defaultMessage: 'Client Density vs Throughput for 6 GHz radio' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-24g': {
     aiFeature: aiFeatures.AirFlexAI,
-    intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 2.4 GHz' }),
+    intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 2.4 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-5g': {
     aiFeature: aiFeatures.AirFlexAI,
-    intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 5 GHz' }),
+    intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 5 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'c-probeflex-6g': {
     aiFeature: aiFeatures.AirFlexAI,
-    intent: defineMessage({ defaultMessage: 'Time to Connect vs. Client Density for 6 GHz' }),
+    intent: defineMessage({ defaultMessage: 'Time to Connect vs Client Density for 6 GHz' }),
     category: categories['Wi-Fi Experience']
   },
   'eco-flex-code': {

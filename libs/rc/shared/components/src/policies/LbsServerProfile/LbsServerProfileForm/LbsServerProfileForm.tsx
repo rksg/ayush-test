@@ -1,17 +1,20 @@
 import { useEffect, useRef } from 'react'
 
+import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   GridCol,
   GridRow,
   PageHeader,
+  showActionModal,
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
 import {
   useAddLbsServerProfileMutation,
   useGetLbsServerProfileQuery,
+  useGetLbsServerProfileListQuery,
   useUpdateLbsServerProfileMutation
 } from '@acx-ui/rc/services'
 import {
@@ -27,6 +30,7 @@ import { CommonResult }  from '@acx-ui/user'
 
 import LbsServerProfileSettingForm from './LbsServerProfileSettingForm'
 
+
 type LbsServerProfileFormProps = {
   editMode?: boolean,
   modalMode?: boolean,
@@ -34,6 +38,7 @@ type LbsServerProfileFormProps = {
 }
 
 export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
+  const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({
@@ -46,6 +51,13 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
 
   const formRef = useRef<StepsFormLegacyInstance<LbsServerProfileContext>>()
   const { data } = useGetLbsServerProfileQuery({ params }, { skip: !editMode })
+  const { data: list } = useGetLbsServerProfileListQuery({
+    params,
+    payload: {
+      fields: ['id', 'name', 'lbsServerVenueName', 'server'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
+    }
+  })
   const [createLbsServerProfile] = useAddLbsServerProfileMutation()
   const [updateLbsServerProfile] = useUpdateLbsServerProfileMutation()
 
@@ -60,15 +72,39 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   }, [data])
 
   const handleLbsServerProfile = async (formData: LbsServerProfileContext) => {
+    const payload = { ...formData }
+    if (isDuplicateProfile(payload)) {
+      return
+    }
+    await saveLbsServerProfile(payload)
+  }
+
+  const isDuplicateProfile = (payload: LbsServerProfileContext) => {
+    const otherProfiles = list?.data?.filter((o) => params?.policyId !== o.id)
+    const isDuplicated = otherProfiles?.some((o) =>
+      // eslint-disable-next-line max-len
+      payload.lbsServerVenueName === o.lbsServerVenueName && payload.serverAddress === o.server.split(':')[0])
+
+    if (isDuplicated) {
+      // eslint-disable-next-line max-len
+      const errorMessage = $t({ defaultMessage: 'The LBS Server <VenueSingular></VenueSingular> Name and Server Address are duplicates of another profile' })
+      showActionModal({
+        type: 'error',
+        content: errorMessage
+      })
+    }
+    return isDuplicated
+  }
+
+  const saveLbsServerProfile = async (payload: LbsServerProfileContext) => {
     try {
-      const payload = { ...formData }
       if (!editMode) {
         await createLbsServerProfile({
           params,
           payload,
           callback: async (res: CommonResult) => {
             const id = res.response?.id
-            formData.id = id
+            payload.id = id
             if (modalMode) {
               modalCallBack?.(id)
             }
@@ -101,14 +137,12 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
       formRef={formRef}
       editMode={editMode}
       onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
-      onFinish={async (data) => {
-        return handleLbsServerProfile(data)
-      }}
+      onFinish={handleLbsServerProfile}
     >
       <StepsFormLegacy.StepForm>
         <GridRow>
           <GridCol col={{ span: modalMode ? 24 : 10 }}>
-            <LbsServerProfileSettingForm />
+            <LbsServerProfileSettingForm list={list}/>
           </GridCol>
         </GridRow>
       </StepsFormLegacy.StepForm>

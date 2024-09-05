@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Input, Select } from 'antd'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import { Form, Input, Radio, RadioChangeEvent, Select, Space } from 'antd'
+import { useIntl }                                             from 'react-intl'
+import { useParams }                                           from 'react-router-dom'
 
 import { Drawer, PasswordInput, Tooltip }    from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
+  useLazyGetTwiliosMessagingServicesQuery,
   useUpdateNotificationSmsProviderMutation
 } from '@acx-ui/rc/services'
 import {
@@ -17,7 +19,7 @@ import {
 
 import { MessageMapping } from '../MessageMapping'
 
-import { SmsProviderData, getProviderQueryParam } from '.'
+import { SmsProviderData, getProviderQueryParam, isTwilioFromNumber } from '.'
 
 interface SetupSmsProviderDrawerProps {
   visible: boolean
@@ -25,6 +27,11 @@ interface SetupSmsProviderDrawerProps {
   editData?: SmsProviderData
   setVisible: (visible: boolean) => void
   setSelected: (selectedType: SmsProviderType) => void
+}
+
+enum MessageMethod {
+  MessagingService,
+  PhoneNumber
 }
 
 export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
@@ -35,10 +42,17 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const [providerType, setProviderType] = useState<SmsProviderType>()
   const [form] = Form.useForm()
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
+  const [isValidTwiliosService, setIsValidTwiliosService] = useState(false)
+  const [isValidAuthToken, setIsValidAuthToken] = useState(false)
   const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
+  const [messagingServices, setMessagingServices] = useState<string[]>()
+  const [messageMethod, setMessageMethod] = useState<MessageMethod>()
+  const [twilioEditMethod, setTwilioEditMethod] = useState<MessageMethod>()
+  const isSmsMessagingServiceEnabled = useIsSplitOn(Features.NUVO_SMS_MESSAGING_SERVICE_TOGGLE)
 
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
   const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
+  const [getTwiliosIncomingServices] = useLazyGetTwiliosMessagingServicesQuery()
 
   useEffect(() => {
     if(isEditMode && editData?.providerType ) {
@@ -48,13 +62,19 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   }, [])
 
   useEffect(() => {
-    form.validateFields(['phoneNumber'])
-  }, [phoneNumbers])
-
-  const twilioPhoneNumberList = phoneNumbers?.map((item) => ({
-    label: item,
-    value: item
-  }))
+    if(isEditMode && editData?.providerType === SmsProviderType.TWILIO) {
+      form.validateFields(['authToken'])
+      if (isTwilioFromNumber(editData.providerData.fromNumber ?? '')) {
+        setMessageMethod(MessageMethod.PhoneNumber)
+        setTwilioEditMethod(MessageMethod.PhoneNumber)
+        handleGetTwiliosIncomingPhoneNumbers()
+      } else {
+        setMessageMethod(MessageMethod.MessagingService)
+        setTwilioEditMethod(MessageMethod.MessagingService)
+        handleGetTwiliosIncomingServices()
+      }
+    }
+  }, [providerType])
 
   const onClose = () => {
     setVisible(false)
@@ -73,7 +93,35 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
       setPhoneNumbers(myNumber)
       setIsValidTwiliosNumber(myNumber.length > 0)
-      form.setFieldValue('phoneNumber', myNumber.length > 0 ? myNumber[0] : '')
+      form.setFieldValue('phoneNumber', myNumber.length > 0
+        ? (isEditMode && twilioEditMethod === MessageMethod.PhoneNumber)
+          ? editData?.providerData.fromNumber ?? myNumber[0]
+          : myNumber[0]
+        : '')
+      form.validateFields(['phoneNumber'])
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+    }
+  }
+
+  const handleGetTwiliosIncomingServices = async () => {
+    try {
+      await form.validateFields(['accountSid', 'authToken'])
+      const payload: NotificationSmsConfig = {
+        accountSid: form.getFieldValue('accountSid'),
+        authToken: form.getFieldValue('authToken')
+      }
+      const servicesList = await getTwiliosIncomingServices({
+        params: params, payload: payload })
+      const myServices = servicesList.data?.messagingServiceResources ?? []
+      setMessagingServices(myServices)
+      setIsValidTwiliosService(myServices.length > 0)
+      form.setFieldValue('messagingService', myServices.length > 0
+        ? (isEditMode && twilioEditMethod === MessageMethod.MessagingService)
+          ? editData?.providerData.fromNumber ?? myServices[0]
+          : myServices[0]
+        : '')
+      form.validateFields(['messagingService'])
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -84,12 +132,20 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       await form.validateFields()
       const providerData: NotificationSmsConfig =
         providerType === SmsProviderType.TWILIO
-          ? {
-            // twilio
-            accountSid: form.getFieldValue('accountSid'),
-            authToken: form.getFieldValue('authToken'),
-            fromNumber: form.getFieldValue('phoneNumber')
-          }
+          ? isSmsMessagingServiceEnabled && messageMethod === MessageMethod.MessagingService ?
+            {
+              // twilio with messaging service
+              accountSid: form.getFieldValue('accountSid'),
+              authToken: form.getFieldValue('authToken'),
+              fromNumber: form.getFieldValue('messagingService')
+            }
+            :
+            {
+            // twilio with phone number
+              accountSid: form.getFieldValue('accountSid'),
+              authToken: form.getFieldValue('authToken'),
+              fromNumber: form.getFieldValue('phoneNumber')
+            }
           : {
             // esendex, other
             apiKey: form.getFieldValue('apiKey'),
@@ -126,6 +182,16 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     setProviderType(value as SmsProviderType)
   }
 
+  const handleMessageMethodChange = (e: RadioChangeEvent) => {
+    setMessageMethod(e.target.value)
+    if (e.target.value === MessageMethod.MessagingService) {
+      handleGetTwiliosIncomingServices()
+    }
+    if (e.target.value === MessageMethod.PhoneNumber) {
+      handleGetTwiliosIncomingPhoneNumbers()
+    }
+  }
+
   const formContent = <Form layout='vertical' form={form} >
     <Form.Item
       name='smsProvider'
@@ -148,7 +214,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='accountSid'
         label={$t({ defaultMessage: 'Account SID' })}
-        initialValue={editData?.providerData.accountSid ?? ''}
+        initialValue={isEditMode ? editData?.providerData.accountSid ?? '' : ''}
         rules={[
           { required: true },
           { validator: (_, value) => {
@@ -165,44 +231,94 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='authToken'
         label={$t({ defaultMessage: 'Auth Token' })}
-        initialValue={editData?.providerData.authToken ?? ''}
+        initialValue={isEditMode ? editData?.providerData.authToken ?? '' : ''}
         rules={[
           { required: true },
           { validator: (_, value) => {
             if(value.length !== 32 || !(/^[A-Za-z0-9]*$/.test(value))) {
+              setIsValidAuthToken(false)
               return Promise.reject(
                 `${$t({ defaultMessage: 'This is not a valid Twilio auth token' })} `
               )
             }
+            setIsValidAuthToken(true)
             return Promise.resolve()}
           }
         ]}
         children={<PasswordInput onBlur={handleGetTwiliosIncomingPhoneNumbers}/>}
       />
-      <Form.Item
-        name='phoneNumber'
-        label={$t({ defaultMessage: 'Phone Number' })}
-        initialValue={editData?.providerData.fromNumber ?? ''}
-        rules={[
-          { validator: () => {
-            const hasNumber = form.getFieldValue('phoneNumber')
-            return !isValidTwiliosNumber && hasNumber === '' ? Promise.reject(
-              `${$t(MessageMapping.received_invalid_twilios_number)}`
-            ) : Promise.resolve()}
-          }
-        ]}
-        children={<Select
-          options={twilioPhoneNumberList}
-          placeholder={$t({ defaultMessage: 'Select...' })}
-          disabled={!isValidTwiliosNumber}
+      {isSmsMessagingServiceEnabled && <>
+        <Form.Item
+          name='messageMethod'
+          label={$t({ defaultMessage: 'Send messages through...' })}
+          initialValue={messageMethod}
+          rules={[
+            { required: true, message: $t({ defaultMessage: 'Please select a messaging method' }) }
+          ]}
+        >
+          <Radio.Group
+            disabled={!isValidAuthToken}
+            onChange={handleMessageMethodChange}
+            value={messageMethod}>
+            <Space direction='vertical'>
+              <Radio value={MessageMethod.MessagingService}>
+                {$t({ defaultMessage: 'Messaging Service' })}
+              </Radio>
+              <Radio value={MessageMethod.PhoneNumber}>
+                {$t({ defaultMessage: 'Phone Number' })}
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+        {messageMethod === MessageMethod.MessagingService && isValidAuthToken && <Form.Item
+          name='messagingService'
+          label={$t({ defaultMessage: 'Messaging Service' })}
+          rules={[
+            { validator: () => {
+              const hasService = form.getFieldValue('messagingService')
+              return !isValidTwiliosService && hasService === '' ? Promise.reject(
+                `${$t(MessageMapping.received_invalid_twilios_service)}`
+              ) : Promise.resolve()}
+            }
+          ]}
+          children={<Select
+            options={messagingServices?.map((item) => ({
+              label: item,
+              value: item
+            }))}
+            placeholder={$t({ defaultMessage: 'Select...' })}
+            disabled={!isValidTwiliosService}
+          />}
         />}
-      />
+      </>}
+      {(!isSmsMessagingServiceEnabled ||
+        (messageMethod === MessageMethod.PhoneNumber && isValidAuthToken))
+         && <Form.Item
+           name='phoneNumber'
+           label={$t({ defaultMessage: 'Phone Number' })}
+           rules={[
+             { validator: () => {
+               const hasNumber = form.getFieldValue('phoneNumber')
+               return !isValidTwiliosNumber && hasNumber === '' ? Promise.reject(
+                 `${$t(MessageMapping.received_invalid_twilios_number)}`
+               ) : Promise.resolve()}
+             }
+           ]}
+           children={<Select
+             options={phoneNumbers?.map((item) => ({
+               label: item,
+               value: item
+             }))}
+             placeholder={$t({ defaultMessage: 'Select...' })}
+             disabled={!isValidTwiliosNumber}
+           />}
+         />}
     </>}
     {providerType === SmsProviderType.ESENDEX &&
       <Form.Item
         name='apiKey'
         label={$t({ defaultMessage: 'API Key' })}
-        initialValue={editData?.providerData.apiKey ?? ''}
+        initialValue={isEditMode ? editData?.providerData.apiKey ?? '' : ''}
         rules={[
           { required: true }
         ]}
@@ -212,7 +328,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='apiKey'
         label={$t({ defaultMessage: 'API Key' })}
-        initialValue={editData?.providerData.apiKey ?? ''}
+        initialValue={isEditMode ? editData?.providerData.apiKey ?? '' : ''}
         rules={[
           { required: true }
         ]}
@@ -229,7 +345,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             placement='right'
           />
         </>}
-        initialValue={editData?.providerData.url ?? ''}
+        initialValue={isEditMode ? editData?.providerData.url ?? '' : ''}
         rules={[
           { required: true, message: $t({ defaultMessage: 'Please enter Send URL' }) },
           { validator: (_, value) => URLRegExp(value) }

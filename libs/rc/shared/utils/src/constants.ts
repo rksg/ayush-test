@@ -216,6 +216,7 @@ export enum ConfigTypeEnum {
   AAA_SETTING = 'AAA_SETTING',
   DNS_SERVER = 'DNS_SERVER',
   DHCP_SERVER = 'DHCP_SERVER',
+  NTP_SERVER = 'NTP_SERVER',
   LAG_SETTINGS = 'LAG_SETTINGS',
   MODEL ='MODEL',
   OVERWRITE = 'OVERWRITE',
@@ -1128,3 +1129,4 @@ export const VLAN_LIMIT_NUMBER = 64
 export const AAA_LIMIT_NUMBER = 32
 export const CLIENT_ISOLATION_LIMIT_NUMBER = 64
 export const ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-ap-compatibiliy-note-hidden'
+export const ACX_UI_EDGE_COMPATIBILITY_NOTE_HIDDEN_KEY = 'ACX-edge-compatibiliy-note-hidden'
