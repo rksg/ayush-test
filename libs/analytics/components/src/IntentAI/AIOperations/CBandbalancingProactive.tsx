@@ -38,12 +38,12 @@ export const kpis: IntentKPIConfig[] = [{
 const useValuesText = createUseValuesText({
   intro: defineMessage({ defaultMessage: `
     <p>
-      <b>Secured network with WPA2/WPA3 encryption:</b>
-      This option ensures network security by implementing strong encryption protocols (WPA2 or WPA3), safeguarding data transmission from unauthorized access and protecting against various security threats, providing peace of mind for users.
+      <b>Switch to proactive for optimized client distribution:</b>
+      Transitioning to proactive client distribution mode allows for more intelligent allocation of clients to access points, optimizing network performance by balancing client load across APs.
     </p>
     <p>
-      <b>Unsecured open network for user convenience:</b>
-      This option provides convenience for users by offering an open network without encryption, allowing easy and immediate access without the need for authentication credentials, but leaving the network vulnerable to unauthorized access and potential security breaches.
+      <b>Stay on basic for better client compatibility:</b>
+      Remaining on basic mode prioritizes client compatibility, ensuring seamless connectivity for a wide range of devices without implementing advanced load balancing techniques.
     </p>
   ` }),
   action: defineMessage({ defaultMessage: 'Steering mode for {scope} is set as {currentValue}. It is recommended to change the mode to PROACTIVE.' }),
@@ -62,7 +62,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will change encryption method to WPA2/WPA3  for this network. This change will enhance network security by encrypting data transmission, protecting against unauthorized access and security threats, and providing users with confidence in the confidentiality and integrity of their data.</p>
+        <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimizes client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />
