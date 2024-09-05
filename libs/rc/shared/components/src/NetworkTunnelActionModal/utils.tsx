@@ -67,6 +67,7 @@ export const useUpdateNetworkTunnelAction = () => {
     if (formTunnelType !== tunnelTypeInitVal) {
       // deactivate
       if (formTunnelType !== NetworkTunnelTypeEnum.SdLan) {
+        // is last network in Venue?
         if (isSdLanLastNetworkInVenue(venueSdLanInfo?.tunneledWlans, networkVenueId)) {
           return await new Promise<void | boolean>((resolve) => {
             showSdLanVenueDissociateModal(async () => {
@@ -74,6 +75,8 @@ export const useUpdateNetworkTunnelAction = () => {
               resolve()
             }, () => resolve(false))
           })
+        } else {
+          return await triggerSdLanOperations()
         }
       } else {
         // activate
