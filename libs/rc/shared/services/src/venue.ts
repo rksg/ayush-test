@@ -57,6 +57,7 @@ import {
   VenueDirectedMulticast,
   VenueLoadBalancing,
   VenueBssColoring,
+  VenueApSmartMonitor,
   TopologyData,
   VenueMdnsFencingPolicy,
   PropertyConfigs,
@@ -1572,6 +1573,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       }
     }),
+    getVenueApSmartMonitor: build.query<VenueApSmartMonitor, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenueSmartMonitor, params, apiCustomHeader)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApSmartMonitor: build.mutation<VenueApSmartMonitor, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.updateVenueApSmartMonitor, params, apiCustomHeader)
+        return{
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     getTopology: build.query<TopologyData, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getTopology, params)
@@ -2113,7 +2139,10 @@ export const {
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
   useUpdateVenueAntennaTypeMutation,
-  useRemoveApPositionMutation
+  useRemoveApPositionMutation,
+  useGetVenueApSmartMonitorQuery,
+  useLazyGetVenueApSmartMonitorQuery,
+  useUpdateVenueApSmartMonitorMutation,
 } = venueApi
 
 

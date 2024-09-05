@@ -103,6 +103,7 @@ export const createHttpRequest = (
   }
   const url = enableNewApi(apiInfo) ? generatePath(`${apiInfo.url}`, tmpParamValues) :
     generatePath(`${apiInfo.oldUrl || apiInfo.url}`, tmpParamValues)
+    console.log(url)
   const method = enableNewApi(apiInfo) ? apiInfo.method : (apiInfo.oldMethod || apiInfo.method)
   return {
     headers,

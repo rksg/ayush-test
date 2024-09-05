@@ -328,6 +328,16 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
+  getVenueSmartMonitor: {
+    method: 'get',
+    url: '/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
+  updateSmartMonitor: {
+    method: 'put',
+    url: '/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
   getDefaultVenueLanPorts: {
     method: 'get',
     url: '/venues/:venueId/apModelLanPortSettings?defaultOnly=true',

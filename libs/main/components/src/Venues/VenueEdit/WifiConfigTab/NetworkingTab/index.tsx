@@ -21,6 +21,7 @@ import { DirectedMulticast }   from './DirectedMulticast'
 import { LanPorts }            from './LanPorts'
 import { MeshNetwork }         from './MeshNetwork'
 import { RadiusOptions }       from './RadiusOptions'
+import { SmartMonitor }        from './SmartMonitor'
 
 
 export interface NetworkingSettingContext {
@@ -30,7 +31,8 @@ export interface NetworkingSettingContext {
   updateDirectedMulticast?: (() => void),
   updateLanPorts?: (() => void),
   discardLanPorts?: (() => void),
-  updateRadiusOptions?: (() => void)
+  updateRadiusOptions?: (() => void),
+  updateSmartMonitor?: (() => void)
 }
 
 export function NetworkingTab () {
@@ -40,6 +42,8 @@ export function NetworkingTab () {
   const { tenantId, venueId } = useParams()
 
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const isSmartMonitorFFEnabled = useIsSplitOn(Features.WIFI_SMART_MONITOR_DISABLE_WLAN_TOGGLE)
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
@@ -129,7 +133,16 @@ export function NetworkingTab () {
         { $t({ defaultMessage: 'Cellular Options' }) }
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
-    </> }] : []),
+    </> }] : []), 
+    ...(isSmartMonitorFFEnabled? [{
+      title: $t({ defaultMessage: 'Smart Monitor' }),
+      content: <>
+        <StepsFormLegacy.SectionTitle id='smart-monitor'>
+          { $t({ defaultMessage: 'Smart Monitor' }) }
+        </StepsFormLegacy.SectionTitle>
+        <SmartMonitor />
+      </>
+    }]: []),
   {
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>
@@ -147,6 +160,7 @@ export function NetworkingTab () {
       await editNetworkingContextData?.updateMesh?.()
       await editNetworkingContextData?.updateDirectedMulticast?.()
       await editNetworkingContextData?.updateRadiusOptions?.()
+      await editNetworkingContextData?.updateSmartMonitor?.()
 
       setEditContextData?.({
         ...editContextData,
@@ -162,6 +176,7 @@ export function NetworkingTab () {
         delete newData.updateMesh
         delete newData.updateDirectedMulticast
         delete newData.updateRadiusOptions
+        delete newData.updateSmartMonitor
 
         setEditNetworkingContextData(newData)
       }

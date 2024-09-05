@@ -765,6 +765,12 @@ export interface ApEnhancedKey {
   tlsKeyEnhancedModeEnabled: boolean
 }
 
+export interface VenueApSmartMonitor {
+	smartMonitorEnabled: boolean,
+	smartMonitorInterval: number,
+	smartMonitorThreshold: number
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
