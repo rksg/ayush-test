@@ -411,7 +411,8 @@ describe('VenueNetworksTab', () => {
     beforeEach(() => {
       jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
         && ff !== Features.WIFI_RBAC_API
-        && ff !== Features.EDGE_SD_LAN_MV_TOGGLE)
+        && ff !== Features.EDGE_SD_LAN_MV_TOGGLE
+        && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
     })
     const mockedSdLanScopeData = {
       sdLans: [{

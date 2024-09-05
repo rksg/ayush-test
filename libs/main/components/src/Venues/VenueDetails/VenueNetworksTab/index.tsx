@@ -644,6 +644,7 @@ export function VenueNetworksTab () {
 
     try {
       if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+        formValues.softGre.newProfileId &&
         formValues.softGre.oldProfileId !== formValues.softGre.newProfileId) {
         await activateSoftGre({
           params: {

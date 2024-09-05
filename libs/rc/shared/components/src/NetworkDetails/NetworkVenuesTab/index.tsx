@@ -789,17 +789,18 @@ export function NetworkVenuesTab () {
 
     try{
       if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+        formValues.softGre.newProfileId &&
         formValues.softGre.oldProfileId !== formValues.softGre.newProfileId) {
         await activateSoftGre({
           params: {
-            ...params,
+            venueId: network!.venueId,
             networkId: network!.id,
             policyId: formValues.softGre.newProfileId
           } })
       } else if (formValues.softGre.oldProfileId) {
         await dectivateSoftGre({
           params: {
-            ...params,
+            venueId: network!.venueId,
             networkId: network!.id,
             policyId: formValues.softGre.oldProfileId
           } })

@@ -843,9 +843,9 @@ export const useUpdateSoftGreActivations = () => {
     }).map((venueId) => {
       // eslint-disable-next-line max-len
       const action = updates[venueId]
-      if (action.newProfileId === '' && !action.oldProfileId) {
+      if (!action.newProfileId && action.oldProfileId) {
         return dectivateSoftGre({ params: { venueId, networkId, policyId: action.oldProfileId } })
-      } else if (action.newProfileId !== '' && action.newProfileId !== action.oldProfileId) {
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId) {
         return activateSoftGre({ params: { venueId, networkId, policyId: action.newProfileId } })
       }
       return Promise.resolve()

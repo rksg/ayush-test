@@ -64,6 +64,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
         if (softGreInfo) {
           form.setFieldValue(['softGre', 'newProfileId'], softGreInfo.profileId)
           form.setFieldValue(['softGre', 'newProfileName'], softGreInfo.profileName)
+          form.setFieldValue(['softGre', 'oldProfileId'], profileId)
         }
       } else if (profileId) {
         form.setFieldValue(['softGre', 'newProfileId'], profileId)
