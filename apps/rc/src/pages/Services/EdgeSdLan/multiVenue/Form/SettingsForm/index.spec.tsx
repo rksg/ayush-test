@@ -1,7 +1,7 @@
-import userEvent     from '@testing-library/user-event'
-import { Form }      from 'antd'
-import { cloneDeep } from 'lodash'
-import { rest }      from 'msw'
+import userEvent          from '@testing-library/user-event'
+import { Form }           from 'antd'
+import { cloneDeep, get } from 'lodash'
+import { rest }           from 'msw'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
@@ -31,6 +31,7 @@ import { SettingsForm } from '.'
 
 const { mockEdgeFeatureCompatibilities } = EdgeCompatibilityFixtures
 const { mockedMvSdLanDataList } = EdgeSdLanFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockEdgeClusterList = cloneDeep(EdgeGeneralFixtures.mockEdgeClusterList)
 mockEdgeClusterList.data[4].highAvailabilityMode = ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY
 
@@ -348,7 +349,21 @@ describe('Edge SD-LAN form: settings', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeFeatureSets.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities)))
+        (_, res, ctx) => res(ctx.json(mockEdgeFeatureCompatibilities))),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => {
+          const clusterid = get(req.body, 'filters.clusterId.0')
+          const singleNode = {
+            data: mockEdgeList.data.slice(0, 1),
+            totalCount: 1
+          }
+          const multiNodes = {
+            data: mockEdgeList.data.slice(1, 3),
+            totalCount: 2
+          }
+          return res(ctx.json(clusterid === 'clusterId_2' ? multiNodes : singleNode))
+        })
     )
 
     const { result: stepFormRef } = renderHook(useMockedFrom)
@@ -359,7 +374,7 @@ describe('Edge SD-LAN form: settings', () => {
     const formBody = await checkBasicSettings()
 
     // show fw info
-    screen.getByText('Cluster Firmware Version: 2.1.0.580')
+    await screen.findByText('Cluster Firmware Version: 1.9.0.200')
     const fwWarningIcon = await screen.findByTestId('WarningCircleSolid')
     await userEvent.hover(fwWarningIcon)
     expect(await screen.findByRole('tooltip', { hidden: true }))
@@ -373,7 +388,7 @@ describe('Edge SD-LAN form: settings', () => {
       await within(formBody).findByRole('combobox', { name: 'DMZ Cluster' }),
       'clusterId_5')
 
-    screen.getByText('Cluster Firmware Version: 2.1.0.480')
+    await screen.findByText('Cluster Firmware Version: 1.9.0.100')
     const fwWarningIcons = await screen.findAllByTestId('WarningCircleSolid')
     expect(fwWarningIcons.length).toBe(2)
     await userEvent.hover(fwWarningIcons[1])
