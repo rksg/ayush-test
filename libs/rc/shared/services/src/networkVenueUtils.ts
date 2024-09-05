@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import { FetchArgs, FetchBaseQueryError }          from '@reduxjs/toolkit/query'
-import { keys, every, get, uniq, omit, findIndex } from 'lodash'
+import { FetchArgs, FetchBaseQueryError }                   from '@reduxjs/toolkit/query'
+import { keys, every, get, uniq, omit, findIndex, isEqual } from 'lodash'
 
 import {
   ApGroupConfigTemplateUrlsInfo,
@@ -14,7 +14,7 @@ import {
   Network,
   NetworkDetail, NetworkVenue,
   NewApGroupViewModelResponseType,
-  PoliciesConfigTemplateUrlsInfo, RadioEnum,
+  PoliciesConfigTemplateUrlsInfo,
   TableResult,
   Venue,
   VlanPoolRbacUrls,
@@ -920,8 +920,8 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
 
           if (addApGroups.length > 0) {
             await Promise.all(addApGroups.map(apGroup => {
-              // add ap group but not for the default setting
-              if (apGroup.radio !== RadioEnum.Both) {
+              // add ap group to update list when there is not the default setting
+              if (isEqual(apGroup.radioTypes?.sort(), apGroup.allApGroupsRadioTypes) || apGroup.vlanId) {
                 updateApGroups.push(apGroup)
               }
               const apGroupSettingReq = {

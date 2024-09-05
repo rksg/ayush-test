@@ -129,14 +129,18 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
   newApGroups.forEach((newApGroup: NetworkApGroup) => {
     const apGroupId = newApGroup.apGroupId as string
     const oldApGroup = find(oldApGroups, { apGroupId })
-    const comparisonResult = comparePayload(
-      newApGroup as unknown as Record<string, unknown>,
-      oldApGroup as unknown as Record<string, unknown> || {},
-      apGroupId,
-      itemProcessFn
-    )
-    if (!oldApGroup) addApGroups.push(newApGroup)
-    if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+
+    if (!oldApGroup) {
+      addApGroups.push(newApGroup)
+    } else {
+      const comparisonResult = comparePayload(
+        newApGroup as unknown as Record<string, unknown>,
+        oldApGroup as unknown as Record<string, unknown> || {},
+        apGroupId,
+        itemProcessFn
+      )
+      if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+    }
   })
 
   oldApGroups.forEach((oldApGroup: NetworkApGroup) => {
@@ -144,13 +148,6 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
     const newApGroup = find(newApGroups, { apGroupId })
     if (!newApGroup) deleteApGroups.push(oldApGroup)
   })
-
-  // When user switch from "All APs" to "Select specific AP Groups" but the content remains the same
-  if (addApGroups.length + updateApGroups.length + deleteApGroups.length === 0
-    && oldPayload.isAllApGroups === true
-    && newPayload.isAllApGroups === false) {
-    addApGroups.push(...newApGroups)
-  }
 
   return { addApGroups, updateApGroups, deleteApGroups }
 }

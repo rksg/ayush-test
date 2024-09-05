@@ -402,7 +402,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings'
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
           ]
 
           onActivityMessageReceived(msg, useCases, () => {
@@ -543,7 +545,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings'
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
           })

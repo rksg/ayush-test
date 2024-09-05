@@ -92,7 +92,7 @@ export function comparePayload (
   } as ComparisonObjectType
 
   for (const key in currentPayload) {
-    if (!oldPayload[key]) {
+    if (!Object.keys(oldPayload).length && !oldPayload[key]) {
       comparisonObject.added.push(itemProcessFn(currentPayload, {}, key, id) as ActionItem)
     } else {
       if (JSON.stringify(currentPayload[key]) !== JSON.stringify(oldPayload[key])) {
