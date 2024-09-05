@@ -44,10 +44,10 @@ export const DateContainer = styled.div`
 `
 
 export const ScheduleModal = styled(Modal)`
-.ant-modal-body{
-  overflow: initial;
-}
-.ant-modal-content{
-  max-height: initial;
-}
+  .ant-modal-body{
+    overflow: initial;
+  }
+  .ant-modal-content{
+    max-height: initial;
+  }
 `
