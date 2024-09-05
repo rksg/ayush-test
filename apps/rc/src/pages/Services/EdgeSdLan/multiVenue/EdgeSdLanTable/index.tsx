@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { Row, Space } from 'antd'
-import { find, uniq } from 'lodash'
-import { useIntl }    from 'react-intl'
+import { Row, Space }      from 'antd'
+import { find, get, uniq } from 'lodash'
+import { useIntl }         from 'react-intl'
 
 import {
   Button,
@@ -316,6 +316,16 @@ const EdgeMvSdLanTable = () => {
     }
   ]
 
+  const handleTableChange: TableProps<EdgeMvSdLanViewData>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    const originSortField = get(sorter, 'field')
+    tableQuery.handleTableChange?.(pagination, filters, {
+      ...sorter,
+      field: originSortField === 'tunneledWlans.venueId' ? 'venueCount' : originSortField
+    }, extra)
+  }
+
   const isSelectionVisible = hasPermission({
     scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
   })
@@ -362,7 +372,7 @@ const EdgeMvSdLanTable = () => {
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
+          onChange={handleTableChange}
           onFilterChange={handleFilterChange}
           enableApiFilter
         />

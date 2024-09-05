@@ -69,7 +69,7 @@ describe('NetworkTunnelModal', () => {
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={{
                 id: targetNetwork.id,
                 type: targetNetwork!.type,
@@ -100,7 +100,7 @@ describe('NetworkTunnelModal', () => {
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={{
                 id: targetNetwork.id,
                 type: targetNetwork.type,
@@ -154,7 +154,7 @@ describe('NetworkTunnelModal', () => {
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
             />
@@ -181,7 +181,7 @@ describe('NetworkTunnelModal', () => {
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={{
                 id: anotherGuestNetwork.id,
                 type: anotherGuestNetwork.type,
@@ -227,7 +227,7 @@ describe('NetworkTunnelModal', () => {
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
             />
@@ -250,40 +250,12 @@ describe('NetworkTunnelModal', () => {
         })
       })
 
-      // TODO: shoud add back when `popup confirm dialog: ACX-58399` ready
-      // it('should change tunnel from DC into DMZ and popup conflict', async () => {
-      //   render(
-      //     <Provider>
-      //       <NetworkTunnelActionModal
-      //         visible={true}
-      //         onClose={() => {}}
-      //         network={{
-      //           ...defaultNetworkData,
-      //           venueId: 'mock_venue_3',
-      //           venueName: 'Mocked-Venue-3'
-      //         }}
-      //         onFinish={mockedOnFinish}
-      //       />
-      //     </Provider>, { route: { params: { tenantId: 't-id' } } })
-
-      //   await checkPageLoaded('Mocked-Venue-3')
-      //   const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
-      //   await waitFor(() => expect(localBreakout).toBeChecked())
-      //   // eslint-disable-next-line max-len
-      //   const tunneling = screen.getByRole('radio', { name: `SD-LAN Tunneling( ${mockedSdLan.name} )` })
-      //   await click(tunneling)
-      //   expect(tunneling).toBeChecked()
-      //   const fwdGuest = screen.getByRole('switch')
-      //   expect(fwdGuest).toBeChecked()
-      //   expect(fwdGuest).toBeDisabled()
-      // })
-
       it('should change tunnel from DMZ into DC', async () => {
         render(
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
             />
@@ -308,7 +280,7 @@ describe('NetworkTunnelModal', () => {
           <Provider>
             <NetworkTunnelActionModal
               visible={true}
-              onClose={() => {}}
+              onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
             />
@@ -325,6 +297,50 @@ describe('NetworkTunnelModal', () => {
           },
           tunnelType: NetworkTunnelTypeEnum.None
         })
+      })
+
+      it('should greyout all option when network is the last one in SDLAN', async () => {
+        const mockData = cloneDeep(mockedSdLan)
+        // eslint-disable-next-line max-len
+        mockData.tunneledWlans!.splice(mockData.tunneledWlans!.findIndex(i => i.networkId === 'network_1'), 1)
+
+        mockedGetVenueSdLanFn.mockReturnValue(mockData)
+
+        render(
+          <Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={jest.fn()}
+              network={defaultNetworkData}
+              onFinish={mockedOnFinish}
+            />
+          </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+        await checkPageLoaded(sdlanVenueName)
+        expect(await screen.findByRole('radio', { name: 'Local Breakout' })).toBeDisabled()
+        expect(await screen.findByRole('radio', { name: /SD-LAN Tunneling/ })).toBeDisabled()
+      })
+
+      // eslint-disable-next-line max-len
+      it('should NOT greyout all option when the network is not the last one network in SDLAN', async () => {
+        render(
+          <Provider>
+            <NetworkTunnelActionModal
+              visible={true}
+              onClose={jest.fn()}
+              network={{
+                id: 'tmpNetworkId',
+                type: NetworkTypeEnum.CAPTIVEPORTAL,
+                venueId: defaultNetworkData.venueId,
+                venueName: defaultNetworkData.venueName
+              }}
+              onFinish={mockedOnFinish}
+            />
+          </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+        await checkPageLoaded(sdlanVenueName)
+        expect(await screen.findByRole('radio', { name: 'Local Breakout' })).not.toBeDisabled()
+        expect(await screen.findByRole('radio', { name: /SD-LAN Tunneling/ })).not.toBeDisabled()
       })
     })
   })
@@ -345,7 +361,7 @@ describe('NetworkTunnelModal', () => {
         <Provider>
           <NetworkTunnelActionModal
             visible={true}
-            onClose={() => {}}
+            onClose={jest.fn()}
             network={mockedNetworkData}
             onFinish={mockedOnFinish}
           />
@@ -366,7 +382,7 @@ describe('NetworkTunnelModal', () => {
       <Provider>
         <NetworkTunnelActionModal
           visible={true}
-          onClose={() => {}}
+          onClose={jest.fn()}
           network={undefined}
           onFinish={mockedOnFinish}
         />

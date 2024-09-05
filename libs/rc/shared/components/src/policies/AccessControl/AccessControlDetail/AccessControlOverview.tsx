@@ -3,8 +3,8 @@ import React from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, SummaryCard }                              from '@acx-ui/components'
-import { AccessControlInfoType, EnabledStatus, PolicyType } from '@acx-ui/rc/utils'
+import { Button, SummaryCard }                                      from '@acx-ui/components'
+import { EnabledStatus, EnhancedAccessControlInfoType, PolicyType } from '@acx-ui/rc/utils'
 
 import {
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
@@ -17,7 +17,8 @@ interface SubPolicyDetailProps {
   policyId: string
 }
 
-export default function AccessControlOverview (props: { data: AccessControlInfoType | undefined }) {
+// eslint-disable-next-line max-len
+export default function AccessControlOverview (props: { data: EnhancedAccessControlInfoType | undefined }) {
   const { $t } = useIntl()
   const { data } = props
   // eslint-disable-next-line max-len
@@ -44,43 +45,45 @@ export default function AccessControlOverview (props: { data: AccessControlInfoT
   const accessControlInfo = [
     {
       title: $t({ defaultMessage: 'Layer 2' }),
-      content: data && data.l2AclPolicy?.enabled
+      content: data && data.l2AclPolicyId
         ? <SubPolicyDetail
           policyType={PolicyType.LAYER_2_POLICY}
-          policyId={data.l2AclPolicy.id}
+          policyId={data.l2AclPolicyId}
         />
         : EnabledStatus.OFF
     },
     {
       title: $t({ defaultMessage: 'Layer 3' }),
-      content: data && data.l3AclPolicy?.enabled
+      content: data && data.l3AclPolicyId
         ? <SubPolicyDetail
           policyType={PolicyType.LAYER_3_POLICY}
-          policyId={data.l3AclPolicy.id}
+          policyId={data.l3AclPolicyId}
         />
         : EnabledStatus.OFF
     },
     {
       title: $t({ defaultMessage: 'Device & OS' }),
-      content: data && data.devicePolicy?.enabled
+      content: data && data.devicePolicyId
         ? <SubPolicyDetail
           policyType={PolicyType.DEVICE_POLICY}
-          policyId={data.devicePolicy.id}
+          policyId={data.devicePolicyId}
         />
         : EnabledStatus.OFF
     },
     {
       title: $t({ defaultMessage: 'Applications' }),
-      content: data && data.applicationPolicy?.enabled
+      content: data && data.applicationPolicyId
         ? <SubPolicyDetail
           policyType={PolicyType.APPLICATION_POLICY}
-          policyId={data.applicationPolicy.id}
+          policyId={data.applicationPolicyId}
         />
         : EnabledStatus.OFF
     },
     {
       title: $t({ defaultMessage: 'Client Rate Limit' }),
-      content: data && data.rateLimiting?.enabled ? EnabledStatus.ON : EnabledStatus.OFF
+      content: data && (data.clientRateUpLinkLimit || data.clientRateDownLinkLimit)
+        ? EnabledStatus.ON
+        : EnabledStatus.OFF
     }
   ]
 
