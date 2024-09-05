@@ -1,10 +1,10 @@
-import { RocketOutlined16 as RocketOutlined } from '@acx-ui/icons'
+import { RocketOutlined } from '@acx-ui/icons-new'
 
 import * as UI from './styledComponents'
 
 export function BetaIndicator () {
   return <UI.IconWrapper>
-    <RocketOutlined />
+    <RocketOutlined size='sm' />
   </UI.IconWrapper>
 }
 

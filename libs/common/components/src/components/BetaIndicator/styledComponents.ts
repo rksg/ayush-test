@@ -10,6 +10,7 @@ export const IconWrapper = styled(Space)`
     display: flex;
     width: 16px !important;
     height: 16px !important;
+    margin: 0 !important;
     color: var(--acx-accents-orange-50);
   }
 `

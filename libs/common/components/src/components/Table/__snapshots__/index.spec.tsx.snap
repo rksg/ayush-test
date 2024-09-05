@@ -4833,6 +4833,7 @@ exports[`Table component should render table with Beta indicator correctly 1`] =
   display: flex;
   width: 16px !important;
   height: 16px !important;
+  margin: 0 !important;
   color: var(--acx-accents-orange-50);
 }
 
@@ -5203,7 +5204,7 @@ exports[`Table component should render table with Beta indicator correctly 1`] =
                                       class="ant-space-item"
                                     >
                                       <svg
-                                        data-testid="RocketOutlined16"
+                                        data-testid="RocketOutlined"
                                       />
                                     </div>
                                   </div>

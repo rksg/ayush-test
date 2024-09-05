@@ -6,7 +6,7 @@ import { WithTable }     from './WithTable'
 import { WithTabs }      from './WithTabs'
 
 
-storiesOf('BetaIndicator', module)
+storiesOf('Beta Indicator', module)
   .add('Basic', Basic)
   .add('With Table', WithTable)
   .add('With Tab', WithTabs)

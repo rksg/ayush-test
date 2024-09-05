@@ -39,6 +39,7 @@ describe('RadioCard', () => {
       await screen.findByText('title')
       await screen.findByText('description')
       await screen.findByText('Wi-Fi')
+      expect(await screen.findByTestId('RocketOutlined')).toBeVisible()
     })
   })
   describe('type = radio', () => {
