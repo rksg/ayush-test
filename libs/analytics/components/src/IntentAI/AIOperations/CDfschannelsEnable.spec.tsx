@@ -145,7 +145,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
-    expect(await screen.findByText('Recommended Configuration: Disabled')).toBeVisible()
+    expect(await screen.findByText('Recommended Configuration: Enabled')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()

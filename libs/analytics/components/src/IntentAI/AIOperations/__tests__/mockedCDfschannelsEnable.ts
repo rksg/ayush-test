@@ -69,5 +69,5 @@ export const mocked = {
     compareData: null
   },
   currentValue: false,
-  recommendedValue: false
+  recommendedValue: true
 } as unknown as Intent
