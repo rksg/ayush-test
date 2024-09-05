@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Row }     from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { EdgeMvSdLanViewData }                from '@acx-ui/rc/utils'
+import { Button, Table, TableProps, Tooltip }         from '@acx-ui/components'
+import { EdgeMvSdLanViewData, sortProp, defaultSort } from '@acx-ui/rc/utils'
+
 
 import { CurrentEdgeInfo, EdgeInfoDrawer } from './EdgeInfoDrawer'
 import * as UI                             from './styledComponents'
@@ -70,7 +71,7 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
       title: $t({ defaultMessage: 'Cluster' }),
       key: 'edgeClusterName',
       dataIndex: 'edgeClusterName',
-      sorter: true,
+      sorter: { compare: sortProp('edgeClusterName', defaultSort) },
       defaultSortOrder: 'ascend',
       render: (_, row) => (
         <Button
@@ -84,19 +85,19 @@ export const SmartEdgesTable = (props: SmartEdgesTableProps) => {
       title: $t({ defaultMessage: '# of tunnels' }),
       key: 'vxlanTunnelNum',
       dataIndex: 'vxlanTunnelNum',
-      sorter: true
+      sorter: { compare: sortProp('vxlanTunnelNum', defaultSort) }
     },
     {
       title: $t({ defaultMessage: '# of Active APs' }),
       key: 'activeApCount',
       dataIndex: 'activeApCount',
-      sorter: true
+      sorter: { compare: sortProp('activeApCount', defaultSort) }
     },
     {
       title: $t({ defaultMessage: '# of tunneled VLANs' }),
       key: 'vlanNum',
       dataIndex: 'vlanNum',
-      sorter: true,
+      sorter: { compare: sortProp('vlanNum', defaultSort) },
       render: (_, row) => {
         return (row.vlanNum && row.vlans)
           ? <Tooltip

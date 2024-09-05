@@ -180,7 +180,6 @@ function Hotspot20Form () {
           const operatorOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
           const selectedOperator = networkId && d?.filter(item => item.wifiNetworkIds
             ?.includes(networkId)).map(item => item.id)?.at(0)
-          form.setFieldValue(['hotspot20Settings', 'originalOperator'], selectedOperator)
           return { operatorSelectOptions: operatorOptions, selectedOperatorId: selectedOperator }
         }
       })
@@ -192,11 +191,18 @@ function Hotspot20Form () {
           const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
             ?.includes(networkId)).map(item => item.id)
           const providerOptions = d?.map(item => ({ label: item.name, value: item.id } )) ?? []
-          form.setFieldValue(['hotspot20Settings', 'originalProviders'], seletedIds)
           disabledAddProvider.current = providerOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
           return { providerSelectOptions: providerOptions, selectedProviderIds: seletedIds }
         }
       })
+
+    useEffect(() => {
+      form.setFieldValue(['hotspot20Settings', 'originalOperator'], selectedOperatorId)
+    }, [selectedOperatorId])
+
+    useEffect(() => {
+      form.setFieldValue(['hotspot20Settings', 'originalProviders'], selectedProviderIds)
+    }, [selectedProviderIds])
 
     useEffect(() => {
       if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedOperatorId &&

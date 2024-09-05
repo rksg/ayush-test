@@ -12,7 +12,18 @@ import { typeMapping } from './mapping'
 type EntityType = typeof entityTypes[number]
 type EntityExistsKey = `is${Capitalize<EntityType>}Exists`
 const entityTypes
-  = ['ap', 'client', 'network', 'switch', 'venue', 'transaction', 'edge', 'unit'] as const
+  = [
+    'ap',
+    'client',
+    'network',
+    'switch',
+    'venue',
+    'transaction',
+    'edge',
+    'remoteedge',
+    'unit',
+    'clientMldMac'
+  ] as const
 const configurationUpdate = 'Configuration Update' as const
 
 export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
@@ -34,6 +45,10 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       path: 'networks/wireless/:networkId/network-details/overview',
       params: ['networkId']
     },
+    clientMldMac: {
+      path: 'users/wifi/clients/search/:clientMldMac',
+      params: ['clientMldMac']
+    },
     switch: {
       path: 'devices/switch/:switchMac/:serialNumber/details/overview',
       params: ['switchMac', 'serialNumber']
@@ -50,13 +65,22 @@ export function EntityLink ({ entityKey, data, highlightFn = val => val }: {
       path: 'devices/edge/:serialNumber/details/overview',
       params: ['serialNumber']
     },
+    remoteedge: {
+      path: 'devices/edge/:remoteEdgeId/details/overview',
+      params: ['remoteEdgeId']
+    },
     unit: {
       path: 'venues/:venueId/venue-details/units',
       params: ['venueId']
     }
   }
+  let entity: EntityType
 
-  const [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  if (entityTypes.includes(entityKey as EntityType)) {
+    entity = entityKey as EntityType
+  } else {
+    [entity] = _.kebabCase(entityKey).split('-') as [EntityType]
+  }
   const name = <>{highlightFn(String(data[entityKey] || extraHandle(entity)))}</>
 
   if (!entityTypes.includes(entity)) return name
@@ -107,7 +131,8 @@ export const getSource = (data: Event, highlightFn?: TableHighlightFnArgs) => {
     ADMINACTIVITY: 'adminName',
     ADMIN: 'adminName',
     NOTIFICATION: 'adminName',
-    EDGE: 'edgeName'
+    EDGE: 'edgeName',
+    PROFILE: 'profileName'
   }
   const entityKey = sourceMapping[data.entity_type as keyof typeof sourceMapping]
   return <EntityLink {...{ entityKey, data, highlightFn }} />
@@ -155,7 +180,6 @@ export const getDetail = (data: Event) => {
 
     // rename to prevent it being parse by extraction process
     const FormatMessage = FormattedMessage
-
     return <FormatMessage
       id='events-detailedDescription-template'
       // escape ' by replacing with '' as it is special character of formatjs
@@ -178,5 +202,12 @@ const extraHandle = (entityType: EntityType) => {
 }
 
 const identifyExistKey = (entityType: EntityType) => {
-  return 'transaction' === entityType ? 'switch' : entityType
+  switch (entityType) {
+    case 'transaction':
+      return 'switch'
+    case 'clientMldMac':
+      return 'client'
+    default:
+      return entityType
+  }
 }

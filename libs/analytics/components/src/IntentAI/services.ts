@@ -9,45 +9,22 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
-  NetworkPath,
   computeRangeFilter,
-  TABLE_DEFAULT_PAGE_SIZE
+  TABLE_DEFAULT_PAGE_SIZE,
+  useEncodedParameter
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, StatusTrail, aiFeaturesLabel, groupedStates } from './config'
-import { statuses, displayStates }                                    from './states'
-
-type Intent = {
-  id: string
-  code: string
-  status: statuses
-  displayStatus: displayStates
-  createdAt: string
-  updatedAt: string
-  sliceType: string
-  sliceValue: string
-  metadata: object
-  path: NetworkPath
-  idPath: NetworkPath
-  statusTrail: StatusTrail
-  trigger: string
-}
-
-export type IntentListItem = Intent & {
-  aiFeature: string
-  intent: string
-  scope: string
-  type: string
-  category: string
-  status: string
-  statusTooltip: string
-}
+import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent, failureCodes } from './config'
+import { DisplayStates }                                                                       from './states'
+import {
+  Actions,
+  IntentWlan,
+  parseTransitionGQLByAction,
+  TransitionIntentItem } from './utils'
 
 type Metadata = {
-  error?: {
-    message?: string
-  }
+  failures?: (keyof typeof failureCodes)[]
   scheduledAt?: string
   updatedAt?: string
   oneClickOptimize?: boolean
@@ -65,18 +42,47 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
-const getStatusTooltip = (state: displayStates, sliceValue: string, metadata: Metadata) => {
+type IntentAPPayload = {
+  code: string
+  root: string
+  sliceId: string
+  search: string
+}
+
+export type IntentAP = {
+  name: string
+  mac: string
+  model: string
+  version: string
+}
+
+const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
+
+  const errMsg: string = metadata.failures?.map(failure => {
+    return failureCodes[failure] ? $t(failureCodes[failure]) : failure
+  }).join('\n - ') || ''
+
   return $t(stateConfig.tooltip, {
-    errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
+    errorMessage: `\n - ${errMsg}\n\n`,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
     // newConfig: metadata.newConfig //TODO: how to display newConfig?
   })
 }
+
+type MutationResponse = { success: boolean, errorMsg: string, errorCode: string }
+
+interface TransitionMutationPayload {
+  action: Actions
+  data: TransitionIntentItem[]
+}
+
+export type TransitionMutationResponse = Record<string, MutationResponse>
+
 type Payload = PathFilter & {
   page: number
   pageSize: number
@@ -120,6 +126,7 @@ export const api = intentAIApi.injectEndpoints({
             data {
               id
               code
+              root
               status
               statusReason
               displayStatus
@@ -127,7 +134,10 @@ export const api = intentAIApi.injectEndpoints({
               updatedAt
               sliceType
               sliceValue
+              sliceId
               metadata
+              preferences
+              statusTrail { status statusReason createdAt }
               path {
                 type
                 name
@@ -165,14 +175,53 @@ export const api = intentAIApi.injectEndpoints({
             intent: $t(detail.intent),
             scope: formattedPath(path, sliceValue),
             category: $t(detail.category),
-            status: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
+            statusLabel: states[displayStatus] ? $t(states[displayStatus].text) : displayStatus,
             statusTooltip: getStatusTooltip(displayStatus, sliceValue, { ...metadata, updatedAt })
           } as (IntentListItem))
           return intents
         }, [] as Array<IntentListItem>)
         return { intents: items, total: response.intents.total }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_LIST' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_LIST' }]
+    }),
+    intentWlans: build.query<
+      IntentWlan[],
+      Partial<{ code: String, root: String, sliceId: String }>
+    >({
+      query: ({ code, root, sliceId }) => ({
+        document: gql`
+          query Wlans($code: String!, $root: String!, $sliceId: String!) {
+            intent(code: $code, root: $root, sliceId: $sliceId) {
+              wlans {
+                name
+                ssid
+              }
+            }
+          }
+        `,
+        variables: { code, root, sliceId }
+      }),
+      transformResponse: (response: { intent: { wlans: IntentWlan[] } }) =>
+        response.intent.wlans
+    }),
+    transitionIntent: build.mutation<TransitionMutationResponse, TransitionMutationPayload>({
+      query: ({ action, data }) => {
+        const { paramsGQL, transitionsGQLs, variables } = parseTransitionGQLByAction(action, data)
+        return {
+          document: gql`
+          mutation TransitionIntent(
+            ${paramsGQL.join(',')}
+          ) {
+            ${transitionsGQLs.join('\n')}
+          }
+        `,
+          variables
+        }
+      },
+      invalidatesTags: [
+        { type: 'Intent', id: 'INTENT_AI_LIST' },
+        { type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }
+      ]
     }),
     intentFilterOptions: build.query<TransformedFilterOptions, PathFilter>({
       query: (payload) => ({
@@ -248,7 +297,7 @@ export const api = intentAIApi.injectEndpoints({
           zones: displayZones
         }
       },
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_AI_FILTER_OPTIONS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_FILTER_OPTIONS' }]
     }),
     intentHighlight: build.query<
       IntentHighlight,
@@ -257,9 +306,9 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentHighlight(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput]
         ) {
-          highlights(start: $start, end: $end, path: $path) {
+          highlights(start: $startDate, end: $endDate, path: $path) {
             rrm {
               new
               active
@@ -284,7 +333,29 @@ export const api = intentAIApi.injectEndpoints({
       }),
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
-      providesTags: [{ type: 'Monitoring', id: 'INTENT_HIGHLIGHTS' }]
+      providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
+    }),
+    getAps: build.query<IntentAP[], IntentAPPayload>({
+      query: (payload) => ({
+        document: gql`
+          query GetAps(
+            $code: String!
+            $root: String!
+            $sliceId: String!
+            $n: Int
+            $search: String
+          ) {
+            intent(code: $code, root: $root, sliceId: $sliceId) {
+              aps: aps(n: $n, search: $search) {
+                name mac model version
+              }
+            }
+          }
+          `,
+        variables: { ...payload, n: 100 }
+      }),
+      transformResponse: (response: { intent: { aps: IntentAP[] } }) =>
+        response.intent.aps
     })
   })
 })
@@ -302,15 +373,15 @@ type Pagination = {
   defaultPageSize: number,
   total: number
 }
-type Filters = {
+export type Filters = {
   sliceValue: string[] | undefined
   category: string[] | undefined
   aiFeature: string[] | undefined
-  status: string[] | undefined
+  statusLabel: string[] | undefined
 }
 const perpareFilterBy = (filters: Filters) => {
   const { $t } = getIntl()
-  const { sliceValue, category, aiFeature, status } = filters
+  const { sliceValue, category, aiFeature, statusLabel } = filters
   let filterBy = []
   if (sliceValue) {
     filterBy.push({ col: '"sliceId"', values: sliceValue })
@@ -337,9 +408,9 @@ const perpareFilterBy = (filters: Filters) => {
   if(featCodes.length > 0) {
     filterBy.push({ col: 'code', values: featCodes })
   }
-  if(status) {
+  if(statusLabel) {
     const filterStates = [] as string[]
-    status.forEach(st => {
+    statusLabel.forEach(st => {
       filterStates.push(...st.split('+'))
     })
     // concat status and statusReason
@@ -356,13 +427,9 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
+  const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
+  const filters = intentTableFilters.read() || {}
   const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
-  const [filters, setFilters] = useState<Filters>({
-    sliceValue: undefined,
-    category: undefined,
-    aiFeature: undefined,
-    status: undefined
-  })
   const handlePageChange: TableProps<IntentListItem>['onChange'] = (
     customPagination
   ) => {
@@ -376,7 +443,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
   const handleFilterChange: TableProps<IntentListItem>['onFilterChange'] = (
     customFilter
   ) => {
-    setFilters(customFilter as Filters)
+    intentTableFilters.write(customFilter as Filters)
     setPagination(DEFAULT_PAGINATION)
   }
   return {
@@ -396,6 +463,9 @@ export function useIntentAITableQuery (filter: PathFilter) {
 }
 export const {
   useIntentAIListQuery,
+  useLazyIntentWlansQuery,
+  useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
-  useIntentHighlightQuery
+  useIntentHighlightQuery,
+  useGetApsQuery
 } = api

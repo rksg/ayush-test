@@ -28,7 +28,9 @@ jest.mock('./SubscriptionHeader', () => ({
   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
 
-const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE]
+const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE,
+  Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE
+]
 
 describe('Subscriptions', () => {
   let params: { tenantId: string }

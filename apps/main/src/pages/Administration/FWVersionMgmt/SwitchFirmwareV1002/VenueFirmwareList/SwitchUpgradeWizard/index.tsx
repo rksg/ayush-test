@@ -15,18 +15,18 @@ import {
 import { WarningCircleOutlined }               from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
 import {
-  useBatchUpdateSwitchVenueSchedulesV1002Mutation,
-  useGetSwitchDefaultFirmwareListV1002Query,
-  useGetSwitchAvailableFirmwareListV1002Query,
+  useBatchUpdateSwitchVenueSchedulesV1001Mutation,
+  useGetSwitchDefaultFirmwareListV1001Query,
+  useGetSwitchAvailableFirmwareListV1001Query,
   useBatchSkipSwitchUpgradeSchedulesMutation } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
-  SwitchFirmware,
   UpdateScheduleRequest,
   FirmwareSwitchV1002,
   getSwitchModelGroup,
-  SwitchFirmwareModelGroup
+  SwitchFirmwareModelGroup,
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -57,14 +57,14 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const params = useParams()
   const { wizardType } = props
   const { checkCurrentVersionsV1002 } = useSwitchFirmwareUtils()
-  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1002Mutation()
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
+  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1001Mutation()
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1001Query({ params })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1001Query({ params })
 
   const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
   const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
   const [hasVenue, setHasVenue] = useState<boolean>(false)
-  const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmware[]>([])
+  const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmwareV1002[]>([])
   const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenueV1002[]>([])
 
   const wizardTitle = {
@@ -179,7 +179,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     },
     [SwitchFirmwareWizardType.skip]: async () => {
       const upgradeList: {
-        currentUpgradeSwitchList: SwitchFirmware[],
+        currentUpgradeSwitchList: SwitchFirmwareV1002[],
         currentUpgradeVenueList: FirmwareSwitchVenueV1002[]
       } = saveSwitchStep()
       form.validateFields()
@@ -236,7 +236,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const saveSwitchStep = function () {
     // eslint-disable-next-line max-len
     let filterVersions: SwitchFirmwareVersion1002[] = availableVersions || []
-    let currentUpgradeSwitchList = [] as SwitchFirmware[]
+    let currentUpgradeSwitchList = [] as SwitchFirmwareV1002[]
     let currentUpgradeVenueList = [] as FirmwareSwitchVenueV1002[]
 
     const nestedData = form.getFieldValue('nestedData')
@@ -248,7 +248,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           row, filterVersions || [], (defaultReleaseVersions || []))
 
       } else if (nestedData[row.venueId]) {
-        nestedData[row.venueId].selectedData.forEach((row: SwitchFirmware) => {
+        nestedData[row.venueId].selectedData.forEach((row: SwitchFirmwareV1002) => {
           if (row.switchId) {
             currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
           }
@@ -331,6 +331,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   setShowSubTitle={setShowSubTitle}
                   visible={true}
                   hasVenue={hasVenue}
+                  upgradeVenueList={upgradeVenueList as FirmwareSwitchVenueV1002[]}
+                  upgradeSwitchList={upgradeSwitchList as SwitchFirmwareV1002[]}
                   availableVersions={upgradeVersions}
                 /> : <ScheduleStep
                   setShowSubTitle={setShowSubTitle}
@@ -338,7 +340,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   hasVenue={hasVenue}
                   data={props.data}
                   upgradeVenueList={upgradeVenueList as FirmwareSwitchVenueV1002[]}
-                  upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
+                  upgradeSwitchList={upgradeSwitchList as SwitchFirmwareV1002[]}
                   availableVersions={upgradeVersions}
                 />
             }

@@ -36,10 +36,10 @@ import {
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                   from '@acx-ui/react-router-dom'
-import { RolesEnum }                   from '@acx-ui/types'
-import { filterByAccess, hasRoles }    from '@acx-ui/user'
-import { getIntl, validationMessages } from '@acx-ui/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl, validationMessages }   from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -309,22 +309,22 @@ export default function DpskPassphraseManagement () {
   ]
 
   const actions = [
-    {
+    ...hasDpskAccess() ? [{
       label: $t({ defaultMessage: 'Add Passphrases' }),
       onClick: () => {
         setPassphrasesDrawerEditMode({ isEdit: false })
         setAddPassphrasesDrawerVisible(true)
       }
-    },
-    {
+    }]: [],
+    ...hasDpskAccess() ? [{
       label: $t({ defaultMessage: 'Import From File' }),
       onClick: () => setUploadCsvDrawerVisible(true)
-    },
+    }]: [],
     {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
     },
-    ...!hasRoles(RolesEnum.DPSK_ADMIN) ? [{
+    ...hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
     }]: []
@@ -400,7 +400,7 @@ export default function DpskPassphraseManagement () {
         pagination={tableQuery.pagination}
         getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
-        actions={hasDpskAccess() ? filterByAccess(actions) : []}
+        actions={actions}
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasDpskAccess() && { type: 'checkbox' }}
         rowKey='id'

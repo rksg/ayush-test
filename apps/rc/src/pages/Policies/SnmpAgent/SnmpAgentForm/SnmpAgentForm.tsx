@@ -37,6 +37,9 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  // eslint-disable-next-line
+  const isSNMPv3PassphraseOn = useIsSplitOn(Features.WIFI_SNMP_V3_AGENT_PASSPHRASE_COMPLEXITY_TOGGLE)
+
 
   const params = useParams()
   const { editMode } = props
@@ -104,9 +107,13 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
         const { policyName, ...others } = clonedData
         const payload = (isUseRbacApi) ? { ...others, name: policyName } : clonedData
         if (!editMode) {
-          await createApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
+          await createApSnmpPolicy({
+            params, payload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
+          }).unwrap()
         } else {
-          await updateApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
+          await updateApSnmpPolicy({
+            params, payload, enableRbac: isUseRbacApi, isSNMPv3PassphraseOn
+          }).unwrap()
         }
 
         navigate(linkToPolicies, { replace: true })

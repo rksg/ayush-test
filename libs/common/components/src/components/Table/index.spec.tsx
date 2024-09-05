@@ -1246,7 +1246,9 @@ describe('Table component', () => {
     it.skip('should render select data from all pages option correctly', async () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox'
-      }} />)
+      }}
+      columns={[]}
+      />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]
@@ -1265,9 +1267,11 @@ describe('Table component', () => {
       render(<GroupTable rowSelection={{
         type: 'checkbox',
         getCheckboxProps: (record) => ({
-          disabled: record.deviceStatus
+          disabled: !!record.deviceStatus
         })
-      }}/>)
+      }}
+      columns={[]}
+      />)
       const filters = await screen.findAllByRole('combobox', { hidden: true, queryFallbacks: true })
       expect(filters.length).toBe(4)
       const groupBySelector = filters[3]

@@ -14,7 +14,8 @@ import {
   PowerSavingStatusEnum,
   SwitchStatusEnum,
   transformApStatus,
-  getPowerSavingStatusEnabledApStatus
+  getPowerSavingStatusEnabledApStatus,
+  transformTitleCase
 } from '@acx-ui/rc/utils'
 import { useLocation }                  from '@acx-ui/react-router-dom'
 import { noDataDisplay, useDateFilter } from '@acx-ui/utils'
@@ -143,7 +144,9 @@ export function APDetailsCard (props: {
       {/* Health  */}
       <Descriptions.Item
         label={$t({ defaultMessage: 'Health' })}
-        children={apDetail?.healthStatus || noDataDisplay} />
+        children={(apDetail?.healthStatus)
+          ? transformTitleCase(apDetail.healthStatus)
+          : noDataDisplay} />
 
       {/* Wireless Radio  */}
       <Descriptions.Item
@@ -251,7 +254,7 @@ export function APDetailsCard (props: {
     <Descriptions labelWidthPercent={50}>
       <Descriptions.Item
         label={$t({ defaultMessage: 'Connected APs' })}
-        children={apDetail?.downLinkCount || noDataDisplay}
+        children={apDetail?.downlinkCount || noDataDisplay}
       />
     </Descriptions>
 

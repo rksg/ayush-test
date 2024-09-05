@@ -5,7 +5,7 @@ import { FormInstance }            from 'antd'
 import _, { cloneDeep, findIndex } from 'lodash'
 import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -56,7 +56,8 @@ import {
   useDeactivateDeviceTemplateOnWifiNetworkMutation,
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useActivateApplicationPolicyTemplateOnWifiNetworkMutation
+  useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -77,7 +78,8 @@ import {
   useConfigTemplateQueryFnSwitcher,
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
-  NetworkTunnelSdLanAction
+  NetworkTunnelSdLanAction,
+  VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -212,7 +214,7 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 }
 
 // eslint-disable-next-line max-len
-export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
@@ -296,7 +298,7 @@ export function useRadiusServer () {
 
 
   // eslint-disable-next-line max-len
-  const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -305,7 +307,7 @@ export function useRadiusServer () {
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
       const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = oldSaveData?.[radiusKey]
+      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
 
       if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
         const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
@@ -332,9 +334,9 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
     return Promise.all([
-      updateProfile(saveData, oldSaveData, networkId),
+      updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
     ])
   }
@@ -370,7 +372,7 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
     const venueData = saveState?.venues?.map(v => ({ ...v,
       clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
     const fullNetworkSaveData = { ...saveState, venues: venueData }
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData
@@ -409,6 +411,43 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
   return { updateClientIsolationActivations }
 }
 
+function useVlanPoolId (networkId: string | undefined): string | undefined {
+  const { isTemplate } = useConfigTemplate()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
+  const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => {
+    return { vlanPoolId: data?.data[0]?.id }
+  }
+
+  const vlanPoolPayload = {
+    fields: ['name', 'id'],
+    filters: { wifiNetworkIds: [networkId] },
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 10000
+  }
+
+  const vlanPool: { vlanPoolId?: string } = useGetVLANPoolPolicyViewModelListQuery({
+    payload: vlanPoolPayload,
+    enableRbac: true
+  }, {
+    skip: isTemplate || !isPolicyRbacEnabled || !networkId,
+    selectFromResult: transformVlanPoolData
+  })
+
+  const vlanPoolTemplate: { vlanPoolId?: string } = useGetEnhancedVlanPoolPolicyTemplateListQuery({
+    payload: vlanPoolPayload,
+    enableRbac: true
+  }, {
+    skip: !isTemplate || !enableTemplateRbac || !networkId,
+    selectFromResult: transformVlanPoolData
+  })
+
+  return isTemplate ? vlanPoolTemplate.vlanPoolId : vlanPool.vlanPoolId
+}
+
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()
@@ -422,21 +461,7 @@ export function useVlanPool () {
     useTemplateMutationFn: useDeactivateVlanPoolTemplateOnWifiNetworkMutation
   })
 
-
-  const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
-    payload: {
-      fields: ['name', 'id'],
-      filters: { wifiNetworkIds: [networkId] },
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    },
-    enableRbac: isPolicyRbacEnabled
-  }, {
-    skip: !isPolicyRbacEnabled || !networkId,
-    selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
-  })
+  const vlanPoolId = useVlanPoolId(networkId)
 
   // eslint-disable-next-line max-len
   const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {

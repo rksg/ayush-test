@@ -183,7 +183,7 @@ export const apSpecificKeyMap = [
   { id: 178, value: 'initialState.CcmApSpecifics.radio5g.cband_channel_license', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 179, value: 'initialState.CcmApSpecifics.radio5g.channel_144_enable', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 180, value: 'initialState.CcmApSpecifics.radio5g.radio.radio_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 181, value: 'initialState.CcmApSpecifics.radio_configs.dual_5g_enable', text: defineMessage({ defaultMessage: 'Dual 5G: Enabled' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 181, value: 'initialState.CcmApSpecifics.radio_configs.dual_5g_enable', text: defineMessage({ defaultMessage: 'Dual 5 GHz: Enabled' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 182, value: 'initialState.CcmApSpecifics.radio_configs.radio24g.radio.adj_threshold', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 183, value: 'initialState.CcmApSpecifics.radio_configs.radio24g.radio.auto_cell_sizing', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 184, value: 'initialState.CcmApSpecifics.radio_configs.radio24g.radio.bg_scan', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },

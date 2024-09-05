@@ -22,10 +22,10 @@ import {
   WlanSecurityEnum,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes } from '@acx-ui/types'
-import { filterByAccess }             from '@acx-ui/user'
-import { getIntl, noDataDisplay }     from '@acx-ui/utils'
+import { TenantLink, useTenantLink }                from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes }               from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay }                   from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -459,7 +459,7 @@ export function NetworkTable ({
         }
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={selectable ? { type: 'radio',
+        rowSelection={(hasCrossVenuesPermission() && selectable) ? { type: 'radio',
           ...rowSelection } : undefined}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',

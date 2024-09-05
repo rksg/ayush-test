@@ -315,7 +315,7 @@ describe('Auth Server Form Item', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Manage SSO Users' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/administration/administrators`,
+      pathname: `/${params.tenantId}/t/administration/userPrivileges/ssoGroups`,
       hash: '',
       search: ''
     })

@@ -124,12 +124,12 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
     if (ApCompatibilityType.NETWORK === type) {
       return getApCompatibilitiesNetwork({
         params: { networkId },
-        payload: { filters: { apIds, venueIds }, feature: featureName }
+        payload: { filters: { apIds, venueIds } }
       }).unwrap()
     } else if (ApCompatibilityType.VENUE === type) {
       return getApCompatibilitiesVenue({
         params: { venueId },
-        payload: { filters: { apIds, networkIds }, feature: featureName }
+        payload: { filters: { apIds, networkIds }, featureName }
       }).unwrap()
     }
     const apFeatureSets = await getApFeatureSets({

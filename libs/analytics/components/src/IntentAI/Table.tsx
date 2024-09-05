@@ -1,28 +1,130 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
-import { Loader, TableProps, Table, Tooltip }             from '@acx-ui/components'
-import { get }                                            from '@acx-ui/config'
-import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
-import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI } from '@acx-ui/icons'
-import { noDataDisplay, PathFilter }                      from '@acx-ui/utils'
+import { Loader, TableProps, Table, Tooltip }                                                  from '@acx-ui/components'
+import { get }                                                                                 from '@acx-ui/config'
+import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
+import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
+import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
-import { codes }                                 from './config'
-import { useIntentAITableQuery, IntentListItem } from './services'
-import * as UI                                   from './styledComponents'
+import { Icon }                                        from './common/IntentIcon'
+import { aiFeatures, codes, IntentListItem }           from './config'
+import { useIntentAITableQuery }                       from './services'
+import { DisplayStates }                               from './states'
+import * as UI                                         from './styledComponents'
+import { IntentAIDateTimePicker, useIntentAIActions }  from './useIntentAIActions'
+import { Actions, getDefaultTime, isVisibledByAction } from './utils'
 
-const icons = {
-  'AI-Driven RRM': <AIDrivenRRM />,
-  'AirFlexAI': <AirFlexAI />,
-  'AI Operations': <AIOperation />,
-  'EcoFlexAI': <EcoFlexAI />
+import type { Filters } from './services'
+
+type IconTooltipProps = {
+  title: MessageDescriptor
+  subTitleLeft: MessageDescriptor
+  subTitleMiddle: MessageDescriptor
+  subTitleRight: MessageDescriptor
+  content: MessageDescriptor
+  icon: JSX.Element
+}
+
+const IconTooltip = (props: IconTooltipProps) => {
+  const { $t } = useIntl()
+  const title = $t(props.title)
+  const subTitleLeft = $t(props.subTitleLeft)
+  const subTitleMiddle = $t(props.subTitleMiddle)
+  const subTitleRight = $t(props.subTitleRight)
+  const content = $t(props.content)
+  return (
+    <UI.FeatureTooltip onClick={(e) => e.stopPropagation()} data-testid='featureTooltip'>
+      <div> {props.icon} </div>
+      <div>
+        <b className='title'>{title}</b><br />
+        <div><b>{subTitleLeft}</b> {subTitleMiddle} <b>{subTitleRight}</b></div>
+        <span className='br-size'></span>
+        {content}
+      </div>
+    </UI.FeatureTooltip>
+  )
+}
+
+export const iconTooltips = {
+  [aiFeatures.RRM]: <IconTooltip
+    icon={<AIDrivenRRM />}
+    title={defineMessage({ defaultMessage: 'AI-Driven RRM' })}
+    subTitleLeft={defineMessage({ defaultMessage: 'Throughput' })}
+    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
+    subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}
+    content={defineMessage({
+      defaultMessage: `Choose between a network with maximum throughput,
+      allowing some interference, or one with minimal interference, for high client density.` })}
+  />,
+  [aiFeatures.AirFlexAI]: <IconTooltip
+    icon={<AirFlexAI />}
+    title={defineMessage({ defaultMessage: 'AirFlexAI' })}
+    subTitleLeft={defineMessage({ defaultMessage: 'Time to Connect' })}
+    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
+    subTitleRight={defineMessage({ defaultMessage: 'Client Density' })}
+    content={defineMessage({
+      defaultMessage: `Choose between fine-tuning your wireless LAN for extremely high client
+      density environment or focus on keeping faster client time to connect.` })}
+  />,
+  [aiFeatures.AIOps]: <IconTooltip
+    icon={<AIOperation />}
+    title={defineMessage({ defaultMessage: 'AI Operations' })}
+    subTitleLeft={defineMessage({ defaultMessage: 'Optimize Network' })}
+    subTitleMiddle={defineMessage({ defaultMessage: 'with' })}
+    subTitleRight={defineMessage({ defaultMessage: 'AI Insights' })}
+    content={defineMessage({
+      defaultMessage: `Proactively monitor and tune network performance with RUCKUS AI's
+      dynamic recommendations to enhance KPIs and user experience.` })}
+  />,
+  [aiFeatures.EcoFlexAI]: <IconTooltip
+    icon={<EcoFlexAI />}
+    title={defineMessage({ defaultMessage: 'EcoFlexAI' })}
+    subTitleLeft={defineMessage({ defaultMessage: 'Energy Footprint' })}
+    subTitleMiddle={defineMessage({ defaultMessage: 'vs' })}
+    subTitleRight={defineMessage({ defaultMessage: 'Mission Criticality' })}
+    content={defineMessage({
+      defaultMessage: `Reduce energy footprint for efficiency and sustainability,
+      or operate mission-critical services for reliability and continuous operation.` })}
+  />
+}
+
+export type AIFeatureProps = {
+  code: string
+  aiFeature: string
+  root: string
+  sliceId: string
+}
+
+export const AIFeature = (props: AIFeatureProps): JSX.Element => {
+  return (<UI.FeatureIcon>
+    <Tooltip
+      placement='right'
+      title={iconTooltips[codes[props.code].aiFeature]}
+      overlayInnerStyle={{ width: '345px' }}
+    >
+      <Icon feature={codes[props.code].aiFeature} />
+    </Tooltip>
+    <TenantLink to={get('IS_MLISA_SA')
+      ? `/analytics/intentAI/${props.root}/${props.sliceId}/${props.code}`
+      : `/analytics/intentAI/${props.sliceId}/${props.code}`
+    }>
+      <span>{props.aiFeature}</span>
+    </TenantLink>
+  </UI.FeatureIcon>)
 }
 
 export function IntentAITable (
   { pathFilters }: { pathFilters: PathFilter }
 ) {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/analytics/intentAI')
+  const intentActions = useIntentAIActions()
+  const revertInitialDate = useRef(getDefaultTime())
 
   const {
     tableQuery: queryResults,
@@ -33,7 +135,77 @@ export function IntentAITable (
   } = useIntentAITableQuery(
     { ...pathFilters }
   )
-  const { aiFeatures = [], categories =[], statuses = [], zones = [] } = filterOptions?.data || {}
+  const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [selectedRows, setSelectedRows] = useState<IntentListItem[]>([])
+
+  const clearSelection = useCallback(() => {
+    setSelectedRowKeys([])
+    setSelectedRows([])
+  }, [setSelectedRowKeys, setSelectedRows])
+
+  const getRevertPickerJSX = () => (<IntentAIDateTimePicker
+    id={'intent-ai-revert-picker'}
+    title={$t({ defaultMessage: 'Revert' })}
+    disabled={false}
+    initialDate={revertInitialDate}
+    onApply={(date) => intentActions.revert(date, selectedRows, clearSelection)}
+  />)
+
+  const rowActions: TableProps<IntentListItem>['rowActions'] = [
+    {
+      key: getShowWithoutRbacCheckKey(Actions.One_Click_Optimize),
+      label: $t({ defaultMessage: '1-Click Optimize' }),
+      visible: rows => isVisibledByAction(rows, Actions.One_Click_Optimize),
+      onClick: (rows) => intentActions.showOneClickOptimize(rows, clearSelection)
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Optimize),
+      label: selectedRows?.[0]?.displayStatus === DisplayStates.new ?
+        $t({ defaultMessage: 'Optimize' }) : $t({ defaultMessage: 'Edit' }),
+      visible: rows => isVisibledByAction(rows, Actions.Optimize),
+      onClick: (rows) => {
+        const row = rows[0]
+        const editPath = get('IS_MLISA_SA')
+          ? `${row.root}/${row.sliceId}/${row.code}/edit`
+          : `${row.sliceId}/${row.code}/edit`
+        navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}/${editPath}`
+        })
+      }
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Revert),
+      label: getRevertPickerJSX() as unknown as string,
+      visible: rows => isVisibledByAction(rows, Actions.Revert),
+      onClick: () => {}
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Pause),
+      label: $t({ defaultMessage: 'Pause' }),
+      visible: rows => isVisibledByAction(rows, Actions.Pause),
+      onClick: (rows) =>
+        intentActions.handleTransitionIntent(Actions.Pause, rows, () => clearSelection())
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Cancel),
+      label: $t({ defaultMessage: 'Cancel' }),
+      visible: rows => isVisibledByAction(rows, Actions.Cancel),
+      onClick: (rows) =>
+        intentActions.handleTransitionIntent(Actions.Cancel, rows, () => clearSelection())
+    },
+    {
+      key: getShowWithoutRbacCheckKey(Actions.Resume),
+      label: $t({ defaultMessage: 'Resume' }),
+      visible: rows => isVisibledByAction(rows, Actions.Resume),
+      onClick: (rows) =>
+        intentActions.handleTransitionIntent(Actions.Resume, rows, () => clearSelection())
+    }
+  ]
+
+  const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
+  const selectedFilters = intentTableFilters.read() || {}
+  const { aiFeatures = [], categories = [], statuses = [], zones = [] } = filterOptions?.data || {}
   const data = queryResults?.data?.intents
   const columns: TableProps<IntentListItem>['columns'] = [
     {
@@ -42,12 +214,10 @@ export function IntentAITable (
       dataIndex: 'aiFeature',
       key: 'aiFeature',
       filterable: aiFeatures,
+      filteredValue: selectedFilters.aiFeatures,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All AI Features' }),
-      render: (_: ReactNode, row: IntentListItem) => <UI.FeatureIcon>
-        {icons[codes[row.code].aiFeature]}
-        <span>{row.aiFeature}</span>
-      </UI.FeatureIcon>
+      render: (_: ReactNode, row: IntentListItem) => <AIFeature {...row} />
     },
     {
       title: $t({ defaultMessage: 'Intent' }),
@@ -61,6 +231,7 @@ export function IntentAITable (
       dataIndex: 'category',
       key: 'category',
       filterable: categories,
+      filteredValue: selectedFilters.categories,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Categories' })
     },
@@ -72,6 +243,7 @@ export function IntentAITable (
       dataIndex: 'sliceValue',
       key: 'sliceValue',
       filterable: zones,
+      filteredValue: selectedFilters.zones,
       filterSearch: true,
       filterPlaceholder: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'All Zones' })
@@ -89,19 +261,20 @@ export function IntentAITable (
     {
       title: $t({ defaultMessage: 'Status' }),
       width: 200,
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'statusLabel',
+      key: 'statusLabel',
       filterable: statuses,
+      filteredValue: selectedFilters.statuses,
       filterSearch: true,
       filterPlaceholder: $t({ defaultMessage: 'All Status' }),
       render: (_, row: IntentListItem ) => {
-        const { status, statusTooltip } = row
+        const { statusLabel, statusTooltip } = row
         return <Tooltip
           placement='top'
           title={statusTooltip}
           dottedUnderline={true}
         >
-          {status}
+          {statusLabel}
         </Tooltip>
       }
     },
@@ -117,7 +290,7 @@ export function IntentAITable (
   return (
     <Loader states={[queryResults]}>
       <UI.IntentAITableStyle/>
-      <Table
+      <Table<IntentListItem>
         className='intentai-table'
         data-testid='intentAI'
         settingsId={'intentai-table'}
@@ -125,12 +298,20 @@ export function IntentAITable (
         dataSource={data}
         columns={columns}
         rowKey='id'
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasCrossVenuesPermission() &&
+          hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
+          type: 'checkbox',
+          selectedRowKeys,
+          onChange: (_, selRows) => setSelectedRows(selRows)
+        }}
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}
         indentSize={6}
         filterableWidth={200}
         onChange={onPageChange}
         pagination={{ ...pagination, total: queryResults?.data?.total || 0 }}
+        selectedFilters={selectedFilters}
         onFilterChange={onFilterChange}
         enableApiFilter={true}
       />

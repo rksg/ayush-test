@@ -495,8 +495,9 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       name: policyName,
       defaultAccess: accessStatus,
       l3Rules: [...layer3RuleList.map(rule => {
-        rule.source.enableIpSubnet = rule.source.ipMask !== ''
-        rule.destination.enableIpSubnet = rule.destination.ipMask !== ''
+        rule.source.enableIpSubnet = rule.source.ipMask !== '' && rule.source.ipMask !== undefined
+        // eslint-disable-next-line max-len
+        rule.destination.enableIpSubnet = rule.destination.ipMask !== '' && rule.destination.ipMask !== undefined
         return {
           priority: rule.priority,
           access: rule.access,
@@ -959,7 +960,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
           </span>
         </div>}
         children={<ContentSwitcher
-          defaultValue={(layer3PolicyInfo &&
+          formInitValue={(layer3PolicyInfo &&
             (isViewMode() || editMode.isEdit || localEditMode.isEdit))
             ? layer3PolicyInfo.defaultAccess
             : AccessStatus.ALLOW}

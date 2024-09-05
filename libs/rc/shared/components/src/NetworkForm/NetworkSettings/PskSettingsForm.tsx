@@ -31,7 +31,7 @@ import {
   WifiNetworkMessages,
   hexRegExp,
   passphraseRegExp,
-  generateHexKey
+  generateHexKey, useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import { AAAInstance }             from '../AAAInstance'
@@ -99,6 +99,7 @@ function SettingsForm () {
   const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
+  const { isTemplate } = useConfigTemplate()
   const [
     wlanSecurity,
     macAddressAuthentication,
@@ -216,6 +217,9 @@ function SettingsForm () {
   },[data])
 
   useEffect(() => {
+
+    if(!wlanSecurity) {return}
+
     if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
       disableMLO(false)
     } else {
@@ -345,7 +349,7 @@ function SettingsForm () {
           </Form.Item>
         </UI.FieldLabel>
         {macAddressAuthentication && <>
-          <Form.Item
+          {!isTemplate && <Form.Item
             name={['wlan', 'isMacRegistrationList']}
             initialValue={!!macRegistrationListId}
           >
@@ -360,13 +364,13 @@ function SettingsForm () {
                 />
               </Space>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item>}
 
           { isMacRegistrationList && <MacRegistrationListComponent
             inputName={['wlan']}
           />}
 
-          { !isMacRegistrationList && <>
+          { (isTemplate || !isMacRegistrationList) && <>
             <Form.Item
               label={$t({ defaultMessage: 'MAC Address Format' })}
               name={['wlan', 'macAuthMacFormat']}

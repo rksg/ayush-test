@@ -8,11 +8,12 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { useGetPreferencesQuery }                from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                from '@acx-ui/rc/utils'
-import { BrowserRouter }                         from '@acx-ui/react-router-dom'
-import { Provider }                              from '@acx-ui/store'
+import { SplitProvider }                      from '@acx-ui/feature-toggle'
+import { TenantDetail }                       from '@acx-ui/msp/utils'
+import { useGetPreferencesQuery }             from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
+import { BrowserRouter }                      from '@acx-ui/react-router-dom'
+import { Provider }                           from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -33,8 +34,7 @@ import AllRoutes    from './AllRoutes'
 import { showBrowserLangDialog,
   detectBrowserLang,
   PartialUserData } from './BrowserDialog/BrowserDialog'
-import { errorMiddleware }        from './errorMiddleware'
-import { refreshTokenMiddleware } from './refreshTokenMiddleware'
+import { errorMiddleware } from './errorMiddleware'
 
 import '@acx-ui/theme'
 
@@ -46,7 +46,7 @@ async function pendoInitalization (): Promise<PendoParameters> {
   const tenantDetailRequest =
     createHttpRequest(AdministrationUrlsInfo.getTenantDetails, { tenantId })
   const resTenant = await fetch(tenantDetailRequest.url, tenantDetailRequest)
-  const tenant = await resTenant.json()
+  const tenant = await resTenant.json() as TenantDetail
 
   return {
     visitor: {
@@ -54,7 +54,7 @@ async function pendoInitalization (): Promise<PendoParameters> {
       full_name: `${user.firstName} ${user.lastName}`,
       role: user.role,
       version: user.pver,
-      var: user.var,
+      var: tenant.tenantType === TenantType.VAR,
       varTenantId: user.varTenantId,
       support: user.support,
       dogfood: user.dogfood,
@@ -82,9 +82,6 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const [language, setLanguage] = useState(userProfile?.preferredLanguage?? defaultLang)
   const [langLoading, setLangLoading] = useState(true)
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
-
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
-  const propsWithFF = { supportReSkinning, ...props }
 
   useEffect(() => {
     if (userProfile) {
@@ -136,20 +133,18 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
     states={[{
       isLoading: isUserProfileLoading || request.isFetching || langLoading
     }]}
-    children={<ConfigProvider {...propsWithFF} lang={lang as unknown as LangKey}/>}
+    children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
   />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
-  const abacEnabled = userProfile.abacEnabled
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        (abacEnabled ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
@@ -158,7 +153,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
-  addMiddleware(refreshTokenMiddleware, errorMiddleware)
+  addMiddleware(errorMiddleware)
 
   root.render(
     <React.StrictMode>

@@ -254,7 +254,11 @@ export const currentAP = {
     band: '5G',
     Rssi: '',
     radioId: 2
-  }
+  },
+  switchId: 'c0:c5:20:b2:08:11',
+  switchName: 'R2',
+  switchPort: '1/1/7',
+  switchSerialNumber: 'FMF3250Q06K'
   // channel60: false
 }
 

@@ -2,21 +2,21 @@ import { Row, Col, Form, Select } from 'antd'
 import { useIntl }                from 'react-intl'
 
 import { PageHeader, StepsForm, Tabs, UserProfileSection } from '@acx-ui/components'
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { MultiFactor }                                     from '@acx-ui/msp/components'
 import {
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
+import { RolesEnum }         from '@acx-ui/types'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUserProfileContext,
   useUpdateUserProfileMutation,
   roleStringMap,
-  hasRoles
+  hasRoles,
+  hasCrossVenuesPermission
 } from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
@@ -26,7 +26,6 @@ import {
 
 export function UserProfile () {
   const { $t } = useIntl()
-  const isI18n2 = useIsSplitOn(Features.I18N_PHASE2_TOGGLE)
   const { Option } = Select
   const { tenantId, activeTab } = useParams()
   const navigate = useNavigate()
@@ -47,6 +46,7 @@ export function UserProfile () {
   const SettingsTab = () => {
     return (
       <StepsForm
+        disabled={!hasCrossVenuesPermission()}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
         onFinish={handleUpdateSettings}
         onCancel={async () => handleCancel()}
@@ -59,7 +59,7 @@ export function UserProfile () {
                 label={$t({ defaultMessage: 'Date Format' })}
                 initialValue={userProfile?.dateFormat}
                 children={
-                  <Select>
+                  <Select disabled={!hasCrossVenuesPermission()}>
                     <Option value={'mm/dd/yyyy'}>
                       {$t({ defaultMessage: 'MM/DD/YYYY' })}</Option>
                     <Option value={'dd/mm/yyyy'}>
@@ -74,7 +74,7 @@ export function UserProfile () {
                 label={$t({ defaultMessage: 'Event Details Level' })}
                 initialValue={userProfile?.detailLevel}
                 children={
-                  <Select>
+                  <Select disabled={!hasCrossVenuesPermission()}>
                     <Option value={DetailLevel.BASIC_USER}>
                       {$t({ defaultMessage: 'Basic User' })}</Option>
                     <Option value={DetailLevel.IT_PROFESSIONAL}>
@@ -86,9 +86,7 @@ export function UserProfile () {
                   </Select>
                 }
               />
-              { isI18n2 && (
-                <PreferredLanguageFormItem />
-              )}
+              <PreferredLanguageFormItem />
             </Col>
           </Row>
         </StepsForm.StepForm>

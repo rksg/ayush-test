@@ -94,15 +94,12 @@ const EdgeMvSdLanForm = (props: EdgeMvSdLanFormProps) => {
     return result
   }, [isEditMode, editData, editDataViewData])
 
-  // getSdLanFormDefaultValues(editData, editDataViewData)
-  // const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-  // if (!isEditMode) {
-  //   initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-  //   initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
-  // }
-
   useEffect(() => {
     form.setFieldsValue(initFormValues)
+    // need to separately set `activatedNetworks`, `activatedGuestNetworks`
+    // https://github.com/ant-design/ant-design/issues/30212
+    form.setFieldValue('activatedNetworks', initFormValues.activatedNetworks)
+    form.setFieldValue('activatedGuestNetworks', initFormValues.activatedGuestNetworks)
   }, [initFormValues])
 
   return (<StepsForm

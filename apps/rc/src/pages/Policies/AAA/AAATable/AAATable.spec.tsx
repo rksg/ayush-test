@@ -7,6 +7,7 @@ import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
+  IdentityProviderUrls,
   PolicyOperation,
   PolicyType
 } from '@acx-ui/rc/utils'
@@ -22,7 +23,7 @@ import {
 import AAATable from './AAATable'
 
 const mockTableResult = {
-  totalCount: 2,
+  totalCount: 3,
   data: [{
     id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
     name: 'My AAA Server 1',
@@ -35,6 +36,13 @@ const mockTableResult = {
     type: 'AUTHENTICATION',
     primary: '34.72.60.107:1811',
     networkIds: ['123', '456']
+  },
+  {
+    id: '637f6dc0-26e2-4498-9c3c-594c51840112',
+    name: 'Test HS20 AAA Server',
+    type: 'AUTHENTICATION',
+    primary: '34.72.60.108:1811',
+    hotspot20IdentityProviderIds: ['789', '012']
   }]
 }
 
@@ -70,7 +78,12 @@ describe('AAATable', () => {
         (_, res, ctx) => res(ctx.json({
           data: [],
           totalCount: 0
-        })))
+        }))
+      ),
+      rest.post(
+        IdentityProviderUrls.getIdentityProviderList.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
@@ -157,6 +170,25 @@ describe('AAATable', () => {
 
     // eslint-disable-next-line max-len
     expect(await screen.findByText('You are unable to delete this record due to its usage in Network')).toBeVisible()
+  })
+
+  it('should not delete selected row when it is applied to a identity provder', async () => {
+    render(
+      <Provider>
+        <AAATable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockTableResult.data[2]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in Identity Provider')).toBeVisible()
   })
 
   it('should navigate to the Edit view', async () => {

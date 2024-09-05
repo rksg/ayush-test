@@ -87,13 +87,17 @@ export interface AP {
   apUpRssi?: number,
   poePort?: string,
   healthStatus?: string,
-  downLinkCount?: number,
+  downlinkCount?: number,
   apRadioDeploy?: string,
   powerSavingStatus?: string,
   lbsStatus?: {
     managementConnected?: boolean,
     serverConnected?: boolean
   }
+  switchId?: string,
+  switchName?: string,
+  switchPort?: string,
+  switchSerialNumber?: string
 }
 
 export interface NewAPModel {
@@ -396,7 +400,8 @@ export interface MeshStatus {
   hopCount: number,
   uplinks?: MeshLinkStatus[],
   downlinks?: MeshLinkStatus[],
-  neighbors?: MeshLinkStatus[]
+  neighbors?: MeshLinkStatus[],
+  radios?: MeshRadioStatus[]
 }
 export interface APMesh {
   IP?: string
@@ -429,12 +434,17 @@ export interface APMesh {
   rxFrames?: string,
   type?: number,
   upMac?: string,
-  downlinkCount?: number
+  downlinkCount?: number,
+  meshBand?: string
 }
 
 export interface RbacAPMesh {
   root: NewAPModel,
   members: NewAPModel[]
+}
+
+export interface MeshRadioStatus {
+  band: string
 }
 
 export interface FloorPlanMeshAP extends APMesh {
@@ -509,7 +519,8 @@ export interface CapabilitiesApModel {
   defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
-  defaultBandCombination?: BandModeEnum
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
@@ -531,7 +542,19 @@ export interface LanPortStatusProperties {
 }
 
 export interface VxlanStatus {
-  vxlanMtu: number
+  vxlanMtu: number,
+  tunStatus: VxlanTunnelStatus,
+  primaryRvtepInfo: VxlanRvtepInfo,
+  activeRvtepInfo: VxlanRvtepInfo
+}
+
+export enum VxlanTunnelStatus {
+  CONNECTED = 'VxLAN_TUN_STATUS_CONNECTED',
+  DISCONNECTED = 'VxLAN_TUN_STATUS_DISCONNECTED'
+}
+
+export interface VxlanRvtepInfo {
+  deviceId: string
 }
 
 export enum GpsFieldStatus {
@@ -864,4 +887,14 @@ export interface SupportCcdApGroup {
   venueId: string,
   members: number,
   aps: APExtended[]
+}
+
+export interface StickyClientSteering {
+  enabled?: boolean
+  snrThreshold?: number
+  neighborApPercentageThreshold?: number
+}
+
+export interface ApStickyClientSteering extends StickyClientSteering {
+  useVenueSettings?: boolean
 }

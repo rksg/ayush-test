@@ -30,7 +30,7 @@ const Events = () => {
     settingsId={settingsId}
     tableQuery={tableQuery}
     filterables={['severity', 'entity_type']}
-    eventTypeMap={omit(eventTypeMapping, ['SWITCH', 'EDGE'])}
+    eventTypeMap={omit(eventTypeMapping, ['SWITCH', 'EDGE', 'PROFILE'])}
     columnState={{ defaultValue: { ...eventTableColumnState, product: false } }}
   />
 }

@@ -6,6 +6,8 @@ import {
   Subtitle
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { useGetMspEcProfileQuery }                                     from '@acx-ui/msp/services'
+import { MSPUtils }                                                    from '@acx-ui/msp/utils'
 import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
@@ -63,7 +65,11 @@ export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeEnabled = useIsEdgeReady()
-  const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
+  const isDelegationTierApi = isDelegationMode()
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
+  const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const mspUtils = MSPUtils()
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
   const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
@@ -86,9 +92,9 @@ export const SubscriptionHeader = () => {
             <Subtitle level={4}>
               {$t({ defaultMessage: 'Subscription Utilization' })}
             </Subtitle>
-            <h4 style={{ marginTop: '-8px' }}>
+            {!isvSmartEdgeEnabled && <h4 style={{ marginTop: '-8px' }}>
               {$t({ defaultMessage: 'Paid, Assigned & Trial' })}
-            </h4>
+            </h4>}
           </Col>
           <Col span={12}>
             <SpaceWrapper full justifycontent='flex-end' size='large'>
@@ -113,10 +119,17 @@ export const SubscriptionHeader = () => {
             )
               .map((item) => {
                 const summary = summaryData[item.value]
+                if (isvSmartEdgeEnabled) {
+                  item.label = $t({ defaultMessage: 'Device Networking' })
+                }
                 return summary ? <SubscriptionUtilizationWidget
                   key={item.value}
                   deviceType={item.value}
                   title={item.label}
+                  title2={isvSmartEdgeEnabled
+                    ? (isMspEc ? $t({ defaultMessage: 'Assigned Licenses' })
+                      : $t({ defaultMessage: 'Paid, Trial & Assigned Licenses' }))
+                    : undefined}
                   total={summary.total}
                   used={summary.used}
                 /> : ''

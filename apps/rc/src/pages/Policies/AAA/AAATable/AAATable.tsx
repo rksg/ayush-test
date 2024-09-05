@@ -8,7 +8,8 @@ import {
   useDeleteAAAPolicyListMutation,
   useGetAAAPolicyViewModelListQuery,
   useNetworkListQuery,
-  useWifiNetworkListQuery
+  useWifiNetworkListQuery,
+  useGetIdentityProviderListQuery
 } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -56,7 +57,11 @@ export default function AAATable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
+      [
+        { fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) },
+        // eslint-disable-next-line max-len
+        { fieldName: 'hotspot20IdentityProviderIds', fieldText: $t({ defaultMessage: 'Identity Provider' }) }
+      ],
       async () => deleteFn({
         params: { tenantId },
         payload: selectedRows.map(row => row.id!),
@@ -144,7 +149,7 @@ function useColumns () {
 
   const { $t } = useIntl()
   const params = useParams()
-  const emptyNetworks: { key: string, value: string }[] = []
+  const emptyResult: { key: string, value: string }[] = []
 
   const getNetworkListQuery = isWifiRbacEnabled? useWifiNetworkListQuery : useNetworkListQuery
 
@@ -161,7 +166,23 @@ function useColumns () {
     selectFromResult: ({ data }) => ({
       networkNameMap: data?.data
         ? data.data.map(network => ({ key: network.id, value: network.name }))
-        : emptyNetworks
+        : emptyResult
+    })
+  })
+  const { identityProviderNameMap } = useGetIdentityProviderListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 2048
+    }
+  }, {
+    selectFromResult: ({ data }) => ({
+      identityProviderNameMap: data?.data
+        ? data.data.map(idp => ({ key: idp.id, value: idp.name }))
+        : emptyResult
     })
   })
   const columns: TableProps<AAAViewModalType>['columns'] = [
@@ -214,13 +235,32 @@ function useColumns () {
       align: 'center',
       filterKey: 'networkIds',
       filterable: networkNameMap,
-      sorter: true,
+      sorter: !isWifiRbacEnabled,
       render: (_, row) =>{
         if (!row.networkIds || row.networkIds.length === 0) return 0
         const networkIds = row.networkIds
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
         return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
+      }
+    },
+    {
+      key: 'identityProviderCount',
+      title: $t({ defaultMessage: 'Identity Providers' }),
+      dataIndex: 'identityProviderCount',
+      align: 'center',
+      filterKey: 'hotspot20IdentityProviderIds',
+      filterable: identityProviderNameMap,
+      sorter: false,
+      render: (_, row) =>{
+        const hotspot20IdentityProviderIds = row.hotspot20IdentityProviderIds
+        if (!hotspot20IdentityProviderIds || hotspot20IdentityProviderIds.length === 0) return 0
+        // eslint-disable-next-line max-len
+        const tooltipItems = identityProviderNameMap.filter(v => hotspot20IdentityProviderIds!.includes(v.key || '')).map(v => v.value)
+        return <SimpleListTooltip
+          items={tooltipItems}
+          displayText={hotspot20IdentityProviderIds.length}
+        />
       }
     }
   ]

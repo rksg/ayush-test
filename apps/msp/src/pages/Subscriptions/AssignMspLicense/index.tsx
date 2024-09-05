@@ -126,6 +126,7 @@ export function AssignMspLicense () {
   const { Option } = Select
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: assignment } =
@@ -427,7 +428,10 @@ export function AssignMspLicense () {
 
       {isDeviceAgnosticEnabled &&
       <div>{(availableApswLicense > 0) && <UI.FieldLabelSubs width='315px'>
-        <label>{intl.$t({ defaultMessage: 'Assigned Paid Device Subscriptions' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Assigned Device Networking' })
+          : intl.$t({ defaultMessage: 'Assigned Paid Device Subscriptions' })
+        }</label>
         <Form.Item
           name='apswLicenses'
           label=''
@@ -442,12 +446,19 @@ export function AssignMspLicense () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
-            availableApswLicense: availableApswLicense })}
+          {isvSmartEdgeEnabled
+            ? intl.$t({ defaultMessage: 'paid licenses out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+            : intl.$t({ defaultMessage: 'devices out of {availableApswLicense} available' }, {
+              availableApswLicense: availableApswLicense })
+          }
         </label>
       </UI.FieldLabelSubs>}
       {(availableApswTrialLicense > 0) && <UI.FieldLabelSubs width='315px'>
-        <label>{intl.$t({ defaultMessage: 'Assigned Trial Device Subscriptions' })}</label>
+        <label>{isvSmartEdgeEnabled
+          ? intl.$t({ defaultMessage: 'Assigned Device Networking' })
+          : intl.$t({ defaultMessage: 'Assigned Trial Device Subscriptions' })
+        }</label>
         <Form.Item
           name='apswTrialLicenses'
           label=''
@@ -462,8 +473,13 @@ export function AssignMspLicense () {
           style={{ paddingRight: '20px' }}
         />
         <label>
-          {intl.$t({ defaultMessage: 'devices out of {availableApswTrialLicense} available' }, {
-            availableApswTrialLicense: availableApswTrialLicense })}
+          {isvSmartEdgeEnabled
+          // eslint-disable-next-line max-len
+            ? intl.$t({ defaultMessage: 'trial licenses out of {availableApswTrialLicense} available' }, {
+              availableApswTrialLicense: availableApswTrialLicense })
+            : intl.$t({ defaultMessage: 'devices out of {availableApswTrialLicense} available' }, {
+              availableApswTrialLicense: availableApswTrialLicense })
+          }
         </label>
       </UI.FieldLabelSubs>}</div>}
 

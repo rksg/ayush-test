@@ -1,10 +1,12 @@
 import { ReactElement } from 'react'
 
-import { Tag, Tooltip, Typography } from 'antd'
-import _                            from 'lodash'
-import { IntlShape }                from 'react-intl'
+import { Divider, Tag, Tooltip, Typography } from 'antd'
+import _                                     from 'lodash'
+import { IntlShape }                         from 'react-intl'
 
+import { cssStr }                   from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { StarSolid }                from '@acx-ui/icons'
 import {
   useGetSwitcDefaultVersionsQuery
 } from '@acx-ui/rc/services'
@@ -23,11 +25,17 @@ import {
   SwitchFirmwareModelGroup,
   SwitchFirmwareV1002,
   SwitchModelGroupDisplayText,
-  SwitchModelGroupDisplayTextValue
+  SwitchModelGroupDisplayTextValue,
+  SwitchVersion1002
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { Statistic } from './styledComponents'
+import {
+  DowngradeTag,
+  RecommendedTag,
+  Statistic,
+  TypeSpace
+} from './styledComponents'
 
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -36,8 +44,8 @@ export function useSwitchFirmwareUtils () {
   const switchVersions = useGetSwitcDefaultVersionsQuery({
     enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
     customHeaders: isSwitchFirmwareV1002Enabled ? {
-      'Content-Type': 'application/vnd.ruckus.v1.2+json',
-      'Accept': 'application/vnd.ruckus.v1.2+json'
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     } : {}
   }, {
     refetchOnMountOrArgChange: false
@@ -53,6 +61,29 @@ export function useSwitchFirmwareUtils () {
     return convertSwitchVersionFormat(version)
   }
 
+  const getVersionOptionV1002 = (intl: IntlShape, v: SwitchVersion1002, note?: React.ReactNode) => {
+    return <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
+      <span style={{ marginRight: '5px' }}>
+        {<TypeSpace split={<Divider type='vertical' />}>
+          <div>
+            {parseSwitchVersion(v.name)} {note}
+          </div>
+          {/* [TODO] Wait for the backend to provide the correct date. */}
+          {/* {!isNaN(Date.parse(v.createdDate || '')) &&
+            formatter(DateFormatEnum.DateFormat)(v.createdDate)} */}
+        </TypeSpace>}
+      </span>
+      {getSwitchVersionTagV1002(intl, v)}
+      <div style={{
+        marginTop: '5px',
+        fontSize: 'var(--acx-body-4-font-size)',
+        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
+      }}>
+        {getSwitchVersionLabelV1002(intl, v)}
+      </div>
+    </span>
+  }
+
   const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
     const transform = firmwareTypeTrans(intl.$t)
     const versionName = parseSwitchVersion(version?.name)
@@ -65,22 +96,38 @@ export function useSwitchFirmwareUtils () {
     }
     return displayVersion
   }
-
-  const getSwitchVersionLabelV1002 = (intl: IntlShape, version: FirmwareVersion): string => {
-    const transform = firmwareTypeTrans(intl.$t)
-    const versionName = parseSwitchVersion(version?.name)
-    const versionType = transform(version?.category)
-
-    let displayVersion = `${versionName} (${versionType})`
-    if (version.inUse) {
-      // eslint-disable-next-line max-len
-      return `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
-    } else if (version.isDowngraded10to90) {
-      // eslint-disable-next-line max-len
-      return `${displayVersion} - ${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
-    }
-    return displayVersion
+  const getSwitchVersionTagV1002 =
+  (intl: IntlShape, version: FirmwareVersion): React.ReactNode => {
+    return (<>
+      {(version?.category === FirmwareCategory.RECOMMENDED) &&
+        <RecommendedTag>
+          <StarSolid
+            style={{
+              color: cssStr('--acx-semantics-yellow-40'),
+              width: '16px',
+              height: '16px',
+              marginRight: '5px',
+              marginBottom: '-3px'
+            }}
+          />
+          <span>{intl.$t({ defaultMessage: 'Recommended' })}</span>
+        </RecommendedTag>}
+      {(version.isDowngradeVersion || version.isDowngraded10to90) && !version.inUse &&
+        <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+    </>)
   }
+
+  const getSwitchVersionLabelV1002 =
+    (intl: IntlShape, version: FirmwareVersion): string | undefined => {
+      if (version.inUse) {
+        // eslint-disable-next-line max-len
+        return `${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
+      } else if (version.isDowngraded10to90) {
+        // eslint-disable-next-line max-len
+        return `${intl.$t({ defaultMessage: 'If selected, switches will be downgraded to version 09.0.10x Router image' })}`
+      }
+      return ''
+    }
 
   const getSwitchNextScheduleTplTooltip =
    (venue: FirmwareSwitchVenue): string | undefined => {
@@ -224,7 +271,8 @@ export function useSwitchFirmwareUtils () {
     return ''
   }
   const getSwitchScheduleTplV1002 = (s: SwitchFirmwareV1002): string => {
-    return s.switchNextSchedule?.version || ''
+    const version = s.switchNextSchedule?.version || ''
+    return _.isString(version) ? parseSwitchVersion(version) : version
   }
 
   const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
@@ -427,8 +475,10 @@ export function useSwitchFirmwareUtils () {
 
   return {
     parseSwitchVersion,
+    getVersionOptionV1002,
     getSwitchVersionLabel,
     getSwitchVersionLabelV1002,
+    getSwitchVersionTagV1002,
     getSwitchNextScheduleTplTooltip,
     getSwitchNextScheduleTplTooltipV1002,
     getSwitchDrawerNextScheduleTpl,

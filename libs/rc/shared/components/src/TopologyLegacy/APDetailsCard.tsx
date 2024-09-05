@@ -231,7 +231,7 @@ export function APDetailsCard (props: {
       <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
           label={$t({ defaultMessage: 'Connected APs' })}
-          children={apDetail?.downLinkCount || noDataDisplay}
+          children={apDetail?.downlinkCount || noDataDisplay}
         />
       </Descriptions>
 

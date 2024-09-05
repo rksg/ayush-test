@@ -23,6 +23,7 @@ import {
   FILTER,
   FloorPlanMeshAP,
   GetApiVersionHeader,
+  MeshStatus,
   NewAPExtendedGrouped,
   NewApGroupViewModelResponseType,
   NewAPModel,
@@ -135,7 +136,7 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     channelU50: false,
     channel60: false
   }
-  result.data = result.data.map(item => {
+  const data = result?.data.map(item => {
     let newItem = { ...item, children: [] as APExtended[], serialNumber: uniqueId() }
     const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
       const { APRadio, lanPortStatus } = ap.apStatusData || {}
@@ -151,8 +152,8 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     newItem.children = aps as unknown as APExtended[]
     return newItem
   })
-  result.extra = channelColumnStatus
-  return result
+
+  return { ...result, data, extra: channelColumnStatus }
 }
 
 export const transformApListFromNewModel = (
@@ -166,9 +167,8 @@ export const transformApListFromNewModel = (
     channel60: false
   }
 
-  result.data = result.data.map(item => {
-    const APRadio = item.radioStatuses
-    const lanPortStatus = item.lanPortStatuses
+  const data = result?.data.map(item => {
+    const { radioStatuses: APRadio, lanPortStatuses: lanPortStatus } = item
 
     if (APRadio) {
       setAPRadioInfo(item, APRadio, channelColumnStatus, true)
@@ -180,8 +180,8 @@ export const transformApListFromNewModel = (
 
     return item
   })
-  result.extra = channelColumnStatus
-  return result
+
+  return { ...result, data, extra: channelColumnStatus }
 }
 
 export const transformGroupByListFromNewModel = (
@@ -413,6 +413,10 @@ const apOldNewFieldsMapping: Record<string, string> = {
   [`${apSystemNamePathHeading}.managementVlan`]: 'networkStatus.managementTrafficVlan',
   'apStatusData.afcInfo.powerMode': 'afcStatus.powerState', //?
   'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState', //?
+  'apStatusData.vxlanStatus.vxlanMtu': 'vxLanTunnelStatus.mtuSize',
+  'apStatusData.vxlanStatus.tunStatus': 'vxLanTunnelStatus.connectStatus',
+  'apStatusData.vxlanStatus.primaryRvtepInfo.deviceId': 'vxLanTunnelStatus.preferredEdgeId',
+  'apStatusData.vxlanStatus.activeRvtepInfo.deviceId': 'vxLanTunnelStatus.activeEdgeId',
   [cellularInfoNamePathHeading]: 'cellularStatus',
   [`${cellularInfoNamePathHeading}.cellularCountry`]: 'cellularStatus.country',
   [`${cellularInfoNamePathHeading}.cellularOperator`]: 'cellularStatus.operator',
@@ -592,16 +596,18 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
             }
           }))
         }
+      } else if (key === 'meshStatus') {
+        const { downlinks , hopCount } = value as MeshStatus
+        set(result, 'downlinkCount', downlinks?.length)
+        set(result, 'hops', hopCount)
       } else if (key === 'cellularStatus') {
         parsingCellularStatusFromNewType(result, value)
       } else if (oldApFieldNameExist) {
-        // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
         set(result, oldApFieldName, value)
       } else {
         parsingApFromNewType(value as Record<string, unknown>, result, namePath)
       }
     } else {
-      // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
       set(result, oldApFieldName, value)
     }
   }

@@ -8,9 +8,15 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsFormLegacy, Tooltip }                                                             from '@acx-ui/components'
-import { Features, useIsTierAllowed }                                                           from '@acx-ui/feature-toggle'
-import { MacAuthMacFormatEnum, macAuthMacFormatOptions, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
+import { StepsFormLegacy, Tooltip }   from '@acx-ui/components'
+import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  MacAuthMacFormatEnum,
+  macAuthMacFormatOptions,
+  useConfigTemplate,
+  WifiNetworkMessages,
+  WlanSecurityEnum
+} from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
@@ -84,6 +90,7 @@ function SettingsForm () {
   const { editMode, data, setData } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -219,7 +226,7 @@ function SettingsForm () {
           </UI.FieldLabel>
         </Form.Item>
         {macAddressAuthentication && <>
-          <Form.Item
+          {!isTemplate && <Form.Item
             name={['wlan', 'isMacRegistrationList']}
             initialValue={!!isMacRegistrationList}
           >
@@ -236,19 +243,22 @@ function SettingsForm () {
                 />
               </Space>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item>}
 
-          { isMacRegistrationList
-            ? <MacRegistrationListComponent inputName={['wlan']} />
-            : <>
-              <Form.Item
-                label={$t({ defaultMessage: 'MAC Address Format' })}
-                name={['wlan', 'macAuthMacFormat']}
-                initialValue={MacAuthMacFormatEnum.UpperDash}
-                children={<Select children={macAuthOptions} />}
-              />
-              <CloudpathServerForm />
-            </>}
+          { isMacRegistrationList && <MacRegistrationListComponent
+            inputName={['wlan']}
+          />}
+
+          { (isTemplate || !isMacRegistrationList) && <>
+            <Form.Item
+              label={$t({ defaultMessage: 'MAC Address Format' })}
+              name={['wlan', 'macAuthMacFormat']}
+              initialValue={MacAuthMacFormatEnum.UpperDash}
+              children={<Select children={macAuthOptions} />}
+            />
+            <CloudpathServerForm />
+          </>}
+
         </>}
       </div>
     </>

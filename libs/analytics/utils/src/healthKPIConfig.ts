@@ -531,13 +531,14 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
+    refreshWiredSummary: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
       minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 80,
+      initialThreshold: 90,
       apiMetric: 'switchCpuUtilization',
       splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
@@ -577,6 +578,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'Uplink Port Utilization Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
+    refreshWiredSummary: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
       minGranularity: 'PT15M'
@@ -653,30 +655,31 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'MC Traffic' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
+    refreshWiredSummary: true,
     timeseries: {
       apiMetric: 'switchPortStormCountAndPortCount',
       minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 2000,
+      initialThreshold: 80,
       apiMetric: 'switchPortStormCount',
-      splits: [1000, 2000, 3000, 4000, 5000, 6000],
-      xUnit: defineMessage({ defaultMessage: 'packets/sec' }),
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
       yUnit: 'Ports',
-      shortXFormat: formatter('countFormatRound'),
+      shortXFormat: noFormat,
       longXFormat: noFormat,
       reFormatFromBarChart: noFormat
     },
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
       thresholdDesc: [
-        defineMessage({ defaultMessage: 'below' }),
-        defineMessage({ defaultMessage: '{threshold} packets/sec' })
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} MC packets storm' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: noFormat,
-      tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to multicast packets received is >= 80%, when port is at or more than 80% of its in utilization.' })
     }
   },
   switchAuthentication: {
@@ -737,8 +740,8 @@ export const kpisForTab = (isMLISA? : string) => {
   }
 }
 
-export const wiredKPIsForTab = () => {
-  return {
+export const wiredKPIsForTab = (is10010eKPIsEnabled = false) => {
+  const kpis = {
     overview: {
       kpis: [
         'switchUplinkPortUtilization'
@@ -749,17 +752,12 @@ export const wiredKPIsForTab = () => {
     connection: {
       kpis: [
         'switchAuthentication'
-        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
-        //'switchDhcp'
       ]
     },
     performance: {
       kpis: [
         'switchPortUtilization',
         'switchUplinkPortUtilization'
-        // TODO: revisit these kpis: https://jira.ruckuswireless.com/browse/RSA-6826
-        // 'switchInterfaceAnomalies'
-        //'switchStormControl'
       ]
     },
     infrastructure: {
@@ -773,4 +771,10 @@ export const wiredKPIsForTab = () => {
       ]
     }
   }
+  if (is10010eKPIsEnabled) {
+    kpis.performance.kpis.push('switchInterfaceAnomalies')
+    kpis.performance.kpis.push('switchStormControl')
+    kpis.connection.kpis.push('switchDhcp')
+  }
+  return kpis
 }

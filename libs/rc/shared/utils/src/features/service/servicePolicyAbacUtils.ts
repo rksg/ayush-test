@@ -1,4 +1,3 @@
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { RadioCardCategory }                               from '@acx-ui/components'
 import { Path }                                            from '@acx-ui/react-router-dom'
 import { EdgeScopes, ScopeKeys, SwitchScopes, WifiScopes } from '@acx-ui/types'
@@ -34,6 +33,7 @@ export interface ServicePolicyCardData<T> {
   listViewPath?: Path
   disabled?: boolean
   scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
+  helpIcon?: React.ReactNode
 }
 // eslint-disable-next-line max-len
 export function isServicePolicyCardEnabled<T> (cardItem: ServicePolicyCardData<T>, oper: ServicePolicyScopeKeyOper): boolean {

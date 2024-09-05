@@ -1,8 +1,9 @@
-import { createApi }               from '@reduxjs/toolkit/query/react'
-import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query'
+import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { get }           from '@acx-ui/config'
 import { getJwtHeaders } from '@acx-ui/utils'
+
+import { graphqlRequestBaseQuery } from './baseQuery'
 
 const getApiUrls = () => {
   const r1ApiURL = `${window.location.origin}/api/a4rc/api/rsa-data-api/graphql/analytics`
@@ -36,7 +37,7 @@ export const dataApi = createApi({
   }),
   reducerPath: 'analytics-data-api',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Monitoring', 'Dashboard'],
+  tagTypes: ['Monitoring', 'Dashboard', 'Health'],
   endpoints: () => ({ })
 })
 
@@ -51,7 +52,7 @@ export const recommendationApi = createApi({
   }),
   reducerPath: 'analytics-data-api-recommendation',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Monitoring'],
+  tagTypes: ['Monitoring', 'Intent'],
   endpoints: () => ({ })
 })
 
@@ -66,7 +67,7 @@ export const intentAIApi = createApi({
   }),
   reducerPath: 'analytics-data-api-intentai',
   refetchOnMountOrArgChange: true,
-  tagTypes: ['Monitoring'],
+  tagTypes: ['Intent'],
   endpoints: () => ({ })
 })
 

@@ -147,9 +147,6 @@ export default function Summary () {
             children={$t(existingCertLabel[form.getFieldValue(['chromebook', 'certRemovalType']) as
               keyof typeof existingCertLabel]) || noDataDisplay} />
           <Form.Item
-            label={$t({ defaultMessage: 'App ID To Notify' })}
-            children={form.getFieldValue(['chromebook', 'notifyAppId']) || noDataDisplay} />
-          <Form.Item
             label={$t({ defaultMessage: 'Google API Key' })}
             children={form.getFieldValue(['chromebook', 'apiKey']) || noDataDisplay} />
         </>}

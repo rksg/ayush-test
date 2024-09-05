@@ -1,3 +1,5 @@
+import { PieChartResult } from '../config'
+
 const switchDetails = {
   serial: '',
   model: '',
@@ -6,7 +8,7 @@ const switchDetails = {
   numOfPorts: 100
 }
 
-export const moreDetailsDataFixture = {
+export const moreDetailsDataFixture: { network: { hierarchyNode: PieChartResult } } = {
   network: {
     hierarchyNode: {
       topNSwitchesByCpuUsage: [{

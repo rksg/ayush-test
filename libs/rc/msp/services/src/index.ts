@@ -1,7 +1,9 @@
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import _                       from 'lodash'
-import moment                  from 'moment-timezone'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
+import { ResultType }                              from 'antd/lib/result'
+import _                                           from 'lodash'
+import moment                                      from 'moment-timezone'
+import { useIntl }                                 from 'react-intl'
 
 import {
   showActionModal
@@ -30,7 +32,8 @@ import {
   RecommendFirmwareUpgrade,
   AvailableMspRecCustomers,
   MspEcWithVenue,
-  MspRbacUrlsInfo
+  MspRbacUrlsInfo,
+  MspCompliances
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -82,7 +85,7 @@ export function useCheckDelegateAdmin (isRbacEnabled: boolean) {
 export function useDelegateToMspEcPath () {
   const delegateToMspEcPath = async (ecTenantId: string) => {
     try {
-      window.location.href = `/${ecTenantId}/t/dashboard`
+      window.location.href = `/${ecTenantId}/t/`
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -650,8 +653,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         const req = createHttpRequest(
           MspUrlsInfo.exportMspEcDeviceInventory,
           { ...params },
-          {},
-          true
+          {}
         )
         return {
           ...req,
@@ -906,10 +908,26 @@ export const mspApi = baseMspApi.injectEndpoints({
           ecTenantId.push(item.id)
         })
 
+        const invalidCustomers: string[] = []
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allEcVenues:any = await Promise.all(ecTenantId.map(id =>
-          fetchWithBQ(genVenuePayload(arg, id))
+        const allEcVenues:any = await Promise.all(ecTenantId.map(id => {
+          // eslint-disable-next-line max-len
+          const venuesQuery = fetchWithBQ(genVenuePayload(arg,id)) as PromiseLike<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
+          return venuesQuery.then((value) => {
+            if (value.error) {
+              invalidCustomers.push(id)
+              return { ...value, data: {}, error: undefined }
+            }
+            return value
+          })
+        }
         ))
+        list.data.forEach((item) => {
+          if (invalidCustomers.includes(item.id)) {
+            item.isUnauthorizedAccess = true
+          }
+        })
         ecTenantId.forEach((id:string, index:number) => {
           ecVenues[id] = allEcVenues[index]?.data.data
         })
@@ -943,6 +961,15 @@ export const mspApi = baseMspApi.injectEndpoints({
       query: ({ params, payload, enableRbac }) => {
         const mspUrlsInfo = getMspUrls(enableRbac)
         const request = createHttpRequest(mspUrlsInfo.getUploadURL, params)
+        return {
+          ...request,
+          body: payload
+        }
+      }
+    }),
+    getEntitlementsCompliances: build.query<MspCompliances, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(MspRbacUrlsInfo.getEntitlementsCompliances, params)
         return {
           ...request,
           body: payload
@@ -1060,7 +1087,8 @@ export const {
   useGetMspEcWithVenuesListQuery,
   useAddBrandCustomersMutation,
   usePatchCustomerMutation,
-  useGetMspUploadURLMutation
+  useGetMspUploadURLMutation,
+  useGetEntitlementsCompliancesQuery
 } = mspApi
 
 export * from './hospitalityVerticalFFCheck'

@@ -476,7 +476,7 @@ describe('Venues Map Helper', () => {
     expect(getMarkerColor([ApVenueStatusEnum.REQUIRES_ATTENTION]))
       .toStrictEqual({ default: '#ED1C24', hover: '#A00D14' })
     expect(getMarkerColor([ApVenueStatusEnum.TRANSIENT_ISSUE]))
-      .toStrictEqual({ default: '#F9C34B', hover: '#E47B01' })
+      .toStrictEqual({ default: '#F9C34B', hover: '#D2940B' })
     expect(getMarkerColor([ApVenueStatusEnum.OPERATIONAL]))
       .toStrictEqual({ default: '#23AB36', hover: '#226D2C' }) //default colors
     expect(getMarkerColor([ApVenueStatusEnum.IN_SETUP_PHASE]))

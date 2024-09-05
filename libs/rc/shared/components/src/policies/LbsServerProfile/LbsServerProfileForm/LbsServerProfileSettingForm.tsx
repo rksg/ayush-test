@@ -1,29 +1,26 @@
 import { Form, Input, InputNumber } from 'antd'
 import { useIntl }                  from 'react-intl'
 
-import { PasswordInput }                   from '@acx-ui/components'
-import { useGetLbsServerProfileListQuery } from '@acx-ui/rc/services'
+import { PasswordInput }      from '@acx-ui/components'
 import {
   checkObjectNotExists,
-  lbsVenueNameRegExp,
+  lbsServerVenueNameRegExp,
   servicePolicyNameRegExp,
   networkWifiSecretRegExp,
-  domainNameRegExp
+  domainNameRegExp,
+  TableResult,
+  LbsServerProfileViewModel
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { LbsServerConnectionProtocolInfo } from '../LbsServerConnectionProtocolInfo/LbsServerConnectionProtocolInfo'
 
-const LbsServerProfileSettingForm = () => {
+// eslint-disable-next-line max-len
+const LbsServerProfileSettingForm = ( props: { list : TableResult<LbsServerProfileViewModel, unknown> | undefined } ) => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { data } = useGetLbsServerProfileListQuery({
-    params,
-    payload: {
-      fields: ['name', 'id'], sortField: 'name',
-      sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
-  })
+  const data = props.list
 
   const nameValidator = (value: string) => {
     if (data?.data && value) {
@@ -36,6 +33,7 @@ const LbsServerProfileSettingForm = () => {
     }
     return Promise.resolve()
   }
+
 
   return (
     <>
@@ -56,13 +54,13 @@ const LbsServerProfileSettingForm = () => {
       />
       <div>
         <Form.Item
-          name='lbsVenueName'
-          label={$t({ defaultMessage: 'LBS <VenueSingular></VenueSingular> Name' })}
+          name='lbsServerVenueName'
+          label={$t({ defaultMessage: 'LBS Server <VenueSingular></VenueSingular> Name' })}
           rules={[
             { required: true },
             { min: 2 },
             { max: 16 },
-            { validator: (_, value) => lbsVenueNameRegExp(value) }
+            { validator: (_, value) => lbsServerVenueNameRegExp(value) }
           ]}
           initialValue={''}
           children={<Input />}
@@ -108,6 +106,7 @@ const LbsServerProfileSettingForm = () => {
         ]}
         children={<PasswordInput />}
       />
+      <LbsServerConnectionProtocolInfo />
     </>
   )
 }

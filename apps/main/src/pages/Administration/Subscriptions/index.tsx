@@ -11,12 +11,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                          from '@acx-ui/config'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
-import { useGetMspProfileQuery }        from '@acx-ui/msp/services'
-import { MSPUtils }                     from '@acx-ui/msp/utils'
-import { SpaceWrapper, useIsEdgeReady } from '@acx-ui/rc/components'
+import { get }                                            from '@acx-ui/config'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
+import { useGetMspEcProfileQuery, useGetMspProfileQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                                       from '@acx-ui/msp/utils'
+import { SpaceWrapper, useIsEdgeReady }                   from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -32,9 +32,9 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { AccountType }    from '@acx-ui/utils'
+import { useParams }                                from '@acx-ui/react-router-dom'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { AccountType, noDataDisplay }               from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -95,13 +95,18 @@ export const SubscriptionTable = () => {
   const mspUtils = MSPUtils()
   const { data: mspProfile } = useGetMspProfileQuery({ params, enableRbac: isMspRbacMspEnabled })
   const isOnboardedMsp = mspUtils.isOnboardedMsp(mspProfile)
-  const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
+  const mspEcProfileData = useGetMspEcProfileQuery({ params })
+  const isMspEc = mspUtils.isMspEc(mspEcProfileData.data)
 
+  const [bannerRefreshLoading, setBannerRefreshLoading] = useState<boolean>(false)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const columns: TableProps<Entitlement>['columns'] = [
     ...(isDeviceAgnosticEnabled ? [
       {
-        title: $t({ defaultMessage: 'Part Number' }),
+        title: (isvSmartEdgeEnabled && isMspEc)
+          ? $t({ defaultMessage: 'Services' })
+          : $t({ defaultMessage: 'Part Number' }),
         dataIndex: 'sku',
         key: 'sku',
         sorter: { compare: sortProp('sku', defaultSort) }
@@ -140,7 +145,8 @@ export const SubscriptionTable = () => {
       }
     ]),
     {
-      title: $t({ defaultMessage: 'Device Count' }),
+      title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'License Count' })
+        : $t({ defaultMessage: 'Device Count' }),
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: { compare: sortProp('quantity', defaultSort) },
@@ -154,6 +160,7 @@ export const SubscriptionTable = () => {
         dataIndex: 'assignedLicense',
         key: 'assignedLicense',
         show: isOnboardedMsp,
+        width: 120,
         sorter: { compare: sortProp('assignedLicense', defaultSort) },
         render: function (data: React.ReactNode, row: Entitlement) {
           return row.assignedLicense
@@ -192,7 +199,8 @@ export const SubscriptionTable = () => {
           ? UI.Expired
           : (remainingDays <= 60 ? UI.Warning : Space)
         return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
+          (isvSmartEdgeEnabled && remainingDays < 0) ? noDataDisplay
+            : EntitlementUtil.timeLeftValues(remainingDays)
         }</TimeLeftWrapper>
       }
     },
@@ -284,7 +292,7 @@ export const SubscriptionTable = () => {
       }
       <Table
         columns={columns}
-        actions={filterByAccess(actions)}
+        actions={hasCrossVenuesPermission() ? filterByAccess(actions) : []}
         dataSource={checkSubscriptionStatus() ? [] : subscriptionData}
         rowKey='id'
       />
