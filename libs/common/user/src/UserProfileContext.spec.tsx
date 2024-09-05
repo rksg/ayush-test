@@ -387,6 +387,29 @@ describe('UserProfileContext', () => {
     expect(screen.queryByText('abacEnabled:false')).toBeVisible()
   })
 
+  it('should generate venuesList correctly when abacEnabled and not hasAllVenues', async () => {
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': true, 'allowed-operations-toggle': false } }
+    })
+    services.useGetVenuesListQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedVenueList }
+    })
+
+    const TestVenuesList = (props: TestUserProfileChildComponentProps) => {
+      const { venuesList, abacEnabled } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`venuesList:${JSON.stringify(venuesList)}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestVenuesList}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+    expect(screen.queryByText(`venuesList:${JSON.stringify(
+      fakedVenueList.data.map(item => item.id))}`)).toBeVisible()
+  })
+
 })
 
 const checkDataRendered = async () => {

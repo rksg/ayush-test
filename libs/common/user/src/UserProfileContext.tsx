@@ -28,6 +28,7 @@ export interface UserProfileContextProps {
   abacEnabled?: boolean
   isCustomRole?: boolean
   hasAllVenues?: boolean
+  venuesList?: string[]
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -127,7 +128,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       isCustomRole,
-      hasAllVenues
+      hasAllVenues,
+      venuesList
     }}
     children={props.children}
   />
