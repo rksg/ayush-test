@@ -1,4 +1,3 @@
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 /* eslint-disable max-len */
 
 import { useState, useEffect } from 'react'
