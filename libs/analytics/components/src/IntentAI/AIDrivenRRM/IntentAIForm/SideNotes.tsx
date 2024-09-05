@@ -52,7 +52,7 @@ export const Introduction: React.FC = () => {
 export const Priority: React.FC = () => {
   const { $t } = useIntl()
   return <SideNotes>
-    <SideNotes.Section title={$t({ defaultMessage: 'Potential trade-off?' })}>
+    <SideNotes.Section title={$t({ defaultMessage: 'Potential trade-off' })}>
       <FormattedMessage
         values={richTextFormatValues}
         defaultMessage={`<p>
