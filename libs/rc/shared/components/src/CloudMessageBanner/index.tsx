@@ -10,7 +10,7 @@ import {
   useLazyGetSwitchVenueVersionListQuery,
   useLazyGetVenueEdgeFirmwareListQuery,
   useLazyGetScheduledFirmwareQuery,
-  useLazyGetSwitchVenueVersionListV1002Query
+  useLazyGetSwitchVenueVersionListV1001Query
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
@@ -52,7 +52,7 @@ export function CloudMessageBanner () {
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
   const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
-  const [getSwitchVenueVersionListV1002] = useLazyGetSwitchVenueVersionListV1002Query()
+  const [getSwitchVenueVersionListV1001] = useLazyGetSwitchVenueVersionListV1001Query()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
 
   const hidePlmMessage = !!sessionStorage.getItem('hidePlmMessage')
@@ -97,7 +97,7 @@ export function CloudMessageBanner () {
 
   const checkSwitchScheduleExists = async () => {
     if (isSwitchFirmwareV1002Enabled) {
-      return await getSwitchVenueVersionListV1002({ params })
+      return await getSwitchVenueVersionListV1001({ params })
         .unwrap()
         .then(result => {
           const upgradeVenueViewList = result?.data ?? []
