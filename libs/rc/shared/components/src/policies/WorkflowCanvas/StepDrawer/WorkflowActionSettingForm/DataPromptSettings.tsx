@@ -89,6 +89,7 @@ function DataPromptField () {
             ))}
             <Form.Item>
               <Button type={'link'}
+                disabled={variables.length > 10}
                 onClick={() => add()}
               >
                 {$t({ defaultMessage: 'Add Field' })}
