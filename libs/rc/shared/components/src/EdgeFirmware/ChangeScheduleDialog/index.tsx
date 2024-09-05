@@ -9,25 +9,22 @@ import { useIntl }                                    from 'react-intl'
 import {
   AVAILABLE_SLOTS,
   EdgeFirmwareVersion,
-  EdgeUpdateScheduleRequest
+  EdgeUpdateScheduleRequest,
+  getFirmwareVersionLabel
 } from '@acx-ui/rc/utils'
 
-import {
-  getVersionLabel
-} from '../../FirmwareUtils'
-
-import * as UI from './styledComponents'
+import * as UI from '../styledComponents'
 
 import type { RangePickerProps } from 'antd/es/date-picker'
 
-export interface ChangeScheduleDialogProps {
+export interface EdgeChangeScheduleDialogProps {
   visible: boolean,
   onCancel: () => void,
   onSubmit: (data: EdgeUpdateScheduleRequest) => void,
   availableVersions?: EdgeFirmwareVersion[]
 }
 
-export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
+export function EdgeChangeScheduleDialog (props: EdgeChangeScheduleDialogProps) {
   const intl = useIntl()
   const { $t } = useIntl()
   const [form] = useForm()
@@ -98,7 +95,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
                   <Radio
                     value={availableVersions[0].id}
                     key={availableVersions[0].id}>
-                    {getVersionLabel(intl, availableVersions[0])}
+                    {getFirmwareVersionLabel(intl, availableVersions[0])}
                   </Radio>
                 }
                 {/* { availableVersions?.map(v =>

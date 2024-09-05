@@ -1,12 +1,43 @@
 import React from 'react'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { APExtended } from 'libs/rc/shared/utils/src/types/ap'
-import { uniqueId }   from 'lodash'
+import { uniqueId } from 'lodash'
 
 import { Table, TableProps } from '..'
 
-export type APExtendedGroupedResponse = {
+interface APExtended {
+  serialNumber: string
+  name?: string
+  model: string
+  fwVersion: string
+  venueId: string
+  venueName: string
+  IP: string
+  apMac: string
+  apStatusData: {
+    APRadio: {
+      Rssi: string | null,
+      txPower?: string | null,
+      channel: string | number,
+      band?: string,
+      radioId?: number,
+      operativeChannelBandwidth?: string
+    }[]
+  }
+  meshRole: string
+  deviceGroupName: string
+  deviceStatus: string
+  deviceGroupId: string
+  clients: number
+  networks?: {
+    count: number
+    names: string[]
+  }
+  members?: number
+  incidents?: number
+  tags: string
+}
+
+type APExtendedGroupedResponse = {
   networks: {
     count: number
     names: string[]
