@@ -7,8 +7,7 @@ import {
   useGetAccountTierQuery,
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
-  useFeatureFlagStatesQuery,
-  useGetPrivilegeGroupsQuery
+  useFeatureFlagStatesQuery
 } from './services'
 import { UserProfile }                         from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -53,8 +52,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
   abacEnabled = featureFlagStates?.[abacFF] ?? false
 
-  const { data: pgList } = useGetPrivilegeGroupsQuery({}, { skip: !abacEnabled })
-
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: ptenantRbacEnable },
     { skip: !Boolean(profile) })
@@ -68,9 +65,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
   const allowedOperations = [] as string[]
 
   const getHasAllVenues = () => {
-    if(pgList) {
-      const pg = pgList.find(item => item.name === profile?.role)
-      return pg?.allVenues
+    if(abacEnabled && profile?.scopes?.includes('venue' as never)) {
+      return false
     }
     return true
   }
