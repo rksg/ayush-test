@@ -46,6 +46,7 @@ describe('WifiSoftGreRadioOption', () => {
             currentTunnelType={NetworkTunnelTypeEnum.SoftGre}
             venueId={venueId}
             networkId={networkId}
+            cachedSoftGre={[]}
           />
         </Form>
       </Provider>,
@@ -78,6 +79,7 @@ describe('WifiSoftGreRadioOption', () => {
             currentTunnelType={NetworkTunnelTypeEnum.SoftGre}
             venueId={venueId}
             networkId={networkId}
+            cachedSoftGre={[]}
           />
         </Form>
       </Provider>,
@@ -97,7 +99,11 @@ describe('WifiSoftGreRadioOption', () => {
     })
     await userEvent.click(await screen.findByRole('combobox'))
     await userEvent.click(await screen.findByText('softGreProfileName2'))
-    expect(await screen.findByText('softGreProfileName2')).toBeVisible()
     expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
+    expect(formRef.current.getFieldsValue()).toEqual({
+      softGre: {
+        newProfileId: '75aa5131892d44a6a85a623dd3e524ed'
+      }
+    })
   })
 })
