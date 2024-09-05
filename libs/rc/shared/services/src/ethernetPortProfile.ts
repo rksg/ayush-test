@@ -6,7 +6,9 @@ import {
   EthernetPortProfileUrls,
   EthernetPortProfileViewData,
   EthernetPortProfile,
-  EhternetPortSettings
+  EhternetPortSettings,
+  ApiVersionEnum,
+  GetApiVersionHeader
 } from '@acx-ui/rc/utils'
 import { baseEthernetPortProfileApi } from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -106,8 +108,9 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     getEthernetPortProfileSettingsByApPortId: build.query<EhternetPortSettings, RequestPayload>({
       query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          EthernetPortProfileUrls.getEthernetPortSettingsByApPortId, params)
+          EthernetPortProfileUrls.getEthernetPortSettingsByApPortId, params, customHeaders)
         return {
           ...req
         }
@@ -116,9 +119,10 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     updateEthernetPortProfileSettingsByApPortId:
       build.mutation<EhternetPortSettings, RequestPayload>({
       query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, params
-        )
+          EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, params,
+            customHeaders)
         return {
           ...req,
           body: payload
@@ -127,8 +131,9 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     activateEthernetPortProfileOnApPortId: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId, params
+          EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId, params, customHeaders
         )
         return {
           ...req
