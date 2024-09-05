@@ -210,8 +210,8 @@ const PortalInstance = (props: {
             initialValue={''}
             children={
               <Select
-                placeholder={$t({ defaultMessage: 'Select Portal' })}
                 options={[
+                  { label: $t({ defaultMessage: 'Select Portal' }), value: '' },
                   ...portalList
                 ]}
                 onChange={(v) => {
