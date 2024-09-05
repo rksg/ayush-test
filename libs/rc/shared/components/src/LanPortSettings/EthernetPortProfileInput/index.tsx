@@ -3,20 +3,30 @@ import { useEffect } from 'react'
 import { Form  }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }                                                                                                                        from '@acx-ui/components'
-import { ApLanPortTypeEnum, EthernetPortAuthType, EthernetPortProfileViewData, checkVlanMember, getEthernetPortTypeString, validateVlanId } from '@acx-ui/rc/utils'
+import { StepsForm }                   from '@acx-ui/components'
+import {
+  ApLanPortTypeEnum,
+  EhternetPortSettings,
+  EthernetPortAuthType,
+  EthernetPortProfileViewData,
+  checkVlanMember,
+  getEthernetPortTypeString,
+  validateVlanId
+} from '@acx-ui/rc/utils'
 
 import EthernetPortProfileOverwriteItem from './EthernetPortProfileOverwriteItem'
 
 interface EthernetPortProfileInputProps {
     currentEthernetPortData?: EthernetPortProfileViewData,
+    currentPortOverwirte?: EhternetPortSettings,
     currentIndex: number,
     isEditable?: boolean
 }
 
 const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   const { $t } = useIntl()
-  const { currentIndex, currentEthernetPortData, isEditable=true } = props
+  const { currentIndex, currentEthernetPortData,
+    currentPortOverwirte, isEditable=true } = props
   const form = Form.useFormInstance()
   const currentUntagId = Form.useWatch( ['lan', currentIndex, 'untagId'] ,form)
 
@@ -27,11 +37,13 @@ const EthernetPortProfileInput = (props:EthernetPortProfileInputProps) => {
   }, [currentUntagId])
 
   useEffect(()=> {
-    if (currentEthernetPortData) {
-      form.setFieldValue(['lan', currentIndex, 'untagId'], currentEthernetPortData?.untagId)
-      form.setFieldValue(['lan', currentIndex, 'vlanMembers'], currentEthernetPortData?.vlanMembers)
+    if (currentPortOverwirte && currentEthernetPortData) {
+      form.setFieldValue(['lan', currentIndex, 'untagId'],
+        currentPortOverwirte.overwriteUntagId ?? currentEthernetPortData?.untagId)
+      form.setFieldValue(['lan', currentIndex, 'vlanMembers'],
+        currentPortOverwirte.overwriteVlanMembers ?? currentEthernetPortData?.vlanMembers)
     }
-  }, [currentEthernetPortData])
+  }, [currentEthernetPortData, currentPortOverwirte])
 
   return (<>
     <StepsForm.FieldLabel width={'200px'}>

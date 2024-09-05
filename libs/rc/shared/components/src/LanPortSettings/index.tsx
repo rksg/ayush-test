@@ -7,12 +7,16 @@ import { useParams }                                       from 'react-router-do
 
 import { cssStr, Tooltip }                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
-import { useGetEthernetPortProfileViewDataListQuery } from '@acx-ui/rc/services'
+import {
+  useGetEthernetPortProfileSettingsByApPortIdQuery,
+  useGetEthernetPortProfileViewDataListQuery
+} from '@acx-ui/rc/services'
 import {
   ApLanPortTypeEnum,
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
+  EhternetPortSettings,
   EthernetPortProfileViewData,
   LanPort,
   VenueLanPorts,
@@ -86,6 +90,8 @@ export function LanPortSettings (props: {
   const ethernetPortProfileId = Form.useWatch( ['lan', index, 'ethernetPortProfileId'] ,form)
   const [currentEthernetPortData, setCurrentEthernetPortData] =
     useState<EthernetPortProfileViewData>()
+  const [ethernetPortSettings, setEthernetPortSettings] =
+    useState<EhternetPortSettings>()
   const isEthernetPortProfileEnabled = useIsSplitOn(Features.ETHERNET_PORT_PROFILE_TOGGLE)
 
   // Non ethernet port profile
@@ -139,6 +145,18 @@ export function LanPortSettings (props: {
         ethernetPortListQuery.data.find((profile)=> profile.id === ethernetPortProfileId))
     }
   }, [ethernetPortProfileId, ethernetPortListQuery?.data])
+
+  // AP level
+  const { data: apEthPortSettings, isLoading: isApEthPortSettingsLoading } =
+    useGetEthernetPortProfileSettingsByApPortIdQuery({
+      params: { venueId, serialNumber, portId: index as unknown as string }
+    }, { skip: !isEthernetPortProfileEnabled && !serialNumber })
+
+  useEffect(() => {
+    if (!isApEthPortSettingsLoading && apEthPortSettings) {
+      setEthernetPortSettings(apEthPortSettings)
+    }
+  }, [apEthPortSettings, isApEthPortSettingsLoading])
 
   function convertEthernetPortListToDropdownItems (
     ethernetPortList?: EthernetPortProfileViewData[]
@@ -234,6 +252,7 @@ export function LanPortSettings (props: {
       </Space>
       <EthernetPortProfileInput
         currentEthernetPortData={currentEthernetPortData}
+        currentPortOverwirte={ethernetPortSettings}
         currentIndex={index}
         isEditable={!!serialNumber} /></>) :
       (<>
