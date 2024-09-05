@@ -67,7 +67,7 @@ export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolea
 }
 
 const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
-  return sumBy(clusterCompatibilities as Record<string, unknown>[], (t) => (get(t, 'total') as number))
+  return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
 }
 export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibility | EdgeSdLanApCompatibility) => {
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
