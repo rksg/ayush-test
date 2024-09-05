@@ -28,6 +28,10 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
       .ant-descriptions-item-label {
         width: ${props => props.noSpace ? 'unset' : `${props.labelWidthPercent}%`};
         color: var(--acx-neutrals-60);
+
+        &::after {
+          margin: 0 6px 0 2px;
+        }
       }
 
       .ant-descriptions-item-content {
