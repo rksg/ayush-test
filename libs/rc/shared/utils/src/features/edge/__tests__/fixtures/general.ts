@@ -20,7 +20,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-1'
+      clusterId: 'cluster-1',
+      firmwareVersion: '1.9.0.100'
     },
     {
       name: 'Smart Edge 2',
@@ -33,7 +34,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-2'
+      clusterId: 'cluster-2',
+      firmwareVersion: '1.9.0.200'
     },
     {
       name: 'Smart Edge 3',
@@ -46,7 +48,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-3'
+      clusterId: 'cluster-3',
+      firmwareVersion: '1.9.0.900'
     },
     {
       name: 'Smart Edge 4',
@@ -59,7 +62,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-4'
+      clusterId: 'cluster-4',
+      firmwareVersion: '2.1.0.900'
     },
     {
       name: 'Smart Edge 5',
@@ -72,7 +76,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-5'
+      clusterId: 'cluster-5',
+      firmwareVersion: '2.1.0.850'
     }
   ]
 }
