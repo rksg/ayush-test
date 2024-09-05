@@ -52,9 +52,8 @@ import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { transformToCityListOptions }    from '@acx-ui/utils'
 
-import { isSdLanGuestUtilizedOnDiffVenue, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal, useGetNetworkTunnelInfo } from '../../EdgeSdLan/edgeSdLanUtils'
-import { showSdLanGuestFwdConflictModal }                                                                                     from '../../EdgeSdLan/SdLanGuestFwdConflictModal'
-import { useEdgeMvSdLanActions,useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction }                         from '../../EdgeSdLan/useEdgeSdLanActions'
+import { useGetNetworkTunnelInfo }                                              from '../../EdgeSdLan/edgeSdLanUtils'
+import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
 import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton, useGetSoftGreScopeNetworkMap } from '../../NetworkTunnelActionModal'
@@ -245,8 +244,7 @@ export function NetworkVenuesTab () {
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
-  const updateNetworkTunnel = useUpdateNetworkTunnelAction()
-  const { toggleNetwork } = useEdgeMvSdLanActions()
+  const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   const [ activateSoftGre ] = useActivateSoftGreMutation()
   const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
@@ -782,14 +780,12 @@ export function NetworkVenuesTab () {
   const handleNetworkTunnelActionFinish = async (
     formValues: NetworkTunnelActionForm,
     otherData: {
+      tunnelTypeInitVal: NetworkTunnelTypeEnum,
       network: NetworkTunnelActionModalProps['network'],
       venueSdLan?: EdgeMvSdLanViewData
     }
   ) => {
-    const { network, venueSdLan } = otherData
-    // eslint-disable-next-line max-len
-    const needSdLanConfigConflictCheck = formValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-     && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
+    const { tunnelTypeInitVal, network, venueSdLan } = otherData
 
     try{
       if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
@@ -809,47 +805,11 @@ export function NetworkVenuesTab () {
           } })
       }
 
-      if (formValues.tunnelType !== NetworkTunnelTypeEnum.SdLan && isSdLanLastNetworkInVenue(venueSdLan?.tunneledWlans, network!.venueId)) {
-        showSdLanVenueDissociateModal(async () => {
-          await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
-          handleCloseTunnelModal()
-        })
-      } else {
-        if (needSdLanConfigConflictCheck) {
-          await new Promise<void>((resolve) => {
-            showSdLanGuestFwdConflictModal({
-              currentNetworkVenueId: network?.venueId!,
-              currentNetworkId: network?.id!,
-              currentNetworkName: '',
-              activatedGuest: formValues.sdLan.isGuestTunnelEnabled,
-              tunneledWlans: venueSdLan!.tunneledWlans,
-              tunneledGuestWlans: venueSdLan!.tunneledGuestWlans,
-              onOk: async (impactVenueIds: string[]) => {
-                if (impactVenueIds.length) {
-                // has conflict and confirmed
+      const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
+      if (shouldCloseModal !== false)
+        handleCloseTunnelModal()
 
-                  const actions = [updateNetworkTunnel(formValues, tunnelModalState.network, venueSdLan)]
-                  actions.push(...impactVenueIds.map(impactVenueId =>
-                    toggleNetwork(venueSdLan?.id!, impactVenueId, network?.id!, true, formValues.sdLan.isGuestTunnelEnabled)))
-                  await Promise.all(actions)
-                } else {
-                  await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
-                }
-
-                resolve()
-                handleCloseTunnelModal()
-              },
-              onCancel: () => resolve()
-            })
-          })
-        } else {
-          await updateNetworkTunnel(formValues, tunnelModalState.network, otherData.venueSdLan)
-          handleCloseTunnelModal()
-        }
-      }
-    } catch (e){
-      // eslint-disable-next-line no-console
-      console.error(e)
+    } catch(err) {
       handleCloseTunnelModal()
     }
   }

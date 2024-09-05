@@ -32,6 +32,7 @@ export interface NetworkTunnelActionModalProps {
   onFinish: (
     values: NetworkTunnelActionForm,
     otherData: {
+      tunnelTypeInitVal: NetworkTunnelTypeEnum,
       network: NetworkTunnelActionModalProps['network'],
       venueSdLan?: EdgeMvSdLanViewData
     }
@@ -80,7 +81,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
 
     setIsSubmitting(true)
-    await onFinish(formValues, { network, venueSdLan: venueSdLanInfo })
+    await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
     setIsSubmitting(false)
   }
 

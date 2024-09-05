@@ -22,13 +22,11 @@ export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => 
   if (Boolean(currentVenue.activated?.isActivated)) {
     const venueId = currentVenue.id
 
-    const destinationsInfo = venueSdLan
-
-    const isTunneled = !!destinationsInfo
+    const isTunneled = !!venueSdLan || !!venueSoftGre
     // eslint-disable-next-line max-len
-    const clusterName = (isTunneled && isGuestTunnelUtilized(destinationsInfo, network?.id!, venueId))
-      ? destinationsInfo?.guestEdgeClusterName
-      : destinationsInfo?.edgeClusterName
+    const clusterName = (isGuestTunnelUtilized(venueSdLan, network?.id!, venueId))
+      ? venueSdLan?.guestEdgeClusterName
+      : venueSdLan?.edgeClusterName
 
     const softGreClusterName = network?.id && venueSoftGre && venueSoftGre.profileName
 
@@ -37,7 +35,7 @@ export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => 
         e.stopPropagation()
         onClick()
       }}>
-      {!!destinationsInfo || !!venueSoftGre
+      {isTunneled
         ? $t({ defaultMessage: 'Tunneled ({clusterName})' },
           { clusterName: venueSoftGre ? softGreClusterName : clusterName })
         : $t({ defaultMessage: 'Local Breakout' })

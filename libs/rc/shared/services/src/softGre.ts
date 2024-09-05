@@ -156,7 +156,8 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
           ...softGreListReq,
           body: JSON.stringify(payload)
         })
-        if (softGreListRes.error) return { data: { options: [] } as SoftGreOptionsData }
+        // eslint-disable-next-line max-len
+        if (softGreListRes.error) return { data: { options: [], isLockedOptions: false } as SoftGreOptionsData }
         let { data: listData } = softGreListRes.data as TableResult<SoftGreViewData>
 
         let venueTotal = 0

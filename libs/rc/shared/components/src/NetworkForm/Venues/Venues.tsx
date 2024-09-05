@@ -600,35 +600,29 @@ export function Venues (props: VenuesProps) {
     const networkVenueId = tunnelModalState.network?.venueId
     const { network, venueSdLan } = otherData
 
-    if (!networkVenueId || !venueSdLan) {
-      handleCloseTunnelModal()
-      return
-    }
+    if (!networkVenueId || !venueSdLan) return
 
-    // eslint-disable-next-line max-len
     const updateContent = getNetworkTunnelSdLanUpdateData(
       modalFormValues,
       form.getFieldValue('sdLanAssociationUpdate'),
       tunnelModalState,
       venueSdLan
     )
-    if (!updateContent) {
-      handleCloseTunnelModal()
-      return
-    }
+    if (!updateContent) return
 
-    const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
-                    && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
-
+    return await new Promise<void | boolean>((resolve) => {
     // eslint-disable-next-line max-len
-    if (modalFormValues.tunnelType === NetworkTunnelTypeEnum.None && isSdLanLastNetworkInVenue(venueSdLan.tunneledWlans, network!.venueId)) {
-      showSdLanVenueDissociateModal(async () => {
-        form.setFieldValue('sdLanAssociationUpdate', updateContent)
-        handleCloseTunnelModal()
-      })
-    } else {
-      if (needSdLanConfigConflictCheck) {
-        await new Promise<void>((resolve) => {
+      if (modalFormValues.tunnelType !== NetworkTunnelTypeEnum.SdLan && isSdLanLastNetworkInVenue(venueSdLan.tunneledWlans, network!.venueId)) {
+        showSdLanVenueDissociateModal(async () => {
+          form.setFieldValue('sdLanAssociationUpdate', updateContent)
+          resolve()
+        }, () => resolve(false))
+      } else {
+        // eslint-disable-next-line max-len
+        const needSdLanConfigConflictCheck = modalFormValues.tunnelType === NetworkTunnelTypeEnum.SdLan
+          && isSdLanGuestUtilizedOnDiffVenue(venueSdLan!, network!.id, network!.venueId)
+
+        if (needSdLanConfigConflictCheck) {
           showSdLanGuestFwdConflictModal({
             currentNetworkVenueId: network?.venueId!,
             currentNetworkId: network?.id!,
@@ -661,16 +655,15 @@ export function Venues (props: VenuesProps) {
               }
 
               resolve()
-              handleCloseTunnelModal()
             },
-            onCancel: () => resolve()
+            onCancel: () => resolve(false)
           })
-        })
-      } else {
-        form.setFieldValue('sdLanAssociationUpdate', updateContent)
-        handleCloseTunnelModal()
+        } else {
+          form.setFieldValue('sdLanAssociationUpdate', updateContent)
+          resolve()
+        }
       }
-    }
+    })
   }
 
   const handleSoftGreTunnelAction = async (modalFormValues: NetworkTunnelActionForm) => {
@@ -694,7 +687,9 @@ export function Venues (props: VenuesProps) {
 
     try{
       handleSoftGreTunnelAction(modalFormValues)
-      await handleSdLanTunnelAction(modalFormValues, otherData)
+      const shouldCloseModal = await handleSdLanTunnelAction(modalFormValues, otherData)
+      if (shouldCloseModal !== false)
+        handleCloseTunnelModal()
     }catch (e) {
       console.error('Error on handleNetworkTunnelActionFinish', e)  // eslint-disable-line no-console
       handleCloseTunnelModal()
