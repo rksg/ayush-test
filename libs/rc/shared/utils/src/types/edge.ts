@@ -64,6 +64,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   clusterNodeStatus?: ClusterNodeStatusEnum
   clusterId?: string
   hasCorePort?: boolean
+  incompatible?: number // UI only
 }
 export interface EdgeDetails {
   serialNumber: string
