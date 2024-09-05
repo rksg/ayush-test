@@ -34,7 +34,7 @@ describe('useUpdateNetworkTunnelAction', () => {
       venueId: mockSdLan.tunneledWlans![0].venueId
     }
 
-    result.current(mockFormValues, mockNetwork, mockSdLan)
+    result.current(mockFormValues, mockNetwork, NetworkTunnelTypeEnum.None, mockSdLan)
     expect(mockedToggleNetworkFn).toBeCalledWith(
       mockSdLan.id,
       mockNetwork.venueId,
@@ -61,7 +61,7 @@ describe('useUpdateNetworkTunnelAction', () => {
       venueId: mockSdLan.tunneledWlans![1].venueId
     }
 
-    result.current(mockFormValues, mockNetwork, mockSdLan)
+    result.current(mockFormValues, mockNetwork, NetworkTunnelTypeEnum.SdLan, mockSdLan)
     expect(mockedToggleNetworkFn).toBeCalledWith(
       mockSdLan.id,
       mockNetwork.venueId,
@@ -88,7 +88,7 @@ describe('useUpdateNetworkTunnelAction', () => {
       venueId: mockSdLan.tunneledWlans![0].venueId
     }
 
-    result.current(mockFormValues, mockNetwork, mockSdLan)
+    result.current(mockFormValues, mockNetwork, NetworkTunnelTypeEnum.SdLan, mockSdLan)
     expect(mockedToggleNetworkFn).toBeCalledWith(
       mockSdLan.id,
       mockNetwork.venueId,
@@ -118,7 +118,7 @@ describe('useUpdateNetworkTunnelAction', () => {
 
     let isFailed: boolean
     try {
-      await result.current(mockFormValues, mockNetwork, mockSdLan)
+      await result.current(mockFormValues, mockNetwork, NetworkTunnelTypeEnum.SdLan, mockSdLan)
       isFailed = false
     } catch(err) {
       isFailed = true

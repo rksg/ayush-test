@@ -54,18 +54,20 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     }
   })
 
-  const networkId = currentNetwork.id ?? ''
+  const networkId = currentNetwork.id ?? TMP_NETWORK_ID
 
   const getVenueSoftGre = () => {
     if (softGreAssociationUpdate?.[currentVenue.id]) {
       const { newProfileId, newProfileName } = softGreAssociationUpdate[currentVenue.id]
+      if (newProfileId === '') return undefined
       return {
         venueId: currentVenue.id,
-        networkIds: [TMP_NETWORK_ID],
+        networkIds: [networkId],
         profileId: newProfileId,
         profileName: newProfileName
       } as SoftGreNetworkTunnel
     }
+    if (networkId === TMP_NETWORK_ID) return undefined
     return softGreVenueMap?.[currentVenue.id]?.find(sg => sg.networkIds.includes(networkId))
   }
 

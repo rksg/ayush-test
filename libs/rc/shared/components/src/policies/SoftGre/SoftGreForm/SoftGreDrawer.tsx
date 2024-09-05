@@ -59,7 +59,7 @@ export default function SoftGreDrawer (props: SoftGreDrawerProps) {
       }
       visible={visible}
       width={450}
-      children={<Form layout='vertical' form={form} >
+      children={visible && <Form layout='vertical' form={form} >
         <Row gutter={20}>
           <Col span={24}>
             <SoftGreSettingForm

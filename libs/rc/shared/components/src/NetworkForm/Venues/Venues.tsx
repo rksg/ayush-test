@@ -477,17 +477,25 @@ export function Venues (props: VenuesProps) {
 
   const handleClickNetworkTunnel = (row: Venue, currentNetwork: NetworkSaveData) => {
     const cachedActs = form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
-
+    const venueId = row.id
+    const networkId = currentNetwork?.id ?? TMP_NETWORK_ID
+    const updateSoftGre = softGreAssociationUpdate && softGreAssociationUpdate[row.id]
+    const cachedSoftGre = updateSoftGre ?
+      [{ venueId,
+        networkIds: [networkId],
+        profileId: updateSoftGre.newProfileId,
+        profileName: updateSoftGre.newProfileName }] : []
     // show modal
     setTunnelModalState({
       visible: true,
       network: {
         id: currentNetwork?.id ?? TMP_NETWORK_ID,
         type: currentNetwork?.type,
-        venueId: row.id,
+        venueId,
         venueName: row.name
       },
-      cachedActs
+      cachedActs,
+      cachedSoftGre
     } as NetworkTunnelActionModalProps)
   }
 

@@ -174,7 +174,8 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
               <WifiSoftGreRadioOption
                 currentTunnelType={tunnelType}
                 venueId={networkVenueId!}
-                networkId={networkId}
+                networkId={networkId!}
+                cachedSoftGre={cachedSoftGre}
               />
             }
           </Space>

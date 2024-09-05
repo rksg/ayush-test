@@ -1,5 +1,6 @@
-import { Form } from 'antd'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { softGreApi }                                      from '@acx-ui/rc/services'
 import { SoftGreUrls }                                     from '@acx-ui/rc/utils'
@@ -33,7 +34,7 @@ describe('WifiSoftGreRadioOption', () => {
   )
 
   it('should correctly render softGRE tunneling', async () => {
-    const venueId = 'venueId-1'
+    const venueId = 'venueId-2'
     const networkId = 'network_0'
     const { result: formRef } = renderHook(() => {
       return Form.useForm()[0]
@@ -51,19 +52,52 @@ describe('WifiSoftGreRadioOption', () => {
       { route: { path: viewPath, params: { venueId, tenantId } } }
     )
 
-    await waitFor(() => expect(mockedGetFn).toBeCalled())
     expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
     expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
-    // const selector = await screen.findByRole('combobox')
-    // await userEvent.click(selector)
-    // await userEvent.selectOptions(selector, 'softGreProfileName1')
-    // await userEvent.selectOptions(
-    //   await screen.findByRole('combobox'),
-    //   await screen.findByRole('option', { name: 'softGreProfileName1' }))
-    // { value: '0d89c0f5596c4689900fb7f5f53a0859', label: 'softGreProfileName1' })
-
-    // expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
-    // expect(formRef.current.getFieldsValue()).toEqual({})
+    await waitFor(() => expect(mockedGetFn).toBeCalled())
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByText('softGreProfileName1'))
+    expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
+    expect(formRef.current.getFieldsValue()).toEqual({
+      softGre: {
+        newProfileId: '0d89c0f5596c4689900fb7f5f53a0859'
+      }
+    })
   })
 
+  it('should correctly render softGRE tunneling selected', async () => {
+    const venueId = 'venueId-1'
+    const networkId = 'network_1'
+    const { result: formRef } = renderHook(() => {
+      return Form.useForm()[0]
+    })
+    render(
+      <Provider>
+        <Form form={formRef.current}>
+          <WifiSoftGreRadioOption
+            currentTunnelType={NetworkTunnelTypeEnum.SoftGre}
+            venueId={venueId}
+            networkId={networkId}
+          />
+        </Form>
+      </Provider>,
+      { route: { path: viewPath, params: { venueId, tenantId } } }
+    )
+
+    expect(await screen.findByRole('button', { name: /Add/i })).toBeEnabled()
+    expect(await screen.findByRole('button', { name: /Profile details/i })).not.toBeEnabled()
+    await waitFor(() => expect(mockedGetFn).toBeCalled())
+    await waitFor(async () => expect(await screen.findByRole('button',
+      { name: /Profile details/i }
+    )).toBeEnabled())
+    expect(formRef.current.getFieldsValue()).toEqual({
+      softGre: {
+        newProfileId: '0d89c0f5596c4689900fb7f5f53a0859'
+      }
+    })
+    await userEvent.click(await screen.findByRole('combobox'))
+    await userEvent.click(await screen.findByText('softGreProfileName2'))
+    expect(await screen.findByText('softGreProfileName2')).toBeVisible()
+    expect(await screen.findByRole('button', { name: /Profile details/i })).toBeEnabled()
+  })
 })
