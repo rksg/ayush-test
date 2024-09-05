@@ -144,7 +144,6 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
           <DetailsSection
-            checkDataRetention
             data-testid='Details'
             title={$t({ defaultMessage: 'Details' })}
             children={<GridRow>
