@@ -101,16 +101,6 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
 
-  useEffect(() => {
-    if (visible) {
-      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
-        setIsValidSoftGre(!!softGreProfileId)
-      } else {
-        setIsValidSoftGre(true)
-      }
-    }
-  }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
-
   const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const hasChangePermission = hasPermission({ scopes: [
     ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : []),
