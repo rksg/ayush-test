@@ -10,10 +10,10 @@ import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
-  useGetSwitchDefaultFirmwareListV1002Query,
+  useGetSwitchDefaultFirmwareListV1001Query,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
-  useGetSwitchVenueVersionListV1002Query,
+  useGetSwitchVenueVersionListV1001Query,
   useGetVenueApModelFirmwareListQuery,
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
@@ -50,7 +50,7 @@ const FWVersionMgmt = () => {
       { skip: isSwitchFirmwareV1002Enabled })
 
   const { data: recommendedSwitchReleaseVersions } =
-    useGetSwitchDefaultFirmwareListV1002Query( { params },
+    useGetSwitchDefaultFirmwareListV1001Query( { params },
       { skip: !isSwitchFirmwareV1002Enabled })
 
   const { data: switchVenueVersionList } =
@@ -58,8 +58,8 @@ const FWVersionMgmt = () => {
       { params, enableRbac: isSwitchRbacEnabled },
       { skip: isSwitchFirmwareV1002Enabled })
 
-  const { data: switchVenueVersionListV1002 } =
-    useGetSwitchVenueVersionListV1002Query(
+  const { data: switchVenueVersionListV1001 } =
+    useGetSwitchVenueVersionListV1001Query(
       { params },
       { skip: !isSwitchFirmwareV1002Enabled })
 
@@ -101,7 +101,7 @@ const FWVersionMgmt = () => {
 
   useEffect(() => {
     if (isSwitchFirmwareV1002Enabled && recommendedSwitchReleaseVersions
-      && switchVenueVersionListV1002) {
+      && switchVenueVersionListV1001) {
 
       const recommended71 = recommendedSwitchReleaseVersions.filter(
         r => r.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].versions[0].id
@@ -110,19 +110,19 @@ const FWVersionMgmt = () => {
       const recommended82 = recommendedSwitchReleaseVersions.filter(
         r => r.modelGroup === SwitchFirmwareModelGroup.ICX82)[0].versions[0].id
 
-      const hasOutdated71 = recommended71 && switchVenueVersionListV1002.data.some(fv =>
+      const hasOutdated71 = recommended71 && switchVenueVersionListV1001.data.some(fv =>
         compareSwitchVersion(recommended71, fv.versions.filter(
           v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.version)) || false
-      const hasOutdated7X = recommended7X && switchVenueVersionListV1002.data.some(fv =>
+      const hasOutdated7X = recommended7X && switchVenueVersionListV1001.data.some(fv =>
         compareSwitchVersion(recommended7X, fv.versions.filter(
           v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX7X)[0]?.version)) || false
-      const hasOutdated82 = recommended82 && switchVenueVersionListV1002.data.some(fv =>
+      const hasOutdated82 = recommended82 && switchVenueVersionListV1001.data.some(fv =>
         compareSwitchVersion(recommended82, fv.versions.filter(
           v=> v.modelGroup=== SwitchFirmwareModelGroup.ICX82)[0]?.version)) || false
 
       setHasRecomendedSwitchFirmware(hasOutdated71 || hasOutdated7X || hasOutdated82)
     }
-  }, [recommendedSwitchReleaseVersions, switchVenueVersionListV1002])
+  }, [recommendedSwitchReleaseVersions, switchVenueVersionListV1001])
 
   useEffect(() => {
     const hasOutdated = edgeVenueVersionList?.some(item=>

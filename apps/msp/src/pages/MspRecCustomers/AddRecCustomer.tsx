@@ -284,7 +284,8 @@ export function AddRecCustomer () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </>

@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-
 import { getJwtHeaders } from '@acx-ui/utils'
+
+import { createApi, fetchBaseQuery } from './baseQuery'
 
 export const smartZoneURL = `${window.location.origin}/analytics/api/rsa-mlisa-smartzone/v1`
 

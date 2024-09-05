@@ -519,7 +519,8 @@ export interface CapabilitiesApModel {
   defaultAntennaType?: ApAntennaTypeEnum,
   supportBandCombination?: boolean,
   bandCombinationCapabilities?: BandModeEnum[],
-  defaultBandCombination?: BandModeEnum
+  defaultBandCombination?: BandModeEnum,
+  supportApStickyClientSteering?: boolean
 }
 
 export interface PingAp {
@@ -886,4 +887,14 @@ export interface SupportCcdApGroup {
   venueId: string,
   members: number,
   aps: APExtended[]
+}
+
+export interface StickyClientSteering {
+  enabled?: boolean
+  snrThreshold?: number
+  neighborApPercentageThreshold?: number
+}
+
+export interface ApStickyClientSteering extends StickyClientSteering {
+  useVenueSettings?: boolean
 }

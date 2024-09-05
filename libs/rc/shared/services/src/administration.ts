@@ -32,7 +32,8 @@ import {
   AdminRbacUrlsInfo,
   NotificationSmsUsage,
   NotificationSmsConfig,
-  TwiliosIncommingPhoneNumbers
+  TwiliosIncommingPhoneNumbers,
+  TwiliosMessagingServices
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -882,8 +883,17 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getTwiliosMessagingServices: build.query<TwiliosMessagingServices, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosMessagingServices,
+          params, { ...ignoreErrorModal })
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
-
   })
 })
 
@@ -964,5 +974,7 @@ export const {
   useUpdateNotificationSmsProviderMutation,
   useDeleteNotificationSmsProviderMutation,
   useGetTwiliosIncomingPhoneNumbersQuery,
-  useLazyGetTwiliosIncomingPhoneNumbersQuery
+  useLazyGetTwiliosIncomingPhoneNumbersQuery,
+  useGetTwiliosMessagingServicesQuery,
+  useLazyGetTwiliosMessagingServicesQuery
 } = administrationApi

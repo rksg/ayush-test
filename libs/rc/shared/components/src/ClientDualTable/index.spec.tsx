@@ -95,7 +95,7 @@ describe('ClientDualTable', () => {
   })
 
   it('should render list correctly(clientMac from path params)', async () => {
-    render(<Provider><ClientDualTable /></Provider>, {
+    render(<Provider><ClientDualTable clientMac={'3C:22:FB:97:C7:EF'}/></Provider>, {
       route: {
         params: { ...params, clientMac: '3C:22:FB:97:C7:EF' },
         path: '/t/:tenantId/users/wifi/clients/search/:clientMac'
@@ -156,6 +156,7 @@ describe('ClientDualTable', () => {
         searchString: '3C:22:FB:97:C7:EF',
         searchTargetFields: [
           'clientMac',
+          'mldAddr',
           'ipAddress',
           'Username',
           'hostname',

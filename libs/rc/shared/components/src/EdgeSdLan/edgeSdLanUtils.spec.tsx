@@ -14,6 +14,7 @@ import {
   edgeSdLanFormRequestPreProcess,
   isGuestTunnelUtilized,
   isSdLanGuestUtilizedOnDiffVenue,
+  isSdLanLastNetworkInVenue,
   tansformSdLanScopedVenueMap,
   useGetNetworkTunnelInfo
 } from './edgeSdLanUtils'
@@ -205,4 +206,26 @@ describe('tansformSdLanScopedVenueMap', () => {
   })
 })
 
+describe('isSdLanLastNetworkInVenue', () => {
+  it('should return true when it is the last one', async () => {
+    const sdlan = mockedMvSdLanDataList[1]
+    const result = isSdLanLastNetworkInVenue(sdlan.tunneledWlans, sdlan.tunneledWlans![0].venueId)
+    expect(result).toBe(true)
+  })
 
+  it('should return false when still have other network on target venue', async () => {
+    const sdlan = mockedMvSdLanDataList[0]
+    const result = isSdLanLastNetworkInVenue(sdlan.tunneledWlans, sdlan.tunneledWlans![0].venueId)
+    expect(result).toBe(false)
+  })
+
+  it('should return false when no venueId', async () => {
+    const result = isSdLanLastNetworkInVenue([])
+    expect(result).toBe(false)
+  })
+
+  it('should return false object when no params given', async () => {
+    const result = isSdLanLastNetworkInVenue()
+    expect(result).toBe(false)
+  })
+})
