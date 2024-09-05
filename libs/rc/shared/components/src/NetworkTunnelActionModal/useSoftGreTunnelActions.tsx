@@ -1,5 +1,7 @@
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
-import { useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
+import { useActivateSoftGreMutation, useDectivateSoftGreMutation, useGetSoftGreViewDataListQuery } from '@acx-ui/rc/services'
+
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
 
 export interface SoftGreNetworkTunnel {
     venueId: string
@@ -71,3 +73,42 @@ export function useGetSoftGreScopeNetworkMap (networkId?: string) {
   return venuesMap
 }
 
+export function useSoftGreTunnelActions () {
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
+  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
+
+  const activateSoftGreTunnel = (
+    venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
+    if (isSoftGreEnabled && formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
+        formValues.softGre?.newProfileId &&
+        formValues.softGre?.oldProfileId !== formValues.softGre?.newProfileId) {
+      return activateSoftGre({
+        params: {
+          venueId,
+          networkId,
+          policyId: formValues.softGre.newProfileId
+        } }).unwrap()
+    }
+    return Promise.resolve()
+
+  }
+
+  const dectivateSoftGreTunnel = (
+    venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
+    if (isSoftGreEnabled && formValues.softGre?.oldProfileId && !formValues.softGre?.newProfileId) {
+      return dectivateSoftGre({
+        params: {
+          venueId,
+          networkId,
+          policyId: formValues.softGre.oldProfileId
+        } }).unwrap()
+    }
+    return Promise.resolve()
+  }
+
+  return {
+    activateSoftGreTunnel,
+    dectivateSoftGreTunnel
+  }
+}

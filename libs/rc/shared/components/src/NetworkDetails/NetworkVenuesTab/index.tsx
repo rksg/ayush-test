@@ -29,9 +29,7 @@ import {
   useDeleteNetworkVenuesTemplateMutation,
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
-  useNewNetworkVenueTableQuery,
-  useDectivateSoftGreMutation,
-  useActivateSoftGreMutation
+  useNewNetworkVenueTableQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -56,9 +54,14 @@ import { useGetNetworkTunnelInfo }                                              
 import { useSdLanScopedNetworkVenues, checkSdLanScopedNetworkDeactivateAction } from '../../EdgeSdLan/useEdgeSdLanActions'
 import {
   NetworkApGroupDialog } from '../../NetworkApGroupDialog'
-import { NetworkTunnelActionModal, NetworkTunnelActionModalProps, NetworkTunnelInfoButton, useGetSoftGreScopeNetworkMap } from '../../NetworkTunnelActionModal'
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum }                                                                 from '../../NetworkTunnelActionModal/types'
-import { useUpdateNetworkTunnelAction }                                                                                   from '../../NetworkTunnelActionModal/utils'
+import { NetworkTunnelActionModal,
+  NetworkTunnelActionModalProps,
+  NetworkTunnelInfoButton,
+  useGetSoftGreScopeNetworkMap,
+  useSoftGreTunnelActions
+} from '../../NetworkTunnelActionModal'
+import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from '../../NetworkTunnelActionModal/types'
+import { useUpdateNetworkTunnelAction }                   from '../../NetworkTunnelActionModal/utils'
 import {
   NetworkVenueScheduleDialog
 } from '../../NetworkVenueScheduleDialog'
@@ -243,10 +246,9 @@ export function NetworkVenuesTab () {
 
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const softGreVenueMap = useGetSoftGreScopeNetworkMap(networkId)
+  const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
-  const [ activateSoftGre ] = useActivateSoftGreMutation()
-  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
@@ -788,25 +790,10 @@ export function NetworkVenuesTab () {
     const { tunnelTypeInitVal, network, venueSdLan } = otherData
 
     try{
-      if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
-        formValues.softGre.newProfileId &&
-        formValues.softGre.oldProfileId !== formValues.softGre.newProfileId) {
-        await activateSoftGre({
-          params: {
-            venueId: network!.venueId,
-            networkId: network!.id,
-            policyId: formValues.softGre.newProfileId
-          } })
-      } else if (formValues.softGre?.oldProfileId) {
-        await dectivateSoftGre({
-          params: {
-            venueId: network!.venueId,
-            networkId: network!.id,
-            policyId: formValues.softGre.oldProfileId
-          } })
-      }
+      await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
+      await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
 

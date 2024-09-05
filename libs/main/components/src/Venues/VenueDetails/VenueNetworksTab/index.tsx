@@ -30,7 +30,8 @@ import {
   NetworkTunnelActionForm,
   useUpdateNetworkTunnelAction,
   NetworkTunnelTypeEnum,
-  useGetSoftGreScopeVenueMap
+  useGetSoftGreScopeVenueMap,
+  useSoftGreTunnelActions
 } from '@acx-ui/rc/components'
 import {
   useAddNetworkVenueMutation,
@@ -44,9 +45,7 @@ import {
   useScheduleSlotIndexMap,
   useGetVLANPoolPolicyViewModelListQuery,
   useNewVenueNetworkTableQuery,
-  useVenuesListQuery,
-  useActivateSoftGreMutation,
-  useDectivateSoftGreMutation
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -205,8 +204,6 @@ export function VenueNetworksTab () {
     useMutationFn: useDeleteNetworkVenueMutation,
     useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
   })
-  const [ activateSoftGre ] = useActivateSoftGreMutation()
-  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
 
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeMvSdLanReady = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
@@ -214,6 +211,7 @@ export function VenueNetworksTab () {
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const softGreVenueMap = useGetSoftGreScopeVenueMap()
+  const softGreTunnelActions = useSoftGreTunnelActions()
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
   const updateSdLanNetworkTunnel = useUpdateNetworkTunnelAction()
   // const { toggleNetwork } = useEdgeMvSdLanActions()
@@ -643,24 +641,10 @@ export function VenueNetworksTab () {
     const { tunnelTypeInitVal, network, venueSdLan } = otherData
 
     try {
-      if (formValues.tunnelType === NetworkTunnelTypeEnum.SoftGre &&
-        formValues.softGre.newProfileId &&
-        formValues.softGre.oldProfileId !== formValues.softGre.newProfileId) {
-        await activateSoftGre({
-          params: {
-            ...params,
-            networkId: network!.id,
-            policyId: formValues.softGre.newProfileId
-          } })
-      } else if (formValues.softGre?.oldProfileId) {
-        await dectivateSoftGre({
-          params: { ...params,
-            networkId: network!.id,
-            policyId: formValues.softGre.oldProfileId
-          } })
-      }
+      await softGreTunnelActions.dectivateSoftGreTunnel(network!.venueId, network!.id, formValues)
 
       const shouldCloseModal = await updateSdLanNetworkTunnel(formValues, tunnelModalState.network, tunnelTypeInitVal, venueSdLan)
+      await softGreTunnelActions.activateSoftGreTunnel(network!.venueId, network!.id, formValues)
       if (shouldCloseModal !== false)
         handleCloseTunnelModal()
     } catch (e){

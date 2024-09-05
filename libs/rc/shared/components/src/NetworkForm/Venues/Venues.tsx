@@ -684,7 +684,8 @@ export function Venues (props: VenuesProps) {
     })
   }
 
-  const handleSoftGreTunnelAction = async (modalFormValues: NetworkTunnelActionForm) => {
+  const handleSoftGreTunnelAction = (modalFormValues: NetworkTunnelActionForm) => {
+    if (!isSoftGreEnabled) return
     const networkVenueId = tunnelModalState.network?.venueId
     const softGreAssociationUpdate = form.getFieldValue('softGreAssociationUpdate') ??
     {} as NetworkTunnelSoftGreAction

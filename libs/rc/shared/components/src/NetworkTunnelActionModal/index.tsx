@@ -11,14 +11,14 @@ import { getIntl }                                                         from 
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-import { EdgeSdLanRadioOption }                                                           from './EdgeSdLanRadioOption'
-import { NetworkTunnelInfoButton }                                                        from './NetworkTunnelInfoButton'
-import * as UI                                                                            from './styledComponents'
-import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                                 from './types'
-import { useEdgeMvSdLanData }                                                             from './useEdgeMvSdLanData'
-import { SoftGreNetworkTunnel, useGetSoftGreScopeVenueMap, useGetSoftGreScopeNetworkMap } from './useSoftGreTunnelActions'
-import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction }         from './utils'
-import WifiSoftGreRadioOption                                                             from './WifiSoftGreRadioOption'
+import { EdgeSdLanRadioOption }                                                                                    from './EdgeSdLanRadioOption'
+import { NetworkTunnelInfoButton }                                                                                 from './NetworkTunnelInfoButton'
+import * as UI                                                                                                     from './styledComponents'
+import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                                                          from './types'
+import { useEdgeMvSdLanData }                                                                                      from './useEdgeMvSdLanData'
+import { SoftGreNetworkTunnel, useGetSoftGreScopeVenueMap, useGetSoftGreScopeNetworkMap, useSoftGreTunnelActions } from './useSoftGreTunnelActions'
+import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction }                                  from './utils'
+import WifiSoftGreRadioOption                                                                                      from './WifiSoftGreRadioOption'
 
 export interface NetworkTunnelActionModalProps {
   visible: boolean
@@ -193,7 +193,8 @@ export {
   useUpdateNetworkTunnelAction,
   type SoftGreNetworkTunnel,
   useGetSoftGreScopeVenueMap,
-  useGetSoftGreScopeNetworkMap
+  useGetSoftGreScopeNetworkMap,
+  useSoftGreTunnelActions
 }
 
 // eslint-disable-next-line max-len
