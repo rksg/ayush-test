@@ -7,6 +7,7 @@ import { mocked as mockedCBandbalancingEnable }        from './AIOperations/__te
 import { mocked as mockedCBandbalancingEnableBelow61 } from './AIOperations/__tests__/mockedCBandbalancingEnableBelow61'
 import { mocked as mockedCBandbalancingProactive }     from './AIOperations/__tests__/mockedCBandbalancingProactive'
 import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__tests__/mockedCDfschannelsDisable'
+import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
 import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
 import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { IntentAIForm }                                from './IntentAIForm'
@@ -35,6 +36,10 @@ jest.mock('./AIOperations/CTxpowerSame', () => ({
 jest.mock('./AIOperations/CDfschannelsDisable', () => ({
   kpis: [],
   IntentAIForm: () => <div data-testid='c-dfschannels-disable-IntentAIForm'/>
+}))
+jest.mock('./AIOperations/CDfschannelsEnable', () => ({
+  kpis: [],
+  IntentAIForm: () => <div data-testid='c-dfschannels-enable-IntentAIForm'/>
 }))
 jest.mock('./AIOperations/CAclbEnable', () => ({
   kpis: [],
@@ -92,6 +97,11 @@ describe('IntentAIForm', () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
         data: { intent: mockedCDfschannelsDisable } })
       await renderAIOperations(mockedCDfschannelsDisable.code)
+    })
+    it('should render for CDfschannelsEnable', async () => {
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
+        data: { intent: mockedCDfschannelsEnable } })
+      await renderAIOperations(mockedCDfschannelsEnable.code)
     })
     it('should render for CAclbEnable', async () => {
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', {

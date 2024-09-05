@@ -24,41 +24,34 @@ import { Reason }                from './SideNotes/Reason'
 import { Tradeoff }              from './SideNotes/Tradeoff'
 
 export const configuration: IntentConfigurationConfig = {
-  label: defineMessage({ defaultMessage: '2.4 GHz TX Power Adjustment' }),
-  valueFormatter: formatter('txFormat')
+  label: defineMessage({ defaultMessage: 'DFS Channels' }),
+  valueFormatter: formatter('enabledFormat')
 }
 
-export const kpis: IntentKPIConfig[] = [
-  {
-    key: 'session-time-on-24GHz',
-    label: defineMessage({ defaultMessage: 'Session time on 2.4 GHz' }),
-    format: formatter('percentFormat'),
-    deltaSign: '-' },
-  {
-    key: 'co-channel-interference-ratio',
-    label: defineMessage({ defaultMessage: 'Co-channel Interference Ratio' }),
-    format: formatter('percentFormat'),
-    deltaSign: '-'
-  }
-]
+export const kpis: IntentKPIConfig[] = [{
+  key: 'co-channel-interference-ratio',
+  label: defineMessage({ defaultMessage: 'Co-channel Interference Ratio' }),
+  format: formatter('percentFormat'),
+  deltaSign: '-'
+}]
 
 const useValuesText = createUseValuesText({
   intro: defineMessage({ defaultMessage: `
     <p>
-      <b>Optimize for 5 GHz, reduce 2.4 GHz power:</b>
-      This option prioritizes the 5 GHz band by decreasing the transmit power of the 2.4 GHz band, aiming to improve overall network performance and reliability by encouraging device connection to the less congested 5 GHz band.
+      <b>Activate DFS for expanded channel options and performance:</b>
+      Enabling Dynamic Frequency Selection (DFS) opens up additional Wi-Fi channels in the 5 GHz band, which can reduce congestion and improve overall network performance by utilizing less crowded frequencies.
     </p>
     <p>
-      <b>Preserve 2.4 GHz range, keep power unchanged:</b>
-      This option maintains the transmit power of the 2.4 GHz band to preserve its range and ensure broader coverage, prioritizing compatibility and connectivity for devices that rely on the 2.4 GHz band.
+      <b>Keep DFS off to avoid interference and disruptions:</b>
+      Disabling DFS avoids potential interference with radar systems and the associated disruptions, maintaining more predictable and stable Wi-Fi operation without the need for radar detection and channel switching.
     </p>
   ` }),
-  action: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on 2.4 GHz and 5 GHz/6 GHz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz/6 GHz.' }),
-  reason: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz/6 GHz and reduces co-channel interference.' }),
+  action: defineMessage({ defaultMessage: '{scope} does not have DFS channels enabled, it is recommended to enable DFS Channels for radio 5 GHz.' }),
+  reason: defineMessage({ defaultMessage: 'Enabling DFS channels will give better channel availability to the AP and enable AP to pick the best available channel. This shall help in reducing co-channel interference and help in improving user experience and throughput for 5 GHz Wi-Fi connections.' }),
   tradeoff: defineMessage({ defaultMessage: `
-    <p>Devices that rely solely on the 2.4 GHz band may experience reduced signal strength and potentially slower speeds, particularly if they are located at the edge of coverage areas or in areas with obstacles that attenuate 5 GHz signals.</p>
+    <p>DFS activation may cause occasional disruptions due to radar detection and mandatory channel switching, impacting real-time applications like audio and video calls, and possibly causing brief connectivity interruptions.</p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic reduction of Transmit Power setting for 2.4 GHz in the network.' })
+  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.' })
 })
 
 export const IntentAIDetails = createIntentAIDetails(useValuesText)
@@ -69,7 +62,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will reduce 2.4 GHz power for this network. This change will enhance 5 GHz network performance by encouraging device connection to the less congested 5 GHz band, resulting in faster speeds and improved reliability for compatible devices.</p>
+        <p>IntentAI will enable DFS Radar channels for this network, allowing access to more channels in the Wi-Fi network hence reducing congestion and enhancing Wi-Fi performance by leveraging less crowded frequencies. </p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />

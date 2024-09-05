@@ -5,6 +5,7 @@ import * as CAclbEnable                from './AIOperations/CAclbEnable'
 import * as CBandbalancingEnable       from './AIOperations/CBandbalancingEnable'
 import * as CBandbalancingProactive    from './AIOperations/CBandbalancingProactive'
 import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
+import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
 import { createIntentContextProvider } from './IntentContext'
@@ -16,6 +17,7 @@ export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
   'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
   'c-txpower-same': CTxpowerSame,
   'c-dfschannels-disable': CDfschannelsDisable,
+  'c-dfschannels-enable': CDfschannelsEnable,
   'c-aclb-enable': CAclbEnable,
   'c-bandbalancing-enable': CBandbalancingEnable,
   'c-bandbalancing-enable-below-61': CBandbalancingEnable,

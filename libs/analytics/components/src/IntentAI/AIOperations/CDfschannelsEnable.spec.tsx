@@ -10,8 +10,8 @@ import { useIntentContext } from '../IntentContext'
 import { Statuses }         from '../states'
 import { Intent }           from '../useIntentDetailsQuery'
 
-import { mocked }                                             from './__tests__/mockedCTxpowerSame'
-import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CTxpowerSame'
+import { mocked }                                             from './__tests__/mockedCDfschannelsEnable'
+import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CDfschannelsEnable'
 
 const { click, selectOptions } = userEvent
 
@@ -76,13 +76,23 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 }
 
 describe('IntentAIDetails', () => {
+  const originalEnv = process.env
+
+  beforeEach(() => {
+    process.env = { ...originalEnv }
+  })
+
+  afterAll(() => {
+    process.env = originalEnv
+  })
+
   it('should handle when status is paused/na', async () => {
     const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic reduction of Transmit Power setting for 2.4 GHz in the network.')).toBeVisible()
+    expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     const kpiElements = await screen.findAllByTestId('KPI')
@@ -91,14 +101,13 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
-
   it('should render', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.new })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Venue: CHETHAN-HOME is configured with the same transmit power on 2.4 GHz and 5 GHz/6 GHz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz/6 GHz.')).toBeVisible()
+    expect(await screen.findByText('Venue: pazhyannur-zone does not have DFS channels enabled, it is recommended to enable DFS Channels for radio 5 GHz.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     const kpiElements = await screen.findAllByTestId('KPI')
@@ -136,7 +145,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
-    expect(await screen.findByText('Recommended Configuration: -1dB')).toBeVisible()
+    expect(await screen.findByText('Recommended Configuration: --')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
