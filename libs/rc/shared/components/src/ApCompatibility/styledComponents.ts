@@ -5,7 +5,8 @@ import {
   CheckMarkCircleSolid,
   WarningTriangleSolid,
   Unknown,
-  MinusCircleSolid
+  MinusCircleSolid,
+  InProgress
 } from '@acx-ui/icons'
 
 export const StyledWrapper = styled.div`
@@ -45,6 +46,16 @@ export const UnavailableIcon = styled(MinusCircleSolid)`
   path:nth-child(2) {
     stroke: var(--acx-neutrals-50);
   }
+`
+
+export const CheckingIcon = styled(InProgress)`
+  circle {
+    fill: var(--acx-neutrals-50);
+    stroke: var(--acx-neutrals-50);
+  }
+  width: 22px;
+  height: 22px;
+  transform: scale(0.8);
 `
 
 export const TableStyleWrapper = styled.div`
