@@ -19,7 +19,6 @@ import {
   formattedPath
 } from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Drawer, Tooltip, Button } from '@acx-ui/components'
-import { get }                                         from '@acx-ui/config'
 import { DateFormatEnum, formatter }                   from '@acx-ui/formatter'
 import {
   DownloadOutlined
@@ -282,11 +281,10 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={hasCrossVenuesPermission() &&
-          (hasPermission({
-            permission: 'WRITE_INCIDENTS',
-            scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
-          }) || !get('IS_MLISA_SA')) && {
+        rowSelection={hasCrossVenuesPermission() && hasPermission({
+          permission: 'WRITE_INCIDENTS',
+          scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+        }) && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {
