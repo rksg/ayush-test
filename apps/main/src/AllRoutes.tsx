@@ -30,11 +30,11 @@ import { UserProfile }                                      from './pages/UserPr
 import UsersBase                                            from './pages/Users'
 import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
 
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
-/* eslint-enable @nrwl/nx/enforce-module-boundaries */
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
