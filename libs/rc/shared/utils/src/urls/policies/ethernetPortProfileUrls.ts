@@ -64,7 +64,7 @@ export const EthernetPortProfileUrls: { [key: string]: ApiInfo } = {
   },
   activateEthernetPortProfileOnApPortId: {
     method: 'put',
-    url: '/venues/:venueId/apModels/:apModel/lanPorts/:portId/ethernetPortProfiles/:id',
+    url: '/venues/:venueId/aps/:serialNumber/lanPorts/:portId/ethernetPortProfiles/:id',
     newApi: true
   }
 }
