@@ -43,7 +43,8 @@ import {
   SWITCH_DEFAULT_VLAN_NAME,
   ProfileTypeEnum,
   PortSettingModel,
-  Vlan
+  Vlan,
+  isVerGEVer
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { store }         from '@acx-ui/store'
@@ -158,6 +159,8 @@ export function EditPortDrawer ({
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitch785048CPortSpeedEnabled =
+    useIsSplitOn(Features.SWITCH_ICX7850_48C_SUPPORT_PORT_SPEED_TOGGLE)
 
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
@@ -347,7 +350,14 @@ export function EditPortDrawer ({
       const vlanUsedByVe = veRouted?.filter(v => v?.portNumber)
         ?.[0]?.portNumber?.split('-')?.[2] || ''
 
-      const portSpeed = getPortSpeed(selectedPorts)
+      let portSpeed = getPortSpeed(selectedPorts)
+      if (!isSwitch785048CPortSpeedEnabled &&
+        selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
+        switchDetail?.firmware &&
+        !isVerGEVer(switchDetail?.firmware, '10010e', false)) {
+        portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
+      }
+
       const defaultVlans = switchesDefaultVlan
         ? _.uniq(Object.values(switchesDefaultVlan)?.map(v => v?.defaultVlanId.toString()))
         : []
