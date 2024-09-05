@@ -9,9 +9,9 @@ import {
   Subtitle,
   useStepFormContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
-import { useGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }                  from '@acx-ui/rc/components'
+import { useBatchGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   compareSwitchVersion,
   SwitchFirmwareVersion1002,
@@ -56,13 +56,18 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1001Query({
-    payload: {
+  const { data: getSwitchFirmwareList } = useBatchGetSwitchFirmwareListV1001Query(
+    [{ payload: {
       venueIdList: upgradeVenueList.map(item => item.venueId),
-      searchFilter: 'ICX7150-C08P',
+      searchFilter: 'ICX8200-24PV',
       searchTargetFields: ['model']
-    }
-  }, { skip: upgradeVenueList.length === 0 })
+    } },
+    { payload: {
+      venueIdList: upgradeVenueList.map(item => item.venueId),
+      searchFilter: 'ICX8200-C08PFV',
+      searchTargetFields: ['model']
+    } } ]
+    , { skip: upgradeVenueList.length === 0 })
 
   useEffect(() => {
     let noteData: NoteProps[] = []
