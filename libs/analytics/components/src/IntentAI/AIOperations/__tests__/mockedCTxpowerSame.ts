@@ -57,6 +57,6 @@ export const mocked = {
     data: { timestamp: '2024-09-02T00:00:00.000Z', result: 0.9059967585089141 },
     compareData: null
   },
-  currentValue: '_FULL',
-  recommendedValue: '_1DB'
+  currentValue: 'Full',
+  recommendedValue: '-1dB'
 } as unknown as Intent

@@ -25,7 +25,7 @@ import { Tradeoff }              from './SideNotes/Tradeoff'
 
 export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: '2.4 GHz TX Power Adjustment' }),
-  valueFormatter: formatter('noFormat')
+  valueFormatter: formatter('txFormat')
 }
 
 export const kpis: IntentKPIConfig[] = [{
