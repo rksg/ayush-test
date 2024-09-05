@@ -14,7 +14,7 @@ import {
   Network,
   NetworkDetail, NetworkVenue,
   NewApGroupViewModelResponseType,
-  PoliciesConfigTemplateUrlsInfo,
+  PoliciesConfigTemplateUrlsInfo, RadioEnum,
   TableResult,
   Venue,
   VlanPoolRbacUrls,
@@ -922,55 +922,63 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
       }
       const updateNetworkVenueQuery = await fetchWithBQ(updateNetworkVenueInfo)
 
-      if (enableRbac && newPayload?.apGroups && oldPayload?.apGroups) {
-        const {
-          updateApGroups,
-          addApGroups,
-          deleteApGroups
-        } = apGroupsChangeSet(newPayload, oldPayload)
+      if (enableRbac) {
+        // per ap groups settings and skip the all ap groups setting
+        if (!newPayload?.isAllApGroups && newPayload?.apGroups && oldPayload?.apGroups) {
+          const {
+            updateApGroups,
+            addApGroups,
+            deleteApGroups
+          } = apGroupsChangeSet(newPayload, oldPayload)
 
-        if (addApGroups.length > 0) {
-          await Promise.all(addApGroups.map(apGroup => {
-            const apGroupSettingReq = {
-              ...createHttpRequest(
-                isTemplate ? ConfigTemplateUrlsInfo.activateVenueApGroupRbac : WifiRbacUrlsInfo.activateVenueApGroup, {
-                  venueId: apGroup.venueId || newPayload.venueId,
-                  networkId: apGroup.networkId || newPayload.networkId,
-                  apGroupId: apGroup.apGroupId
-                })
-            }
-            return fetchWithBQ(apGroupSettingReq)
-          }))
+          if (addApGroups.length > 0) {
+            await Promise.all(addApGroups.map(apGroup => {
+              // add ap group but not for the default setting
+              if (apGroup.radio !== RadioEnum.Both) {
+                updateApGroups.push(apGroup)
+              }
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  isTemplate ? ConfigTemplateUrlsInfo.activateVenueApGroupRbac : WifiRbacUrlsInfo.activateVenueApGroup, {
+                    venueId: apGroup.venueId || newPayload.venueId,
+                    networkId: apGroup.networkId || newPayload.networkId,
+                    apGroupId: apGroup.apGroupId
+                  })
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
+
+          if (updateApGroups.length > 0) {
+            await Promise.all(updateApGroups.map(apGroup => {
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  isTemplate ? ConfigTemplateUrlsInfo.updateVenueApGroupsRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
+                    venueId: apGroup.venueId || newPayload.venueId,
+                    networkId: apGroup.networkId || newPayload.networkId,
+                    apGroupId: apGroup.apGroupId
+                  }),
+                body: JSON.stringify(apGroup)
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
+
+          if (deleteApGroups.length > 0) {
+            await Promise.all(deleteApGroups.map(apGroup => {
+              const apGroupSettingReq = {
+                ...createHttpRequest(
+                  isTemplate ? ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac : WifiRbacUrlsInfo.deactivateVenueApGroup, {
+                    venueId: apGroup.venueId || oldPayload.venueId,
+                    networkId: apGroup.networkId || oldPayload.networkId,
+                    apGroupId: apGroup.apGroupId
+                  })
+              }
+              return fetchWithBQ(apGroupSettingReq)
+            }))
+          }
         }
 
-        if (updateApGroups.length > 0) {
-          await Promise.all(updateApGroups.map(apGroup => {
-            const apGroupSettingReq = {
-              ...createHttpRequest(
-                isTemplate ? ConfigTemplateUrlsInfo.updateVenueApGroupsRbac : WifiRbacUrlsInfo.updateVenueApGroups, {
-                  venueId: apGroup.venueId || newPayload.venueId,
-                  networkId: apGroup.networkId || newPayload.networkId,
-                  apGroupId: apGroup.apGroupId
-                }),
-              body: JSON.stringify(apGroup)
-            }
-            return fetchWithBQ(apGroupSettingReq)
-          }))
-        }
-
-        if (deleteApGroups.length > 0) {
-          await Promise.all(deleteApGroups.map(apGroup => {
-            const apGroupSettingReq = {
-              ...createHttpRequest(
-                isTemplate ? ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac : WifiRbacUrlsInfo.deactivateVenueApGroup, {
-                  venueId: apGroup.venueId || oldPayload.venueId,
-                  networkId: apGroup.networkId || oldPayload.networkId,
-                  apGroupId: apGroup.apGroupId
-                })
-            }
-            return fetchWithBQ(apGroupSettingReq)
-          }))
-        }
       }
 
       return updateNetworkVenueQuery.data

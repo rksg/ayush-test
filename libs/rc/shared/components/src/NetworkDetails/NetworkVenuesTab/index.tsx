@@ -71,8 +71,7 @@ import { useGetNetwork }         from '../services'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
 
-
-const defaultPayload = {
+const basePayload = {
   searchString: '',
   fields: [
     'name',
@@ -99,33 +98,15 @@ const defaultPayload = {
   searchTargetFields: ['name']
 }
 
+const defaultPayload = { ...basePayload }
+
 const defaultRbacPayload = {
-  searchString: '',
+  ...basePayload,
   fields: [
-    'name',
-    'id',
-    'description',
-    'city',
-    'country',
-    'networks',
-    'aggregatedApStatus',
-    'radios',
-    'aps',
-    'activated',
-    'vlan',
-    'scheduling',
-    'switches',
-    'switchClients',
-    'latitude',
-    'longitude',
-    'mesh',
-    'status',
-    'isOweMaster',
-    'owePairNetworkId',
+    ...basePayload.fields,
     'venueApGroups',
     'incompatible'
-  ],
-  searchTargetFields: ['name']
+  ]
 }
 
 const useNetworkVenueList = (props: { settingsId: string, networkId?: string } ) => {
