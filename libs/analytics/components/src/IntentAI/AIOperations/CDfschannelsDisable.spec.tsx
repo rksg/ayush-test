@@ -111,7 +111,7 @@ describe('IntentAIDetails', () => {
   })
 
   it('should render', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.new })
+    const { params } = mockIntentContextWith()
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()

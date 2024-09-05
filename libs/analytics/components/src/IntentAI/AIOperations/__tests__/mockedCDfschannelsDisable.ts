@@ -5,7 +5,7 @@ export const mocked = {
   root: '04442d1c-6dc3-4959-a57e-a0bc3d3b0291',
   code: 'c-dfschannels-disable',
   sliceId: '6f02e6f8-b246-4d3b-be84-957aeef1beb7',
-  status: 'na',
+  status: 'new',
   metadata: { failures: ['dual-5g-disabled-or-no-R760', 'for-country-us'] },
   sliceType: 'zone',
   sliceValue: 'AlphaNet_5_1',
@@ -15,6 +15,12 @@ export const mocked = {
     { type: 'zone', name: 'AlphaNet_5_1' }
   ],
   statusTrail: [
+    {
+      createdAt: '2024-08-29T06:05:49.505Z',
+      displayStatus: 'new',
+      status: 'new',
+      statusReason: null
+    },
     {
       createdAt: '2024-08-28T06:05:52.459Z',
       displayStatus: 'na-verified',

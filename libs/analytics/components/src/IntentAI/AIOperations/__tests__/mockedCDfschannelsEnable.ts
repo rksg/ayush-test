@@ -5,7 +5,7 @@ export const mocked = {
   root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   code: 'c-dfschannels-enable',
   sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
-  status: 'na',
+  status: 'new',
   metadata: { failures: ['dfs-channel-5g-disabled'] },
   sliceType: 'zone',
   sliceValue: 'pazhyannur-zone',
@@ -15,6 +15,12 @@ export const mocked = {
     { type: 'zone', name: 'pazhyannur-zone' }
   ],
   statusTrail: [
+    {
+      status: 'new',
+      statusReason: null,
+      displayStatus: 'new',
+      createdAt: '2024-08-29T06:05:49.505Z'
+    },
     {
       status: 'na',
       statusReason: 'verified',
