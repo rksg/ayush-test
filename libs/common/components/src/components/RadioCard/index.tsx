@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { RadioProps }                                from 'antd'
+import { RadioProps, Space }                         from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { getTitleWithIndicator } from '../BetaIndicator'
@@ -55,7 +55,7 @@ export function RadioCard ({
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
-      { isBetaFeature ? getTitleWithIndicator(title as string) : title }
+      { isBetaFeature ? getTitleWithIndicator(title as string) : <Space>{title}</Space> }
     </Title>
     <Description>{description}</Description>
     { categories.length > 0 &&
