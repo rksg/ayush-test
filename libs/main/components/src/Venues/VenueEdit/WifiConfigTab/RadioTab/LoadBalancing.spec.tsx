@@ -81,6 +81,7 @@ describe('Venue Load Balancing', () => {
     expect(await screen.findByRole('radio', { name: /Based on Client Count/i })).toBeVisible()
     // turn off load balancing switch button
     await userEvent.click((await screen.findByTestId('load-balancing-enabled')))
+    expect(await screen.findByTestId('load-balancing-off-warning-text')).toBeInTheDocument()
     expect(screen.queryByRole('radio', { name: /Based on Client Count/i })).toBeNull()
 
     // turn off band load balancing switch button

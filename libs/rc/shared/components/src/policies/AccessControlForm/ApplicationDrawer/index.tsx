@@ -38,6 +38,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
+import { PROFILE_MAX_COUNT_APPLICATION_POLICY_RULES }                  from '../../AccessControl/constants'
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
 import { useScrollLock }                                               from '../ScrollLock'
@@ -486,7 +487,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 
   }
 
-  const actions = !isViewMode() ? [{
+  // eslint-disable-next-line max-len
+  const actions = !isViewMode() && applicationsRuleList.length < PROFILE_MAX_COUNT_APPLICATION_POLICY_RULES ? [{
     label: $t({ defaultMessage: 'Add' }),
     onClick: handleAddAction
   }] : []

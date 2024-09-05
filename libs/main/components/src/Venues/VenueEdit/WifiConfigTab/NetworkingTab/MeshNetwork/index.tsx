@@ -511,9 +511,15 @@ export function MeshNetwork () {
                 <Radio value='5-6-GHz' data-testid='radio56'>
                   {$t({ defaultMessage: '5 & 6 GHz' })}
                 </Radio>
-                <Radio value='5-GHz' data-testid='radio5'>
-                  {$t({ defaultMessage: '5 GHz' })}
-                </Radio>
+                <Tooltip
+                  title={$t({
+                    defaultMessage: 'When selecting the 5GHz radio to link other mesh APs, 2R APs (2/6) will form mesh on the 5GHz band.'
+                  })}
+                >
+                  <Radio value='5-GHz' data-testid='radio5'>
+                    {$t({ defaultMessage: '5 GHz' })}
+                  </Radio>
+                </Tooltip>
                 {
                   isSupport6GRadio ? (
                     <Radio value='6-GHz' data-testid='radio6'>

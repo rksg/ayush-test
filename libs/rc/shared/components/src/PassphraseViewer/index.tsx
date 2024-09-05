@@ -4,7 +4,7 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Tooltip, PasswordInput } from '@acx-ui/components'
-import { CopyOutlined }                   from '@acx-ui/icons'
+import { CopyOutlined }                   from '@acx-ui/icons-new'
 
 export function PassphraseViewer (props: { passphrase: string }) {
   const { $t } = useIntl()
@@ -17,8 +17,8 @@ export function PassphraseViewer (props: { passphrase: string }) {
       <PasswordInput readOnly style={{ paddingLeft: 0 }} bordered={false} value={passphrase} />
       <Tooltip title={copyButtonTooltip}>
         <Button
-          type='link'
-          icon={<CopyOutlined />}
+          ghost
+          icon={<CopyOutlined size='sm' />}
           onMouseOut={() => setCopyTooltip(copyButtonTooltipDefaultText)}
           onClick={() => {
             navigator.clipboard.writeText(passphrase)
