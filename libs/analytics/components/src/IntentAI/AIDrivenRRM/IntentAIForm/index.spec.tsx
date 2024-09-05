@@ -100,7 +100,7 @@ describe('IntentAIForm', () => {
 
     // Step 2
     await screen.findAllByRole('heading', { name: 'Intent Priority' })
-    expect(await screen.findByText('Potential trade-off?')).toBeVisible()
+    expect(await screen.findByText('Potential trade-off')).toBeVisible()
     await click(screen.getByRole('radio', {
       name: 'High client throughput in sparse network'
     }))
