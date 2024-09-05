@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import {  Form, FormInstance, Radio, Row, Space, Select } from 'antd'
-import { DefaultOptionType }                              from 'antd/lib/select'
-import { useIntl }                                        from 'react-intl'
+import {  Form, Radio, Row, Space, Select } from 'antd'
+import { DefaultOptionType }                from 'antd/lib/select'
+import { useIntl }                          from 'react-intl'
 
 import { useGetSoftGreOptionsQuery }               from '@acx-ui/rc/services'
 import { WifiScopes }                              from '@acx-ui/types'
@@ -11,8 +11,8 @@ import { hasPermission, hasCrossVenuesPermission } from '@acx-ui/user'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
-import * as UI                                            from './styledComponents'
-import { NetworkTunnelActionForm, NetworkTunnelTypeEnum } from './types'
+import * as UI                   from './styledComponents'
+import { NetworkTunnelTypeEnum } from './types'
 
 const defaultPayload = {
   fields: ['id', 'name', 'activations'],
@@ -23,14 +23,14 @@ const defaultPayload = {
 }
 
 interface WiFISoftGreRadioOptionProps {
-  form: FormInstance<NetworkTunnelActionForm>
   currentTunnelType: NetworkTunnelTypeEnum
   venueId: string
   networkId?: string
 }
 
 export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionProps) {
-  const { form, currentTunnelType, venueId, networkId } = props
+  const { currentTunnelType, venueId, networkId } = props
+  const form = Form.useFormInstance()
   const { $t } = useIntl()
   const [ detailDrawerVisible, setDetailDrawerVisible ] = useState<boolean>(false)
   const [ addDrawerVisible, setAddDrawerVisible ] = useState<boolean>(false)

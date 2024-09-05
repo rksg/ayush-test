@@ -69,10 +69,10 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
       <Row>
         <Col span={isDrawerMode ? 16 : 11}>
           <Form.Item
+            {...(readMode? undefined : { name: 'name' })}
             hidden={readMode}
-            name='name'
             label={$t({ defaultMessage: 'Profile Name' })}
-            rules={readMode ? [] : [
+            rules={readMode ? undefined : [
               { required: true },
               { min: 2 },
               { max: 32 },
@@ -86,19 +86,19 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             children={readMode ? softGreData?.name : <Input/>}
           />
           <Form.Item
-            name='description'
+            {...(readMode? undefined : { name: 'description' })}
             label={$t({ defaultMessage: 'Description' })}
             initialValue=''
-            rules={readMode? [] : [{ max: 64 } ]}
+            rules={readMode? undefined : [{ max: 64 } ]}
             children={
               readMode ? softGreData?.description || noDataDisplay
                 : <Input.TextArea rows={2} />
             }
           />
           <Form.Item
-            name='primaryGatewayAddress'
+            {...(readMode? undefined : { name: 'primaryGatewayAddress' })}
             label={$t({ defaultMessage: 'Tunnel Primary Gateway Address' })}
-            rules={readMode ? [] : [
+            rules={readMode ? undefined : [
               { required: true },
               { validator: (_, value) => networkWifiIpRegExp(value) }
             ]}
@@ -109,9 +109,9 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
             }
           />
           <Form.Item
-            name='secondaryGatewayAddress'
+            {...(readMode? undefined : { name: 'secondaryGatewayAddress' })}
             label={$t({ defaultMessage: 'Tunnel Secondary Gateway Address' })}
-            rules={readMode ? [] : [
+            rules={readMode ? undefined : [
               { validator: (_, value) => networkWifiIpRegExp(value) },
               { validator: (_, value) => {
                 const primaryGatewayAddress = form.getFieldValue('primaryGatewayAddress')
@@ -129,7 +129,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
         </Col>
         <Col span={24}>
           <Form.Item
-            name='mtuType'
+            {...(readMode? undefined : { name: 'mtuType' })}
             initialValue={MtuTypeEnum.AUTO}
             label={$t({ defaultMessage: 'Gateway Path MTU Mode' })}
             tooltip={readMode ? null : $t(messageMapping.mtu_tooltip)}
@@ -257,7 +257,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
                 <Form.Item
                   name='keepAliveRetryTimes'
                   initialValue={5}
-                  rules={readMode ? [] : [
+                  rules={readMode ? undefined : [
                     {
                       required: true,
                       message: $t({ defaultMessage: 'Please enter ICMP Keep Alive Retries' })
@@ -288,7 +288,7 @@ export const SoftGreSettingForm = (props: SoftGreSettingFormProps) => {
               />
             </UI.FormItemWrapper>
             <Form.Item
-              name='disassociateClientEnabled'
+              {...(readMode? undefined : { name: 'disassociateClientEnabled' })}
               initialValue={false}
               valuePropName='checked'
               children={

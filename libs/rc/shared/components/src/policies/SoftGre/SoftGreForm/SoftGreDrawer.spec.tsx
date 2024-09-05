@@ -4,25 +4,11 @@ import { rest }  from 'msw'
 
 import { softGreApi }                                                     from '@acx-ui/rc/services'
 import { SoftGreUrls }                                                    from '@acx-ui/rc/utils'
-import { Path }                                                           from '@acx-ui/react-router-dom'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {  mockSoftGreTable } from './__tests__/fixtures'
 import SoftGreDrawer         from './SoftGreDrawer'
-
-const mockedUseNavigate = jest.fn()
-const mockedTenantPath: Path = {
-  pathname: 't/tenantId',
-  search: '',
-  hash: ''
-}
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedUseNavigate,
-  useTenantLink: ():Path => mockedTenantPath
-}))
 
 const readViewPath = '/:tenantId/t/policies/SoftGre/:policyId'
 const createViewPath = '/:tenantId/t/policies/SoftGre/create'

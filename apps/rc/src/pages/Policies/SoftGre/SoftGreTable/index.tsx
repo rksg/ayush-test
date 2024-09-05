@@ -79,7 +79,8 @@ export default function SoftGreTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Profile' }),
+            entityName: $t({ defaultMessage: 'Profile{plural}' },
+              { plural: rows.length === 1 ? '' : 's' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },

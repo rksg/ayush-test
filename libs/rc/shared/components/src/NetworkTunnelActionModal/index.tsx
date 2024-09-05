@@ -182,7 +182,6 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
             }
             {isSoftGreEnabled && visible &&
               <WifiSoftGreRadioOption
-                form={form}
                 currentTunnelType={tunnelType}
                 venueId={networkVenueId!}
                 networkId={networkId}

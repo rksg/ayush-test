@@ -1,15 +1,19 @@
 import { waitFor, within } from '@testing-library/react'
 import userEvent           from '@testing-library/user-event'
 import { cloneDeep, find } from 'lodash'
+import { rest }            from 'msw'
 
-import { EdgeSdLanFixtures, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { softGreApi }                                      from '@acx-ui/rc/services'
+import { EdgeSdLanFixtures, NetworkTypeEnum, SoftGreUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                 from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockDeepNetworkList } from './__tests__/fixtures'
+import { mockDeepNetworkList, mockSoftGreTable } from './__tests__/fixtures'
 
 import { NetworkTunnelActionModal, NetworkTunnelTypeEnum } from '.'
 
@@ -77,6 +81,7 @@ describe('NetworkTunnelModal', () => {
                 venueName: sdlanVenueName
               }}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -108,6 +113,7 @@ describe('NetworkTunnelModal', () => {
                 venueName: sdlanVenueName
               }}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -157,6 +163,7 @@ describe('NetworkTunnelModal', () => {
               onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -189,6 +196,7 @@ describe('NetworkTunnelModal', () => {
                 venueName: sdlanVenueName
               }}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -230,6 +238,7 @@ describe('NetworkTunnelModal', () => {
               onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -258,6 +267,7 @@ describe('NetworkTunnelModal', () => {
               onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -283,6 +293,7 @@ describe('NetworkTunnelModal', () => {
               onClose={jest.fn()}
               network={defaultNetworkData}
               onFinish={mockedOnFinish}
+              cachedSoftGre={[]}
             />
           </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -364,6 +375,7 @@ describe('NetworkTunnelModal', () => {
             onClose={jest.fn()}
             network={mockedNetworkData}
             onFinish={mockedOnFinish}
+            cachedSoftGre={[]}
           />
         </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -385,6 +397,7 @@ describe('NetworkTunnelModal', () => {
           onClose={jest.fn()}
           network={undefined}
           onFinish={mockedOnFinish}
+          cachedSoftGre={[]}
         />
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
@@ -394,6 +407,61 @@ describe('NetworkTunnelModal', () => {
     // eslint-disable-next-line testing-library/no-node-access
     expect(venueNameSentence?.textContent)
       .toBe('Define how this network traffic will be tunnelled at venue "":')
+  })
+
+  describe('SoftGRE', () => {
+    const mockedGetFn = jest.fn()
+    beforeEach(() => {
+      mockedGetVenueSdLanFn.mockReturnValue(undefined)
+      mockedGetFn.mockClear()
+      store.dispatch(softGreApi.util.resetApiState())
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockServer.use(
+        rest.post(
+          SoftGreUrls.getSoftGreViewDataList.url,
+          (_, res, ctx) => res(ctx.json(mockSoftGreTable))
+        )
+      )
+    })
+    it('should correctly display when SoftGRE run on this venue', async () => {
+      const venueId = 'venueId-1'
+      const networkId = 'network_1'
+      const tenantId = 'tenantId-1'
+      const mockedNetworkData = {
+        id: networkId,
+        venueId,
+        type: NetworkTypeEnum.CAPTIVEPORTAL,
+        venueName: 'mock_venue_test'
+      }
+
+      const viewPath = '/:tenantId/t/venues/:venueId/venue-details/networks'
+      const cachedSoftGre = [{
+        venueId,
+        networkIds: [networkId],
+        profileId: '0d89c0f5596c4689900fb7f5f53a0859',
+        profileName: 'softGreProfileName1'
+      }]
+      render(
+        <Provider>
+          <NetworkTunnelActionModal
+            visible={true}
+            onClose={() => {}}
+            network={mockedNetworkData}
+            onFinish={mockedOnFinish}
+            cachedSoftGre={cachedSoftGre}
+          />
+        </Provider>,
+        { route: { path: viewPath, params: { venueId, tenantId } } }
+      )
+
+      await checkPageLoaded(mockedNetworkData.venueName)
+      const softGreTunneling = screen.getByRole('radio', { name: 'SoftGRE Tunneling' })
+      await waitFor(() => expect(softGreTunneling).toBeChecked())
+      const localBreakout = screen.getByRole('radio', { name: 'Local Breakout' })
+      expect(localBreakout).not.toBeChecked()
+      const sdlanTunneling = screen.getByRole('radio', { name: 'SD-LAN Tunneling' })
+      expect(sdlanTunneling).not.toBeChecked()
+    })
   })
 })
 
