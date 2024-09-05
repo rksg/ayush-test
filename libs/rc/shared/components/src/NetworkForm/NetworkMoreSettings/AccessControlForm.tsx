@@ -375,17 +375,17 @@ function SelectAccessProfileProfile (props: {
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
 
-  const { selectedLayer2 } = GetL2AclPolicyListFromNwInstance(state)
+  const { selectedLayer2 } = useL2AclPolicyListFromNwInstance(state)
 
-  const { selectedLayer3 } = GetL3AclPolicyListFromNwInstance(state)
+  const { selectedLayer3 } = useL3AclPolicyListFromNwInstance(state)
 
-  const { selectedDevicePolicy } = GetDeviceAclPolicyListFromNwInstance(state)
+  const { selectedDevicePolicy } = useDeviceAclPolicyListFromNwInstance(state)
 
-  const { selectedApplicationPolicy } = GetAppAclPolicyListFromNwInstance(state)
+  const { selectedApplicationPolicy } = useAppAclPolicyListFromNwInstance(state)
 
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
-    = GetAclPolicyListFromNwInstance()
+    = useAclPolicyListFromNwInstance()
 
   useEffect(() => {
     if (data && accessControlList) {
@@ -514,7 +514,7 @@ function SelectAccessProfileProfile (props: {
   </>)
 }
 
-const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedLayer2: string
 } => {
   const params = useParams()
@@ -557,7 +557,7 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   return isTemplate ? useL2PolicyTemplateList : useL2PolicyList
 }
 
-const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedLayer3: string
 } => {
   const params = useParams()
@@ -601,7 +601,7 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   return isTemplate ? useL3PolicyTemplateList : useL3PolicyList
 }
 
-const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedDevicePolicy: string
 } => {
   const params = useParams()
@@ -644,7 +644,7 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
   return isTemplate ? useDevicePolicyTemplateList : useDevicePolicyList
 }
 
-const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedApplicationPolicy: string
 } => {
   const params = useParams()
@@ -717,7 +717,7 @@ const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileTyp
   </>
 }
 
-const GetAclPolicyListFromNwInstance = () => {
+const useAclPolicyListFromNwInstance = () => {
   const params = useParams()
   const defaultPayload = {
     searchString: '',
