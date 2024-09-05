@@ -106,13 +106,15 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     getEthernetPortProfileSettingsByApPortId: build.query<EhternetPortSettings, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EthernetPortProfileUrls.getEthernetPortSettingsByApPortId, params)
+        const req = createHttpRequest(
+          EthernetPortProfileUrls.getEthernetPortSettingsByApPortId, params)
         return {
           ...req
         }
       }
     }),
-    updateEthernetPortProfileSettingsByApPortId: build.mutation<EhternetPortSettings, RequestPayload>({
+    updateEthernetPortProfileSettingsByApPortId:
+      build.mutation<EhternetPortSettings, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, params
