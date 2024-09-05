@@ -5,7 +5,7 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import _ from 'lodash'
 
-import { updateJwtCache } from '@acx-ui/utils'
+import { reconnectSockets, updateJwtCache } from '@acx-ui/utils'
 
 import {
   graphqlRequestBaseQuery as originalGraphqlRequestBaseQuery
@@ -24,6 +24,7 @@ function refreshJWT (headers?: Headers) {
   sessionStorage.setItem('jwt', loginToken)
   sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
   updateJwtCache(loginToken)
+  reconnectSockets()
 }
 
 export const fetchBaseQuery: typeof originalFetchBaseQuery = (options) => {
