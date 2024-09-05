@@ -123,7 +123,6 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
           <DetailsSection
-            checkDataRetention
             data-testid='Benefits'
             title={$t({ defaultMessage: 'Benefits' })}
             children={<GridRow>
@@ -139,7 +138,6 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           />
 
           <DetailsSection
-            checkDataRetention
             data-testid='Key Performance Indications'
             title={$t({ defaultMessage: 'Key Performance Indications' })}
             children={<IntentAIRRMGraph
