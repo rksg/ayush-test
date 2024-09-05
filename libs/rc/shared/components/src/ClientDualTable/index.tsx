@@ -16,6 +16,7 @@ type ClientDualTableProps = {
 export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
   const { $t } = useIntl()
   const [searchValue, setSearchValue] = useState( clientMac ?? '' )
+  const [searchInputRef, setSearchInputRef] = useState( clientMac ?? '' )
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
 
@@ -43,9 +44,11 @@ export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
     <div id='ClientsTable'>
       <SearchBarDiv>
         <Table.SearchInput
-          value={searchValue}
+          disabled={!!clientMac}
+          value={searchInputRef}
           onChange={(e) => {
             const value = e.target.value
+            setSearchInputRef(value)
             if (value.length === 0 || value.length >= 2) {
               setSearchValue(value)
             }

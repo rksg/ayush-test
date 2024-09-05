@@ -18,8 +18,12 @@ import { getGraphKPIs }        from '../useIntentDetailsQuery'
 
 import { ConfigurationCard }   from './ConfigurationCard'
 import { createUseValuesText } from './createUseValuesText'
+import { ImpactedAPCount }     from './ImpactedAPCount'
 
-export function createIntentAIDetails (useValuesText: ReturnType<typeof createUseValuesText>) {
+export function createIntentAIDetails (
+  useValuesText: ReturnType<typeof createUseValuesText>,
+  options: { showImpactedAPs?: boolean } = {}
+) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
@@ -54,8 +58,10 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
                   label={$t({ defaultMessage: 'Date' })}
                   children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
                 />
+                {options.showImpactedAPs ? <Descriptions.Item
+                  label={$t({ defaultMessage: 'AP Impact Count' })}
+                  children={<ImpactedAPCount />} /> : null}
               </Descriptions>
-              <br />
             </div>)}
           </FixedAutoSizer>
         </GridCol>
