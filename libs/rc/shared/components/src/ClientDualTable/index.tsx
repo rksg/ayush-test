@@ -19,7 +19,7 @@ export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
   const [searchInputRef, setSearchInputRef] = useState( clientMac ?? '' )
   const [connectedClientCount, setConnectedClientCount] = useState<number>(0)
   const [historicalClientCount, setHistoricalClientCount] = useState<number>(0)
-  const [searchInputDisable, setSearchInputDisable] = useState(!!clientMac)
+
   const getSearchToolTipText = () => {
     return defineMessage({ defaultMessage: `
       <div>You can search for clients by the following properties *:
@@ -40,15 +40,11 @@ export function ClientDualTable ({ clientMac }: ClientDualTableProps) {
     }
   }
 
-  useEffect(() => {
-    setSearchInputDisable(!!clientMac)
-  }, [clientMac])
-
   return <>
     <div id='ClientsTable'>
       <SearchBarDiv>
         <Table.SearchInput
-          disabled={searchInputDisable}
+          disabled={!!clientMac}
           value={searchInputRef}
           onChange={(e) => {
             const value = e.target.value
