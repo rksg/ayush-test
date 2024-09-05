@@ -759,16 +759,21 @@ export function NetworkForm (props:{
         }
       }
       await updateClientIsolationActivations(payload, null, networkId)
-      // eslint-disable-next-line max-len
-      if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate'] && networkId && payload.venues) {
+
+      // Tunnel Activation/Deactivation
+      if (!isTemplate && networkId && payload.venues) {
         // eslint-disable-next-line max-len
-        await updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues)
+        if (isEdgeSdLanMvEnabled && formData['sdLanAssociationUpdate']) {
+        // eslint-disable-next-line max-len
+          await updateEdgeSdLanActivations(networkId, formData['sdLanAssociationUpdate'] as NetworkTunnelSdLanAction[], payload.venues)
+        }
+
+        if (isSoftGreEnabled && formData['softGreAssociationUpdate']) {
+        // eslint-disable-next-line max-len
+          await updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
+        }
       }
 
-      if (isSoftGreEnabled && formData['softGreAssociationUpdate'] && networkId && payload.venues) {
-        // eslint-disable-next-line max-len
-        await updateSoftGreActivations(networkId, formData['softGreAssociationUpdate'] as NetworkTunnelSoftGreAction, payload.venues)
-      }
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

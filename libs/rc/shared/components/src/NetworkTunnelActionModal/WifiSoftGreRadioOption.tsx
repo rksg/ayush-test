@@ -65,13 +65,10 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
           form.setFieldValue(['softGre', 'newProfileId'], softGreInfo.profileId)
           form.setFieldValue(['softGre', 'newProfileName'], softGreInfo.profileName)
         }
-      } if (profileId) {
+      } else if (profileId) {
         form.setFieldValue(['softGre', 'newProfileId'], profileId)
         form.setFieldValue(['softGre', 'oldProfileId'], profileId)
         form.setFieldValue(['softGre', 'newProfileName'], options.find(item => item.value === profileId)?.label)
-        if (currentTunnelType !== NetworkTunnelTypeEnum.SoftGre) {
-          form.setFieldValue('tunnelType', NetworkTunnelTypeEnum.SoftGre)
-        }
       }
     }
   }, [form, optionsDataQuery])

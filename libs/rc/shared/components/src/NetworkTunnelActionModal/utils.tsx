@@ -20,7 +20,7 @@ export const getNetworkTunnelType = (
     wlan.networkId === network?.id && wlan.venueId === network?.venueId))
 
   const isSoftGreTunneled = Boolean(softGreInfo?.find(sg =>
-    sg.venueId === network?.venueId && sg.networkIds.includes(network?.id!)))
+    sg.venueId === network?.venueId && sg.networkIds.includes(network?.id!))?.profileId)
 
   return isSdLanTunneled ? NetworkTunnelTypeEnum.SdLan :
     (isSoftGreTunneled ? NetworkTunnelTypeEnum.SoftGre : NetworkTunnelTypeEnum.None)

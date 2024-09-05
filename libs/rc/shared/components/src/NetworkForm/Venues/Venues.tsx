@@ -158,6 +158,7 @@ interface VenuesProps {
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
 
+  const { isTemplate } = useConfigTemplate()
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
   const form = Form.useFormInstance()
@@ -443,7 +444,7 @@ export function Venues (props: VenuesProps) {
           getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e))
       }
     },
-    ...(isEdgeSdLanMvEnabled || isSoftGreEnabled ? [{
+    ...(!isTemplate && (isEdgeSdLanMvEnabled || isSoftGreEnabled) ? [{
       key: 'tunneledInfo',
       title: $t({ defaultMessage: 'Tunnel' }),
       dataIndex: 'tunneledInfo',
@@ -475,16 +476,25 @@ export function Venues (props: VenuesProps) {
     return data?.venues?.find(v => v.venueId === venueId)
   }
 
+  const getCachedSoftGre = (venueId: string, networkId: string) => {
+    const updateSoftGre = softGreAssociationUpdate && softGreAssociationUpdate[venueId]
+    if (updateSoftGre) {
+      return [{ venueId,
+        networkIds: [networkId],
+        profileId: updateSoftGre.newProfileId,
+        profileName: updateSoftGre.newProfileName }]
+    } else if (networkId !== TMP_NETWORK_ID) {
+      const softGreVenue = softGreVenueMap?.[venueId]?.find(sg => sg.networkIds.includes(networkId))
+      if (softGreVenue) return [softGreVenue]
+    }
+    return []
+  }
+
   const handleClickNetworkTunnel = (row: Venue, currentNetwork: NetworkSaveData) => {
     const cachedActs = form.getFieldValue('sdLanAssociationUpdate') as NetworkTunnelSdLanAction[]
     const venueId = row.id
     const networkId = currentNetwork?.id ?? TMP_NETWORK_ID
-    const updateSoftGre = softGreAssociationUpdate && softGreAssociationUpdate[row.id]
-    const cachedSoftGre = updateSoftGre ?
-      [{ venueId,
-        networkIds: [networkId],
-        profileId: updateSoftGre.newProfileId,
-        profileName: updateSoftGre.newProfileName }] : []
+    const cachedSoftGre = getCachedSoftGre(venueId, networkId)
     // show modal
     setTunnelModalState({
       visible: true,
