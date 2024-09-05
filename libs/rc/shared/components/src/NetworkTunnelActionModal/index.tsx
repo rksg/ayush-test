@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, Space, Typography } from 'antd'
+import { Form, Radio, Space, Typography, Tooltip } from 'antd'
 
 import { Modal }                                                           from '@acx-ui/components'
 import { Features }                                                        from '@acx-ui/feature-toggle'
@@ -83,10 +83,14 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelTypeInitVal])
 
-  const isDisabledAll = getIsDisabledAll(venueSdLanInfo)
+  const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const hasChangePermission = hasPermission({ scopes: [
     ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : [])
   ] })
+
+  const localBreakoutRadio = <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
+    {$t({ defaultMessage: 'Local Breakout' })}
+  </Radio>
 
   return <Modal
     visible={visible}
@@ -120,9 +124,12 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 }
               </UI.RadioSubTitle>}
             >
-              <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
-                {$t({ defaultMessage: 'Local Breakout' })}
-              </Radio>
+              <Tooltip title={isDisabledAll
+                // eslint-disable-next-line max-len
+                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                : undefined}>
+                {localBreakoutRadio}
+              </Tooltip>
             </Form.Item>
 
             {network && visible && isEdgeSdLanMvEnabled &&
@@ -138,7 +145,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                   ? {
                     isDisabled: true,
                     // eslint-disable-next-line max-len
-                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last WLAN of this SD-LAN' })
+                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
                   }
                   : undefined}
               />
@@ -158,8 +165,13 @@ export {
   useUpdateNetworkTunnelAction
 }
 
-const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined): boolean => {
-  if(!sdlanInfo) return false
+// eslint-disable-next-line max-len
+const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNetworkId: string | undefined): boolean => {
+  const dcNetworkCount = sdlanInfo?.tunneledWlans?.length ?? 0
+  if(dcNetworkCount === 0 || !currentNetworkId) return false
 
-  return (sdlanInfo.tunneledWlans?.length ?? 0) <= 1
+  const isSdLanLastNetwork = sdlanInfo!.tunneledWlans!.length <= 1
+  if (!isSdLanLastNetwork) return false
+
+  return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }

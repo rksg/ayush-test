@@ -56,7 +56,13 @@ export default function AnalyticsRoutes () {
         <Route path=':sliceId/:code' element={<IntentAIDetails />} />
         <Route path=':sliceId/:code/edit' element={<IntentAIForm />} />
       </Route>
-      <Route path='analytics/health' element={HealthComponent} />
+      {isSwitchHealthEnabled
+        ? <Route
+          path='analytics/health'
+          element={<TenantNavigate replace to='/analytics/health/overview' />}
+        />
+        : <Route path='analytics/health' element={HealthComponent} />
+      }
       <Route path='analytics/health/:activeSubTab' element={HealthComponent}>
         <Route path='tab/:categoryTab' element={HealthComponent} />
       </Route>

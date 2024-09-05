@@ -5,9 +5,9 @@ import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
 import { defineMessage, useIntl }                                    from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 
-import { AnchorContext, Loader, Tooltip }       from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
+import { AnchorContext, Loader, Tooltip, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
 import {
   useGetVenueLoadBalancingQuery, useGetVenueTemplateLoadBalancingQuery,
   useUpdateVenueLoadBalancingMutation,
@@ -207,7 +207,47 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
             style={{ marginTop: '-5px' }}
             children={<Switch
               data-testid='load-balancing-enabled'
-              onChange={onFormDataChanged} />}
+              onChange={(value) => {
+                if (value) {
+                  onFormDataChanged()
+                } else {
+                  showActionModal({
+                    type: 'warning',
+                    width: 450,
+                    content: <p data-testId='load-balancing-off-warning-text'>
+                      {
+                        $t({ defaultMessage: `Please be aware that disabling the load balancing \n
+                      functionality in this venue will also deactivate the sticky client steering \n
+                      function on all APs within the venue. Are you sure you want to disable it?` })
+                      }
+                    </p>,
+                    okText: $t({ defaultMessage: 'Disable' }),
+                    cancelText: $t({ defaultMessage: 'Cancel' }),
+                    customContent: {
+                      action: 'CUSTOM_BUTTONS',
+                      buttons: [
+                        {
+                          text: 'Cancel',
+                          type: 'default',
+                          key: 'cancel',
+                          handler: () => {
+                            form.setFieldValue('enabled', true)
+                          }
+                        },
+                        {
+                          text: 'Disable',
+                          type: 'primary',
+                          key: 'start',
+                          closeAfterAction: true,
+                          handler: onFormDataChanged
+                        }
+                      ]
+                    }
+                  })
+                }
+
+              }
+              } />}
           />
         </FieldLabel>
       </Col>
