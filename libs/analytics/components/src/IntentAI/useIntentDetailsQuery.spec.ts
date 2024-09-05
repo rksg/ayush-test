@@ -1,9 +1,9 @@
-import { intentAIUrl, store } from '@acx-ui/store'
-import { mockGraphqlQuery }   from '@acx-ui/test-utils'
+import { intentAIUrl, store }           from '@acx-ui/store'
+import { mockGraphqlQuery, renderHook } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM }              from './AIDrivenRRM/__tests__/fixtures'
-import { kpis }                          from './AIDrivenRRM/common'
-import { api, getGraphKPIs, getKpiData } from './useIntentDetailsQuery'
+import { mockedIntentCRRM }                               from './AIDrivenRRM/__tests__/fixtures'
+import { kpis }                                           from './AIDrivenRRM/common'
+import { api, getGraphKPIs, getKpiData, useIntentParams } from './useIntentDetailsQuery'
 
 describe('intentAI services', () => {
   describe('intent details', () => {
@@ -56,5 +56,18 @@ describe('intentAI services', () => {
       expect(result.value).toEqual('--')
       expect(result.delta).toEqual(undefined)
     })
+  })
+})
+
+describe('useIntentParams', () => {
+  it('handle RAI route', () => {
+    const params = { root: 'root', sliceId: 'sliceId', code: 'code' }
+    const { result } = renderHook(useIntentParams, { route: { params } })
+    expect(result.current).toEqual(params)
+  })
+  it('handle R1 route', () => {
+    const params = { tenantId: 'tenantId', sliceId: 'sliceId', code: 'code' }
+    const { result } = renderHook(useIntentParams, { route: { params } })
+    expect(result.current).toEqual({ root: 'tenantId', sliceId: 'sliceId', code: 'code' })
   })
 })

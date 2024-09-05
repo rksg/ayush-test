@@ -4,7 +4,8 @@ import React from 'react'
 import { Col, Row }                   from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }   from '@acx-ui/components'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { IntentWizardHeader }                                             from '../common/IntentWizardHeader'
 import { FormValues, IntentTransitionPayload, createUseIntentTransition } from '../useIntentTransition'
@@ -28,6 +29,7 @@ export function createIntentAIForm <Preferences> (config: {
 
   function IntentAIForm () {
     const { $t } = useIntl()
+    const navigate = useNavigate()
 
     const useIntentTransition = createUseIntentTransition(config.getFormDTO)
     const { submit } = useIntentTransition()
@@ -36,6 +38,7 @@ export function createIntentAIForm <Preferences> (config: {
     return (<>
       <IntentWizardHeader />
       <StepsForm
+        onCancel={() => { navigate(-1) }}
         onFinish={async (values) => { submit(values) }}
         buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
         initialValues={initialValues}

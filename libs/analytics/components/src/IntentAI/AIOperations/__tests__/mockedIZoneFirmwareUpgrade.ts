@@ -30,3 +30,24 @@ export const mocked = {
     compareData: { timestamp: '2024-06-09T00:00:00.000Z', result: [ 0, 0 ] }
   }
 } as unknown as Intent
+
+export const mockedIntentAps = [
+  {
+    name: 'RuckusAP',
+    mac: '28:B3:71:27:38:E0',
+    model: 'R650',
+    version: 'Unknown'
+  },
+  {
+    name: 'RuckusAP',
+    mac: 'B4:79:C8:3E:7E:50',
+    model: 'R550',
+    version: 'Unknown'
+  },
+  {
+    name: 'RuckusAP',
+    mac: 'C8:84:8C:3E:46:B0',
+    model: 'R560',
+    version: 'Unknown'
+  }
+]
