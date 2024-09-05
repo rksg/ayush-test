@@ -51,13 +51,13 @@ export const TenantLinkWrapper = ({ params, linkType }: {
     useIsSplitOn(Features.INTENT_AI_TOGGLE)
   ].some(Boolean)
   let path =''
+  const intentData = linkType === 'crrm'
+    ? params.crrm
+    : params.aclb
   if (isIntentAIEnabled) {
-    const intent = params.crrm ?? params.aclb
-    path = `/intentAI${get('IS_MLISA_SA') ? `/${intent!.root}` : ''}/${intent!.sliceId}/${intent!.code}`
+    path = `/intentAI${get('IS_MLISA_SA') ? `/${intentData!.root}` : ''}/${intentData!.sliceId}/${intentData!.code}`
   } else {
-    const id = (linkType === 'crrm'
-      ? params.crrmId
-      : params.aclbId) ?? params.recommendationId
+    const id = intentData?.intentId ?? params.recommendationId
     path = `/recommendations/${linkType}/${id}`
   }
   return (
@@ -174,9 +174,7 @@ export type AirtimeParams = {
   ssidCountPerRadioSlice: number
   recommendationId?: string,
   crrm?:IntentQueryParams,
-  crrmId?:string
   aclb?:IntentQueryParams,
-  aclbId?:string,
 }
 
 export const htmlValues: FormatMessageValues = {
@@ -370,7 +368,7 @@ const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: Airtim
   const checkTrue = checkTrueParams(checks)
   const allFalse = airtimeTxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
   const { ssidCountPerRadioSlice } = params
-  const aiOpsLink = <TenantLinkWrapper params={params} linkType='aclb' />
+  const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, link: aiOpsLink }}/>

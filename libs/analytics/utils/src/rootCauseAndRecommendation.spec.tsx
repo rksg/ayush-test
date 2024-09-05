@@ -59,14 +59,12 @@ describe('TenantLinkWrapper', () => {
   const baseParams = {
     ssidCountPerRadioSlice: 1,
     recommendationId: '270bf212-85e4-470a-b721-4eef78b8e7ae',
-    crrmId: 'cf66ed04-fcc8-4f9c-8b60-5699339b5f19',
     crrm: {
       code: 'c-crrm-channel24g-auto',
       root: '204fa5c7-4d45-4315-848d-9c54460ae8d7',
       sliceId: 'cc36f41d-e6e8-4763-a28d-a38aebb500b2',
       intentId: '3c61bda8-85ba-4356-b955-691b755cf6f8'
     },
-    aclbId: '743da2c1-8c9a-4c21-95f2-374defc5076a',
     aclb: {
       code: 'c-aclb-enable',
       root: '6f931c53-21eb-4727-b2ad-e23b43d98846',
@@ -99,7 +97,7 @@ describe('TenantLinkWrapper', () => {
 
     render(
       <MemoryRouter>
-        <TenantLinkWrapper params={newParams} linkType='aiops' />
+        <TenantLinkWrapper params={newParams} linkType='aiOps' />
       </MemoryRouter>
     )
 
@@ -120,21 +118,21 @@ describe('TenantLinkWrapper', () => {
 
     expect(screen.getByRole('link', { name: /here/i })
       .getAttribute('href'))
-      .toContain(`/recommendations/crrm/${baseParams.crrmId}`)
+      .toContain(`/recommendations/crrm/${baseParams.crrm?.intentId}`)
   })
 
-  it('renders the correct link when Intent AI is not enabled for aiops', () => {
+  it('renders the correct link when Intent AI is not enabled for aiOps', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(
       <MemoryRouter>
-        <TenantLinkWrapper params={baseParams} linkType='aiops' />
+        <TenantLinkWrapper params={baseParams} linkType='aiOps' />
       </MemoryRouter>
     )
 
     expect(screen.getByRole('link', { name: /here/i })
       .getAttribute('href'))
-      .toContain(`/recommendations/aiops/${baseParams.aclbId}`)
+      .toContain(`/recommendations/aiOps/${baseParams.aclb?.intentId}`)
   })
 
   it('renders the correct link when Intent AI is not enabled for fallback', () => {
@@ -143,13 +141,13 @@ describe('TenantLinkWrapper', () => {
 
     render(
       <MemoryRouter>
-        <TenantLinkWrapper params={newParams} linkType='aiops' />
+        <TenantLinkWrapper params={newParams} linkType='aiOps' />
       </MemoryRouter>
     )
 
     expect(screen.getByRole('link', { name: /here/i })
       .getAttribute('href'))
-      .toContain(`/recommendations/aiops/${baseParams.recommendationId}`)
+      .toContain(`/recommendations/aiOps/${baseParams.recommendationId}`)
   })
 })
 

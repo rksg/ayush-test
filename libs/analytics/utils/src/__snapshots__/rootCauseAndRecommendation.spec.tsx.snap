@@ -1290,7 +1290,7 @@ Array [
             values={
               Object {
                 "aiOpsLink": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "ssidCountPerRadioSlice": 1,
@@ -1796,7 +1796,7 @@ Array [
             values={
               Object {
                 "aiOpsLink": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "aclb": Object {
@@ -2326,7 +2326,7 @@ Array [
             values={
               Object {
                 "aiOpsLink": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "aclb": Object {
@@ -2856,7 +2856,7 @@ Array [
             values={
               Object {
                 "aiOpsLink": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "ssidCountPerRadioSlice": 0,
@@ -3346,7 +3346,7 @@ Array [
             values={
               Object {
                 "aiOpsLink": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "ssidCountPerRadioSlice": 0,
@@ -5876,7 +5876,7 @@ Array [
               Object {
                 "li": [Function],
                 "link": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "ssidCountPerRadioSlice": 1,
@@ -6416,7 +6416,7 @@ Array [
               Object {
                 "li": [Function],
                 "link": <TenantLinkWrapper
-                  linkType="aclb"
+                  linkType="aiOps"
                   params={
                     Object {
                       "ssidCountPerRadioSlice": 0,
