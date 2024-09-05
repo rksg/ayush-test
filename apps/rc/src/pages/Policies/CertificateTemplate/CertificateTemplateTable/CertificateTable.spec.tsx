@@ -142,7 +142,8 @@ describe('CertificateTable', () => {
       name: 'templateName',
       caType: 'caType',
       keyLength: 123,
-      algorithm: AlgorithmType.SHA_256
+      algorithm: AlgorithmType.SHA_256,
+      identityGroupId: '123'
     }
     render(<Provider><CertificateTable templateData={certificateTemplate}/></Provider>)
 

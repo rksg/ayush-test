@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CertificateUrls, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                 from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }      from '@acx-ui/test-utils'
+import { CertificateUrls, PersonaUrls, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                   from '@acx-ui/test-utils'
 
+import { mockPersonaGroupTableResult }                                                           from '../../../users/__tests__/fixtures'
 import { certificateAuthorityList, certificateTemplate, certificateTemplateList, policySetList } from '../__test__/fixtures'
 
 import { CertificateTemplateForm } from './CertificateTemplateForm'
@@ -13,6 +14,7 @@ import { CertificateTemplateForm } from './CertificateTemplateForm'
 const mockedUsedNavigate = jest.fn()
 const mockedUsedEdit = jest.fn()
 const mockedBind = jest.fn()
+const mockedAssociate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -20,7 +22,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useEditCertificateTemplateMutation: () => [mockedUsedEdit],
-  useBindCertificateTemplateWithPolicySetMutation: () => [mockedBind]
+  useBindCertificateTemplateWithPolicySetMutation: () => [mockedBind],
+  useAssociateIdentityGroupWithCertTemplateMutation: () => [mockedAssociate]
 }))
 
 describe('CertificateTemplateForm', () => {
@@ -45,6 +48,12 @@ describe('CertificateTemplateForm', () => {
       rest.post(
         CertificateUrls.addCertificateTemplate.url,
         (req, res, ctx) => res(ctx.json({ id: '12345' }))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json(mockPersonaGroupTableResult))
+        }
       ))
     jest.clearAllMocks()
   })
@@ -57,20 +66,20 @@ describe('CertificateTemplateForm', () => {
       }
     })
 
-    expect(screen.queryAllByText('Onboard CA')).toHaveLength(2)
     expect(screen.getByText('Summary')).toBeVisible()
+    await userEvent.type(screen.getByLabelText('Certificate Template Name'), 'testTemplateName')
+    await userEvent.type(screen.getByLabelText('Common Name'), 'testCommonName')
+    const selects = await screen.findAllByRole('combobox')
+    await userEvent.click(selects[0])
+    await userEvent.click(await screen.findByText('Class A'))
+    await userEvent.click(selects[1])
+    await userEvent.click(await screen.findByText('ps12'))
     await userEvent.click(screen.getByText('Next'))
+
+    await waitFor(() => expect(screen.queryByText('CA Sources')).toBeVisible())
     const select = await screen.findByRole('combobox')
     await userEvent.click(select)
     await userEvent.click(await screen.findByText('onboard1'))
-    await userEvent.type(screen.getByLabelText('Certificate Template Name'), 'testTemplateName')
-    await userEvent.type(screen.getByLabelText('Common Name'), 'testCommonName')
-    await userEvent.click(screen.getByText('Next'))
-
-    await waitFor(() => expect(screen.queryAllByText('Adaptive Policy Set')).toHaveLength(2))
-    const adaptivePolicySelect = await screen.findByRole('combobox')
-    await userEvent.click(adaptivePolicySelect)
-    await userEvent.click(await screen.findByText('ps12'))
     const enableChromebookInput = screen.getByLabelText('Enable Chromebook Enrollment')
     await userEvent.click(enableChromebookInput)
     const apiKeyInput = await screen.findByLabelText('Google API Key')
@@ -94,6 +103,7 @@ describe('CertificateTemplateForm', () => {
 
     await userEvent.click(screen.getByText('Add'))
     await waitFor(() => expect(mockedBind).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedAssociate).toBeCalledTimes(1))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
 
@@ -105,6 +115,16 @@ describe('CertificateTemplateForm', () => {
       }
     })
 
+    await userEvent.type(screen.getByLabelText('Certificate Template Name'), 'testTemplateName')
+    await userEvent.type(screen.getByLabelText('Common Name'), 'testCommonName')
+    const selects = await screen.findAllByRole('combobox')
+    await userEvent.click(selects[0])
+    await userEvent.click(await screen.findByText('Class A'))
+    await userEvent.click(selects[1])
+    await userEvent.click(await screen.findByText('ps12'))
+    await userEvent.click(screen.getByText('Next'))
+
+    await waitFor(() => expect(screen.queryByText('CA Sources')).toBeVisible())
     const showMoreButton = await screen.findByRole('button', { name: 'Show more settings' })
     await userEvent.click(showMoreButton)
     const expirationDateByDateRadio = await screen.queryAllByRole('radio', { name: 'By date' })[1]
@@ -123,19 +143,12 @@ describe('CertificateTemplateForm', () => {
       }
     })
 
-    expect(await screen.findByText('onboard2')).toBeVisible()
+    expect(await screen.findByText('Class A')).toBeVisible()
     expect(await screen.findByLabelText('Certificate Template Name'))
       .toHaveValue('certificateTemplate1')
     expect(await screen.findByLabelText('Common Name')).toHaveValue('test')
-    await userEvent.click(screen.getByText('More Settings'))
-    expect(await screen.findAllByText('Adaptive Policy Set')).toHaveLength(2)
-    const adaptivePolicySelect = await screen.findByRole('combobox')
-    await userEvent.click(adaptivePolicySelect)
-    await userEvent.click(await screen.findByText('ps2'))
-    await userEvent.click(screen.getByRole('switch'))
     await userEvent.click(screen.getByText('Apply'))
     await waitFor(() => expect(mockedUsedEdit).toBeCalledTimes(1))
-    await waitFor(() => expect(mockedBind).toBeCalledTimes(1))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalledTimes(1))
   })
 })

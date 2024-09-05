@@ -375,7 +375,8 @@ export const certificateTemplate = {
   certificateNames: [
     'test',
     'test'
-  ]
+  ],
+  identityGroupId: 'persona-group-id-1'
 }
 
 export const policySetList = {

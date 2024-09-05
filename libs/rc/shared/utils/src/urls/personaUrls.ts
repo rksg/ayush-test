@@ -12,7 +12,7 @@ type PersonaUrlType =
   'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
   'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
-  'associateDpskPool'
+  'associateDpskPool' | 'associateCertTemplate'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -30,6 +30,11 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   associateMacRegistration: {
     method: 'put',
     url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`,
+    newApi: true
+  },
+  associateCertTemplate: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/certificateTemplates/:templateId`,
     newApi: true
   },
   searchPersonaGroupList: {

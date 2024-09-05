@@ -3,20 +3,22 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                          from '@acx-ui/components'
-import { caTypeShortLabel }                                                                                                                       from '@acx-ui/rc/components'
-import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess }                      from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                             from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                                                                          from '@acx-ui/utils'
+import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                               from '@acx-ui/components'
+import { caTypeShortLabel }                                                                                                                                                            from '@acx-ui/rc/components'
+import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess }                                                           from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                                  from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                                                                                                                               from '@acx-ui/utils'
 
 import CertificateTable from '../CertificateTemplateTable/CertificateTable'
 import { Section }      from '../styledComponents'
 
 import ChromebookTab from './ChromebookTab'
+import ScepTable     from './ScepTable'
 
 enum TabKeyType {
   CERTIFICATE = 'certificate',
+  SCEP = 'scep',
   CHROMEBOOK = 'chromebook'
 }
 
@@ -27,6 +29,9 @@ export default function CertificateTemplateDetail () {
   const certificate = useGetSpecificTemplateCertificatesQuery({
     params: { templateId: params.policyId },
     payload: { pageSize: 1, page: 1 }
+  })
+  const scepKey = useGetSpecificTemplateScepKeysQuery({
+    params: { templateId: params.policyId, pageSize: '1', page: '0' }
   })
   const { data: certificateTemplateData, isLoading } = useGetCertificateTemplateQuery({ params })
   const { policySetName } = useGetAdaptivePolicySetQuery(
@@ -70,12 +75,15 @@ export default function CertificateTemplateDetail () {
     [TabKeyType.CERTIFICATE]: <CertificateTable
       templateData={certificateTemplateData}
       showGenerateCert={!!privateKeyBase64} />,
+    [TabKeyType.SCEP]: <ScepTable templateId={certificateTemplateData?.id}/>,
     [TabKeyType.CHROMEBOOK]: <ChromebookTab data={certificateTemplateData} />
   }
 
   const tabTitle = {
     [TabKeyType.CERTIFICATE]: $t({ defaultMessage: 'Certificate ({count})' },
       { count: certificate.data?.totalCount || 0 }),
+    [TabKeyType.SCEP]: $t({ defaultMessage: 'SCEP Keys ({count})' },
+      { count: scepKey.data?.totalCount || 0 }),
     [TabKeyType.CHROMEBOOK]: $t({ defaultMessage: 'Chromebook Enrollment' })
   }
 

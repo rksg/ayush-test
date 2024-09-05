@@ -29,7 +29,8 @@ describe('CertificateSettings', () => {
     name: 'templateName',
     caType: 'caType',
     keyLength: 123,
-    algorithm: AlgorithmType.SHA_256
+    algorithm: AlgorithmType.SHA_256,
+    identityGroupId: '123'
   }
 
   it('should render the form correctly', async () => {

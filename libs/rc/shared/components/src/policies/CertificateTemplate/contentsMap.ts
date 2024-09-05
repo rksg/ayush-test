@@ -42,9 +42,6 @@ export const existingCertLabel: Record<ChromebookCertRemovalType, MessageDescrip
 }
 
 export const onboardSettingsDescription: Record<string, MessageDescriptor> = {
-  INFORMATION: defineMessage({
-    defaultMessage: 'Use a certificate authority within the RUCKUS One to sign certificates.'
-  }),
   CERTIFICATE_TEMPLATE_NAME: defineMessage({
     defaultMessage: 'The Common Name is normally used to provide identity information within the certificate. Variables, such as \$\'{USERNAME\'}, will be replaced at the time of issuance with the appropriate value from the enrollment.'
   }),

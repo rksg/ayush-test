@@ -56,5 +56,11 @@ export const CollapseWrapper = styled.div`
 
 export const CollapsePanelContentWrapper = styled.div`
   margin-top: 10px;
-
 `
+
+export const DrawerTitle = styled.div`
+  font-size: var(--acx-body-4-font-size);
+  font-weight: var(--acx-subtitle-3-font-weight);
+  border-bottom: 1px solid var(--acx-neutrals-20);
+  padding-bottom: 4px;
+  `
