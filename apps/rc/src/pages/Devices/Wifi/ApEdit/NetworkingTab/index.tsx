@@ -5,6 +5,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
 import { redirectPreviousPage }          from '@acx-ui/rc/utils'
 import { useTenantLink }                 from '@acx-ui/react-router-dom'
@@ -17,7 +18,6 @@ import { IpSettings }        from './IpSettings/IpSettings'
 import { LanPorts }          from './LanPorts'
 import { ApMesh }            from './Mesh'
 import { SmartMonitor }      from './SmartMonitor'
-import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 
 export interface ApNetworkingContext {
   updateIpSettings?: (data?: unknown) => void | Promise<void>

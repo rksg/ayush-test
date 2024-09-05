@@ -1591,7 +1591,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
-        const req = createHttpRequest(urlsInfo.updateVenueApSmartMonitor, params, apiCustomHeader)
+        const req = createHttpRequest(urlsInfo.updateVenueSmartMonitor, params, apiCustomHeader)
         return{
           ...req,
           body: JSON.stringify(payload)
@@ -2142,7 +2142,7 @@ export const {
   useRemoveApPositionMutation,
   useGetVenueApSmartMonitorQuery,
   useLazyGetVenueApSmartMonitorQuery,
-  useUpdateVenueApSmartMonitorMutation,
+  useUpdateVenueApSmartMonitorMutation
 } = venueApi
 
 

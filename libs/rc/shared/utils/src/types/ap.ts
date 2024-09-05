@@ -678,9 +678,9 @@ export interface ApDirectedMulticast {
 
 export interface ApSmartMonitor {
   useVenueSettings: boolean,
-  smartMonitorEnabled: boolean,
-  smartMonitorInterval: number,
-  smartMonitorThreshold: number
+  enabled: boolean,
+  interval: number,
+  threshold: number
 }
 
 export interface APExtendedGrouped extends APExtended {

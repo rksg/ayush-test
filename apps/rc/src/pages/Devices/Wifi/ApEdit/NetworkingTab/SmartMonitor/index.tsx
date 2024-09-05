@@ -1,177 +1,175 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, InputNumber, Row, Space, Switch, Tooltip } from 'antd';
-import { isEmpty } from 'lodash';
-import { defineMessage, useIntl } from 'react-intl';
-import { useParams } from 'react-router-dom';
+import { Col, Form, InputNumber, Row, Space, Switch, Tooltip } from 'antd'
+import { isEmpty }                                             from 'lodash'
+import { defineMessage, useIntl }                              from 'react-intl'
+import { useParams }                                           from 'react-router-dom'
 
 import {
   AnchorContext,
   Loader,
   StepsForm,
   StepsFormLegacy,
-  StepsFormLegacyInstance,
-} from '@acx-ui/components';
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle';
+  StepsFormLegacyInstance
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useGetApSmartMonitorQuery,
   useLazyGetVenueApSmartMonitorQuery,
-  useUpdateApSmartMonitorMutation,
-} from '@acx-ui/rc/services';
+  useUpdateApSmartMonitorMutation
+} from '@acx-ui/rc/services'
 import {
-  ApDirectedMulticast,
   ApSmartMonitor,
-  VenueApSmartMonitor,
-  VenueDirectedMulticast,
-} from '@acx-ui/rc/utils';
+  VenueApSmartMonitor
+} from '@acx-ui/rc/utils'
 
-import { ApDataContext, ApEditContext } from '../..';
-import { FieldLabel } from '../../styledComponents';
-import { VenueSettingsHeader } from '../../VenueSettingsHeader';
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons';
-const { useWatch } = Form;
-export function SmartMonitor() {
-  const { $t } = useIntl();
-  const { tenantId, serialNumber } = useParams();
+import { ApDataContext, ApEditContext } from '../..'
+import { FieldLabel }                   from '../../styledComponents'
+import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
+const { useWatch } = Form
+export function SmartMonitor () {
+  const { $t } = useIntl()
+  const { tenantId, serialNumber } = useParams()
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API);
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
     setEditContextData,
     editNetworkingContextData,
-    setEditNetworkingContextData,
-  } = useContext(ApEditContext);
+    setEditNetworkingContextData
+  } = useContext(ApEditContext)
 
-  const { venueData } = useContext(ApDataContext);
-  const { setReadyToScroll } = useContext(AnchorContext);
-  const venueId = venueData?.id;
+  const { venueData } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
+  const venueId = venueData?.id
 
   const smartMonitor = useGetApSmartMonitorQuery(
     {
       params: { venueId, serialNumber },
-      enableRbac: isUseRbacApi,
+      enableRbac: isUseRbacApi
     },
     { skip: !venueId }
-  );
+  )
 
   const [updateApSmartMonitor, { isLoading: isUpdatingApSmartMonitor }] =
-    useUpdateApSmartMonitorMutation();
+    useUpdateApSmartMonitorMutation()
 
-  const [getVenueApSmartMonitor] = useLazyGetVenueApSmartMonitorQuery();
+  const [getVenueApSmartMonitor] = useLazyGetVenueApSmartMonitorQuery()
 
-  const formRef = useRef<StepsFormLegacyInstance<ApSmartMonitor>>();
-  const isUseVenueSettingsRef = useRef<boolean>(false);
+  const formRef = useRef<StepsFormLegacyInstance<ApSmartMonitor>>()
+  const isUseVenueSettingsRef = useRef<boolean>(false)
 
-  const [initData, setInitData] = useState({} as ApSmartMonitor);
-  const [apSmartMonitor, setApSmartMonitor] = useState({} as ApSmartMonitor);
+  const [initData, setInitData] = useState({} as ApSmartMonitor)
+  const [apSmartMonitor, setApSmartMonitor] = useState({} as ApSmartMonitor)
   const [venueApSmartMonitor, setVenueApSmartMonitor] = useState(
     {} as VenueApSmartMonitor
-  );
-  const [isUseVenueSettings, setIsUseVenueSettings] = useState(true);
+  )
+  const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
 
-  const [formInitializing, setFormInitializing] = useState(true);
+  const [formInitializing, setFormInitializing] = useState(true)
 
   const smartMonitorSettings = [
     {
       key: 'smartMonitorEnable',
       label: defineMessage({ defaultMessage: 'Smart Monitor' }),
-      fieldName: 'smartMonitorEnable',
+      fieldName: 'smartMonitorEnable'
     },
     {
       key: 'smartMonitorInterval',
       label: defineMessage({ defaultMessage: 'Interval' }),
-      fieldName: 'smartMonitorInterval',
+      fieldName: 'smartMonitorInterval'
     },
     {
       key: 'smartMonitorThreshold',
       label: defineMessage({ defaultMessage: 'Max Retries' }),
-      fieldName: 'smartMonitorThreshold',
-    },
-  ];
+      fieldName: 'smartMonitorThreshold'
+    }
+  ]
 
   useEffect(() => {
-    const smartMonitorData = smartMonitor?.data;
+    const smartMonitorData = smartMonitor?.data
 
     if (venueId && smartMonitorData) {
       const setData = async () => {
         const venueApSmartMonitorData = await getVenueApSmartMonitor(
           {
             params: { tenantId, venueId },
-            enableRbac: isUseRbacApi,
+            enableRbac: isUseRbacApi
           },
           true
-        ).unwrap();
+        ).unwrap()
 
-        setVenueApSmartMonitor(venueApSmartMonitorData);
-        setIsUseVenueSettings(smartMonitorData.useVenueSettings);
-        isUseVenueSettingsRef.current = smartMonitorData.useVenueSettings;
+        setVenueApSmartMonitor(venueApSmartMonitorData)
+        setIsUseVenueSettings(smartMonitorData.useVenueSettings)
+        isUseVenueSettingsRef.current = smartMonitorData.useVenueSettings
 
         if (formInitializing) {
-          setInitData(smartMonitorData);
-          setFormInitializing(false);
+          setInitData(smartMonitorData)
+          setFormInitializing(false)
 
-          setReadyToScroll?.((r) => [...new Set(r.concat('Smart-Monitor'))]);
+          setReadyToScroll?.((r) => [...new Set(r.concat('Smart-Monitor'))])
         } else {
-          formRef?.current?.setFieldsValue(smartMonitorData);
+          formRef?.current?.setFieldsValue(smartMonitorData)
         }
-      };
+      }
 
-      setData();
+      setData()
     }
-  }, [venueId, smartMonitor?.data]);
+  }, [venueId, smartMonitor?.data])
 
   const handleVenueSetting = () => {
-    let isUseVenue = !isUseVenueSettings;
-    setIsUseVenueSettings(isUseVenue);
-    isUseVenueSettingsRef.current = isUseVenue;
+    let isUseVenue = !isUseVenueSettings
+    setIsUseVenueSettings(isUseVenue)
+    isUseVenueSettingsRef.current = isUseVenue
 
     if (isUseVenue) {
       if (formRef?.current) {
-        const currentData = formRef.current.getFieldsValue();
-        setApSmartMonitor({ ...currentData });
+        const currentData = formRef.current.getFieldsValue()
+        setApSmartMonitor({ ...currentData })
       }
 
       if (venueApSmartMonitor) {
         const data = {
           ...venueApSmartMonitor,
-          useVenueSettings: true,
-        };
-        formRef?.current?.setFieldsValue(data);
+          useVenueSettings: true
+        }
+        formRef?.current?.setFieldsValue(data)
       }
     } else {
       if (!isEmpty(apSmartMonitor)) {
-        formRef?.current?.setFieldsValue(apSmartMonitor);
+        formRef?.current?.setFieldsValue(apSmartMonitor)
       }
     }
 
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, true);
-  };
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
+  }
 
-  const handleUpdateSmartMonitor = async (values: ApSmartMonitor) => {
+  const handleUpdateSmartMonitor = async (values: any) => {
     try {
       setEditContextData &&
         setEditContextData({
           ...editContextData,
           isDirty: false,
-          hasError: false,
-        });
+          hasError: false
+        })
 
-      const isUseVenue = isUseVenueSettingsRef.current;
+      const isUseVenue = isUseVenueSettingsRef.current
       const payload = {
         ...values,
-        useVenueSettings: isUseVenue,
-      };
+        useVenueSettings: isUseVenue
+      }
 
       await updateApSmartMonitor({
         params: { venueId, serialNumber },
         payload,
-        enableRbac: isUseRbacApi,
-      }).unwrap();
+        enableRbac: isUseRbacApi
+      }).unwrap()
     } catch (error) {
-      console.log(error); // eslint-disable-line no-console
+      console.log(error) // eslint-disable-line no-console
     }
-  };
+  }
 
   const updateEditContext = (
     form: StepsFormLegacyInstance,
@@ -182,53 +180,56 @@ export function SmartMonitor() {
         ...editContextData,
         unsavedTabKey: 'networking',
         tabTitle: $t({ defaultMessage: 'Networking' }),
-        isDirty: isDirty,
-      });
+        isDirty: isDirty
+      })
 
     setEditNetworkingContextData &&
       setEditNetworkingContextData({
         ...editNetworkingContextData,
         updateSmartMonitor: () =>
-          handleUpdateSmartMonitor(form?.getFieldsValue()),
-        discardSmartMonitorChanges: () => handleDiscard(),
-      });
-  };
+          handleUpdateSmartMonitor(form?.getFieldsValue().smartMonitor),
+        discardSmartMonitorChanges: () => handleDiscard()
+      })
+  }
 
   const handleDiscard = () => {
-    setIsUseVenueSettings(initData.useVenueSettings);
-    isUseVenueSettingsRef.current = initData.useVenueSettings;
-    formRef?.current?.setFieldsValue(initData);
-  };
+    setIsUseVenueSettings(initData.useVenueSettings)
+    isUseVenueSettingsRef.current = initData.useVenueSettings
+    formRef?.current?.setFieldsValue(initData)
+  }
 
   const handleChange = () => {
-    updateEditContext(formRef?.current as StepsFormLegacyInstance, true);
-  };
+    updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
+  }
 
-  const fieldDataKey = ['wlan', 'advancedCustomization', 'smartMonitor'];
+  const fieldDataKey = ['smartMonitor']
 
-  const smartMonitorEnabledFieldName = [...fieldDataKey, 'smartMonitorEnabled'];
+  const smartMonitorEnabledFieldName = [...fieldDataKey, 'enabled']
   const smartMonitorIntervalFieldName = [
     ...fieldDataKey,
-    'smartMonitorInterval',
-  ];
+    'interval'
+  ]
   const smartMonitorThresholdFieldName = [
     ...fieldDataKey,
-    'smartMonitorThreshold',
-  ];
-
-  const overrideEnabled = useWatch<boolean>('overrideEnabled');
+    'threshold'
+  ]
 
   const handleChanged = () => {
-    handleUpdateSmartMonitor;
-  };
+    handleUpdateSmartMonitor
+  }
+
+  const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
+  const toggleSmartMonitor = (checked: boolean) => {
+    setSmartMonitorEnabled(checked)
+  }
 
   return (
     <Loader
       states={[
         {
           isLoading: formInitializing,
-          isFetching: isUpdatingApSmartMonitor,
-        },
+          isFetching: isUpdatingApSmartMonitor
+        }
       ]}
     >
       <StepsFormLegacy formRef={formRef} onFormChange={handleChange}>
@@ -240,15 +241,14 @@ export function SmartMonitor() {
           />
 
           <StepsForm.FieldLabel width={'280px'}>
-            {$t({ defaultMessage: 'Smart Monitor' })}
             <>
               {$t({ defaultMessage: 'Smart Monitor' })}
               <Tooltip
                 title={$t({
                   defaultMessage:
-                    'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable',
+                    'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
                 })}
-                placement="top"
+                placement='top'
               >
                 <QuestionMarkCircleOutlined />
               </Tooltip>
@@ -257,28 +257,30 @@ export function SmartMonitor() {
               name={smartMonitorEnabledFieldName}
               valuePropName={'checked'}
               initialValue={false}
-              children={<Switch onChange={handleChanged} />}
+              children={<Switch
+                onChange={handleChanged}
+                onClick={toggleSmartMonitor} />}
             />
           </StepsForm.FieldLabel>
-          {overrideEnabled && (
+          {smartMonitorEnabled && (
             <Space size={30}>
               <Form.Item
                 required
                 label={$t({ defaultMessage: 'Heartbeat Interval' })}
               >
-                <Space align="center">
+                <Space align='center'>
                   <Form.Item
                     noStyle
                     name={smartMonitorIntervalFieldName}
-                    initialValue={3}
+                    initialValue={10}
                     rules={[
                       {
                         required: true,
                         message: $t({
                           defaultMessage:
-                            'Please enter a number between 5 and 60',
-                        }),
-                      },
+                            'Please enter a number between 5 and 60'
+                        })
+                      }
                     ]}
                     children={
                       <InputNumber
@@ -293,7 +295,7 @@ export function SmartMonitor() {
                 </Space>
               </Form.Item>
               <Form.Item required label={$t({ defaultMessage: 'Max Retries' })}>
-                <Space align="center">
+                <Space align='center'>
                   <Form.Item
                     noStyle
                     name={smartMonitorThresholdFieldName}
@@ -303,9 +305,9 @@ export function SmartMonitor() {
                         required: true,
                         message: $t({
                           defaultMessage:
-                            'Please enter a number between 1 and 10',
-                        }),
-                      },
+                            'Please enter a number between 1 and 10'
+                        })
+                      }
                     ]}
                     children={
                       <InputNumber
@@ -324,5 +326,5 @@ export function SmartMonitor() {
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </Loader>
-  );
+  )
 }

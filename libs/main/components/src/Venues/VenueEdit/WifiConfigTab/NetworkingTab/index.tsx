@@ -133,16 +133,16 @@ export function NetworkingTab () {
         { $t({ defaultMessage: 'Cellular Options' }) }
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
-    </> }] : []), 
-    ...(isSmartMonitorFFEnabled? [{
-      title: $t({ defaultMessage: 'Smart Monitor' }),
-      content: <>
-        <StepsFormLegacy.SectionTitle id='smart-monitor'>
-          { $t({ defaultMessage: 'Smart Monitor' }) }
-        </StepsFormLegacy.SectionTitle>
-        <SmartMonitor />
-      </>
-    }]: []),
+    </> }] : []),
+  ...(isSmartMonitorFFEnabled? [{
+    title: $t({ defaultMessage: 'Smart Monitor' }),
+    content: <>
+      <StepsFormLegacy.SectionTitle id='smart-monitor'>
+        { $t({ defaultMessage: 'Smart Monitor' }) }
+      </StepsFormLegacy.SectionTitle>
+      <SmartMonitor />
+    </>
+  }]: []),
   {
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>

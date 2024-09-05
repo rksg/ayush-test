@@ -766,9 +766,9 @@ export interface ApEnhancedKey {
 }
 
 export interface VenueApSmartMonitor {
-	smartMonitorEnabled: boolean,
-	smartMonitorInterval: number,
-	smartMonitorThreshold: number
+	enabled: boolean,
+	interval: number,
+	threshold: number
 }
 
 export interface ApManagementVlan {

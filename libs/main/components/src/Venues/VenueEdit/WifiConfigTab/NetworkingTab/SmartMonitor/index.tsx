@@ -1,88 +1,80 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react'
 
-import { Form, InputNumber, Space, Switch } from 'antd';
-import { useIntl } from 'react-intl';
-import { useParams } from 'react-router-dom';
+import { Col, Form, InputNumber, Row, Space, Switch } from 'antd'
+import { useIntl }                                    from 'react-intl'
+import { useParams }                                  from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsForm, Tooltip } from '@acx-ui/components';
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle';
+import { AnchorContext, Loader, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }     from '@acx-ui/icons'
 import {
   useGetVenueApSmartMonitorQuery,
-  useLazyGetVenueApSmartMonitorQuery,
-  useUpdateVenueApSmartMonitorMutation,
-} from '@acx-ui/rc/services';
-import { VenueApSmartMonitor, useConfigTemplate } from '@acx-ui/rc/utils';
+  useUpdateVenueApSmartMonitorMutation
+} from '@acx-ui/rc/services'
+import { VenueApSmartMonitor } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../..';
-import { QuestionMarkCircleOutlined } from '@acx-ui/icons';
+import { VenueEditContext } from '../../..'
+import { FieldLabel }       from '../../styledComponents'
 
-const { useWatch } = Form;
-
-export function SmartMonitor() {
-  const { $t } = useIntl();
-  const { venueId } = useParams();
-  const { isTemplate } = useConfigTemplate();
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API);
-  
-  const isConfigTemplateRbacEnabled = useIsSplitOn(
-    Features.RBAC_CONFIG_TEMPLATE_TOGGLE
-  );
-  const resolvedRbacEnabled = isTemplate
-    ? isConfigTemplateRbacEnabled
-    : isUseRbacApi;
+export function SmartMonitor () {
+  const colSpan = 8
+  const { $t } = useIntl()
+  const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
 
   const {
     editContextData,
     setEditContextData,
     editNetworkingContextData,
-    setEditNetworkingContextData,
-  } = useContext(VenueEditContext);
-  const { setReadyToScroll } = useContext(AnchorContext);
+    setEditNetworkingContextData
+  } = useContext(VenueEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
 
-  const form = Form.useFormInstance();
+  const form = Form.useFormInstance()
 
   const [
     updateVenueApSmartMonitor,
-    { isLoading: isUpdatingVenueApSmartMonitor },
-  ] = useUpdateVenueApSmartMonitorMutation();
+    { isLoading: isUpdatingVenueApSmartMonitor }
+  ] = useUpdateVenueApSmartMonitorMutation()
   // eslint-disable-next-line max-len
-  console.log(venueId)
-  const venueApSmartMonitor =
-  useGetVenueApSmartMonitorQuery({
-      param: { venueId },
-      enableRbac: isUseRbacApi,
-    },{ skip: !venueId });
 
-console.log(venueApSmartMonitor)
-  const overrideEnabled = useWatch<boolean>('overrideEnabled');
+  const venueApSmartMonitor = useGetVenueApSmartMonitorQuery(
+    {
+      params: { venueId },
+      enableRbac: isUseRbacApi
+    },
+    { skip: !venueId }
+  )
 
   useEffect(() => {
-    const venueApSmartMonitorData = venueApSmartMonitor;
+    const venueApSmartMonitorData = venueApSmartMonitor
     if (venueApSmartMonitorData) {
-      form.setFieldsValue(venueApSmartMonitorData);
+      form.setFieldsValue(venueApSmartMonitorData)
 
-      setReadyToScroll?.((r) => [...new Set(r.concat('Smart-Monitor'))]);
+      setReadyToScroll?.((r) => [...new Set(r.concat('Smart-Monitor'))])
     }
-  }, [form, venueApSmartMonitor, setReadyToScroll]);
+  }, [form, venueApSmartMonitor, setReadyToScroll])
 
   const handleUpdateSmartMonitor = async () => {
     try {
-      const formData = form.getFieldsValue();
+      const formData =
+        form.getFieldsValue().smartMonitor
       let payload: VenueApSmartMonitor = {
-        smartMonitorEnabled: formData.smartMonitorEnabled,
-        smartMonitorInterval: formData.smartMonitorInterval,
-        smartMonitorThreshold: formData.smartMonitorThreshold,
-      };
+        enabled: formData.smartMonitorEnabled,
+        interval: formData.smartMonitorInterval,
+        threshold: formData.smartMonitorThreshold
+      }
 
       await updateVenueApSmartMonitor({
         params: { venueId },
         payload: payload,
-        enableRbac: isUseRbacApi,
-      }).unwrap();
+        enableRbac: isUseRbacApi
+      }).unwrap()
     } catch (error) {
-      console.log(error); // eslint-disable-line no-console
+      console.log(error) // eslint-disable-line no-console
     }
-  };
+  }
 
   const handleChanged = () => {
     setEditContextData &&
@@ -90,78 +82,91 @@ console.log(venueApSmartMonitor)
         ...editContextData,
         unsavedTabKey: 'networking',
         tabTitle: $t({ defaultMessage: 'Networking' }),
-        isDirty: true,
-      });
+        isDirty: true
+      })
 
     setEditNetworkingContextData &&
       setEditNetworkingContextData({
         ...editNetworkingContextData,
-        updateSmartMonitor: handleUpdateSmartMonitor,
-      });
-  };
+        updateSmartMonitor: handleUpdateSmartMonitor
+      })
+  }
 
-  const fieldDataKey = ['wlan', 'advancedCustomization', 'smartMonitor'];
+  const toggleSmartMonitor = (checked: boolean) => {
+    setSmartMonitorEnabled(checked)
+  }
 
-  const smartMonitorEnabledFieldName = [...fieldDataKey, 'smartMonitorEnabled'];
+  const fieldDataKey = ['smartMonitor']
+
+  const smartMonitorEnabledFieldName = [...fieldDataKey, 'smartMonitorEnabled']
   const smartMonitorIntervalFieldName = [
     ...fieldDataKey,
-    'smartMonitorInterval',
-  ];
+    'smartMonitorInterval'
+  ]
   const smartMonitorThresholdFieldName = [
     ...fieldDataKey,
-    'smartMonitorThreshold',
-  ];
+    'smartMonitorThreshold'
+  ]
 
   return (
     <Loader
       states={[
         {
-          isLoading: true,
-          isFetching: true,
-          // isLoading: venueApSmartMonitor ? true : false,
-          // isFetching: isUpdatingVenueApSmartMonitor,
-        },
+          isLoading: venueApSmartMonitor?.isLoading,
+          isFetching: isUpdatingVenueApSmartMonitor
+        }
       ]}
     >
-      <StepsForm.FieldLabel width={'280px'}>
-        {$t({ defaultMessage: 'Smart Monitor' })}
-        <>
-          {$t({ defaultMessage: 'Smart Monitor' })}
-          <Tooltip
-            title={$t({
-              defaultMessage:
-                'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable',
-            })}
-            placement="top"
-          >
-            <QuestionMarkCircleOutlined />
-          </Tooltip>
-        </>
-        <Form.Item
-          name={smartMonitorEnabledFieldName}
-          valuePropName={'checked'}
-          initialValue={false}
-          children={<Switch onChange={handleChanged} />}
-        />
-      </StepsForm.FieldLabel>
-      {overrideEnabled && (
+      <Row gutter={0}>
+        <Col span={colSpan}>
+          <FieldLabel width='200px'>
+            <Space>
+              {$t({ defaultMessage: 'Smart Monitor' })}
+              <Tooltip
+                title={$t({
+                  defaultMessage:
+                    'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
+                })}
+                placement='right'
+              >
+                <QuestionMarkCircleOutlined
+                  style={{ height: '14px', marginBottom: -3 }}
+                />
+              </Tooltip>
+            </Space>
+            <Form.Item
+              name={smartMonitorEnabledFieldName}
+              valuePropName={'checked'}
+              initialValue={false}
+              children={
+                <Switch
+                  checked={smartMonitorEnabled}
+                  onChange={handleChanged}
+                  onClick={toggleSmartMonitor}
+                />
+              }
+            />
+          </FieldLabel>
+        </Col>
+      </Row>
+      {smartMonitorEnabled && (
         <Space size={30}>
           <Form.Item
             required
             label={$t({ defaultMessage: 'Heartbeat Interval' })}
           >
-            <Space align="center">
+            <Space align='center'>
               <Form.Item
                 noStyle
                 name={smartMonitorIntervalFieldName}
-                initialValue={3}
+                initialValue={10}
                 rules={[
                   {
                     required: true,
                     message: $t({
-                      defaultMessage: 'Please enter a number between 5 and 60',
-                    }),
-                  },
+                      defaultMessage: 'Please enter a number between 5 and 60'
+                    })
+                  }
                 ]}
                 children={
                   <InputNumber
@@ -176,7 +181,7 @@ console.log(venueApSmartMonitor)
             </Space>
           </Form.Item>
           <Form.Item required label={$t({ defaultMessage: 'Max Retries' })}>
-            <Space align="center">
+            <Space align='center'>
               <Form.Item
                 noStyle
                 name={smartMonitorThresholdFieldName}
@@ -185,9 +190,9 @@ console.log(venueApSmartMonitor)
                   {
                     required: true,
                     message: $t({
-                      defaultMessage: 'Please enter a number between 1 and 10',
-                    }),
-                  },
+                      defaultMessage: 'Please enter a number between 1 and 10'
+                    })
+                  }
                 ]}
                 children={
                   <InputNumber
@@ -204,5 +209,5 @@ console.log(venueApSmartMonitor)
         </Space>
       )}
     </Loader>
-  );
+  )
 }
