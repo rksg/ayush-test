@@ -1,14 +1,21 @@
 
 import { ReactElement } from 'react'
 
+import { Space }                      from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
 import { Button, cssStr }                     from '@acx-ui/components'
 import { Features }                           from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, EdgeStatusEnum } from '@acx-ui/rc/utils'
 
-import { useIsEdgeFeatureReady }                                                            from '../../useEdgeActions'
-import { CheckMarkCircleSolidIcon, WarningTriangleSolidIcon, UnknownIcon, UnavailableIcon } from '../styledComponents'
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
+import {
+  CheckMarkCircleSolidIcon,
+  WarningTriangleSolidIcon,
+  UnknownIcon,
+  UnavailableIcon,
+  CheckingIcon
+} from '../styledComponents'
 
 import { messageMapping } from './messageMapping'
 
@@ -45,18 +52,20 @@ export const ApCompatibilityFeature = (props: ApCompatibilityFeatureProps) => {
 
   const isPartialCompatible = !!count && ApDeviceStatusEnum.OPERATIONAL
 
-  return (isPartialCompatible
-    ? <>
-      {checkResult.icon}
-      <Button
-        type='link'
-        style={{ fontSize: cssStr('--acx-body-4-font-size') }}
-        onClick={onClick}>
-        {$t(checkResult.message)}
-      </Button>
-    </>
-    : <>{checkResult.icon} {$t(checkResult.message)}</>
-  )
+  return <Space size='small'>
+    {isPartialCompatible
+      ? <>
+        {checkResult.icon}
+        <Button
+          type='link'
+          style={{ fontSize: cssStr('--acx-body-4-font-size') }}
+          onClick={onClick}>
+          {$t(checkResult.message)}
+        </Button>
+      </>
+      : <>{checkResult.icon}{$t(checkResult.message)}</>
+    }
+  </Space>
 }
 
 const getCompatibilityMessage = (
@@ -102,7 +111,7 @@ const getCompatibilityMessage = (
     case ApDeviceStatusEnum.REBOOTING:
       return {
         message: messageMapping.checking,
-        icon: <UnknownIcon/>
+        icon: <CheckingIcon />
       }
 
     default:

@@ -12,10 +12,11 @@ import {
   intentListWithAllStatus,
   filterOptions
 } from './__tests__/fixtures'
-import { IntentListItem }                                         from './config'
-import { api, useIntentAITableQuery, TransitionMutationResponse } from './services'
-import { DisplayStates, Statuses, StatusReasons }                 from './states'
-import { Actions }                                                from './utils'
+import { mockedIntentAps }                                                  from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentListItem }                                                   from './config'
+import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAp } from './services'
+import { DisplayStates, Statuses, StatusReasons }                           from './states'
+import { Actions }                                                          from './utils'
 
 import type { TableCurrentDataSource } from 'antd/lib/table/interface'
 
@@ -689,6 +690,46 @@ describe('Intent services', () => {
       expect(data?.intents).toEqual(expectedResult)
     })
 
+  })
+
+  it('should return correct ap details', async () => {
+    mockGraphqlQuery(intentAIUrl, 'GetAps', {
+      data: {
+        intent: {
+          aps: mockedIntentAps
+        }
+      }
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.getAps.initiate({
+        code: 'c1',
+        root: 'r1',
+        sliceId: 's1',
+        search: ''
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    expect(data).toStrictEqual<IntentAp[]>([
+      {
+        name: 'RuckusAP',
+        mac: '28:B3:71:27:38:E0',
+        model: 'R650',
+        version: 'Unknown'
+      },
+      {
+        name: 'RuckusAP',
+        mac: 'B4:79:C8:3E:7E:50',
+        model: 'R550',
+        version: 'Unknown'
+      },
+      {
+        name: 'RuckusAP',
+        mac: 'C8:84:8C:3E:46:B0',
+        model: 'R560',
+        version: 'Unknown'
+      }
+    ])
   })
 
   it('should return intentHighlight', async () => {
