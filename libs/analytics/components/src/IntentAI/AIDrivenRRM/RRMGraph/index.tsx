@@ -126,14 +126,13 @@ export const IntentAIRRMGraph = ({
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
-  return <UI.Wrapper
-    style={{
-      filter: blurData ? 'blur(8px)' : 'none'
-    }}
-    data-testid='graph-wrapper'
-  >
+  return <UI.Wrapper>
     <Card>
-      <UI.GraphWrapper key={'graph-details'}>
+      <UI.GraphWrapper data-testid='graph-wrapper'
+        key={'graph-details'}
+        style={{
+          filter: blurData ? 'blur(8px)' : 'none'
+        }}>
         {useGraph(crrmData, detailsZoomScale, false,
           blurData ? STATIC_SUMMARY_URL : summaryUrlBefore,
           blurData ? STATIC_SUMMARY_URL : summaryUrlAfter)}
