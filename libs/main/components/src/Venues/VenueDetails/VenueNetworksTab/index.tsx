@@ -652,7 +652,7 @@ export function VenueNetworksTab () {
             networkId: network!.id,
             policyId: formValues.softGre.newProfileId
           } })
-      } else if (formValues.softGre.oldProfileId) {
+      } else if (formValues.softGre?.oldProfileId) {
         await dectivateSoftGre({
           params: { ...params,
             networkId: network!.id,

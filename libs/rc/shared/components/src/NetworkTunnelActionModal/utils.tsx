@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { cloneDeep, findIndex } from 'lodash'
 
-import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
+import { EdgeMvSdLanViewData, EdgeSdLanTunneledWlan, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import { isGuestTunnelUtilized, isSdLanLastNetworkInVenue, showSdLanVenueDissociateModal } from '../EdgeSdLan/edgeSdLanUtils'
 import { showSdLanGuestFwdConflictModal }                                                  from '../EdgeSdLan/SdLanGuestFwdConflictModal'
@@ -35,6 +35,7 @@ export const useUpdateNetworkTunnelAction = () => {
     tunnelTypeInitVal: NetworkTunnelTypeEnum,
     venueSdLanInfo?: EdgeMvSdLanViewData
   ) => {
+
     const formTunnelType = formValues.tunnelType
     if (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType !== NetworkTunnelTypeEnum.SdLan) {
       return Promise.resolve()
@@ -51,7 +52,7 @@ export const useUpdateNetworkTunnelAction = () => {
     }
 
     const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
-    const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled
+    const sdLanTunnelGuest = formValues.sdLan?.isGuestTunnelEnabled ?? false
 
     const triggerSdLanOperations = async () => {
       return await toggleNetwork(
@@ -63,32 +64,33 @@ export const useUpdateNetworkTunnelAction = () => {
       )
     }
 
-    // activate/deactivate SDLAN tunneling
-    if (formTunnelType !== tunnelTypeInitVal) {
-      // deactivate
-      if (formTunnelType !== NetworkTunnelTypeEnum.SdLan) {
-        // is last network in Venue?
-        if (isSdLanLastNetworkInVenue(venueSdLanInfo?.tunneledWlans, networkVenueId)) {
-          return await new Promise<void | boolean>((resolve) => {
-            showSdLanVenueDissociateModal(async () => {
-              await triggerSdLanOperations()
-              resolve()
-            }, () => resolve(false))
-          })
-        } else {
-          return await triggerSdLanOperations()
-        }
+    // deactivate SDLAN tunneling
+    if (formTunnelType !== NetworkTunnelTypeEnum.SdLan) {
+      // is last network in Venue?
+      if (isSdLanLastNetworkInVenue(venueSdLanInfo?.tunneledWlans, networkVenueId)) {
+        return await new Promise<void | boolean>((resolve) => {
+          showSdLanVenueDissociateModal(async () => {
+            await triggerSdLanOperations()
+            resolve()
+          }, () => resolve(false))
+        })
       } else {
-        // activate
         return await triggerSdLanOperations()
       }
     } else {
-      // tunnelType still SDLAN
-
+      // activate or still sdlan
       const isGuestTunnelUtilizedInitState = isGuestTunnelUtilized(venueSdLanInfo, networkId, networkVenueId)
 
-      // check if tunnel guest changed
-      if(isGuestTunnelUtilizedInitState !== sdLanTunnelGuest) {
+      // if no changes
+      if (formTunnelType === tunnelTypeInitVal && isGuestTunnelUtilizedInitState === sdLanTunnelGuest)
+        return Promise.resolve()
+
+      // check conflict when is CAPTIVEPORTAL network
+      // and 1. still SDLAN and tunnel guest changed
+      // or 2. activate SDLAN
+      if(((formTunnelType === tunnelTypeInitVal && isGuestTunnelUtilizedInitState !== sdLanTunnelGuest)
+      || (tunnelTypeInitVal !== NetworkTunnelTypeEnum.SdLan && formTunnelType === NetworkTunnelTypeEnum.SdLan))
+      && network.type === NetworkTypeEnum.CAPTIVEPORTAL) {
         return await new Promise<void | boolean>((resolve) =>
           showSdLanGuestFwdConflictModal({
             currentNetworkVenueId: network?.venueId!,
@@ -113,10 +115,10 @@ export const useUpdateNetworkTunnelAction = () => {
             onCancel: () => resolve(false)
           })
         )
+      } else {
+        return await triggerSdLanOperations()
       }
     }
-
-    return Promise.resolve()
   }
 
   return updateSdLanNetworkTunnel

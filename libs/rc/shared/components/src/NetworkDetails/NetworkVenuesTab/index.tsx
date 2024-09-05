@@ -797,7 +797,7 @@ export function NetworkVenuesTab () {
             networkId: network!.id,
             policyId: formValues.softGre.newProfileId
           } })
-      } else if (formValues.softGre.oldProfileId) {
+      } else if (formValues.softGre?.oldProfileId) {
         await dectivateSoftGre({
           params: {
             venueId: network!.venueId,
@@ -811,6 +811,8 @@ export function NetworkVenuesTab () {
         handleCloseTunnelModal()
 
     } catch(err) {
+      // eslint-disable-next-line no-console
+      console.error(err)
       handleCloseTunnelModal()
     }
   }

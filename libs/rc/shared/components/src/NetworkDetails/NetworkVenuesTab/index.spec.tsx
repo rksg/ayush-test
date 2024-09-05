@@ -56,7 +56,8 @@ const disabledFFs = [
   Features.EDGE_SD_LAN_MV_TOGGLE,
   Features.RBAC_SERVICE_POLICY_TOGGLE,
   Features.WIFI_RBAC_API,
-  Features.SWITCH_RBAC_API
+  Features.SWITCH_RBAC_API,
+  Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
 ]
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -813,7 +814,8 @@ describe('SoftGreTunnel', () => {
   const mockedGetSoftGreFn = jest.fn()
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE
+      || ff === Features.WIFI_RBAC_API || !disabledFFs.includes(ff as Features))
 
     act(() => {
       store.dispatch(networkApi.util.resetApiState())
