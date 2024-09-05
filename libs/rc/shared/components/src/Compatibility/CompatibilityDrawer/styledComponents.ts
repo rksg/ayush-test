@@ -5,7 +5,7 @@ export const StyledFeatureName = styled(Typography.Text)`
   font-size: var(--acx-body-3-font-size);
   font-weight: var(--acx-body-font-weight-bold);
   color: var(--acx-primary-black);
-  margin-bottm: 11px;
+  margin-bottom: 10px;
 `
 
 export const StyledDeviceTypeTitle = styled(Typography.Text)`
@@ -13,7 +13,7 @@ export const StyledDeviceTypeTitle = styled(Typography.Text)`
   font-weight: var(--acx-body-font-weight-bold);
   color: var(--acx-primary-black);
   margin-top: var(--acx-content-vertical-space);
-  margin-bottom: var(--acx-descriptions-space);
+  margin-bottom: var(--acx-content-vertical-space);
 `
 
 export const detailStyle = {

@@ -71,7 +71,7 @@ describe('LbsServerProfileForm', () => {
 
     //step 1 setting form
     await userEvent.type(await screen.findByLabelText('Profile Name'), 'test3')
-    await userEvent.type(await screen.findByLabelText('LBS Venue Name'), 'lbsvenue03')
+    await userEvent.type(await screen.findByLabelText('LBS Server Venue Name'), 'lbsvenue03')
     await userEvent.type(await screen.findByLabelText('Server Address'), 'abc.venue.ruckuslbs.com')
     await userEvent.type(await screen.findByLabelText('Port'), '8883')
     await userEvent.type(await screen.findByLabelText('Password'), 'qwerasdf')
@@ -116,7 +116,7 @@ describe('LbsServerProfileForm', () => {
       route: { params: { tenantId: mockedTenantId, policyId: mockedPolicyId1 }, path: editPath }
     })
 
-    await userEvent.type(await screen.findByLabelText('LBS Venue Name'), '-2')
+    await userEvent.type(await screen.findByLabelText('LBS Server Venue Name'), '-2')
     await userEvent.type(await screen.findByLabelText('Port'), '8884')
 
     await userEvent.type(await screen.findByLabelText('Server Address'), 'abc.venue.ruckuslbs.com')
@@ -179,12 +179,12 @@ describe('LbsServerProfileForm', () => {
     })
 
     await userEvent.type(await screen.findByLabelText('Profile Name'), 'test3')
-    await userEvent.type(await screen.findByLabelText('LBS Venue Name'), 'lbsvenue02')
+    await userEvent.type(await screen.findByLabelText('LBS Server Venue Name'), 'lbsvenue02')
     await userEvent.type(await screen.findByLabelText('Server Address'), 'xyz.venue.ruckuslbs.com')
     await userEvent.type(await screen.findByLabelText('Port'), '8883')
     await userEvent.type(await screen.findByLabelText('Password'), 'qwerasdf')
 
     await userEvent.click(await screen.findByText('Add'))
 
-    await waitFor(() => expect(screen.queryByText('The LBS Venue Name and Server Address are duplicates of another profile')).toBeVisible()) })
+    await waitFor(() => expect(screen.queryByText('The LBS Server Venue Name and Server Address are duplicates of another profile')).toBeVisible()) })
 })

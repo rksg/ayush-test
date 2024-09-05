@@ -4,8 +4,6 @@ import { useTreatments } from '@splitsoftware/splitio-react'
 
 import { useTenantId } from '@acx-ui/utils'
 
-import { Features } from './features'
-
 enum FeatureFlag {
   ON = 'on',
   OFF = 'off'
@@ -19,5 +17,5 @@ export function useIsSplitOn (splitName: string): boolean {
   if(splitName === 'removable-ff') {
     return true
   }
-  return splitName === Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE || treatment === FeatureFlag.ON
+  return treatment === FeatureFlag.ON
 }

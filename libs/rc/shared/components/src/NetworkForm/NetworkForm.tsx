@@ -90,7 +90,7 @@ import {
 import PortalInstance           from './PortalInstance'
 import {
   useNetworkVxLanTunnelProfileInfo,
-  deriveFieldsFromServerData,
+  deriveRadiusFieldsFromServerData,
   useRadiusServer,
   useVlanPool,
   useClientIsolationActivations,
@@ -301,7 +301,7 @@ export function NetworkForm (props:{
   useEffect(() => {
     if (!data) return
 
-    let resolvedData = deriveFieldsFromServerData(data)
+    let resolvedData = isUseWifiRbacApi ? data : deriveRadiusFieldsFromServerData(data)
 
     if (cloneMode) {
       formRef.current?.resetFields()
@@ -357,7 +357,7 @@ export function NetworkForm (props:{
     if (!radiusServerConfigurations) return
 
     const fullNetworkSaveData = merge({}, saveState, radiusServerConfigurations)
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData
@@ -739,7 +739,7 @@ export function NetworkForm (props:{
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       if (formData.type !== NetworkTypeEnum.HOTSPOT20) {
-        await updateRadiusServer(saveState, data, networkId)
+        await updateRadiusServer(saveState, networkId)
       }
       await updateWifiCallingActivation(networkId, saveState)
       await updateAccessControl(saveState, data)
@@ -858,7 +858,7 @@ export function NetworkForm (props:{
         // HS 20 Network:
         // The Radius service is binding on the Identity provider profile
         // So it doesn't need to do the network and radius service binding
-        await updateRadiusServer(formData, data, payload.id)
+        await updateRadiusServer(formData, payload.id)
       }
       await updateWifiCallingActivation(payload.id, formData)
 

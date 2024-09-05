@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, Space, Typography } from 'antd'
+import { Form, Radio, Space, Typography, Tooltip } from 'antd'
 
 import { Modal }                                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
@@ -101,11 +101,25 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
 
-  const isDisabledAll = getIsDisabledAll(venueSdLanInfo)
+  useEffect(() => {
+    if (visible) {
+      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
+        setIsValidSoftGre(!!softGreProfileId)
+      } else {
+        setIsValidSoftGre(true)
+      }
+    }
+  }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
+
+  const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const hasChangePermission = hasPermission({ scopes: [
     ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : []),
     ...(isSoftGreEnabled ? [WifiScopes.UPDATE] : [])
   ] })
+
+  const localBreakoutRadio = <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
+    {$t({ defaultMessage: 'Local Breakout' })}
+  </Radio>
 
   return <Modal
     visible={visible}
@@ -140,9 +154,12 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 }
               </UI.RadioSubTitle>}
             >
-              <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
-                {$t({ defaultMessage: 'Local Breakout' })}
-              </Radio>
+              <Tooltip title={isDisabledAll
+                // eslint-disable-next-line max-len
+                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                : undefined}>
+                {localBreakoutRadio}
+              </Tooltip>
             </Form.Item>
 
             {network && visible && isEdgeSdLanMvEnabled &&
@@ -189,8 +206,13 @@ export {
   useGetSoftGreScopeNetworkMap
 }
 
-const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined): boolean => {
-  if(!sdlanInfo) return false
+// eslint-disable-next-line max-len
+const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNetworkId: string | undefined): boolean => {
+  const dcNetworkCount = sdlanInfo?.tunneledWlans?.length ?? 0
+  if(dcNetworkCount === 0 || !currentNetworkId) return false
 
-  return (sdlanInfo.tunneledWlans?.length ?? 0) <= 1
+  const isSdLanLastNetwork = sdlanInfo!.tunneledWlans!.length <= 1
+  if (!isSdLanLastNetwork) return false
+
+  return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }
