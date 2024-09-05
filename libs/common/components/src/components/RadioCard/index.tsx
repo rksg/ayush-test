@@ -55,7 +55,7 @@ export function RadioCard ({
   const { $t } = useIntl()
   return <Card $cardType={type} onClick={type === 'default' ? onClick : undefined}>
     <Title>
-      { isBetaFeature ? getTitleWithIndicator(title) : title }
+      { isBetaFeature ? getTitleWithIndicator(title as string) : title }
     </Title>
     <Description>{description}</Description>
     { categories.length > 0 &&
