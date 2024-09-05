@@ -64,15 +64,15 @@ describe('AlarmsButton', () => {
   })
 
   it('should render AlarmsButton correctly', async () => {
-    render(<Provider>
+    await render(<Provider>
       <AlarmsButton />
     </Provider>, { route: { params } })
     await userEvent.click(screen.getByRole('button'))
     expect(await screen.findByText('testamy_ap')).toBeVisible()
-    const cancelButton = await screen.findByRole('button', { name: 'Close' })
-    await userEvent.click(cancelButton)
     await userEvent.click((await screen.findAllByTitle('All Severities'))[0])
     await userEvent.click((await screen.findAllByTitle('Major'))[0])
     await userEvent.click((await screen.findByText('Clear all alarms')))
+    const cancelButton = await screen.findByRole('button', { name: 'Close' })
+    await userEvent.click(cancelButton)
   })
 })

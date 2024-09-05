@@ -17,7 +17,8 @@ import {
   ApTable,
   ApCompatibilityDrawer,
   retrievedCompatibilitiesOptions,
-  useApGroupsFilterOpts
+  useApGroupsFilterOpts,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
@@ -28,13 +29,10 @@ import { ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
 import { EmbeddedReport, ReportType }              from '@acx-ui/reports/components'
 
-
+import { CompatibilityCheck }      from './CompatibilityCheck'
 import { IconThirdTab, AlertNote } from './styledComponents'
 import { RbacVenueMeshApsTable }   from './VenueMeshApsTable/RbacVenueMeshApsTable'
 import { VenueMeshApsTable }       from './VenueMeshApsTable/VenueMeshApsTable'
-
-
-
 
 const useIsMeshEnabled = (venueId: string | undefined) => {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -56,26 +54,28 @@ export function VenueWifi () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/venues/${params.venueId}/venue-details/devices`)
+  const { venueId } = params
+  const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
 
   const isEnableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const isShowApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
   const [ showCompatibilityNote, setShowCompatibilityNote ] = useState(false)
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const apCompatibilityTenantId = sessionStorage.getItem(ACX_UI_AP_COMPATIBILITY_NOTE_HIDDEN_KEY) ?? ''
-  const enabledMesh = useIsMeshEnabled(params.venueId)
+  const enabledMesh = useIsMeshEnabled(venueId)
 
   const { compatibilitiesFilterOptions, apCompatibilities, incompatible } = useGetApCompatibilitiesVenueQuery(
     {
-      params: { venueId: params.venueId },
+      params: { venueId },
       payload: { filters: {} }
     },
     {
       selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
     })
 
-  const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [params.venueId] })
+  const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [venueId] })
 
   useEffect(() => {
     if (incompatible > 0) {
@@ -101,40 +101,42 @@ export function VenueWifi () {
   }
 
   const alertNote = () => {
-    return (
-      <AlertNote
-        data-testid='ap-compatibility-alert-note'
-        message={
-          <>
-            <Tooltip.Info
-              isFilled
-              iconStyle={{
-                height: '16px',
-                width: '16px',
-                marginRight: '6px',
-                marginBottom: '-3px',
-                color: cssStr('--acx-accents-orange-50')
-              }} />
-            <span style={{ lineHeight: '28px' }}>
-              {$t({
-                defaultMessage:
+    return isEdgeCompatibilityEnabled && venueId
+      ? <CompatibilityCheck venueId={venueId} />
+      : (
+        <AlertNote
+          data-testid='ap-compatibility-alert-note'
+          message={
+            <>
+              <Tooltip.Info
+                isFilled
+                iconStyle={{
+                  height: '16px',
+                  width: '16px',
+                  marginRight: '6px',
+                  marginBottom: '-3px',
+                  color: cssStr('--acx-accents-orange-50')
+                }} />
+              <span style={{ lineHeight: '28px' }}>
+                {$t({
+                  defaultMessage:
           '{total} access points are not compatible with certain Wi-Fi features.' },
-              { total: incompatible })}
-            </span>
-            <Button
-              data-testid='ap-compatibility-alert-note-open'
-              type='link'
-              style={{ fontSize: '12px', marginBottom: '4px' }}
-              onClick={() => {
-                setDrawerVisible(true)
-              }}>
-              {$t({ defaultMessage: 'See details' })}
-            </Button>
-          </>}
-        type='info'
-        closable
-        onClose={clickCloseNote} />
-    )
+                { total: incompatible })}
+              </span>
+              <Button
+                data-testid='ap-compatibility-alert-note-open'
+                type='link'
+                style={{ fontSize: '12px', marginBottom: '4px' }}
+                onClick={() => {
+                  setDrawerVisible(true)
+                }}>
+                {$t({ defaultMessage: 'See details' })}
+              </Button>
+            </>}
+          type='info'
+          closable
+          onClose={clickCloseNote} />
+      )
   }
 
   return (
@@ -177,7 +179,7 @@ export function VenueWifi () {
         </Tooltip>}>
         <EmbeddedReport
           reportName={ReportType.ACCESS_POINT}
-          rlsClause={`"zoneName" in ('${params?.venueId}')`}
+          rlsClause={`"zoneName" in ('${venueId}')`}
         />
       </Tabs.TabPane>
       { isShowApGroupTable && (

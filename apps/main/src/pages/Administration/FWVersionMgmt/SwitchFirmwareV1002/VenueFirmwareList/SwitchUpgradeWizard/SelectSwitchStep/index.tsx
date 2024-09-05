@@ -14,7 +14,7 @@ import {
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
-  useLazyGetSwitchFirmwareListV1002Query
+  useLazyGetSwitchFirmwareListV1001Query
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
@@ -135,7 +135,7 @@ export const SelectSwitchStep = (
   const { tenantId } = useParams()
   const { parseSwitchVersion, getSwitchScheduleTplV1002 } = useSwitchFirmwareUtils()
 
-  const [ getSwitchFirmwareList ] = useLazyGetSwitchFirmwareListV1002Query()
+  const [ getSwitchFirmwareList ] = useLazyGetSwitchFirmwareListV1001Query()
 
   const [searchText, setSearchText] = useState('' as string)
   const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
