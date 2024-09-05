@@ -161,6 +161,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               />
             </GridCol>
           </GridRow>
+
           <DetailsSection
             data-testid='Status Trail'
             title={$t({ defaultMessage: 'Status Trail' })}

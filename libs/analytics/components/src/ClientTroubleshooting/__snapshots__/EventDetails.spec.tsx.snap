@@ -33,6 +33,10 @@ exports[`EventDetails renders Details correctly 1`] = `
   color: var(--acx-neutrals-60);
 }
 
+.c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label::after {
+  margin: 0 6px 0 2px;
+}
+
 .c5 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
   display: unset;
 }
