@@ -370,7 +370,7 @@ export function MspCustomers () {
       },
       {
         title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Assigned Licenses' })
-          : $t({ defaultMessage: 'Device Subscriptions' }) ,
+          : $t({ defaultMessage: 'Assigned Device Subscriptions' }) ,
         dataIndex: 'apswLicense',
         key: 'apswLicense',
         align: 'center',
