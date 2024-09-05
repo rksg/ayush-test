@@ -63,7 +63,6 @@ export function createIntentAIDetails (useValuesText: ReturnType<typeof createUs
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
           <DetailsSection
-            checkDataRetention
             data-testid='Details'
             title={$t({ defaultMessage: 'Details' })}
             children={<GridRow>
