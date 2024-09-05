@@ -277,11 +277,7 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenueTemplate: {
     method: 'put',
     url: '/templates/networkActivations/:networkVenueId?quickAck=true',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    newApi: true
   },
   updateNetworkVenueTemplateRbac: {
     method: 'put',

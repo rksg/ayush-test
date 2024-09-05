@@ -44,11 +44,7 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenue: {
     method: 'put',
     url: '/networkActivations/:networkVenueId?quickAck=true',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    newApi: true
   },
   updateNetworkVenues: {
     method: 'put',
