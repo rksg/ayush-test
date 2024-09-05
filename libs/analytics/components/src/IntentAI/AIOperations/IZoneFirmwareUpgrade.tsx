@@ -64,7 +64,7 @@ const useValuesText = createUseValuesText({
   inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
 })
 
-export const IntentAIDetails = createIntentAIDetails(useValuesText)
+export const IntentAIDetails = createIntentAIDetails(useValuesText, { showImpactedAPs: true })
 
 const options = {
   yes: {
