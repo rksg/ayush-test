@@ -2,19 +2,21 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { networkApi, policyApi, serviceApi, softGreApi, venueApi } from '@acx-ui/rc/services'
 import {
   AaaUrls,
   AccessControlUrls,
   ClientIsolationUrls,
   CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  SoftGreUrls,
   VlanPoolRbacUrls,
   WifiNetworkFixtures,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -35,7 +37,8 @@ import {
   apGroupsResponse,
   externalProviders,
   vlanList,
-  mockRbacVlanList
+  mockRbacVlanList,
+  mockSoftGreTable
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -166,6 +169,11 @@ describe('NetworkForm', () => {
   beforeEach(() => {
     // eslint-disable-next-line max-len
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
+    store.dispatch(networkApi.util.resetApiState())
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(serviceApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
+    store.dispatch(softGreApi.util.resetApiState())
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url, (_, res, ctx) =>
         res(ctx.json({ COMMON: '{}' }))
@@ -235,7 +243,10 @@ describe('NetworkForm', () => {
       ),
       rest.post(VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_, res, ctx) => res(ctx.json(mockRbacVlanList))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 
