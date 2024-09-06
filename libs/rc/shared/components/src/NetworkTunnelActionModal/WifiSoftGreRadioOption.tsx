@@ -5,9 +5,9 @@ import {  Form, Radio, Row, Space, Select } from 'antd'
 import { DefaultOptionType }                from 'antd/lib/select'
 import { useIntl }                          from 'react-intl'
 
-import { useGetSoftGreOptionsQuery }               from '@acx-ui/rc/services'
-import { WifiScopes }                              from '@acx-ui/types'
-import { hasPermission, hasCrossVenuesPermission } from '@acx-ui/user'
+import { Tooltip }                                          from '@acx-ui/components'
+import { useGetSoftGreOptionsQuery }                        from '@acx-ui/rc/services'
+import { hasPolicyPermission, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
 
 import SoftGreDrawer from '../policies/SoftGre/SoftGreForm/SoftGreDrawer'
 
@@ -29,6 +29,7 @@ interface WiFISoftGreRadioOptionProps {
   networkId?: string
   cachedSoftGre: SoftGreNetworkTunnel[]
   disabledInfo?: { // can't change for edge
+    noChangePermission: boolean,
     isDisabled: boolean,
     tooltip: string
   }
@@ -113,9 +114,11 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       </UI.RadioSubTitle>}
     >
       <UI.RadioWrapper>
-        <Radio value={NetworkTunnelTypeEnum.SoftGre} disabled={disabledInfo?.isDisabled}>
-          {$t({ defaultMessage: 'SoftGRE Tunneling' })}
-        </Radio>
+        <Tooltip title={disabledInfo?.isDisabled && disabledInfo?.tooltip}>
+          <Radio value={NetworkTunnelTypeEnum.SoftGre} disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission}>
+            {$t({ defaultMessage: 'SoftGRE Tunneling' })}
+          </Radio>
+        </Tooltip>
         {currentTunnelType === NetworkTunnelTypeEnum.SoftGre &&
               <Space wrap>
                 <Form.Item noStyle
@@ -142,7 +145,7 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
                 </UI.TextButton>
                 <UI.TextButton
                   type='link'
-                  disabled={!(hasCrossVenuesPermission({ needGlobalPermission: true }) && hasPermission({ scopes: [WifiScopes.CREATE] }))}
+                  disabled={!hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.CREATE })}
                   onClick={handleClickAdd}
                   style={{ marginLeft: 5 }}
                 >

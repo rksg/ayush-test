@@ -113,15 +113,18 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   // eslint-disable-next-line max-len
   const hasSoftGrePermission = isSoftGreEnabled ? hasPolicyPermission({ type: PolicyType.SOFTGRE, oper: PolicyOperation.EDIT }) : true
   const hasChangePermission = hasEdgeSdLanPermission && hasSoftGrePermission
-  const localBreakoutRadio = <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
+  const noChangePermission = !hasChangePermission
+  const localBreakoutRadio = (<Radio
+    value={NetworkTunnelTypeEnum.None}
+    disabled={isDisabledAll || noChangePermission}>
     {$t({ defaultMessage: 'Local Breakout' })}
-  </Radio>
+  </Radio>)
 
   return <Modal
     visible={visible}
     title={$t({ defaultMessage: 'Tunnel' })}
     okText={$t({ defaultMessage: 'Apply' })}
-    okButtonProps={{ disabled: !hasChangePermission || isSubmitting ||
+    okButtonProps={{ disabled: noChangePermission || isSubmitting ||
       (isEdgeSdLanMvEnabled && !venueSdLanInfo) || !isValidSoftGre }}
     maskClosable={false}
     keyboard={false}
@@ -167,9 +170,10 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 networkType={networkType!}
                 venueSdLan={venueSdLanInfo}
                 networkVlanPool={networkVlanPool}
-                disabledInfo={isDisabledAll
+                disabledInfo={(isDisabledAll || noChangePermission)
                   ? {
-                    isDisabled: true,
+                    isDisabled: isDisabledAll,
+                    noChangePermission,
                     // eslint-disable-next-line max-len
                     tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
                   }
@@ -182,6 +186,14 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 venueId={networkVenueId!}
                 networkId={networkId!}
                 cachedSoftGre={cachedSoftGre}
+                disabledInfo={(isDisabledAll || noChangePermission)
+                  ? {
+                    isDisabled: isDisabledAll,
+                    noChangePermission,
+                    // eslint-disable-next-line max-len
+                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                  }
+                  : undefined}
               />
             }
           </Space>
