@@ -14,6 +14,7 @@ export const StyledSpace = styled(Space)`
   width: 100%;
   margin-bottom: var(--acx-descriptions-space);
   justify-content: space-between;
+  align-items: baseline;
   & .ant-form-item {
       margin: 0;
   }
