@@ -30,7 +30,8 @@ export const Descriptions = styled(AntDescriptions)<DescriptionsProps>`
         color: var(--acx-neutrals-60);
 
         &::after {
-          margin: 0 6px 0 2px;
+          bottom: 0;
+          margin: 0 0.25em 0 0;
         }
       }
 

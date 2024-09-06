@@ -34,7 +34,8 @@ exports[`Descriptions should render 1`] = `
 }
 
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label::after {
-  margin: 0 6px 0 2px;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
 }
 
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
@@ -113,7 +114,8 @@ exports[`Descriptions should render with no space 1`] = `
 }
 
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-label::after {
-  margin: 0 6px 0 2px;
+  bottom: 0;
+  margin: 0 0.25em 0 0;
 }
 
 .c0 .ant-descriptions-item .ant-descriptions-item-container .ant-descriptions-item-content {
