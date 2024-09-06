@@ -26,7 +26,6 @@ import { Provider }                            from '@acx-ui/store'
 import { render, screen }                      from '@acx-ui/test-utils'
 import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
 import { getUserProfile, setUserProfile }      from '@acx-ui/user'
-import { NodeType }                            from '@acx-ui/utils'
 
 import * as fixtures               from './__tests__/fixtures'
 import { AirtimeB }                from './AirtimeB'
