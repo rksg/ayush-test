@@ -1,3 +1,4 @@
+import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Tooltip, Button, cssStr }                 from '@acx-ui/components'
@@ -28,14 +29,12 @@ export const CompatibleAlertBanner = (props: CompatibleAlertBannerProps) => {
   return (<UI.AlertNote
     data-testid='compatibility-alert-note'
     message={
-      <>
+      <Space size='small'>
         <Tooltip.Info
           isFilled
           iconStyle={{
             height: '16px',
             width: '16px',
-            marginRight: '6px',
-            marginBottom: '-3px',
             color: cssStr('--acx-accents-orange-50')
           }} />
         <span style={{ lineHeight: '28px' }}>
@@ -44,11 +43,11 @@ export const CompatibleAlertBanner = (props: CompatibleAlertBannerProps) => {
         <Button
           data-testid='compatibility-alert-note-open'
           type='link'
-          style={{ fontSize: '12px', marginBottom: '4px' }}
+          style={{ fontSize: '12px' }}
           onClick={onClick}>
           {$t({ defaultMessage: 'See details' })}
         </Button>
-      </>}
+      </Space>}
     type='info'
     closable
     onClose={handleOnClose} />
