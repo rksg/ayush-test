@@ -21,7 +21,7 @@ export const IncidentHeader = ({ incident }: { incident: Incident }) => {
     subTitle={shortDescription(incident)}
     extra={hasPermission({
       permission: 'WRITE_INCIDENTS',
-      scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+      scopes: [incident.sliceType.startsWith('switch') ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
     })
       ? [<MuteIncident incident={incident} />]
       : []

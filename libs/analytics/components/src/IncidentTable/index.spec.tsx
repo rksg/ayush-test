@@ -14,9 +14,9 @@ import {
   mockGraphqlMutation,
   within
 } from '@acx-ui/test-utils'
-import { RolesEnum, WifiScopes }          from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
-import { DateRange }                      from '@acx-ui/utils'
+import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
+import { DateRange }                           from '@acx-ui/utils'
 
 import { api, IncidentTableRow, IncidentNodeData } from './services'
 
@@ -432,28 +432,53 @@ describe('IncidentTable', () => {
     expect(screen.queryByTestId('Mute')).not.toBeInTheDocument()
   })
 
-  it('should not show muted when wifi-u is missing', async () => {
+  it('should not show muted when wifi-u is missing on wireless incident', async () => {
     setUserProfile({
       ...getUserProfile(),
       abacEnabled: true,
       isCustomRole: true,
-      scopes: [WifiScopes.READ]
+      scopes: [SwitchScopes.UPDATE]
     })
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
     })
-
     render(<Provider><IncidentTable filters={filters}/></Provider>, {
       route: {
         path: '/tenantId/t/analytics/incidents',
         wrapRoutes: false
       }
     })
-
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
     fireEvent.click(
       await screen.findByText(
         'RADIUS failures are unusually high in Access Point: r710_!216 (60:D0:2C:22:6B:90)'
+      )
+    )
+    expect(screen.queryByTestId('Mute')).not.toBeInTheDocument()
+  })
+
+  it('should not show muted when switch-u is missing on wired incident', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.UPDATE]
+    })
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: {
+        incidents: [{ ...incidentTests[0], sliceType: 'switchId' }]
+      } } }
+    })
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false
+      }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    fireEvent.click(
+      await screen.findByText(
+        'RADIUS failures are unusually high in Unknown: r710_!216 (60:D0:2C:22:6B:90)'
       )
     )
     expect(screen.queryByTestId('Mute')).not.toBeInTheDocument()

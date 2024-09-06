@@ -145,6 +145,10 @@ export function IncidentTable ({ filters }: {
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
       key: getShowWithoutRbacCheckKey('mute'),
+      visible: ([row]) => row && hasPermission({
+        permission: 'WRITE_INCIDENTS',
+        scopes: [row.sliceType.startsWith('switch') ? SwitchScopes.UPDATE : WifiScopes.UPDATE]
+      }),
       label: $t(selectedIncident?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
