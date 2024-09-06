@@ -15,13 +15,10 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
-  ServicePolicyCardData,
-  isServicePolicyCardEnabled,
-  isServicePolicyCardSetEnabled,
-  hasDpskAccess
+  isServiceCardSetEnabled,
+  isServiceCardEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes }                       from '@acx-ui/types'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -53,7 +50,7 @@ export default function SelectServiceForm () {
     })
   }
 
-  const sets: { title: string, items: ServicePolicyCardData<ServiceType>[] }[] = [
+  const set = [
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
@@ -65,8 +62,7 @@ export default function SelectServiceForm () {
         },
         {
           type: ServiceType.DPSK,
-          categories: [RadioCardCategory.WIFI],
-          disabled: !hasDpskAccess()
+          categories: [RadioCardCategory.WIFI]
         },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
@@ -76,11 +72,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-          scopeKeysMap: {
-            create: [EdgeScopes.CREATE],
-            read: [EdgeScopes.READ]
-          }
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
@@ -140,8 +132,9 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              { //eslint-disable-next-line max-len
-                sets.filter(set => isServicePolicyCardSetEnabled<ServiceType>(set, 'create')).map(set => {
+              {
+                // eslint-disable-next-line max-len
+                set.filter(set => isServiceCardSetEnabled(set, ServiceOperation.CREATE)).map(set => {
                   return <UI.CategoryContainer key={set.title}>
                     <Typography.Title level={3}>
                       { set.title }
@@ -149,14 +142,13 @@ export default function SelectServiceForm () {
                     <GridRow>
                       {
                         // eslint-disable-next-line max-len
-                        set.items.filter(item => isServicePolicyCardEnabled<ServiceType>(item, 'create')).map(item => {
+                        set.items.filter(item => isServiceCardEnabled(item, ServiceOperation.CREATE)).map(item => {
                           return <GridCol key={item.type} col={{ span: 6 }}>
                             <ServiceCard
                               key={item.type}
                               serviceType={item.type}
                               categories={item.categories}
                               type={'radio'}
-                              scopeKeysMap={item.scopeKeysMap}
                             />
                           </GridCol>
                         })

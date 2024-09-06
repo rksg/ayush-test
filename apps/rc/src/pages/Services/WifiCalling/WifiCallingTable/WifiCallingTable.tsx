@@ -23,11 +23,11 @@ import {
   AclOptionType,
   WifiCallingSetting,
   QosPriorityEnum,
-  wifiCallingQosPriorityLabelMapping
+  wifiCallingQosPriorityLabelMapping,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -116,14 +116,14 @@ export default function WifiCallingTable () {
 
   const rowActions: TableProps<WifiCallingSetting>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -138,6 +138,8 @@ export default function WifiCallingTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -154,11 +156,11 @@ export default function WifiCallingTable () {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByService(ServiceType.WIFI_CALLING, ServiceOperation.CREATE)}
           >
             <Button
               disabled={tableQuery.data?.totalCount
@@ -179,11 +181,8 @@ export default function WifiCallingTable () {
           onChange={tableQuery.handleTableChange}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            // eslint-disable-next-line max-len
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-          }
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
         />
       </Loader>
     </>
