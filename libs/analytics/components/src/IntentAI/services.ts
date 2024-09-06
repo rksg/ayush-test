@@ -10,12 +10,13 @@ import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
   computeRangeFilter,
-  TABLE_DEFAULT_PAGE_SIZE
+  TABLE_DEFAULT_PAGE_SIZE,
+  useEncodedParameter
 }                                                   from '@acx-ui/utils'
 import type { PathFilter } from '@acx-ui/utils'
 
-import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent } from './config'
-import { DisplayStates }                                                         from './states'
+import { states, codes, aiFeaturesLabel, groupedStates, IntentListItem, Intent, failureCodes } from './config'
+import { DisplayStates }                                                                       from './states'
 import {
   Actions,
   IntentWlan,
@@ -23,9 +24,7 @@ import {
   TransitionIntentItem } from './utils'
 
 type Metadata = {
-  error?: {
-    message?: string
-  }
+  failures?: (keyof typeof failureCodes)[]
   scheduledAt?: string
   updatedAt?: string
   oneClickOptimize?: boolean
@@ -43,12 +42,31 @@ export type IntentHighlight = {
   ops?: HighlightItem
 }
 
+type IntentAPPayload = {
+  code: string
+  root: string
+  sliceId: string
+  search: string
+}
+
+export type IntentAP = {
+  name: string
+  mac: string
+  model: string
+  version: string
+}
+
 const getStatusTooltip = (state: DisplayStates, sliceValue: string, metadata: Metadata) => {
   const { $t } = getIntl()
 
   const stateConfig = states[state]
+
+  const errMsg: string = metadata.failures?.map(failure => {
+    return failureCodes[failure] ? $t(failureCodes[failure]) : failure
+  }).join('\n - ') || ''
+
   return $t(stateConfig.tooltip, {
-    errorMessage: metadata.error?.message,  //TODO: need to update error message logics after ETL finalizes metadata.failures
+    errorMessage: `\n - ${errMsg}\n\n`,
     scheduledAt: formatter(DateFormatEnum.DateTimeFormat)(metadata.scheduledAt),
     zoneName: sliceValue
     // userName: metadata.scheduledBy //TODO: scheduledBy is ID, how to get userName for R1 case?
@@ -288,9 +306,9 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentHighlight(
-          $start: DateTime, $end: DateTime, $path: [HierarchyNodeInput]
+          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput]
         ) {
-          highlights(start: $start, end: $end, path: $path) {
+          highlights(start: $startDate, end: $endDate, path: $path) {
             rrm {
               new
               active
@@ -316,6 +334,28 @@ export const api = intentAIApi.injectEndpoints({
       transformResponse: (response: { highlights: IntentHighlight }) =>
         response.highlights,
       providesTags: [{ type: 'Intent', id: 'INTENT_HIGHLIGHTS' }]
+    }),
+    getAps: build.query<IntentAP[], IntentAPPayload>({
+      query: (payload) => ({
+        document: gql`
+          query GetAps(
+            $code: String!
+            $root: String!
+            $sliceId: String!
+            $n: Int
+            $search: String
+          ) {
+            intent(code: $code, root: $root, sliceId: $sliceId) {
+              aps: aps(n: $n, search: $search) {
+                name mac model version
+              }
+            }
+          }
+          `,
+        variables: { ...payload, n: 100 }
+      }),
+      transformResponse: (response: { intent: { aps: IntentAP[] } }) =>
+        response.intent.aps
     })
   })
 })
@@ -333,7 +373,7 @@ type Pagination = {
   defaultPageSize: number,
   total: number
 }
-type Filters = {
+export type Filters = {
   sliceValue: string[] | undefined
   category: string[] | undefined
   aiFeature: string[] | undefined
@@ -387,13 +427,9 @@ export function useIntentAITableQuery (filter: PathFilter) {
     defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
     total: 0
   }
+  const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
+  const filters = intentTableFilters.read() || {}
   const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION)
-  const [filters, setFilters] = useState<Filters>({
-    sliceValue: undefined,
-    category: undefined,
-    aiFeature: undefined,
-    statusLabel: undefined
-  })
   const handlePageChange: TableProps<IntentListItem>['onChange'] = (
     customPagination
   ) => {
@@ -407,7 +443,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
   const handleFilterChange: TableProps<IntentListItem>['onFilterChange'] = (
     customFilter
   ) => {
-    setFilters(customFilter as Filters)
+    intentTableFilters.write(customFilter as Filters)
     setPagination(DEFAULT_PAGINATION)
   }
   return {
@@ -430,5 +466,6 @@ export const {
   useLazyIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
-  useIntentHighlightQuery
+  useIntentHighlightQuery,
+  useGetApsQuery
 } = api

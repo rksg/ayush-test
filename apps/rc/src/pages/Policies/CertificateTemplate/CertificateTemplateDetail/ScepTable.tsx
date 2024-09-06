@@ -5,11 +5,11 @@ import moment            from 'moment'
 import { useIntl }       from 'react-intl'
 import { useParams }     from 'react-router-dom'
 
-import { Loader, PasswordInput, Table, TableProps, showActionModal }                     from '@acx-ui/components'
-import { CopyOutlined }                                                                  from '@acx-ui/icons'
-import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
-import { ChallengePasswordType, ScepKeyData, hasCloudpathAccess, useTableQuery }         from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                from '@acx-ui/user'
+import { Loader, PasswordInput, Table, TableProps, showActionModal }                                                                                   from '@acx-ui/components'
+import { CopyOutlined }                                                                                                                                from '@acx-ui/icons'
+import { useDeleteSpecificTemplateScepKeyMutation, useGetSpecificTemplateScepKeysQuery }                                                               from '@acx-ui/rc/services'
+import { ChallengePasswordType, PolicyOperation, PolicyType, ScepKeyData, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess }                                                                                                                              from '@acx-ui/user'
 
 import ScepDrawer from './ScepDrawer'
 
@@ -108,6 +108,7 @@ export default function ScepTable ({ templateId = '' }) {
 
   const rowActions: TableProps<ScepKeyData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([selectedRow]) => {
         setVisible(true)
@@ -115,6 +116,7 @@ export default function ScepTable ({ templateId = '' }) {
       }
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showActionModal({
@@ -137,13 +139,15 @@ export default function ScepTable ({ templateId = '' }) {
       }
     }
   ]
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
-  const actionButtons = [
+  const actionButtons = filterByAccessForServicePolicyMutation([
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE),
       label: $t({ defaultMessage: 'Add SCEP Key' }),
       onClick: () => setVisible(true)
     }
-  ]
+  ])
 
   return (
     <Loader states={[tableQuery]}>
@@ -153,10 +157,10 @@ export default function ScepTable ({ templateId = '' }) {
         dataSource={tableQuery?.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={allowedRowActions}
         actions={filterByAccess(actionButtons)}
         rowSelection={
-          hasCloudpathAccess() && { type: 'radio', onChange: () => {
+          allowedRowActions.length > 0 && { type: 'radio', onChange: () => {
             setVisible(false)
           } }}
         rowKey='id'

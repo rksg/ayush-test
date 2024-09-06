@@ -10,7 +10,7 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils }             from '@acx-ui/rc/components'
-import { useGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
+import { useGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   compareSwitchVersion,
   SwitchFirmwareVersion1002,
@@ -19,9 +19,9 @@ import {
   SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
-import * as UI               from '../../styledComponents'
-import { NoteButton }        from '../../styledComponents'
-import { Switch7150C08Note } from '../Switch7150C08Note'
+import * as UI                              from '../../styledComponents'
+import { NoteButton }                       from '../../styledComponents'
+import { NoteProps, NotesEnum, SwitchNote } from '../SwitchNote'
 
 export interface UpdateNowStepProps {
   visible: boolean,
@@ -37,14 +37,14 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const intl = useIntl()
   const { form, current } = useStepFormContext()
   const { availableVersions, hasVenue, setShowSubTitle,
-    upgradeVenueList, upgradeSwitchList } = props
-  const { getSwitchVersionLabelV1002,
-    parseSwitchVersion,
-    getSwitchVersionTagV1002 } = useSwitchFirmwareUtils()
+    upgradeVenueList } = props
+  const { getVersionOptionV1002 } = useSwitchFirmwareUtils()
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
   const [selectedICX82Version, setSelecteedICX82Version] = useState('')
+
+  const [switchNoteData, setSwitchNoteData] = useState([] as NoteProps[])
 
   const ICX71Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.switchCount || 0
@@ -53,10 +53,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const ICX82Count = availableVersions?.filter(
     v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.switchCount || 0
 
-  const [icx7150C08pGroupedData, setIcx7150C08pGroupedData] =
-    useState([] as SwitchFirmwareV1002[][])
-
-  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1002Query({
+  const { data: getSwitchFirmwareList } = useGetSwitchFirmwareListV1001Query({
     payload: {
       venueIdList: upgradeVenueList.map(item => item.venueId),
       searchFilter: 'ICX7150-C08P',
@@ -65,13 +62,9 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   }, { skip: upgradeVenueList.length === 0 })
 
   useEffect(() => {
-    const upgradeSwitchListOfIcx7150C08p = upgradeSwitchList.filter(s =>
-      s.model === 'ICX7150-C08P' || s.model === 'ICX7150-C08')
-    if (upgradeVenueList.length === 0 || getSwitchFirmwareList?.data) {
-      const switchList = upgradeSwitchListOfIcx7150C08p.concat(getSwitchFirmwareList?.data || [])
-      const groupedObject = _.groupBy(switchList, 'venueId')
-      setIcx7150C08pGroupedData(Object.values(groupedObject))
-    }
+    let noteData: NoteProps[] = []
+
+    setSwitchNoteData(noteData)
   }, [getSwitchFirmwareList])
 
 
@@ -105,18 +98,31 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
       return []
     }
 
-  const icx71hasVersionStartingWith100 =
-    getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.some(v => v.id.startsWith('100'))
 
   useEffect(() => {
     setShowSubTitle(false)
   }, [current])
 
-  const scrollToTarget = () => {
-    const targetElement = document.getElementById('note_1')
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const getNoteButton = (type: NotesEnum) => {
+    const scrollToTarget = () => {
+      const targetElement = document.getElementById(type)
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
+
+    const noteIndex = switchNoteData.findIndex(note => note.type === type)
+    if(noteIndex === -1) {
+      return null
+    }
+    return<NoteButton
+      size='small'
+      ghost={true}
+      onClick={scrollToTarget} >
+      {'[' + (noteIndex + 1) + ']'}
+    </NoteButton>
   }
 
   return (
@@ -164,20 +170,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               { getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
                 <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                  <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
-                    <span style={{ marginRight: '5px' }}>
-                      {parseSwitchVersion(v?.name)}
-                    </span>
-                    {getSwitchVersionTagV1002(intl, v)}
-                    <br />
-                    <div style={{
-                      marginTop: '5px',
-                      fontSize: 'var(--acx-body-4-font-size)',
-                      color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
-                    }}>
-                      {getSwitchVersionLabelV1002(intl, v)}
-                    </div>
-                  </span>
+                  {getVersionOptionV1002(intl, v)}
                 </Radio>) }
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
@@ -200,20 +193,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               {getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
                 <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                  <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
-                    <span style={{ marginRight: '5px' }}>
-                      {parseSwitchVersion(v?.name)}
-                    </span>
-                    {getSwitchVersionTagV1002(intl, v)}
-                    <br/>
-                    <div style={{
-                      marginTop: '5px',
-                      fontSize: 'var(--acx-body-4-font-size)',
-                      color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
-                    }}>
-                      {getSwitchVersionLabelV1002(intl, v)}
-                    </div>
-                  </span>
+                  {getVersionOptionV1002(intl, v)}
                 </Radio>)}
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
@@ -237,37 +217,13 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
               { // eslint-disable-next-line max-len
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                   <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                    <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
-                      <span style={{ marginRight: '5px' }}>
-                        {parseSwitchVersion(v?.name)}
-                      </span>
-                      {icx7150C08pGroupedData.length > 0 && v.id.startsWith('100') &&
-                          <NoteButton
-                            size='small'
-                            ghost={true}
-                            onClick={scrollToTarget} >
-                            {'[1]'}
-                          </NoteButton>}
-                      {getSwitchVersionTagV1002(intl, v)}
-                      <br />
-                      <div style={{
-                        marginTop: '5px',
-                        fontSize: 'var(--acx-body-4-font-size)',
-                        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
-                      }}>
-                        {getSwitchVersionLabelV1002(intl, v)}
-                      </div>
-                    </span>
+                    {getVersionOptionV1002(intl, v)}
                   </Radio>)}
               <Radio value='' key='0' style={{ fontSize: 'var(--acx-body-3-font-size)' }}>
                 {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
               </Radio>
             </Space>
           </Radio.Group>
-          {icx7150C08pGroupedData.length > 0 && icx71hasVersionStartingWith100 &&
-            <div id='note_1'>
-              <Switch7150C08Note icx7150C08pGroupedData={icx7150C08pGroupedData} />
-            </div>}
         </>}
 
         <UI.Section>
@@ -293,6 +249,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
           </UI.Ul>
         </UI.Section>
       </Form.Item>
+      {switchNoteData.length > 0 && <SwitchNote notes={switchNoteData} />}
     </div>
   )
 }

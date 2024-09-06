@@ -3,7 +3,7 @@ import { MessageDescriptor, defineMessage, useIntl }                   from 'rea
 
 import { Button, ModalRef }                                                                                                                                                                                from '@acx-ui/components'
 import { useDeleteCaPrivateKeyMutation, useLazyDownloadCertificateAuthorityChainsQuery, useLazyDownloadCertificateAuthorityQuery, useLazyDownloadCertificateChainsQuery, useLazyDownloadCertificateQuery } from '@acx-ui/rc/services'
-import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType, hasCloudpathAccess }                                                                                           from '@acx-ui/rc/utils'
+import { Certificate, CertificateAuthority, CertificateCategoryType, CertificateAcceptType, PolicyOperation, PolicyType, hasPolicyPermission }                                                             from '@acx-ui/rc/utils'
 import { getIntl, validationMessages }                                                                                                                                                                     from '@acx-ui/utils'
 
 import { deleteDescription }                                         from '../contentsMap'
@@ -198,7 +198,9 @@ export default function DownloadSection (props: DownloadDrawerProps) {
             <Row justify='end'>
               {renderViewButton($t(titleLabel[downloadType]),
                 data?.privateKeyBase64)}
-              {type === CertificateCategoryType.CERTIFICATE_AUTHORITY && hasCloudpathAccess() &&
+              {type === CertificateCategoryType.CERTIFICATE_AUTHORITY &&
+                // eslint-disable-next-line max-len
+                hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.DELETE }) &&
                 <><Divider type='vertical' />
                   <Button type='link'
                     size='small'
@@ -213,7 +215,7 @@ export default function DownloadSection (props: DownloadDrawerProps) {
       {data?.privateKeyBase64 && renderDownloadButton(CertDownloadType.PKCS8,
         () => handleDownloadClick(downloadType, CertDownloadType.PKCS8))}
       {type === CertificateCategoryType.CERTIFICATE_AUTHORITY && !data?.privateKeyBase64 && (
-        hasCloudpathAccess() ? (
+        hasPolicyPermission({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE }) ? (
           <ButtonWrapper>
             <Button onClick={() => setUploadDrawerOpen(true)}>
               {$t({ defaultMessage: 'Upload' })}

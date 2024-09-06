@@ -15,7 +15,7 @@ import {
   Drawer
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils }                 from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
+import { useLazyGetSwitchFirmwareListV1001Query } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareV1002,
@@ -45,7 +45,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   } = useSwitchFirmwareUtils()
 
   const [showMoreVenueSchedule, setShowMoreVenueSchedule] = useState<boolean>(false)
-  const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListV1002Query({
+  const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListV1001Query({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
   const [switchFimwareStatusList, setSwitchFirmwareStatusList] =

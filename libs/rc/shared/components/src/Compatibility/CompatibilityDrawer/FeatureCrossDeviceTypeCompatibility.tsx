@@ -41,6 +41,8 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
     }}
   />
 
+  const isCrossDeviceType = deviceTypes.length > 1
+
   return <>
     <Form.Item>
       {description}
@@ -52,11 +54,12 @@ export const FeatureCrossDeviceTypeCompatibility = (props: FeatureCrossDeviceTyp
         const firmwareLink = getFirmwareLinkByDeviceType(typeName as CompatibilityDeviceEnum)
 
         return hasValidData && <div key={typeName}>
-          <Row>
+          { isCrossDeviceType && <Row>
             <StyledDeviceTypeTitle>
               {getCompatibilityDeviceTypeDisplayName(typeName as CompatibilityDeviceEnum)}
             </StyledDeviceTypeTitle>
           </Row>
+          }
           <CompatibilityItem
             description=''
             data={typeData.incompatibleFeatures ?? []}

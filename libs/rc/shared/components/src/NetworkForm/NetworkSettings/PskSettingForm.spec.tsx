@@ -207,7 +207,10 @@ describe('NetworkForm', () => {
   it('should create PSK network with WPA2 and mac auth (for mac registration list)', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     // eslint-disable-next-line max-len
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.WIFI_RBAC_API
+      && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
+      && ff !== Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
     mockServer.use(
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url

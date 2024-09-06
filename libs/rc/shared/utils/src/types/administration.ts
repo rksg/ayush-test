@@ -403,3 +403,8 @@ export interface TwiliosIncommingPhoneNumbers
 {
   incommingPhoneNumbers?: string[]
 }
+
+export interface TwiliosMessagingServices
+{
+  messagingServiceResources?: string[]
+}

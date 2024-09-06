@@ -10,7 +10,7 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlInfoType,
+  EnhancedAccessControlInfoType,
   Network,
   NetworkTypeEnum,
   networkTypes,
@@ -28,12 +28,14 @@ const defaultPayload = {
   ]
 }
 
-const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | undefined }) => {
+// eslint-disable-next-line max-len
+const AccessControlNetworksDetail = (props: { data: EnhancedAccessControlInfoType | undefined }) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const enableWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data } = props
+
   const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
@@ -65,11 +67,11 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
   ]
 
   useEffect(() => {
-    if (data?.networkIds?.length) {
+    if (data?.wifiNetworkIds?.length) {
       tableQuery.setPayload({
         ...defaultPayload,
         filters: {
-          id: data.networkIds
+          id: data.wifiNetworkIds
         }
       })
     }

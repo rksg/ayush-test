@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                               from '@acx-ui/components'
 import { caTypeShortLabel, CertificateTable }                                                                                                                                          from '@acx-ui/rc/components'
 import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess }                                                           from '@acx-ui/rc/utils'
+import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy }                  from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                  from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                                                                                                                                               from '@acx-ui/utils'
 
@@ -105,17 +105,18 @@ export default function CertificateTemplateDetail () {
             oper: PolicyOperation.LIST
           })
         }]}
-        extra={hasCloudpathAccess() &&[
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.CERTIFICATE_TEMPLATE,
               oper: PolicyOperation.EDIT,
               policyId: params.policyId!
             })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Section>
         <SummaryCard data={summaryInfo} />
