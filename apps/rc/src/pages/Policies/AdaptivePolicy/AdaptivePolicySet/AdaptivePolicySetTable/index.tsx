@@ -10,14 +10,13 @@ import {
   useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicySet, FILTER,
+  AdaptivePolicySet, FILTER, filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  getPolicyRoutePath, hasCloudpathAccess,
+  getPolicyRoutePath, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                               from '@acx-ui/user'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
@@ -161,6 +160,7 @@ export default function AdaptivePolicySetTable () {
   }
 
   const rowActions: TableProps<AdaptivePolicySet>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -174,6 +174,7 @@ export default function AdaptivePolicySetTable () {
     }
   },
   {
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       const name = selectedRow.name
@@ -204,6 +205,7 @@ export default function AdaptivePolicySetTable () {
 
   const actions = [{
     label: $t({ defaultMessage: 'Add Set' }),
+    scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.CREATE),
     onClick: () => {
       navigate({
         ...tenantBasePath,
@@ -220,6 +222,8 @@ export default function AdaptivePolicySetTable () {
     tableQuery.setPayload(payload)
   }
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <Loader states={[
       tableQuery,
@@ -234,10 +238,10 @@ export default function AdaptivePolicySetTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
-        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
-        actions={filterByAccess(actions)}
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+        actions={filterByAccessForServicePolicyMutation(actions)}
       />
     </Loader>
   )

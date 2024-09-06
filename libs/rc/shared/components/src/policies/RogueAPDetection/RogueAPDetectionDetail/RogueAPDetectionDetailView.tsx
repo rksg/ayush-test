@@ -3,21 +3,16 @@ import React, { createContext, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { Button, GridCol, GridRow, PageHeader } from '@acx-ui/components'
 import {
-  GridRow,
-  GridCol,
-  Button,
-  PageHeader
-} from '@acx-ui/components'
-import {
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
+  PolicyOperation,
   PolicyType,
   RogueApConstant,
   RogueAPDetailContextType,
-  PolicyOperation,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
@@ -39,19 +34,21 @@ export const RogueAPDetectionDetailView = () => {
       <PageHeader
         title={policyName}
         breadcrumb={breadcrumb}
-        extra={policyName !== RogueApConstant.DefaultProfile ? filterByAccess([
-          <PolicyConfigTemplateLinkSwitcher
-            scopeKey={[WifiScopes.UPDATE]}
-            type={PolicyType.ROGUE_AP_DETECTION}
-            oper={PolicyOperation.EDIT}
-            policyId={params.policyId!}
-            children={
-              <Button key={'configure'} type={'primary'}>
-                {$t({ defaultMessage: 'Configure' })}
-              </Button>
-            }
-          />
-        ]) : []}
+        extra={policyName !== RogueApConstant.DefaultProfile
+          ? filterByAccessForServicePolicyMutation([
+            <PolicyConfigTemplateLinkSwitcher
+              scopeKey={getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT)}
+              type={PolicyType.ROGUE_AP_DETECTION}
+              oper={PolicyOperation.EDIT}
+              policyId={params.policyId!}
+              children={
+                <Button key={'configure'} type={'primary'}>
+                  {$t({ defaultMessage: 'Configure' })}
+                </Button>
+              }
+            />
+          ])
+          : []}
       />
 
       <GridRow>

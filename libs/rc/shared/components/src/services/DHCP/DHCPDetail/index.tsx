@@ -11,6 +11,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   ServiceOperation,
   ServiceType,
   TableResult,
@@ -18,9 +20,7 @@ import {
   useServiceListBreadcrumb,
   Venue
 } from '@acx-ui/rc/utils'
-import { DHCPUsage }      from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { DHCPUsage } from '@acx-ui/rc/utils'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
 import { PoolTable }                         from '../DHCPForm'
@@ -60,9 +60,9 @@ export function DHCPDetail () {
       <PageHeader
         title={data?.serviceName}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <ServiceConfigTemplateLinkSwitcher
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT)}
             type={ServiceType.DHCP}
             oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}

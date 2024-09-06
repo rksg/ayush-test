@@ -6,14 +6,14 @@ import { Features, useIsSplitOn }                          from '@acx-ui/feature
 import { useAaaPolicyQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
 
@@ -39,9 +39,9 @@ export function AAAPolicyDetail () {
       <PageHeader
         title={queryResults.data?.name || ''}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.AAA, PolicyOperation.EDIT)}
             type={PolicyType.AAA}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

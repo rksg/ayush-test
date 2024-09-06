@@ -30,8 +30,9 @@ interface SdLanRadioOptionProps {
   venueSdLan: EdgeMvSdLanViewData | undefined
   networkVlanPool?: VLANPoolViewModelType
   disabledInfo?: {
-    isDisabled: boolean,
-    tooltip: string
+    noChangePermission: boolean
+    isDisabled: boolean
+    tooltip: string | undefined
   }
 }
 
@@ -114,7 +115,8 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
     >
       <Tooltip title={disabledInfo?.tooltip}>
         <EdgeSdLanRadioButton
-          disabled={disabledInfo?.isDisabled || !isVenueSdLanExist}
+          // eslint-disable-next-line max-len
+          disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission || !isVenueSdLanExist}
           sdlanName={sdlanName}
         />
       </Tooltip>
