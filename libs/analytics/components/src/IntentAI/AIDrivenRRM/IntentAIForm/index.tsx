@@ -3,7 +3,8 @@ import { useState } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm }   from '@acx-ui/components'
+import { useNavigate } from '@acx-ui/react-router-dom'
 
 import { IntentWizardHeader } from '../../common/IntentWizardHeader'
 import { getScheduledAt }     from '../../common/ScheduleTiming'
@@ -45,6 +46,7 @@ const useIntentTransition = createUseIntentTransition(getFormDTO)
 export function IntentAIForm () {
   const { intent } = useIntentContext()
   const { $t } = useIntl()
+  const navigate = useNavigate()
 
   const queryResult = useIntentAICRRMQuery()
   const crrmData = queryResult.data!
@@ -71,6 +73,7 @@ export function IntentAIForm () {
         ...initialValues,
         preferences: _.get(intent, ['metadata','preferences']) || { crrmFullOptimization: true }
       }}
+      onCancel={() => { navigate(-1) }}
       onFinish={async (values) => { submit(values) }}
     >
       <StepsForm.StepForm

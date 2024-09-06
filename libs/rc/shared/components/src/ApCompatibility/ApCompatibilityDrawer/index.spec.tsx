@@ -14,9 +14,15 @@ import {
   mockApCompatibilitiesNetwork,
   mockFeatureCompatibilities
 } from '../__test__/fixtures'
-import { ApCompatibilityType, InCompatibilityFeatures, ApCompatibilityQueryTypes } from '../constants'
+import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
 
 import { ApCompatibilityDrawer } from '.'
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
 
 describe('ApCompatibilityDrawer', () => {
   const venueId = '8caa8f5e01494b5499fa156a6c565138'
@@ -33,6 +39,8 @@ describe('ApCompatibilityDrawer', () => {
       store.dispatch(networkApi.util.resetApiState())
       store.dispatch(apApi.util.resetApiState())
     })
+
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
     mockServer.use(
       rest.post(
@@ -62,7 +70,6 @@ describe('ApCompatibilityDrawer', () => {
             venueId={venueId}
             featureName={InCompatibilityFeatures.BETA_DPSK3}
             venueName={venueName}
-            queryType={ApCompatibilityQueryTypes.CHECK_VENUE_WITH_FEATURE}
             onClose={mockedCloseDrawer}
           /></Form>
       </Provider>, {
@@ -82,7 +89,6 @@ describe('ApCompatibilityDrawer', () => {
             type={ApCompatibilityType.NETWORK}
             networkId={networkId}
             featureName={InCompatibilityFeatures.BETA_DPSK3}
-            queryType={ApCompatibilityQueryTypes.CHECK_NETWORK}
             onClose={mockedCloseDrawer}
           /></Form>
       </Provider>, {
@@ -107,7 +113,28 @@ describe('ApCompatibilityDrawer', () => {
       </Provider>, {
         route: { params: { tenantId, featureName }, path: '/:tenantId' }
       })
-    expect(await screen.findByText('6.2.3.103.251')).toBeInTheDocument()
+    expect(await screen.findByText('6.2.3.103.252')).toBeInTheDocument()
+    const icon = await screen.findByTestId('CloseSymbol')
+    expect(icon).toBeVisible()
+  })
+
+  it('should fetch and display render alone correctly (isTemplate)', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    render(
+      <Provider>
+        <Form>
+          <ApCompatibilityDrawer
+            visible={true}
+            type={ApCompatibilityType.VENUE}
+            venueId={venueId}
+            featureName={InCompatibilityFeatures.BETA_DPSK3}
+            venueName={venueName}
+            onClose={mockedCloseDrawer}
+          /></Form>
+      </Provider>, {
+        route: { params: { tenantId, featureName }, path: '/:tenantId' }
+      })
+    expect(await screen.findByText('6.2.3.103.252')).toBeInTheDocument()
     const icon = await screen.findByTestId('CloseSymbol')
     expect(icon).toBeVisible()
   })
@@ -146,7 +173,6 @@ describe('ApCompatibilityDrawer', () => {
             isMultiple
             visible={true}
             venueId={params.venueId}
-            queryType={ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS}
             apIds={['001001001']}
             apName={apName}
             onClose={mockedCloseDrawer}

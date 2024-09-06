@@ -5,36 +5,39 @@ import { EdgeMvSdLanViewData, Network, NetworkSaveData, Venue } from '@acx-ui/rc
 
 import { isGuestTunnelUtilized } from '../EdgeSdLan/edgeSdLanUtils'
 
+import { SoftGreNetworkTunnel } from './useSoftGreTunnelActions'
+
 interface NetworkTunnelInfoButtonProps {
   network?: Network | NetworkSaveData | null
   currentVenue: Venue
   onClick: () => void
-  venueSdLan?: EdgeMvSdLanViewData
+  venueSdLan?: EdgeMvSdLanViewData,
+  venueSoftGre?: SoftGreNetworkTunnel
 }
 
 export const NetworkTunnelInfoButton = (props: NetworkTunnelInfoButtonProps) => {
   const { $t } = useIntl()
-  const { network, currentVenue, onClick, venueSdLan } = props
+  const { network, currentVenue, onClick, venueSdLan, venueSoftGre } = props
 
   if (Boolean(currentVenue.activated?.isActivated)) {
     const venueId = currentVenue.id
 
-    const destinationsInfo = venueSdLan
-
-    const isTunneled = !!destinationsInfo
+    const isTunneled = !!venueSdLan || !!venueSoftGre
     // eslint-disable-next-line max-len
-    const clusterName = (isTunneled && isGuestTunnelUtilized(destinationsInfo, network?.id!, venueId))
-      ? destinationsInfo?.guestEdgeClusterName
-      : destinationsInfo?.edgeClusterName
+    const clusterName = (isGuestTunnelUtilized(venueSdLan, network?.id!, venueId))
+      ? venueSdLan?.guestEdgeClusterName
+      : venueSdLan?.edgeClusterName
+
+    const softGreClusterName = network?.id && venueSoftGre && venueSoftGre.profileName
 
     return <Button type='link'
       onClick={(e) => {
         e.stopPropagation()
         onClick()
       }}>
-      {!!destinationsInfo
+      {isTunneled
         ? $t({ defaultMessage: 'Tunneled ({clusterName})' },
-          { clusterName })
+          { clusterName: venueSoftGre ? softGreClusterName : clusterName })
         : $t({ defaultMessage: 'Local Breakout' })
       }
     </Button>

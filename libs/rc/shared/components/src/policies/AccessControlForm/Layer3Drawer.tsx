@@ -21,33 +21,36 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Drag }                   from '@acx-ui/icons'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Drag }                          from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
+  useAddL3AclPolicyTemplateMutation,
   useGetEnhancedL3AclProfileListQuery,
   useGetL3AclPolicyQuery,
-  useUpdateL3AclPolicyMutation
-} from '@acx-ui/rc/services'
-import {
-  useAddL3AclPolicyTemplateMutation,
   useGetL3AclPolicyTemplateListQuery,
   useGetL3AclPolicyTemplateQuery,
+  useUpdateL3AclPolicyMutation,
   useUpdateL3AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
+  hasPolicyPermission,
+  L3AclPolicy,
+  layer3ProtocolLabelMapping,
   Layer3ProtocolType,
-  portRegExp,
   networkWifiIpRegExp,
+  PolicyOperation,
+  PolicyType,
+  portRegExp,
   subnetMaskIpRegExp,
+  TableResult,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateQueryFnSwitcher,
-  layer3ProtocolLabelMapping, TableResult, L3AclPolicy, useConfigTemplate
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                               from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 
 import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
@@ -1075,7 +1078,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.EDIT }) &&
           <Button type='link'
             disabled={visible || !l3AclPolicyId}
             onClick={() => {
@@ -1091,7 +1094,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.LAYER_3_POLICY, oper: PolicyOperation.CREATE }) &&
           <Button type='link'
             disabled={visible || layer3List.length >= PROFILE_MAX_COUNT_LAYER3_POLICY}
             onClick={() => {
@@ -1104,9 +1107,6 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
       </AclGridCol>
     </GridRow>
   }
-
-  // eslint-disable-next-line max-len
-  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>

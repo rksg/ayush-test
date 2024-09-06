@@ -1,13 +1,11 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button,  GridCol, GridRow, Loader, PageHeader }                                            from '@acx-ui/components'
-import { useGetSoftGreViewDataListQuery }                                                           from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, SoftGreActivation, SoftGreViewData, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
-import { getPolicyDetailsLink }                                                                     from '@acx-ui/rc/utils'
-import { TenantLink }                                                                               from '@acx-ui/react-router-dom'
-import { WifiScopes }                                                                               from '@acx-ui/types'
-import { filterByAccess }                                                                           from '@acx-ui/user'
+import { Button,  GridCol, GridRow, Loader, PageHeader }                                                                                                         from '@acx-ui/components'
+import { useGetSoftGreViewDataListQuery }                                                                                                                        from '@acx-ui/rc/services'
+import { filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, PolicyOperation, PolicyType, SoftGreActivation, SoftGreViewData, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
+import { getPolicyDetailsLink }                                                                                                                                  from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                            from '@acx-ui/react-router-dom'
 
 import SoftGreDetailContent from './SoftGreDetailContent'
 import SoftGreVenueDetail   from './SoftGreVenueDetail'
@@ -34,9 +32,9 @@ export default function SoftGreDetail () {
         title={softGreDetail?.name}
         breadcrumb={breadcrumb}
         extra={
-          params.policyId && filterByAccess([
+          params.policyId && filterByAccessForServicePolicyMutation([
             <TenantLink
-              scopeKey={[WifiScopes.UPDATE]}
+              scopeKey={getScopeKeyByPolicy(PolicyType.SOFTGRE, PolicyOperation.EDIT)}
               to={getPolicyDetailsLink({
                 type: PolicyType.SOFTGRE,
                 oper: PolicyOperation.EDIT,
