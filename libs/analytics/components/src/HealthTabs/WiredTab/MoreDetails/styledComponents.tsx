@@ -4,11 +4,8 @@ export const DrawerTitle = styled.span`
   margin-top: 5px;
 `
 export const ChartTitle = styled.span`
-  font-size: var(--acx-headline-4-font-size);
-  line-height: var(--acx-headline-4-line-height);
-  font-weight: var(--acx-headline-4-font-weight);
-  font-family: var(--acx-accent-brand-font);
-  padding-bottom: 20px;
+  padding-bottom : 10px;
+  font-size: 12px;
 `
 export const PieChartWrapper = styled.div`
   height: 260px;
