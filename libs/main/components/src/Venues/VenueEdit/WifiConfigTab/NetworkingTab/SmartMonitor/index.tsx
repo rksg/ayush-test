@@ -48,9 +48,11 @@ export function SmartMonitor () {
   )
 
   useEffect(() => {
-    const venueApSmartMonitorData = venueApSmartMonitor
+    const venueApSmartMonitorData = venueApSmartMonitor.data
     if (venueApSmartMonitorData) {
-      form.setFieldsValue(venueApSmartMonitorData)
+      form.setFieldsValue({ smartMonitor: venueApSmartMonitorData });
+
+      setSmartMonitorEnabled(venueApSmartMonitorData.enabled)
 
       setReadyToScroll?.((r) => [...new Set(r.concat('Smart-Monitor'))])
     }
@@ -61,9 +63,9 @@ export function SmartMonitor () {
       const formData =
         form.getFieldsValue().smartMonitor
       let payload: VenueApSmartMonitor = {
-        enabled: formData.smartMonitorEnabled,
-        interval: formData.smartMonitorInterval,
-        threshold: formData.smartMonitorThreshold
+        enabled: formData.enabled,
+        interval: formData.interval,
+        threshold: formData.threshold
       }
 
       await updateVenueApSmartMonitor({
@@ -98,21 +100,21 @@ export function SmartMonitor () {
 
   const fieldDataKey = ['smartMonitor']
 
-  const smartMonitorEnabledFieldName = [...fieldDataKey, 'smartMonitorEnabled']
+  const smartMonitorEnabledFieldName = [...fieldDataKey, 'enabled']
   const smartMonitorIntervalFieldName = [
     ...fieldDataKey,
-    'smartMonitorInterval'
+    'interval'
   ]
   const smartMonitorThresholdFieldName = [
     ...fieldDataKey,
-    'smartMonitorThreshold'
+    'threshold'
   ]
 
   return (
     <Loader
       states={[
         {
-          isLoading: venueApSmartMonitor?.isLoading,
+          isLoading: venueApSmartMonitor.isLoading,
           isFetching: isUpdatingVenueApSmartMonitor
         }
       ]}
