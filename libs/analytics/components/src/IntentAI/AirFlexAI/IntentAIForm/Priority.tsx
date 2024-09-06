@@ -12,13 +12,8 @@ import { useIntentContext }   from '../../IntentContext'
 
 import * as SideNotes from './SideNotes'
 
-const name = ['preferences', 'enabled'] as NamePath
+const name = ['preferences', 'enable'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
-
-export enum IntentPriority {
-  full = 'full',
-  partial = 'partial'
-}
 
 export function Priority () {
   const { $t } = useIntl()

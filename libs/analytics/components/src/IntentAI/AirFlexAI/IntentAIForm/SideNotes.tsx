@@ -32,18 +32,3 @@ export const Priority: React.FC = () => {
     </SideNotes.Section>
   </SideNotes>
 }
-
-// export const Settings: React.FC = () => {
-//   const { $t } = useIntl()
-//   const { form } = useStepFormContext<Intent>()
-//   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
-//   const { title, content } = isFullOptimization ? intentPriority.full : intentPriority.partial
-
-//   return <SideNotes>
-//     <SideNotes.Section title={$t(title)}>
-//       <Typography.Paragraph children={$t(content)} />
-//     </SideNotes.Section>
-//   </SideNotes>
-// }
-
-//export const Summary = Settings

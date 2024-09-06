@@ -16,8 +16,6 @@ export function Settings () {
       <ScheduleTiming />
       <WlanSelection />
     </Col>
-    <Col span={7} offset={2}>
-      {/* <SideNotes.Settings /> */}
-    </Col>
+    
   </Row>
 }

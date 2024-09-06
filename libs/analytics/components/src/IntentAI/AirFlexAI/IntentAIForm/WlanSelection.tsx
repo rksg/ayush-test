@@ -4,7 +4,7 @@ import { Form }                   from 'antd'
 import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { Loader, Select } from '@acx-ui/components'
+import { Loader, Select, useStepFormContext } from '@acx-ui/components'
 import { get }                                                from '@acx-ui/config'
 
 import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
@@ -12,8 +12,9 @@ import { RadioTypeEnum }                    from '@acx-ui/rc/utils'
 
 import { useIntentWlansQuery } from '../../services'
 import { useIntentContext }    from '../../IntentContext'
+import { Intent } from '../../useIntentDetailsQuery'
 
-type Wlan = {
+export type Wlan = {
   name: string
   ssid: string
   id: string
@@ -27,6 +28,7 @@ const codeToRadio: Record<string, RadioTypeEnum> = {
 export default function WlanSelection() {
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const { intent } = useIntentContext()
+  const { form } = useStepFormContext<Intent>()
   const { root, code, metadata, sliceId } = intent
   const savedWlans = metadata.wlans
   const { $t } = useIntl()
@@ -56,21 +58,26 @@ export default function WlanSelection() {
     } else if (!isMlisa && wlansQuery.data) {
       available = wlansQuery.data as typeof r1Networks.data
     }
-    if (available) {
+    if (available?.length) {
       if (savedWlans) {
         const saved = savedWlans.map(({ name }) => name)
+        console.log('saved', saved)
         setWlans(available.map(wlan => ({
           ...wlan,
           excluded: !saved.includes(isMlisa ? wlan.name : wlan.id)
         })))
+        form.setFieldValue('wlans', savedWlans)
       } else {
         setWlans(available)
+        form.setFieldValue('wlans', available)
       }
     }
   }, [r1Networks.data, code, isMlisa, savedWlans, venueId, wlansQuery])
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
+  <Form.Item hidden name='wlans' children={<></>}></Form.Item>
   <Form.Item
-    label={$t({ defaultMessage: 'Exclude WLANs' })}
+    label={$t({ defaultMessage: 'Exclude Networks' })}
+    rules={[{ required: true, message: $t({ defaultMessage: 'Please select atleast one Network' }) }]}
     style={{
       margin: '0 0 0 0',
       fontWeight: 'normal',
@@ -84,10 +91,16 @@ export default function WlanSelection() {
       showArrow
       showSearch={false}
       style={{ width: '100%', margin: '0 auto 10px auto' }}
-      onChange={(ids: string[]) => setWlans(
-        wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id) }))
-      )}
-      placeholder={$t({ defaultMessage: 'Select WLANs' })}
+      onChange={(ids: string[]) => {
+        setWlans(
+          wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id) }))
+        )
+        form.setFieldValue(
+          'wlans',
+          wlans.filter(wlan => (ids.includes(wlan.id)))
+        )
+      }}
+      placeholder={$t({ defaultMessage: 'Select Networks' })}
       value={selectedWlans.map(wlan => wlan.id)}
       maxTagPlaceholder={() =>
         <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
@@ -98,8 +111,8 @@ export default function WlanSelection() {
             } selected`
           }, {
             count: selectedWlans.length,
-            singular: $t(defineMessage({ defaultMessage: 'WLAN' })),
-            plural: $t(defineMessage({ defaultMessage: 'WLANs' }))
+            singular: $t(defineMessage({ defaultMessage: 'Network' })),
+            plural: $t(defineMessage({ defaultMessage: 'Networks' }))
           })}
         </div>
       }
