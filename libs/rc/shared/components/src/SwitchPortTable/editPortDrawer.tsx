@@ -355,8 +355,8 @@ export function EditPortDrawer ({
         selectedPorts.every(port => port.switchModel === 'ICX7850-48C') &&
         switchDetail?.firmware &&
         !isVerGEVer(switchDetail?.firmware, '10010e', false)) {
-        portSpeed = portSpeed.filter(item => !item.includes('FIVE_G')
-        && !item.includes('TEN_G_FULL_'))
+        portSpeed = portSpeed.filter(item => !item.includes('FIVE_G'))
+          .filter(item => !item.includes('TEN_G_FULL_'))
       }
 
       const defaultVlans = switchesDefaultVlan
