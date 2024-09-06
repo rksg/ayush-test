@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
@@ -10,17 +10,16 @@ import {
   useGetVenuesQuery
 } from '@acx-ui/rc/services'
 import {
-  PolicyType,
-  useTableQuery,
+  ClientIsolationViewModel, filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  ClientIsolationViewModel
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 export default function ClientIsolationTable () {
   const { $t } = useIntl()
@@ -59,14 +58,14 @@ export default function ClientIsolationTable () {
 
   const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: ClientIsolationViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
@@ -82,6 +81,8 @@ export default function ClientIsolationTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -93,11 +94,11 @@ export default function ClientIsolationTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Profile' })}</Button>
           </TenantLink>
@@ -111,11 +112,8 @@ export default function ClientIsolationTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            // eslint-disable-next-line max-len
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-          }
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
