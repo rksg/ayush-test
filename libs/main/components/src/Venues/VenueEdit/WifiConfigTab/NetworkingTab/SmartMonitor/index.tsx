@@ -50,7 +50,7 @@ export function SmartMonitor () {
   useEffect(() => {
     const venueApSmartMonitorData = venueApSmartMonitor.data
     if (venueApSmartMonitorData) {
-      form.setFieldsValue({ smartMonitor: venueApSmartMonitorData });
+      form.setFieldsValue({ smartMonitor: venueApSmartMonitorData })
 
       setSmartMonitorEnabled(venueApSmartMonitorData.enabled)
 

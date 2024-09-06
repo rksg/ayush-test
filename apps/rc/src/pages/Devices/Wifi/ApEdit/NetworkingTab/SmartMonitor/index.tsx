@@ -2,13 +2,12 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, InputNumber, Row, Space, Switch, Tooltip } from 'antd'
 import { isEmpty }                                             from 'lodash'
-import { defineMessage, useIntl }                              from 'react-intl'
+import { useIntl }                                             from 'react-intl'
 import { useParams }                                           from 'react-router-dom'
 
 import {
   AnchorContext,
   Loader,
-  StepsForm,
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
@@ -19,16 +18,14 @@ import {
   useLazyGetVenueApSmartMonitorQuery,
   useUpdateApSmartMonitorMutation
 } from '@acx-ui/rc/services'
-import {
-  ApSmartMonitor,
-  VenueApSmartMonitor
-} from '@acx-ui/rc/utils'
+import { ApSmartMonitor, VenueApSmartMonitor } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 const { useWatch } = Form
 export function SmartMonitor () {
+  const colSpan = 8
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
 
@@ -70,29 +67,13 @@ export function SmartMonitor () {
 
   const [formInitializing, setFormInitializing] = useState(true)
 
-  const smartMonitorSettings = [
-    {
-      key: 'smartMonitorEnable',
-      label: defineMessage({ defaultMessage: 'Smart Monitor' }),
-      fieldName: 'smartMonitorEnable'
-    },
-    {
-      key: 'smartMonitorInterval',
-      label: defineMessage({ defaultMessage: 'Interval' }),
-      fieldName: 'smartMonitorInterval'
-    },
-    {
-      key: 'smartMonitorThreshold',
-      label: defineMessage({ defaultMessage: 'Max Retries' }),
-      fieldName: 'smartMonitorThreshold'
-    }
-  ]
+  const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
 
   useEffect(() => {
     const smartMonitorData = smartMonitor?.data
 
     if (venueId && smartMonitorData) {
-      const setData = async () => {
+      const setSmartMonitorData = async () => {
         const venueApSmartMonitorData = await getVenueApSmartMonitor(
           {
             params: { tenantId, venueId },
@@ -104,6 +85,7 @@ export function SmartMonitor () {
         setVenueApSmartMonitor(venueApSmartMonitorData)
         setIsUseVenueSettings(smartMonitorData.useVenueSettings)
         isUseVenueSettingsRef.current = smartMonitorData.useVenueSettings
+        setSmartMonitorEnabled(smartMonitorData.enabled)
 
         if (formInitializing) {
           setInitData(smartMonitorData)
@@ -115,7 +97,7 @@ export function SmartMonitor () {
         }
       }
 
-      setData()
+      setSmartMonitorData()
     }
   }, [venueId, smartMonitor?.data])
 
@@ -136,6 +118,8 @@ export function SmartMonitor () {
           useVenueSettings: true
         }
         formRef?.current?.setFieldsValue(data)
+
+        setSmartMonitorEnabled(venueApSmartMonitor.enabled)
       }
     } else {
       if (!isEmpty(apSmartMonitor)) {
@@ -146,7 +130,7 @@ export function SmartMonitor () {
     updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
-  const handleUpdateSmartMonitor = async (values: any) => {
+  const handleUpdateSmartMonitor = async (values: ApSmartMonitor) => {
     try {
       setEditContextData &&
         setEditContextData({
@@ -187,7 +171,7 @@ export function SmartMonitor () {
       setEditNetworkingContextData({
         ...editNetworkingContextData,
         updateSmartMonitor: () =>
-          handleUpdateSmartMonitor(form?.getFieldsValue().smartMonitor),
+          handleUpdateSmartMonitor(form?.getFieldsValue()),
         discardSmartMonitorChanges: () => handleDiscard()
       })
   }
@@ -202,23 +186,10 @@ export function SmartMonitor () {
     updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
   }
 
-  const fieldDataKey = ['smartMonitor']
+  const smartMonitorEnabledFieldName = 'enabled'
+  const smartMonitorIntervalFieldName = 'interval'
+  const smartMonitorThresholdFieldName = 'threshold'
 
-  const smartMonitorEnabledFieldName = [...fieldDataKey, 'enabled']
-  const smartMonitorIntervalFieldName = [
-    ...fieldDataKey,
-    'interval'
-  ]
-  const smartMonitorThresholdFieldName = [
-    ...fieldDataKey,
-    'threshold'
-  ]
-
-  const handleChanged = () => {
-    handleUpdateSmartMonitor
-  }
-
-  const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
   const toggleSmartMonitor = (checked: boolean) => {
     setSmartMonitorEnabled(checked)
   }
@@ -240,28 +211,48 @@ export function SmartMonitor () {
             handleVenueSetting={handleVenueSetting}
           />
 
-          <StepsForm.FieldLabel width={'280px'}>
-            <>
-              {$t({ defaultMessage: 'Smart Monitor' })}
-              <Tooltip
-                title={$t({
-                  defaultMessage:
-                    'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
-                })}
-                placement='top'
-              >
-                <QuestionMarkCircleOutlined />
-              </Tooltip>
-            </>
-            <Form.Item
-              name={smartMonitorEnabledFieldName}
-              valuePropName={'checked'}
-              initialValue={false}
-              children={<Switch
-                onChange={handleChanged}
-                onClick={toggleSmartMonitor} />}
-            />
-          </StepsForm.FieldLabel>
+          <Row gutter={0}>
+            <Col span={colSpan}>
+              <FieldLabel width='200px'>
+                <Space>
+                  {$t({ defaultMessage: 'Smart Monitor' })}
+                  <Tooltip
+                    title={$t({
+                      defaultMessage:
+                        'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
+                    })}
+                    placement='right'
+                  >
+                    <QuestionMarkCircleOutlined
+                      style={{ height: '14px', marginBottom: -3 }}
+                    />
+                  </Tooltip>
+                </Space>
+                <Form.Item
+                  name={smartMonitorEnabledFieldName}
+                  valuePropName={'checked'}
+                  initialValue={false}
+                  children={
+                    isUseVenueSettings ? (
+                      <span data-testid={'enabled-span'}>
+                        {formRef?.current?.getFieldValue(
+                          smartMonitorEnabledFieldName
+                        )
+                          ? $t({ defaultMessage: 'On' })
+                          : $t({ defaultMessage: 'Off' })}
+                      </span>
+                    ) : (
+                      <Switch
+                        checked={smartMonitorEnabled}
+                        onChange={handleChange}
+                        onClick={toggleSmartMonitor}
+                      />
+                    )
+                  }
+                />
+              </FieldLabel>
+            </Col>
+          </Row>
           {smartMonitorEnabled && (
             <Space size={30}>
               <Form.Item
@@ -283,12 +274,20 @@ export function SmartMonitor () {
                       }
                     ]}
                     children={
-                      <InputNumber
-                        min={5}
-                        max={60}
-                        style={{ width: '75px' }}
-                        onChange={handleChanged}
-                      />
+                      isUseVenueSettings ? (
+                        <span data-testid={'interval-span'}>
+                          {formRef?.current?.getFieldValue(
+                            smartMonitorIntervalFieldName
+                          )}
+                        </span>
+                      ) : (
+                        <InputNumber
+                          min={5}
+                          max={60}
+                          style={{ width: '75px' }}
+                          onChange={handleChange}
+                        />
+                      )
                     }
                   />
                   <div>{$t({ defaultMessage: 'Seconds' })}</div>
@@ -310,12 +309,20 @@ export function SmartMonitor () {
                       }
                     ]}
                     children={
-                      <InputNumber
-                        min={1}
-                        max={10}
-                        style={{ width: '75px' }}
-                        onChange={handleChanged}
-                      />
+                      isUseVenueSettings ? (
+                        <span data-testid={'threshold-span'}>
+                          {formRef?.current?.getFieldValue(
+                            smartMonitorThresholdFieldName
+                          )}
+                        </span>
+                      ) : (
+                        <InputNumber
+                          min={1}
+                          max={10}
+                          style={{ width: '75px' }}
+                          onChange={handleChange}
+                        />
+                      )
                     }
                   />
                   <div>{$t({ defaultMessage: 'Retries' })}</div>
