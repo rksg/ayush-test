@@ -1,12 +1,10 @@
 
-import { useEffect } from 'react'
-
 import { Col, Form, Row }                      from 'antd'
 import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { Loader, PageHeader, StepsForm }                                                      from '@acx-ui/components'
-import { useCreateSoftGreMutation, useGetSoftGreViewDataListQuery, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
+import { PageHeader, StepsForm }                              from '@acx-ui/components'
+import { useCreateSoftGreMutation, useUpdateSoftGreMutation } from '@acx-ui/rc/services'
 import {
   LocationExtended,
   PolicyOperation,
@@ -14,8 +12,7 @@ import {
   getPolicyRoutePath,
   redirectPreviousPage,
   SoftGre,
-  usePolicyListBreadcrumb,
-  SoftGreViewData
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -44,19 +41,6 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
   const [ updateSoftGre ] = useUpdateSoftGreMutation()
   const [ createSoftGre ] = useCreateSoftGreMutation()
 
-  const { softGreData, isLoading } = useGetSoftGreViewDataListQuery(
-    { params, payload: { filters: { id: [params.policyId] } } },
-    {
-      skip: !editMode,
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          softGreData: (data?.data?.[0] ?? {}) as SoftGreViewData,
-          isLoading
-        }
-      }
-    }
-  )
-
   const handleFinish = async (data: SoftGre) => {
     try {
       if (editMode) {
@@ -71,15 +55,8 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
     }
   }
 
-  useEffect(() => {
-    if (!editMode || !softGreData) return
-
-    form.setFieldsValue(softGreData)
-
-  }, [softGreData, form, editMode])
-
   return (
-    <Loader states={[{ isLoading }]}>
+    <>
       <PageHeader
         title={editMode
           ? $t({ defaultMessage: 'Edit SoftGRE' })
@@ -100,11 +77,15 @@ export const SoftGreForm = (props: SoftGreFormProps) => {
         <StepsForm.StepForm>
           <Row gutter={20}>
             <Col span={10}>
-              <SoftGreSettingForm />
+              <SoftGreSettingForm
+                editMode={editMode}
+                readMode={false}
+                policyId={params?.policyId}
+              />
             </Col>
           </Row>
         </StepsForm.StepForm>
       </StepsForm>
-    </Loader>
+    </>
   )
 }
