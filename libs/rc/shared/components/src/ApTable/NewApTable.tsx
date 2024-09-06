@@ -60,10 +60,12 @@ import { RequestPayload, WifiScopes }                                     from '
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
-import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType } from '../ApCompatibility'
-import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
-import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
-import { useApActions }                                                                                  from '../useApActions'
+import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityType } from '../ApCompatibility'
+import { ApGeneralCompatibilityDrawer as EnhancedApCompatibilityDrawer }      from '../Compatibility'
+import { seriesMappingAP }                                                    from '../DevicesWidget/helper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                    from '../ImportFileDrawer'
+import { useApActions }                                                       from '../useApActions'
+import { useIsEdgeFeatureReady }                                              from '../useEdgeActions'
 
 import { getGroupableConfig } from './newGroupByConfig'
 import { useExportCsv }       from './useExportCsv'
@@ -105,6 +107,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
+
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
@@ -345,7 +349,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       title: $t({ defaultMessage: 'AP Group' }),
       dataIndex: 'apGroupId',
       filterKey: 'apGroupId',
-      filterable: filterables ? filterables['apGroupId'] : false,
+      filterable: filterables ? filterables['deviceGroupId'] : false,
       sorter: true,
       groupable: enableGroups
         ? filterables && getGroupableConfig(apAction)?.deviceGroupNameGroupableOptions
@@ -502,6 +506,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       render: (_: ReactNode, row: NewAPModelExtended) => {
         return (<ApCompatibilityFeature
           count={row?.incompatible}
+          deviceStatus={row?.status}
           onClick={() => {
             setSelectedApSN(row?.serialNumber)
             setSelectedApName(row?.name ?? '')
@@ -726,19 +731,25 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
           }
         />
       </ImportFileDrawer>
-      <ApCompatibilityDrawer
+      {!isEdgeCompatibilityEnabled && <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
         venueId={params.venueId}
         networkId={params.networkId}
-        queryType={params.venueId ?
-          ApCompatibilityQueryTypes.CHECK_VENUE_WITH_APS :
-          ApCompatibilityQueryTypes.CHECK_NETWORK_WITH_APS}
         apIds={selectedApSN ? [selectedApSN] : []}
         apName={selectedApName}
         isMultiple
         onClose={() => setCompatibilitiesDrawerVisible(false)}
-      />
+      />}
+      {isEdgeCompatibilityEnabled && <EnhancedApCompatibilityDrawer
+        visible={compatibilitiesDrawerVisible}
+        isMultiple
+        type={ApCompatibilityType.VENUE}
+        venueId={params.venueId}
+        apId={selectedApSN}
+        apName={selectedApName}
+        onClose={() => setCompatibilitiesDrawerVisible(false)}
+      />}
     </Loader>
   )
 })

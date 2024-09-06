@@ -10,7 +10,7 @@ import { searchFixture, emptySearchFixture } from './__fixtures__/searchMocks'
 
 import SearchResults from '.'
 
-const params = { searchVal: 'test%3F' }
+const params = { searchVal: 'test%3F%20%20%20%20' }
 describe('Search Results', () => {
   beforeEach(() => {
     setRaiPermissions({
@@ -23,7 +23,7 @@ describe('Search Results', () => {
     } as RaiPermissions)
     cleanup()
   })
-  it('should decode search string correctly', async () => {
+  it('should decode search string correctly after trimming spaces', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: searchFixture
     })
