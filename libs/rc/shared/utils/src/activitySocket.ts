@@ -1,6 +1,5 @@
-import { getJwtToken, getTenantId } from '@acx-ui/utils'
+import { getIndependentSocket, getJwtToken, getTenantId } from '@acx-ui/utils'
 
-import { getIndependentSocket } from './initialSocket'
 
 export const initActivitySocket = (handler: (msg: string) => void): SocketIOClient.Socket => {
   const token = getJwtToken()

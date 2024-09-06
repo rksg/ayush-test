@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom'
 
 import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import {
-  useGetSwitchDefaultFirmwareListV1002Query,
-  useGetSwitchLatestFirmwareListV1002Query
+  useGetSwitchDefaultFirmwareListV1001Query,
+  useGetSwitchLatestFirmwareListV1001Query
 } from '@acx-ui/rc/services'
 import { FirmwareCategory, SwitchFirmwareModelGroup } from '@acx-ui/rc/utils'
 
@@ -21,8 +21,8 @@ export const VersionBanner = () => {
     [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: 'ICX Models (8200)' })
   }
 
-  const { data: latestVersions } = useGetSwitchLatestFirmwareListV1002Query({ params })
-  const { data: recommendedVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
+  const { data: latestVersions } = useGetSwitchLatestFirmwareListV1001Query({ params })
+  const { data: recommendedVersions } = useGetSwitchDefaultFirmwareListV1001Query({ params })
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   if(!latestVersions && !recommendedVersions) return <></>

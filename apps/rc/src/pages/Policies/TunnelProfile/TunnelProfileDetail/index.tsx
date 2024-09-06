@@ -6,21 +6,21 @@ import { Features }                                      from '@acx-ui/feature-t
 import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
 import { useGetTunnelProfileViewDataListQuery }          from '@acx-ui/rc/services'
 import {
+  filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getScopeKeyByPolicy,
+  getTunnelTypeString,
+  isDefaultTunnelProfile as getIsDefaultTunnelProfile,
+  mtuRequestTimeoutUnitConversion,
   MtuTypeEnum,
   PolicyOperation,
   PolicyType,
   TunnelProfileViewData,
-  getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
-  getTunnelTypeString,
-  TunnelTypeEnum,
-  isDefaultTunnelProfile as getIsDefaultTunnelProfile,
-  mtuRequestTimeoutUnitConversion
+  TunnelTypeEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }  from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes } from '@acx-ui/types'
-import { filterByAccess }         from '@acx-ui/user'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { ageTimeUnitConversion } from '../util'
 
@@ -112,7 +112,7 @@ const TunnelProfileDetail = () => {
     ...(isEdgeVxLanKaReady ? [
       {
         title: $t({ defaultMessage: 'Keep Alive Interval' }),
-        content: `${tunnelProfileData.keepAliveInterval ?? ''} 
+        content: `${tunnelProfileData.keepAliveInterval ?? ''}
         ${$t({ defaultMessage: 'seconds' })}`
       },
       {
@@ -137,9 +137,9 @@ const TunnelProfileDetail = () => {
           }
         ]}
         extra={
-          filterByAccess([
+          filterByAccessForServicePolicyMutation([
             <TenantLink
-              scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}
+              scopeKey={getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT)}
               to={getPolicyDetailsLink({
                 type: PolicyType.TUNNEL_PROFILE,
                 oper: PolicyOperation.EDIT,

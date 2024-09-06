@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import {
-  websocketServerUrl,
   ClientIsolationUrls,
   ClientUrlsInfo,
   ClientIsolationSaveData,
@@ -20,6 +19,7 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { websocketServerUrl } from '@acx-ui/utils'
 
 import{
   createPath,

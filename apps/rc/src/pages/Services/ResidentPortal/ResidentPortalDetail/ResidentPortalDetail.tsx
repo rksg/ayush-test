@@ -10,13 +10,13 @@ import { useGetResidentPortalQuery }                                          fr
 import {
   ServiceOperation,
   ServiceType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 
 import ColorBoxIcon              from './ColorBoxIcon'
@@ -166,13 +166,13 @@ export default function ResidentPortalDetail () {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getServiceDetailsLink({
             type: ServiceType.RESIDENT_PORTAL,
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId!
           })}
-          scopeKey={[WifiScopes.UPDATE]}>
+          scopeKey={getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.EDIT)}>
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

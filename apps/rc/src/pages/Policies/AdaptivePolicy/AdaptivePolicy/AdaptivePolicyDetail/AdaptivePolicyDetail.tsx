@@ -18,7 +18,7 @@ import {
   PolicyType,
   getAdaptivePolicyDetailLink,
   useAdaptivePolicyBreadcrumb,
-  hasCloudpathAccess
+  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -73,7 +73,7 @@ export default function AdaptivePolicyDetail () {
       <PageHeader
         title={policyData?.name || ''}
         breadcrumb={breadcrumb}
-        extra={hasCloudpathAccess() && [
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={
               getAdaptivePolicyDetailLink({
@@ -81,10 +81,11 @@ export default function AdaptivePolicyDetail () {
                 policyId: policyId!,
                 templateId: templateId!
               })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <SummaryCard isLoading={isGetAdaptivePolicyLoading || isGetConditionsLoading}>

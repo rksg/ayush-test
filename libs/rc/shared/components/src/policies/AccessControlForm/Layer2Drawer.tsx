@@ -6,36 +6,31 @@ import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 import styled                                      from 'styled-components/macro'
 
-import {
-  Button,
-  Drawer,
-  GridCol,
-  GridRow,
-  showToast,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
+import { Button, Drawer, GridCol, GridRow, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { DeleteSolid, DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
+  useAddL2AclPolicyTemplateMutation,
   useGetEnhancedL2AclProfileListQuery,
   useGetL2AclPolicyQuery,
-  useUpdateL2AclPolicyMutation
-} from '@acx-ui/rc/services'
-import {
-  useAddL2AclPolicyTemplateMutation,
   useGetL2AclPolicyTemplateListQuery,
   useGetL2AclPolicyTemplateQuery,
+  useUpdateL2AclPolicyMutation,
   useUpdateL2AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
   CommonResult,
   defaultSort,
+  hasPolicyPermission,
   L2AclPolicy,
   MacAddressFilterRegExp,
-  sortProp, TableResult, useConfigTemplate,
+  PolicyOperation,
+  PolicyType,
+  sortProp,
+  TableResult,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -43,6 +38,8 @@ import { useParams }                     from '@acx-ui/react-router-dom'
 import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
+
+import { PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT } from '../AccessControl/constants'
 
 import { AddModeProps, editModeProps }                            from './AccessControlForm'
 import { PROFILE_MAX_COUNT_LAYER2_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
@@ -118,7 +115,6 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [skipFetch, setSkipFetch] = useState(true)
   const form = Form.useFormInstance()
   const [contentForm] = Form.useForm()
-  const MAC_ADDRESS_LIMIT = 128
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
@@ -280,7 +276,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   }
 
   const handleAddAction = () => {
-    if (macAddressList.length === MAC_ADDRESS_LIMIT) {
+    if (macAddressList.length === PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT) {
       showToast({
         type: 'error',
         duration: 10,
@@ -552,7 +548,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         name='layer2AccessMacAddress'
         label={$t(
           { defaultMessage: 'MAC Address ( {count}/{count_limit} )' },
-          { count: macAddressList.length, count_limit: MAC_ADDRESS_LIMIT })
+          // eslint-disable-next-line max-len
+          { count: macAddressList.length, count_limit: PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT })
         }
         style={{ flexDirection: 'column' }}
         rules={[
@@ -642,7 +639,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.EDIT }) &&
           <Button type='link'
             disabled={visible || !l2AclPolicyId}
             onClick={() => {
@@ -658,7 +655,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.LAYER_2_POLICY, oper: PolicyOperation.CREATE }) &&
           <Button type='link'
             disabled={visible || layer2List.length >= PROFILE_MAX_COUNT_LAYER2_POLICY}
             onClick={() => {
@@ -720,7 +717,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
                     content: $t({ defaultMessage: 'No validate MAC Address could add' })
                   })
                 } else {
-                  if (macAddressList.length + addressTags.length <= MAC_ADDRESS_LIMIT) {
+                  // eslint-disable-next-line max-len
+                  if (macAddressList.length + addressTags.length <= PROFILE_MAX_COUNT_LAYER2_POLICY_MAC_ADDRESS_LIMIT) {
                     setMacAddressList([...macAddressList, ...addressTags.map(tag => {
                       return {
                         macAddress: tag
