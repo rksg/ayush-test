@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form  }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { StepsForm }                   from '@acx-ui/components'
+import { StepsForm } from '@acx-ui/components'
 import {
   ApLanPortTypeEnum,
   EhternetPortSettings,

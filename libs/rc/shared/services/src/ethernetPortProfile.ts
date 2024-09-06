@@ -118,17 +118,17 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
     }),
     updateEthernetPortProfileSettingsByApPortId:
       build.mutation<EhternetPortSettings, RequestPayload>({
-      query: ({ params, payload }) => {
-        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-        const req = createHttpRequest(
-          EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, params,
+        query: ({ params, payload }) => {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const req = createHttpRequest(
+            EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, params,
             customHeaders)
-        return {
-          ...req,
-          body: payload
+          return {
+            ...req,
+            body: payload
+          }
         }
-      }
-    }),
+      }),
     activateEthernetPortProfileOnApPortId: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
