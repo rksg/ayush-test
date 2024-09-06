@@ -18,7 +18,7 @@ import { DetailsSection }             from '../common/DetailsSection'
 import { getIntentStatus }            from '../common/getIntentStatus'
 import { IntentDetailsHeader }        from '../common/IntentDetailsHeader'
 import { IntentIcon }                 from '../common/IntentIcon'
-import { isIntentInactive }           from '../common/isIntentActive'
+import { isIntentActive }             from '../common/isIntentActive'
 import { KpiCard }                    from '../common/KpiCard'
 import { StatusTrail }                from '../common/StatusTrail'
 import { codes }                      from '../config'
@@ -43,7 +43,7 @@ export function createUseValuesText ({ reason, tradeoff, action }: {
       sliceValue
     } = intent
 
-    const actionText = isIntentInactive(intent)
+    const actionText = !isIntentActive(intent)
       ? action.inactive
       : action.active
     const currentValueText = (intent.currentValue === true)
@@ -90,10 +90,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
     const { $t } = useIntl()
     const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
-    const isFlexAI = intent.code.startsWith('c-probeflex')
     const isMlisa = get('IS_MLISA_SA') === 'true'
     const { wlans } = intent.metadata
-    const needsWlans = isFlexAI && wlans && wlans.length > 0
+    const needsWlans = wlans && wlans.length > 0
     const wlanRecords = useWlanRecords(wlans, !needsWlans || isMlisa)
     const showData = isDataRetained(intent.metadata.dataEndTime)
 

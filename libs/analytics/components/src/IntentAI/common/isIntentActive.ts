@@ -7,8 +7,3 @@ export const isIntentActive = (intent: Intent) => [
   Statuses.paused,
   Statuses.na
 ].includes(intent.status as Statuses) === false
-
-export const isIntentInactive = (intent: Intent) => [
-  Statuses.paused,
-  Statuses.na
-].includes(intent.status as Statuses)
