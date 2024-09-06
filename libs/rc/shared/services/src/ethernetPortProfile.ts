@@ -117,7 +117,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       }
     }),
     updateEthernetPortProfileSettingsByApPortId:
-      build.mutation<EhternetPortSettings, RequestPayload>({
+      build.mutation<CommonResult, RequestPayload>({
         query: ({ params, payload }) => {
           const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = createHttpRequest(
@@ -125,7 +125,7 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
             customHeaders)
           return {
             ...req,
-            body: payload
+            body: JSON.stringify(payload)
           }
         }
       }),
