@@ -14,7 +14,7 @@ import {
 } from './__tests__/fixtures'
 import { mockedIntentAps }                                                  from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
 import { IntentListItem }                                                   from './config'
-import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAp } from './services'
+import { api, useIntentAITableQuery, TransitionMutationResponse, IntentAP } from './services'
 import { DisplayStates, Statuses, StatusReasons }                           from './states'
 import { Actions }                                                          from './utils'
 
@@ -710,7 +710,7 @@ describe('Intent services', () => {
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
-    expect(data).toStrictEqual<IntentAp[]>([
+    expect(data).toStrictEqual<IntentAP[]>([
       {
         name: 'RuckusAP',
         mac: '28:B3:71:27:38:E0',
