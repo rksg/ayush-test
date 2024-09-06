@@ -1,12 +1,11 @@
 import moment from 'moment-timezone'
 
-import { algorithmLabel }                                                                                                                                             from '@acx-ui/rc/components'
 import { Certificate, CertificateStatusType, EXPIRATION_TIME_FORMAT, CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, KeyUsageType, UsageType } from '@acx-ui/rc/utils'
 import { getIntl, noDataDisplay }                                                                                                                                     from '@acx-ui/utils'
 
 
-import { certificateStatusTypeLabel, keyUsagesLabel, usagesLabel } from '../contentsMap'
-import { DescriptionText }                                         from '../styledComponents'
+import { algorithmLabel, certificateStatusTypeLabel, keyUsagesLabel, usagesLabel } from '../contentsMap'
+import { DescriptionText }                                                         from '../styledComponents'
 
 import { Content, RenderType } from './DetailDrawer'
 

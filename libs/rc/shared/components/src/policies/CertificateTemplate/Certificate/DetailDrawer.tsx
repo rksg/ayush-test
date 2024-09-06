@@ -5,16 +5,17 @@ import { useIntl }                         from 'react-intl'
 
 import { Collapse, Drawer, Loader }                                                                                                                                           from '@acx-ui/components'
 import { CollapseActive, CollapseInactive }                                                                                                                                   from '@acx-ui/icons'
-import { MAX_CERTIFICATE_PER_TENANT, UploadCaSettings }                                                                                                                       from '@acx-ui/rc/components'
 import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSubCertificateAuthoritiesQuery, useUploadCaPrivateKeyMutation } from '@acx-ui/rc/services'
 import { Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                         from '@acx-ui/rc/utils'
 import { noDataDisplay }                                                                                                                                                      from '@acx-ui/utils'
 
+import { UploadCaSettings }                                                                                                   from '../CertificateAuthorityForm/CertificateAuthoritySettings/UploadCaSettings'
+import { MAX_CERTIFICATE_PER_TENANT }                                                                                         from '../constants'
 import { certDetailTitle }                                                                                                    from '../contentsMap'
 import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Description, DescriptionRow, DescriptionText, RawInfo } from '../styledComponents'
 
 import { getCertificateAuthorityDetails, getCertificateDetails } from './DetailDrawerHelper'
-import DownloadSection from './DownloadSection'
+import DownloadSection                                           from './DownloadSection'
 
 interface DetailDrawerProps {
   open?: boolean;
