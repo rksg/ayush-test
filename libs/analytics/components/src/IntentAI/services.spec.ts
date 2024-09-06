@@ -737,7 +737,6 @@ describe('Intent services', () => {
       data: intentHighlights
     }, true)
 
-
     const { status, data, error } = await store.dispatch(
       api.endpoints.intentHighlight.initiate({
         startDate: '2023-06-10T00:00:00+08:00',
