@@ -75,7 +75,10 @@ import {
   downloadFile,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  NewApGroupViewModelResponseType
+  NewApGroupViewModelResponseType,
+  LanPort,
+  EhternetPortSettings,
+  EthernetPortProfileUrls
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -853,6 +856,42 @@ export const apApi = baseApApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
+    }),
+    updateApEthernetPorts: build.mutation<WifiApSetting, RequestPayload>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined);
+        (payload as WifiApSetting).lanPorts?.map(async (l: LanPort, index: number) => {
+          const overwriteSetting: EhternetPortSettings = {
+            enabled: l.enabled,
+            overwriteUntagId: l.untagId,
+            overwriteVlanMembers: l.vlanMembers
+          }
+          const oevrwriteParams = {
+            venueId: params!.venueId,
+            serialNumber: params!.serialNumber,
+            portId: index as unknown as string
+          }
+          const ethParams = {
+            venueId: params!.venueId,
+            serialNumber: params!.serialNumber,
+            portId: index as unknown as string,
+            id: l.ethernetPortProfileId
+          }
+          const overwriteReq = createHttpRequest(
+            EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, oevrwriteParams,
+            apiCustomHeader)
+          await fetchWithBQ({ ...overwriteReq, body: overwriteSetting })
+          const activateReq = createHttpRequest(
+            EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId, ethParams, apiCustomHeader
+          )
+          await fetchWithBQ({ ...activateReq })
+        })
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const req = createHttpRequest(urlsInfo.updateApLanPorts, params, apiCustomHeader)
+        const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
+        return { data: res.data as WifiApSetting }
       },
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
