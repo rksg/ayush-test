@@ -7,9 +7,9 @@ import {
 } from '@reduxjs/toolkit/query/react'
 import { Params } from 'react-router-dom'
 
-import { getJwtToken, getTenantId } from '@acx-ui/utils'
+// import { getUserProfile }           from '@acx-ui/user'
 
-import { initialSocket } from './initialSocket'
+import { offActivity, onActivity } from '@acx-ui/utils'
 
 import { Transaction } from '.'
 
@@ -42,21 +42,25 @@ export async function onSocketActivityChanged <
 ) {
   const { cacheDataLoaded, cacheEntryRemoved } = api
 
-  const token = getJwtToken()
-
-  const tenantId = getTenantId()
-
-  const url = token ? `/activity?token=${token}&tenantId=${tenantId}`
-    : `/activity?tenantId=${tenantId}`
-  const socket = initialSocket(url)
-
   await cacheDataLoaded
 
-  const onActivityChangedEvent = (data: string) => handler(JSON.parse(data))
+  const onActivityChangedEvent = (data: string) => {
+    // const userProfile = getUserProfile()
+    const jsonData = JSON.parse(data)
+    // if(userProfile.abacEnabled){
+    //   const hasPermittedVenue = jsonData?.scopeType === 'venues' && jsonData?.scopeIds?.some(
+    //     (id: string) => userProfile.venuesList?.includes(id))
+    //   if(userProfile.hasAllVenues || hasPermittedVenue){
+    //     handler(jsonData)
+    //   }
+    // } else {
+    handler(jsonData)
+    // }
+  }
 
-  socket.on('activityChangedEvent', onActivityChangedEvent)
+  onActivity(onActivityChangedEvent)
 
   await cacheEntryRemoved
 
-  socket.off('activityChangedEvent', onActivityChangedEvent)
+  offActivity(onActivityChangedEvent)
 }

@@ -3,10 +3,10 @@ import userEvent     from '@testing-library/user-event'
 import { cloneDeep } from 'lodash'
 import { rest }      from 'msw'
 
-import { venueApi, edgeApi }                                                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures, EdgeCompatibilityFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                from '@acx-ui/store'
-import { act, mockServer, render, screen, within }                                                        from '@acx-ui/test-utils'
+import { venueApi, edgeApi }                                                                                                                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeUrlsInfo, WifiUrlsInfo, IncompatibilityFeatures, EdgeCompatibilityFixtures, FirmwareUrlsInfo, EdgeFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                        from '@acx-ui/store'
+import { act, mockServer, render, screen, within }                                                                                                from '@acx-ui/test-utils'
 
 import { CompatibilityItemProps } from '../CompatibilityDrawer/CompatibilityItem'
 import { FeatureItemProps }       from '../CompatibilityDrawer/CompatibilityItem/FeatureItem'
@@ -23,6 +23,11 @@ const {
   mockEdgeSdLanApCompatibilites,
   mockEdgeFeatureCompatibilities
 } = EdgeCompatibilityFixtures
+
+const {
+  mockedVenueFirmwareList,
+  mockAvailableVersions
+} = EdgeFirmwareFixtures
 
 jest.mock('../CompatibilityDrawer/CompatibilityItem', () => {
   const CompatibilityItemComp = jest.requireActual('../CompatibilityDrawer/CompatibilityItem')
@@ -77,7 +82,13 @@ describe('EdgeCompatibilityDrawer', () => {
         (_, res, ctx) => res(ctx.json(mockApFeatureCompatibilities))),
       rest.get(
         CommonUrlsInfo.getVenue.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json({ name: venueName })))
+        (_, res, ctx) => res(ctx.json({ name: venueName }))),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVenueFirmwareList))),
+      rest.get(
+        FirmwareUrlsInfo.getAvailableEdgeFirmwareVersions.url,
+        (_req, res, ctx) => res(ctx.json(mockAvailableVersions)))
     )
   })
 

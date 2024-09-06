@@ -108,7 +108,7 @@ describe('Edge SD-LAN Detail', () => {
 
     const sdlanWarning = await screen.findByText(/SD-LAN is not able to be brought up on/)
     // eslint-disable-next-line testing-library/no-node-access
-    const detailBtn = within(sdlanWarning.parentNode as HTMLElement)
+    const detailBtn = within(sdlanWarning.closest('.ant-space') as HTMLElement)
       .getByRole('button', { name: 'See details' })
     await screen.findByText(/Tunnel Profile is not able to be brought up on/)
 

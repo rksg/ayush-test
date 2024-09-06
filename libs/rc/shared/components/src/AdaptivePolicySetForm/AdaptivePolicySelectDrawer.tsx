@@ -9,13 +9,12 @@ import {
   usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
-  AdaptivePolicy, FILTER,
-  getAdaptivePolicyDetailLink, hasCloudpathAccess,
-  PolicyOperation, SEARCH,
+  AdaptivePolicy, FILTER, filterByAccessForServicePolicyMutation,
+  getAdaptivePolicyDetailLink, getScopeKeyByPolicy,
+  PolicyOperation, PolicyType, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 
@@ -175,12 +174,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
             pagination={adaptivePolicyListTableQuery.pagination}
             onChange={adaptivePolicyListTableQuery.handleTableChange}
             onFilterChange={handleFilterChange}
-            actions={filterByAccess( hasCloudpathAccess() ? [{
+            actions={filterByAccessForServicePolicyMutation([{
+              scopeKey: getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY, PolicyOperation.CREATE),
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {
                 setAdaptivePolicyDrawerVisible(true)
               }
-            }] : [])}
+            }])}
           />
         </Form.Item>
       </Loader>
