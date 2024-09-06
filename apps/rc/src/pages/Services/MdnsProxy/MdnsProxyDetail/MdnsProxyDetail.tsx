@@ -9,11 +9,11 @@ import {
   ServiceOperation,
   MdnsProxyScopeData,
   getServiceRoutePath,
-  getServiceListRoutePath
+  getServiceListRoutePath,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
 import { MdnsProxyOverview }       from './MdnsProxyOverview'
@@ -46,9 +46,9 @@ export default function MdnsProxyDetail () {
             link: getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.LIST })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByService(ServiceType.MDNS_PROXY, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.MDNS_PROXY,
               oper: ServiceOperation.EDIT,

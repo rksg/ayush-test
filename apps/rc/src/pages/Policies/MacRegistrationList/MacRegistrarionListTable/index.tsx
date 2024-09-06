@@ -30,10 +30,10 @@ import {
   getPolicyRoutePath,
   returnExpirationString,
   useTableQuery,
-  hasCloudpathAccess
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
 
 export default function MacRegistrationListsTable () {
   const { $t } = useIntl()
@@ -191,6 +191,7 @@ export default function MacRegistrationListsTable () {
   }
 
   const rowActions: TableProps<MacRegistrationPool>['rowActions'] = [{
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT),
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate({
@@ -204,6 +205,7 @@ export default function MacRegistrationListsTable () {
     }
   },
   {
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE),
     label: $t({ defaultMessage: 'Delete' }),
     onClick: ([selectedRow], clearSelection) => {
       doProfileDelete(
@@ -241,6 +243,8 @@ export default function MacRegistrationListsTable () {
     tableQuery.setPayload(payload)
   }
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -250,10 +254,11 @@ export default function MacRegistrationListsTable () {
             link: getPolicyListRoutePath(true) }
         ]}
         title={$t({ defaultMessage: 'MAC Registration Lists' })}
-        extra={hasCloudpathAccess() && ([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE)}
           >
             <Button type='primary'>{ $t({ defaultMessage: 'Add MAC Registration List' }) }</Button>
           </TenantLink>
@@ -271,9 +276,9 @@ export default function MacRegistrationListsTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
+          rowActions={allowedRowActions}
           onFilterChange={handleFilterChange}
-          rowSelection={hasCloudpathAccess() && { type: 'radio' }}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
         />
       </Loader>
     </>

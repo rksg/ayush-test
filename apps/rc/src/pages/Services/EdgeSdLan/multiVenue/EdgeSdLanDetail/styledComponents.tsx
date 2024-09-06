@@ -21,7 +21,7 @@ export const StyledTableInfoText = styled(Typography.Text)`
 `
 
 export const StyledSpace = styled(Space)`
-  .ant-space-item:not(:last-child) {
+  & > .ant-space-item:not(:last-child) {
     margin-bottom: -15px;
   }
 `
