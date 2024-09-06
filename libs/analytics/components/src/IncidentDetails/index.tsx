@@ -23,6 +23,7 @@ import { NetTime }                 from './Details/NetTime'
 import { RadiusFailure }           from './Details/RadiusFailure'
 import { SwitchMemoryHigh }        from './Details/SwitchMemoryHigh'
 import { SwitchPoePd }             from './Details/SwitchPoePd'
+import { SwitchTcpSynDDoS }        from './Details/SwitchTcpSynDDoS'
 import { SwitchVlanMismatch }      from './Details/SwitchVlanMismatch'
 import { Ttc }                     from './Details/Ttc'
 import {
@@ -46,6 +47,7 @@ export const incidentDetailsMap = {
   'i-apserv-high-num-reboots': ApservHighNumReboots,
   'i-switch-poe-pd': SwitchPoePd,
   'i-switch-vlan-mismatch': SwitchVlanMismatch,
+  's-switch-tcp-syn-ddos': SwitchTcpSynDDoS,
   'p-channeldist-suboptimal-plan-24g': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-outdoor': ChannelDist,
   'p-channeldist-suboptimal-plan-50g-indoor': ChannelDist,

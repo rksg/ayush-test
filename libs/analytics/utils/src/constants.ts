@@ -36,6 +36,7 @@ const allIncidentCodes = [
   'i-apserv-continuous-reboots',
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
+  's-switch-tcp-syn-ddos',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low',
@@ -110,6 +111,7 @@ export const incidentCodes: IncidentCode[] = [
   'i-apserv-continuous-reboots',
   'i-apserv-downtime-high',
   'i-switch-vlan-mismatch',
+  's-switch-tcp-syn-ddos',
   'i-switch-poe-pd',
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low'
@@ -159,9 +161,15 @@ export const categoryCodeMap = {
       'i-apserv-continuous-reboots',
       'i-apserv-downtime-high',
       'i-switch-vlan-mismatch',
+      's-switch-tcp-syn-ddos',
       'i-switch-poe-pd',
       'i-apinfra-poe-low',
       'i-apinfra-wanthroughput-low'
+    ] as IncidentCode[]
+  },
+  security: {
+    codes: [
+      's-switch-tcp-syn-ddos'
     ] as IncidentCode[]
   }
 }

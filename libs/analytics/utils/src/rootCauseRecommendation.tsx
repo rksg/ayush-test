@@ -83,6 +83,7 @@ export const codeToFailureTypeMap: Record<IncidentCode, string> = {
   'i-apserv-continuous-reboots': 'ap-reboot',
   'i-apserv-downtime-high': 'ap-sz-conn-failure',
   'i-switch-vlan-mismatch': 'vlan-mismatch',
+  's-switch-tcp-syn-ddos': 'tcp-syn-ddos',
   'i-switch-poe-pd': 'poe-pd',
   'i-apinfra-poe-low': 'ap-poe-low',
   'i-apinfra-wanthroughput-low': 'ap-wanthroughput-low',
@@ -1148,6 +1149,16 @@ export const rootCauseRecommendationMap = {
       }),
       recommendations: defineMessage({
         defaultMessage: '<p>Check and configure missing VLAN, or ensure type (untagged/tagged) match on both ends of the connection.</p>'
+      })
+    }
+  },
+  'tcp-syn-ddos': {
+    DEFAULT: {
+      rootCauses: defineMessage({
+        defaultMessage: '<p>TCP SYN DDoS - Root Cause - TBD</p>'
+      }),
+      recommendations: defineMessage({
+        defaultMessage: '<p>TCP SYN DDoS - Recommendations - TBD</p>'
       })
     }
   },

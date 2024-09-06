@@ -210,6 +210,17 @@ export const incidentInformation: Record<IncidentCode, IncidentInformation> = {
     }),
     incidentType: 'switch'
   },
+  's-switch-tcp-syn-ddos': {
+    category: defineMessage({ defaultMessage: 'Security' }),
+    subCategory: defineMessage({ defaultMessage: 'TCP-SYN DDoS' }),
+    shortDescription: defineMessage({
+      defaultMessage: 'TCP SYN DDoS Attack found in {scope}'
+    }),
+    longDescription: defineMessage({
+      defaultMessage: 'TCP SYN DDoS Attack found in {scope}.'
+    }),
+    incidentType: 'switch'
+  },
   'p-switch-memory-high': {
     category: defineMessage({ defaultMessage: 'Performance' }),
     subCategory: defineMessage({ defaultMessage: 'Memory' }),
