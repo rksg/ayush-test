@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Radio, Space, Typography } from 'antd'
+import { Form, Radio, Space, Typography, Tooltip } from 'antd'
 
 import { Modal }                                                           from '@acx-ui/components'
-import { Features }                                                        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {  EdgeMvSdLanViewData, NetworkTunnelSdLanAction, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { EdgeScopes }                                                      from '@acx-ui/types'
+import { EdgeScopes, WifiScopes }                                          from '@acx-ui/types'
 import { hasPermission }                                                   from '@acx-ui/user'
 import { getIntl }                                                         from '@acx-ui/utils'
 
 import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
-import { EdgeSdLanRadioOption }                                                   from './EdgeSdLanRadioOption'
-import { NetworkTunnelInfoButton }                                                from './NetworkTunnelInfoButton'
-import * as UI                                                                    from './styledComponents'
-import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                         from './types'
-import { useEdgeMvSdLanData }                                                     from './useEdgeMvSdLanData'
-import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction } from './utils'
+import { EdgeSdLanRadioOption }                                                                                    from './EdgeSdLanRadioOption'
+import { NetworkTunnelInfoButton }                                                                                 from './NetworkTunnelInfoButton'
+import * as UI                                                                                                     from './styledComponents'
+import { NetworkTunnelTypeEnum, NetworkTunnelActionForm }                                                          from './types'
+import { useEdgeMvSdLanData }                                                                                      from './useEdgeMvSdLanData'
+import { SoftGreNetworkTunnel, useGetSoftGreScopeVenueMap, useGetSoftGreScopeNetworkMap, useSoftGreTunnelActions } from './useSoftGreTunnelActions'
+import { getNetworkTunnelType, mergeSdLanCacheAct, useUpdateNetworkTunnelAction }                                  from './utils'
+import WifiSoftGreRadioOption                                                                                      from './WifiSoftGreRadioOption'
 
 export interface NetworkTunnelActionModalProps {
   visible: boolean
@@ -30,24 +32,30 @@ export interface NetworkTunnelActionModalProps {
   onFinish: (
     values: NetworkTunnelActionForm,
     otherData: {
+      tunnelTypeInitVal: NetworkTunnelTypeEnum,
       network: NetworkTunnelActionModalProps['network'],
       venueSdLan?: EdgeMvSdLanViewData
     }
   ) => Promise<void>
   cachedActs?: NetworkTunnelSdLanAction[]
+  cachedSoftGre: SoftGreNetworkTunnel[]
   disableAll?: boolean
   radioOptTooltip?: string
 }
 
 const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   const { $t } = getIntl()
-  const { visible, network, onClose, onFinish, cachedActs } = props
+  const { visible, network, onClose, onFinish, cachedActs, cachedSoftGre } = props
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
+
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [isValidSoftGre, setIsValidSoftGre] = useState<boolean>(true)
 
   const [form] = Form.useForm()
   const tunnelType = Form.useWatch(['tunnelType'], form)
+  const softGreProfileId = Form.useWatch(['softGre', 'newProfileId'], form)
 
   const networkId = network?.id
   const networkType = network?.type
@@ -66,14 +74,14 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
   if (venueSdLanInfo && cachedActs)
     venueSdLanInfo = mergeSdLanCacheAct(venueSdLanInfo, cachedActs)
 
-  const tunnelTypeInitVal = getNetworkTunnelType(network, venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(network, cachedSoftGre, venueSdLanInfo)
 
   const handleApply = async () => {
     if (!networkVenueId)  return
     const formValues = form.getFieldsValue(true) as NetworkTunnelActionForm
 
     setIsSubmitting(true)
-    await onFinish(formValues, { network, venueSdLan: venueSdLanInfo })
+    await onFinish(formValues, { tunnelTypeInitVal, network, venueSdLan: venueSdLanInfo })
     setIsSubmitting(false)
   }
 
@@ -83,16 +91,32 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
     }
   }, [visible, tunnelTypeInitVal])
 
-  const isDisabledAll = getIsDisabledAll(venueSdLanInfo)
+  useEffect(() => {
+    if (visible) {
+      if (isSoftGreEnabled && tunnelType === NetworkTunnelTypeEnum.SoftGre) {
+        setIsValidSoftGre(!!softGreProfileId)
+      } else {
+        setIsValidSoftGre(true)
+      }
+    }
+  }, [visible, tunnelType, isSoftGreEnabled, softGreProfileId])
+
+  const isDisabledAll = getIsDisabledAll(venueSdLanInfo, networkId)
   const hasChangePermission = hasPermission({ scopes: [
-    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : [])
+    ...(isEdgeSdLanMvEnabled ? [EdgeScopes.UPDATE] : []),
+    ...(isSoftGreEnabled ? [WifiScopes.UPDATE] : [])
   ] })
+
+  const localBreakoutRadio = <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
+    {$t({ defaultMessage: 'Local Breakout' })}
+  </Radio>
 
   return <Modal
     visible={visible}
     title={$t({ defaultMessage: 'Tunnel' })}
     okText={$t({ defaultMessage: 'Apply' })}
-    okButtonProps={{ disabled: !hasChangePermission || isSubmitting || !venueSdLanInfo }}
+    okButtonProps={{ disabled: !hasChangePermission || isSubmitting ||
+      (isEdgeSdLanMvEnabled && !venueSdLanInfo) || !isValidSoftGre }}
     maskClosable={false}
     keyboard={false}
     width={600}
@@ -120,9 +144,12 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                 }
               </UI.RadioSubTitle>}
             >
-              <Radio value={NetworkTunnelTypeEnum.None} disabled={isDisabledAll}>
-                {$t({ defaultMessage: 'Local Breakout' })}
-              </Radio>
+              <Tooltip title={isDisabledAll
+                // eslint-disable-next-line max-len
+                ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                : undefined}>
+                {localBreakoutRadio}
+              </Tooltip>
             </Form.Item>
 
             {network && visible && isEdgeSdLanMvEnabled &&
@@ -143,6 +170,14 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                   : undefined}
               />
             }
+            {isSoftGreEnabled && visible &&
+              <WifiSoftGreRadioOption
+                currentTunnelType={tunnelType}
+                venueId={networkVenueId!}
+                networkId={networkId!}
+                cachedSoftGre={cachedSoftGre}
+              />
+            }
           </Space>
         </Radio.Group>
       </Form.Item>
@@ -155,11 +190,20 @@ export {
   type NetworkTunnelActionForm,
   NetworkTunnelInfoButton,
   NetworkTunnelActionModal,
-  useUpdateNetworkTunnelAction
+  useUpdateNetworkTunnelAction,
+  type SoftGreNetworkTunnel,
+  useGetSoftGreScopeVenueMap,
+  useGetSoftGreScopeNetworkMap,
+  useSoftGreTunnelActions
 }
 
-const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined): boolean => {
-  if(!sdlanInfo) return false
+// eslint-disable-next-line max-len
+const getIsDisabledAll = (sdlanInfo: EdgeMvSdLanViewData | undefined, currentNetworkId: string | undefined): boolean => {
+  const dcNetworkCount = sdlanInfo?.tunneledWlans?.length ?? 0
+  if(dcNetworkCount === 0 || !currentNetworkId) return false
 
-  return (sdlanInfo.tunneledWlans?.length ?? 0) <= 1
+  const isSdLanLastNetwork = sdlanInfo!.tunneledWlans!.length <= 1
+  if (!isSdLanLastNetwork) return false
+
+  return sdlanInfo!.tunneledWlans![0].networkId === currentNetworkId
 }
