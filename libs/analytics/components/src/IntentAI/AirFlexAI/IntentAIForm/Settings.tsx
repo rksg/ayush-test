@@ -1,21 +1,24 @@
 import { Row, Col, Typography }   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
+
+import { ScheduleTiming } from '../../common/ScheduleTiming'
+import { Intent }         from '../../useIntentDetailsQuery'
 
 import * as SideNotes from './SideNotes'
-import WlanSelection from './WlanSelection'
-import { ScheduleTiming } from '../../common/ScheduleTiming'
+import WlanSelection  from './WlanSelection'
 
 export function Settings () {
   const { $t } = useIntl()
-
+  const { form } = useStepFormContext<Intent>()
+  const isEnabled = form.getFieldValue('preferences').enable
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t({ defaultMessage: 'Settings' })} />
-      <ScheduleTiming />
-      <WlanSelection />
+      <ScheduleTiming disabled={!isEnabled} />
+      <WlanSelection disabled={!isEnabled}/>
     </Col>
-    
+
   </Row>
 }

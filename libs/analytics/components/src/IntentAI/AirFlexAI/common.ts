@@ -7,7 +7,7 @@ import { IntentKPIConfig } from '../useIntentDetailsQuery'
 
 export const kpis: IntentKPIConfig[] = [{
   key: 'avg-mgmt-traffic-per-client',
-  label: defineMessage({ defaultMessage: 'Current average management traffic per client' }),
+  label: defineMessage({ defaultMessage: 'Average management traffic per client' }),
   format: formatter('bytesFormat'),
   deltaSign: '-'
 }]
