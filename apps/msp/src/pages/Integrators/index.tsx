@@ -41,22 +41,6 @@ const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
 }
 
-const defaultPayload = {
-  searchString: '',
-  filters: { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] },
-  fields: [
-    'check-all',
-    'id',
-    'name',
-    'tenantType',
-    'mspAdminCount',
-    'mspEcAdminCount',
-    'wifiLicense',
-    'switchLicens'
-  ],
-  searchTargetFields: ['name']
-}
-
 export function Integrators () {
   const { $t } = useIntl()
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
@@ -80,6 +64,26 @@ export function Integrators () {
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
   const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const onBoard = mspLabel?.msp_label
+  const ecFilters = isPrimeAdmin || isSupportToMspDashboardAllowed
+    ? { tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
+    : { mspAdmins: [userProfile?.adminId],
+      tenantType: [AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER] }
+
+  const defaultPayload = {
+    searchString: '',
+    filters: ecFilters,
+    fields: [
+      'check-all',
+      'id',
+      'name',
+      'tenantType',
+      'mspAdminCount',
+      'mspEcAdminCount',
+      'wifiLicense',
+      'switchLicens'
+    ],
+    searchTargetFields: ['name']
+  }
 
   const columns: TableProps<MspEc>['columns'] = [
     {

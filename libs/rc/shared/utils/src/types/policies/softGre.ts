@@ -1,3 +1,5 @@
+import { DefaultOptionType } from 'antd/lib/select'
+
 import { MtuTypeEnum } from '../../models'
 
 export interface SoftGre {
@@ -41,3 +43,8 @@ export interface SoftGreActivation {
   wifiNetworkIds: string[]
 }
 
+export interface SoftGreOptionsData {
+  options: DefaultOptionType[],
+  id?: string,
+  isLockedOptions: boolean
+}
