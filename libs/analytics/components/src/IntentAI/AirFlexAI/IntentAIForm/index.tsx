@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -7,7 +7,6 @@ import { StepsForm } from '@acx-ui/components'
 
 import { IntentWizardHeader }                                                               from '../../common/IntentWizardHeader'
 import { getScheduledAt }                                                                   from '../../common/ScheduleTiming'
-import { useIntentContext }                                                                 from '../../IntentContext'
 import { createUseIntentTransition, FormValues, IntentTransitionPayload, useInitialValues } from '../../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem }                               from '../../utils'
 
@@ -36,10 +35,9 @@ function getFormDTO (values: FormValues<FormVal>): IntentTransitionPayload {
   }
   return dto
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useIntentTransition = createUseIntentTransition<FormVal>(getFormDTO as any)
 export const IntentAIForm: React.FC = () => {
-  const { intent } = useIntentContext()
   const { $t } = useIntl()
   const { submit } = useIntentTransition()
   // always enable = true, because only new, scheduled, active, applyscheduled can open wizard

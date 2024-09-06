@@ -1,15 +1,10 @@
+/* eslint-disable max-len */
 import React from 'react'
 
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
-
-import { useStepFormContext }              from '@acx-ui/components'
-import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { SideNotes } from '../../common/SideNotes'
-import { Intent }    from '../../useIntentDetailsQuery'
-
-import { Priority as PriorityPage } from './Priority'
 
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()

@@ -1,7 +1,7 @@
+/* eslint-disable max-len */
 import React from 'react'
 
 import { Row, Col, Form }                           from 'antd'
-import _                                            from 'lodash'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'

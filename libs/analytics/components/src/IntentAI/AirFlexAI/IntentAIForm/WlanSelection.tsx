@@ -1,7 +1,6 @@
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Form }                   from 'antd'
-import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Loader, Select, useStepFormContext } from '@acx-ui/components'

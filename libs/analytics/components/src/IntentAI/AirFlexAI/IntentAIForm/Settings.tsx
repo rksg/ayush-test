@@ -1,13 +1,12 @@
-import { Row, Col, Typography }   from 'antd'
-import { defineMessage, useIntl } from 'react-intl'
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
 import { ScheduleTiming } from '../../common/ScheduleTiming'
 import { Intent }         from '../../useIntentDetailsQuery'
 
-import * as SideNotes from './SideNotes'
-import WlanSelection  from './WlanSelection'
+import WlanSelection from './WlanSelection'
 
 export function Settings () {
   const { $t } = useIntl()
