@@ -28,7 +28,8 @@ type Profile = {
   abacEnabled?: boolean
   scopes?: ScopeKeys
   isCustomRole?: boolean,
-  hasAllVenues?: boolean
+  hasAllVenues?: boolean,
+  venuesList?: string[]
 }
 const userProfile: Profile = {
   profile: {} as UserProfile,
@@ -60,6 +61,7 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.isCustomRole = profile.isCustomRole
   userProfile.scopes = profile?.scopes
   userProfile.hasAllVenues = profile?.hasAllVenues
+  userProfile.venuesList = profile?.venuesList
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
