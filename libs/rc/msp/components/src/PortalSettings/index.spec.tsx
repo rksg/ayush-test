@@ -180,7 +180,7 @@ describe('PortalSettings', () => {
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -203,7 +203,7 @@ describe('PortalSettings', () => {
     await waitFor(() =>
       expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -856,7 +856,7 @@ describe('PortalSettings', () => {
     await waitFor(() =>
       expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -893,7 +893,7 @@ describe('PortalSettings', () => {
 
     expect(services.useGetMspLabelQuery).toHaveBeenCalled()
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()
@@ -952,7 +952,7 @@ describe('PortalSettings', () => {
     await waitFor(() =>
       expect(utils.loadImageWithJWT).toHaveBeenCalledTimes(8))
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('heading', { level: 1, name: 'Portal Settings' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 3, name: 'Branding' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo:' })).toBeVisible()
     expect(screen.getByRole('heading', { level: 4, name: 'Logo Preview:' })).toBeVisible()

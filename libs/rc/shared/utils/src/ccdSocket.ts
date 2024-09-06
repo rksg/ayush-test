@@ -1,6 +1,4 @@
-import { getJwtToken, getTenantId } from '@acx-ui/utils'
-
-import { getIndependentSocket } from './initialSocket'
+import { getIndependentSocket, getJwtToken, getTenantId } from '@acx-ui/utils'
 
 
 // eslint-disable-next-line max-len

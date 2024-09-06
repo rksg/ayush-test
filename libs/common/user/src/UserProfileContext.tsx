@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react'
 
+import { useParams } from 'react-router-dom'
+
 import { RolesEnum as Role } from '@acx-ui/types'
 import { useTenantId }       from '@acx-ui/utils'
 
@@ -8,7 +10,8 @@ import {
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
   useFeatureFlagStatesQuery,
-  useGetPrivilegeGroupsQuery
+  useGetPrivilegeGroupsQuery,
+  useGetVenuesListQuery
 } from './services'
 import { UserProfile }                         from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -25,6 +28,7 @@ export interface UserProfileContextProps {
   abacEnabled?: boolean
   isCustomRole?: boolean
   hasAllVenues?: boolean
+  venuesList?: string[]
 }
 
 const isPrimeAdmin = () => hasRoles(Role.PRIME_ADMIN)
@@ -77,6 +81,18 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   const hasAllVenues = getHasAllVenues()
 
+  const params = useParams()
+  const payload = {
+    fields: ['id'],
+    pageSize: 10000
+  }
+
+  const { data: venues } = useGetVenuesListQuery({ params, payload },
+    { skip: !abacEnabled || hasAllVenues })
+
+  const venuesList: string[] = (venues?.data.map(item => item.id)
+    .filter((id): id is string => id !== undefined)) || []
+
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
     const userProfile = { ...profile } as UserProfile
@@ -95,7 +111,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       abacEnabled,
       isCustomRole,
       scopes: profile?.scopes,
-      hasAllVenues
+      hasAllVenues,
+      venuesList
     })
   }
 
@@ -111,7 +128,8 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       betaEnabled,
       abacEnabled,
       isCustomRole,
-      hasAllVenues
+      hasAllVenues,
+      venuesList
     }}
     children={props.children}
   />
