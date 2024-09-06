@@ -126,8 +126,8 @@ export function SmartMonitor () {
               {$t({ defaultMessage: 'Smart Monitor' })}
               <Tooltip
                 title={$t({
-                  defaultMessage:
-                    'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
+                  // eslint-disable-next-line max-len
+                  defaultMessage: 'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
                 })}
                 placement='right'
               >
