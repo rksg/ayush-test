@@ -112,7 +112,8 @@ export default function OnboardForm ({ editMode = false }) {
                   disabled={editMode}
                   placeholder={$t({ defaultMessage: 'Select ...' })}
                   options={
-                    identityGroupList?.data.filter(group => !group.certificateTemplateId)
+                    identityGroupList?.data
+                      .filter(group => editMode ? group : !group.certificateTemplateId)
                       .map(group => ({ value: group.id, label: group.name }))}
                 />
               }

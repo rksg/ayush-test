@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                               from '@acx-ui/components'
-import { caTypeShortLabel, CertificateTable }                                                                                                                                          from '@acx-ui/rc/components'
-import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
-import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy }                  from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                                                                  from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                                                                                                               from '@acx-ui/utils'
+import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                                                            from '@acx-ui/components'
+import { caTypeShortLabel, CertificateTable }                                                                                                                                                                       from '@acx-ui/rc/components'
+import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetPersonaGroupByIdQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
+import { PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy }                                               from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                                                               from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                                                                                                                                                            from '@acx-ui/utils'
 
 import { Section } from '../styledComponents'
 
@@ -41,6 +41,14 @@ export default function CertificateTemplateDetail () {
         policySetName: data?.name || certificateTemplateData?.policySetId
       })
     })
+  const { identityGroupName } = useGetPersonaGroupByIdQuery(
+    { params: { groupId: certificateTemplateData?.identityGroupId } },
+    {
+      skip: !certificateTemplateData?.identityGroupId,
+      selectFromResult: ({ data }) => ({
+        identityGroupName: data?.name || certificateTemplateData?.identityGroupId
+      })
+    })
   const { privateKeyBase64 } = useGetCertificateAuthorityQuery(
     { params: { caId: certificateTemplateData?.onboard?.certificateAuthorityId } },
     {
@@ -61,6 +69,11 @@ export default function CertificateTemplateDetail () {
     {
       title: $t({ defaultMessage: 'Certificate Authority' }),
       content: certificateTemplateData?.onboard?.certificateAuthorityName,
+      colSpan: 4
+    },
+    {
+      title: $t({ defaultMessage: 'Identity Group' }),
+      content: identityGroupName || certificateTemplateData?.identityGroupId || noDataDisplay,
       colSpan: 4
     },
     {
