@@ -60,6 +60,9 @@ export interface Transaction {
   startDatetime: string
   endDatetime?: string
   useCase: string
+  eventType?: string
+  scopeType?: string
+  scopeIds?: string[]
 }
 
 type QueryParams = { tabView: string } | null

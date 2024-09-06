@@ -117,6 +117,7 @@ export default VenueEditTabs
 export function usePropertyManagementEnabled () {
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
+  const hasPropertyManagementPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
-  return enablePropertyManagement && !isTemplate
+  return enablePropertyManagement && !isTemplate && hasPropertyManagementPermission
 }

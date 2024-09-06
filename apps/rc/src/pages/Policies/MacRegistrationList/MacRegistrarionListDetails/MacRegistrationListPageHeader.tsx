@@ -7,7 +7,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  hasCloudpathAccess
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
@@ -34,17 +35,18 @@ function MacRegistrationListPageHeader () {
           link: tablePath
         }
       ]}
-      extra={hasCloudpathAccess() && [
+      extra={filterByAccessForServicePolicyMutation([
         <TenantLink
           to={getPolicyDetailsLink({
             type: PolicyType.MAC_REGISTRATION_LIST,
             oper: PolicyOperation.EDIT,
             policyId: policyId!
           })}
+          scopeKey={getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)}
         >
           <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
         </TenantLink>
-      ]}
+      ])}
       footer={<MacRegistrationListTabs />}
     />
   )

@@ -27,9 +27,11 @@ import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum,
+  PolicyOperation,
+  PolicyType,
   WifiNetworkMessages,
   WlanSecurityEnum,
-  hasCloudpathAccess,
+  hasPolicyPermission,
   macAuthMacFormatOptions,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
@@ -212,7 +214,9 @@ function SettingsForm () {
               </Select>
             </Form.Item>
           </GridCol>
-          { hasCloudpathAccess() && <Button
+          { hasPolicyPermission({
+            type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          <Button
             type='link'
             style={{ top: '28px' }}
             onClick={() => setCertTempModalVisible(true)}
