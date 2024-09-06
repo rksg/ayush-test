@@ -175,7 +175,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                     isDisabled: isDisabledAll,
                     noChangePermission,
                     // eslint-disable-next-line max-len
-                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                    tooltip: isDisabledAll ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' }) : undefined
                   }
                   : undefined}
               />
@@ -191,7 +191,7 @@ const NetworkTunnelActionModal = (props: NetworkTunnelActionModalProps) => {
                     isDisabled: isDisabledAll,
                     noChangePermission,
                     // eslint-disable-next-line max-len
-                    tooltip: $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
+                    tooltip: isDisabledAll ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' }) : undefined
                   }
                   : undefined}
               />
