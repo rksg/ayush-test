@@ -56,6 +56,32 @@ function TestUserProfile (props: {
 
 const route = { path: '/:tenantId/t', params: { tenantId } }
 
+const fakedVenueList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 5,
+  page: 1,
+  data: [
+    {
+      id: '31331a644e454c75911467cdd6933af2'
+    },
+    {
+      id: '9148ca1e5eeb425dae5d04af38e8e1b2'
+    },
+    {
+      id: '4d0fe96778b7478a829bc6e7d81319e2'
+    },
+    {
+      id: '7bdda584ada34de991a8081e4c59da89'
+    },
+    {
+      id: '05b61055a7cf499eb153f414eb7230f4'
+    }
+  ]
+}
+
 describe('UserProfileContext', () => {
   const wrapper = (props: { children: React.ReactNode }) => (
     <Provider>
@@ -78,7 +104,9 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
         res(ctx.status(200))),
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
-        (_req, res, ctx) => res(ctx.json({})))
+        (_req, res, ctx) => res(ctx.json({}))),
+      rest.post(UserUrlsInfo.getVenuesList.url,
+        (_req, res, ctx) => res(ctx.json(fakedVenueList)))
     )
   })
 
@@ -370,6 +398,29 @@ describe('UserProfileContext', () => {
     render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
     await checkDataRendered()
     expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+  })
+
+  it('should generate venuesList correctly when abacEnabled and not hasAllVenues', async () => {
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': true, 'allowed-operations-toggle': false } }
+    })
+    services.useGetVenuesListQuery = jest.fn().mockImplementation(() => {
+      return { data: fakedVenueList }
+    })
+
+    const TestVenuesList = (props: TestUserProfileChildComponentProps) => {
+      const { venuesList, abacEnabled } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`venuesList:${JSON.stringify(venuesList)}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestVenuesList}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:true')).toBeVisible()
+    expect(screen.queryByText(`venuesList:${JSON.stringify(
+      fakedVenueList.data.map(item => item.id))}`)).toBeVisible()
   })
 
 })
