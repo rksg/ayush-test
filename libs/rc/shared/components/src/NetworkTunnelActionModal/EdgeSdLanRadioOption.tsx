@@ -32,7 +32,7 @@ interface SdLanRadioOptionProps {
   disabledInfo?: {
     noChangePermission: boolean
     isDisabled: boolean
-    tooltip: string
+    tooltip: string | undefined
   }
 }
 
@@ -113,7 +113,7 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
         </Form.Item>
       </UI.RadioSubTitle>}
     >
-      <Tooltip title={disabledInfo?.isDisabled && disabledInfo?.tooltip}>
+      <Tooltip title={disabledInfo?.tooltip}>
         <EdgeSdLanRadioButton
           // eslint-disable-next-line max-len
           disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission || !isVenueSdLanExist}

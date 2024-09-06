@@ -31,7 +31,7 @@ interface WiFISoftGreRadioOptionProps {
   disabledInfo?: { // can't change for edge
     noChangePermission: boolean,
     isDisabled: boolean,
-    tooltip: string
+    tooltip: string | undefined
   }
 }
 
@@ -114,8 +114,9 @@ export default function WifiSoftGreRadioOption (props: WiFISoftGreRadioOptionPro
       </UI.RadioSubTitle>}
     >
       <UI.RadioWrapper>
-        <Tooltip title={disabledInfo?.isDisabled && disabledInfo?.tooltip}>
-          <Radio value={NetworkTunnelTypeEnum.SoftGre} disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission}>
+        <Tooltip title={disabledInfo?.tooltip}>
+          <Radio value={NetworkTunnelTypeEnum.SoftGre}
+            disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission}>
             {$t({ defaultMessage: 'SoftGRE Tunneling' })}
           </Radio>
         </Tooltip>
