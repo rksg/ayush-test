@@ -1,48 +1,49 @@
-
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import {
-  Checkbox,
-  Form,
-  Select,
-  Slider,
-  Space,
-  Switch
-} from 'antd'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox'
-import _, { get }              from 'lodash'
-import { useIntl }             from 'react-intl'
+import { Checkbox, Form, Select, Slider, Space, Switch } from 'antd'
+import { CheckboxChangeEvent }                           from 'antd/lib/checkbox'
+import _, { get }                                        from 'lodash'
+import { useIntl }                                       from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
   useAddAccessControlProfileMutation,
   useAddAccessControlProfileTemplateMutation,
-  useGetL2AclPolicyTemplateListQuery,
-  useGetL3AclPolicyTemplateListQuery,
-  useGetDevicePolicyTemplateListQuery,
-  useGetAppPolicyTemplateListQuery,
   useGetAccessControlProfileTemplateListQuery,
+  useGetAppPolicyTemplateListQuery,
+  useGetDevicePolicyTemplateListQuery,
   useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery,
   useGetEnhancedL2AclProfileListQuery,
   useGetEnhancedL3AclProfileListQuery,
-  useGetEnhancedApplicationProfileListQuery,
-  useGetEnhancedDeviceProfileListQuery
+  useGetL2AclPolicyTemplateListQuery,
+  useGetL3AclPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlFormFields, AccessControlInfoType,
-  AccessControlProfile, AccessControlProfileTemplate,
-  AclEmbeddedObject, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+  AccessControlFormFields,
+  AccessControlInfoType,
+  AccessControlProfile,
+  AccessControlProfileTemplate,
+  AclEmbeddedObject,
+  hasPolicyPermission,
+  PolicyOperation,
+  PolicyType,
+  transformDisplayText,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { transformDisplayText } from '@acx-ui/rc/utils'
-import { useParams }            from '@acx-ui/react-router-dom'
-import { WifiScopes }           from '@acx-ui/types'
-import { hasPermission }        from '@acx-ui/user'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import {
   AccessControlSettingForm,
-  ApplicationDrawer, convertToPayload,
-  DeviceOSDrawer, genAclPayloadObject,
+  ApplicationDrawer,
+  convertToPayload,
+  DeviceOSDrawer,
+  genAclPayloadObject,
   Layer2Drawer,
   Layer3Drawer
 } from '../../policies/AccessControlForm'
@@ -305,7 +306,8 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
     uplinkLimit, downlinkLimit//, modalStatus.visible
   ])
 
-  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
+  // eslint-disable-next-line max-len
+  if (!hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })) return null
 
   const handleOnClick = () => {
     setModalStatus({
@@ -375,17 +377,17 @@ function SelectAccessProfileProfile (props: {
     selectedAccessControlProfile: undefined as AccessControlProfile | undefined
   })
 
-  const { selectedLayer2 } = GetL2AclPolicyListFromNwInstance(state)
+  const { selectedLayer2 } = useL2AclPolicyListFromNwInstance(state)
 
-  const { selectedLayer3 } = GetL3AclPolicyListFromNwInstance(state)
+  const { selectedLayer3 } = useL3AclPolicyListFromNwInstance(state)
 
-  const { selectedDevicePolicy } = GetDeviceAclPolicyListFromNwInstance(state)
+  const { selectedDevicePolicy } = useDeviceAclPolicyListFromNwInstance(state)
 
-  const { selectedApplicationPolicy } = GetAppAclPolicyListFromNwInstance(state)
+  const { selectedApplicationPolicy } = useAppAclPolicyListFromNwInstance(state)
 
   //Access control list
   const { accessControlProfileSelectOptions, accessControlList }
-    = GetAclPolicyListFromNwInstance()
+    = useAclPolicyListFromNwInstance()
 
   useEffect(() => {
     if (data && accessControlList) {
@@ -472,7 +474,7 @@ function SelectAccessProfileProfile (props: {
           children={accessControlProfileSelectOptions} />
       </Form.Item>
 
-      {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+      {hasPolicyPermission({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE }) &&
         <Button type='link'
           onClick={handleOnAddClick}
           children={$t({ defaultMessage: 'Add' })}
@@ -514,7 +516,7 @@ function SelectAccessProfileProfile (props: {
   </>)
 }
 
-const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedLayer2: string
 } => {
   const params = useParams()
@@ -557,7 +559,7 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   return isTemplate ? useL2PolicyTemplateList : useL2PolicyList
 }
 
-const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedLayer3: string
 } => {
   const params = useParams()
@@ -601,7 +603,7 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   return isTemplate ? useL3PolicyTemplateList : useL3PolicyList
 }
 
-const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedDevicePolicy: string
 } => {
   const params = useParams()
@@ -644,7 +646,7 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
   return isTemplate ? useDevicePolicyTemplateList : useDevicePolicyList
 }
 
-const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
+const useAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileType): {
   selectedApplicationPolicy: string
 } => {
   const params = useParams()
@@ -717,7 +719,7 @@ const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileTyp
   </>
 }
 
-const GetAclPolicyListFromNwInstance = () => {
+const useAclPolicyListFromNwInstance = () => {
   const params = useParams()
   const defaultPayload = {
     searchString: '',

@@ -11,11 +11,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   EnhancedAccessControlInfoType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
   PolicyOperation,
-  PolicyType, useConfigTemplate, usePolicyListBreadcrumb, useTableQuery
+  PolicyType,
+  useConfigTemplate,
+  usePolicyListBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
@@ -35,9 +37,9 @@ export function AccessControlDetail () {
       <PageHeader
         title={data?.name}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT)}
             type={PolicyType.ACCESS_CONTROL}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

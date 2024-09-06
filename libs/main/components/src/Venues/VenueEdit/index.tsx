@@ -142,6 +142,7 @@ export function VenueEdit () {
     = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
     || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
     || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'details')
+    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'property')
 
     if (hasNoPermissions) {
       navigate(notPermissions, { replace: true })

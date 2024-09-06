@@ -446,11 +446,12 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
 
 export default function SearchResults () {
   const { searchVal } = useParams()
+  const trimmedSearchVal = searchVal?.trim()
   return <TimeRangeDropDownProvider availableRanges={[
     DateRange.last24Hours,
     DateRange.last7Days,
     DateRange.last30Days
   ]}>
-    <SearchResult key={searchVal} searchVal={searchVal} />
+    <SearchResult key={trimmedSearchVal} searchVal={trimmedSearchVal} />
   </TimeRangeDropDownProvider>
 }

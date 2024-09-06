@@ -118,7 +118,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
           }]}
           barColors={usedBarColors}
         />
-        {trial && !extendedTrial
+        {trial && (!extendedTrial && used === 0)
           ? <div style={{ marginLeft: '25px', fontSize: '11px' }}>
             <UI.LegendDot style={{ backgroundColor: usedBarColors[1] }} />
             <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
