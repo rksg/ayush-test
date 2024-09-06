@@ -490,7 +490,7 @@ export function ManageCustomer () {
       const quantityApsw = _.isString(ecFormData.apswLicense)
         ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
       const quantityApswTrial = _.isString(ecFormData.apswTrialLicense)
-        ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswLicense
+        ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
       const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
         : isDeviceAgnosticEnabled
           ? { assignments: [{
