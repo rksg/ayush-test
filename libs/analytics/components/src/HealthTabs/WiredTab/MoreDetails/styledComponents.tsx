@@ -4,10 +4,13 @@ export const DrawerTitle = styled.span`
   margin-top: 5px;
 `
 export const ChartTitle = styled.span`
-  padding-bottom : 10px;
+  text-align: left;
   font-size: 12px;
+  padding-bottom: 10px;
 `
 export const PieChartWrapper = styled.div`
-  height: 260px;
-  min-width: 380px;
+  height: 100%;
+  .ant-card-body {
+    height: 100%
+  }
 `

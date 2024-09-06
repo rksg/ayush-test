@@ -164,7 +164,8 @@ export const MoreDetailsPieChart = ({
                   }}
                   showLegend
                   dataFormatter={tooltipFormatter(total, formatter('countFormat'))} />
-                { hasOthers && <Space align='start' style={{ width }} >
+                { hasOthers &&
+                <Space align='start' style={{ width }} >
                   <InformationOutlined />
                   {$t({
                     defaultMessage: `Detailed breakup of all items beyond
