@@ -15,23 +15,19 @@ export function RecentLogin (props: { userEmail: string }) {
   const tableQuery = useTableQuery({
     useQuery: useAdminLogsQuery,
     pagination: {
-      pageSize: 10000
+      pageSize: 5
     },
     defaultPayload: {
       url: CommonUrlsInfo.getEventList.url,
       fields: [
         'event_datetime',
-        'severity',
         'entity_type',
-        'entity_id',
-        'message',
-        'adminName',
         'id',
         'ipAddress'
       ],
-      searchString: 'logged',
+      searchString: `${userEmail} logged into the cloud controller`,
       filters: {
-        entity_type: ['ADMIN', 'NOTIFICATION']
+        entity_type: ['ADMIN']
       }
     },
     sorter: {
@@ -39,13 +35,6 @@ export function RecentLogin (props: { userEmail: string }) {
       sortOrder: 'DESC'
     }
   })
-
-  const tableData = getProfilesByType(tableQuery.data?.data as AdminLog[])
-
-  function getProfilesByType (queryData: AdminLog[]) {
-    return queryData?.filter(p =>
-      p.message.includes('logged into') && p.message.includes(userEmail)).slice(0, 5)
-  }
 
   const columnsRecentLogin: TableProps<EventList>['columns'] = [
     {
@@ -71,7 +60,7 @@ export function RecentLogin (props: { userEmail: string }) {
       <Loader states={[tableQuery]}>
         <Table
           columns={columnsRecentLogin}
-          dataSource={tableData}
+          dataSource={tableQuery.data?.data}
           style={{ width: '600px' }}
           rowKey='id'
           type={'form'}
