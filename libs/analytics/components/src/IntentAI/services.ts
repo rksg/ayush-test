@@ -226,7 +226,6 @@ export const api = intentAIApi.injectEndpoints({
           $path: [HierarchyNodeInput]
         ) {
           intentFilterOptions(
-            end: $endDate
             path: $path
           ) {
             codes { id label }
