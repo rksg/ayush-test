@@ -55,9 +55,9 @@ function VLANsTable (props: {
     dataIndex: 'serial',
     title: $t({ defaultMessage: 'Switch Serial' })
   }, {
-    key: 'portNumber',
-    dataIndex: 'portNumber',
-    title: $t({ defaultMessage: 'Port Number' })
+    key: 'portNumberss',
+    dataIndex: 'portNumbers',
+    title: $t({ defaultMessage: 'Port Numbers' })
   }]
 
   return <Table

@@ -15,7 +15,7 @@ export interface ImpactedSwitch {
   ports: ImpactedSwitchPort[]
 }
 
-export type ImpactedSwitchPortRow = ImpactedSwitchPort
+export type ImpactedSwitchPortRow = { portNumbers:string }
   & Pick<ImpactedSwitch, 'name' | 'mac' | 'serial'>
   & { key?: string, index?: number }
 
@@ -45,8 +45,9 @@ export const impactedApi = dataApi.injectEndpoints({
       query: (variables) => ({ document, variables }),
       transformResponse: (response: Response<{ impactedSwitchDDoS: ImpactedSwitch[] }>) => {
         return response.incident.impactedSwitchDDoS
-          .flatMap(({ name, mac, serial, ports }) =>
-            ports.map(port => ({ name, mac, serial, ...port })))
+          .map(({ name, mac, serial, ports }) => {
+            return { name,mac, serial , portNumbers: ports.map(port=>port.portNumber).join(', ') }
+          })
       }
     })
   })
