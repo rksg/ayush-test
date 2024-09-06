@@ -10,7 +10,8 @@ import {
   getServiceDetailsLink,
   ServiceOperation,
   useServiceListBreadcrumb,
-  hasDpskAccess
+  hasDpskAccess,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -75,6 +76,7 @@ export default function DpskDetails () {
               oper: ServiceOperation.EDIT,
               serviceId: serviceId!
             })}
+            scopeKey={getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

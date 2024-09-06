@@ -1,8 +1,9 @@
 import { cloneDeep } from 'lodash'
 
-import { NetworkSaveData, Venue, NetworkTunnelSdLanAction } from '@acx-ui/rc/utils'
+import { NetworkSaveData, Venue, NetworkTunnelSdLanAction, NetworkTunnelSoftGreAction } from '@acx-ui/rc/utils'
 
 import { SdLanScopedNetworkVenuesData } from '../../EdgeSdLan/useEdgeSdLanActions'
+import { SoftGreNetworkTunnel }         from '../../NetworkTunnelActionModal'
 import { NetworkTunnelInfoButton }      from '../../NetworkTunnelActionModal/NetworkTunnelInfoButton'
 import { mergeSdLanCacheAct }           from '../../NetworkTunnelActionModal/utils'
 import { TMP_NETWORK_ID }               from '../utils'
@@ -12,6 +13,8 @@ interface NetworkTunnelInfoButtonFormItemProps {
   currentVenue: Venue
   currentNetwork: NetworkSaveData
   sdLanScopedNetworkVenues: SdLanScopedNetworkVenuesData
+  softGreVenueMap: Record<string, SoftGreNetworkTunnel[]>
+  softGreAssociationUpdate: NetworkTunnelSoftGreAction
   onClick: (currentVenue: Venue, currentNetwork: NetworkSaveData) => void
 }
 
@@ -21,6 +24,8 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     currentVenue,
     currentNetwork,
     sdLanScopedNetworkVenues,
+    softGreVenueMap,
+    softGreAssociationUpdate,
     onClick
   } = props
 
@@ -49,6 +54,23 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     }
   })
 
+  const networkId = currentNetwork.id ?? TMP_NETWORK_ID
+
+  const getVenueSoftGre = () => {
+    if (softGreAssociationUpdate?.[currentVenue.id]) {
+      const { newProfileId, newProfileName } = softGreAssociationUpdate[currentVenue.id]
+      if (newProfileId === '') return undefined
+      return {
+        venueId: currentVenue.id,
+        networkIds: [networkId],
+        profileId: newProfileId,
+        profileName: newProfileName
+      } as SoftGreNetworkTunnel
+    }
+    if (networkId === TMP_NETWORK_ID) return undefined
+    return softGreVenueMap?.[currentVenue.id]?.find(sg => sg.networkIds.includes(networkId))
+  }
+
   return <NetworkTunnelInfoButton
     network={{
       ...currentNetwork,
@@ -56,6 +78,7 @@ export const NetworkTunnelInfoButtonFormItem = (props: NetworkTunnelInfoButtonFo
     }}
     currentVenue={currentVenue}
     venueSdLan={sdLanNetworkVenues.sdLansVenueMap?.[currentVenue.id]?.[0]}
+    venueSoftGre={getVenueSoftGre()}
     onClick={handleClick}
   />
 }

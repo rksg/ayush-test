@@ -10,21 +10,24 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery,
   useWifiNetworkListQuery
-}                                    from '@acx-ui/rc/services'
-import { getPolicyDetailsLink,
+} from '@acx-ui/rc/services'
+import {
+  filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
+  getScopeKeyByPolicy,
+  getTunnelTypeString, hasPolicyPermission,
   isDefaultTunnelProfile,
   MtuTypeEnum,
   PolicyOperation,
   PolicyType,
   TunnelProfileViewData,
-  useTableQuery,
-  getTunnelTypeString,
-  TunnelTypeEnum } from '@acx-ui/rc/utils'
+  TunnelTypeEnum,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }                       from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
+
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
@@ -195,7 +198,7 @@ const TunnelProfileTable = () => {
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.EDIT),
       // Default Tunnel profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
             && !isDefaultTunnelProfile(selectedRows[0]),
@@ -212,7 +215,7 @@ const TunnelProfileTable = () => {
       }
     },
     {
-      scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.DELETE),
       visible: (selectedRows) => !selectedRows.some(row => isDefaultTunnelProfile(row)),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
@@ -233,8 +236,10 @@ const TunnelProfileTable = () => {
     }
   ]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  const isSelectionVisible = hasPolicyPermission({
+    type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT
+  }) && hasPolicyPermission({
+    type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.DELETE
   })
 
   return (
@@ -253,8 +258,9 @@ const TunnelProfileTable = () => {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
-          <TenantLink scopeKey={[WifiScopes.CREATE, EdgeScopes.CREATE]}
+        extra={filterByAccessForServicePolicyMutation([
+          // eslint-disable-next-line max-len
+          <TenantLink scopeKey={getScopeKeyByPolicy(PolicyType.TUNNEL_PROFILE, PolicyOperation.CREATE)}
           // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
           >
@@ -266,7 +272,7 @@ const TunnelProfileTable = () => {
         <Table
           rowKey='id'
           columns={columns}
-          rowActions={filterByAccess(rowActions)}
+          rowActions={filterByAccessForServicePolicyMutation(rowActions)}
           rowSelection={isSelectionVisible && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
