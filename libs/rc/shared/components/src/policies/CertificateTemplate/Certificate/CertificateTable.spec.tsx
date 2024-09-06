@@ -9,7 +9,7 @@ import { setUserProfile, getUserProfile }                                       
 
 import { certificateList, certificateTemplate } from '../__test__/fixtures'
 
-import CertificateTable from './CertificateTable'
+import { CertificateTable } from './CertificateTable'
 
 
 
@@ -33,7 +33,7 @@ describe('CertificateTable', () => {
   })
 
   it('should render table with correct columns', async () => {
-    render(<Provider><CertificateTable /></Provider>, {
+    render(<Provider><CertificateTable/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
@@ -53,7 +53,7 @@ describe('CertificateTable', () => {
   })
 
   it('should open detail drawer when name button is clicked', async () => {
-    render(<Provider><CertificateTable /></Provider>, {
+    render(<Provider><CertificateTable/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
@@ -117,7 +117,7 @@ describe('CertificateTable', () => {
         })
     )
 
-    render(<Provider><CertificateTable /></Provider>, {
+    render(<Provider><CertificateTable/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
@@ -145,7 +145,10 @@ describe('CertificateTable', () => {
       algorithm: AlgorithmType.SHA_256,
       identityGroupId: '123'
     }
-    render(<Provider><CertificateTable templateData={certificateTemplate}/></Provider>)
+    render(<Provider>
+      <CertificateTable
+        type='specificTemplate'
+        templateData={certificateTemplate}/></Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row')
@@ -168,7 +171,7 @@ describe('CertificateTable', () => {
       profile: { ...getUserProfile().profile, roles: [RolesEnum.PRIME_ADMIN] }
     })
 
-    render(<Provider><CertificateTable /></Provider>, {
+    render(<Provider><CertificateTable type='all'/></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'
@@ -191,7 +194,7 @@ describe('CertificateTable', () => {
       profile: { ...getUserProfile().profile, roles: [RolesEnum.READ_ONLY] }
     })
 
-    render(<Provider><CertificateTable /></Provider>, {
+    render(<Provider><CertificateTable type='all' /></Provider>, {
       route: {
         params: { tenantId: 't-id' },
         path: '/:tenantId/policies/certificate/list'

@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Tabs }                                                                                             from '@acx-ui/components'
+import { CertificateTable }                                                                                                     from '@acx-ui/rc/components'
 import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                          from '@acx-ui/rc/services'
 import { CertificateCategoryType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                         from '@acx-ui/react-router-dom'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
-import CertificateTable          from '../CertificateTemplateTable/CertificateTable'
 import CertificateTemplateTable  from '../CertificateTemplateTable/CertificateTemplateTable'
 
 
@@ -22,7 +22,7 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
   const tabs: Record<CertificateCategoryType, JSX.Element> = {
     [CertificateCategoryType.CERTIFICATE_TEMPLATE]: <CertificateTemplateTable/>,
     [CertificateCategoryType.CERTIFICATE_AUTHORITY]: <CertificateAuthorityTable/>,
-    [CertificateCategoryType.CERTIFICATE]: <CertificateTable />
+    [CertificateCategoryType.CERTIFICATE]: <CertificateTable/>
   }
 
   const tabsPathMapping: Record<CertificateCategoryType, Path> = {

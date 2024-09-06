@@ -34,7 +34,8 @@ import {
   LbsServerProfileForm,
   ApGroupDetails,
   useIsEdgeFeatureReady,
-  SoftGreForm
+  SoftGreForm,
+  CertificateForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -88,7 +89,6 @@ import RadiusAttributeGroupDetail
 import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
-import CertificateForm                                                  from './pages/Policies/CertificateTemplate/CertificateForm/CertificateForm'
 import CertificateTemplateDetail                                        from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
 import CertificateTemplateList                                          from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
 import ClientIsolationDetail                                            from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'

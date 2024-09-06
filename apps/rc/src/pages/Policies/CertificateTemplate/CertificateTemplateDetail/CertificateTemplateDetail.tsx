@@ -4,14 +4,13 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, Loader, PageHeader, SummaryCard, Tabs }                                                                                                                               from '@acx-ui/components'
-import { caTypeShortLabel }                                                                                                                                                            from '@acx-ui/rc/components'
+import { caTypeShortLabel, CertificateTable }                                                                                                                                          from '@acx-ui/rc/components'
 import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSpecificTemplateCertificatesQuery, useGetSpecificTemplateScepKeysQuery } from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess }                                                           from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                                                  from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                                                                                                                                               from '@acx-ui/utils'
 
-import CertificateTable from '../CertificateTemplateTable/CertificateTable'
-import { Section }      from '../styledComponents'
+import { Section } from '../styledComponents'
 
 import ChromebookTab from './ChromebookTab'
 import ScepTable     from './ScepTable'
@@ -73,6 +72,7 @@ export default function CertificateTemplateDetail () {
 
   const tabMapping = {
     [TabKeyType.CERTIFICATE]: <CertificateTable
+      type='specificTemplate'
       templateData={certificateTemplateData}
       showGenerateCert={!!privateKeyBase64} />,
     [TabKeyType.SCEP]: <ScepTable templateId={certificateTemplateData?.id}/>,

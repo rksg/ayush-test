@@ -10,16 +10,19 @@ import { Certificate, CertificateCategoryType, CertificateStatusType, Certificat
 import { filterByAccess }                                                                                                                                                                                      from '@acx-ui/user'
 import { getIntl, noDataDisplay }                                                                                                                                                                              from '@acx-ui/utils'
 
-import CertificateSettings from '../CertificateForm/CertificateSettings'
-import { issuedByLabel }   from '../contentsMap'
+import { issuedByLabel } from '../contentsMap'
 
-import DetailDrawer                                            from './DetailDrawer'
+import CertificateSettings                                     from './CertificateForm/CertificateSettings'
+import { DetailDrawer }                                        from './DetailDrawer'
 import { getCertificateStatus, getDisplayedCertificateStatus } from './DetailDrawerHelper'
 import RevokeForm                                              from './RevokeForm'
 
 
-export default function CertificateTable ({ templateData, showGenerateCert = false }:
-  { templateData?: CertificateTemplate, showGenerateCert?: boolean }) {
+
+export function CertificateTable ({ templateData, showGenerateCert = false, type = 'all' }:
+  { templateData?: CertificateTemplate, showGenerateCert?: boolean,
+    type?: 'all' | 'specificTemplate' | 'specificIdentity'
+   }) {
   const { $t } = useIntl()
   const [certificateForm] = Form.useForm()
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
@@ -29,11 +32,12 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
   const settingsId = 'certificate-table'
   const tableQuery = useTableQuery({
     useQuery:
-    templateData ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
+    type === 'specificTemplate' ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
     defaultPayload: {},
-    apiParams: templateData?.id ? { templateId: templateData?.id } : {},
+    apiParams: type === 'specificTemplate' ? { templateId: templateData?.id! } : {},
     pagination: { settingsId }
   })
+
 
   useEffect(() => {
     tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
@@ -230,7 +234,7 @@ export default function CertificateTable ({ templateData, showGenerateCert = fal
     <>
       <Loader states={[tableQuery]}>
         <Table<Certificate>
-          settingsId={settingsId}
+          settingsId={'certificate-table'}
           columns={columns}
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}

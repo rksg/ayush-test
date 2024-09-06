@@ -6,14 +6,12 @@ import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
 import { Loader, TableProps, Table, Button, showActionModal }                                                                                    from '@acx-ui/components'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                         from '@acx-ui/rc/components'
+import { DetailDrawer, MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, deleteDescription }                                                        from '@acx-ui/rc/components'
 import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, hasCloudpathAccess, useTableQuery }                              from '@acx-ui/rc/utils'
 import { filterByAccess }                                                                                                                        from '@acx-ui/user'
 
-import { deleteDescription } from '../contentsMap'
 
-import DetailDrawer                 from './DetailDrawer'
 import EditCertificateAuthorityForm from './EditCertificateAuthorityForm'
 
 

@@ -14,7 +14,7 @@ import { certDetailTitle }                                                      
 import { CollapsePanelContentWrapper, CollapseTitle, CollapseWrapper, Description, DescriptionRow, DescriptionText, RawInfo } from '../styledComponents'
 
 import { getCertificateAuthorityDetails, getCertificateDetails } from './DetailDrawerHelper'
-import DownloadSection                                           from './DownloadSection'
+import DownloadSection from './DownloadSection'
 
 interface DetailDrawerProps {
   open?: boolean;
@@ -46,7 +46,7 @@ export interface SubContent {
   detail?: string;
 }
 
-export default function DetailDrawer ({ open = false, setOpen, data, type }: DetailDrawerProps) {
+export function DetailDrawer ({ open = false, setOpen, data, type }: DetailDrawerProps) {
   const { $t } = useIntl()
   const [uploadDrawerOpen, setUploadDrawerOpen] = useState(false)
   const [uploadPrivateKeyForm] = Form.useForm()

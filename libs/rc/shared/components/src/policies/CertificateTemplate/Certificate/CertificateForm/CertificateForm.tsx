@@ -5,13 +5,13 @@ import { useGenerateCertificateMutation }                                       
 import { getPolicyListRoutePath, getPolicyRoutePath, PolicyType, PolicyOperation, CertificateFormData } from '@acx-ui/rc/utils'
 import { useTenantLink, useNavigate }                                                                   from '@acx-ui/react-router-dom'
 
-import { Title } from '../styledComponents'
+import { Title } from '../../styledComponents'
 
 import CertificateSettings from './CertificateSettings'
 
 
 
-export default function CertificateForm () {
+export function CertificateForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [generateCertificate] = useGenerateCertificateMutation()
