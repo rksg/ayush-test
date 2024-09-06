@@ -23,7 +23,7 @@ import { ApSmartMonitor, VenueApSmartMonitor } from '@acx-ui/rc/utils'
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
-const { useWatch } = Form
+
 export function SmartMonitor () {
   const colSpan = 8
   const { $t } = useIntl()
@@ -218,8 +218,8 @@ export function SmartMonitor () {
                   {$t({ defaultMessage: 'Smart Monitor' })}
                   <Tooltip
                     title={$t({
-                      defaultMessage:
-                        'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
+                      // eslint-disable-next-line max-len
+                      defaultMessage: 'Enabling this feature will automatically disable WLANs if the default gateway of the access point is unreachable'
                     })}
                     placement='right'
                   >
