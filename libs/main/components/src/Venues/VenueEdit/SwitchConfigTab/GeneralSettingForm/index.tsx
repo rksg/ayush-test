@@ -117,6 +117,23 @@ export function GeneralSettingForm () {
   }, [navigate])
 
   useEffect(() => {
+    if (isCliProfile && venueSwitchSetting?.isSuccess) {
+      const { data } = venueSwitchSetting
+      setFormData({
+        ...formData,
+        dns: data?.dns ?? [],
+        syslogEnabled: data?.syslogEnabled ?? false,
+        syslogPrimaryServer: data?.syslogPrimaryServer || '',
+        syslogSecondaryServer: data?.syslogSecondaryServer || ''
+      })
+      formRef?.current?.setFieldsValue({
+        dns: data?.dns ?? []
+      })
+    }
+
+  }, [isCliProfile])
+
+  useEffect(() => {
     if (venueSwitchSetting?.isSuccess) {
       const { data } = venueSwitchSetting
       setFormState({
