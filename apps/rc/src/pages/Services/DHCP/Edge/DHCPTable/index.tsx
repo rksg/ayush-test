@@ -10,6 +10,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
@@ -18,7 +20,6 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }              from '@acx-ui/user'
 
 
 const EdgeDhcpTable = () => {
@@ -175,6 +176,7 @@ const EdgeDhcpTable = () => {
 
   const rowActions: TableProps<DhcpStats>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -190,6 +192,7 @@ const EdgeDhcpTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -208,6 +211,7 @@ const EdgeDhcpTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.EDIT),
       visible: (selectedRows) => isUpdateAvailable(selectedRows[0]),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows, clearSelection) => {
@@ -229,6 +233,8 @@ const EdgeDhcpTable = () => {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -240,9 +246,11 @@ const EdgeDhcpTable = () => {
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.EDGE_DHCP, oper: ServiceOperation.CREATE })}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_DHCP, ServiceOperation.CREATE)}
+          >
             <Button type='primary'>{$t({ defaultMessage: 'Add DHCP Service' })}</Button>
           </TenantLink>
         ])}
@@ -255,8 +263,8 @@ const EdgeDhcpTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasAccess() && { type: 'radio' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

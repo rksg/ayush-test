@@ -24,14 +24,13 @@ import {
   defaultSort,
   DPSKDeviceInfo,
   getOsTypeIcon,
-  hasCloudpathAccess,
   Persona,
   PersonaDevice,
   PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { filterByAccess, hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }                            from '@acx-ui/utils'
 
 
 const defaultClientPayload = {
@@ -252,33 +251,35 @@ export function PersonaDevicesTable (props: {
     }
   ]
 
-  const rowActions: TableProps<PersonaDevice>['rowActions'] = hasCloudpathAccess() ? [
-    {
-      label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedItems, clearSelection) => {
+  const rowActions: TableProps<PersonaDevice>['rowActions'] =
+    hasCrossVenuesPermission({ needGlobalPermission: true })
+      ? [
+        {
+          label: $t({ defaultMessage: 'Delete' }),
+          onClick: (selectedItems, clearSelection) => {
 
-        showActionModal({
-          type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: selectedItems.length > 1 ? 'devices' : '',
-            entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
-            numOfEntities: selectedItems.length
-          },
-          // FIXME: Need to add mac registration list id into this dialog
-          // eslint-disable-next-line max-len
-          content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
-          onOk: () => {
-            deleteDevices(selectedItems)
-            clearSelection()
+            showActionModal({
+              type: 'confirm',
+              customContent: {
+                action: 'DELETE',
+                entityName: selectedItems.length > 1 ? 'devices' : '',
+                entityValue: selectedItems.length === 1 ? selectedItems[0].macAddress : undefined,
+                numOfEntities: selectedItems.length
+              },
+              // FIXME: Need to add mac registration list id into this dialog
+              // eslint-disable-next-line max-len
+              content: $t({ defaultMessage: 'It will remove these devices from the MAC Registration list associated with this identity. Are you sure you want to delete them?' }),
+              onOk: () => {
+                deleteDevices(selectedItems)
+                clearSelection()
+              }
+            })
           }
-        })
-      }
-    }
-  ] : []
+        }
+      ] : []
 
   const actions: TableProps<PersonaDevice>['actions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Device' }),
         onClick: () => {
@@ -350,7 +351,7 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasCloudpathAccess() ? {
+        rowSelection={hasCrossVenuesPermission({ needGlobalPermission: true }) ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page

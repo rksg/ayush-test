@@ -68,7 +68,12 @@ export const R1NotificationSettings = ({ tenantId, apply }: {
   const [updatePrefrences] = useUpdateTenantSelfMutation()
   useEffect(() => {
     if (tenantDetailsData?.data?.subscribes) {
-      setState(JSON.parse(tenantDetailsData?.data?.subscribes))
+      try {
+        const jsonData = JSON.parse(tenantDetailsData?.data?.subscribes)
+        setState(jsonData)
+      } catch {
+        setState(defaultNotification)
+      }
     }
   }, [tenantDetailsData.data])
   apply.current = async (): Promise<boolean | void> => {

@@ -21,8 +21,9 @@ import {
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
-import { hasCloudpathAccess, PersonaGroup } from '@acx-ui/rc/utils'
-import { noDataDisplay }                    from '@acx-ui/utils'
+import { PersonaGroup }             from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
+import { noDataDisplay }            from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {
@@ -32,11 +33,12 @@ function PersonaGroupDetailsPageHeader (props: {
   const { $t } = useIntl()
   const { title, onClick } = props
 
-  const extra = hasCloudpathAccess() && [
-    <Button type={'primary'} onClick={onClick} >
-      {$t({ defaultMessage: 'Configure' })}
-    </Button>
-  ]
+  const extra = hasCrossVenuesPermission({ needGlobalPermission: true })
+    && [
+      <Button type={'primary'} onClick={onClick} >
+        {$t({ defaultMessage: 'Configure' })}
+      </Button>
+    ]
 
   return (
     <PageHeader
