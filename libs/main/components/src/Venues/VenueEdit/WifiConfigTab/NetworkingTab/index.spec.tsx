@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { venueApi }                                                           from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                    from '@acx-ui/store'
@@ -14,11 +15,13 @@ import {
   venueSetting,
   venueLanPorts,
   mockCellularSettings,
+  mockSmartMonitorOptions,
   mockRadiusOptions,
   mockDirectedMulticast
 } from '../../../__tests__/fixtures'
 
 import { NetworkingTab } from '.'
+import { useState } from 'react'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
@@ -69,6 +72,14 @@ describe('NetworkingTab', () => {
         (_, res, ctx) => res(ctx.json(mockDirectedMulticast))
       ),
       rest.put(WifiUrlsInfo.updateApDirectedMulticast.url,
+        (_req, res, ctx) => res(ctx.status(200))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueSmartMonitor.url,
+        (_, res, ctx) => res(ctx.json(mockSmartMonitorOptions))
+      ),
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueSmartMonitor.url,
         (_req, res, ctx) => res(ctx.status(200))
       ),
       rest.get(
@@ -146,5 +157,17 @@ describe('NetworkingTab', () => {
     )
     const nasIdField = await screen.findByText('NAS ID')
     expect(nasIdField).toBeInTheDocument()
+  })
+
+  it('should show Smart Monitor Options if feature flag is On', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><NetworkingTab /></Provider>, { route: { params } })
+    await waitFor(() => screen.findByText('Smart Monitor'))
+    
+    userEvent.click(
+      await screen.findByRole('switch', { name: 'Smart Monitor' })
+    )
+    const heartbeatField = await screen.findByText('Heartbeat Interval')
+    expect(heartbeatField).toBeInTheDocument()
   })
 })
