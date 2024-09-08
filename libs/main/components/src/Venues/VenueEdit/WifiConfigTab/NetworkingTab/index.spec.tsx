@@ -21,6 +21,7 @@ import {
 } from '../../../__tests__/fixtures'
 
 import { NetworkingTab } from '.'
+import { useState } from 'react'
 
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
 const mockedUsedNavigate = jest.fn()
@@ -162,7 +163,7 @@ describe('NetworkingTab', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitFor(() => screen.findByText('Smart Monitor'))
-
+    
     userEvent.click(
       await screen.findByRole('switch', { name: 'Smart Monitor' })
     )
