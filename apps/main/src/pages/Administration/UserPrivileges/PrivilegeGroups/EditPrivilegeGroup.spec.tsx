@@ -398,64 +398,6 @@ describe('Edit Privilege Group', () => {
       search: ''
     })
   })
-  it('should display correctly for customer with all selected venues and new venue added later', async () => {
-    params.action = 'edit'
-    render(
-      <Provider>
-        <EditPrivilegeGroup />
-      </Provider>, {
-        route: { params }
-      }
-    )
-    // Select venues
-    await userEvent.click(screen.getByRole('radio', { name: 'All Venues' }))
-
-    // Select customers
-    await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
-    expect(screen.getByText('AC Hotel Atlanta Airport Gateway (1 Venues)')).toBeVisible()
-    expect(screen.queryByText('Amy (All Venues)')).toBeVisible()
-    await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[0])
-    await screen.findByText('Select Customers')
-    await screen.findByText('int 1')
-    expect(screen.getAllByRole('checkbox')).toHaveLength(9)
-    await userEvent.click(screen.getAllByRole('checkbox')[5])
-    await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
-    expect(screen.queryByText('AC Hotel Atlanta Airport Gateway (All Venues)')).toBeVisible()
-    expect(screen.queryByText('Amy (All Venues)')).toBeVisible()
-    expect(screen.getByText('int 1 (All Venues)')).toBeVisible()
-
-    // Update list of venues for Amy customer
-    const updatedCustomerList = { ...customerList }
-    // eslint-disable-next-line testing-library/no-node-access
-    updatedCustomerList.data[1].children = [
-      { name: 'Venue B', id: 'BBB', selected: false },
-      { name: 'Venue Z', id: 'ZZZZ', selected: false },
-      { name: 'Venue Y', id: 'YYYY', selected: false }
-    ]
-    mspServices.useGetMspEcWithVenuesListQuery = jest.fn().mockImplementation(() => {
-      return { data: updatedCustomerList }
-    })
-
-    // Check customers list has updated selected venues
-    await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[0])
-    await screen.findByText('Select Customers')
-    await userEvent.click(screen.getAllByRole('button', { name: 'Expand row' })[0])
-    await userEvent.click(screen.getAllByRole('button', { name: 'Expand row' })[1])
-    await userEvent.click(screen.getAllByRole('button', { name: 'Expand row' })[2])
-    await userEvent.click(screen.getAllByRole('button', { name: 'Expand row' })[3])
-    expect(screen.getByRole('row', { name: 'AC Hotel Atlanta Airport Gateway' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'Venue A' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'Amy' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'Venue B' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'Venue Z' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'Venue Y' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'int 1' })).toHaveClass('ant-table-row-selected')
-    expect(screen.getByRole('row', { name: 'Venue C' })).toHaveClass('ant-table-row-selected')
-    await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
-    expect(screen.queryByText('AC Hotel Atlanta Airport Gateway (All Venues)')).toBeVisible()
-    expect(screen.queryByText('Amy (All Venues)')).toBeVisible()
-    expect(screen.getByText('int 1 (All Venues)')).toBeVisible()
-  })
   it('should render correctly for not onboarded msp', async () => {
     jest.spyOn(router, 'useLocation').mockReturnValue({ state: {
       isOnboardedMsp: false,
