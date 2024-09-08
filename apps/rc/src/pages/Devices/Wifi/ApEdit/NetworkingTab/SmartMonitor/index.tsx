@@ -325,7 +325,6 @@ export function SmartMonitor () {
                       )
                     }
                   />
-                  <div>{$t({ defaultMessage: 'Retries' })}</div>
                 </Space>
               </Form.Item>
             </Space>
