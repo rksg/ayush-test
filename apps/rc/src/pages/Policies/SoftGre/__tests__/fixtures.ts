@@ -54,19 +54,6 @@ export const mockSoftGreTable = {
 }
 
 export const mockSoftGreDetailFromListQueryById = {
-  status: 'fulfilled',
-  endpointName: 'getSoftGreViewDataList',
-  requestId: '6mG_G_RHPWH4NkXXkXkHd',
-  originalArgs: {
-    payload: {
-      filters: {
-        id: [
-          'a983a74d1791406a9dfb17c6796676d4'
-        ]
-      }
-    }
-  },
-  startedTimeStamp: 1724031815898,
   data: {
     totalCount: 2,
     page: 1,
@@ -93,40 +80,7 @@ export const mockSoftGreDetailFromListQueryById = {
         ]
       }
     ]
-  },
-  fulfilledTimeStamp: 1724031816830,
-  isUninitialized: false,
-  isLoading: false,
-  isSuccess: true,
-  isError: false,
-  currentData: {
-    totalCount: 2,
-    page: 1,
-    data: [
-      {
-        id: '0d89c0f5596c4689900fb7f5f53a0859',
-        name: 'softGreProfileName1',
-        mtuType: MtuTypeEnum.MANUAL,
-        mtuSize: 1450,
-        disassociateClientEnabled: false,
-        primaryGatewayAddress: '128.0.0.1',
-        secondaryGatewayAddress: '128.0.0.0',
-        keepAliveInterval: 100,
-        keepAliveRetryTimes: 8,
-        activations: [
-          {
-            venueId: '0e2f68ab79154ffea64aa52c5cc48826',
-            wifiNetworkIds: [
-              '9b33509cc0a1464cad9447778a72006f',
-              '797a1f499c254260b7a1aedafba524a3',
-              'b946294426b8413d819751cb3d320a20'
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  isFetching: false
+  }
 }
 
 export const mockSoftGreDetail = {

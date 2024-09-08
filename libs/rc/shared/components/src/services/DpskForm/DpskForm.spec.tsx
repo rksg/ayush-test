@@ -4,7 +4,6 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
-  websocketServerUrl,
   getServiceRoutePath,
   ServiceType,
   ServiceOperation,
@@ -19,6 +18,7 @@ import {
   screen,
   waitFor
 } from '@acx-ui/test-utils'
+import { websocketServerUrl } from '@acx-ui/utils'
 
 import {
   createPath,

@@ -94,7 +94,9 @@ const CheckboxGroup = ({ wlanData, mloEnabled, wifi7Enabled } :
 
   return (
     <Form.Item
-      label={$t({ defaultMessage: 'Select 2 bands for MLO: ' })}
+      label={wifi7Mlo3LinkFlag
+        ? $t({ defaultMessage: 'Select bands for MLO: ' })
+        : $t({ defaultMessage: 'Select 2 bands for MLO: ' })}
       name={['wlan', 'advancedCustomization', 'multiLinkOperationOptions']}
       valuePropName='checked'
       hidden={!(wifi7Enabled && mloEnabled)}

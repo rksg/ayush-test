@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Tabs }                                                                                             from '@acx-ui/components'
-import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                          from '@acx-ui/rc/services'
-import { CertificateCategoryType, PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath, hasCloudpathAccess } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                         from '@acx-ui/react-router-dom'
+import { Button, PageHeader, Tabs }                                                                                                                                      from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useGetCertificatesQuery }                                                                   from '@acx-ui/rc/services'
+import { CertificateCategoryType, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyListRoutePath, getPolicyRoutePath, getScopeKeyByPolicy } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                  from '@acx-ui/react-router-dom'
 
 import CertificateAuthorityTable from '../CertificateTemplateTable/CertificateAuthorityTable'
 import CertificateTable          from '../CertificateTemplateTable/CertificateTable'
@@ -71,9 +71,10 @@ export default function CertificateTemplateList (props: { tabKey: CertificateCat
           text: $t({ defaultMessage: 'Policies & Profiles' }),
           link: getPolicyListRoutePath(true)
         }]}
-        extra={hasCloudpathAccess() && ([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={buttonLinkMapping[props.tabKey]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.CREATE)}
           >
             <Button key='configure' type='primary'>{buttonTextMapping[props.tabKey]}</Button>
           </TenantLink>

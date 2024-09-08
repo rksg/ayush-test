@@ -452,6 +452,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspRbacEcAssignmentHistory: build.query<TableResult<MspAssignmentHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspecAssignmentHistoryReq =
+          createHttpRequest(MspRbacUrlsInfo.getMspEcAssignmentHistory, params)
+        return {
+          ...mspecAssignmentHistoryReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     addCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const mspUrlsInfo = getMspUrls(enableRbac)
@@ -653,8 +664,7 @@ export const mspApi = baseMspApi.injectEndpoints({
         const req = createHttpRequest(
           MspUrlsInfo.exportMspEcDeviceInventory,
           { ...params },
-          {},
-          true
+          {}
         )
         return {
           ...req,
@@ -1044,6 +1054,7 @@ export const {
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
   useMspRbacAssignmentHistoryQuery,
+  useMspRbacEcAssignmentHistoryQuery,
   useAddCustomerMutation,
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,

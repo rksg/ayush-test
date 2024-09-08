@@ -1,20 +1,19 @@
 import { useMemo } from 'react'
 
-import { Row, Space } from 'antd'
-import { find, uniq } from 'lodash'
-import { useIntl }    from 'react-intl'
+import { Row, Space }      from 'antd'
+import { find, get, uniq } from 'lodash'
+import { useIntl }         from 'react-intl'
 
 import {
   Button,
   PageHeader,
   Table,
   TableProps,
-  Tooltip,
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                                from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
+import { useIsSplitOn, Features }                                                      from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip, EdgeServiceStatusLight, useEdgeSdLanCompatibilityData } from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useDeleteEdgeSdLanMutation,
@@ -33,7 +32,10 @@ import {
   useTableQuery,
   FILTER,
   SEARCH,
-  EdgeMvSdLanViewData
+  EdgeMvSdLanViewData,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
+  defaultSort
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -41,8 +43,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { CompatibilityCheck } from './CompatibilityCheck'
 
@@ -217,15 +217,13 @@ const EdgeMvSdLanTable = () => {
         const venuesCount = venueIds.length
         const venueNames = venueIds.map(id => {
           const name = find(venueOptions, { key: id })?.value
-          return name ? <span key={id}>{name}</span> : undefined
+          return name
         }).filter(i => i)
 
         return venuesCount > 0
-          ? <Tooltip dottedUnderline
-            title={<Space direction='vertical'>
-              {venueNames}
-            </Space>}
-            children={<span data-testid={`venue-names-${row.id}`}>{venuesCount}</span>}
+          ? <CountAndNamesTooltip data={{
+            count: venuesCount, names: venueNames.sort(defaultSort) as string[]
+          }}
           />
           : venuesCount
       }
@@ -281,7 +279,7 @@ const EdgeMvSdLanTable = () => {
 
   const rowActions: TableProps<EdgeMvSdLanViewData>['rowActions'] = [
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
@@ -298,7 +296,7 @@ const EdgeMvSdLanTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.DELETE],
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -318,9 +316,17 @@ const EdgeMvSdLanTable = () => {
     }
   ]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
-  })
+  const handleTableChange: TableProps<EdgeMvSdLanViewData>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    const originSortField = get(sorter, 'field')
+    tableQuery.handleTableChange?.(pagination, filters, {
+      ...sorter,
+      field: originSortField === 'tunneledWlans.venueId' ? 'venueCount' : originSortField
+    }, extra)
+  }
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -336,9 +342,9 @@ const EdgeMvSdLanTable = () => {
             link: getServiceListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[EdgeScopes.CREATE]}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}
             to={getServiceRoutePath({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE
@@ -360,11 +366,11 @@ const EdgeMvSdLanTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={isSelectionVisible && { type: 'checkbox' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
+          onChange={handleTableChange}
           onFilterChange={handleFilterChange}
           enableApiFilter
         />

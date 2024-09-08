@@ -26,7 +26,8 @@ import {
   createHttpRequest,
   useLocaleContext,
   LangKey,
-  DEFAULT_SYS_LANG
+  DEFAULT_SYS_LANG,
+  initializeSockets
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -140,13 +141,11 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
-  const abacEnabled = userProfile.abacEnabled
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        (abacEnabled ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
@@ -156,6 +155,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
+
+  initializeSockets()
 
   root.render(
     <React.StrictMode>

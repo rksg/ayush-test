@@ -25,10 +25,11 @@ import {
 import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
 import { store }                                                        from '@acx-ui/store'
 import { RolesEnum }                                                    from '@acx-ui/types'
-import { hasRoles }                                                     from '@acx-ui/user'
+import { hasCrossVenuesPermission, hasRoles }                           from '@acx-ui/user'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
+import * as UI            from '../styledComponents'
 
 import { SetupSmsProviderDrawer } from './SetupSmsProviderDrawer'
 
@@ -59,6 +60,10 @@ export const reloadSmsNotification = (timeoutSec?: number) => {
   }, milisec)
 }
 
+export const isTwilioFromNumber = (trilioValue: string) => {
+  return (trilioValue[trilioValue.length-1] !== ']')
+}
+
 const SmsProviderItem = () => {
   const { $t } = useIntl()
   const params = useParams()
@@ -74,7 +79,8 @@ const SmsProviderItem = () => {
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
-  const hasPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+  const hasPermission = hasCrossVenuesPermission()
+    && hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const FREE_SMS_POOL = 100
 
@@ -116,7 +122,7 @@ const SmsProviderItem = () => {
       const providerType = smsUsage.data?.provider
       setRuckusOneUsed(usedSms)
       setSmsThreshold(smsUsage.data?.threshold ?? 80)
-      setSmsProviderType(providerType ?? SmsProviderType.RUCKUS_ONE)
+      setSmsProviderType(providerType ?? SmsProviderType.SMSProvider_UNSET)
       setSmsProviderConfigured((providerType && providerType !== SmsProviderType.RUCKUS_ONE &&
         providerType !== SmsProviderType.SMSProvider_UNSET) ? true : false)
       setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
@@ -260,39 +266,39 @@ const SmsProviderItem = () => {
   const ProviderTwillo = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       <Card type='solid-bg' >
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Provider' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {'Twilio'}</h3>
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Account SID' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.accountSid}</h3>
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Auth Token' })}
-            style={{ marginBottom: '-2px' }}
-          />
-          <PasswordInput
-            bordered={false}
-            value={smsProvider.data?.authToken}
-            style={{ padding: '0px' }}
-          />
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Phone Number' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.fromNumber}</h3>
-        </div>
+        <UI.ProviderWrapper direction='vertical' size={5}>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'Provider' })} />
+            <h3>{'Twilio'}</h3>
+          </div>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'Account SID' })} />
+            <h3>{smsProvider.data?.accountSid}</h3>
+          </div>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'Auth Token' })}
+            />
+            <PasswordInput
+              bordered={false}
+              value={smsProvider.data?.authToken}
+              style={{ padding: '0px' }}
+            />
+          </div>
+          <div>
+            <Form.Item
+              colon={false}
+              label={isTwilioFromNumber(smsProvider.data?.fromNumber ?? '')
+                ? $t({ defaultMessage: 'Phone Number' })
+                : $t({ defaultMessage: 'Message Service' })} />
+            <h3>{smsProvider.data?.fromNumber}</h3>
+          </div>
+        </UI.ProviderWrapper>
       </Card>
     </Col>
   }
@@ -300,25 +306,25 @@ const SmsProviderItem = () => {
   const ProviderEsendex = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       <Card type='solid-bg' >
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Provider' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {'Esendex'}</h3>
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'API Token' })}
-            style={{ marginBottom: '-2px' }}
-          />
-          <PasswordInput
-            bordered={false}
-            value={smsProvider.data?.apiKey}
-            style={{ padding: '0px' }}
-          />
-        </div>
+        <UI.ProviderWrapper direction='vertical' size={5}>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'Provider' })} />
+            <h3>{'Esendex'}</h3>
+          </div>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'API Token' })}
+            />
+            <PasswordInput
+              bordered={false}
+              value={smsProvider.data?.apiKey}
+              style={{ padding: '0px' }}
+            />
+          </div>
+        </UI.ProviderWrapper>
       </Card>
     </Col>
   }
@@ -326,33 +332,32 @@ const SmsProviderItem = () => {
   const ProviderOthers = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       <Card type='solid-bg' >
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Provider' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {'Other'}</h3>
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'API Token' })}
-            style={{ marginBottom: '-2px' }}
-          />
-          <PasswordInput
-            bordered={false}
-            value={smsProvider.data?.apiKey}
-            style={{ padding: '0px' }}
-          />
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Send URL' })}
-            style={{ marginBottom: '-2px' }}
-          />
-          <h3>{smsProvider.data?.url}</h3>
-        </div>
+        <UI.ProviderWrapper direction='vertical' size={5}>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'Provider' })} />
+            <h3>{'Other'}</h3>
+          </div>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'API Token' })}
+            />
+            <PasswordInput
+              bordered={false}
+              value={smsProvider.data?.apiKey}
+              style={{ padding: '0px' }}
+            />
+          </div>
+          <div>
+            <Form.Item
+              colon={false}
+              label={$t({ defaultMessage: 'Send URL' })}
+            />
+            <h3>{smsProvider.data?.url}</h3>
+          </div>
+        </UI.ProviderWrapper>
       </Card>
     </Col>
   }

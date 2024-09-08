@@ -268,7 +268,7 @@ export const RbacClientsTable = (props: ClientsTableProps<ClientInfo>) => {
             return <Tooltip title={mac}>
               {mac || noDataDisplay}
             </Tooltip>
-          }, (row) => row.mldMacAddress !== undefined)
+          }, (row) => row.mldMacAddress !== undefined || !!row.apInformation?.name || !!row.venueInformation?.name)
         }
       }] : []),
       {

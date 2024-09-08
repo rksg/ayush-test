@@ -12,13 +12,14 @@ import {
   ServiceOperation,
   ServiceType,
   WebAuthTemplate,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath,
   isDefaultWebAuth
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                     from '@acx-ui/user'
 
 
 export function NetworkSegAuthSummary ({ data }: { data?: WebAuthTemplate }) {
@@ -125,7 +126,7 @@ export default function NetworkSegAuthDetail () {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <Button disabled>
             {$t({ defaultMessage: 'Preview' })}
           </Button>,
@@ -134,7 +135,9 @@ export default function NetworkSegAuthDetail () {
               type: ServiceType.WEBAUTH_SWITCH,
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId as string
-            })}>
+            })}
+            scopeKey={getScopeKeyByService(ServiceType.WEBAUTH_SWITCH, ServiceOperation.EDIT)}
+          >
             <Button key='configure'
               disabled={isDefaultWebAuth(params.serviceId as string)}
               type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>

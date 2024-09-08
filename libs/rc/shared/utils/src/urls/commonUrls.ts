@@ -1,7 +1,5 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-export const websocketServerUrl = '/api/websocket/socket.io'
-
 export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVMNetworksList: {
     method: 'post',

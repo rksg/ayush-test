@@ -94,8 +94,7 @@ const GraphTitle = ({ details }: { details: Intent }) => {
       <UI.GraphTitle>{$t({ defaultMessage: 'Before' })}</UI.GraphTitle>
       <UI.GraphSubTitle>
         {$t({ defaultMessage: 'As at {dateTime}' }, {
-          // TODO: take dataEndTime from intent.metadata.dataEndTime
-          dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.dataEndTime)
+          dateTime: formatter(DateFormatEnum.DateTimeFormat)(details.metadata.dataEndTime)
         })}
       </UI.GraphSubTitle>
     </div>

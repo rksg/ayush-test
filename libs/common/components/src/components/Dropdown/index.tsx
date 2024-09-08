@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 
+import {
+  DropdownProps as AntDropdownProps,
+  MenuProps as AntMenuProps
+} from 'antd'
 import { MenuItemType } from 'rc-menu/lib/interface'
 
 import { ScopeKeys } from '@acx-ui/types'
 
 import * as UI from './styledComponents'
-
-import type {
-  DropdownProps as AntDropdownProps,
-  MenuProps as AntMenuProps
-} from 'antd'
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>

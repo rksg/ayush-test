@@ -33,7 +33,8 @@ import {
   SEARCH,
   PropertyConfigs,
   PropertyConfigQuery,
-  hasCloudpathAccess
+  getScopeKeyByPolicy,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -41,7 +42,6 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -171,6 +171,7 @@ export default function ConnectionMeteringTable () {
 
   const rowActions: TableProps<ConnectionMetering>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([data],clearSelection) => {
         navigate({
@@ -186,6 +187,7 @@ export default function ConnectionMeteringTable () {
       disabled: (selectedItems => selectedItems.length > 1)
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CONNECTION_METERING, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
         doProfileDelete(selectedItems,
@@ -215,6 +217,8 @@ export default function ConnectionMeteringTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = {
       ...tableQuery.payload,
@@ -239,8 +243,12 @@ export default function ConnectionMeteringTable () {
               link: getPolicyListRoutePath(true) }
           ]}
         title={$t({ defaultMessage: 'Data Usage Metering' })}
-        extra={hasCloudpathAccess() && [
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
+            scopeKey={getScopeKeyByPolicy(
+              PolicyType.CONNECTION_METERING,
+              PolicyOperation.CREATE
+            )}
             to={getPolicyRoutePath({
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.CREATE
@@ -250,18 +258,18 @@ export default function ConnectionMeteringTable () {
               { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
             </Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Table
         enableApiFilter
         columns={useColumns(venueMap, propertyMap)}
-        rowActions={filterByAccess(rowActions)}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
       />
     </Loader>
   )

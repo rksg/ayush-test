@@ -30,11 +30,11 @@ import { UserProfile }                                      from './pages/UserPr
 import UsersBase                                            from './pages/Users'
 import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
 
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const MspRoutes = React.lazy(() => import('@msp/Routes'))
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
-/* eslint-enable @nrwl/nx/enforce-module-boundaries */
 const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
@@ -157,7 +157,11 @@ function AdministrationRoutes () {
         element={<EditPrivilegeGroup />} />
       <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
       <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
-      <Route path='onpremMigration/add' element={<MigrationForm />} />
+      <Route path='onpremMigration/add'
+        element={
+          <AuthRoute requireCrossVenuesPermission={{ needGlobalPermission: true }}>
+            <MigrationForm />
+          </AuthRoute>} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>
   )

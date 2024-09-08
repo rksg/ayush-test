@@ -1,16 +1,19 @@
 import React from 'react'
 
-import { Space, Typography } from 'antd'
-import { useIntl }           from 'react-intl'
+import { Space, Typography }         from 'antd'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { useStepFormContext }              from '@acx-ui/components'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
 
-import { SideNotes }      from '../../common/SideNotes'
-import { Intent }         from '../../useIntentDetailsQuery'
-import { intentPriority } from '../common'
+import { richTextFormatValues } from '../../common/richTextFormatValues'
+import { SideNotes }            from '../../common/SideNotes'
+import { Intent }               from '../../useIntentDetailsQuery'
 
-import { Priority as PriorityPage } from './Priority'
+import {
+  Priority as PriorityPage,
+  priorities
+} from './Priority'
 
 export const Introduction: React.FC = () => {
   const { $t } = useIntl()
@@ -48,29 +51,31 @@ export const Introduction: React.FC = () => {
 
 export const Priority: React.FC = () => {
   const { $t } = useIntl()
-  const tradeoff = $t({ defaultMessage: `In the quest for minimizing interference between access
-    points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral
-    efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially
-    reducing throughput. Narrow channels limit data capacity, which could lower overall
-    throughput.` })
   return <SideNotes>
-    <SideNotes.Section title={$t({ defaultMessage: 'Potential trade-off?' })}>
-      <Typography.Paragraph children={tradeoff} />
+    <SideNotes.Section title={$t({ defaultMessage: 'Potential trade-off' })}>
+      <FormattedMessage
+        values={richTextFormatValues}
+        defaultMessage={`<p>
+          In the quest for minimizing interference between access points (APs), AI algorithms may
+          opt to narrow channel widths. While this can enhance spectral efficiency and alleviate
+          congestion, it also heightens vulnerability to noise, potentially reducing throughput.
+          Narrow channels limit data capacity, which could lower overall throughput.
+        </p>`}
+      />
     </SideNotes.Section>
   </SideNotes>
 }
 
-export const Settings: React.FC = () => {
-  const { $t } = useIntl()
+export const Summary: React.FC = () => {
   const { form } = useStepFormContext<Intent>()
   const isFullOptimization = form.getFieldValue(PriorityPage.fieldName)
-  const { title, content } = isFullOptimization ? intentPriority.full : intentPriority.partial
+  const priority = isFullOptimization ? priorities.full : priorities.partial
 
   return <SideNotes>
-    <SideNotes.Section title={$t(title)}>
-      <Typography.Paragraph children={$t(content)} />
-    </SideNotes.Section>
+    <SideNotes.Section
+      title={priority.title}
+      children={priority.content}
+    />
   </SideNotes>
 }
 
-export const Summary = Settings

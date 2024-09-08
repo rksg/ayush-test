@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }                   from '@acx-ui/components'
+import { Filter }          from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -76,7 +76,9 @@ import {
   downloadFile,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  NewApGroupViewModelResponseType
+  NewApGroupViewModelResponseType,
+  StickyClientSteering,
+  ApStickyClientSteering
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -1354,6 +1356,34 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
+    }),
+    getApStickyClientSteering: build.query<ApStickyClientSteering, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApStickyClientSteering, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    updateApStickyClientSteering: build.mutation<StickyClientSteering, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApStickyClientSteering, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    resetApStickyClientSteering: build.mutation<StickyClientSteering, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.resetApStickyClientSteering, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
     })
   })
 })
@@ -1454,7 +1484,10 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetApNeighborsQuery,
-  useMoveApToTargetApGroupMutation
+  useMoveApToTargetApGroupMutation,
+  useGetApStickyClientSteeringQuery,
+  useUpdateApStickyClientSteeringMutation,
+  useResetApStickyClientSteeringMutation
 } = apApi
 
 export function isAPLowPower (afcInfo?: AFCInfo): boolean {
