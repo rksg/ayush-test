@@ -16,20 +16,20 @@ import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade
 import { createIntentContextProvider } from './IntentContext'
 
 export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
+  'c-aclb-enable': CAclbEnable,
+  'c-bandbalancing-enable-below-61': CBandbalancingEnable,
+  'c-bandbalancing-enable': CBandbalancingEnable,
+  'c-bandbalancing-proactive': CBandbalancingProactive,
+  'c-bgscan24g-enable': CBgScan24gEnable,
+  'c-bgscan24g-timer': CBgScan24gTimer,
+  'c-bgscan5g-enable': CBgScan5gEnable,
+  'c-bgscan5g-timer': CBgScan5gTimer,
+  'c-bgscan6g-timer': CBgScan6gTimer,
   'c-crrm-channel24g-auto': CCrrmChannel24gAuto,
   'c-crrm-channel5g-auto': CCrrmChannel5gAuto,
   'c-crrm-channel6g-auto': CCrrmChannel6gAuto,
-  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
-  'c-txpower-same': CTxpowerSame,
   'c-dfschannels-disable': CDfschannelsDisable,
   'c-dfschannels-enable': CDfschannelsEnable,
-  'c-aclb-enable': CAclbEnable,
-  'c-bandbalancing-enable': CBandbalancingEnable,
-  'c-bandbalancing-enable-below-61': CBandbalancingEnable,
-  'c-bandbalancing-proactive': CBandbalancingProactive,
-  'c-bgscan24g-enable': CBgScan24gEnable,
-  'c-bgscan5g-enable': CBgScan5gEnable,
-  'c-bgscan24g-timer': CBgScan24gTimer,
-  'c-bgscan5g-timer': CBgScan5gTimer,
-  'c-bgscan6g-timer': CBgScan6gTimer
+  'c-txpower-same': CTxpowerSame,
+  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade
 })

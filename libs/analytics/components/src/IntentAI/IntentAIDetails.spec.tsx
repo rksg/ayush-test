@@ -105,64 +105,66 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
       unmount()
     }
-    it('should render for IZoneFirmwareUpgrade', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedIZoneFirmwareUpgrade } })
+    it('i-zonefirmware-upgrade', async () => {
+      const intent = mockedIZoneFirmwareUpgrade
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       const codes = ['i-zonefirmware-upgrade']
-      await doTest(codes, mockedIZoneFirmwareUpgrade)
+      await doTest(codes, intent)
     })
     it('c-bgscan-enable', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedCBgScanEnable } })
+      const intent = mockedCBgScanEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       const codes = ['c-bgscan24g-enable', 'c-bgscan5g-enable']
-      await doTest(codes, mockedCBgScanEnable)
+      await doTest(codes, intent)
     })
     it('c-bgscan-timer', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedCBgScanTimer } })
+      const intent = mockedCBgScanTimer
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       const codes = ['c-bgscan24g-timer', 'c-bgscan5g-timer', 'c-bgscan6g-timer']
-      await doTest(codes, mockedCBgScanTimer)
+      await doTest(codes, intent)
     })
-    it('should render for CTxpowerSame', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCTxpowerSame } })
-      await renderAIOperations(mockedCTxpowerSame.code)
+    it('c-txpower-same', async () => {
+      const intent = mockedCTxpowerSame
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
-    it('should render for CDfschannelsDisable', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCDfschannelsDisable } })
-      await renderAIOperations(mockedCDfschannelsDisable.code)
+    it('c-dfschannels-disable', async () => {
+      const intent = mockedCDfschannelsDisable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
-    it('should render for CDfschannelsEnable', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCDfschannelsEnable } })
-      await renderAIOperations(mockedCDfschannelsEnable.code)
+    it('c-dfschannels-enable', async () => {
+      const intent = mockedCDfschannelsEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
-    it('should render for CAclbEnable', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCAclbEnable } })
-      await renderAIOperations(mockedCAclbEnable.code)
+    it('c-aclb-enable', async () => {
+      const intent = mockedCAclbEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
-    it('should render for CBandbalancingEnable', async () => {
+    it('c-bandbalancing-enable', async () => {
       jest.spyOn(CBandbalancingEnable(), 'IntentAIDetails').mockImplementation(() => (
         <div data-testid='c-bandbalancing-enable-IntentAIDetails' />
       ))
 
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCBandbalancingEnable } })
-      await renderAIOperations(mockedCBandbalancingEnable.code)
+      const intent = mockedCBandbalancingEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
-    it('should render for CBandbalancingEnableBelow61', async () => {
+    it('c-bandbalancing-enable-below-61', async () => {
       jest.spyOn(CBandbalancingEnable(), 'IntentAIDetails').mockImplementation(() => (
         <div data-testid='c-bandbalancing-enable-below-61-IntentAIDetails' />
       ))
 
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCBandbalancingEnableBelow61 } })
-      await renderAIOperations(mockedCBandbalancingEnableBelow61.code)
+      const intent = mockedCBandbalancingEnableBelow61
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
-    it('should render for CBandbalancingProactive', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedCBandbalancingProactive } })
-      await renderAIOperations(mockedCBandbalancingProactive.code)
+    it('c-bandbalancing-proactive', async () => {
+      const intent = mockedCBandbalancingProactive
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
     })
   })
 })
