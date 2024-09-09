@@ -9,6 +9,7 @@ import { GridCol, GridRow }                     from '@acx-ui/components'
 import { StepsFormLegacy }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
+  useGetAccessControlProfileQuery,
   useGetEnhancedAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -198,22 +199,7 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
   const defaultPayload = {
     filters: { id: [params.policyId] },
     searchString: '',
-    fields: [
-      'id',
-      'name',
-      'l2AclPolicyName',
-      'l2AclPolicyId',
-      'l3AclPolicyName',
-      'l3AclPolicyId',
-      'devicePolicyName',
-      'devicePolicyId',
-      'applicationPolicyName',
-      'applicationPolicyId',
-      'clientRateUpLinkLimit',
-      'clientRateDownLinkLimit',
-      'networkIds',
-      'networkCount'
-    ],
+    fields: [],
     page: 1
   }
 
@@ -226,7 +212,14 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
     }
   })
 
+  const { data } = useGetAccessControlProfileQuery({ params })
+
   const useAclPolicy = tableQuery?.data?.data[0]
+
+  const useAclPolicyWithDesc = {
+    ...useAclPolicy,
+    description: data?.description || ''
+  }
 
   const templateTableQuery = useTableQuery({
     useQuery: useGetAccessControlProfileTemplateListQuery,
@@ -239,5 +232,6 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
 
   const useAclTemplatePolicy = templateTableQuery?.data?.data[0]
 
-  return ((isTemplate ? useAclTemplatePolicy : useAclPolicy) || {}) as EnhancedAccessControlInfoType
+  // eslint-disable-next-line max-len
+  return ((isTemplate ? useAclTemplatePolicy : useAclPolicyWithDesc) || {}) as EnhancedAccessControlInfoType
 }
