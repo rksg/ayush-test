@@ -164,17 +164,17 @@ export type AirtimeTxChecks = {
 export type AirtimeArray = (AirtimeBusyChecks | AirtimeRxChecks | AirtimeTxChecks)[]
 
 export type IntentQueryParams = {
-  code:string,
-  root:string,
-  sliceId:string,
-  intentId:string
+  code: string,
+  root: string,
+  sliceId: string,
+  intentId: string
 }
 
 export type AirtimeParams = {
   ssidCountPerRadioSlice: number
   recommendationId?: string,
-  crrm?:IntentQueryParams,
-  aclb?:IntentQueryParams,
+  crrm?: IntentQueryParams,
+  aclb?: IntentQueryParams,
 }
 
 export const htmlValues: FormatMessageValues = {
