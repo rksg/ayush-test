@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -28,26 +28,26 @@ export const kpis: IntentKPIConfig[] = []
 export const createBgScanEnable = (
   useValuesText: ReturnType<typeof createUseValuesText>
 ) => {
-
   const IntentAIDetails = createIntentAIDetails(useValuesText)
 
   const options = {
     yes: {
-      title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+      title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
       content: <FormattedMessage
-        values={richTextFormatValues}
+        values={{ ...richTextFormatValues, ...(getValuesFn()) }}
         defaultMessage={`
-          <p>IntentAI will change the background scan interval allowing the network to swiftly detect and react to interference, optimizing performance and ensuring a more responsive and efficient Wi-Fi experience.</p>
+          <p>IntentAI will activate background scanning and configure the auto channel selection mode to "{channelSelectionMode}" for this network.</p>
+          <p>IntentAI will continuously monitor these configurations.</p>
         `}
       />
     },
     no: {
-      title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+      title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
       content: <FormattedMessage
         values={richTextFormatValues}
         defaultMessage={`
-          <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.
-  For manual control, you may directly change the network configurations.</p>
+          <p>IntentAI will maintain the existing network configuration and will cease automated monitoring and change for this Intent.</p>
+          <p>For manual control, you may directly change the network configurations.</p>
           <p>For automated monitoring and control, you can select the "Resume" action, after which IntentAI will resume overseeing the network for this Intent.</p>
       `} />
     }
@@ -76,6 +76,7 @@ export const createBgScanEnable = (
   }).addStep({
     title: defineMessage({ defaultMessage: 'Introduction' }),
     SideNote: () => <Reason
+      reasonText={useValuesText().reasonText}
       resources={[{
         icon: 'video' as const,
         label: defineMessage({ defaultMessage: 'RUCKUS AI - AI Operations Demo' }),
@@ -100,7 +101,6 @@ export const createBgScanEnable = (
       const { $t } = useIntl()
       const { intent } = useIntentContext()
       return <>
-        <Typography.Paragraph children={useValuesText().actionText} />
         <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
         <Form.Item name={['preferences','enable']}>

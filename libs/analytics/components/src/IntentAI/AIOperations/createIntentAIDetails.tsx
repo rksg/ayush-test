@@ -86,8 +86,8 @@ export function createIntentAIDetails (
           <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection
-                data-testid='Why the intent?'
-                title={$t({ defaultMessage: 'Why the intent?' })}
+                data-testid='Why is the recommendation?'
+                title={$t({ defaultMessage: 'Why is the recommendation?' })}
                 children={<Card>{valuesText.reasonText}</Card>}
               />
             </GridCol>

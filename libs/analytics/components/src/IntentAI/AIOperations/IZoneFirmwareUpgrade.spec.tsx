@@ -90,7 +90,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(await screen.findByTestId('KPI')).toBeVisible()
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
@@ -126,7 +126,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(await screen.findByTestId('KPI')).toBeVisible()
-    expect(await screen.findByTestId('Why the intent?')).toBeVisible()
+    expect(await screen.findByTestId('Why is the recommendation?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
 
@@ -145,12 +145,12 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect((await screen.findAllByText('Why is the recommendation?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the intent' })
+    const radioEnabled = screen.getByRole('radio', { name: 'Yes, apply the recommendation' })
     await click(radioEnabled)
     expect(radioEnabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
@@ -177,12 +177,12 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect((await screen.findAllByText('Why is the recommendation?')).length).toEqual(1)
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
     expect(await screen.findByText('Potential trade-off')).toBeVisible()
-    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the intent' })
+    const radioDisabled = screen.getByRole('radio', { name: 'No, do not apply the recommendation' })
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
