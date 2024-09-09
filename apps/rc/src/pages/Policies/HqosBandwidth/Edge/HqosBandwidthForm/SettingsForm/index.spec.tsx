@@ -44,7 +44,7 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
   </Provider>
 }
 
-describe('QoS Settings Form', () => {
+describe('HQoS Settings Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
   })
@@ -57,7 +57,7 @@ describe('QoS Settings Form', () => {
 
     />, { route: { params: { tenantId: 't-id' } } })
 
-    await screen.findByText(/Configure the QoS bandwidth settings for each traffic class/i)
+    await screen.findByText(/Configure the HQoS bandwidth settings for each traffic class/i)
     await screen.findByText(/Note: Total guaranteed bandwidth across all classes must NOT exceed 100%. Max bandwidth must exceed minimal guaranteed bandwidth in each class/i)
 
     expect(screen.getByRole('columnheader', { name: /Traffic Class/i })).toBeTruthy()

@@ -58,11 +58,11 @@ export const AddHqosBandwidthModal = () => {
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)} data-testid='addQosBandwidthButton'>
+      <Button type='link' onClick={()=>setVisible(true)} data-testid='addHqosBandwidthButton'>
         {$t({ defaultMessage: 'Add' })}
       </Button>
       <Modal
-        title={$t({ defaultMessage: 'Add Qos for SmartEdge Profile' })}
+        title={$t({ defaultMessage: 'Add HQos for SmartEdge Profile' })}
         width={1100}
         visible={visible}
         type={ModalType.ModalStepsForm}

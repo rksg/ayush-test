@@ -43,7 +43,7 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
   </Provider>
 }
 
-describe('QoS Scope Form', () => {
+describe('HQoS Scope Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
     mockServer.use(
@@ -62,7 +62,7 @@ describe('QoS Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    await screen.findByText(/Activate clusters that the QoS bandwidth profile will be applied/i)
+    await screen.findByText(/Activate clusters that the HQoS bandwidth profile will be applied/i)
 
     expect(screen.getByRole('columnheader', { name: /Cluster/i })).toBeTruthy()
     expect(screen.getByRole('columnheader', { name: /Venue/i })).toBeTruthy()
@@ -87,7 +87,7 @@ describe('QoS Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    await screen.findByText(/Activate clusters that the QoS bandwidth profile will be applied/i)
+    await screen.findByText(/Activate clusters that the HQoS bandwidth profile will be applied/i)
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     await waitFor(()=>{
@@ -115,7 +115,7 @@ describe('QoS Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    await screen.findByText(/Activate clusters that the QoS bandwidth profile will be applied/i)
+    await screen.findByText(/Activate clusters that the HQoS bandwidth profile will be applied/i)
 
     const rows = await screen.findAllByRole('row', { name: /Edge Cluster/i })
     await waitFor(()=>{

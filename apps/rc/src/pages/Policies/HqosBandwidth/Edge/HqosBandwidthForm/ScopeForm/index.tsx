@@ -87,7 +87,7 @@ export const ScopeForm = () => {
           {
             $t({
               // eslint-disable-next-line max-len
-              defaultMessage: 'Activate clusters that the QoS bandwidth profile will be applied:'
+              defaultMessage: 'Activate clusters that the HQoS bandwidth profile will be applied:'
             })
           }
         </UI.FieldText>

@@ -86,12 +86,12 @@ const AddEdgeHqosBandwidth = () => {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'Add QoS Bandwidth Profile' })}
+        title={$t({ defaultMessage: 'Add HQoS Bandwidth Profile' })}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           // eslint-disable-next-line max-len
           { text: $t({ defaultMessage: 'Policies & Profiles' }), link: getPolicyListRoutePath(true) },
-          { text: $t({ defaultMessage: 'QoS Bandwidth' }), link: qosListRoute }
+          { text: $t({ defaultMessage: 'HQoS Bandwidth' }), link: qosListRoute }
         ]}
       />
       <HqosBandwidthForm

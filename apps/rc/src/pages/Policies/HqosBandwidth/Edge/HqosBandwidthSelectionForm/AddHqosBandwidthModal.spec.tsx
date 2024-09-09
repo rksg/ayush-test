@@ -18,15 +18,15 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 const mockedAddFn = jest.fn()
 const mockedSubmitDataGen = jest.fn()
 
-jest.mock('../QosBandwidthForm', () => ({
+jest.mock('../HqosBandwidthForm', () => ({
   __esModule: true,
-  ...jest.requireActual('../QosBandwidthForm'),
+  ...jest.requireActual('../HqosBandwidthForm'),
   default: (props: {
     onFinish: (values: HqosBandwidthFormModel) => Promise<boolean | void>
     onCancel: () => void
   }) => {
     const submitData = mockedSubmitDataGen()
-    return <div data-testid='rc-QosBandwidthForm'>
+    return <div data-testid='rc-HqosBandwidthForm'>
       <button onClick={() => {
         props.onFinish(submitData)
       }}>Submit</button>
@@ -39,7 +39,7 @@ jest.mock('../QosBandwidthForm', () => ({
 
 const params = { tenantId: 't-id' }
 
-describe('SmartEdgeForm > AddQosBandwidthModal', () => {
+describe('SmartEdgeForm > AddHqosBandwidthModal', () => {
   mockedAddFn.mockReset()
   mockedSubmitDataGen.mockReset()
   beforeEach(() => {
@@ -85,8 +85,8 @@ describe('SmartEdgeForm > AddQosBandwidthModal', () => {
 
     await click(await screen.findByRole('button', { name: 'Add' }))
     const addModal = await screen.findByRole('dialog')
-    await screen.findByText('Add Qos for SmartEdge Profile')
-    expect(await screen.findByTestId('rc-QosBandwidthForm')).toBeVisible()
+    await screen.findByText('Add HQos for SmartEdge Profile')
+    expect(await screen.findByTestId('rc-HqosBandwidthForm')).toBeVisible()
 
     await click(within(addModal).getByRole('button', { name: 'Submit' }))
     await waitFor(() => expect(mockedAddFn).toBeCalledTimes(1))
@@ -102,8 +102,8 @@ describe('SmartEdgeForm > AddQosBandwidthModal', () => {
 
     await click(await screen.findByRole('button', { name: 'Add' }))
     const addModal = await screen.findByRole('dialog')
-    await screen.findByText('Add Qos for SmartEdge Profile')
-    const mockForm = await screen.findByTestId('rc-QosBandwidthForm')
+    await screen.findByText('Add HQos for SmartEdge Profile')
+    const mockForm = await screen.findByTestId('rc-HqosBandwidthForm')
     expect(mockForm).toBeVisible()
     const cancelButton = within(mockForm).getByRole('button', { name: 'Cancel' })
     await click(cancelButton)

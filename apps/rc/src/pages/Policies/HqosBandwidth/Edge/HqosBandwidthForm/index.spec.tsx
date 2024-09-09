@@ -16,7 +16,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import QosBandwidthForm from '.'
+import HqosBandwidthForm from '.'
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 const { click } = userEvent
 
@@ -53,7 +53,7 @@ const addSteps = [{
 
 const mockedFinishFn = jest.fn()
 
-describe('Edge QoS form', () => {
+describe('Edge HQoS form', () => {
   beforeEach(() => {
     mockedFinishFn.mockClear()
   })
@@ -61,7 +61,7 @@ describe('Edge QoS form', () => {
   describe('Add', () => {
     const { result } = renderHook(() => Form.useForm())
     it('should submit with correct data', async () => {
-      render(<QosBandwidthForm
+      render(<HqosBandwidthForm
         form={result.current[0]}
         steps={addSteps}
         onFinish={mockedFinishFn}
@@ -123,7 +123,7 @@ describe('Edge QoS form', () => {
         trafficClassSettings: mockData.trafficClassSettings
       }
       const formRef = result.current[0]
-      render(<QosBandwidthForm
+      render(<HqosBandwidthForm
         form={formRef}
         steps={editSteps}
         onFinish={mockedFinishFn}

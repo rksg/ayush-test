@@ -33,9 +33,9 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedNavigate
 }))
-jest.mock('../QosBandwidthForm', () => ({
+jest.mock('../HqosBandwidthForm', () => ({
   __esModule: true,
-  ...jest.requireActual('../QosBandwidthForm'),
+  ...jest.requireActual('../HqosBandwidthForm'),
   default: (props: {
     onFinish: (values: HqosBandwidthFormModel) => Promise<boolean | void>
     onCancel: () => void
@@ -62,7 +62,7 @@ const targetPath = getPolicyRoutePath({
   type: PolicyType.HQOS_BANDWIDTH,
   oper: PolicyOperation.LIST
 })
-describe('Edit Edge QoS Profile', () => {
+describe('Edit Edge HQoS Profile', () => {
   beforeEach(() => {
     mockedEditFn.mockReset()
     mockedActivateFn.mockReset()

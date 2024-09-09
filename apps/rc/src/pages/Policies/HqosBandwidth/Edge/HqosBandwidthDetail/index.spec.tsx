@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('Edge QoS Bandwidth Detail', () => {
+describe('Edge HQoS Bandwidth Detail', () => {
   let params: { tenantId: string, policyId: string }
   beforeEach(() => {
     params = {
@@ -70,7 +70,7 @@ describe('Edge QoS Bandwidth Detail', () => {
       name: 'Policies & Profiles'
     })).toBeVisible()
     expect(screen.getByRole('link', {
-      name: 'QoS Bandwidth'
+      name: 'HQoS Bandwidth'
     })).toBeVisible()
   })
 })

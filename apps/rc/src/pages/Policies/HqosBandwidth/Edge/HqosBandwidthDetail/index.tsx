@@ -35,7 +35,7 @@ const EdgeHqosBandwidthDetail = () => {
       content: () => (qosViewData.description)
     },
     {
-      title: $t({ defaultMessage: 'QoS Bandwidth Control' }),
+      title: $t({ defaultMessage: 'HQoS Bandwidth Control' }),
       content: () => {
         return <Tooltip title={
           <TrafficClassSettingsTable
@@ -63,7 +63,7 @@ const EdgeHqosBandwidthDetail = () => {
         { text: $t({ defaultMessage: 'Policies & Profiles' })
           , link: getPolicyListRoutePath(true) },
         {
-          text: $t({ defaultMessage: 'QoS Bandwidth' }),
+          text: $t({ defaultMessage: 'HQoS Bandwidth' }),
           link: getPolicyRoutePath({
             type: PolicyType.HQOS_BANDWIDTH,
             oper: PolicyOperation.LIST

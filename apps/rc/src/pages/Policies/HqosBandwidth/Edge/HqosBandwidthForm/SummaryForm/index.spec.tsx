@@ -16,7 +16,7 @@ import { SummaryForm } from '.'
 
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
-describe('QoS Summary form', () => {
+describe('HQoS Summary form', () => {
   it('should correctly display', async () => {
     const mockQos = mockEdgeHqosProfileStatusList.data[1]
     const mockedData = {

@@ -25,7 +25,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const [form] = Form.useForm()
 
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
@@ -189,7 +189,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
           </Row>
           <Row gutter={20}>
             <Col span={7}>
-              {isEdgeQosEnabled &&
+              {isEdgeHqosEnabled &&
               <StepsForm.FieldLabel width='50%'>
                 {$t({ defaultMessage: 'Hierarchical QoS' })}
                 <Form.Item
@@ -200,7 +200,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
               </StepsForm.FieldLabel>
               }
               {
-                isEdgeQosEnabled &&
+                isEdgeHqosEnabled &&
                 <Form.Item
                   dependencies={['qosSwitch']}
                 >

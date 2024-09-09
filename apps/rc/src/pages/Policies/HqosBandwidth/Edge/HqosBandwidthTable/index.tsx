@@ -107,7 +107,7 @@ const EdgeHqosBandwidthTable = () => {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'QoS Bandwidth Control' }),
+      title: $t({ defaultMessage: 'HQoS Bandwidth Control' }),
       align: 'center',
       key: 'tracfficClass',
       dataIndex: 'tracfficClass',
@@ -166,7 +166,7 @@ const EdgeHqosBandwidthTable = () => {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'QoS' }),
+            entityName: $t({ defaultMessage: 'HQoS' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
@@ -183,7 +183,7 @@ const EdgeHqosBandwidthTable = () => {
     <>
       <PageHeader
         title={
-          $t({ defaultMessage: 'QoS Bandwidth ({count})' },
+          $t({ defaultMessage: 'HQoS Bandwidth ({count})' },
             { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
@@ -199,7 +199,7 @@ const EdgeHqosBandwidthTable = () => {
             to={getPolicyRoutePath({
               type: PolicyType.HQOS_BANDWIDTH,
               oper: PolicyOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add QoS Bandwidth Profile' })}</Button>
+            <Button type='primary'>{$t({ defaultMessage: 'Add HQoS Bandwidth Profile' })}</Button>
           </TenantLink>
         ])}
       />

@@ -22,7 +22,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import QosBandwidthTable from '.'
+import HqosBandwidthTable from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
@@ -32,7 +32,7 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-describe('QosBandwidthTable', () => {
+describe('HqosBandwidthTable', () => {
   let params: { tenantId: string }
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
     type: PolicyType.HQOS_BANDWIDTH,
@@ -61,10 +61,10 @@ describe('QosBandwidthTable', () => {
     )
   })
 
-  it('Should render QosBandwidthTable successfully', async () => {
+  it('Should render HqosBandwidthTable successfully', async () => {
     render(
       <Provider>
-        <QosBandwidthTable />
+        <HqosBandwidthTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -76,7 +76,7 @@ describe('QosBandwidthTable', () => {
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <QosBandwidthTable />
+        <HqosBandwidthTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -87,10 +87,10 @@ describe('QosBandwidthTable', () => {
     })).toBeVisible()
   })
 
-  it('edge qos profile detail page link should be correct', async () => {
+  it('edge hqos profile detail page link should be correct', async () => {
     render(
       <Provider>
-        <QosBandwidthTable />
+        <HqosBandwidthTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -100,7 +100,7 @@ describe('QosBandwidthTable', () => {
       { name: mockQosProfile.name }) as HTMLAnchorElement
     expect(edgeQosProfileDetailLink.href)
       .toContain(`/${params.tenantId}/t/${getPolicyDetailsLink({
-        type: PolicyType.QOS_BANDWIDTH,
+        type: PolicyType.HQOS_BANDWIDTH,
         oper: PolicyOperation.DETAIL,
         policyId: mockQosProfile.id
       })}`)
@@ -110,7 +110,7 @@ describe('QosBandwidthTable', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <QosBandwidthTable />
+        <HqosBandwidthTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -122,7 +122,7 @@ describe('QosBandwidthTable', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: `/${params.tenantId}/t/${getPolicyDetailsLink({
-        type: PolicyType.QOS_BANDWIDTH,
+        type: PolicyType.HQOS_BANDWIDTH,
         oper: PolicyOperation.EDIT,
         policyId: mockQosProfile.id
       })}`,
@@ -135,7 +135,7 @@ describe('QosBandwidthTable', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <QosBandwidthTable />
+        <HqosBandwidthTable />
       </Provider>, {
         route: { params, path: tablePath }
       })
@@ -146,7 +146,7 @@ describe('QosBandwidthTable', () => {
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "Test-QoS-1"?')
     const dialog = screen.queryByRole('dialog')
-    await user.click(screen.getByRole('button', { name: 'Delete QoS' }))
+    await user.click(screen.getByRole('button', { name: 'Delete HQoS' }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 

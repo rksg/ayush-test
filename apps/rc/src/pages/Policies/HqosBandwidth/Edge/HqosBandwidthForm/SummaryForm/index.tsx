@@ -106,7 +106,7 @@ export const SummaryForm = () => {
 
       <Col span={24}>
         <Subtitle level={4}>
-          { $t({ defaultMessage: 'QoS Bandwidth Control:' }) }
+          { $t({ defaultMessage: 'HQoS Bandwidth Control:' }) }
         </Subtitle>
         <Table
           rowKey={(row: TrafficClassSetting) => `${row.trafficClass}-${row.priority}`}

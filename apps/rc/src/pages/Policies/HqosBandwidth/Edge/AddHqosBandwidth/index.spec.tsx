@@ -53,7 +53,7 @@ const targetPath = getPolicyRoutePath({
   oper: PolicyOperation.LIST
 })
 
-describe('Add Edge QoS Profile', () => {
+describe('Add Edge HQoS Profile', () => {
   beforeEach(() => {
     mockedAddFn.mockReset()
     mockedActivateFn.mockReset()

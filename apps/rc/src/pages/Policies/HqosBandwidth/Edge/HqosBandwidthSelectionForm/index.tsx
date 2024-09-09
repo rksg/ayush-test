@@ -35,7 +35,7 @@ export const EdgeQosProfileSelectionForm = () => {
 
 
   const content = <Form.Item
-    label={$t({ defaultMessage: 'QoS Bandwitdth Profile' })}
+    label={$t({ defaultMessage: 'HQoS Bandwitdth Profile' })}
     data-testid='edge-cluster-qos-select-form-label'>
     <Space>
       <Form.Item
@@ -43,7 +43,7 @@ export const EdgeQosProfileSelectionForm = () => {
         rules={[
           {
             required: true,
-            message: $t({ defaultMessage: 'Please select a QoS Profile' })
+            message: $t({ defaultMessage: 'Please select a HQoS Profile' })
           }
         ]}
         noStyle

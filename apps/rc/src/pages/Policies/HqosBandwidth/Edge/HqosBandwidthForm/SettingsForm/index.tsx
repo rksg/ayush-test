@@ -221,7 +221,7 @@ export const SettingsForm = () => {
                   name='trafficClassSettings'
                   label={<>
                     {$t({ defaultMessage:
-                        'Configure the QoS bandwidth settings for each traffic class' })}
+                        'Configure the HQoS bandwidth settings for each traffic class' })}
                   </>}
                   rules={
                     [{ required: true }

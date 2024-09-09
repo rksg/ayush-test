@@ -89,11 +89,11 @@ export const HqosBandwidthDeatilDrawer = () => {
 
   return (
     <>
-      <Button type='link' onClick={()=>setVisible(true)} data-testid='showQosBandwidthDetailButton'>
+      <Button type='link' onClick={()=>setVisible(true)} data-testid='showHqosBandwidthDetailButton'>
         {$t({ defaultMessage: 'Profile Details' })}
       </Button>
       <Drawer
-        title={$t({ defaultMessage: 'QoS Bandwidth Profile Details : {profileName}' },{ profileName: detailData?.name })}
+        title={$t({ defaultMessage: 'HQoS Bandwidth Profile Details : {profileName}' },{ profileName: detailData?.name })}
         visible={visible}
         onClose={onClose}
         children={content}

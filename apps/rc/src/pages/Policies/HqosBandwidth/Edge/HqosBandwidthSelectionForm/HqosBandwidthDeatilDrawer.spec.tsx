@@ -14,7 +14,7 @@ const { click } = userEvent
 
 const params = { tenantId: 't-id' }
 
-describe('SmartEdgeForm > QosBandwidthDeatilDrawer', () => {
+describe('SmartEdgeForm > HqosBandwidthDeatilDrawer', () => {
 
   beforeEach(() => {
     mockServer.use(
@@ -44,7 +44,7 @@ describe('SmartEdgeForm > QosBandwidthDeatilDrawer', () => {
 
     await click(await screen.findByRole('button', { name: /Profile Details/i }))
     const drawer = await screen.findByRole('dialog')
-    await screen.findByText(/QoS Bandwidth Profile Detail/i)
+    await screen.findByText(/HQoS Bandwidth Profile Detail/i)
     expect((await screen.findAllByText(/Best effort/i)).length).toBe(2)
     await waitFor(() => expect(drawer).toBeVisible())
   })
@@ -68,7 +68,7 @@ describe('SmartEdgeForm > QosBandwidthDeatilDrawer', () => {
 
     await click(await screen.findByRole('button', { name: /Profile Details/i }))
     const drawer = await screen.findByRole('dialog')
-    await screen.findByText(/QoS Bandwidth Profile Detail/i)
+    await screen.findByText(/HQoS Bandwidth Profile Detail/i)
     await waitFor(() => expect(drawer).toBeVisible())
     const closeButton = within(drawer).getByLabelText('Close')
     await click(closeButton)

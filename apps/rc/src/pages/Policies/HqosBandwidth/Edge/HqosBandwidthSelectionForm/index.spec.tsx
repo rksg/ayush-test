@@ -32,7 +32,7 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-describe('EdgeQosProfileSelectionForm', () => {
+describe('EdgeHqosProfileSelectionForm', () => {
   let params: { tenantId: string, clusterId: string }
   beforeEach(() => {
     params = {
@@ -50,7 +50,7 @@ describe('EdgeQosProfileSelectionForm', () => {
     )
   })
 
-  it('should create EdgeQosProfileSelectionForm successfully', async () => {
+  it('should create EdgeHqosProfileSelectionForm successfully', async () => {
     render(
       <Provider>
         <StepsForm>
@@ -60,7 +60,7 @@ describe('EdgeQosProfileSelectionForm', () => {
         </StepsForm>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('QoS Bandwitdth Profile')).toBeVisible()
+    expect(await screen.findByText('HQoS Bandwitdth Profile')).toBeVisible()
   })
 
   it('should show "Select" in drop-down when qosId is not given', async () => {
