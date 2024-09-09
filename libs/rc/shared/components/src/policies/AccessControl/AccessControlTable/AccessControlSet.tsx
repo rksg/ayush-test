@@ -14,16 +14,14 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AclOptionType,
-  EnhancedAccessControlInfoType,
-  getPolicyDetailsLink, Network,
+  EnhancedAccessControlInfoType, filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink, getScopeKeyByPolicy, Network,
   PolicyOperation,
   PolicyType,
   useTableQuery,
   WifiNetwork
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useTenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import { defaultNetworkPayload } from '../../../NetworkTable'
 import { ApplicationDrawer }     from '../../AccessControlForm/ApplicationDrawer'
@@ -133,7 +131,7 @@ const AccessControlSet = () => {
 
   const rowActions: TableProps<EnhancedAccessControlInfoType>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -141,7 +139,7 @@ const AccessControlSet = () => {
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ACCESS_CONTROL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -157,6 +155,8 @@ const AccessControlSet = () => {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return <Loader states={[tableQuery]}>
     <Table<EnhancedAccessControlInfoType>
       settingsId={settingsId}
@@ -167,11 +167,8 @@ const AccessControlSet = () => {
       onChange={tableQuery.handleTableChange}
       onFilterChange={tableQuery.handleFilterChange}
       rowKey='id'
-      rowActions={filterByAccess(rowActions)}
-      rowSelection={
-        // eslint-disable-next-line max-len
-        hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-      }
+      rowActions={allowedRowActions}
+      rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
     />
   </Loader>
 }

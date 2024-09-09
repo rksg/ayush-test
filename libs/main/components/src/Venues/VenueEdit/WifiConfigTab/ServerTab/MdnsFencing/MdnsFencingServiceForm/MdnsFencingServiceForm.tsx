@@ -3,8 +3,8 @@ import { useContext } from 'react'
 import { Divider, Form, FormInstance, Input, Select } from 'antd'
 import { FormattedMessage, useIntl }                  from 'react-intl'
 
-import { Tooltip }                                                                                        from '@acx-ui/components'
-import { MdnsFencingService, BridgeServiceEnum, mdnsProxyRuleTypeLabelMapping, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
+import { Tooltip }                                                                                                           from '@acx-ui/components'
+import { MdnsFencingService, BridgeServiceEnum, mdnsProxyRuleTypeLabelMapping, trailingNorLeadingSpaces, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { MdnsFencingServiceContext } from '../MdnsFencingServiceTable'
 
@@ -21,6 +21,7 @@ export default function MdnsFencingServiceForm (props: MdnsFencingServicesFormPr
   const { $t } = useIntl()
   const { Option } = Select
   const { form } = props
+  const { isTemplate } = useConfigTemplate()
 
   const { currentServiceRef, otherServices } = useContext(MdnsFencingServiceContext)
 
@@ -118,7 +119,7 @@ export default function MdnsFencingServiceForm (props: MdnsFencingServicesFormPr
       />
       <Divider />
       <WirelessConnectionFieldset />
-      <WiredConnectionFieldset />
+      {!isTemplate && <WiredConnectionFieldset />}
       <CustomMappingFieldset />
     </Form>
   )

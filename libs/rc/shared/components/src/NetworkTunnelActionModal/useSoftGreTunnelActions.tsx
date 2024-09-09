@@ -96,7 +96,8 @@ export function useSoftGreTunnelActions () {
 
   const dectivateSoftGreTunnel = (
     venueId: string, networkId: string, formValues: NetworkTunnelActionForm) => {
-    if (isSoftGreEnabled && formValues.softGre?.oldProfileId && !formValues.softGre?.newProfileId) {
+    if (isSoftGreEnabled && formValues.tunnelType !== NetworkTunnelTypeEnum.SoftGre
+      && formValues.softGre?.oldProfileId && !formValues.softGre?.newProfileId) {
       return dectivateSoftGre({
         params: {
           venueId,
