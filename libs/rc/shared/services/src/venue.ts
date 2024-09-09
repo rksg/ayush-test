@@ -1574,24 +1574,20 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueApSmartMonitor: build.query<VenueApSmartMonitor, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
 
-        const req = createHttpRequest(urlsInfo.getVenueSmartMonitor, params, apiCustomHeader)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getVenueSmartMonitor, params, apiCustomHeader)
         return{
           ...req
         }
       }
     }),
     updateVenueApSmartMonitor: build.mutation<VenueApSmartMonitor, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
 
-        const req = createHttpRequest(urlsInfo.updateVenueSmartMonitor, params, apiCustomHeader)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateVenueSmartMonitor, params, apiCustomHeader)
         return{
           ...req,
           body: JSON.stringify(payload)

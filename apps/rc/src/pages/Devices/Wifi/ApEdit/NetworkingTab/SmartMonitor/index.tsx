@@ -11,7 +11,6 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 import {
   useGetApSmartMonitorQuery,
@@ -29,8 +28,6 @@ export function SmartMonitor () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-
   const {
     editContextData,
     setEditContextData,
@@ -44,8 +41,7 @@ export function SmartMonitor () {
 
   const smartMonitor = useGetApSmartMonitorQuery(
     {
-      params: { venueId, serialNumber },
-      enableRbac: isUseRbacApi
+      params: { venueId, serialNumber }
     },
     { skip: !venueId }
   )
@@ -76,8 +72,7 @@ export function SmartMonitor () {
       const setSmartMonitorData = async () => {
         const venueApSmartMonitorData = await getVenueApSmartMonitor(
           {
-            params: { tenantId, venueId },
-            enableRbac: isUseRbacApi
+            params: { tenantId, venueId }
           },
           true
         ).unwrap()
@@ -147,8 +142,7 @@ export function SmartMonitor () {
 
       await updateApSmartMonitor({
         params: { venueId, serialNumber },
-        payload,
-        enableRbac: isUseRbacApi
+        payload
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

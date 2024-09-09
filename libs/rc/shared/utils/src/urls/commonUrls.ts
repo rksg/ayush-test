@@ -291,16 +291,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/bssColoringSettings',
     newApi: true
   },
-  getVenueSmartMonitor: {
-    method: 'get',
-    url: '/venues/:venueId/apSmartMonitorSettings',
-    newApi: true
-  },
-  updateVenueSmartMonitor: {
-    method: 'put',
-    url: '/venues/:venueId/apSmartMonitorSettings',
-    newApi: true
-  },
   getVenueLanPorts: {
     method: 'get',
     url: '/venues/:venueId/lanPortSettings',

@@ -5,7 +5,6 @@ import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
 import { AnchorContext, Loader, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }     from '@acx-ui/icons'
 import {
   useGetVenueApSmartMonitorQuery,
@@ -20,7 +19,6 @@ export function SmartMonitor () {
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [smartMonitorEnabled, setSmartMonitorEnabled] = useState(false)
 
   const {
@@ -41,8 +39,7 @@ export function SmartMonitor () {
 
   const venueApSmartMonitor = useGetVenueApSmartMonitorQuery(
     {
-      params: { venueId },
-      enableRbac: isUseRbacApi
+      params: { venueId }
     },
     { skip: !venueId }
   )
@@ -70,8 +67,7 @@ export function SmartMonitor () {
 
       await updateVenueApSmartMonitor({
         params: { venueId },
-        payload: payload,
-        enableRbac: isUseRbacApi
+        payload: payload
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
