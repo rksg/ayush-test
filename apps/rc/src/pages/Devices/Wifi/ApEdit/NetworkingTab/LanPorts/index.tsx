@@ -280,6 +280,7 @@ export function LanPorts () {
     setSelectedModel((apLanPorts?.useVenueSettings
       ? venueLanPorts : apLanPorts) as WifiApSetting)
 
+    isResetClick.current = false
     formRef?.current?.setFieldsValue({
       lan: apLanPorts?.lanPorts,
       useVenueSettings: apLanPorts?.useVenueSettings
