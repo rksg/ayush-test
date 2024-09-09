@@ -1,5 +1,5 @@
 
-import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority, MtuTypeEnum, SoftGreViewData } from '@acx-ui/rc/utils'
+import { EdgeHqosTrafficClass, EdgeHqosTrafficClassPriority, MtuTypeEnum, SoftGreViewData } from '@acx-ui/rc/utils'
 
 export const mockedRogueApPoliciesList = {
   fields: [
@@ -69,8 +69,8 @@ export const mockedEdgeQosBandwidthQueryData = {
       description: '',
       trafficClassSettings: [
         {
-          trafficClass: EdgeQosTrafficClass.VOICE,
-          priority: EdgeQosTrafficClassPriority.HIGH
+          trafficClass: EdgeHqosTrafficClass.VOICE,
+          priority: EdgeHqosTrafficClassPriority.HIGH
         },
         {
           venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
