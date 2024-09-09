@@ -12,7 +12,7 @@ export const IntentAITabContent = () => {
       <GridCol col={{ span: 24 }} style={{ minHeight: '180px' }}>
         <UI.ApplyModalStyle />
         <IntentAITable
-          pathFilters={{ ...pathFilters }}
+          pathFilters={pathFilters}
         />
       </GridCol>
     </GridRow>
