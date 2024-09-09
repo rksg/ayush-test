@@ -2,21 +2,21 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { get }                                                  from '@acx-ui/config'
-import { networkApi }                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                       from '@acx-ui/rc/utils'
-import { Provider, store, intentAIApi, intentAIUrl }            from '@acx-ui/store'
-import { mockGraphqlQuery, mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { get }                                from '@acx-ui/config'
+import { networkApi }                         from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                     from '@acx-ui/rc/utils'
+import { Provider, store, intentAIApi }       from '@acx-ui/store'
+import { mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { mockIntentContext } from '../__tests__/fixtures'
 import { Statuses }          from '../states'
 import { Intent }            from '../useIntentDetailsQuery'
 
-import { mockedAirFlexKpi, mockedIntentAirFlex, mockWifiNetworkList } from './__tests__/fixtures'
-import { configuration, kpis }                                        from './common'
-import * as CProbeFlex24g                                             from './CProbeFlex24g'
-import * as CProbeFlex5g                                              from './CProbeFlex5g'
-import * as CProbeFlex6g                                              from './CProbeFlex6g'
+import { mockedIntentAirFlex, mockWifiNetworkList } from './__tests__/fixtures'
+import { configuration, kpis }                      from './common'
+import * as CProbeFlex24g                           from './CProbeFlex24g'
+import * as CProbeFlex5g                            from './CProbeFlex5g'
+import * as CProbeFlex6g                            from './CProbeFlex6g'
 
 jest.mock('../IntentContext')
 jest.mock('@acx-ui/config', () => ({
@@ -36,9 +36,6 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 describe('IntentAIDetails', () => {
   beforeEach(() => {
     store.dispatch(intentAIApi.util.resetApiState())
-    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-      data: { intent: mockedAirFlexKpi }
-    })
 
     store.dispatch(networkApi.util.resetApiState())
     mockServer.use(

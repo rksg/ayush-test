@@ -42,9 +42,9 @@ export function createUseValuesText ({ reason, tradeoff, action }: {
       sliceValue
     } = intent
 
-    const actionText = state === 'inactive'
-      ? action.inactive
-      : action.active
+    const actionText = state === 'active'
+      ? action.active
+      : action.inactive
     const currentValueText = (intent.currentValue === true)
       ? $t({ defaultMessage: 'enabled' })
       : $t({ defaultMessage: 'not enabled' })
