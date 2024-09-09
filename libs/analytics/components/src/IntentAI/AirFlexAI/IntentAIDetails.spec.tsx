@@ -8,9 +8,9 @@ import { CommonUrlsInfo }                                       from '@acx-ui/rc
 import { Provider, store, intentAIApi, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
-import { useIntentContext } from '../IntentContext'
-import { Statuses }         from '../states'
-import { Intent }           from '../useIntentDetailsQuery'
+import { mockIntentContext } from '../__tests__/fixtures'
+import { Statuses }          from '../states'
+import { Intent }            from '../useIntentDetailsQuery'
 
 import { mockedAirFlexKpi, mockedIntentAirFlex, mockWifiNetworkList } from './__tests__/fixtures'
 import { configuration, kpis }                                        from './common'
@@ -24,17 +24,12 @@ jest.mock('@acx-ui/config', () => ({
 }))
 const mockGet = get as jest.Mock
 
-const mockIntentContextWith = (data: Partial<Intent>) => {
-  let intent = mockedIntentAirFlex
-  intent = _.merge({}, intent, data) as typeof intent
-  jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
+const mockIntentContextWith = (data: Partial<Intent> = {}) => {
+  const intent = _.merge({}, mockedIntentAirFlex, data) as Intent
+  const context = mockIntentContext({ intent, configuration, kpis })
   return {
-    ...intent,
-    params: {
-      code: mockedIntentAirFlex.code,
-      root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-      sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
-    }
+    params: _.pick(context.intent, ['code', 'root', 'sliceId']),
+    metadata: context.intent.metadata
   }
 }
 
@@ -196,7 +191,7 @@ describe('IntentAIDetails', () => {
         code: 'c-probeflex-5g',
         metadata: {
           wlans: mockWifiNetworkList.data
-        } as unknown as Intent['metadata']
+        } as Intent['metadata']
       })
       render(
         <CProbeFlex5g.IntentAIDetails />,
@@ -214,7 +209,7 @@ describe('IntentAIDetails', () => {
         code: 'c-probeflex-5g',
         metadata: {
           wlans: mockWifiNetworkList.data
-        } as unknown as Intent['metadata']
+        } as Intent['metadata']
       })
       render(
         <CProbeFlex5g.IntentAIDetails />,

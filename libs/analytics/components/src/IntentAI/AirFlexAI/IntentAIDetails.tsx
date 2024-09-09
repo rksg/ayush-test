@@ -11,20 +11,19 @@ import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
 import { useWifiNetworkListQuery }               from '@acx-ui/rc/services'
 import { getIntl, NodeType }                     from '@acx-ui/utils'
 
-import { DescriptionRow }             from '../../DescriptionSection'
-import { FixedAutoSizer }             from '../../DescriptionSection/styledComponents'
-import { ConfigurationCard }          from '../AIOperations/ConfigurationCard'
-import { DetailsSection }             from '../common/DetailsSection'
-import { getIntentStatus }            from '../common/getIntentStatus'
-import { IntentDetailsHeader }        from '../common/IntentDetailsHeader'
-import { IntentIcon }                 from '../common/IntentIcon'
-import { isIntentActive }             from '../common/isIntentActive'
-import { KpiCard }                    from '../common/KpiCard'
-import { StatusTrail }                from '../common/StatusTrail'
-import { codes }                      from '../config'
-import { useIntentContext }           from '../IntentContext'
-import { getGraphKPIs }               from '../useIntentDetailsQuery'
-import { IntentWlan, isDataRetained } from '../utils'
+import { DescriptionRow }      from '../../DescriptionSection'
+import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
+import { ConfigurationCard }   from '../AIOperations/ConfigurationCard'
+import { DetailsSection }      from '../common/DetailsSection'
+import { getIntentStatus }     from '../common/getIntentStatus'
+import { IntentDetailsHeader } from '../common/IntentDetailsHeader'
+import { IntentIcon }          from '../common/IntentIcon'
+import { KpiCard }             from '../common/KpiCard'
+import { StatusTrail }         from '../common/StatusTrail'
+import { codes }               from '../config'
+import { useIntentContext }    from '../IntentContext'
+import { getGraphKPIs }        from '../useIntentDetailsQuery'
+import { IntentWlan }          from '../utils'
 
 export function createUseValuesText ({ reason, tradeoff, action }: {
   reason: MessageDescriptor
@@ -36,14 +35,14 @@ export function createUseValuesText ({ reason, tradeoff, action }: {
 }) {
   return function useValuesText () {
     const { $t } = getIntl()
-    const { intent } = useIntentContext()
+    const { intent, state } = useIntentContext()
     const {
       path,
       sliceType,
       sliceValue
     } = intent
 
-    const actionText = !isIntentActive(intent)
+    const actionText = state === 'inactive'
       ? action.inactive
       : action.active
     const currentValueText = (intent.currentValue === true)
@@ -88,13 +87,12 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, configuration } = useIntentContext()
+    const { intent, kpis } = useIntentContext()
     const valuesText = useValuesText()
     const isMlisa = get('IS_MLISA_SA') === 'true'
     const { wlans } = intent.metadata
     const needsWlans = wlans && wlans.length > 0
     const wlanRecords = useWlanRecords(wlans, !needsWlans || isMlisa)
-    const showData = isDataRetained(intent.metadata.dataEndTime)
 
     return <>
       <IntentDetailsHeader />
@@ -141,46 +139,40 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection
-            data-testid='Details'
-            title={$t({ defaultMessage: 'Details' })}
-            children={<GridRow>
-              {[
-                <GridCol data-testid='Configuration' key='value' col={{ span: 12 }}>
-                  <ConfigurationCard configuration={configuration!} intent={intent}/>
-                </GridCol>,
-                ...getGraphKPIs(intent, kpis).map(kpi => (
-                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                    <KpiCard kpi={kpi}
-                      showData={showData}
-                      intent={intent} />
-                  </GridCol>
-                ))]}
-            </GridRow>}
-          />
+          <DetailsSection data-testid='Details'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+            <GridRow>
+              <GridCol data-testid='Configuration' col={{ span: 12 }}>
+                <ConfigurationCard />
+              </GridCol>
+              {getGraphKPIs(intent, kpis).map(kpi => (
+                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                  <KpiCard kpi={kpi} />
+                </GridCol>
+              ))}
+            </GridRow>
+          </DetailsSection>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Why this recommendation?'
-                title={$t({ defaultMessage: 'Why this recommendation?' })}
-                children={<Card>{valuesText.reasonText}</Card>}
-              />
+              <DetailsSection data-testid='Why this recommendation?'>
+                <DetailsSection.Title
+                  children={$t({ defaultMessage: 'Why this recommendation?' })} />
+                <Card>{valuesText.reasonText}</Card>
+              </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Potential trade-off'
-                title={$t({ defaultMessage: 'Potential trade-off' })}
-                children={<Card>{valuesText.tradeoffText}</Card>}
-              />
+              <DetailsSection data-testid='Potential trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                <Card>{valuesText.tradeoffText}</Card>
+              </DetailsSection>
             </GridCol>
           </GridRow>
 
-          <DetailsSection
-            data-testid='Status Trail'
-            title={$t({ defaultMessage: 'Status Trail' })}
-            children={<StatusTrail />}
-          />
+          <DetailsSection data-testid='Status Trail'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
+            <StatusTrail />
+          </DetailsSection>
         </GridCol>
       </GridRow>
     </>
