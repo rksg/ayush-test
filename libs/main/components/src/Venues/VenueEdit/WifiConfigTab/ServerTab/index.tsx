@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import { useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import { ConfigTemplateType, redirectPreviousPage, useConfigTemplate }    from '@acx-ui/rc/utils'
 import { useNavigate }                                                    from '@acx-ui/react-router-dom'
@@ -33,6 +33,7 @@ export function ServerTab () {
   const { isTemplate } = useConfigTemplate()
   const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
   const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
+  const isBetaFeatureLbsEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
 
   const {
     previousPath,
@@ -55,7 +56,7 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
-  if (supportLbs && !isTemplate) {
+  if ((supportLbs && isBetaFeatureLbsEnabled) && !isTemplate) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService />))
   }

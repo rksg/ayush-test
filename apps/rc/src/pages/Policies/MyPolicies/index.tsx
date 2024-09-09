@@ -4,7 +4,7 @@ import { find }                      from 'lodash'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                        from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useIsEdgeReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
@@ -132,6 +132,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
+  const isBetaFeatureLbsEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -267,10 +268,10 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetLbsServerProfileListQuery({
         params, payload: defaultPayload
-      }, { skip: !supportLbs }).data?.totalCount,
+      }, { skip: !(supportLbs && isBetaFeatureLbsEnabled) }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !supportLbs
+      disabled: !(supportLbs && isBetaFeatureLbsEnabled)
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,
