@@ -32,7 +32,8 @@ const defaultPayload = {
     'mtuSize',
     'keepAliveInterval',
     'keepAliveRetryTimes',
-    'disassociateClientEnabled'
+    'disassociateClientEnabled',
+    'activations'
   ],
   searchString: '',
   filters: {},
@@ -233,7 +234,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       align: 'center',
-      filterKey: 'venueIds',
+      filterKey: 'activations.venueId',
       filterable: venueNameMap,
       sorter: true,
       render: function (_, row) {
