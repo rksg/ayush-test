@@ -68,7 +68,7 @@ describe('Edge QoS form', () => {
       />, {
         wrapper: Provider,
         route: {
-          path: '/:tenantId/t/policies/qosBandwidth/create',
+          path: '/:tenantId/t/policies/hqosBandwidth/create',
           params: { tenantId: 't-id' } }
       })
 

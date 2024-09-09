@@ -6,9 +6,9 @@ import { useIntl } from 'react-intl'
 import { Button, Loader, Modal, ModalType, showToast } from '@acx-ui/components'
 import { useCreateEdgeQosProfileMutation }             from '@acx-ui/rc/services'
 
-import QosBandwidthForm, { QosBandwidthFormModel } from '../QosBandwidthForm'
-import { SettingsForm }                            from '../QosBandwidthForm/SettingsForm'
-import { SummaryForm }                             from '../QosBandwidthForm/SummaryForm'
+import QosBandwidthForm, { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
+import { SummaryForm }                             from '../HqosBandwidthForm/SummaryForm'
 
 export const AddQosBandwidthModal = () => {
   const { $t } = useIntl()

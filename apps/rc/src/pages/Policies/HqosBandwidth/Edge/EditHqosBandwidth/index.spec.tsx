@@ -14,7 +14,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { QosBandwidthFormModel } from '../QosBandwidthForm'
+import { QosBandwidthFormModel } from '../HqosBandwidthForm'
 
 import EditEdgeQosBandwidth from '.'
 const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures

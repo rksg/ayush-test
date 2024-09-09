@@ -6,17 +6,17 @@ import { useActivateQosOnEdgeClusterMutation, useCreateEdgeQosProfileMutation } 
 import { PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                              from '@acx-ui/react-router-dom'
 
-import QosBandwidthForm, { QosBandwidthFormModel } from '../QosBandwidthForm'
-import { ScopeForm }                               from '../QosBandwidthForm/ScopeForm'
-import { SettingsForm }                            from '../QosBandwidthForm/SettingsForm'
-import { SummaryForm }                             from '../QosBandwidthForm/SummaryForm'
+import QosBandwidthForm, { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import { ScopeForm }                               from '../HqosBandwidthForm/ScopeForm'
+import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
+import { SummaryForm }                             from '../HqosBandwidthForm/SummaryForm'
 
 
 const AddEdgeQosBandwidth = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const qosListRoute = getPolicyRoutePath({
-    type: PolicyType.QOS_BANDWIDTH,
+    type: PolicyType.HQOS_BANDWIDTH,
     oper: PolicyOperation.LIST
   })
 

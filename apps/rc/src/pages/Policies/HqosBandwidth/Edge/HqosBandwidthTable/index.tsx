@@ -20,7 +20,6 @@ import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom
 import { EdgeScopes }                             from '@acx-ui/types'
 import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
-
 import * as UI from '../styledComponents'
 
 const EdgeQosBandwidthTable = () => {
@@ -91,7 +90,7 @@ const EdgeQosBandwidthTable = () => {
         return (
           <TenantLink
             to={getPolicyDetailsLink({
-              type: PolicyType.QOS_BANDWIDTH,
+              type: PolicyType.HQOS_BANDWIDTH,
               oper: PolicyOperation.DETAIL,
               policyId: row.id!
             })}>
@@ -152,7 +151,7 @@ const EdgeQosBandwidthTable = () => {
           ...basePath,
           pathname:
           `${basePath.pathname}/${getPolicyDetailsLink({
-            type: PolicyType.QOS_BANDWIDTH,
+            type: PolicyType.HQOS_BANDWIDTH,
             oper: PolicyOperation.EDIT,
             policyId: selectedRows[0].id!
           })}`
@@ -198,7 +197,7 @@ const EdgeQosBandwidthTable = () => {
           <TenantLink
             scopeKey={[EdgeScopes.CREATE]}
             to={getPolicyRoutePath({
-              type: PolicyType.QOS_BANDWIDTH,
+              type: PolicyType.HQOS_BANDWIDTH,
               oper: PolicyOperation.CREATE })}>
             <Button type='primary'>{$t({ defaultMessage: 'Add QoS Bandwidth Profile' })}</Button>
           </TenantLink>

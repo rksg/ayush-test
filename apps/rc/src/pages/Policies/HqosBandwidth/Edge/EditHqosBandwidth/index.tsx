@@ -19,9 +19,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import QosBandwidthForm, { QosBandwidthFormModel } from '../QosBandwidthForm'
-import { ScopeForm }                               from '../QosBandwidthForm/ScopeForm'
-import { SettingsForm }                            from '../QosBandwidthForm/SettingsForm'
+import QosBandwidthForm, { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import { ScopeForm }                               from '../HqosBandwidthForm/ScopeForm'
+import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
 
 
 const EditEdgeQosBandwidth = () => {
@@ -30,7 +30,7 @@ const EditEdgeQosBandwidth = () => {
   const [form] = Form.useForm()
   const params = useParams()
   const qosListRoute = getPolicyRoutePath({
-    type: PolicyType.QOS_BANDWIDTH,
+    type: PolicyType.HQOS_BANDWIDTH,
     oper: PolicyOperation.LIST
   })
   const linkToProfileList = useTenantLink(qosListRoute)

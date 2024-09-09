@@ -10,7 +10,7 @@ import { useActivateQosOnEdgeClusterMutation, useDeactivateQosOnEdgeClusterMutat
 import { EdgeClusterStatus }                                                                                                                       from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                                                                                                   from '@acx-ui/react-router-dom'
 
-import EdgeQosProfileSelectionForm from '../../../../Policies/QosBandwidth/Edge/QosBandwidthSelectionForm'
+import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
 interface EdgeNetworkControlProps {
   currentClusterStatus?: EdgeClusterStatus

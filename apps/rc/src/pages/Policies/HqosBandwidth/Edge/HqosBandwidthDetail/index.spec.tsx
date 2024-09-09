@@ -43,7 +43,7 @@ describe('Edge QoS Bandwidth Detail', () => {
       <Provider>
         <EdgeQosBandwidthDetail />
       </Provider>, {
-        route: { params, path: '/:tenantId/policies/qosBandwidth/:policyId/detail' }
+        route: { params, path: '/:tenantId/policies/hqosBandwidth/:policyId/detail' }
       }
     )
 
@@ -60,7 +60,7 @@ describe('Edge QoS Bandwidth Detail', () => {
       <Provider>
         <EdgeQosBandwidthDetail />
       </Provider>, {
-        route: { params, path: '/:tenantId/policies/qosBandwidth/:policyId/detail' }
+        route: { params, path: '/:tenantId/policies/hqosBandwidth/:policyId/detail' }
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()

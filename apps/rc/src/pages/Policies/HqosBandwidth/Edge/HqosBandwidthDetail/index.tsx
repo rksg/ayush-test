@@ -9,7 +9,6 @@ import { TenantLink, useParams }                                                
 import { EdgeScopes }                                                                                                     from '@acx-ui/types'
 import { filterByAccess }                                                                                                 from '@acx-ui/user'
 
-
 import * as UI from '../styledComponents'
 
 import { EdgeClusterTable } from './EdgeClusterTable'
@@ -66,7 +65,7 @@ const EdgeQosBandwidthDetail = () => {
         {
           text: $t({ defaultMessage: 'QoS Bandwidth' }),
           link: getPolicyRoutePath({
-            type: PolicyType.QOS_BANDWIDTH,
+            type: PolicyType.HQOS_BANDWIDTH,
             oper: PolicyOperation.LIST
           })
         }
@@ -75,7 +74,7 @@ const EdgeQosBandwidthDetail = () => {
         // eslint-disable-next-line max-len
         <TenantLink scopeKey={[EdgeScopes.UPDATE]}
           to={getPolicyDetailsLink({
-            type: PolicyType.QOS_BANDWIDTH,
+            type: PolicyType.HQOS_BANDWIDTH,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId!
           })}>
