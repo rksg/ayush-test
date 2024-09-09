@@ -22,6 +22,8 @@ import {
 import {
   CapabilitiesApModel,
   DHCPSaveData,
+  EditPortMessages,
+  isEqualLanPort,
   LanPort,
   useConfigTemplate,
   VenueLanPorts,
@@ -232,10 +234,7 @@ export function LanPorts () {
             type: 'confirm',
             width: 450,
             title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
-            content:
-              $t({ defaultMessage:
-                `Changing the port settings may result in loss of connectivity and communication issues
-                 to your APs. Do you want to continue with these changes?` }),
+            content: $t(EditPortMessages.RESET_PORT_WARNING),
             okText: $t({ defaultMessage: 'Continue' }),
             onOk: async () => {
               try {
@@ -295,23 +294,6 @@ export function LanPorts () {
     }
 
     return false
-  }
-
-  const isEqualLanPort = (currentLan: VenueLanPorts, otherLan: VenueLanPorts) => {
-    const poeProperties = ['poeMode']
-    if (!isEqual(pick(currentLan, poeProperties), pick(otherLan, poeProperties))) {
-      return false
-    }
-
-    const lanPortProperties = ['enabled', 'portId', 'type', 'untagId', 'vlanMembers']
-    for (let i = 0; i < currentLan.lanPorts.length; i++) {
-      if (!isEqual(pick(currentLan.lanPorts[i], lanPortProperties),
-        pick(otherLan.lanPorts[i], lanPortProperties))) {
-        return false
-      }
-    }
-
-    return true
   }
 
   const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
