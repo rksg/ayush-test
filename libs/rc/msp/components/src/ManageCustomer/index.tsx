@@ -580,29 +580,16 @@ export function ManageCustomer () {
 
       const licAssignment = []
       if (isTrialEditMode) {
-        const quantityWifi = _.isString(ecFormData.wifiLicense)
-          ? parseInt(ecFormData.wifiLicense, 10) : ecFormData.wifiLicense
-        licAssignment.push({
-          quantity: quantityWifi,
-          action: AssignActionEnum.ADD,
-          isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
-          deviceType: EntitlementDeviceType.MSP_WIFI
-        })
-        const quantitySwitch = _.isString(ecFormData.switchLicense)
-          ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
-        licAssignment.push({
-          quantity: quantitySwitch,
-          action: AssignActionEnum.ADD,
-          isTrial: false,
-          deviceType: EntitlementDeviceType.MSP_SWITCH
-        })
         if (isDeviceAgnosticEnabled) {
           const quantityApsw = _.isString(ecFormData.apswLicense)
             ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+          const quantityApswTrial = _.isString(ecFormData.apswTrialLicense)
+            ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
           licAssignment.push({
-            quantity: quantityApsw,
+            quantity: serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+              ? quantityApswTrial : quantityApsw,
             action: AssignActionEnum.ADD,
-            isTrial: false,
+            isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
             deviceType: EntitlementDeviceType.MSP_APSW
           })
         }
@@ -792,6 +779,9 @@ export function ManageCustomer () {
     if (startDate) {
       setSubscriptionStartDate(moment(startDate))
       setTrialMode(false)
+      formRef.current?.setFieldsValue({
+        apswTrialLicense: 0
+      })
     }
   }
 
@@ -845,7 +835,7 @@ export function ManageCustomer () {
       ? assignedLicense.filter(en => en.licenseType === deviceType && en.status === 'VALID' &&
         en.isTrial === isTrial)
       : assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
-        en.trialAssignment === isTrial)
+        en.trialAssignment === isTrial && en.ownAssignments === false)
     return license.length > 0 ? license[0].id : 0
 
   }
