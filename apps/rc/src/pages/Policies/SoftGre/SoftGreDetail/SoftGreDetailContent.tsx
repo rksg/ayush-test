@@ -15,15 +15,15 @@ export default function SoftGreDetailContent (props: SoftGreDetailContentProps) 
   const softGreInfo = [
     {
       title: $t({ defaultMessage: 'Description' }),
-      content: data?.description ?? noDataDisplay
+      content: data?.description || noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Primary Gateway' }),
-      content: data?.primaryGatewayAddress ?? noDataDisplay
+      content: data?.primaryGatewayAddress || noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Secondary Gateway' }),
-      content: data?.secondaryGatewayAddress ?? noDataDisplay
+      content: data?.secondaryGatewayAddress || noDataDisplay
     },
     {
       title: $t({ defaultMessage: 'Disassociate Clients' }),
