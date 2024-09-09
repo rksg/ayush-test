@@ -1,27 +1,29 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
+  doProfileDelete,
   useDelSyslogPoliciesMutation,
-  useSyslogPolicyListQuery,
-  useGetVenuesQuery, doProfileDelete
+  useGetVenuesQuery,
+  useSyslogPolicyListQuery
 } from '@acx-ui/rc/services'
 import {
   FacilityEnum,
+  facilityLabelMapping, filterByAccessForServicePolicyMutation,
   FlowLevelEnum,
-  PolicyType,
-  useTableQuery,
+  flowLevelLabelMapping,
   getPolicyDetailsLink,
-  PolicyOperation,
-  SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath, flowLevelLabelMapping, facilityLabelMapping
+  getPolicyRoutePath,
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType,
+  SyslogPolicyListType,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT } from '../constants'
 
@@ -71,14 +73,14 @@ export default function SyslogTable () {
 
   const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -93,6 +95,8 @@ export default function SyslogTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -109,9 +113,12 @@ export default function SyslogTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })} scopeKey={[WifiScopes.CREATE]}>
+          <TenantLink
+            to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.SYSLOG, PolicyOperation.CREATE)}
+          >
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Syslog Server' })}
             </Button>
@@ -126,9 +133,8 @@ export default function SyslogTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          // eslint-disable-next-line max-len
-          rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

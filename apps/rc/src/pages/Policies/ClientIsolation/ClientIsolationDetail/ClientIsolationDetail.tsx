@@ -5,15 +5,15 @@ import { Features, useIsSplitOn }                            from '@acx-ui/featu
 import { useGetClientIsolationQuery }                        from '@acx-ui/rc/services'
 import {
   ClientIsolationSaveData,
-  PolicyOperation,
-  PolicyType,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
+  getPolicyListRoutePath,
   getPolicyRoutePath,
-  getPolicyListRoutePath
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { WifiScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 
@@ -41,13 +41,13 @@ export default function ClientIsolationDetail () {
             link: tablePath
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink to={getPolicyDetailsLink({
             type: PolicyType.CLIENT_ISOLATION,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
           })}
-          scopeKey={[WifiScopes.UPDATE]}>
+          scopeKey={getScopeKeyByPolicy(PolicyType.CLIENT_ISOLATION, PolicyOperation.EDIT)}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

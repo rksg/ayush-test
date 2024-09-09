@@ -143,7 +143,7 @@ describe('dpsk.utils', () => {
       },
       deletePolicyApiInfo: {
         method: 'delete',
-        url: '/dpskServices/:serviceId/policySets/:policySetId',
+        url: '/dpskServices/:serviceId/policySets',
         newApi: true,
         defaultHeaders: {
           'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -228,10 +228,7 @@ describe('dpsk.utils', () => {
         body: JSON.stringify(_.omit(mockProps.queryArgs.payload, 'policySetId'))
       }))
       expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.getDpskService, { serviceId: '987654321' })
-      expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.deletePolicyApiInfo, {
-        serviceId: '987654321',
-        policySetId: 'original'
-      })
+      expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.deletePolicyApiInfo, { serviceId: '987654321' })
       expect(result).toEqual({ data: { response: { id: '987654321' } } })
     })
 

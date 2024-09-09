@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { useState, useEffect, useMemo } from 'react'
 
 import { get, sumBy } from 'lodash'
@@ -20,14 +21,13 @@ import {
   EdgeSdLanCompatibility,
   ApIncompatibleDevice,
   ApIncompatibleFeature,
-  EntityCompatibility
+  EntityCompatibility,
+  VenueSdLanApCompatibility
 } from '@acx-ui/rc/utils'
 
 import { EdgeCompatibilityDrawerProps, EdgeCompatibilityType } from '../Compatibility/EdgeCompatibilityDrawer'
 
-// eslint-disable-next-line max-len
 export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolean = false) => {
-  // eslint-disable-next-line max-len
   const [data, setData] = useState<Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> | undefined>(undefined)
 
   const [getSdLanEdgeCompatibilities] = useLazyGetSdLanEdgeCompatibilitiesQuery()
@@ -40,15 +40,12 @@ export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolea
         getSdLanApCompatibilities({ payload: { filters: { serviceIds: ids } } }).unwrap()
       ])
 
-      // eslint-disable-next-line max-len
       const deviceTypeResultMap: Record<string, EdgeSdLanCompatibility[] | EdgeSdLanApCompatibility[]> = {}
       result.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            // eslint-disable-next-line max-len
             deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = (resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities
           } else {
-            // eslint-disable-next-line max-len
             deviceTypeResultMap[CompatibilityDeviceEnum.AP] = (resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities
           }
         }
@@ -69,16 +66,20 @@ export const useEdgeSdLanCompatibilityData = (serviceIds: string[], skip: boolea
   return data
 }
 
-// eslint-disable-next-line max-len
-const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibility | EdgeSdLanApCompatibility) => {
+const getTotalScopedCount = (clusterCompatibilities: EntityCompatibility[] | VenueSdLanApCompatibility[]) => {
+  return sumBy(clusterCompatibilities as Record<string, unknown>[], 'total')
+}
+export const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibility | EdgeSdLanApCompatibility) => {
   const isEdgePerspective = compatibleData.hasOwnProperty('clusterEdgeCompatibilities')
 
   const resultMapping : Record<string, ApCompatibility> = {}
 
   if (isEdgePerspective) {
     const data = (compatibleData as EdgeSdLanCompatibility).clusterEdgeCompatibilities
-    data.forEach(item => {
-      item.incompatibleFeatures?.forEach(feature => {
+    const totalScoped = getTotalScopedCount(data)
+
+    data.forEach(clusterCompatibilities => {
+      clusterCompatibilities.incompatibleFeatures?.forEach(feature => {
         const featureName = feature.featureRequirement.featureName
 
         if (!resultMapping[featureName]) {
@@ -89,20 +90,22 @@ const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibilit
               requiredFw: feature.featureRequirement.requiredFw
             }],
             incompatible: 0,
-            total: 0
+            // `total` should beyound features
+            total: totalScoped
           } as ApCompatibility
         }
 
-        // eslint-disable-next-line max-len
         resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
-        resultMapping[featureName].total += item.total
-        // eslint-disable-next-line max-len
+
+
         resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
           { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
       })
     })
   } else {
     const data = (compatibleData as EdgeSdLanApCompatibility).venueSdLanApCompatibilities
+    const totalScoped = getTotalScopedCount(data)
+
     data.forEach(item => {
       item.incompatibleFeatures?.forEach(feature => {
         const featureName = feature.featureName
@@ -116,14 +119,11 @@ const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibilit
               supportedModelFamilies: feature.supportedModelFamilies
             }],
             incompatible: 0,
-            total: 0
+            total: totalScoped
           } as ApCompatibility
         }
 
-        // eslint-disable-next-line max-len
         resultMapping[featureName].incompatible += sumBy(feature.incompatibleDevices, (d) => d.count)
-        resultMapping[featureName].total += item.total
-        // eslint-disable-next-line max-len
         resultMapping[featureName].incompatibleFeatures![0].incompatibleDevices = [
           { count: resultMapping[featureName].incompatible } as ApIncompatibleDevice]
       })
@@ -133,7 +133,6 @@ const getFeaturesIncompatibleDetailData = (compatibleData: EdgeSdLanCompatibilit
   return resultMapping
 }
 
-// eslint-disable-next-line max-len
 export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: boolean = false) => {
   const [ isInitializing, setIsInitializing ] = useState(false)
   const [ data, setData ] = useState<Record<string, Record<string, ApCompatibility>>>({})
@@ -154,11 +153,9 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: 
       result.forEach((resultItem, index) => {
         if (resultItem.status === 'fulfilled') {
           if(index === 0) {
-            // eslint-disable-next-line max-len
             const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanCompatibilitiesResponse).compatibilities[0])
             deviceTypeResultMap[CompatibilityDeviceEnum.EDGE] = details
           } else {
-            // eslint-disable-next-line max-len
             const details = getFeaturesIncompatibleDetailData((resultItem.value as EdgeSdLanApCompatibilitiesResponse).compatibilities[0])
             deviceTypeResultMap[CompatibilityDeviceEnum.AP] = details
           }
@@ -184,7 +181,6 @@ export const useEdgeSdLanDetailsCompatibilitiesData = (serviceId: string, skip: 
     [data, isInitializing])
 }
 
-// eslint-disable-next-line max-len
 export const getSdLanDetailsCompatibilitiesDrawerData = (sdLanCompatibilities: Record<string, Record<string, ApCompatibility>>, featureName: string) => {
   const edgeData = get(sdLanCompatibilities, [CompatibilityDeviceEnum.EDGE, featureName])
   const apData = get(sdLanCompatibilities, [CompatibilityDeviceEnum.AP, featureName])
@@ -195,7 +191,6 @@ export const getSdLanDetailsCompatibilitiesDrawerData = (sdLanCompatibilities: R
   return result
 }
 
-// eslint-disable-next-line max-len
 export const useEdgeCompatibilityRequirementData = (featureName: IncompatibilityFeatures, skip: boolean = false) => {
   const [ isInitializing, setIsInitializing ] = useState(false)
   const [ data, setData ] = useState<Record<string, ApCompatibility>>({})
@@ -250,7 +245,6 @@ export const useEdgeCompatibilityRequirementData = (featureName: Incompatibility
     [data, isInitializing])
 }
 
-// eslint-disable-next-line max-len
 export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDrawerProps, 'visible'|'title'| 'onClose'>, skip: boolean = false) => {
   const { data, type = EdgeCompatibilityType.VENUE, featureName, venueId, edgeId } = props
   const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
@@ -271,7 +265,7 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
             ...(edgeId ? { edgeIds: [edgeId] } : undefined)
           } }
         }).unwrap()
-        // eslint-disable-next-line max-len
+
         edgeCompatibilitiesResponse = sdLanToApCompatibilityData(venueEdgeCompatibilities.compatibilities)
       } else if (type === EdgeCompatibilityType.ALONE) {
         const edgeFeatureSets = await getEdgeFeatureSets({
@@ -308,7 +302,6 @@ export const useVenueEdgeCompatibilitiesData = (props: Omit<EdgeCompatibilityDra
     [edgeCompatibilities, isInitializing])
 }
 
-// eslint-disable-next-line max-len
 const sdLanToApCompatibilityData = (data: EntityCompatibility[]): ApCompatibility[] => {
   return data.map(item => ({
     id: item.id,
