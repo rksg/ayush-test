@@ -4,21 +4,26 @@ import { incidentScope } from '@acx-ui/analytics/utils'
 
 import { richTextFormatValues } from '../common/richTextFormatValues'
 import { useIntentContext }     from '../IntentContext'
+import { Intent }               from '../useIntentDetailsQuery'
 
-export function createUseValuesText (config: {
-  intro: MessageDescriptor
-  action: MessageDescriptor
-  reason: MessageDescriptor
-  tradeoff: MessageDescriptor
-  inactive: MessageDescriptor
-}) {
+export function createUseValuesText<ValuesType = unknown> (
+  config: {
+    intro: MessageDescriptor
+    action: MessageDescriptor
+    reason: MessageDescriptor
+    tradeoff: MessageDescriptor
+    inactive: MessageDescriptor
+  },
+  getValuesFn?: (intent: Intent) => ValuesType
+) {
   return function useValuesText () {
     const { intent, state } = useIntentContext()
     const values = {
       ...richTextFormatValues,
       currentValue: intent.currentValue,
       recommendedValue: intent.recommendedValue,
-      scope: incidentScope(intent)
+      scope: incidentScope(intent),
+      ...(getValuesFn && getValuesFn(intent))
     }
     const summary = state === 'no-data' ? config.inactive : config.action
     return {
