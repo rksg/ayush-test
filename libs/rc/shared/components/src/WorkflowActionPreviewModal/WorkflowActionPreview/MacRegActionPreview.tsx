@@ -1,0 +1,145 @@
+import { useState, useEffect, useCallback } from 'react'
+
+import { Form, Input, List, Row, Space, Typography } from 'antd'
+import { defineMessage, useIntl }                    from 'react-intl'
+
+import { useLazyGetMacRegListQuery,useLazyNetworkListQuery } from '@acx-ui/rc/services'
+import { GenericActionPreviewProps, MacRegAction }           from '@acx-ui/rc/utils'
+
+import { ContentPreview } from './ContentPreview'
+interface MacRegOnboardedVariables {
+  macAddress?: string
+  networks : string[]
+}
+
+function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
+  const { $t } = useIntl()
+  const { Text, Link } = Typography
+  const { onboard } = props
+  const networkList :string[] = onboard?.networks
+  const [selectedSsid, setSelectedSsid] = useState<string>('')
+  const macAddress = onboard?.macAddress
+  useEffect(() => {
+    if (networkList.length === 1) {
+      setSelectedSsid(networkList[0])
+    }
+  }, [networkList])
+  return (
+
+    <Space direction='vertical' size='large'>
+      <br/>
+      <Text>
+        {$t({ defaultMessage: 'The device with MAC address ' })+' '}
+        <Text strong data-testid='macAdd'>{macAddress} </Text>
+        {$t({ defaultMessage: ' is now allowed to connect to the following network:' })}
+      </Text>
+      {selectedSsid &&
+          <Space direction='vertical' size='large' align='center'>
+            <Link onClick={() => setSelectedSsid('')}> {selectedSsid}</Link>
+          </Space>
+      }
+      {(networkList.length > 1 && selectedSsid === '') &&
+          <List bordered
+            dataSource={networkList}
+            renderItem={
+              (ssid) => (
+                (ssid && ssid.trim().length > 0) && <List.Item>
+                  <Row justify='space-between' style={{ width: '100%' }}>
+                    <Space align='baseline'>
+                      <Link onClick={() => setSelectedSsid(ssid)}>{ssid}</Link>
+                    </Space>
+                  </Row>
+                </List.Item>
+              )} />
+      }
+      <br/>
+    </Space>
+  )
+}
+
+function MacRegActionInputPreview (){
+  const { $t } = useIntl()
+  const macRegexString = {
+    name: 'macAddress',
+    // eslint-disable-next-line max-len
+    regex: new RegExp(/^(?:[0-9A-Fa-f]{2}([-:]?))(?:[0-9A-Fa-f]{2}\1){4}[0-9A-Fa-f]{2}|([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4}$/),
+    required: true,
+    errorMessage: defineMessage({ defaultMessage: 'Please enter a valid MAC address' })
+  }
+  return (
+    <Space direction='vertical' align='center'>
+      <br/>
+      <br/>
+      <Form layout='vertical' style={{ width: '250px' }}>
+        <Form.Item
+          label={$t({ defaultMessage: 'Enter the MAC address of your device here' })}
+          name={'macAddress'}
+          rules={[{
+            pattern: macRegexString.regex,
+            message: $t(macRegexString.errorMessage),
+            required: macRegexString.required
+          }]}
+        >
+          <Input />
+        </Form.Item>
+      </Form>
+    </Space>
+  )
+}
+
+
+
+export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegAction>) {
+  const { data, ...rest } = props
+  const [page, setPage] = useState('macInputPreview')
+  //const [macAddress] = useState<string>('')
+  const macAddress = Form.useWatch<string>('macAddress')
+  const [ getMacRegPool] = useLazyGetMacRegListQuery()
+  const [ getNetworkList, networkListResponse ] = useLazyNetworkListQuery({
+    selectFromResult: ({ data }) => {
+      return data?.data.map(network => network.ssid) ?? []
+    }
+  })
+  const loadMacRegNetworks = useCallback((macRegListId: string) => {
+    if (!macRegListId) {
+      return
+    }
+    getMacRegPool({
+      params: { policyId: macRegListId }
+    }).then(response => {
+      if (response.data?.networkIds && response.data?.networkIds.length > 0) {
+        getNetworkList({
+          payload: {
+            fields: ['name', 'ssid']
+            ,filters: { id: response.data.networkIds }
+          }
+        })
+      }
+    })
+  }, [getMacRegPool, getNetworkList])
+
+
+  useEffect(() => {
+    if (data?.macRegListId) {
+      loadMacRegNetworks(data?.macRegListId)
+    }
+  }, [data?.macRegListId, loadMacRegNetworks])
+
+  const macInputPreview = <MacRegActionInputPreview />
+
+  const onBoardPreview= <MacRegOnboardedPreview
+    onboard={{ macAddress: macAddress, networks: networkListResponse }}/>
+
+
+  return <ContentPreview
+
+    body={page === 'macInputPreview' ? macInputPreview : onBoardPreview}
+    onNext={() => {
+      setPage('onBoardPreview')
+    }}
+    onBack={() => {
+      setPage('macInputPreview')
+    }}
+    {...rest}
+  />
+}
