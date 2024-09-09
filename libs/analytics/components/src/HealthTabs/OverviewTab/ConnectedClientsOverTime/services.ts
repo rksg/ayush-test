@@ -41,8 +41,7 @@ export const api = dataApi.injectEndpoints({
               timeSeries(granularity: $granularity) {
                 time
                 wirelessClientsCount: connectedClientCount
-                # TODO: Uncomment this when wired clients are available
-                # wiredClientsCount: switchConnectedClientCount
+                wiredClientsCount: switchConnectedClientCount
               }
             }
           }

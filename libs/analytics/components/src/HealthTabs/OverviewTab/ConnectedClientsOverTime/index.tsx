@@ -23,9 +23,8 @@ export function ConnectedClientsOverTime ({
   const chartColors = qualitativeColorSet()
 
   const seriesMapping = [
-    { key: 'wirelessClientsCount', name: $t({ defaultMessage: 'Wireless Clients' }) }
-    // TODO: Uncomment this when wired clients are available
-    //{ key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) }
+    { key: 'wirelessClientsCount', name: $t({ defaultMessage: 'Wireless Clients' }) },
+    { key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) }
   ] as unknown as Array<{ key: Key, name: string }>
 
   const queryResults = useHealthConnectedClientsOverTimeQuery(filters, {
