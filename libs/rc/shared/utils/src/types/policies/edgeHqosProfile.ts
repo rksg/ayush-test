@@ -2,7 +2,7 @@ import { EdgeAlarmSummary }      from '../..'
 import {
   EdgeHqosTrafficClass,
   EdgeHqosTrafficClassPriority
-} from '../../models/EdgeQosProfilesEnum'
+} from '../../models/EdgeHqosProfilesEnum'
 
 export interface EdgeHqosConfig {
     id?: string

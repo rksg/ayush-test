@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { EdgeHqosTrafficClass, EdgeHqosTrafficClassPriority } from '../../models/EdgeQosProfilesEnum'
+import { EdgeHqosTrafficClass, EdgeHqosTrafficClassPriority } from '../../models/EdgeHqosProfilesEnum'
 
 export const trafficClassToDisplay = (trafficClass?: string | EdgeHqosTrafficClass) => {
   const trafficClassEnum = EdgeHqosTrafficClass[trafficClass as keyof typeof EdgeHqosTrafficClass]
