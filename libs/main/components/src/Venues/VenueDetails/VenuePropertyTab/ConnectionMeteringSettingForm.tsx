@@ -11,9 +11,9 @@ import { StepsForm, Button,  Modal, ModalType, Subtitle, Tooltip, DatePicker } f
 import { ConnectionMeteringForm, ConnectionMeteringFormMode }                  from '@acx-ui/rc/components'
 import {
   BillingCycleType,
-  ConnectionMetering,
-  hasCloudpathAccess
+  ConnectionMetering
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 const Info = styled(Typography.Text)`
   overflow-wrap: anywhere;
@@ -166,7 +166,7 @@ export function ConnectionMeteringSettingForm (
             </Form.Item>
           </Col>
           <Col span={3}>{
-            hasCloudpathAccess() &&[
+            hasCrossVenuesPermission({ needGlobalPermission: true }) &&[
               <Button
                 style={{ marginLeft: '5px', height: '100%' }}
                 type={'link'}

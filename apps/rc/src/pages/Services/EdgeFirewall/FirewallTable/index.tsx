@@ -27,7 +27,9 @@ import {
   useTableQuery,
   DdosAttackType,
   getDDoSAttackTypeString,
-  getACLDirectionString
+  getACLDirectionString,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -35,7 +37,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 const edgeOptionsDefaultPayload = {
   fields: ['name', 'serialNumber'],
@@ -232,6 +233,7 @@ const FirewallTable = () => {
 
   const rowActions: TableProps<EdgeFirewallViewData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.EDIT),
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -248,6 +250,7 @@ const FirewallTable = () => {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       disabled: isDeleteBtnDisable,
       tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
@@ -277,6 +280,8 @@ const FirewallTable = () => {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -291,12 +296,13 @@ const FirewallTable = () => {
             link: getServiceListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getServiceRoutePath({
               type: ServiceType.EDGE_FIREWALL,
               oper: ServiceOperation.CREATE
             })}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.CREATE)}
           >
             <Button type='primary'>
               {$t({ defaultMessage: 'Add Firewall Service' })}
@@ -314,8 +320,8 @@ const FirewallTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

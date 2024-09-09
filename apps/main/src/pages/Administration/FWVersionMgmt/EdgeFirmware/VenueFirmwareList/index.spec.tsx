@@ -3,6 +3,7 @@ import { Modal, ModalProps } from 'antd'
 import { rest }              from 'msw'
 
 import { useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { EdgeChangeScheduleDialogProps }               from '@acx-ui/rc/components'
 import { firmwareApi }                                 from '@acx-ui/rc/services'
 import { FirmwareUrlsInfo, SwitchFirmwareFixtures }    from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
@@ -10,17 +11,14 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { availableVersions, preferenceData, venueFirmwareList } from '../__tests__/fixtures'
 
-import { ChangeScheduleDialogProps } from './ChangeScheduleDialog'
-
 import { VenueFirmwareList } from '.'
-
 
 const MockModal = (props: ModalProps) => <Modal {...props} />
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
-jest.mock('./ChangeScheduleDialog', () => {
-  const oriCompoents = jest.requireActual('./ChangeScheduleDialog')
-  const ChangeScheduleDialog = (props: ChangeScheduleDialogProps) => <MockModal
+jest.mock('@acx-ui/rc/components', () => {
+  const oriCompoents = jest.requireActual('@acx-ui/rc/components')
+  const EdgeChangeScheduleDialog = (props: EdgeChangeScheduleDialogProps) => <MockModal
     okText='Save'
     onOk={() => {
       props.onSubmit({})
@@ -29,7 +27,7 @@ jest.mock('./ChangeScheduleDialog', () => {
     onCancel={props.onCancel}
     visible={props.visible}
   />
-  return { ...oriCompoents, ChangeScheduleDialog }
+  return { ...oriCompoents, EdgeChangeScheduleDialog }
 })
 
 const mockedUpdateNow = jest.fn()

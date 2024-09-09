@@ -12,7 +12,8 @@ import {
   useLazySearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
-  getPolicyDetailsLink, hasCloudpathAccess,
+  filterByAccessForServicePolicyMutation,
+  getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType,
   useAdaptivePolicyBreadcrumb
@@ -71,19 +72,19 @@ export default function AdaptivePolicySetDetail () {
       <PageHeader
         title={policySetData?.name || ''}
         breadcrumb={breadcrumb}
-        extra={hasCloudpathAccess() && [
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={
               getPolicyDetailsLink({
                 type: PolicyType.ADAPTIVE_POLICY_SET,
                 oper: PolicyOperation.EDIT,
                 policyId: policyId as string
-              })
-            }
+              })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ADAPTIVE_POLICY_SET, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <Card>

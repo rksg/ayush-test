@@ -87,7 +87,7 @@ describe('ApCompatibilityFeature', () => {
         onClick={jest.fn()}
       />)
       screen.getByText('Compatibility Checking')
-      expect(screen.getByTestId('Unknown')).toBeVisible()
+      expect(screen.getByTestId('InProgress')).toBeVisible()
     })
   })
 })
