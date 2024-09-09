@@ -15,6 +15,7 @@ export enum WorkflowDetailsTabKey {
 export enum PolicyOperation {
   CREATE,
   EDIT,
+  DELETE,
   DETAIL,
   LIST
 }
@@ -34,7 +35,8 @@ const operationPathMapping: Record<PolicyOperation, string> = {
   [PolicyOperation.CREATE]: 'create',
   [PolicyOperation.EDIT]: ':policyId/edit',
   [PolicyOperation.DETAIL]: ':policyId/detail',
-  [PolicyOperation.LIST]: 'list'
+  [PolicyOperation.LIST]: 'list',
+  [PolicyOperation.DELETE]: ''
 }
 
 export const policyTypePathMapping: Record<PolicyType, string> = {

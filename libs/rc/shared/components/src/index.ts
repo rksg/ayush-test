@@ -227,7 +227,6 @@ export * from './NetworkTunnelActionModal'
 export { showSdLanGuestFwdConflictModal } from './EdgeSdLan/SdLanGuestFwdConflictModal'
 export {
   ApCompatibilityType,
-  ApCompatibilityQueryTypes,
   InCompatibilityFeatures,
   retrievedCompatibilitiesOptions,
   ApCompatibilityFeature,

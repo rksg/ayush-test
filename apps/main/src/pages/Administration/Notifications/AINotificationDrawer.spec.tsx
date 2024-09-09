@@ -32,6 +32,7 @@ jest.mock('@acx-ui/user', () => ({
 }))
 
 const components = require('@acx-ui/components')
+const services = require('@acx-ui/rc/services')
 jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
@@ -455,5 +456,40 @@ describe('IncidentNotificationDrawer', () => {
         })
     })
     expect(components.showToast).toHaveBeenCalledTimes(2)
+  })
+  it('incorrect json tenant details data should have default preferences', async () => {
+    const incorrectTenantDetails = { subscribes: '{\"DEVICE_EDGE_FIRMWARE\":false,,,}' }
+    services.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: incorrectTenantDetails }
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const mockedPref = {
+      incident: {
+        P1: ['email']
+      },
+      configRecommendation: {
+        aiOps: ['email']
+      }
+    }
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
+      data: mockedPref
+    }, true)
+    render(<MockDrawer />, { wrapper: Provider })
+    const drawerButton = screen.getByRole('button', { name: /open me/ })
+    fireEvent.click(drawerButton)
+    expect(await screen.findByText('Notifications Preferences')).toBeVisible()
+    await waitFor(() => {
+      expect(screen.getAllByRole('checkbox')).toHaveLength(9)
+    })
+
+    // Assert that preferences are default checked
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'API Changes' })).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'AP Firmware' })).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'Switch Firmware' })).toBeChecked() })
+    await waitFor(() => {
+      expect(screen.getByRole('checkbox', { name: 'SmartEdge Firmware' })).toBeChecked() })
   })
 })

@@ -33,6 +33,8 @@ import {
   FILTER,
   SEARCH,
   EdgeMvSdLanViewData,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   defaultSort
 } from '@acx-ui/rc/utils'
 import {
@@ -41,8 +43,6 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { CompatibilityCheck } from './CompatibilityCheck'
 
@@ -279,7 +279,7 @@ const EdgeMvSdLanTable = () => {
 
   const rowActions: TableProps<EdgeMvSdLanViewData>['rowActions'] = [
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
@@ -296,7 +296,7 @@ const EdgeMvSdLanTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.DELETE],
+      scopeKey: getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -326,9 +326,7 @@ const EdgeMvSdLanTable = () => {
     }, extra)
   }
 
-  const isSelectionVisible = hasPermission({
-    scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
-  })
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -344,9 +342,9 @@ const EdgeMvSdLanTable = () => {
             link: getServiceListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[EdgeScopes.CREATE]}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.CREATE)}
             to={getServiceRoutePath({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE
@@ -368,8 +366,8 @@ const EdgeMvSdLanTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={isSelectionVisible && { type: 'checkbox' }}
-          rowActions={filterByAccess(rowActions)}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={handleTableChange}

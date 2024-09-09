@@ -13,7 +13,7 @@ import {
   ClientIsolationUrls,
   ConnectionMeteringUrls,
   EdgeQosProfilesUrls,
-  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
   getSelectPolicyRoutePath,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
@@ -27,7 +27,8 @@ import {
 import {
   mockedClientIsolationQueryData,
   mockedRogueApPoliciesList,
-  mockedVlanPoolProfilesQueryData
+  mockedVlanPoolProfilesQueryData,
+  mockSoftGreTable
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -119,7 +120,10 @@ describe('MyPolicies', () => {
           totalCount: 1,
           data: []
         }))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 

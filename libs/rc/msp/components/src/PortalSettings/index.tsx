@@ -797,7 +797,7 @@ export function PortalSettings () {
   return (
     <>
       <PageHeader
-        title={intl.$t({ defaultMessage: 'Settings' })}
+        title={intl.$t({ defaultMessage: 'Portal Settings' })}
       />
       {mspLabel &&
         <StepsForm

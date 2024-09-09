@@ -9,7 +9,8 @@ const mockedSocket = {
   close: jest.fn()
 }
 
-jest.mock('./initialSocket', () => ({
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
   getIndependentSocket: () => mockedSocket
 }))
 
