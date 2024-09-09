@@ -6,7 +6,7 @@ import {
   TableResult,
   ApGroupViewModel,
   onSocketActivityChanged,
-  onActivityMessageReceived
+  onActivityMessageReceived, ConfigTemplateUrlsInfo, CommonResult
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -70,6 +70,27 @@ export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [
         { type: 'ApGroupTemplate', id: 'LIST' }
       ]
+    }),
+    activateVenueApGroupTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.activateVenueApGroupRbac,
+        ConfigTemplateUrlsInfo.activateVenueApGroupRbac
+      ),
+      invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
+    }),
+    deactivateVenueApGroupTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac,
+        ConfigTemplateUrlsInfo.deactivateVenueApGroupRbac
+      ),
+      invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
+    }),
+    updateVenueApGroupTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.updateVenueApGroupRbac,
+        ConfigTemplateUrlsInfo.updateVenueApGroupRbac
+      ),
+      invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
     })
   })
 })
@@ -82,5 +103,8 @@ export const {
   useLazyGetApGroupsTemplateListQuery,
   useAddApGroupTemplateMutation,
   useUpdateApGroupTemplateMutation,
-  useDeleteApGroupsTemplateMutation
+  useDeleteApGroupsTemplateMutation,
+  useActivateVenueApGroupTemplateMutation,
+  useDeactivateVenueApGroupTemplateMutation,
+  useUpdateVenueApGroupTemplateMutation
 } = apGroupConfigTemplateApi
