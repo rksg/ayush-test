@@ -94,17 +94,9 @@ describe('IntentAIDetails', () => {
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
     await doTest(codes, mockedIntentCRRM)
   })
+  const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
 
   describe('should render for AIOperations', () => {
-    const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
-    const renderAIOperations = async (code: string) => {
-      const { unmount } = render(<IntentAIDetails />, {
-        route: { params: { code } },
-        wrapper: Provider
-      })
-      expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
-      unmount()
-    }
     it('i-zonefirmware-upgrade', async () => {
       const intent = mockedIZoneFirmwareUpgrade
       mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
