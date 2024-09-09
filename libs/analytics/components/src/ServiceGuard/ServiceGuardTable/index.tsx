@@ -255,7 +255,10 @@ export function ServiceGuardTable () {
         dataSource={queryResults.data}
         rowSelection={
           hasCrossVenuesPermission() &&
-          hasPermission({ permission: 'WRITE_SERVICE_VALIDATION' }) && { type: 'radio' }
+          hasPermission({
+            permission: 'WRITE_SERVICE_VALIDATION',
+            scopes: [WifiScopes.UPDATE]
+          }) && { type: 'radio' }
         }
         rowActions={filterByAccess(rowActions)}
         rowKey='id'
