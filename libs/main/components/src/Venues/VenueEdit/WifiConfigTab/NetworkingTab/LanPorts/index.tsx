@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import { isEqual, clone, pick }                          from 'lodash'
+import { isEqual, clone }                                from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
 import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
