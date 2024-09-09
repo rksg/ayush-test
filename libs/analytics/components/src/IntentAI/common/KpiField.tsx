@@ -17,7 +17,7 @@ export const KpiField: React.FC<{
   return <Form.Item label={$t(kpi.label)}>
     <Space align='center' size={5}>
       <span>{isDataRetained ? kpi.value : kpi.footer}</span>
-      {kpi.delta &&<TrendPill
+      {kpi.delta && <TrendPill
         value={kpi.delta.value}
         trend={kpi.delta.trend}
       />}
