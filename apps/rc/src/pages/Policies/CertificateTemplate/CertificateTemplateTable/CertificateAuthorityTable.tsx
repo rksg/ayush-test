@@ -5,11 +5,10 @@ import { Modal as AntModal }    from 'antd'
 import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
-import { Loader, TableProps, Table, Button, showActionModal }                                                                                    from '@acx-ui/components'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                         from '@acx-ui/rc/components'
-import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
-import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, hasCloudpathAccess, useTableQuery }                              from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                                                                        from '@acx-ui/user'
+import { Loader, TableProps, Table, Button, showActionModal }                                                                                                                             from '@acx-ui/components'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                                                                  from '@acx-ui/rc/components'
+import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery }                                          from '@acx-ui/rc/services'
+import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
 
 import { deleteDescription } from '../contentsMap'
 
@@ -172,18 +171,21 @@ export default function CertificateAuthorityTable () {
 
   const rowActions: TableProps<CertificateAuthority>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([selectedRow]) => {
         showEditModal(selectedRow)
       }
     },
     {
+      scopeKey: getScopeKeyByPolicy(PolicyType.CERTIFICATE_TEMPLATE, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showDeleteModal(selectedRow, clearSelection)
       }
     }
   ]
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -194,8 +196,8 @@ export default function CertificateAuthorityTable () {
           dataSource={tableQuery?.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasCloudpathAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           rowKey='id'
           searchableWidth={430}
           enableApiFilter={true}

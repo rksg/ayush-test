@@ -9,12 +9,13 @@ import {
   EdgeFirewallViewData,
   ServiceOperation,
   ServiceType,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
 
 import { EdgeTable } from './EdgeTable'
 import * as UI       from './styledComponents'
@@ -90,12 +91,15 @@ const FirewallDetail = () => {
             })
           }
         ]}
-        extra={filterByAccess([
-          <TenantLink to={getServiceDetailsLink({
-            type: ServiceType.EDGE_FIREWALL,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId!
-          })}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceDetailsLink({
+              type: ServiceType.EDGE_FIREWALL,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId!
+            })}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_FIREWALL, ServiceOperation.EDIT)}
+          >
             <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

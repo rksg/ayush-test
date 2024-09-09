@@ -26,7 +26,8 @@ import {
   createHttpRequest,
   useLocaleContext,
   LangKey,
-  DEFAULT_SYS_LANG
+  DEFAULT_SYS_LANG,
+  initializeSockets
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -154,6 +155,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
+
+  initializeSockets()
 
   root.render(
     <React.StrictMode>
