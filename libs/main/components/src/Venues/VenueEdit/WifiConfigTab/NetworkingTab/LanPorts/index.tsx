@@ -212,6 +212,7 @@ export function LanPorts () {
     const selected = getSelectedModelData(data, apModel)
     setLanPortData(data)
     setLanPortOrinData(data)
+    setResetModels([])
 
     form?.setFieldsValue({
       ...selected,
@@ -239,6 +240,7 @@ export function LanPorts () {
             onOk: async () => {
               try {
                 processUpdateVenueLanPorts(payload)
+                setResetModels([])
               } catch (error) {
                 console.log(error) // eslint-disable-line no-console
               }
