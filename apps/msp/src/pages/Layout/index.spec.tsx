@@ -247,7 +247,7 @@ describe('Layout', () => {
     expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Device Inventory' })).toBeNull()
     expect(screen.queryByRole('menuitem', { name: 'Subscriptions' })).toBeNull()
-    expect(screen.queryByRole('menuitem', { name: 'Settings' })).toBeNull()
+    expect(screen.queryByRole('menuitem', { name: 'Portal Settings' })).toBeNull()
   })
 
   it('should hide menu options in case of LSP', async () => {
@@ -304,7 +304,7 @@ describe('Layout', () => {
     expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
-    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Portal Settings' })).toBeVisible()
   })
   it('should render correctly if no data', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -321,7 +321,7 @@ describe('Layout', () => {
     expect(screen.getByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
-    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Portal Settings' })).toBeVisible()
   })
   it('should navigate correctly if guest manager', async () => {
     user.hasRoles = jest.fn().mockImplementation(() => {
@@ -376,7 +376,7 @@ describe('Layout', () => {
     expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()
-    expect(screen.getByRole('menuitem', { name: 'Settings' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Portal Settings' })).toBeVisible()
   })
 
   it('should render config template layout for MSP-Non-Var users', async () => {

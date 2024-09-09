@@ -1,16 +1,16 @@
-
-
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, Card, Loader, PageHeader,  GridRow, GridCol, SummaryCard } from '@acx-ui/components'
 import { useGetConnectionMeteringByIdQuery }                                from '@acx-ui/rc/services'
 import {
-  getPolicyListRoutePath,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  PolicyType,
-  PolicyOperation, getPolicyRoutePath,
-  hasCloudpathAccess
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
@@ -60,16 +60,21 @@ export default function ConnectionMeteringDetail () {
             })
           }
         ]}
-        extra={hasCloudpathAccess() && [
-          <TenantLink to={getPolicyDetailsLink({
-            policyId: policyId!,
-            type: PolicyType.CONNECTION_METERING,
-            oper: PolicyOperation.EDIT
-          })}
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            scopeKey={getScopeKeyByPolicy(
+              PolicyType.CONNECTION_METERING,
+              PolicyOperation.EDIT
+            )}
+            to={getPolicyDetailsLink({
+              policyId: policyId!,
+              type: PolicyType.CONNECTION_METERING,
+              oper: PolicyOperation.EDIT
+            })}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>

@@ -1,18 +1,16 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery } from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery }      from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
   PolicyType,
   PolicyOperation,
   useConfigTemplateQueryFnSwitcher,
-  usePolicyListBreadcrumb
-}   from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { WifiScopes }     from '@acx-ui/types'
-import { filterByAccess } from '@acx-ui/user'
+  usePolicyListBreadcrumb, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
 
@@ -35,9 +33,9 @@ export function VLANPoolDetail () {
       <PageHeader
         title={queryResults.data?.name}
         breadcrumb={breadcrumb}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <PolicyConfigTemplateLinkSwitcher
-            scopeKey={[WifiScopes.UPDATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT)}
             type={PolicyType.VLAN_POOL}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

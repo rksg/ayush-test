@@ -17,11 +17,11 @@ import {
   getServiceListRoutePath,
   useTableQuery,
   ResidentPortal,
-  getServiceDetailsLink
+  getServiceDetailsLink,
+  getScopeKeyByService,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                   from '@acx-ui/types'
-import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 export default function ResidentPortalTable () {
   const intl = useIntl()
@@ -41,7 +41,7 @@ export default function ResidentPortalTable () {
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
       visible: ([selectedRow]) => selectedRow && !selectedRow.venueCount,
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.DELETE),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -62,7 +62,7 @@ export default function ResidentPortalTable () {
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.EDIT),
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -118,6 +118,8 @@ export default function ResidentPortalTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -131,13 +133,14 @@ export default function ResidentPortalTable () {
             text: intl.$t({ defaultMessage: 'My Services' }),
             link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={
-            getServiceRoutePath({
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceRoutePath({
               type: ServiceType.RESIDENT_PORTAL,
-              oper: ServiceOperation.CREATE })}
-          scopeKey={[WifiScopes.CREATE]}>
+              oper: ServiceOperation.CREATE })
+            }
+            scopeKey={getScopeKeyByService(ServiceType.RESIDENT_PORTAL, ServiceOperation.CREATE)}
+          >
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add Resident Portal' })}</Button>
           </TenantLink>
         ])}
@@ -149,8 +152,8 @@ export default function ResidentPortalTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasPermission() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
         />
       </Loader>
     </>
