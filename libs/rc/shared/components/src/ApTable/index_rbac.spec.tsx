@@ -316,9 +316,7 @@ describe('Aps', () => {
   })
 
   it('should import correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.AP_GPS || ff === Features.WIFI_RBAC_API
-    })
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.WIFI_RBAC_API)
     const importAPSpy = jest.fn()
 
     mockServer.use(

@@ -562,12 +562,9 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
-  const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const { acx_account_vertical } = getJwtTokenPayload()
   const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY ? AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
-  const importTemplateLink = apGpsFlag ?
-    `assets/templates/${isHospitality}aps_import_template_with_gps.csv` :
-    `assets/templates/${isHospitality}aps_import_template.csv`
+  const importTemplateLink = `assets/templates/${isHospitality}aps_import_template_with_gps.csv`
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
