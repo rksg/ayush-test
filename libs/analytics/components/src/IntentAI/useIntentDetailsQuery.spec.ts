@@ -75,6 +75,18 @@ describe('getGraphKPIs', () => {
     expect(result.delta).toEqual(undefined)
     expect(result.footer).toEqual('')
   })
+  it('handle kpi with data, without compareData', () => {
+    const [ result ] = getGraphKPIs({
+      ...mockedIntentCRRM,
+      kpi_number_of_interfering_links: {
+        data: { timestamp: null, result: 2 },
+        compareData: null
+      }
+    }, kpis)
+    expect(result.value).toEqual('2')
+    expect(result.delta).toEqual(undefined)
+    expect(result.footer).toEqual('')
+  })
   it('handle na/paused', () => {
     const [ result ] = getGraphKPIs({
       ...mockedIntentCRRM,

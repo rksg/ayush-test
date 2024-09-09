@@ -151,17 +151,19 @@ export function getGraphKPIs (
       ret.delta = { trend: TrendTypeEnum.None, value: '0%' }
     } else {
       const result = getKPIData(intent, kpi)
-      const hasValue = result.data && result.data?.result !== null
-      const valueAccessor = kpi.valueAccessor || ((value) => value[0])
+      ret.value = kpi.format(_.get(result, ['data', 'result'], null))
 
-      if (hasValue) {
-        ret.value = kpi.format(result.data?.result)
-        ret.delta = kpiDelta(
-          valueAccessor(_.castArray(result.compareData?.result)),
-          valueAccessor(_.castArray(result.data?.result)),
-          kpi.deltaSign,
-          kpi.valueFormatter || kpi.format
-        ) as { value: string; trend: TrendTypeEnum }
+      const valueAccessor = kpi.valueAccessor || ((value) => value[0])
+      const values = [
+        valueAccessor(_.castArray(result.compareData?.result)),
+        valueAccessor(_.castArray(result.data?.result))
+      ]
+      if (values.every(Number.isFinite)) {
+        const format = kpi.valueFormatter || kpi.format
+        ret.delta = kpiDelta(values[0], values[1], kpi.deltaSign, format) as {
+          value: string
+          trend: TrendTypeEnum
+        }
       }
     }
 
