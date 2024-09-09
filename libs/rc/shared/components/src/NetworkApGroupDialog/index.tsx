@@ -13,8 +13,9 @@ import {
   Space,
   Spin
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { useWatch } from 'antd/lib/form/Form'
+import _            from 'lodash'
+import { useIntl }  from 'react-intl'
 
 import {
   Modal,
@@ -84,6 +85,37 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
   tenantId?: string
 }
 
+type RadioSelectProps = SelectProps & {
+  isSupport6G: boolean
+}
+
+const RadioSelect = (props: RadioSelectProps) => {
+  const { $t } = useIntl()
+  const { isSupport6G, ...otherProps } = props
+  const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
+  if (!isSupport6G) {
+    _.remove(otherProps.value, (v) => v === RadioTypeEnum._6_GHz)
+  }
+  return (
+    <Select
+      {...otherProps}
+      mode='multiple'
+      showArrow
+      style={{ width: '220px' }}
+    >
+      <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
+      <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
+      <Select.Option
+        value={RadioTypeEnum._6_GHz}
+        disabled={!isSupport6G}
+        title={!isSupport6G ? disabledBandTooltip : ''}
+      >
+        {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
+      </Select.Option>
+    </Select>
+  )
+}
+
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
 
@@ -92,11 +124,14 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
+  const isSupport6G = IsNetworkSupport6g(network)
 
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
 
   const [form] = Form.useForm()
+
+  const selectionType = useWatch('selectionType', form)
 
   const open = !!props.visible
 
@@ -186,31 +221,6 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     }
   },[instanceListResult])
 
-  const RadioSelect = (props: SelectProps) => {
-    const isSupport6G = IsNetworkSupport6g(network)
-    const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
-    if (!isSupport6G) {
-      _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
-    }
-    return (
-      <Select
-        {...props}
-        mode='multiple'
-        showArrow
-        style={{ width: '220px' }}
-      >
-        <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
-        <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
-        <Select.Option
-          value={RadioTypeEnum._6_GHz}
-          disabled={!isSupport6G}
-          title={!isSupport6G ? disabledBandTooltip : ''}
-        >
-          {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
-        </Select.Option>
-      </Select>
-    )
-  }
 
   const ApGroupItem = ({ apgroup, name }: { apgroup: NetworkApGroup, name: number }) => {
     const apGroupName = apgroup?.isDefault ? $t({ defaultMessage: 'APs not assigned to any group' }) : apgroup?.apGroupName
@@ -301,7 +311,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 }
               }
             ]}>
-            { selected ? <RadioSelect /> : <Input type='hidden' /> }
+            { selected ? <RadioSelect isSupport6G={isSupport6G}/> : <Input type='hidden' /> }
           </UI.FormItemRounded>
         </Col>
       </>
@@ -371,24 +381,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
                 <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
               </Radio>
-              <Form.Item noStyle
-                shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
-                { ({ getFieldValue }) => getFieldValue('selectionType') === 0 && (
-                  <UI.FormItemRounded>
-                    <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
-                      {defaultVlanString.vlanText}
-                    </Form.Item>
-                    <Form.Item name='allApGroupsRadioTypes'
-                      label={$t({ defaultMessage: 'Radio Band' })}
-                      rules={[{ required: true },
-                        {
-                          validator: (_, value) => validateRadioBandForDsaeNetwork(value)
-                        }]}
-                      labelCol={{ span: 5 }}>
-                      <RadioSelect />
-                    </Form.Item>
-                  </UI.FormItemRounded>
-                )}
+              <Form.Item noStyle>
+                { selectionType === 0 && <UI.FormItemRounded>
+                  <Form.Item label={$t({ defaultMessage: 'VLAN' })} labelCol={{ span: 5 }}>
+                    {defaultVlanString.vlanText}
+                  </Form.Item>
+                  <Form.Item name='allApGroupsRadioTypes'
+                    label={$t({ defaultMessage: 'Radio Band' })}
+                    rules={[{ required: true },
+                      {
+                        validator: (_, value) => validateRadioBandForDsaeNetwork(value)
+                      }]}
+                    labelCol={{ span: 5 }}>
+                    <RadioSelect isSupport6G={isSupport6G}/>
+                  </Form.Item>
+                </UI.FormItemRounded>}
               </Form.Item>
 
               <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
@@ -396,24 +403,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
               </Radio>
               <Form.List name='apgroups'>
                 { (fields) => (
-                  <Form.Item noStyle
-                    shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>
-                    { ({ getFieldValue }) => getFieldValue('selectionType') === 1 && (
-                      <Row gutter={[4, 0]} style={{ width: '750px' }}>
-                        <Col span={8}></Col>
-                        <Col span={8}>
-                          <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
-                        </Col>
-                        <Col span={8}>
-                          <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
-                        </Col>
-                        { fields.map((field, index) => (
-                          <Form.Item key={field.key} noStyle>
-                            <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
-                          </Form.Item>
-                        ))}
-                      </Row>
-                    )}
+                  <Form.Item noStyle>
+                    { selectionType === 1 && <Row gutter={[4, 0]} style={{ width: '750px' }}>
+                      <Col span={8}></Col>
+                      <Col span={8}>
+                        <UI.VerticalLabel>{$t({ defaultMessage: 'VLAN' })}</UI.VerticalLabel>
+                      </Col>
+                      <Col span={8}>
+                        <UI.VerticalLabel>{$t({ defaultMessage: 'Radio Band' })}</UI.VerticalLabel>
+                      </Col>
+                      { fields.map((field, index) => (
+                        <Form.Item key={field.key} noStyle>
+                          <ApGroupItem name={field.name} apgroup={formInitData.apgroups[index]} />
+                        </Form.Item>
+                      ))}
+                    </Row>}
                   </Form.Item>
                 )}
               </Form.List>
