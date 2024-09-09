@@ -95,7 +95,7 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
   })
   it('should show different tooltip based on return value of compareVersion', async () => {
-    const { params } = mockIntentContextWith({ currentValue: '7.0.0' })
+    const { params } = mockIntentContextWith({ status: Statuses.active, currentValue: '7.0.0' })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     await hover(await screen.findByTestId('InformationSolid'))
     expect(await screen.findByRole('tooltip', { hidden: true }))
@@ -139,7 +139,7 @@ describe('IntentAIDetails', () => {
 
 describe('IntentAIForm', () => {
   it('should render when active', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.active })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
@@ -171,7 +171,7 @@ describe('IntentAIForm', () => {
     expect(mockNavigate).toBeCalled()
   })
   it('should render when paused', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({ status: Statuses.paused } )
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))

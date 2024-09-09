@@ -1,9 +1,19 @@
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
-import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { IntentAIDetails }                      from './IntentAIDetails'
+import { mockedIntentCRRM }                            from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedCAclbEnable }                 from './AIOperations/__tests__/mockedCAclbEnable'
+import { mocked as mockedCBandbalancingEnable }        from './AIOperations/__tests__/mockedCBandbalancingEnable'
+import { mocked as mockedCBandbalancingEnableBelow61 } from './AIOperations/__tests__/mockedCBandbalancingEnableBelow61'
+import { mocked as mockedCBandbalancingProactive }     from './AIOperations/__tests__/mockedCBandbalancingProactive'
+import { mocked as mockedCBgScanEnable }               from './AIOperations/__tests__/mockedCBgScanEnable'
+import { mocked as mockedCBgScanTimer }                from './AIOperations/__tests__/mockedCBgScanTimer'
+import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__tests__/mockedCDfschannelsDisable'
+import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
+import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
+import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { IntentAIDetails }                             from './IntentAIDetails'
+import { Intent }                                      from './useIntentDetailsQuery'
 
 jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
   kpis: [],
@@ -22,44 +32,131 @@ jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='i-zonefirmware-upgrade-IntentAIDetails'/>
 }))
+jest.mock('./AIOperations/CTxpowerSame', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-txpower-same-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CDfschannelsDisable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-dfschannels-disable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CDfschannelsEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-dfschannels-enable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CAclbEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-aclb-enable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CBandbalancingProactive', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bandbalancing-proactive-IntentAIDetails'/>
+}))
 
+jest.mock('./AIOperations/CBgScan24gEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bgscan24g-enable-IntentAIDetails'/>
+}))
+
+jest.mock('./AIOperations/CBgScan5gEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bgscan5g-enable-IntentAIDetails'/>
+}))
+
+jest.mock('./AIOperations/CBgScan24gTimer', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bgscan24g-timer-IntentAIDetails'/>
+}))
+
+jest.mock('./AIOperations/CBgScan5gTimer', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bgscan5g-timer-IntentAIDetails'/>
+}))
+
+jest.mock('./AIOperations/CBgScan6gTimer', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
+}))
+
+const doTest = async (codes: string[], intent: Intent) => {
+  for (const code of codes) {
+    const { unmount } = render(<IntentAIDetails />, {
+      route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
+      wrapper: Provider
+    })
+    expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
+    unmount()
+  }
+}
 describe('IntentAIDetails', () => {
   it('should render for AIDrivenRRM', async () => {
-    mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-      data: { intent: mockedIntentCRRM }
-    })
+    mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
-
-    for (const code of codes) {
-      const { unmount } = render(<IntentAIDetails />, {
-        route: {
-          params: {
-            code,
-            root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
-            sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52'
-          }
-        },
-        wrapper: Provider
-      })
-      expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
-      unmount()
-    }
+    await doTest(codes, mockedIntentCRRM)
   })
+  const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
 
   describe('should render for AIOperations', () => {
-    const renderAIOperations = async (code: string) => {
-      const { unmount } = render(<IntentAIDetails />, {
-        route: { params: { code } },
-        wrapper: Provider
-      })
-      expect(await screen.findByTestId(`${code}-IntentAIDetails`)).toBeVisible()
-      unmount()
-    }
-    it('should render for AIOperations', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedIZoneFirmwareUpgrade } })
-      await renderAIOperations(mockedIZoneFirmwareUpgrade.code)
+    it('i-zonefirmware-upgrade', async () => {
+      const intent = mockedIZoneFirmwareUpgrade
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      const codes = ['i-zonefirmware-upgrade']
+      await doTest(codes, intent)
     })
-    // TODO: add test for other AIOperations
+    it('c-bgscan-enable', async () => {
+      const intent = mockedCBgScanEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      const codes = ['c-bgscan24g-enable', 'c-bgscan5g-enable']
+      await doTest(codes, intent)
+    })
+    it('c-bgscan-timer', async () => {
+      const intent = mockedCBgScanTimer
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      const codes = ['c-bgscan24g-timer', 'c-bgscan5g-timer', 'c-bgscan6g-timer']
+      await doTest(codes, intent)
+    })
+    it('c-txpower-same', async () => {
+      const intent = mockedCTxpowerSame
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-dfschannels-disable', async () => {
+      const intent = mockedCDfschannelsDisable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-dfschannels-enable', async () => {
+      const intent = mockedCDfschannelsEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-aclb-enable', async () => {
+      const intent = mockedCAclbEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-bandbalancing-enable', async () => {
+      jest.spyOn(CBandbalancingEnable(), 'IntentAIDetails').mockImplementation(() => (
+        <div data-testid='c-bandbalancing-enable-IntentAIDetails' />
+      ))
+
+      const intent = mockedCBandbalancingEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-bandbalancing-enable-below-61', async () => {
+      jest.spyOn(CBandbalancingEnable(), 'IntentAIDetails').mockImplementation(() => (
+        <div data-testid='c-bandbalancing-enable-below-61-IntentAIDetails' />
+      ))
+
+      const intent = mockedCBandbalancingEnableBelow61
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-bandbalancing-proactive', async () => {
+      const intent = mockedCBandbalancingProactive
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
   })
 })
