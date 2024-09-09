@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-import { Typography }                 from 'antd'
-import _                              from 'lodash'
-import moment                         from 'moment-timezone'
-import { MessageDescriptor, useIntl } from 'react-intl'
+import { Typography }                                from 'antd'
+import _                                             from 'lodash'
+import moment                                        from 'moment-timezone'
+import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { Card, Descriptions, GridCol, GridRow, Loader } from '@acx-ui/components'
 import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
@@ -14,7 +14,6 @@ import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
 import { IntentIcon }               from '../common/IntentIcon'
-import { isIntentActive }           from '../common/isIntentActive'
 import { KpiCard }                  from '../common/KpiCard'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
@@ -25,12 +24,7 @@ import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGr
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
 import { useIntentAICRRMQuery }                                    from './RRMGraph/services'
 
-export function createUseValuesText ({ reason, tradeoff }: {
-  reason: {
-    default: MessageDescriptor
-    activeFull: MessageDescriptor
-    activePartial: MessageDescriptor
-  }
+export function createUseValuesText ({ tradeoff }: {
   tradeoff: {
     full: MessageDescriptor
     partial: MessageDescriptor
@@ -48,14 +42,16 @@ export function createUseValuesText ({ reason, tradeoff }: {
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
     const { data, compareData } = getKpiData(intent, kpi)
 
-    const reasonText = isIntentActive(intent)
-      ? isFullOptimization ? reason.activeFull : reason.activePartial
-      : reason.default
+    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved 
+      throughput, lower latency, better signal quality, stable connections, enhanced user 
+      experience, longer battery life, efficient spectrum utilization, optimized channel usage, 
+      and reduced congestion, leading to higher data rates, higher SNR, consistent performance, 
+      and balanced network load.` })
 
     const tradeoffText = isFullOptimization ? tradeoff.full : tradeoff.partial
 
     return {
-      reasonText: $t(reasonText, { before: kpi.format(compareData), after: kpi.format(data) }),
+      benefitText: $t(benefitText, { before: kpi.format(compareData), after: kpi.format(data) }),
       tradeoffText: $t(tradeoffText)
     }
   }
@@ -122,8 +118,8 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
         <GridCol col={{ span: 18, xxl: 20 }}>
           <DetailsSection
             checkDataRetention
-            data-testid='Benefits'
-            title={$t({ defaultMessage: 'Benefits' })}
+            data-testid='Details'
+            title={$t({ defaultMessage: 'Details' })}
             children={<GridRow>
               {getGraphKPIs(intent, kpis).map(kpi => (
                 <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
@@ -148,9 +144,9 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
           <GridRow>
             <GridCol col={{ span: 12 }}>
               <DetailsSection
-                data-testid='Why the intent?'
-                title={$t({ defaultMessage: 'Why the intent?' })}
-                children={<Card>{valuesText.reasonText}</Card>}
+                data-testid='Benefits'
+                title={$t({ defaultMessage: 'Benefits' })}
+                children={<Card>{valuesText.benefitText}</Card>}
               />
             </GridCol>
             <GridCol col={{ span: 12 }}>

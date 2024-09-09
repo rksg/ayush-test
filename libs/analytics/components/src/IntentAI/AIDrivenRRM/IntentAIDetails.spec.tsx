@@ -4,6 +4,7 @@ import { intentAIUrl, Provider, store, intentAIApi } from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, within }  from '@acx-ui/test-utils'
 
 import { useIntentContext } from '../IntentContext'
+import { Statuses }         from '../states'
 import { Intent }           from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
@@ -46,7 +47,7 @@ describe('IntentAIDetails', () => {
   it('handle beyond data retention', async () => {
     const { params } = mockIntentContextWith({
       code: 'c-crrm-channel5g-auto',
-      status: 'applied',
+      status: Statuses.active,
       kpi_number_of_interfering_links: {
         data: {
           timestamp: null,
@@ -67,7 +68,7 @@ describe('IntentAIDetails', () => {
     )
 
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    expect(await screen.findByTestId('Benefits'))
+    expect(await screen.findByTestId('Details'))
       .toHaveTextContent('Beyond data retention period')
     expect(await screen.findByTestId('Key Performance Indications'))
       .toHaveTextContent('Beyond data retention period')
@@ -82,7 +83,7 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
       expect(await screen.findByTestId('IntentAIRRMGraph')).toBeVisible()
       expect(await screen.findByTestId('DownloadRRMComparison')).toBeVisible()
-      const benefits = await screen.findByTestId('Benefits')
+      const benefits = await screen.findByTestId('Details')
       expect(await within(benefits).findAllByTestId('KPI')).toHaveLength(1)
     }
 
@@ -119,7 +120,7 @@ describe('IntentAIDetails', () => {
     it('handle new rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'new',
+        status: Statuses.new,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -141,14 +142,14 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why the intent?'))
-        .toHaveTextContent(/interfering links from 2 to 0/)
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
     })
 
     it('handle active full rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -170,8 +171,8 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why the intent?'))
-        .toHaveTextContent(/adjust the channel plan, bandwidth and AP transmit power when necessary to/) // eslint-disable-line max-len
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
         .toHaveTextContent(/for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten/) // eslint-disable-line max-len
     })
@@ -179,7 +180,7 @@ describe('IntentAIDetails', () => {
     it('handle active partial rrm', async () => {
       const { params } = mockIntentContextWith({
         code: 'c-crrm-channel5g-auto',
-        status: 'applied',
+        status: Statuses.active,
         kpi_number_of_interfering_links: {
           data: {
             timestamp: null,
@@ -201,8 +202,8 @@ describe('IntentAIDetails', () => {
 
       await assertRenderCorrectly()
 
-      expect(await screen.findByTestId('Why the intent?'))
-        .toHaveTextContent(/adjust the channel plan when necessary to/)
+      expect(await screen.findByTestId('Benefits'))
+        .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.')  // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
         .toHaveTextContent(/for channel and Auto Channel Selection will potentially be overwritten/)
     })
