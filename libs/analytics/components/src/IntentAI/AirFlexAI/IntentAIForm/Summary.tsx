@@ -34,7 +34,7 @@ export function Summary () {
             rules={[{
               validator: () => {
                 if (!wlans || wlans.length === 0) {
-                  return Promise.reject($t({ defaultMessage: 'Please select atleast one Network in Settings' }))
+                  return Promise.reject($t({ defaultMessage: 'Please select at least one Network in Settings' }))
                 }
                 return Promise.resolve()
               }

@@ -54,14 +54,13 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   }, { skip: isMlisa })
   const wlansQuery = isMlisa ? raIQuery : r1Networks
   useEffect(() => {
-
     if (isMlisa && wlansQuery.data) {
       available = wlansQuery.data.map(wlan => ({ ...wlan, id: wlan.name })) // RA does not have ID
     } else if (!isMlisa && wlansQuery.data) {
       available = wlansQuery.data as typeof r1Networks.data
     }
     if (available?.length) {
-      if (savedWlans) {
+      if (savedWlans?.length) {
         const saved = savedWlans.map(({ name }) => name)
         setWlans(available.map(wlan => ({
           ...wlan,
@@ -97,19 +96,21 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
         }}
         placeholder={$t({ defaultMessage: 'Select Networks' })}
         value={selectedWlans.map(wlan => wlan.id)}
-        maxTagPlaceholder={() =>
-          <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
-            {$t({
-              defaultMessage: `{count} {count, plural,
+        maxTagPlaceholder={
+        // istanbul ignore next
+          () =>
+            <div title={selectedWlans.map(wlan => wlan.name).join(', ')}>
+              {$t({
+                defaultMessage: `{count} {count, plural,
               one {{singular}}
               other {{plural}}
             } selected`
-            }, {
-              count: selectedWlans.length,
-              singular: $t(defineMessage({ defaultMessage: 'Network' })),
-              plural: $t(defineMessage({ defaultMessage: 'Networks' }))
-            })}
-          </div>
+              }, {
+                count: selectedWlans.length,
+                singular: $t(defineMessage({ defaultMessage: 'Network' })),
+                plural: $t(defineMessage({ defaultMessage: 'Networks' }))
+              })}
+            </div>
         }
         children={wlans
           ?.map(({ id, name }: { id: string, name: string }) =>

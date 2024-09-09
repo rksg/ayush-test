@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
-import _           from 'lodash'
 import moment      from 'moment-timezone'
 
 import { get }                                                                                      from '@acx-ui/config'
@@ -49,9 +48,23 @@ const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
+jest.mock('@acx-ui/rc/services', () => ({
+  useVenueRadioActiveNetworksQuery: jest.fn().mockReturnValue({ data: [{
+    id: 'i4',
+    name: 'n4',
+    ssid: 's4'
+  }, {
+    id: 'i5',
+    name: 'n5',
+    ssid: 's5'
+  }, {
+    id: 'i6',
+    name: 'n6',
+    ssid: 's6'
+  }] })
+}))
 beforeEach(() => {
   store.dispatch(intentAIApi.util.resetApiState())
-  mockGet.mockReturnValue('true')
   moment.tz.setDefault('Asia/Singapore')
   const now = +new Date('2024-08-08T12:00:00.000Z')
   jest.spyOn(Date, 'now').mockReturnValue(now)
@@ -88,8 +101,7 @@ afterEach((done) => {
 })
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  let intent = mocked
-  intent = _.merge({}, intent, data) as typeof intent
+  const intent = { ...mocked, ...data }
   jest.mocked(useIntentContext).mockReturnValue({ intent, kpis })
   return {
     params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
@@ -98,6 +110,8 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 
 describe('IntentAIForm', () => {
   it('should work when active', async () => {
+    mockGet.mockReturnValue('true') // RAI
+
     const { params } = mockIntentContextWith()
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -125,16 +139,23 @@ describe('IntentAIForm', () => {
       '12:30 (UTC+08)'
     )
     expect(await screen.findByRole('combobox', { name: 'Start Time' })).toHaveValue('12.5')
+
+    await selectOptions(
+      await screen.findByPlaceholderText('Select Networks'),
+      'DENSITY'
+    )
+
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Average management traffic per client')).toBeVisible()
-    expect(await screen.findByText('2 Networks selected')).toBeVisible()
+    expect(await screen.findByText('1 Network selected')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
   it('should work when paused', async () => {
+    mockGet.mockReturnValue(false) //R1
     const { params } = mockIntentContextWith()
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
@@ -152,7 +173,6 @@ describe('IntentAIForm', () => {
     await click(radioDisabled)
     expect(radioDisabled).toBeChecked()
     await click(actions.getByRole('button', { name: 'Next' }))
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
 
     expect(await screen.findByRole('combobox', { name: 'Start Time' })).toBeDisabled()
@@ -161,6 +181,70 @@ describe('IntentAIForm', () => {
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
 
     expect(await screen.findByText(/IntentAI will maintain the existing network configuration and will cease automated monitoring of configuration for handling probe request\/response in the network./)).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Apply' }))
+
+    expect(await screen.findByText(/has been updated/)).toBeVisible()
+    expect(mockNavigate).toBeCalled()
+  })
+  it('should validate when no wlans', async () => {
+    mockGet.mockReturnValue('true') // RAI
+    mockGraphqlQuery(intentAIUrl, 'Wlans', {
+      data: {
+        intent: {
+          wlans: []
+        }
+      }
+    })
+
+    const { params } = mockIntentContextWith()
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const date = await screen.findByPlaceholderText('Select date')
+    await click(date)
+    await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+    await selectOptions(
+      await screen.findByRole('combobox', { name: 'Start Time' }),
+      '12:30 (UTC+08)'
+    )
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect((await screen.findAllByText('Summary')).length).toEqual(2)
+    expect(await screen.findByText('0 Networks selected')).toBeVisible()
+    await click(actions.getByRole('button', { name: 'Apply' }))
+
+    expect(await screen.findByText(/Please select at least one Network in Settings/)).toBeVisible()
+  })
+  it('should use all wlans when no saved wlans', async () => {
+    mockGet.mockReturnValue('true') // RAI
+    const data = { ...mocked, metadata: { wlans: [] } } as Intent
+    const { params } = mockIntentContextWith(data)
+    render(<IntentAIForm />, { route: { params }, wrapper: Provider })
+    const form = within(await screen.findByTestId('steps-form'))
+    const actions = within(form.getByTestId('steps-form-actions'))
+
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    await click(actions.getByRole('button', { name: 'Next' }))
+
+    expect(await screen.findByRole('heading', { name: 'Settings' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const date = await screen.findByPlaceholderText('Select date')
+    await click(date)
+    await click(await screen.findByRole('cell', { name: '2024-08-09' }))
+    await selectOptions(
+      await screen.findByRole('combobox', { name: 'Start Time' }),
+      '12:30 (UTC+08)'
+    )
+    await click(actions.getByRole('button', { name: 'Next' }))
+    expect((await screen.findAllByText('Summary')).length).toEqual(2)
+    expect(await screen.findByText('2 Networks selected')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
