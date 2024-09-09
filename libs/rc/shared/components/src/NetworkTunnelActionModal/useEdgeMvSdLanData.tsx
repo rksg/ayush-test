@@ -17,6 +17,7 @@ interface useEdgeMvSdLanDataProps {
 }
 export const useEdgeMvSdLanData = (props: useEdgeMvSdLanDataProps = {}) => {
   const { sdLanQueryOptions, networkId } = props
+  const isEdgeSdLanP2Enabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeSdLanMvEnabled = useIsEdgeFeatureReady(Features.EDGE_SD_LAN_MV_TOGGLE)
 
   const allSdLansQuery = useGetEdgeMvSdLanViewDataListQuery({
@@ -29,7 +30,7 @@ export const useEdgeMvSdLanData = (props: useEdgeMvSdLanDataProps = {}) => {
       filters: sdLanQueryOptions?.filters,
       pageSize: 10000
     }
-  }, { skip: !isEdgeSdLanMvEnabled || sdLanQueryOptions?.skip })
+  }, { skip: !(isEdgeSdLanP2Enabled || isEdgeSdLanMvEnabled) || sdLanQueryOptions?.skip })
 
   const { networkVlanPool } = useGetVLANPoolPolicyViewModelListQuery({
     payload: {

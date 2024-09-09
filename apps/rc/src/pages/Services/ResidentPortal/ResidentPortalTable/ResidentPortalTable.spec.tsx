@@ -176,10 +176,8 @@ describe('ResidentPortalTable', () => {
 
     const targetPortal = mockedDetailedResidentPortalList.content[1]
     const row = await screen.findByRole('row', { name: new RegExp(targetPortal.name) })
-    await userEvent.click(within(row).getByRole('radio'))
 
-    expect(screen.queryByRole('button', { name: /Edit/ })).toBeNull()
-    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull()
+    expect(within(row).queryByRole('radio')).toBeNull()
   })
 
 
