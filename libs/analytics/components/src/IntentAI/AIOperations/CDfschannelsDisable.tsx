@@ -3,7 +3,6 @@ import { Form, Typography }                         from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
@@ -13,7 +12,7 @@ import { KpiField }                                           from '../common/Kp
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig, intentState } from '../useIntentDetailsQuery'
+import { getGraphKPIs, IntentKPIConfig }                      from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -25,45 +24,42 @@ import { Reason }                from './SideNotes/Reason'
 import { Tradeoff }              from './SideNotes/Tradeoff'
 
 export const configuration: IntentConfigurationConfig = {
-  label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-  valueFormatter: formatter('noFormat'),
-  tooltip: (intent: Intent) =>
-    (intentState(intent) === 'active' &&
-      intent.currentValue &&
-      compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
-      ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
-      : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this intent is applied.' })
+  label: defineMessage({ defaultMessage: 'DFS Channels' }),
+  valueFormatter: formatter('enabledFormat')
 }
 
 export const kpis: IntentKPIConfig[] = [{
-  key: 'aps-on-latest-fw-version',
-  label: defineMessage({ defaultMessage: 'APs on Latest Firmware Version' }),
-  valueAccessor: ([x, y]: number[]) => x / y,
-  valueFormatter: formatter('percentFormat'),
-  deltaSign: '+',
-  format: formatter('ratioFormat')
+  key: 'avg-dfs-event-count',
+  label: defineMessage({ defaultMessage: 'Average DFS Events' }),
+  format: formatter('countFormat'),
+  deltaSign: '-'
+}, {
+  key: 'max-dfs-event-count',
+  label: defineMessage({ defaultMessage: 'Max DFS Events' }),
+  format: formatter('countFormat'),
+  deltaSign: '-'
 }]
 
 const useValuesText = createUseValuesText({
-  action: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
-  reason: defineMessage({ defaultMessage: 'Latest AP firmware version in the zone will ensure all the APs in zone have the best available firmware with appropriate security/bug fixes and new features.' }),
-  tradeoff: defineMessage({ defaultMessage: `
-    <p>Upgrades may temporarily disrupt network operations and require careful planning to mitigate potential compatibility issues with existing hardware or software configurations.</p>
-  ` }),
   intro: defineMessage({ defaultMessage: `
     <p>
-      <b>Upgrade for latest security and features:</b>
-      Upgrading the network ensures it benefits from the latest security patches and features, enhancing protection against cyber threats and enabling access to new functionalities for improved performance.
+      <b>Turn off DFS to avoid radar interference:</b>
+      Disabling Dynamic Frequency Selection (DFS) prevents potential interference with radar systems, ensuring stable Wi-Fi operation without the disruptions associated with radar detection and channel switching.
     </p>
     <p>
-      <b>Delay to avoid network downtime and compatibility issues:</b>
-      Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
+      <b>Keep DFS enabled for optimal channel availability:</b>
+      Enabling DFS provides access to additional channels in the 5 GHz band, reducing congestion and optimizing overall Wi-Fi performance by using less crowded frequencies.
     </p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
+  action: defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this <VenueSingular></VenueSingular>.' }),
+  reason: defineMessage({ defaultMessage: 'If AP is placed in an area where there are genuine and consistent DFS Radar signals, then the AP need not try to operate on the DFS channel.' }),
+  tradeoff: defineMessage({ defaultMessage: `
+    <p>Disabling DFS limits the available channels, potentially increasing network congestion and reducing overall Wi-Fi performance, especially in crowded environments with many competing devices.</p>
+  ` }),
+  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of DFS channels in the network.' })
 })
 
-export const IntentAIDetails = createIntentAIDetails(useValuesText, { showImpactedAPs: true })
+export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
@@ -71,7 +67,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+        <p>IntentAI will disable DFS Radar channels for this network, ensuring stable and predictable Wi-Fi performance by avoiding interference with radar systems and preventing the disruptions caused by mandatory channel switching.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />

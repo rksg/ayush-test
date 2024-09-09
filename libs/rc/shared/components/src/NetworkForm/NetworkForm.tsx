@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState, createContext } from 'react'
 
+import { MutationDefinition }                                            from '@reduxjs/toolkit/query'
 import { Form }                                                          from 'antd'
 import { get, isEqual, isNil, isNull, isUndefined, merge, omit, omitBy } from 'lodash'
 import { defineMessage, useIntl }                                        from 'react-intl'
@@ -101,6 +102,9 @@ import {
   useUpdateSoftGreActivations
 } from './utils'
 import { Venues } from './Venues/Venues'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DefaultMutationDefinition = MutationDefinition<any, any, any, any>
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -625,6 +629,7 @@ export function NetworkForm (props:{
     newNetworkVenues? : NetworkVenue[],
     oldNetworkVenues? : NetworkVenue[]
   )=> {
+
     const added: NetworkVenue[] = []
     const removed: string[] = []
     const update: NetworkVenue[] = []
@@ -664,7 +669,6 @@ export function NetworkForm (props:{
       })
     }
 
-
     if (added.length) {
       const addNetworkVenueReqs = added.map((networkVenue) => {
         const params = {
@@ -691,11 +695,18 @@ export function NetworkForm (props:{
 
     if (update.length) {
       const updateNetworkVenueReqs = update.map((networkVenue) => {
+        const venueId = networkVenue.venueId
+        // eslint-disable-next-line max-len
+        const oldNetworkVenue = oldNetworkVenues?.find((oldNetworkVenue) => oldNetworkVenue.venueId === venueId)!
+
         const params = {
           venueId: networkVenue.venueId,
           networkId: networkId
         }
-        return updateNetworkVenue({ params, payload: networkVenue, enableRbac: true })
+        return updateNetworkVenue({ params, payload: {
+          oldPayload: oldNetworkVenue,
+          newPayload: networkVenue
+        }, enableRbac: true })
       })
 
       await Promise.allSettled(updateNetworkVenueReqs)

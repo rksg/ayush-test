@@ -3,7 +3,6 @@ import { Form, Typography }                         from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
@@ -13,7 +12,7 @@ import { KpiField }                                           from '../common/Kp
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig, intentState } from '../useIntentDetailsQuery'
+import { getGraphKPIs, IntentKPIConfig }                      from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -25,45 +24,42 @@ import { Reason }                from './SideNotes/Reason'
 import { Tradeoff }              from './SideNotes/Tradeoff'
 
 export const configuration: IntentConfigurationConfig = {
-  label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-  valueFormatter: formatter('noFormat'),
-  tooltip: (intent: Intent) =>
-    (intentState(intent) === 'active' &&
-      intent.currentValue &&
-      compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
-      ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
-      : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this intent is applied.' })
+  label: defineMessage({ defaultMessage: 'Client Load Balancing' }),
+  valueFormatter: formatter('enabledFormat')
 }
 
 export const kpis: IntentKPIConfig[] = [{
-  key: 'aps-on-latest-fw-version',
-  label: defineMessage({ defaultMessage: 'APs on Latest Firmware Version' }),
-  valueAccessor: ([x, y]: number[]) => x / y,
-  valueFormatter: formatter('percentFormat'),
-  deltaSign: '+',
-  format: formatter('ratioFormat')
+  key: 'avg-ap-unique-client-count',
+  label: defineMessage({ defaultMessage: 'Average AP Unique Clients' }),
+  format: formatter('countFormat'),
+  deltaSign: 'none'
+}, {
+  key: 'max-ap-unique-client-count',
+  label: defineMessage({ defaultMessage: 'Max AP Unique Clients' }),
+  format: formatter('countFormat'),
+  deltaSign: 'none'
 }]
 
 const useValuesText = createUseValuesText({
-  action: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
-  reason: defineMessage({ defaultMessage: 'Latest AP firmware version in the zone will ensure all the APs in zone have the best available firmware with appropriate security/bug fixes and new features.' }),
-  tradeoff: defineMessage({ defaultMessage: `
-    <p>Upgrades may temporarily disrupt network operations and require careful planning to mitigate potential compatibility issues with existing hardware or software configurations.</p>
-  ` }),
   intro: defineMessage({ defaultMessage: `
     <p>
-      <b>Upgrade for latest security and features:</b>
-      Upgrading the network ensures it benefits from the latest security patches and features, enhancing protection against cyber threats and enabling access to new functionalities for improved performance.
+      <b>Enhance network performance with load balancing:</b>
+      Implementing load balancing optimizes network performance by evenly distributing client connections across access points, preventing overloading on specific APs and ensuring efficient utilization of network resources.
     </p>
     <p>
-      <b>Delay to avoid network downtime and compatibility issues:</b>
-      Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
+      <b>Maintain stability by disabling load balancing:</b>
+      Disabling load balancing prioritizes network stability over performance optimization, ensuring consistent connectivity and reducing the risk of disruptions caused by frequent client reassignments.
     </p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
+  action: defineMessage({ defaultMessage: 'Client Load Balancing for this {scope} is disabled. For proper distribution of Clients across APs, it is recommended to enable Client Load Balancing with default method as "Based on Client Count". Note that for Smartzones 6.0 and below Client Load Balancing will be enabled on 5 GHz only.' }),
+  reason: defineMessage({ defaultMessage: 'Client Load Balancing allows equal distribution of clients by allowing heavily loaded APs to move clients to less loaded neighboring APs, This shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
+  tradeoff: defineMessage({ defaultMessage: `
+    <p>Load balancing mechanisms may introduce complexity and require additional management overhead, potentially leading to increased network latency or disruptions during client reassignments.</p>
+  ` }),
+  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of load balancing in the network.' })
 })
 
-export const IntentAIDetails = createIntentAIDetails(useValuesText, { showImpactedAPs: true })
+export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
@@ -71,7 +67,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+        <p>IntentAI will enable load balancing based on client count for this network, this change shall improves network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />
