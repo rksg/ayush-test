@@ -124,6 +124,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
 
   const { data: switchData } =
     useGetSwitchQuery({
@@ -148,7 +149,7 @@ function AddMemberForm (props: DefaultVlanFormProps) {
               required: true,
               message: $t({ defaultMessage: 'This field is required' })
             },
-            { validator: (_, value) => validatorSwitchModel(value, switchDetail?.activeSerial) },
+            { validator: (_, value) => validatorSwitchModel(value, isSupport8100, switchDetail?.activeSerial) },
             { validator: (_, value) => validatorUniqueMember(value, [
               ...tableData.map(d => ({ id: (d.key === row.key) ? value : d.id })),
               ...(switchData?.stackMembers || [])

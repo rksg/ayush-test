@@ -5,6 +5,7 @@ import { Row, Col, Form, Radio, Typography, RadioChangeEvent, Checkbox, Select, 
 import { CheckboxChangeEvent }                                                          from 'antd/lib/checkbox'
 
 import { Card, Tooltip }                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
 import { ICX_MODELS_MODULES, SwitchModelPortData } from '@acx-ui/rc/utils'
 import { getIntl }                                 from '@acx-ui/utils'
 
@@ -47,6 +48,8 @@ export function SelectModelStep (props: { editMode: boolean }) {
   const [optionListForSlot3, setOptionListForSlot3] = useState<ModelsType[]>([])
   const [optionListForSlot4, setOptionListForSlot4] = useState<ModelsType[]>([])
 
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+
   const [switchFamilyModels, setSwitchFamilyModels] =
     useState<SwitchModelPortData>({
       id: '',
@@ -59,6 +62,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
   useEffect(() => {
     if(ICX_MODELS_MODULES){
       const modules = Object.keys(ICX_MODELS_MODULES)
+        .filter(key => isSupport8100 || key !== 'ICX8100')
       const familiesData = modules.map(key => {
         return { label: `ICX-${key.split('ICX')[1]}`, value: key }
       })
@@ -106,6 +110,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
     }
 
     if (family === 'ICX8200') {
+      setModuleSelectionEnable(false)
+      form.setFieldValue('enableSlot2', true)
+      form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+      setModule2SelectionEnable(false)
+    }
+
+    if (family === 'ICX8100') {
       setModuleSelectionEnable(false)
       form.setFieldValue('enableSlot2', true)
       form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)

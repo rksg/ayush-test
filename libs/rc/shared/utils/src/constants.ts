@@ -1109,6 +1109,38 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
     //     { portLabel: PortLabelType.GENERAL }
     //   ]
     // }
+  },
+  ICX8100: {
+    '24': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '24P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48': {
+      powerSlots: 1, fanSlots: 1, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    '48P': {
+      powerSlots: 1, fanSlots: 2, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    },
+    'C08PF': {
+      powerSlots: 1, fanSlots: 0, portModuleSlots: [
+        { portLabel: PortLabelType.GENERAL },
+        { portLabel: PortLabelType.GENERAL }
+      ]
+    }
   }
 }
 
