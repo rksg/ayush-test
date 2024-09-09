@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
@@ -11,18 +11,19 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  PolicyType,
-  useTableQuery,
+  EnhancedRoguePolicyType,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  EnhancedRoguePolicyType,
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType,
+  useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { RequestPayload }                                          from '@acx-ui/types'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
 import { useIsEdgeReady }    from '../../../useEdgeActions'
@@ -118,7 +119,7 @@ export function RogueAPDetectionTable () {
 
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems =>
         selectedItems.length > 0 && !selectedItems.map(item => item.name).includes(DEFAULT_PROFILE)
@@ -128,7 +129,7 @@ export function RogueAPDetectionTable () {
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems =>
         selectedItems.length === 1 && selectedItems[0].name !== DEFAULT_PROFILE
@@ -146,13 +147,13 @@ export function RogueAPDetectionTable () {
     }
   ]
 
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'Rogue AP Detection'
-          })
+          $t({ defaultMessage: 'Rogue AP Detection' })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
@@ -161,11 +162,11 @@ export function RogueAPDetectionTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             // eslint-disable-next-line max-len
             to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.CREATE)}
           >
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
@@ -183,11 +184,8 @@ export function RogueAPDetectionTable () {
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            // eslint-disable-next-line max-len
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-          }
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
         />
       </Loader>
     </>

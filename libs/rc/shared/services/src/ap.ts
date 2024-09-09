@@ -18,6 +18,7 @@ import {
   ApAntennaTypeSettings,
   ApBandModeSettings,
   ApBssColoringSettings,
+  ApSmartMonitor,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -990,6 +991,28 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'BssColoring' }]
     }),
+    getApSmartMonitor: build.query<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
+    updateApSmartMonitor: build.mutation<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
         const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1428,6 +1451,9 @@ export const {
   useUpdateApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
+  useGetApSmartMonitorQuery,
+  useLazyGetApSmartMonitorQuery,
+  useUpdateApSmartMonitorMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,
