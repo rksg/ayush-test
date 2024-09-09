@@ -1,7 +1,26 @@
 import { NetworkPath } from '@acx-ui/utils'
 
-import { aiFeatures }     from '../config'
-import { AIFeatureProps } from '../Table'
+import { aiFeatures }                                  from '../config'
+import { IntentConfigurationConfig, useIntentContext } from '../IntentContext'
+import { AIFeatureProps }                              from '../Table'
+import { Intent, IntentKPIConfig, intentState }        from '../useIntentDetailsQuery'
+import { isDataRetained }                              from '../utils'
+
+export const mockIntentContext = (config: {
+  intent: Intent
+  kpis?: IntentKPIConfig[],
+  configuration?: IntentConfigurationConfig
+}) => {
+  const context: ReturnType<typeof useIntentContext> = {
+    configuration: config.configuration,
+    intent: config.intent,
+    kpis: config.kpis ?? [],
+    state: intentState(config.intent),
+    isDataRetained: isDataRetained(config.intent.metadata.dataEndTime)
+  }
+  jest.mocked(useIntentContext).mockReturnValue(context)
+  return context
+}
 
 //Refer to libs/analytics/components/src/Recommendations/__tests__/fixtures.ts
 export const notEnoughLicenses = {

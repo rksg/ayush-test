@@ -1,5 +1,7 @@
-import { Statistic as AntStatistic } from 'antd'
-import styled                        from 'styled-components'
+import { ComponentType } from 'react'
+
+import { Statistic as AntStatistic, StatisticProps } from 'antd'
+import styled                                        from 'styled-components'
 
 export const Title = styled.div`
   color: var(--acx-primary-black);
@@ -18,15 +20,16 @@ export const Value = styled.span`
   font-weight: var(--acx-body-font-weight-bold);
 `
 
-export const Statistic = styled(AntStatistic)`
+export const Statistic = styled<ComponentType<StatisticProps & { $blur: boolean }>>(AntStatistic)`
   display: flex;
   flex-direction: column-reverse;
+  ${props => props.$blur && 'filter: blur(8px);'}
   .ant-statistic-title {
     color: var(--acx-neutrals-60);
     font-size: var(--acx-body-4-font-size);
     line-height: var(--acx-body-4-line-height);
   }
-  .ant-statistic-content{
+  .ant-statistic-content {
     display: flex;
     align-items: center;
   }
@@ -34,5 +37,7 @@ export const Statistic = styled(AntStatistic)`
     font-size: 28px;
     font-weight: var(--acx-body-font-weight-bold);
   }
-}
+  .ant-statistic-content-suffix {
+    display: flex;
+  }
 `

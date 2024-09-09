@@ -6,9 +6,9 @@ import moment      from 'moment-timezone'
 import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { useIntentContext } from '../IntentContext'
-import { Statuses }         from '../states'
-import { Intent }           from '../useIntentDetailsQuery'
+import { mockIntentContext } from '../__tests__/fixtures'
+import { Statuses }          from '../states'
+import { Intent }            from '../useIntentDetailsQuery'
 
 import { mocked, mockedIntentAps }                            from './__tests__/mockedIZoneFirmwareUpgrade'
 import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
@@ -67,12 +67,9 @@ afterEach((done) => {
 })
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  let intent = mocked
-  intent = _.merge({}, intent, data) as typeof intent
-  jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
-  return {
-    params: { code: mocked.code, root: mocked.root, sliceId: mocked.sliceId }
-  }
+  const intent = _.merge({}, mocked, data) as Intent
+  const context = mockIntentContext({ intent, configuration, kpis })
+  return { params: _.pick(context.intent, ['code', 'root', 'sliceId']) }
 }
 
 describe('IntentAIDetails', () => {
@@ -139,7 +136,11 @@ describe('IntentAIDetails', () => {
 
 describe('IntentAIForm', () => {
   it('should render when active', async () => {
-    const { params } = mockIntentContextWith()
+    const { params } = mockIntentContextWith({
+      metadata: {
+        scheduledAt: '2024-06-14T08:30:00.000Z'
+      } as Intent['metadata']
+    })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))

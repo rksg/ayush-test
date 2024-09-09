@@ -5,7 +5,7 @@ export const mocked = {
   root: '3e93a325-c53c-4bdb-876f-ced1f59ca820',
   code: 'i-zonefirmware-upgrade',
   sliceId: '5f46ced9-03b8-4cf1-89f1-fac17afdf421',
-  status: 'applied',
+  status: 'active',
   metadata: {},
   sliceType: 'zone',
   sliceValue: 'weiguo-mesh',
@@ -16,7 +16,7 @@ export const mocked = {
     { type: 'zone', name: 'weiguo-mesh' }
   ],
   statusTrail: [
-    { status: 'applied', createdAt: '2024-06-14T08:30:39.214Z' },
+    { status: 'active', createdAt: '2024-06-14T08:30:39.214Z' },
     { status: 'applyscheduleinprogress', createdAt: '2024-06-14T08:30:02.362Z' },
     { status: 'applyscheduled', createdAt: '2024-06-04T08:06:00.791Z' },
     { status: 'new', createdAt: '2024-04-03T06:03:59.617Z' }

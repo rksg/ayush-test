@@ -7,7 +7,7 @@ import { get }                                                                  
 import { Provider, intentAIUrl, store, intentAIApi }                                                from '@acx-ui/store'
 import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { useIntentContext }                   from '../../IntentContext'
+import { mockIntentContext }                  from '../../__tests__/fixtures'
 import { mockedCRRMGraphs, mockedIntentCRRM } from '../__tests__/fixtures'
 import { kpis }                               from '../common'
 
@@ -68,8 +68,7 @@ describe('IntentAIForm', () => {
     jest.spyOn(require('../../utils'), 'isDataRetained')
       .mockImplementation(() => true)
 
-    jest.mocked(useIntentContext)
-      .mockReturnValue({ intent: mockedIntentCRRM, kpis })
+    mockIntentContext({ intent: mockedIntentCRRM, kpis })
   })
 
   afterEach((done) => {
