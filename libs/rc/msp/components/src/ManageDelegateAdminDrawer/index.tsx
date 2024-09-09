@@ -1,7 +1,7 @@
 import { Key, useEffect, useState } from 'react'
 
-import { Select, Space } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Select, Space, Tooltip } from 'antd'
+import { useIntl }                from 'react-intl'
 
 import {
   Button,
@@ -38,6 +38,10 @@ interface ManageDelegateAdminDrawerProps {
   tenantType?: string
 }
 
+interface TooltipRowProps extends React.PropsWithChildren {
+  'data-row-key': string;
+}
+
 export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps) => {
   const { $t } = useIntl()
 
@@ -47,6 +51,7 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
+  const [mspAdminsToAllEcs, setMspAdminsToAllEcs] = useState<MspAdministrator[]>([])
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const isSkip = tenantId === undefined
@@ -81,6 +86,9 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
       setSelectedKeys(getSelectedKeys(queryResults?.data as MspAdministrator[], admins))
       const selRows = getSelectedRows(queryResults?.data as MspAdministrator[], admins)
       setSelectedRows(selRows)
+    }
+    if (queryResults?.data) {
+      setMspAdminsToAllEcs(queryResults?.data.filter(admin => admin.delegateToAllECs))
     }
     setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
   }, [queryResults?.data, delegatedAdmins?.data])
@@ -162,7 +170,8 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
         const selRole = selectedRoles.find((sel) => sel.id === row.id)
         return row.role === RolesEnum.DPSK_ADMIN ||
               (row.role === RolesEnum.GUEST_MANAGER && rowNotSelected(row.email)) ||
-              (selRole && !SupportedDelegatedRoles.includes(selRole.role as RolesEnum))
+              (selRole && !SupportedDelegatedRoles.includes(selRole.role as RolesEnum)) ||
+              mspAdminsToAllEcs.some(admin => admin.id === row.id)
           ? <span>
             {roleDisplayText[row.role] ? $t(roleDisplayText[row.role]) : row.role}
           </span>
@@ -195,6 +204,18 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
         ))
       }
     </Select>
+  }
+
+  const TooltipRow: React.FC<TooltipRowProps> = (props) => {
+    const showTooltip = mspAdminsToAllEcs.some(admin => admin.email === props['data-row-key'])
+
+    return showTooltip ?
+      <Tooltip
+        title={$t({ defaultMessage: 'This administrator has been delegated to all ecs' })}
+      >
+        <tr {...props} />
+      </Tooltip>
+      : <tr {...props} />
   }
 
   const content =
@@ -230,8 +251,14 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
                 (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email)) ||
                 (selectedRoles.find((sel) => sel.id === record.id)
                   && !SupportedDelegatedRoles.includes(selectedRoles.find((sel) =>
-                    sel.id === record.id)?.role as RolesEnum))
+                    sel.id === record.id)?.role as RolesEnum)) ||
+                mspAdminsToAllEcs.some(admin => admin.id === record.id)
             })
+          }}
+          components={{
+            body: {
+              row: TooltipRow
+            }
           }}
         />
       </Loader>
