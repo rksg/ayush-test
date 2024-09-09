@@ -13,6 +13,8 @@ export class NetworkApGroup {
   // AP group radio types configuration
   radioTypes?: RadioTypeEnum[]
 
+  allApGroupsRadioTypes?: RadioTypeEnum[]
+
   isDefault?: boolean
 
   apGroupName?: string
