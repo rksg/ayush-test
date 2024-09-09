@@ -513,6 +513,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bssColoringSettings',
     newApi: true
   },
+  getApSmartMonitor: {
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/smartMonitorSettings',
+    newApi: true
+  },
+  updateApSmartMonitor: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/smartMonitorSettings',
+    newApi: true
+  },
   getVenueDirectedMulticast: {
     method: 'get',
     //url: '/venues/:venueId/directedMulticastSettings',
@@ -568,6 +578,16 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     // url: '/venues/:venueId/bssColoringSettings',
     url: '/venues/:venueId/apBssColoringSettings',
+    newApi: true
+  },
+  getVenueSmartMonitor: {
+    method: 'get',
+    url: '/venues/:venueId/apSmartMonitorSettings',
+    newApi: true
+  },
+  updateVenueSmartMonitor: {
+    method: 'put',
+    url: '/venues/:venueId/apSmartMonitorSettings',
     newApi: true
   },
   getVenueClientAdmissionControl: {
