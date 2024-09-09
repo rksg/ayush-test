@@ -32,7 +32,6 @@ import {
   ConnectionMetering,
   FILTER,
   getPolicyDetailsLink,
-  hasCloudpathAccess,
   Persona,
   PolicyOperation,
   PolicyType,
@@ -43,9 +42,10 @@ import {
   SwitchViewModel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import { filterByAccess }       from '@acx-ui/user'
-import { exportMessageMapping } from '@acx-ui/utils'
+import { TenantLink }               from '@acx-ui/react-router-dom'
+import { RolesEnum }                from '@acx-ui/types'
+import { filterByAccess, hasRoles } from '@acx-ui/user'
+import { exportMessageMapping }     from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
@@ -148,6 +148,7 @@ export function VenuePropertyTab () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
+  const hasPropertyUnitPermission = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const settingsId = 'property-units-table'
   const queryUnitList = useTableQuery({
@@ -315,7 +316,7 @@ export function VenuePropertyTab () {
   }
 
   const actions: TableProps<PropertyUnit>['actions'] =
-    hasCloudpathAccess()
+    hasPropertyUnitPermission
       ? [{
         label: $t({ defaultMessage: 'Add Unit' }),
         disabled: !hasAssociation,
@@ -328,7 +329,7 @@ export function VenuePropertyTab () {
       }] : []
 
   const rowActions: TableProps<PropertyUnit>['rowActions'] =
-    hasCloudpathAccess()
+    hasPropertyUnitPermission
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
@@ -567,7 +568,7 @@ export function VenuePropertyTab () {
         actions={filterByAccess(hasAssociation ? actions : [])}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasCloudpathAccess() && { type: 'checkbox' }}
+          hasPropertyUnitPermission && { type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

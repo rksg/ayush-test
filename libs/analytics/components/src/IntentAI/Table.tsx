@@ -7,6 +7,7 @@ import { get }                                                                  
 import { DateFormatEnum, formatter }                                                           from '@acx-ui/formatter'
 import { AIDrivenRRM, AIOperation, AirFlexAI, EcoFlexAI }                                      from '@acx-ui/icons'
 import { useNavigate, useTenantLink, TenantLink }                                              from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 import { noDataDisplay, PathFilter, useEncodedParameter }                                      from '@acx-ui/utils'
 
@@ -300,7 +301,7 @@ export function IntentAITable (
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasCrossVenuesPermission() &&
-          hasPermission({ permission: 'WRITE_INTENT_AI' }) && {
+          hasPermission({ permission: 'WRITE_INTENT_AI', scopes: [WifiScopes.UPDATE] }) && {
           type: 'checkbox',
           selectedRowKeys,
           onChange: (_, selRows) => setSelectedRows(selRows)

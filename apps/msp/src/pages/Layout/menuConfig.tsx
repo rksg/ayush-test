@@ -134,7 +134,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
     ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',
-        label: $t({ defaultMessage: 'Settings' }),
+        label: $t({ defaultMessage: 'Portal Settings' }),
         tenantType: 'v' as TenantType,
         inactiveIcon: ConfigurationOutlined,
         activeIcon: ConfigurationSolid,

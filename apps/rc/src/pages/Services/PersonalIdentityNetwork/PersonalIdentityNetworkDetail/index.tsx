@@ -12,7 +12,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ServiceOperation, ServiceType,
+  filterByAccessForServicePolicyMutation,
   genDhcpConfigByNsgSetting,
+  getScopeKeyByService,
   getServiceDetailsLink,
   getServiceListRoutePath,
   getServiceRoutePath
@@ -107,14 +109,18 @@ const PersonalIdentityNetworkDetail = () => {
         extra={[...(dhcpRelay ? [
           <Alert style={{ margin: 'auto' }} message={warningMsg} type='info' showIcon />
         ] : []),
-        <TenantLink state={{ from: location }}
-          to={getServiceDetailsLink({
-            type: ServiceType.NETWORK_SEGMENTATION,
-            oper: ServiceOperation.EDIT,
-            serviceId: params.serviceId! })}
-          key='edit'>
-          <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
-        </TenantLink>
+        ...filterByAccessForServicePolicyMutation([
+          <TenantLink state={{ from: location }}
+            to={getServiceDetailsLink({
+              type: ServiceType.NETWORK_SEGMENTATION,
+              oper: ServiceOperation.EDIT,
+              serviceId: params.serviceId! })}
+            key='edit'
+            scopeKey={getScopeKeyByService(ServiceType.NETWORK_SEGMENTATION, ServiceOperation.EDIT)}
+          >
+            <Button type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+          </TenantLink>
+        ])
         ]}
       />
       <Space direction='vertical' size={30}>
