@@ -3,17 +3,17 @@ import { message } from 'antd'
 import _           from 'lodash'
 import moment      from 'moment-timezone'
 
-import { intentAIApi, intentAIUrl, Provider, store }                                                from '@acx-ui/store'
-import { mockGraphqlMutation, mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { intentAIApi, intentAIUrl, Provider, store }                              from '@acx-ui/store'
+import { mockGraphqlMutation, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import { useIntentContext } from '../IntentContext'
 import { Statuses }         from '../states'
 import { Intent }           from '../useIntentDetailsQuery'
 
-import { mocked, mockedIntentAps }                            from './__tests__/mockedIZoneFirmwareUpgrade'
-import { configuration, kpis, IntentAIDetails, IntentAIForm } from './IZoneFirmwareUpgrade'
+import { mocked }                                             from './__tests__/mockedCBgScanEnable'
+import { configuration, kpis, IntentAIDetails, IntentAIForm } from './CBgScan24gEnable'
 
-const { click, selectOptions, hover } = userEvent
+const { click, selectOptions } = userEvent
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -67,7 +67,7 @@ afterEach((done) => {
 })
 
 const mockIntentContextWith = (data: Partial<Intent> = {}) => {
-  let intent = mocked
+  let intent = { ...mocked, code: 'c-bgscan24g-enable' }
   intent = _.merge({}, intent, data) as typeof intent
   jest.mocked(useIntentContext).mockReturnValue({ intent, configuration, kpis })
   return {
@@ -76,45 +76,20 @@ const mockIntentContextWith = (data: Partial<Intent> = {}) => {
 }
 
 describe('IntentAIDetails', () => {
-  beforeEach(() => {
-    mockGraphqlQuery(intentAIUrl, 'GetAps', { data: { intent: { aps: mockedIntentAps } } })
-  })
-
   it('should handle when status is paused/na', async () => {
     const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
+
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.')).toBeVisible()
+    expect(await screen.findByText('When activated, this AIOps Intent takes over the automatic configuration Background Scan Timer on 2.4 GHz radio in the network.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
-    expect(await screen.findByTestId('KPI')).toBeVisible()
+    expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
     expect(await screen.findByTestId('Why the intent?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
-  })
-  it('should show different tooltip based on return value of compareVersion', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.active, currentValue: '7.0.0' })
-    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
-    await hover(await screen.findByTestId('InformationSolid'))
-    expect(await screen.findByRole('tooltip', { hidden: true }))
-      // eslint-disable-next-line max-len
-      .toHaveTextContent('Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.')
-  })
-  it('should render correctly for firmware drawer', async () => {
-    const { params } = mockIntentContextWith()
-    render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
-    expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
-    await userEvent.click(await screen.findByText('3 of 3 APs (100 %)'))
-    const drawerEl = await screen.findByRole('dialog')
-    const drawer = within(drawerEl)
-    expect(await drawer.findByText('3 Impacted APs')).toBeVisible()
-    expect(await drawer.findByText('B4:79:C8:3E:7E:50')).toBeVisible()
-    expect(await drawer.findByText('28:B3:71:27:38:E0')).toBeVisible()
-    expect(await drawer.findByText('C8:84:8C:3E:46:B0')).toBeVisible()
-    await userEvent.click(drawer.getByRole('button', { name: 'Close' }))
-    expect(drawerEl).not.toBeVisible()
   })
   it('should render', async () => {
     const { params } = mockIntentContextWith()
@@ -122,18 +97,13 @@ describe('IntentAIDetails', () => {
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Venue: weiguo-mesh is running with older AP firmware version . It is recommended to upgrade zone to the latest available AP firmware version.')).toBeVisible()
+    expect(await screen.findByText(/2.4 GHz radio setting for Venue: APMEMv6 has "Auto Channel Selection" set as "TBD"/)).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
-    expect(await screen.findByTestId('KPI')).toBeVisible()
+    expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()
     expect(await screen.findByTestId('Why the intent?')).toBeVisible()
     expect(await screen.findByTestId('Potential trade-off')).toBeVisible()
     expect(await screen.findByTestId('Status Trail')).toBeVisible()
-
-    await hover(await screen.findByTestId('InformationSolid'))
-    expect(await screen.findByRole('tooltip', { hidden: true }))
-      // eslint-disable-next-line max-len
-      .toHaveTextContent('Latest available AP firmware version will be used when this intent is applied.')
   })
 })
 
@@ -145,7 +115,7 @@ describe('IntentAIForm', () => {
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect(screen.queryByText('Why the intent?')).not.toBeInTheDocument()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
@@ -164,20 +134,20 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Summary' })).toBeVisible()
-    expect(await screen.findByText('Recommended Configuration: 7.0.0')).toBeVisible()
+    expect(await screen.findByText('Recommended Configuration: Enabled')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
     expect(mockNavigate).toBeCalled()
   })
   it('should render when paused', async () => {
-    const { params } = mockIntentContextWith({ status: Statuses.paused } )
+    const { params } = mockIntentContextWith({ status: Statuses.paused })
     render(<IntentAIForm />, { route: { params }, wrapper: Provider })
     const form = within(await screen.findByTestId('steps-form'))
     const actions = within(form.getByTestId('steps-form-actions'))
 
     expect(await screen.findByRole('heading', { name: 'Introduction' })).toBeVisible()
-    expect((await screen.findAllByText('Why the intent?')).length).toEqual(1)
+    expect(screen.queryByText('Why the intent?')).not.toBeInTheDocument()
     await click(actions.getByRole('button', { name: 'Next' }))
 
     expect(await screen.findByRole('heading', { name: 'Intent Priority' })).toBeVisible()
