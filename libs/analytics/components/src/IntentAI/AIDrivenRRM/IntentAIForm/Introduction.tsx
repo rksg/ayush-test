@@ -10,7 +10,6 @@ import { IntroSummary }         from '../../common/IntroSummary'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
 import { aiFeatures }           from '../../config'
 import { useIntentContext }     from '../../IntentContext'
-import { isDataRetained }       from '../../utils'
 import { useIntentAICRRMQuery } from '../RRMGraph/services'
 
 import * as SideNotes from './SideNotes'
@@ -62,8 +61,7 @@ export function Introduction (
   { sliderUrlBefore, sliderUrlAfter, queryResult }:
   { sliderUrlBefore: string, sliderUrlAfter: string, queryResult: ReturnType<typeof useIntentAICRRMQuery> }) {
   const { $t } = useIntl()
-  const { intent } = useIntentContext()
-  const showData = isDataRetained(intent.metadata.dataEndTime)
+  const { isDataRetained: showData } = useIntentContext()
   const compareSlider = <Loader states={[queryResult]}>
     <CompareSlider
       style={{ width: '40%', height: '100%' }}

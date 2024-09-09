@@ -4,14 +4,14 @@ import _                     from 'lodash'
 import moment                from 'moment-timezone'
 import { MessageDescriptor } from 'react-intl'
 
-import { kpiDelta, TrendTypeEnum }              from '@acx-ui/analytics/utils'
-import { formatter }                            from '@acx-ui/formatter'
-import { useParams }                            from '@acx-ui/react-router-dom'
-import { intentAIApi }                          from '@acx-ui/store'
-import { NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
+import { kpiDelta, TrendTypeEnum }                       from '@acx-ui/analytics/utils'
+import { formatter }                                     from '@acx-ui/formatter'
+import { useParams }                                     from '@acx-ui/react-router-dom'
+import { intentAIApi }                                   from '@acx-ui/store'
+import { getIntl, NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
-import { DisplayStates, Statuses, StatusReasons } from './states'
-import { IntentWlan }                             from './utils'
+import { DisplayStates, Statuses, StatusReasons }        from './states'
+import { dataRetentionText, IntentWlan, isDataRetained } from './utils'
 
 export type IntentKPIConfig = {
   key: string;
@@ -84,6 +84,19 @@ export const useIntentParams = () => {
   }
 }
 
+export function intentState (intent: Intent) {
+  switch (intent.status) {
+    case Statuses.paused:
+    case Statuses.na:
+      return 'no-data'
+    case Statuses.new:
+    case Statuses.scheduled:
+      return 'inactive'
+    default:
+      return 'active'
+  }
+}
+
 const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
   return kpis.map(kpi => {
     const name = `kpi_${_.snakeCase(kpi.key)}`
@@ -102,12 +115,12 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
     .trim()
 }
 
-export function getKpiData (intent: Intent, config: IntentKPIConfig) {
+export function getKPIData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
   const kpi = intent[key] as IntentKpi[`kpi_${string}`]
   return {
-    data: _.get(kpi, 'data.result', null),
-    compareData: _.get(kpi, 'compareData.result', null)
+    data: kpi.data,
+    compareData: kpi.compareData
   }
 }
 
@@ -115,22 +128,44 @@ export function getGraphKPIs (
   intent: Intent,
   kpis: IntentKPIConfig[]
 ) {
+  const { $t } = getIntl()
+  const state = intentState(intent)
+
   return kpis.map((kpi) => {
-    const { data, compareData } = getKpiData(intent, kpi)
-    const valueAccessor = kpi.valueAccessor || ((value) => value[0])
-    const delta: { value: string; trend: TrendTypeEnum } | undefined = compareData
-      ? kpiDelta(
-        valueAccessor(_.castArray(compareData)),
-        valueAccessor(_.castArray(data as number | number[])),
-        kpi.deltaSign,
-        kpi.valueFormatter || kpi.format
-      ) as { value: string; trend: TrendTypeEnum }
-      : undefined
-    return {
+    const ret = {
       ..._.pick(kpi, ['key', 'label']),
-      value: data ? kpi.format(data) : noDataDisplay,
-      delta: data ? delta : undefined
+      value: noDataDisplay,
+      delta: undefined,
+      footer: ''
+    } as {
+      key: string
+      label: MessageDescriptor
+      value: string
+      footer: string
+      delta: { value: string; trend: TrendTypeEnum } | undefined
     }
+
+    if (!isDataRetained(intent.metadata.dataEndTime)) {
+      ret.footer = $t(dataRetentionText)
+    } else if (state === 'no-data') {
+      ret.delta = { trend: TrendTypeEnum.None, value: '0%' }
+    } else {
+      const result = getKPIData(intent, kpi)
+      const hasValue = result.data && result.data?.result !== null
+      const valueAccessor = kpi.valueAccessor || ((value) => value[0])
+
+      if (hasValue) {
+        ret.value = kpi.format(result.data?.result)
+        ret.delta = kpiDelta(
+          valueAccessor(_.castArray(result.compareData?.result)),
+          valueAccessor(_.castArray(result.data?.result)),
+          kpi.deltaSign,
+          kpi.valueFormatter || kpi.format
+        ) as { value: string; trend: TrendTypeEnum }
+      }
+    }
+
+    return ret
   })
 }
 

@@ -4,12 +4,11 @@ import { useIntl }        from 'react-intl'
 
 import { StepsForm, ProcessedCloudRRMGraph } from '@acx-ui/components'
 
-import { KpiField }                          from '../../common/KpiField'
-import { ScheduleTiming }                    from '../../common/ScheduleTiming'
-import { useIntentContext }                  from '../../IntentContext'
-import { getGraphKPIs }                      from '../../useIntentDetailsQuery'
-import { dataRetentionText, isDataRetained } from '../../utils'
-import { IntentAIRRMGraph }                  from '../RRMGraph'
+import { KpiField }         from '../../common/KpiField'
+import { ScheduleTiming }   from '../../common/ScheduleTiming'
+import { useIntentContext } from '../../IntentContext'
+import { getGraphKPIs }     from '../../useIntentDetailsQuery'
+import { IntentAIRRMGraph } from '../RRMGraph'
 
 import * as SideNotes from './SideNotes'
 
@@ -18,26 +17,18 @@ export function Summary (
   { summaryUrlBefore?: string, summaryUrlAfter?: string, crrmData: ProcessedCloudRRMGraph[] }) {
   const { $t } = useIntl()
   const { intent, kpis } = useIntentContext()
-  const showData = isDataRetained(intent.metadata.dataEndTime)
 
   return <Row gutter={20}>
     <Col span={16}>
       <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
       <Form.Item label={$t({ defaultMessage: 'Projected interfering links reduction' })}>
-        {showData
-          ? <IntentAIRRMGraph
-            details={intent}
-            crrmData={crrmData}
-            summaryUrlBefore={summaryUrlBefore}
-            summaryUrlAfter={summaryUrlAfter}
-          />
-          : $t(dataRetentionText)
-        }
+        <IntentAIRRMGraph
+          crrmData={crrmData}
+          summaryUrlBefore={summaryUrlBefore}
+          summaryUrlAfter={summaryUrlAfter}
+        />
       </Form.Item>
-      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField
-        key={kpi.key}
-        kpi={kpi}
-        showData={showData}/>))}
+      {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
       <ScheduleTiming.FieldSummary />
     </Col>
     <Col span={7} offset={1}>

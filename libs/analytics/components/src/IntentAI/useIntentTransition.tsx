@@ -8,8 +8,6 @@ import { showToast }         from '@acx-ui/components'
 import { useNavigateToPath } from '@acx-ui/react-router-dom'
 import { intentAIApi }       from '@acx-ui/store'
 
-import { states } from '../Recommendations/states'
-
 import { validateScheduleTiming }                 from './common/ScheduleTiming'
 import { aiFeaturesLabel, codes, Intent }         from './config'
 import { useIntentContext }                       from './IntentContext'

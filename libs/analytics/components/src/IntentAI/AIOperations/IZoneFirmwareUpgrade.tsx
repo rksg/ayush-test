@@ -7,16 +7,15 @@ import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
-import { TradeOff }                                                           from '../../TradeOff'
-import { IntroSummary }                                                       from '../common/IntroSummary'
-import { isIntentActive }                                                     from '../common/isIntentActive'
-import { KpiField }                                                           from '../common/KpiField'
-import { richTextFormatValues }                                               from '../common/richTextFormatValues'
-import { getScheduledAt, ScheduleTiming }                                     from '../common/ScheduleTiming'
-import { IntentConfigurationConfig, useIntentContext }                        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig }                              from '../useIntentDetailsQuery'
-import { useInitialValues }                                                   from '../useIntentTransition'
-import { Actions, getTransitionStatus, isDataRetained, TransitionIntentItem } from '../utils'
+import { TradeOff }                                           from '../../TradeOff'
+import { IntroSummary }                                       from '../common/IntroSummary'
+import { KpiField }                                           from '../common/KpiField'
+import { richTextFormatValues }                               from '../common/richTextFormatValues'
+import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
+import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
+import { getGraphKPIs, Intent, IntentKPIConfig, intentState } from '../useIntentDetailsQuery'
+import { useInitialValues }                                   from '../useIntentTransition'
+import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
 import { ConfigurationField }    from './ConfigurationField'
 import { createIntentAIDetails } from './createIntentAIDetails'
@@ -29,7 +28,7 @@ export const configuration: IntentConfigurationConfig = {
   label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
   valueFormatter: formatter('noFormat'),
   tooltip: (intent: Intent) =>
-    (isIntentActive(intent) &&
+    (intentState(intent) === 'active' &&
       intent.currentValue &&
       compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
       ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
@@ -175,14 +174,10 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { form } = useStepFormContext()
 
     const enable = form.getFieldValue('preferences').enable
-    const showData = isDataRetained(intent.metadata.dataEndTime)
     return enable
       ? <>
         {configuration && <ConfigurationField configuration={configuration} intent={intent}/>}
-        {getGraphKPIs(intent, kpis).map(kpi => (<KpiField
-          key={kpi.key}
-          kpi={kpi}
-          showData={showData}/>))}
+        {getGraphKPIs(intent, kpis).map(kpi => (<KpiField key={kpi.key} kpi={kpi} />))}
         <ScheduleTiming.FieldSummary />
       </>
       : options.no.content

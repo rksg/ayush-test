@@ -2,46 +2,27 @@ import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Card, TrendPill } from '@acx-ui/components'
-import { noDataDisplay }   from '@acx-ui/utils'
 
-import { Statuses }             from '../../states'
-import { getGraphKPIs, Intent } from '../../useIntentDetailsQuery'
-import { dataRetentionText }    from '../../utils'
-
+import { useIntentContext } from '../../IntentContext'
+import { getGraphKPIs }     from '../../useIntentDetailsQuery'
 
 import * as UI from './styledComponents'
 
-
-const BLURREDKPI = '1/2'
-
-
 export const KpiCard: React.FC<{
   kpi: ReturnType<typeof getGraphKPIs>[number]
-  showData: boolean
-  intent: Intent
-}> = ({ kpi, showData, intent }) => {
+}> = ({ kpi }) => {
   const { $t } = useIntl()
-  const blurData = [
-    Statuses.na,
-    Statuses.paused
-  ].includes(intent.status as Statuses)
+  const { state } = useIntentContext()
+
   // TODO: show timestamps on hover
   return <Card>
     <UI.Title>{$t(kpi.label)}</UI.Title>
     <Space align='center' size={5}>
       <UI.Statistic
-        title={!showData && $t(dataRetentionText)}
-        value={blurData
-          ? BLURREDKPI
-          : showData ? kpi.value : noDataDisplay}
-        suffix={showData && kpi.delta &&
-        <TrendPill
-          value={kpi.delta.value}
-          trend={kpi.delta.trend}
-        />}
-        style={{
-          filter: blurData ? 'blur(8px)' : 'none'
-        }}
+        $blur={state === 'no-data'}
+        title={kpi.footer}
+        value={kpi.value}
+        suffix={kpi.delta && <TrendPill {...kpi.delta} />}
       />
     </Space>
   </Card>
