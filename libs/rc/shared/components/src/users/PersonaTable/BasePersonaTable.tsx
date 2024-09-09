@@ -14,9 +14,9 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, hasCloudpathAccess, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                                  from '@acx-ui/user'
-import { exportMessageMapping }                                                            from '@acx-ui/utils'
+import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }                    from '@acx-ui/user'
+import { exportMessageMapping }                                        from '@acx-ui/utils'
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
@@ -265,7 +265,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
   }
 
   const actions: TableProps<PersonaGroup>['actions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity' }),
         onClick: () => {
@@ -279,7 +279,7 @@ export function BasePersonaTable (props: PersonaTableProps) {
       }] : []
 
   const rowActions: TableProps<Persona>['rowActions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
@@ -376,7 +376,8 @@ export function BasePersonaTable (props: PersonaTableProps) {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasCloudpathAccess() && { type: personaGroupId ? 'checkbox' : 'radio' }}
+          hasCrossVenuesPermission({ needGlobalPermission: true })
+          && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,

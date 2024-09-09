@@ -50,7 +50,7 @@ jest.mock('@acx-ui/rc/services', () => ({
   useGetSwitchCurrentVersionsQuery: () => ({
     data: mockSwitchCurrentVersions
   }),
-  useGetSwitchCurrentVersionsV1002Query: () => ({
+  useGetSwitchCurrentVersionsV1001Query: () => ({
     data: mockSwitchCurrentVersionsV1002
   })
 }))

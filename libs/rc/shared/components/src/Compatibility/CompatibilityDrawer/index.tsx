@@ -31,6 +31,8 @@ export type CompatibilityDrawerProps = {
   venueId?: string,
   venueName?: string,
   featureName?: IncompatibilityFeatures,
+
+  width?: number
 }
 
 export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
@@ -41,6 +43,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
     onClose,
     isLoading = false,
     deviceType = CompatibilityDeviceEnum.AP,
+    width = 500,
     ...others
   } = props
 
@@ -51,7 +54,7 @@ export const CompatibilityDrawer = (props: CompatibilityDrawerProps) => {
       closable={true}
       onClose={onClose}
       destroyOnClose={true}
-      width={'500px'}
+      width={width}
     >
       <Loader states={[ { isLoading } ]}>
         <Form layout='vertical'>
@@ -80,7 +83,9 @@ const DrawerContentUnit = (props: DrawerContentUnitProps ) => {
   const deviceTypes = Object.keys(compatibilityData)
   const isCrossDevices = deviceTypes.length > 1
 
-  if (isCrossDevices) {
+  if ((isCrossDevices && deviceType === CompatibilityDeviceEnum.AP)
+  // eslint-disable-next-line max-len
+  || (deviceType === CompatibilityDeviceEnum.EDGE && (props.compatibilityType === CompatibilityType.VENUE || props.compatibilityType === CompatibilityType.DEVICE))) {
     return <SameDeviceTypeCompatibility
       key={data.id}
       types={deviceTypes}

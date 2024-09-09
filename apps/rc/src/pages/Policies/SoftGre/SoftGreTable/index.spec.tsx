@@ -128,9 +128,9 @@ describe('SoftGreTable', () => {
 
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialog = await screen.findByRole('dialog')
-    await within(dialog).findByText('Delete "2 Policy"?')
+    await within(dialog).findByText('Delete "2 Profiles"?')
 
-    await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Delete Profiles' }))
     await waitFor(() => {
       expect(mockedSingleDeleteApi).toBeCalledTimes(2)
     })
@@ -154,7 +154,7 @@ describe('SoftGreTable', () => {
     const dialog = await screen.findByRole('dialog')
     await(within(dialog).findByText('Delete "softGreProfileName1"?'))
 
-    await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Delete Profile' }))
     await waitFor(() => {
       expect(mockedSingleDeleteApi).toBeCalledTimes(1)
     })

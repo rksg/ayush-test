@@ -12,11 +12,11 @@ import {
   getServiceRoutePath,
   getPolicyDetailsLink,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  getScopeKeyByService,
+  filterByAccessForServicePolicyMutation
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { filterByAccess }        from '@acx-ui/user'
 import { noDataDisplay }         from '@acx-ui/utils'
 
 import { NetworkTable } from './NetworkTable'
@@ -82,9 +82,9 @@ const EdgeSdLanDetail = () => {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[EdgeScopes.UPDATE]}
+            scopeKey={getScopeKeyByService(ServiceType.EDGE_SD_LAN, ServiceOperation.EDIT)}
             to={getServiceDetailsLink({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.EDIT,

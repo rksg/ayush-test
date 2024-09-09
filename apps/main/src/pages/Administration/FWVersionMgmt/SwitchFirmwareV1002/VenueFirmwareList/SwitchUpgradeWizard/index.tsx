@@ -15,9 +15,9 @@ import {
 import { WarningCircleOutlined }               from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
 import {
-  useBatchUpdateSwitchVenueSchedulesV1002Mutation,
-  useGetSwitchDefaultFirmwareListV1002Query,
-  useGetSwitchAvailableFirmwareListV1002Query,
+  useBatchUpdateSwitchVenueSchedulesV1001Mutation,
+  useGetSwitchDefaultFirmwareListV1001Query,
+  useGetSwitchAvailableFirmwareListV1001Query,
   useBatchSkipSwitchUpgradeSchedulesMutation } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
@@ -57,9 +57,9 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const params = useParams()
   const { wizardType } = props
   const { checkCurrentVersionsV1002 } = useSwitchFirmwareUtils()
-  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1002Mutation()
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
+  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1001Mutation()
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1001Query({ params })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1001Query({ params })
 
   const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
   const [showSubTitle, setShowSubTitle] = useState<boolean>(true)

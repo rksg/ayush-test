@@ -1,23 +1,27 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
-import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
+import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                                              from '@acx-ui/rc/components'
 import {
-  PolicyType,
-  useTableQuery,
+  useDelVLANPoolPolicyMutation,
+  useGetVenuesQuery,
+  useGetVLANPoolPolicyViewModelListQuery
+} from '@acx-ui/rc/services'
+import {
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
-  PolicyOperation,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  VLANPoolViewModelType,
-  VLAN_LIMIT_NUMBER
+  getScopeKeyByPolicy,
+  PolicyOperation,
+  PolicyType,
+  useTableQuery,
+  VLAN_LIMIT_NUMBER,
+  VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 export default function VLANPoolTable () {
   const { $t } = useIntl()
@@ -55,7 +59,7 @@ export default function VLANPoolTable () {
 
   const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
@@ -73,7 +77,7 @@ export default function VLANPoolTable () {
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
@@ -87,6 +91,9 @@ export default function VLANPoolTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
@@ -105,10 +112,10 @@ export default function VLANPoolTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.VLAN_POOL, PolicyOperation.CREATE)}
           >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
@@ -125,10 +132,8 @@ export default function VLANPoolTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={
-            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }
-          }
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

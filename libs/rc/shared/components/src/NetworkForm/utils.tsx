@@ -5,7 +5,7 @@ import { FormInstance }            from 'antd'
 import _, { cloneDeep, findIndex } from 'lodash'
 import { Params }                  from 'react-router-dom'
 
-import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ActionItem,
   comparePayload,
@@ -57,7 +57,9 @@ import {
   useActivateDeviceTemplateOnWifiNetworkMutation,
   useDeactivateApplicationPolicyTemplateOnWifiNetworkMutation,
   useActivateApplicationPolicyTemplateOnWifiNetworkMutation,
-  useGetEnhancedVlanPoolPolicyTemplateListQuery
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
+  useActivateSoftGreMutation,
+  useDectivateSoftGreMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -79,7 +81,8 @@ import {
   NetworkRadiusSettings,
   EdgeMvSdLanViewData,
   NetworkTunnelSdLanAction,
-  VLANPoolViewModelType
+  VLANPoolViewModelType,
+  NetworkTunnelSoftGreAction
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -220,7 +223,7 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 }
 
 // eslint-disable-next-line max-len
-export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+export function deriveRadiusFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
   return {
     ...data,
     isCloudpathEnabled: data.authRadius ? true : false,
@@ -304,7 +307,7 @@ export function useRadiusServer () {
 
 
   // eslint-disable-next-line max-len
-  const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateProfile = async (saveData: NetworkSaveData, networkId?: string) => {
     if (!resolvedRbacEnabled || !networkId) return Promise.resolve()
 
     const mutations: Promise<CommonResult>[] = []
@@ -313,7 +316,7 @@ export function useRadiusServer () {
     const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
     radiusServerIdKeys.forEach(radiusKey => {
       const radiusValue = saveData[radiusKey]
-      const oldRadiusValue = oldSaveData?.[radiusKey]
+      const oldRadiusValue = radiusServerConfigurations?.[radiusKey]
 
       if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
         const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
@@ -340,9 +343,9 @@ export function useRadiusServer () {
   }
 
   // eslint-disable-next-line max-len
-  const updateRadiusServer = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+  const updateRadiusServer = async (saveData: NetworkSaveData, networkId?: string) => {
     return Promise.all([
-      updateProfile(saveData, oldSaveData, networkId),
+      updateProfile(saveData, networkId),
       updateSettings(saveData, networkId)
     ])
   }
@@ -378,7 +381,7 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
     const venueData = saveState?.venues?.map(v => ({ ...v,
       clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
     const fullNetworkSaveData = { ...saveState, venues: venueData }
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+    const resolvedNetworkSaveData = deriveRadiusFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldsValue({
       ...resolvedNetworkSaveData
@@ -829,6 +832,32 @@ export const useUpdateEdgeSdLanActivations = () => {
   return updateEdgeSdLanActivations
 }
 
+export const useUpdateSoftGreActivations = () => {
+  const [ activateSoftGre ] = useActivateSoftGreMutation()
+  const [ dectivateSoftGre ] = useDectivateSoftGreMutation()
+
+  // eslint-disable-next-line max-len
+  const updateSoftGreActivations = async (networkId: string, updates: NetworkTunnelSoftGreAction, activatedVenues: NetworkVenue[], cloneMode: boolean) => {
+    const actions = Object.keys(updates).filter(venueId => {
+      return _.find(activatedVenues, { venueId })
+    }).map((venueId) => {
+      // eslint-disable-next-line max-len
+      const action = updates[venueId]
+      if (!cloneMode && !action.newProfileId && action.oldProfileId) {
+        return dectivateSoftGre({ params: { venueId, networkId, policyId: action.oldProfileId } })
+      } else if (action.newProfileId && action.newProfileId !== action.oldProfileId) {
+        return activateSoftGre({ params: { venueId, networkId, policyId: action.newProfileId } })
+      }
+      return Promise.resolve()
+    })
+
+    return await Promise.all(actions)
+  }
+
+  return updateSoftGreActivations
+}
+
+
 export const getNetworkTunnelSdLanUpdateData = (
   modalFormValues: NetworkTunnelActionForm,
   sdLanAssociationUpdates: NetworkTunnelSdLanAction[],
@@ -843,7 +872,7 @@ export const getNetworkTunnelSdLanUpdateData = (
   const sdLanTunneled = formTunnelType === NetworkTunnelTypeEnum.SdLan
   const sdLanTunnelGuest = modalFormValues.sdLan?.isGuestTunnelEnabled
 
-  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, venueSdLanInfo)
+  const tunnelTypeInitVal = getNetworkTunnelType(tunnelModalProps.network, [], venueSdLanInfo)
   const isFwdGuest = sdLanTunneled ? sdLanTunnelGuest : false
   let isNeedUpdate: boolean = false
 
