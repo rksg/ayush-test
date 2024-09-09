@@ -21,9 +21,12 @@ import { createHttpRequest } from '@acx-ui/utils'
 
 export const softGreApi = baseSoftGreApi.injectEndpoints({
   endpoints: (build) => ({
-    createSoftGre: build.mutation<CommonResult, RequestPayload>({
+    createSoftGre: build.mutation<CommonResult, RequestPayload<SoftGre>>({
       query: ({ payload }) => {
         const req = createHttpRequest(SoftGreUrls.createSoftGre)
+        if (payload && !payload.secondaryGatewayAddress) {
+          delete payload.secondaryGatewayAddress
+        }
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -79,9 +82,12 @@ export const softGreApi = baseSoftGreApi.injectEndpoints({
       },
       providesTags: [{ type: 'SoftGre', id: 'DETAIL' }]
     }),
-    updateSoftGre: build.mutation<CommonResult, RequestPayload>({
+    updateSoftGre: build.mutation<CommonResult, RequestPayload<SoftGre>>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(SoftGreUrls.updateSoftGre, params)
+        if (payload && !payload.secondaryGatewayAddress) {
+          delete payload.secondaryGatewayAddress
+        }
         return {
           ...req,
           body: JSON.stringify(payload)
