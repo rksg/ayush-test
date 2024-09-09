@@ -4,6 +4,11 @@ import * as CCrrmChannel6gAuto         from './AIDrivenRRM/CCrrmChannel6gAuto'
 import * as CAclbEnable                from './AIOperations/CAclbEnable'
 import * as CBandbalancingEnable       from './AIOperations/CBandbalancingEnable'
 import * as CBandbalancingProactive    from './AIOperations/CBandbalancingProactive'
+import * as CBgScan24gEnable           from './AIOperations/CBgScan24gEnable'
+import * as CBgScan24gTimer            from './AIOperations/CBgScan24gTimer'
+import * as CBgScan5gEnable            from './AIOperations/CBgScan5gEnable'
+import * as CBgScan5gTimer             from './AIOperations/CBgScan5gTimer'
+import * as CBgScan6gTimer             from './AIOperations/CBgScan6gTimer'
 import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
@@ -21,5 +26,10 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-aclb-enable': CAclbEnable,
   'c-bandbalancing-enable': CBandbalancingEnable,
   'c-bandbalancing-enable-below-61': CBandbalancingEnable,
-  'c-bandbalancing-proactive': CBandbalancingProactive
+  'c-bandbalancing-proactive': CBandbalancingProactive,
+  'c-bgscan24g-enable': CBgScan24gEnable,
+  'c-bgscan5g-enable': CBgScan5gEnable,
+  'c-bgscan24g-timer': CBgScan24gTimer,
+  'c-bgscan5g-timer': CBgScan5gTimer,
+  'c-bgscan6g-timer': CBgScan6gTimer
 })
