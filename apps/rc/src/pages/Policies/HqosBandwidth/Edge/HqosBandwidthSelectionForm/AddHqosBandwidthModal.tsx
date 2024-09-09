@@ -7,8 +7,8 @@ import { Button, Loader, Modal, ModalType, showToast } from '@acx-ui/components'
 import { useCreateEdgeHqosProfileMutation }            from '@acx-ui/rc/services'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
-import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
-import { SummaryForm }                             from '../HqosBandwidthForm/SummaryForm'
+import { SettingsForm }                              from '../HqosBandwidthForm/SettingsForm'
+import { SummaryForm }                               from '../HqosBandwidthForm/SummaryForm'
 
 export const AddHqosBandwidthModal = () => {
   const { $t } = useIntl()

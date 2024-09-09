@@ -1,11 +1,11 @@
 
 import { Form, Select, Space } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }             from 'react-intl'
 
-import { useStepFormContext } from '@acx-ui/components'
+import { useStepFormContext }                     from '@acx-ui/components'
 import { useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
 
-import { AddHqosBandwidthModal } from './AddHqosBandwidthModal'
+import { AddHqosBandwidthModal }     from './AddHqosBandwidthModal'
 import { HqosBandwidthDeatilDrawer } from './HqosBandwidthDetailDrawer'
 
 

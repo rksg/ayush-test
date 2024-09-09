@@ -20,8 +20,8 @@ import {
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
-import { ScopeForm }                               from '../HqosBandwidthForm/ScopeForm'
-import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
+import { ScopeForm }                                 from '../HqosBandwidthForm/ScopeForm'
+import { SettingsForm }                              from '../HqosBandwidthForm/SettingsForm'
 
 
 const EditEdgeHqosBandwidth = () => {

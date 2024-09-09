@@ -2,8 +2,8 @@
 import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
 
-import { StepsForm, Table, TableProps, useStepFormContext }                         from '@acx-ui/components'
-import { useGetEdgeClusterListQuery }                                               from '@acx-ui/rc/services'
+import { StepsForm, Table, TableProps, useStepFormContext }                          from '@acx-ui/components'
+import { useGetEdgeClusterListQuery }                                                from '@acx-ui/rc/services'
 import { EdgeClusterStatus, EdgeHqosViewData, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'

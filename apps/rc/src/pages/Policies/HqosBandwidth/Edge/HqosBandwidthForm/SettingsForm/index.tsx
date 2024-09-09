@@ -2,8 +2,8 @@ import { Alert, Checkbox, Col, Form, Input, InputNumber, Row, Space, Table, Tabl
 import _                                                                                          from 'lodash'
 import { useIntl }                                                                                from 'react-intl'
 
-import { useStepFormContext }                                                                                      from '@acx-ui/components'
-import { SpaceWrapper }                                                                                            from '@acx-ui/rc/components'
+import { useStepFormContext }                                                                                       from '@acx-ui/components'
+import { SpaceWrapper }                                                                                             from '@acx-ui/rc/components'
 import { EdgeHqosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyNameRegExp, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
 import * as UI from '../../styledComponents'

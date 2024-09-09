@@ -7,9 +7,9 @@ import { PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath
 import { useNavigate, useTenantLink }                                              from '@acx-ui/react-router-dom'
 
 import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
-import { ScopeForm }                               from '../HqosBandwidthForm/ScopeForm'
-import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
-import { SummaryForm }                             from '../HqosBandwidthForm/SummaryForm'
+import { ScopeForm }                                 from '../HqosBandwidthForm/ScopeForm'
+import { SettingsForm }                              from '../HqosBandwidthForm/SettingsForm'
+import { SummaryForm }                               from '../HqosBandwidthForm/SummaryForm'
 
 
 const AddEdgeHqosBandwidth = () => {

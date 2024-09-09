@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { find } from 'lodash'
+import { find }                      from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
