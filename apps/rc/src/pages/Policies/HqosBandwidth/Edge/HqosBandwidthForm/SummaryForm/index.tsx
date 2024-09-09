@@ -8,13 +8,13 @@ import { CheckMark }                                                     from '@
 import { SpaceWrapper }                                                  from '@acx-ui/rc/components'
 import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
-import { QosBandwidthFormModel } from '..'
+import { HqosBandwidthFormModel } from '..'
 
 import { StyledAntdDescriptions } from './styledComponents'
 
 export const SummaryForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<QosBandwidthFormModel>()
+  const { form } = useStepFormContext<HqosBandwidthFormModel>()
   const formValues = form.getFieldsValue(true)
 
   const getActivateEdgeClusterNames = () => {

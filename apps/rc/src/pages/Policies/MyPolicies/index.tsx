@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
-import { find }                      from 'lodash'
+import { find } from 'lodash'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
+import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
@@ -13,7 +13,7 @@ import {
   useGetApSnmpViewModelQuery,
   useGetCertificateTemplatesQuery,
   useGetConnectionMeteringListQuery,
-  useGetEdgeQosProfileViewDataListQuery,
+  useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetIdentityProviderListQuery,
@@ -291,7 +291,7 @@ function useCardData (): PolicyCardData[] {
       type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       // eslint-disable-next-line max-len
-      totalCount: useGetEdgeQosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeHqosEnabled }).data?.totalCount,
+      totalCount: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeHqosEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })),
       disabled: !isEdgeHqosEnabled

@@ -1,16 +1,18 @@
 import { rest } from 'msw'
 
 import {
-  EdgeGeneralFixtures, EdgeQosProfileFixtures, EdgeQosProfilesUrls,
+  EdgeGeneralFixtures,
+  EdgeHqosProfileFixtures,
+  EdgeHqosProfilesUrls,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                                              from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import EdgeQosBandwidthDetail from '.'
+import EdgeHqosBandwidthDetail from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -28,8 +30,8 @@ describe('Edge QoS Bandwidth Detail', () => {
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeClusterStatusList.url,
@@ -41,7 +43,7 @@ describe('Edge QoS Bandwidth Detail', () => {
   it('should render Detail successfully', async () => {
     render(
       <Provider>
-        <EdgeQosBandwidthDetail />
+        <EdgeHqosBandwidthDetail />
       </Provider>, {
         route: { params, path: '/:tenantId/policies/hqosBandwidth/:policyId/detail' }
       }
@@ -58,7 +60,7 @@ describe('Edge QoS Bandwidth Detail', () => {
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
-        <EdgeQosBandwidthDetail />
+        <EdgeHqosBandwidthDetail />
       </Provider>, {
         route: { params, path: '/:tenantId/policies/hqosBandwidth/:policyId/detail' }
       }

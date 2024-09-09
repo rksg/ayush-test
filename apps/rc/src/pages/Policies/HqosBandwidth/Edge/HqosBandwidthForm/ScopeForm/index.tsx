@@ -4,13 +4,13 @@ import { useIntl }                from 'react-intl'
 
 import { StepsForm, Table, TableProps, useStepFormContext }                         from '@acx-ui/components'
 import { useGetEdgeClusterListQuery }                                               from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeQosViewData, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
+import { EdgeClusterStatus, EdgeHqosViewData, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
 
 import * as UI from '../styledComponents'
 
 export const ScopeForm = () => {
   const { $t } = useIntl()
-  const { form } = useStepFormContext<EdgeQosViewData>()
+  const { form } = useStepFormContext<EdgeHqosViewData>()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeClusterListQuery,

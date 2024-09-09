@@ -2,7 +2,7 @@ import userEvent       from '@testing-library/user-event'
 import { Form, Input } from 'antd'
 
 import {
-  EdgeQosProfileFixtures,
+  EdgeHqosProfileFixtures,
   getDefaultTrafficClassListData
 } from '@acx-ui/rc/utils'
 import {
@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import QosBandwidthForm from '.'
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 const { click } = userEvent
 
 const mockedNavigate = jest.fn()
@@ -116,7 +116,7 @@ describe('Edge QoS form', () => {
     })
 
     it('should correctly edit profile', async () => {
-      const mockData = mockEdgeQosProfileStatusList.data[1]
+      const mockData = mockEdgeHqosProfileStatusList.data[1]
       const editData = {
         name: mockData.name,
         description: mockData.description,

@@ -3,12 +3,12 @@ import { useIntl } from 'react-intl'
 import { Button, cssStr, Loader, PageHeader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
 import { TrafficClassSettingsTable }                                                       from '@acx-ui/rc/components'
 import {
-  useDeleteEdgeQosProfileMutation,
+  useDeleteEdgeHqosProfileMutation,
   useGetEdgeClusterListQuery,
-  useGetEdgeQosProfileViewDataListQuery
+  useGetEdgeHqosProfileViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeQosViewData,
+  EdgeHqosViewData,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
@@ -22,7 +22,7 @@ import { filterByAccess, hasPermission }          from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
-const EdgeQosBandwidthTable = () => {
+const EdgeHqosBandwidthTable = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -39,7 +39,7 @@ const EdgeQosBandwidthTable = () => {
   }
   const settingsId = 'profiles-edge-qos-bandwidth-table'
   const tableQuery = useTableQuery({
-    useQuery: useGetEdgeQosProfileViewDataListQuery,
+    useQuery: useGetEdgeHqosProfileViewDataListQuery,
     defaultPayload: getQosViewDataPayload,
     sorter: {
       sortField: 'name',
@@ -75,9 +75,9 @@ const EdgeQosBandwidthTable = () => {
       }
     })
 
-  const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeQosProfileMutation()
+  const [deleteQos, { isLoading: isDeleteQosUpdating }] = useDeleteEdgeHqosProfileMutation()
 
-  const columns: TableProps<EdgeQosViewData>['columns'] = [
+  const columns: TableProps<EdgeHqosViewData>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
       key: 'name',
@@ -141,7 +141,7 @@ const EdgeQosBandwidthTable = () => {
     }
   ]
 
-  const rowActions: TableProps<EdgeQosViewData>['rowActions'] = [
+  const rowActions: TableProps<EdgeHqosViewData>['rowActions'] = [
     {
       scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
@@ -227,4 +227,4 @@ const EdgeQosBandwidthTable = () => {
   )
 }
 
-export default EdgeQosBandwidthTable
+export default EdgeHqosBandwidthTable

@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeQosProfileFixtures, EdgeQosProfilesUrls, EdgeQosViewData, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { EdgeHqosProfileFixtures, EdgeHqosProfilesUrls, EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -14,10 +14,10 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 
-import EditEdgeQosBandwidth from '.'
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+import EditEdgeHqosBandwidth from '.'
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
 const { click } = userEvent
 
@@ -37,10 +37,10 @@ jest.mock('../QosBandwidthForm', () => ({
   __esModule: true,
   ...jest.requireActual('../QosBandwidthForm'),
   default: (props: {
-    onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+    onFinish: (values: HqosBandwidthFormModel) => Promise<boolean | void>
     onCancel: () => void
     editMode: boolean
-    editData: EdgeQosViewData
+    editData: EdgeHqosViewData
   }) => {
     const submitData = mockedSubmitDataGen()
     return <div data-testid='rc-QosBandwidthForm'>
@@ -59,7 +59,7 @@ jest.spyOn(Form, 'useForm').mockImplementation(() => result.current)
 result.current[0].setFieldValue = mockedSetFieldFn
 const params = { tenantId: 't-id', policyId: 't-qos-id' }
 const targetPath = getPolicyRoutePath({
-  type: PolicyType.QOS_BANDWIDTH,
+  type: PolicyType.HQOS_BANDWIDTH,
   oper: PolicyOperation.LIST
 })
 describe('Edit Edge QoS Profile', () => {
@@ -74,28 +74,28 @@ describe('Edit Edge QoS Profile', () => {
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (req, res, ctx) => {
           mockedGetQosReq(req.body)
-          return res(ctx.json(mockEdgeQosProfileStatusList))
+          return res(ctx.json(mockEdgeHqosProfileStatusList))
         }
       ),
       rest.put(
-        EdgeQosProfilesUrls.updateEdgeQosProfile.url,
+        EdgeHqosProfilesUrls.updateEdgeHqosProfile.url,
         (req, res, ctx) => {
           mockedEditFn(req.body)
           return res(ctx.status(202))
         }
       ),
       rest.put(
-        EdgeQosProfilesUrls.activateEdgeCluster.url,
+        EdgeHqosProfilesUrls.activateEdgeCluster.url,
         (req, res, ctx) => {
           mockedActivateFn(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.delete(
-        EdgeQosProfilesUrls.deactivateEdgeCluster.url,
+        EdgeHqosProfilesUrls.deactivateEdgeCluster.url,
         (req, res, ctx) => {
           mockedDeactivateFn(req.params)
           return res(ctx.status(202))
@@ -105,7 +105,7 @@ describe('Edit Edge QoS Profile', () => {
   })
 
   it('should correctly edit and actviate/deactivate', async () => {
-    const mockQos = mockEdgeQosProfileStatusList.data[0]
+    const mockQos = mockEdgeHqosProfileStatusList.data[0]
     const reqClusterId = mockQos.edgeClusterIds[0]
     mockedSubmitDataGen.mockReturnValue({
       trafficClassSettings: mockQos.trafficClassSettings,
@@ -120,7 +120,7 @@ describe('Edit Edge QoS Profile', () => {
       }
     })
     render(<Provider>
-      <EditEdgeQosBandwidth />
+      <EditEdgeHqosBandwidth />
     </Provider>, {
       route: { params }
     })
@@ -148,14 +148,14 @@ describe('Edit Edge QoS Profile', () => {
   })
 
   it('should correctly edit and no actviate/deactivate', async () => {
-    const mockQos = mockEdgeQosProfileStatusList.data[0]
+    const mockQos = mockEdgeHqosProfileStatusList.data[0]
     mockedSubmitDataGen.mockReturnValue({
       trafficClassSettings: mockQos.trafficClassSettings,
       name: 'update-QoS-1',
       description: 'description'
     })
     render(<Provider>
-      <EditEdgeQosBandwidth />
+      <EditEdgeHqosBandwidth />
     </Provider>, {
       route: { params }
     })
@@ -183,7 +183,7 @@ describe('Edit Edge QoS Profile', () => {
 
   it('should navigate to service list when click cancel', async () => {
     render(<Provider>
-      <EditEdgeQosBandwidth />
+      <EditEdgeHqosBandwidth />
     </Provider>, {
       route: { params }
     })

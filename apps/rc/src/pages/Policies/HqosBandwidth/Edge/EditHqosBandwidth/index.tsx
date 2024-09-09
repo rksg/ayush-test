@@ -2,15 +2,15 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Loader, PageHeader }       from '@acx-ui/components'
+import { Loader, PageHeader }        from '@acx-ui/components'
 import {
-  useActivateQosOnEdgeClusterMutation,
-  useDeactivateQosOnEdgeClusterMutation,
-  useGetEdgeQosProfileViewDataListQuery,
-  useUpdateEdgeQosProfileMutation
+  useActivateHqosOnEdgeClusterMutation,
+  useDeactivateHqosOnEdgeClusterMutation,
+  useGetEdgeHqosProfileViewDataListQuery,
+  useUpdateEdgeHqosProfileMutation
 } from '@acx-ui/rc/services'
 import {
-  EdgeQosViewData,
+  EdgeHqosViewData,
   PolicyOperation,
   PolicyType,
   TrafficClassSetting,
@@ -19,12 +19,12 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import QosBandwidthForm, { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { ScopeForm }                               from '../HqosBandwidthForm/ScopeForm'
 import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
 
 
-const EditEdgeQosBandwidth = () => {
+const EditEdgeHqosBandwidth = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const [form] = Form.useForm()
@@ -34,17 +34,16 @@ const EditEdgeQosBandwidth = () => {
     oper: PolicyOperation.LIST
   })
   const linkToProfileList = useTenantLink(qosListRoute)
-  const [updateEdgeQosProfile] = useUpdateEdgeQosProfileMutation()
-  const [activateEdgeCluster] = useActivateQosOnEdgeClusterMutation()
-  const [deactivateEdgeCluster] = useDeactivateQosOnEdgeClusterMutation()
-  // const { data, isLoading } = useGetEdgeQosProfileByIdQuery({ params })
-  const { viewData, isLoading } = useGetEdgeQosProfileViewDataListQuery(
+  const [updateEdgeHqosProfile] = useUpdateEdgeHqosProfileMutation()
+  const [activateEdgeCluster] = useActivateHqosOnEdgeClusterMutation()
+  const [deactivateEdgeCluster] = useDeactivateHqosOnEdgeClusterMutation()
+  const { viewData, isLoading } = useGetEdgeHqosProfileViewDataListQuery(
     { payload: {
       filters: { id: [params.policyId] }
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
-        viewData: data?.data?.[0] || {} as EdgeQosViewData,
+        viewData: data?.data?.[0] || {} as EdgeHqosViewData,
         isLoading
       })
     }
@@ -61,7 +60,7 @@ const EditEdgeQosBandwidth = () => {
     }
   ]
 
-  const handleFinish = async (formData: QosBandwidthFormModel) => {
+  const handleFinish = async (formData: HqosBandwidthFormModel) => {
     updateQosConfig(formData, viewData)
     changeEdgeClusterAssociation(formData)
   }
@@ -82,7 +81,7 @@ const EditEdgeQosBandwidth = () => {
      return false
    }
 
-  const updateQosConfig = async (reqConfig: QosBandwidthFormModel, dbConfig: EdgeQosViewData)=> {
+  const updateQosConfig = async (reqConfig: HqosBandwidthFormModel, dbConfig: EdgeHqosViewData)=> {
     if(reqConfig.name === dbConfig.name && reqConfig.description === dbConfig.description
       && !isChangedTrafficClassSettings(
         reqConfig.trafficClassSettings??[], dbConfig.trafficClassSettings??[])
@@ -98,7 +97,7 @@ const EditEdgeQosBandwidth = () => {
         trafficClassSettings: reqConfig.trafficClassSettings
       }
 
-      await updateEdgeQosProfile({ params, payload }).unwrap()
+      await updateEdgeHqosProfile({ params, payload }).unwrap()
       navigate(linkToProfileList, { replace: true })
     } catch(err) {
       // eslint-disable-next-line no-console
@@ -106,7 +105,7 @@ const EditEdgeQosBandwidth = () => {
     }
   }
 
-  const changeEdgeClusterAssociation = async (formData: QosBandwidthFormModel) => {
+  const changeEdgeClusterAssociation = async (formData: HqosBandwidthFormModel) => {
     const activateChangedClusters = formData.activateChangedClusters
     const activateChangedClustersInfo = formData.activateChangedClustersInfo??{}
     const reqClusterIds = viewData.edgeClusterIds??[]
@@ -163,7 +162,7 @@ const EditEdgeQosBandwidth = () => {
         ]}
       />
       <Loader states={[{ isLoading }]}>
-        <QosBandwidthForm
+        <HqosBandwidthForm
           form={form}
           steps={steps}
           onFinish={handleFinish}
@@ -175,4 +174,4 @@ const EditEdgeQosBandwidth = () => {
   )
 }
 
-export default EditEdgeQosBandwidth
+export default EditEdgeHqosBandwidth

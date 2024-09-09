@@ -2,10 +2,10 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 
 import { baseQuery } from './baseQuery'
 
-export const baseEdgeQosProfilesApi = createApi({
+export const baseEdgeHqosProfilesApi = createApi({
   baseQuery: baseQuery,
-  reducerPath: 'edgeQosProfilesApi',
-  tagTypes: ['EdgeQosProfiles'],
+  reducerPath: 'edgeHqosProfilesApi',
+  tagTypes: ['EdgeHqosProfiles'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

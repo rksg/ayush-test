@@ -2,17 +2,17 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { PageHeader }                                                              from '@acx-ui/components'
-import { useActivateQosOnEdgeClusterMutation, useCreateEdgeQosProfileMutation }    from '@acx-ui/rc/services'
+import { useActivateHqosOnEdgeClusterMutation, useCreateEdgeHqosProfileMutation }  from '@acx-ui/rc/services'
 import { PolicyOperation, PolicyType, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { useNavigate, useTenantLink }                                              from '@acx-ui/react-router-dom'
 
-import QosBandwidthForm, { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { ScopeForm }                               from '../HqosBandwidthForm/ScopeForm'
 import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
 import { SummaryForm }                             from '../HqosBandwidthForm/SummaryForm'
 
 
-const AddEdgeQosBandwidth = () => {
+const AddEdgeHqosBandwidth = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const qosListRoute = getPolicyRoutePath({
@@ -21,8 +21,8 @@ const AddEdgeQosBandwidth = () => {
   })
 
   const linkToProfileList = useTenantLink(qosListRoute)
-  const [addQosProfile] = useCreateEdgeQosProfileMutation()
-  const [activateEdgeCluster] = useActivateQosOnEdgeClusterMutation()
+  const [addQosProfile] = useCreateEdgeHqosProfileMutation()
+  const [activateEdgeCluster] = useActivateHqosOnEdgeClusterMutation()
   const [form] = Form.useForm()
 
   const steps = [
@@ -40,7 +40,7 @@ const AddEdgeQosBandwidth = () => {
     }
   ]
 
-  const addEdgeClusterAssociation = async (qosId?:string, formData?: QosBandwidthFormModel) => {
+  const addEdgeClusterAssociation = async (qosId?:string, formData?: HqosBandwidthFormModel) => {
     const activateChangedClusters = formData?.activateChangedClusters
     const activateChangedClustersInfo = formData?.activateChangedClustersInfo
     if(!activateChangedClusters ) {
@@ -62,7 +62,7 @@ const AddEdgeQosBandwidth = () => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleFinish = async (formData: QosBandwidthFormModel) => {
+  const handleFinish = async (formData: HqosBandwidthFormModel) => {
     try {
       const payload = {
         name: formData.name,
@@ -94,7 +94,7 @@ const AddEdgeQosBandwidth = () => {
           { text: $t({ defaultMessage: 'QoS Bandwidth' }), link: qosListRoute }
         ]}
       />
-      <QosBandwidthForm
+      <HqosBandwidthForm
         form={form}
         steps={steps}
         onFinish={handleFinish}
@@ -104,4 +104,4 @@ const AddEdgeQosBandwidth = () => {
   )
 }
 
-export default AddEdgeQosBandwidth
+export default AddEdgeHqosBandwidth

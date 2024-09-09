@@ -1,12 +1,12 @@
 
 import { Form, Select, Space } from 'antd'
-import { useIntl }             from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { useStepFormContext }                    from '@acx-ui/components'
-import { useGetEdgeQosProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { useStepFormContext } from '@acx-ui/components'
+import { useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
 
-import { AddQosBandwidthModal }     from './AddQosBandwidthModal'
-import { QosBandwidthDeatilDrawer } from './QosBandwidthDetailDrawer'
+import { AddHqosBandwidthModal } from './AddHqosBandwidthModal'
+import { HqosBandwidthDeatilDrawer } from './HqosBandwidthDetailDrawer'
 
 
 export const EdgeQosProfileSelectionForm = () => {
@@ -17,7 +17,7 @@ export const EdgeQosProfileSelectionForm = () => {
 
   const {
     edgeQosOptions, isEdgeQosOptionsLoading
-  } = useGetEdgeQosProfileViewDataListQuery({
+  } = useGetEdgeHqosProfileViewDataListQuery({
     payload: {
       fields: ['id', 'name'],
       pageSize: 10000,
@@ -57,8 +57,8 @@ export const EdgeQosProfileSelectionForm = () => {
           loading={isEdgeQosOptionsLoading}
         />
       </Form.Item>
-      <QosBandwidthDeatilDrawer />
-      <AddQosBandwidthModal />
+      <HqosBandwidthDeatilDrawer />
+      <AddHqosBandwidthModal />
     </Space>
   </Form.Item>
 

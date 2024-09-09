@@ -1,16 +1,16 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { StepsForm }                                   from '@acx-ui/components'
-import { edgeApi }                                     from '@acx-ui/rc/services'
-import { EdgeQosProfileFixtures, EdgeQosProfilesUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                             from '@acx-ui/store'
-import { mockServer, render, renderHook, screen }      from '@acx-ui/test-utils'
+import { StepsForm }                                     from '@acx-ui/components'
+import { edgeApi }                                       from '@acx-ui/rc/services'
+import { EdgeHqosProfileFixtures, EdgeHqosProfilesUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { mockServer, render, renderHook, screen }        from '@acx-ui/test-utils'
 
 
 import { EdgeQosProfileSelectionForm } from './index'
 
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -44,8 +44,8 @@ describe('EdgeQosProfileSelectionForm', () => {
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
       )
     )
   })
@@ -81,7 +81,7 @@ describe('EdgeQosProfileSelectionForm', () => {
       const [ form ] = Form.useForm()
       return form
     })
-    formRef.current.setFieldValue('qosId', mockEdgeQosProfileStatusList.data[0].id)
+    formRef.current.setFieldValue('qosId', mockEdgeHqosProfileStatusList.data[0].id)
 
     render(
       <Provider>

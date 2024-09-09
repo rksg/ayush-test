@@ -5,52 +5,52 @@ import _                from 'lodash'
 
 import { StepsForm }               from '@acx-ui/components'
 import {
-  EdgeQosViewData,
+  EdgeHqosViewData,
   getDefaultTrafficClassListData
 } from '@acx-ui/rc/utils'
 
-interface EdgeQosFormStep {
+interface EdgeHqosFormStep {
   title: string
   content: ReactNode
 }
 
-interface EdgeQosFormProps {
+interface EdgeHqosFormProps {
   form: FormInstance,
-  steps: EdgeQosFormStep[]
-  editData?: EdgeQosViewData
-  onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+  steps: EdgeHqosFormStep[]
+  editData?: EdgeHqosViewData
+  onFinish: (values: HqosBandwidthFormModel) => Promise<boolean | void>
   onCancel?: () => void
 }
 
-export interface QosBandwidthFormModel extends EdgeQosViewData {
+export interface HqosBandwidthFormModel extends EdgeHqosViewData {
   activateChangedClusters?:{ [key:string]:boolean }
   activateChangedClustersInfo?:{ [key:string]:
     { clusterName:string, venueId:string, venueName:string } }
 }
 
 export const getEdgeQosFormDefaultValues
-  = (profileData?: EdgeQosViewData): QosBandwidthFormModel => {
+  = (profileData?: EdgeHqosViewData): HqosBandwidthFormModel => {
     return {
       ...profileData,
       activateChangedClusters: profileData?.edgeClusterIds?.reduce((acc, curr) => {
         return { ...acc, [curr]: true }
       }, {} as { [clusterId: string]: boolean })
-    } as QosBandwidthFormModel
+    } as HqosBandwidthFormModel
   }
 
-const QosBandwidthForm = (props: EdgeQosFormProps) => {
+const HqosBandwidthForm = (props: EdgeHqosFormProps) => {
   const { form, steps, editData, onFinish, onCancel } = props
   const isEditMode = Boolean(editData)
 
-  const handleFinish = async (formData: QosBandwidthFormModel) => {
+  const handleFinish = async (formData: HqosBandwidthFormModel) => {
     onFinish(formData)
   }
 
-  const defaultQosData:EdgeQosViewData = {
+  const defaultQosData:EdgeHqosViewData = {
     trafficClassSettings: getDefaultTrafficClassListData()
   }
 
-  const mergeData = (data ?: EdgeQosViewData) => {
+  const mergeData = (data ?: EdgeHqosViewData) => {
     if(!data) {
       return defaultQosData
     }
@@ -92,4 +92,4 @@ const QosBandwidthForm = (props: EdgeQosFormProps) => {
   )
 }
 
-export default QosBandwidthForm
+export default HqosBandwidthForm

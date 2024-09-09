@@ -4,18 +4,18 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, Modal, ModalType, showToast } from '@acx-ui/components'
-import { useCreateEdgeQosProfileMutation }             from '@acx-ui/rc/services'
+import { useCreateEdgeHqosProfileMutation }            from '@acx-ui/rc/services'
 
-import QosBandwidthForm, { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import HqosBandwidthForm, { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 import { SettingsForm }                            from '../HqosBandwidthForm/SettingsForm'
 import { SummaryForm }                             from '../HqosBandwidthForm/SummaryForm'
 
-export const AddQosBandwidthModal = () => {
+export const AddHqosBandwidthModal = () => {
   const { $t } = useIntl()
   const [visible, setVisible]=useState(false)
   const [addQosProfile,
     { isLoading: isEdgeQosBandwidthCreating }
-  ] = useCreateEdgeQosProfileMutation()
+  ] = useCreateEdgeHqosProfileMutation()
   const [form] = Form.useForm()
 
   const steps = [
@@ -29,7 +29,7 @@ export const AddQosBandwidthModal = () => {
     }
   ]
 
-  const handleFinish = async (formData: QosBandwidthFormModel) => {
+  const handleFinish = async (formData: HqosBandwidthFormModel) => {
     try {
       const payload = {
         name: formData.name,
@@ -48,7 +48,7 @@ export const AddQosBandwidthModal = () => {
   }
 
   const content = <Loader states={[{ isLoading: false, isFetching: isEdgeQosBandwidthCreating }]}>
-    <QosBandwidthForm
+    <HqosBandwidthForm
       form={form}
       steps={steps}
       onFinish={handleFinish}

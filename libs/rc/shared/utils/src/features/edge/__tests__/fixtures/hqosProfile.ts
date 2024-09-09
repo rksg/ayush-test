@@ -1,65 +1,65 @@
-import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority } from '../../../../models'
+import { EdgeHqosTrafficClass, EdgeHqosTrafficClassPriority } from '../../../../models'
 
 export const mockTrafficClassSettings = [
   {
     maxBandwidth: 100,
     minBandwidth: 15,
-    trafficClass: EdgeQosTrafficClass.VIDEO,
-    priority: EdgeQosTrafficClassPriority.HIGH,
+    trafficClass: EdgeHqosTrafficClass.VIDEO,
+    priority: EdgeHqosTrafficClassPriority.HIGH,
     priorityScheduling: true
   },
   {
     maxBandwidth: 100,
     minBandwidth: 5,
-    trafficClass: EdgeQosTrafficClass.VIDEO,
-    priority: EdgeQosTrafficClassPriority.LOW,
+    trafficClass: EdgeHqosTrafficClass.VIDEO,
+    priority: EdgeHqosTrafficClassPriority.LOW,
     priorityScheduling: true
   },
   {
     maxBandwidth: 100,
     minBandwidth: 1,
-    trafficClass: EdgeQosTrafficClass.VOICE,
-    priority: EdgeQosTrafficClassPriority.HIGH,
+    trafficClass: EdgeHqosTrafficClass.VOICE,
+    priority: EdgeHqosTrafficClassPriority.HIGH,
     priorityScheduling: false
   },
   {
     maxBandwidth: 100,
     minBandwidth: 5,
-    trafficClass: EdgeQosTrafficClass.VOICE,
-    priority: EdgeQosTrafficClassPriority.LOW,
+    trafficClass: EdgeHqosTrafficClass.VOICE,
+    priority: EdgeHqosTrafficClassPriority.LOW,
     priorityScheduling: false
   },
   {
     maxBandwidth: 100,
     minBandwidth: 20,
-    trafficClass: EdgeQosTrafficClass.BEST_EFFORT,
-    priority: EdgeQosTrafficClassPriority.HIGH,
+    trafficClass: EdgeHqosTrafficClass.BEST_EFFORT,
+    priority: EdgeHqosTrafficClassPriority.HIGH,
     priorityScheduling: false
   },
   {
     maxBandwidth: 100,
     minBandwidth: 5,
-    trafficClass: EdgeQosTrafficClass.BEST_EFFORT,
-    priority: EdgeQosTrafficClassPriority.LOW,
+    trafficClass: EdgeHqosTrafficClass.BEST_EFFORT,
+    priority: EdgeHqosTrafficClassPriority.LOW,
     priorityScheduling: false
   },
   {
     maxBandwidth: 100,
     minBandwidth: 10,
-    trafficClass: EdgeQosTrafficClass.BACKGROUND,
-    priority: EdgeQosTrafficClassPriority.HIGH,
+    trafficClass: EdgeHqosTrafficClass.BACKGROUND,
+    priority: EdgeHqosTrafficClassPriority.HIGH,
     priorityScheduling: false
   },
   {
     maxBandwidth: 100,
     minBandwidth: 5,
-    trafficClass: EdgeQosTrafficClass.BACKGROUND,
-    priority: EdgeQosTrafficClassPriority.LOW,
+    trafficClass: EdgeHqosTrafficClass.BACKGROUND,
+    priority: EdgeHqosTrafficClassPriority.LOW,
     priorityScheduling: false
   }
 ]
 
-export const mockEdgeQosProfileStatusList = {
+export const mockEdgeHqosProfileStatusList = {
   fields: null,
   totalCount: 2,
   page: 1,
@@ -69,15 +69,15 @@ export const mockEdgeQosProfileStatusList = {
         {
           maxBandwidth: 100,
           minBandwidth: 1,
-          trafficClass: EdgeQosTrafficClass.VIDEO,
-          priority: EdgeQosTrafficClassPriority.HIGH,
+          trafficClass: EdgeHqosTrafficClass.VIDEO,
+          priority: EdgeHqosTrafficClassPriority.HIGH,
           priorityScheduling: false
         },
         {
           maxBandwidth: 100,
           minBandwidth: 1,
-          trafficClass: EdgeQosTrafficClass.VOICE,
-          priority: EdgeQosTrafficClassPriority.HIGH,
+          trafficClass: EdgeHqosTrafficClass.VOICE,
+          priority: EdgeHqosTrafficClassPriority.HIGH,
           priorityScheduling: false
         }
       ],

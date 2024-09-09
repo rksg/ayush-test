@@ -1,50 +1,50 @@
-import { configureStore }                                 from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import dynamicMiddlewares                                 from 'redux-dynamic-middlewares'
+import dynamicMiddlewares from 'redux-dynamic-middlewares'
 
 import {
-  baseAdministrationApi as administrationApi ,
-  baseApApi as apApi,
-  baseClientApi as clientApi,
-  baseCommonApi as commonApi,
-  baseDhcpApi as dhcpApi,
-  baseEdgeApi as edgeApi ,
-  baseEdgeDhcpApi as edgeDhcpApi,
-  baseEventAlarmApi as eventAlarmApi,
-  baseFirmwareApi as firmwareApi,
-  baseMigrationApi as migrationApi,
-  baseLicenseApi as licenseApi,
-  baseMspApi as mspApi,
-  baseNetworkApi as networkApi,
-  baseNsgApi as nsgApi,
-  basePersonaApi as personaApi,
-  basePolicyApi as policyApi,
-  baseServiceApi as serviceApi,
-  baseSwitchApi as switchApi,
-  baseTimelineApi as timelineApi,
-  baseVenueApi as venueApi,
-  baseTunnelProfileApi as tunnelProfileApi,
-  baseSoftGreApi as softGreApi,
-  baseResidentPortalApi as residentPortalApi,
-  baseConnectionMeteringApi as connectionMeteringApi,
-  dataApi,
-  dataApiSearch,
-  recommendationApi,
-  intentAIApi,
-  serviceGuardApi,
-  reportsApi,
-  rbacApi,
-  userApi,
-  baseMsgTemplateApi as msgTemplateApi,
-  videoCallQoeApi,
-  baseEdgeFirewallApi as edgeFirewallApi,
-  baseSigPackApi as sigPackApi,
-  baseRWGApi as rwgApi,
-  notificationApi,
-  baseEdgeSdLanApi,
-  baseConfigTemplateApi,
-  smartZoneApi,
-  baseEdgeQosProfilesApi as edgeQosProfilesApi
+    baseAdministrationApi as administrationApi,
+    baseApApi as apApi,
+    baseConfigTemplateApi,
+    baseEdgeSdLanApi,
+    baseClientApi as clientApi,
+    baseCommonApi as commonApi,
+    baseConnectionMeteringApi as connectionMeteringApi,
+    dataApi,
+    dataApiSearch,
+    baseDhcpApi as dhcpApi,
+    baseEdgeApi as edgeApi,
+    baseEdgeDhcpApi as edgeDhcpApi,
+    baseEdgeFirewallApi as edgeFirewallApi,
+    baseEdgeHqosProfilesApi as edgeHqosProfilesApi,
+    baseEventAlarmApi as eventAlarmApi,
+    baseFirmwareApi as firmwareApi,
+    intentAIApi,
+    baseLicenseApi as licenseApi,
+    baseMigrationApi as migrationApi,
+    baseMsgTemplateApi as msgTemplateApi,
+    baseMspApi as mspApi,
+    baseNetworkApi as networkApi,
+    notificationApi,
+    baseNsgApi as nsgApi,
+    basePersonaApi as personaApi,
+    basePolicyApi as policyApi,
+    rbacApi,
+    recommendationApi,
+    reportsApi,
+    baseResidentPortalApi as residentPortalApi,
+    baseRWGApi as rwgApi,
+    baseServiceApi as serviceApi,
+    serviceGuardApi,
+    baseSigPackApi as sigPackApi,
+    smartZoneApi,
+    baseSoftGreApi as softGreApi,
+    baseSwitchApi as switchApi,
+    baseTimelineApi as timelineApi,
+    baseTunnelProfileApi as tunnelProfileApi,
+    userApi,
+    baseVenueApi as venueApi,
+    videoCallQoeApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -92,7 +92,7 @@ export const store = configureStore({
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer,
-    [edgeQosProfilesApi.reducerPath]: edgeQosProfilesApi.reducer
+    [edgeHqosProfilesApi.reducerPath]: edgeHqosProfilesApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -142,7 +142,7 @@ export const store = configureStore({
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
       smartZoneApi.middleware,
-      edgeQosProfilesApi.middleware
+      edgeHqosProfilesApi.middleware
     ])
   },
 

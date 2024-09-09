@@ -10,7 +10,7 @@ import { Form }  from 'antd'
 
 import { StepsForm, StepsFormProps } from '@acx-ui/components'
 import {
-  EdgeQosProfileFixtures,
+  EdgeHqosProfileFixtures,
   getDefaultTrafficClassListData
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -21,7 +21,7 @@ import {
 
 import { SettingsForm } from '.'
 
-const { mockTrafficClassSettings } = EdgeQosProfileFixtures
+const { mockTrafficClassSettings } = EdgeHqosProfileFixtures
 
 const mockedSetFieldValue = jest.fn()
 

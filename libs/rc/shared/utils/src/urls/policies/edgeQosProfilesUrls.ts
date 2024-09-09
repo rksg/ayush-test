@@ -1,27 +1,27 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-export const EdgeQosProfilesUrls: { [key: string]: ApiInfo } = {
-  getEdgeQosProfileById: {
+export const EdgeHqosProfilesUrls: { [key: string]: ApiInfo } = {
+  getEdgeHqosProfileById: {
     method: 'get',
     url: '/edgeHqosProfiles/:policyId',
     newApi: true
   },
-  addEdgeQosProfile: {
+  addEdgeHqosProfile: {
     method: 'post',
     url: '/edgeHqosProfiles',
     newApi: true
   },
-  updateEdgeQosProfile: {
+  updateEdgeHqosProfile: {
     method: 'put',
     url: '/edgeHqosProfiles/:policyId',
     newApi: true
   },
-  deleteEdgeQosProfile: {
+  deleteEdgeHqosProfile: {
     method: 'delete',
     url: '/edgeHqosProfiles/:policyId',
     newApi: true
   },
-  getEdgeQosProfileViewDataList: {
+  getEdgeHqosProfileViewDataList: {
     method: 'post',
     url: '/edgeHqosProfiles/query',
     newApi: true

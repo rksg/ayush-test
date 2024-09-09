@@ -4,7 +4,7 @@ import { useIntl }                                                              
 
 import { useStepFormContext }                                                                                      from '@acx-ui/components'
 import { SpaceWrapper }                                                                                            from '@acx-ui/rc/components'
-import { EdgeQosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyNameRegExp, trafficClassToDisplay } from '@acx-ui/rc/utils'
+import { EdgeHqosViewData, TrafficClassSetting, priorityToDisplay, servicePolicyNameRegExp, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
 import * as UI from '../../styledComponents'
 
@@ -31,7 +31,7 @@ const checkMinAndMaxBandwidthCompare = (minBandwidth?: number, maxBandwidth?: nu
 export const SettingsForm = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { initialValues } = useStepFormContext<EdgeQosViewData>()
+  const { initialValues } = useStepFormContext<EdgeHqosViewData>()
 
   const bandwidthMinAndMaxErrMsg =
   $t({ defaultMessage: 'This value should be between 1 and 100' })

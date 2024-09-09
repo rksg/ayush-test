@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeQosProfilesUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { EdgeHqosProfilesUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import {
   Provider
 } from '@acx-ui/store'
@@ -12,9 +12,9 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { QosBandwidthFormModel } from '../HqosBandwidthForm'
+import { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 
-import AddEdgeQosBandwidth from '.'
+import AddEdgeHqosBandwidth from '.'
 
 const { click } = userEvent
 
@@ -28,11 +28,11 @@ const mockedAddFn = jest.fn()
 const mockedActivateFn = jest.fn()
 const mockedSubmitDataGen = jest.fn()
 
-jest.mock('../QosBandwidthForm', () => ({
+jest.mock('../HqosBandwidthForm', () => ({
   __esModule: true,
-  ...jest.requireActual('../QosBandwidthForm'),
+  ...jest.requireActual('../HqosBandwidthForm'),
   default: (props: {
-    onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+    onFinish: (values: HqosBandwidthFormModel) => Promise<boolean | void>
     onCancel: () => void
   }) => {
     const submitData = mockedSubmitDataGen()
@@ -49,7 +49,7 @@ jest.mock('../QosBandwidthForm', () => ({
 
 const params = { tenantId: 't-id' }
 const targetPath = getPolicyRoutePath({
-  type: PolicyType.QOS_BANDWIDTH,
+  type: PolicyType.HQOS_BANDWIDTH,
   oper: PolicyOperation.LIST
 })
 
@@ -61,14 +61,14 @@ describe('Add Edge QoS Profile', () => {
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.addEdgeQosProfile.url,
+        EdgeHqosProfilesUrls.addEdgeHqosProfile.url,
         (req, res, ctx) => {
           mockedAddFn(req.body)
           return res(ctx.json({ response: { id: 't-qos-id' } }))
         }
       ),
       rest.put(
-        EdgeQosProfilesUrls.activateEdgeCluster.url,
+        EdgeHqosProfilesUrls.activateEdgeCluster.url,
         (req, res, ctx) => {
           mockedActivateFn(req.params)
           return res(ctx.status(202))
@@ -102,7 +102,7 @@ describe('Add Edge QoS Profile', () => {
         { clusterName: 'cluster-name', venueId: 'venue-id', venueName: 'venue-name' } }
     })
     render(<Provider>
-      <AddEdgeQosBandwidth />
+      <AddEdgeHqosBandwidth />
     </Provider>, {
       route: { params }
     })
@@ -157,7 +157,7 @@ describe('Add Edge QoS Profile', () => {
       description: 'description'
     })
     render(<Provider>
-      <AddEdgeQosBandwidth />
+      <AddEdgeHqosBandwidth />
     </Provider>, {
       route: { params }
     })
@@ -192,7 +192,7 @@ describe('Add Edge QoS Profile', () => {
 
   it('should navigate to service list when click cancel', async () => {
     render(<Provider>
-      <AddEdgeQosBandwidth />
+      <AddEdgeHqosBandwidth />
     </Provider>, {
       route: { params }
     })

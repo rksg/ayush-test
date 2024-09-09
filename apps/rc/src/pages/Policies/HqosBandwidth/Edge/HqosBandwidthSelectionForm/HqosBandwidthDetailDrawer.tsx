@@ -6,16 +6,16 @@ import { useIntl }     from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps }                     from '@acx-ui/components'
 import { CheckMark }                                                     from '@acx-ui/icons'
-import { useGetEdgeQosProfileByIdQuery }                                 from '@acx-ui/rc/services'
+import { useGetEdgeHqosProfileByIdQuery }                                from '@acx-ui/rc/services'
 import { TrafficClassSetting, priorityToDisplay, trafficClassToDisplay } from '@acx-ui/rc/utils'
 
-export const QosBandwidthDeatilDrawer = () => {
+export const HqosBandwidthDeatilDrawer = () => {
   const { $t } = useIntl()
   const [visible, setVisible]=useState(false)
   const form = Form.useFormInstance()
   const qosId = form.getFieldValue('qosId')
 
-  const { data: detailData, isLoading } = useGetEdgeQosProfileByIdQuery({ params: { policyId: qosId } })
+  const { data: detailData, isLoading } = useGetEdgeHqosProfileByIdQuery({ params: { policyId: qosId } })
 
   const onClose = () => {
     setVisible(false)

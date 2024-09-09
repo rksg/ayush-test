@@ -96,10 +96,10 @@ import ClientIsolationTable                                             from './
 import ConnectionMeteringDetail                                         from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm                                       from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable                                          from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
-import AddEdgeQosBandwidth                                              from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
-import EditEdgeQosBandwidth                                             from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
-import EdgeQosBandwidthDetail                                           from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
-import EdgeQosBandwidthTable                                            from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
+import AddEdgeHqosBandwidth                                              from './pages/Policies/HqosBandwidth/Edge/AddHqosBandwidth'
+import EditEdgeHqosBandwidth                                             from './pages/Policies/HqosBandwidth/Edge/EditHqosBandwidth'
+import EdgeHqosBandwidthDetail                                           from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthDetail'
+import EdgeHqosBandwidthTable                                            from './pages/Policies/HqosBandwidth/Edge/HqosBandwidthTable'
 import IdentityProviderDetail                                           from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                                            from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import LbsServerProfileDetail                                           from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
@@ -1103,19 +1103,19 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.CREATE })}
-        element={<AddEdgeQosBandwidth />}
+        element={<AddEdgeHqosBandwidth />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.EDIT })}
-        element={<EditEdgeQosBandwidth />}
+        element={<EditEdgeHqosBandwidth />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.DETAIL })}
-        element={<EdgeQosBandwidthDetail />}
+        element={<EdgeHqosBandwidthDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })}
-        element={<EdgeQosBandwidthTable />}
+        element={<EdgeHqosBandwidthTable />}
       />
       {isConnectionMeteringEnabled && <>
         <Route

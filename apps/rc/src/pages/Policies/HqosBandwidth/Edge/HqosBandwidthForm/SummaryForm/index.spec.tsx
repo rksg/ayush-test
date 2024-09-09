@@ -1,8 +1,8 @@
 import { Form } from 'antd'
 
-import { StepsForm }       from '@acx-ui/components'
+import { StepsForm }        from '@acx-ui/components'
 import {
-  EdgeQosProfileFixtures
+  EdgeHqosProfileFixtures
 } from '@acx-ui/rc/utils'
 import {
   render,
@@ -10,21 +10,21 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { QosBandwidthFormModel } from '..'
+import { HqosBandwidthFormModel } from '..'
 
 import { SummaryForm } from '.'
 
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
 describe('QoS Summary form', () => {
   it('should correctly display', async () => {
-    const mockQos = mockEdgeQosProfileStatusList.data[1]
+    const mockQos = mockEdgeHqosProfileStatusList.data[1]
     const mockedData = {
       id: '',
       name: mockQos.name,
       description: mockQos.description,
       trafficClassSettings: mockQos.trafficClassSettings
-    } as QosBandwidthFormModel
+    } as HqosBandwidthFormModel
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -42,7 +42,7 @@ describe('QoS Summary form', () => {
   })
 
   it('should correctly display and activate edge cluster', async () => {
-    const mockQos = mockEdgeQosProfileStatusList.data[0]
+    const mockQos = mockEdgeHqosProfileStatusList.data[0]
     const mockedData = {
       id: '',
       name: mockQos.name,
@@ -51,7 +51,7 @@ describe('QoS Summary form', () => {
       activateChangedClusters: { [mockQos.edgeClusterIds[0]]: true },
       activateChangedClustersInfo: { [mockQos.edgeClusterIds[0]]:
         { clusterName: 'cluster', venueId: 'venue', venueName: 'venue' } }
-    } as QosBandwidthFormModel
+    } as HqosBandwidthFormModel
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()

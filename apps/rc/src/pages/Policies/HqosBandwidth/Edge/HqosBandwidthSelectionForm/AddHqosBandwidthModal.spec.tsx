@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeQosProfilesUrls }                         from '@acx-ui/rc/utils'
+import { EdgeHqosProfilesUrls }                        from '@acx-ui/rc/utils'
 import { Provider }                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { QosBandwidthFormModel } from '../QosBandwidthForm'
+import { HqosBandwidthFormModel } from '../HqosBandwidthForm'
 
-import { AddQosBandwidthModal } from './AddQosBandwidthModal'
+import { AddHqosBandwidthModal } from './AddHqosBandwidthModal'
 const { click } = userEvent
 const mockedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -22,7 +22,7 @@ jest.mock('../QosBandwidthForm', () => ({
   __esModule: true,
   ...jest.requireActual('../QosBandwidthForm'),
   default: (props: {
-    onFinish: (values: QosBandwidthFormModel) => Promise<boolean | void>
+    onFinish: (values: HqosBandwidthFormModel) => Promise<boolean | void>
     onCancel: () => void
   }) => {
     const submitData = mockedSubmitDataGen()
@@ -45,7 +45,7 @@ describe('SmartEdgeForm > AddQosBandwidthModal', () => {
   beforeEach(() => {
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.addEdgeQosProfile.url,
+        EdgeHqosProfilesUrls.addEdgeHqosProfile.url,
         (req, res, ctx) => {
           mockedAddFn(req.body)
           return res(ctx.json({ response: { id: 't-qos-id' } }))
@@ -77,7 +77,7 @@ describe('SmartEdgeForm > AddQosBandwidthModal', () => {
     })
     render(
       <Provider>
-        <AddQosBandwidthModal />
+        <AddHqosBandwidthModal />
       </Provider>, {
         route: { params }
       }
@@ -96,7 +96,7 @@ describe('SmartEdgeForm > AddQosBandwidthModal', () => {
   it('Should close modal while clicking cancel button', async () => {
     render(
       <Provider>
-        <AddQosBandwidthModal />
+        <AddHqosBandwidthModal />
       </Provider>
     )
 

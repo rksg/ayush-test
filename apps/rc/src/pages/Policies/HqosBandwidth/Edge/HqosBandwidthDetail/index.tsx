@@ -3,8 +3,8 @@ import { useIntl }                 from 'react-intl'
 
 import { Button, Loader, PageHeader, SummaryCard, Tooltip, cssStr }                                                       from '@acx-ui/components'
 import { TrafficClassSettingsTable }                                                                                      from '@acx-ui/rc/components'
-import { useGetEdgeQosProfileViewDataListQuery }                                                                          from '@acx-ui/rc/services'
-import { EdgeQosViewData, PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
+import { useGetEdgeHqosProfileViewDataListQuery }                                                                         from '@acx-ui/rc/services'
+import { EdgeHqosViewData, PolicyOperation, PolicyType, getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
 import { EdgeScopes }                                                                                                     from '@acx-ui/types'
 import { filterByAccess }                                                                                                 from '@acx-ui/user'
@@ -13,17 +13,17 @@ import * as UI from '../styledComponents'
 
 import { EdgeClusterTable } from './EdgeClusterTable'
 
-const EdgeQosBandwidthDetail = () => {
+const EdgeHqosBandwidthDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { qosViewData, isLoading } = useGetEdgeQosProfileViewDataListQuery(
+  const { qosViewData, isLoading } = useGetEdgeHqosProfileViewDataListQuery(
     { payload: {
       filters: { id: [params.policyId] }
     } },
     {
       selectFromResult: ({ data, isLoading }) => ({
-        qosViewData: data?.data?.[0] || {} as EdgeQosViewData,
+        qosViewData: data?.data?.[0] || {} as EdgeHqosViewData,
         isLoading
       })
     }
@@ -109,4 +109,4 @@ const EdgeQosBandwidthDetail = () => {
 
 }
 
-export default EdgeQosBandwidthDetail
+export default EdgeHqosBandwidthDetail

@@ -2,16 +2,15 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { EdgeQosProfileFixtures, EdgeQosProfilesUrls }             from '@acx-ui/rc/utils'
+import { EdgeHqosProfileFixtures, EdgeHqosProfilesUrls }           from '@acx-ui/rc/utils'
 import { Provider }                                                from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { QosBandwidthDeatilDrawer } from './QosBandwidthDetailDrawer'
+import { HqosBandwidthDeatilDrawer } from './HqosBandwidthDetailDrawer'
 
 
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 const { click } = userEvent
-
 
 const params = { tenantId: 't-id' }
 
@@ -20,8 +19,8 @@ describe('SmartEdgeForm > QosBandwidthDeatilDrawer', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        EdgeQosProfilesUrls.getEdgeQosProfileById.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList.data[1]))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileById.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList.data[1]))
       )
     )
   })
@@ -31,12 +30,12 @@ describe('SmartEdgeForm > QosBandwidthDeatilDrawer', () => {
       const [ form ] = Form.useForm()
       return form
     })
-    formRef.current.setFieldValue('qosId', mockEdgeQosProfileStatusList.data[1].id)
+    formRef.current.setFieldValue('qosId', mockEdgeHqosProfileStatusList.data[1].id)
 
     render(
       <Provider>
         <Form form={formRef.current}>
-          <QosBandwidthDeatilDrawer />
+          <HqosBandwidthDeatilDrawer />
         </Form>
       </Provider>, {
         route: { params }
@@ -55,12 +54,12 @@ describe('SmartEdgeForm > QosBandwidthDeatilDrawer', () => {
       const [ form ] = Form.useForm()
       return form
     })
-    formRef.current.setFieldValue('qosId', mockEdgeQosProfileStatusList.data[1].id)
+    formRef.current.setFieldValue('qosId', mockEdgeHqosProfileStatusList.data[1].id)
 
     render(
       <Provider>
         <Form form={formRef.current}>
-          <QosBandwidthDeatilDrawer />
+          <HqosBandwidthDeatilDrawer />
         </Form>
       </Provider>, {
         route: { params }

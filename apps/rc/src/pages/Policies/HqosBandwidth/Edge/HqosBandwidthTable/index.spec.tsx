@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi, edgeQosProfilesApi } from '@acx-ui/rc/services'
+import { edgeApi, edgeHqosProfilesApi } from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
-  EdgeQosProfileFixtures,
-  EdgeQosProfilesUrls,
+  EdgeHqosProfileFixtures,
+  EdgeHqosProfilesUrls,
   EdgeUrlsInfo,
   PolicyOperation,
   PolicyType,
@@ -25,7 +25,7 @@ import {
 import QosBandwidthTable from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -35,7 +35,7 @@ jest.mock('react-router-dom', () => ({
 describe('QosBandwidthTable', () => {
   let params: { tenantId: string }
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({
-    type: PolicyType.QOS_BANDWIDTH,
+    type: PolicyType.HQOS_BANDWIDTH,
     oper: PolicyOperation.LIST
   })
   beforeEach(() => {
@@ -44,14 +44,14 @@ describe('QosBandwidthTable', () => {
     }
 
     store.dispatch(edgeApi.util.resetApiState())
-    store.dispatch(edgeQosProfilesApi.util.resetApiState())
+    store.dispatch(edgeHqosProfilesApi.util.resetApiState())
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
       ),
       rest.delete(
-        EdgeQosProfilesUrls.deleteEdgeQosProfile.url,
+        EdgeHqosProfilesUrls.deleteEdgeHqosProfile.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.post(
@@ -95,7 +95,7 @@ describe('QosBandwidthTable', () => {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const mockQosProfile = mockEdgeQosProfileStatusList.data[0]
+    const mockQosProfile = mockEdgeHqosProfileStatusList.data[0]
     const edgeQosProfileDetailLink = await screen.findByRole('link',
       { name: mockQosProfile.name }) as HTMLAnchorElement
     expect(edgeQosProfileDetailLink.href)
@@ -115,7 +115,7 @@ describe('QosBandwidthTable', () => {
         route: { params, path: tablePath }
       })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const mockQosProfile = mockEdgeQosProfileStatusList.data[0]
+    const mockQosProfile = mockEdgeHqosProfileStatusList.data[0]
     const rows = await screen.findAllByRole('row')
     expect(within(rows[1]).getByRole('cell', { name: /Test-QoS-1/i })).toBeVisible()
     await user.click(within(rows[1]).getByRole('radio'))

@@ -12,9 +12,9 @@ import {
   ApSnmpUrls,
   ClientIsolationUrls,
   ConnectionMeteringUrls,
-  EdgeQosProfilesUrls,
-  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
-  getSelectPolicyRoutePath
+  EdgeHqosProfilesUrls,
+  getSelectPolicyRoutePath,
+  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -204,7 +204,7 @@ describe('MyPolicies', () => {
 
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
       ),
       rest.post(

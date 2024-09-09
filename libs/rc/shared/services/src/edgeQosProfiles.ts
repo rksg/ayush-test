@@ -1,45 +1,45 @@
 
 import {
   CommonResult,
-  EdgeQosConfig,
-  EdgeQosProfilesUrls,
-  EdgeQosViewData,
+  EdgeHqosProfilesUrls,
+  EdgeHqosConfig,
+  EdgeHqosViewData,
   TableResult,
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseEdgeQosProfilesApi } from '@acx-ui/store'
-import { RequestPayload }         from '@acx-ui/types'
-import { createHttpRequest }      from '@acx-ui/utils'
+import { baseEdgeHqosProfilesApi } from '@acx-ui/store'
+import { RequestPayload }          from '@acx-ui/types'
+import { createHttpRequest }       from '@acx-ui/utils'
 
 import { serviceApi } from './service'
 
 
-export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
+export const edgeHqosProfilesApi = baseEdgeHqosProfilesApi.injectEndpoints({
   endpoints: (build) => ({
-    createEdgeQosProfile: build.mutation<CommonResult, RequestPayload>({
+    createEdgeHqosProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeQosProfilesUrls.addEdgeQosProfile, undefined)
+        const req = createHttpRequest(EdgeHqosProfilesUrls.addEdgeHqosProfile, undefined)
         return {
           ...req,
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'EdgeQosProfiles', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }]
     }),
-    deleteEdgeQosProfile: build.mutation<CommonResult, RequestPayload>({
+    deleteEdgeHqosProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeQosProfilesUrls.deleteEdgeQosProfile, params)
+        const req = createHttpRequest(EdgeHqosProfilesUrls.deleteEdgeHqosProfile, params)
         return {
           ...req
         }
       },
-      invalidatesTags: [{ type: 'EdgeQosProfiles', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }]
     }),
-    updateEdgeQosProfile: build.mutation<CommonResult, RequestPayload>({
+    updateEdgeHqosProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          EdgeQosProfilesUrls.updateEdgeQosProfile,
+          EdgeHqosProfilesUrls.updateEdgeHqosProfile,
           params
         )
         return {
@@ -47,26 +47,26 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'EdgeQosProfiles', id: 'LIST' }]
+      invalidatesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }]
     }),
-    getEdgeQosProfileById: build.query<EdgeQosConfig, RequestPayload>({
+    getEdgeHqosProfileById: build.query<EdgeHqosConfig, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(EdgeQosProfilesUrls.getEdgeQosProfileById, params)
+        const req = createHttpRequest(EdgeHqosProfilesUrls.getEdgeHqosProfileById, params)
         return {
           ...req
         }
       },
-      providesTags: [{ type: 'EdgeQosProfiles', id: 'DETAIL' }]
+      providesTags: [{ type: 'EdgeHqosProfiles', id: 'DETAIL' }]
     }),
-    getEdgeQosProfileViewDataList: build.query<TableResult<EdgeQosViewData>, RequestPayload>({
+    getEdgeHqosProfileViewDataList: build.query<TableResult<EdgeHqosViewData>, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(EdgeQosProfilesUrls.getEdgeQosProfileViewDataList)
+        const req = createHttpRequest(EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList)
         return {
           ...req,
           body: payload
         }
       },
-      providesTags: [{ type: 'EdgeQosProfiles', id: 'LIST' }],
+      providesTags: [{ type: 'EdgeHqosProfiles', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
@@ -79,25 +79,25 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' }
             ]))
-            api.dispatch(edgeQosProfilesApi.util.invalidateTags([
-              { type: 'EdgeQosProfiles', id: 'LIST' }
+            api.dispatch(edgeHqosProfilesApi.util.invalidateTags([
+              { type: 'EdgeHqosProfiles', id: 'LIST' }
             ]))
           })
         })
       },
       extraOptions: { maxRetries: 5 }
     }),
-    activateQosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+    activateHqosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(EdgeQosProfilesUrls.activateEdgeCluster, params)
+          ...createHttpRequest(EdgeHqosProfilesUrls.activateEdgeCluster, params)
         }
       }
     }),
-    deactivateQosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
+    deactivateHqosOnEdgeCluster: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(EdgeQosProfilesUrls.deactivateEdgeCluster, params)
+          ...createHttpRequest(EdgeHqosProfilesUrls.deactivateEdgeCluster, params)
         }
       }
     })
@@ -105,11 +105,11 @@ export const edgeQosProfilesApi = baseEdgeQosProfilesApi.injectEndpoints({
 })
 
 export const {
-  useGetEdgeQosProfileViewDataListQuery,
-  useGetEdgeQosProfileByIdQuery,
-  useCreateEdgeQosProfileMutation,
-  useDeleteEdgeQosProfileMutation,
-  useUpdateEdgeQosProfileMutation,
-  useActivateQosOnEdgeClusterMutation,
-  useDeactivateQosOnEdgeClusterMutation
-} = edgeQosProfilesApi
+  useGetEdgeHqosProfileViewDataListQuery,
+  useGetEdgeHqosProfileByIdQuery,
+  useCreateEdgeHqosProfileMutation,
+  useDeleteEdgeHqosProfileMutation,
+  useUpdateEdgeHqosProfileMutation,
+  useActivateHqosOnEdgeClusterMutation,
+  useDeactivateHqosOnEdgeClusterMutation
+} = edgeHqosProfilesApi

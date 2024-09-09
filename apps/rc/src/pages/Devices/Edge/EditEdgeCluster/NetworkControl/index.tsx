@@ -3,12 +3,12 @@ import { Col, Form, Row, Switch } from 'antd'
 import { useIntl }                from 'react-intl'
 
 
-import { Loader, StepsForm }                                                                                                                       from '@acx-ui/components'
-import { Features }                                                                                                                                from '@acx-ui/feature-toggle'
-import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                        from '@acx-ui/rc/components'
-import { useActivateQosOnEdgeClusterMutation, useDeactivateQosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeQosProfileViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeClusterStatus }                                                                                                                       from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                                                                   from '@acx-ui/react-router-dom'
+import { Loader, StepsForm }                                                                                                                          from '@acx-ui/components'
+import { Features }                                                                                                                                   from '@acx-ui/feature-toggle'
+import { EdgeDhcpSelectionForm, useEdgeDhcpActions, useIsEdgeFeatureReady }                                                                           from '@acx-ui/rc/components'
+import { useActivateHqosOnEdgeClusterMutation, useDeactivateHqosOnEdgeClusterMutation, useGetDhcpStatsQuery, useGetEdgeHqosProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeClusterStatus }                                                                                                                          from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }                                                                                                      from '@acx-ui/react-router-dom'
 
 import EdgeQosProfileSelectionForm from '../../../../Policies/HqosBandwidth/Edge/HqosBandwidthSelectionForm'
 
@@ -28,8 +28,8 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
 
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
-  const [activateEdgeQos] = useActivateQosOnEdgeClusterMutation()
-  const [deactivateEdgeQos] = useDeactivateQosOnEdgeClusterMutation()
+  const [activateEdgeQos] = useActivateHqosOnEdgeClusterMutation()
+  const [deactivateEdgeQos] = useDeactivateHqosOnEdgeClusterMutation()
   const { $t } = useIntl()
 
   const { currentDhcp, isDhcpLoading } = useGetDhcpStatsQuery({
@@ -48,7 +48,7 @@ export const EdgeNetworkControl = (props: EdgeNetworkControlProps) => {
     })
   })
 
-  const { currentQos, isQosLoading } = useGetEdgeQosProfileViewDataListQuery({
+  const { currentQos, isQosLoading } = useGetEdgeHqosProfileViewDataListQuery({
     payload: {
       fields: [
         'id'

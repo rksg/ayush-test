@@ -1,16 +1,16 @@
 import _ from 'lodash'
 
-import { EdgeQosTrafficClass, EdgeQosTrafficClassPriority } from '../../models/EdgeQosProfilesEnum'
+import { EdgeHqosTrafficClass, EdgeHqosTrafficClassPriority } from '../../models/EdgeQosProfilesEnum'
 
-export const trafficClassToDisplay = (trafficClass?: string | EdgeQosTrafficClass) => {
-  const trafficClassEnum = EdgeQosTrafficClass[trafficClass as keyof typeof EdgeQosTrafficClass]
+export const trafficClassToDisplay = (trafficClass?: string | EdgeHqosTrafficClass) => {
+  const trafficClassEnum = EdgeHqosTrafficClass[trafficClass as keyof typeof EdgeHqosTrafficClass]
   switch (trafficClassEnum) {
-    case EdgeQosTrafficClass.BEST_EFFORT:
+    case EdgeHqosTrafficClass.BEST_EFFORT:
       return _.capitalize('BEST EFFORT')
   }
   return _.capitalize(trafficClass)
 }
 
-export const priorityToDisplay = (priority?: string | EdgeQosTrafficClassPriority) => {
+export const priorityToDisplay = (priority?: string | EdgeHqosTrafficClassPriority) => {
   return _.capitalize(priority)
 }
