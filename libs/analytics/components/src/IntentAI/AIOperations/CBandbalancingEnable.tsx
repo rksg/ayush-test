@@ -3,18 +3,16 @@ import { Form, Typography }                         from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { compareVersion }                from '@acx-ui/analytics/utils'
 import { StepsForm, useStepFormContext } from '@acx-ui/components'
 import { formatter }                     from '@acx-ui/formatter'
 
 import { TradeOff }                                           from '../../TradeOff'
 import { IntroSummary }                                       from '../common/IntroSummary'
-import { isIntentActive }                                     from '../common/isIntentActive'
 import { KpiField }                                           from '../common/KpiField'
 import { richTextFormatValues }                               from '../common/richTextFormatValues'
 import { getScheduledAt, ScheduleTiming }                     from '../common/ScheduleTiming'
 import { IntentConfigurationConfig, useIntentContext }        from '../IntentContext'
-import { getGraphKPIs, Intent, IntentKPIConfig }              from '../useIntentDetailsQuery'
+import { getGraphKPIs, IntentKPIConfig }                      from '../useIntentDetailsQuery'
 import { useInitialValues }                                   from '../useIntentTransition'
 import { Actions, getTransitionStatus, TransitionIntentItem } from '../utils'
 
@@ -26,45 +24,37 @@ import { Reason }                from './SideNotes/Reason'
 import { Tradeoff }              from './SideNotes/Tradeoff'
 
 export const configuration: IntentConfigurationConfig = {
-  label: defineMessage({ defaultMessage: 'AP Firmware Version' }),
-  valueFormatter: formatter('noFormat'),
-  tooltip: (intent: Intent) =>
-    (isIntentActive(intent) &&
-      intent.currentValue &&
-      compareVersion(intent.currentValue as string, intent.recommendedValue as string) > -1)
-      ? defineMessage({ defaultMessage: 'Zone was upgraded manually to recommended AP firmware version. Manually check whether this intent is still valid.' })
-      : defineMessage({ defaultMessage: 'Latest available AP firmware version will be used when this intent is applied.' })
+  label: defineMessage({ defaultMessage: 'Load Balancing: Band Balancing Mode' }),
+  valueFormatter: formatter('enabledFormat')
 }
 
 export const kpis: IntentKPIConfig[] = [{
-  key: 'aps-on-latest-fw-version',
-  label: defineMessage({ defaultMessage: 'APs on Latest Firmware Version' }),
-  valueAccessor: ([x, y]: number[]) => x / y,
-  valueFormatter: formatter('percentFormat'),
-  deltaSign: '+',
-  format: formatter('ratioFormat')
+  key: 'client-ratio',
+  label: defineMessage({ defaultMessage: 'Percentage of Clients on 2.4 GHz' }),
+  format: formatter('percentFormat'),
+  deltaSign: '-'
 }]
 
 const useValuesText = createUseValuesText({
-  action: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
-  reason: defineMessage({ defaultMessage: 'Latest AP firmware version in the zone will ensure all the APs in zone have the best available firmware with appropriate security/bug fixes and new features.' }),
-  tradeoff: defineMessage({ defaultMessage: `
-    <p>Upgrades may temporarily disrupt network operations and require careful planning to mitigate potential compatibility issues with existing hardware or software configurations.</p>
-  ` }),
   intro: defineMessage({ defaultMessage: `
     <p>
-      <b>Upgrade for latest security and features:</b>
-      Upgrading the network ensures it benefits from the latest security patches and features, enhancing protection against cyber threats and enabling access to new functionalities for improved performance.
+      <b>Enable band balancing for optimized performance:</b>
+      Activating band balancing distributes devices across different frequency bands (2.4 GHz and 5 GHz) to optimize network performance by reducing congestion and improving load distribution.
     </p>
     <p>
-      <b>Delay to avoid network downtime and compatibility issues:</b>
-      Delaying upgrades prioritizes network stability and compatibility, minimizing the risk of potential downtime and ensuring existing devices continue to function without compatibility issues.
+      <b>Keep band balancing disabled to avoid compatibility issues:</b>
+      Disabling band balancing ensures that all devices can connect to their preferred band without being forced to switch, which can avoid potential compatibility problems with certain devices.
     </p>
   ` }),
-  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic upgrade of Zone firmware in the network.' })
+  action: defineMessage({ defaultMessage: 'Band Balancing Mode for {scope} is disabled. It is recommended to enable Band Balancing Mode.' }),
+  reason: defineMessage({ defaultMessage: 'Band Balancing feature intelligently distributes WLAN clients on 2.4 GHz and 5 GHz channels in order to balance the client load. Band Balancing shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
+  tradeoff: defineMessage({ defaultMessage: `
+    <p>Some devices may experience compatibility issues or be forced to connect to less optimal bands, potentially impacting their performance and user experience.</p>
+  ` }),
+  inactive: defineMessage({ defaultMessage: 'When activated, this AIOps Intent takes over the automatic configuration of Band balancing in the network.' })
 })
 
-export const IntentAIDetails = createIntentAIDetails(useValuesText, { showImpactedAPs: true })
+export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
@@ -72,7 +62,7 @@ const options = {
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
-        <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+        <p>IntentAI will enabling band balancing for this network, this change shall optimize network performance by efficiently distributing devices across available frequency bands, reducing congestion and enhancing overall Wi-Fi experience.</p>
         <p>IntentAI will continuously monitor these configurations.</p>
       `}
     />
