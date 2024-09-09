@@ -882,7 +882,7 @@ export const apApi = baseApApi.injectEndpoints({
           const overwriteReq = createHttpRequest(
             EthernetPortProfileUrls.updateEthernetPortProfileSettingsByApPortId, oevrwriteParams,
             apiCustomHeader)
-          await fetchWithBQ({ ...overwriteReq, body: overwriteSetting })
+          await fetchWithBQ({ ...overwriteReq, body: JSON.stringify(overwriteSetting) })
           const activateReq = createHttpRequest(
             EthernetPortProfileUrls.activateEthernetPortProfileOnApPortId, ethParams, apiCustomHeader
           )
