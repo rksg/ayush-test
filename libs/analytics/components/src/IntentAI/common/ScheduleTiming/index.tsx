@@ -169,11 +169,6 @@ function isDateVisible (status: Statuses) {
 }
 
 export function getScheduledAt (values: FormValues) {
-  // TODO:
-  // remove once switch to Intent resolver
-  // required due to Recommendation resolver doesn't return scheudledAt by default
-  values.settings.date ??= moment().clone().startOf('day')
-
   const duration = moment.duration(values.settings.time, 'hours')
   const scheduledAt = values.settings.date.clone().set({
     hours: duration.hours(),

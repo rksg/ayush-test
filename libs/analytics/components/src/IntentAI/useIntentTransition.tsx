@@ -71,39 +71,13 @@ const { useIntentTransitionMutation } = intentAIApi.injectEndpoints({
   })
 })
 
-/**
- * TODO:
- * Temp helper to convert recommendation status to intent status
- */
-/* istanbul ignore next */
-export function recToIntentStatues (intent: Pick<Intent, 'status'>) {
-  let result: { status: Statuses, statusReason?: StatusReasons } = {
-    status: intent.status as Statuses,
-    statusReason: undefined
-  }
-  switch (intent.status as typeof states[keyof typeof states]) {
-    case states.new:
-      result = { status: Statuses.new, statusReason: undefined }
-      break
-    case states.applyScheduled:
-    case states.applied:
-      result = { status: Statuses.active, statusReason: undefined }
-      break
-  }
-  return result
-}
-
 export function useInitialValues <Preferences> () {
-  const { id, metadata, status, displayStatus } = useIntentContext().intent as unknown as Intent
-  return {
-    id,
-    ...recToIntentStatues({ status }),
-    displayStatus,
-    settings: metadata?.scheduledAt ? {
-      date: moment(metadata.scheduledAt),
-      time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
-    } : { date: undefined, time: undefined }
-  } as FormValues<Preferences>
+  const { id, metadata, status, statusReason, displayStatus } = useIntentContext().intent
+  const settings = metadata?.scheduledAt ? {
+    date: moment(metadata.scheduledAt),
+    time: moment.duration(moment(metadata.scheduledAt).format('HH:mm:ss')).asHours()
+  } : { date: undefined, time: undefined }
+  return { id, status, statusReason, displayStatus, settings } as FormValues<Preferences>
 }
 
 export function createUseIntentTransition <Preferences> (
