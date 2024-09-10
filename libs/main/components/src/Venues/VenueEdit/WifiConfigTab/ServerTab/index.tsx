@@ -32,8 +32,9 @@ export function ServerTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
-  const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
-  const isBetaFeatureLbsEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
+  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
+  const isLbsBetaFeatureEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
+  const supportLbs = isLbsFeatureEnabled && isLbsBetaFeatureEnabled
 
   const {
     previousPath,
@@ -56,7 +57,7 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
-  if ((supportLbs && isBetaFeatureLbsEnabled) && !isTemplate) {
+  if (supportLbs && !isTemplate) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService />))
   }

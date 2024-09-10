@@ -131,8 +131,9 @@ export default function MyPolicies () {
 function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
-  const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
-  const isBetaFeatureLbsEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
+  const isLbsFeatureEnabled = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
+  const isLbsBetaFeatureEnabled = useIsTierAllowed(TierFeatures.BETA_LBS)
+  const supportLbs = isLbsFeatureEnabled && isLbsBetaFeatureEnabled
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -268,10 +269,10 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetLbsServerProfileListQuery({
         params, payload: defaultPayload
-      }, { skip: !(supportLbs && isBetaFeatureLbsEnabled) }).data?.totalCount,
+      }, { skip: !supportLbs }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !(supportLbs && isBetaFeatureLbsEnabled)
+      disabled: !supportLbs
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,
