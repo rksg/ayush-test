@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
 import { find }                      from 'lodash'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -13,37 +13,36 @@ import {
   useGetApSnmpViewModelQuery,
   useGetCertificateTemplatesQuery,
   useGetConnectionMeteringListQuery,
-  useGetEdgeQosProfileViewDataListQuery,
+  useGetEdgeHqosProfileViewDataListQuery,
   useGetEnhancedAccessControlProfileListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetIdentityProviderListQuery,
   useGetLbsServerProfileListQuery,
+  useGetSoftGreViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
-  useSyslogPolicyListQuery,
-  useGetSoftGreViewDataListQuery
+  useSyslogPolicyListQuery
 } from '@acx-ui/rc/services'
 import {
   IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
-  ServicePolicyCardData,
+  filterByAccessForServicePolicyMutation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  isServicePolicyCardEnabled,
+  isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping,
-  servicePolicyCardDataToScopeKeys
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
+  Path,
   TenantLink,
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -54,7 +53,7 @@ export default function MyPolicies () {
   const navigate = useNavigate()
   const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
-  const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
+  const policies = useCardData()
   const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
 
   if (isEdgeCompatibilityEnabled) {
@@ -67,15 +66,13 @@ export default function MyPolicies () {
       : undefined
   }
 
-  const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
-
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
@@ -83,7 +80,7 @@ export default function MyPolicies () {
       <GridRow>
         {
           // eslint-disable-next-line max-len
-          policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+          policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
             const title = <FormattedMessage
               defaultMessage={
                 '{name} ({count})<helpIcon></helpIcon>'
@@ -128,7 +125,16 @@ export default function MyPolicies () {
   )
 }
 
-function useCardData (): ServicePolicyCardData<PolicyType>[] {
+interface PolicyCardData {
+  type: PolicyType
+  categories: RadioCardCategory[]
+  totalCount?: number
+  listViewPath?: Path
+  disabled?: boolean
+  helpIcon?: React.ReactNode
+}
+
+function useCardData (): PolicyCardData[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
@@ -138,7 +144,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isEdgeHqosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   return [
@@ -282,13 +288,13 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       disabled: !isCertificateTemplateEnabled
     },
     {
-      type: PolicyType.QOS_BANDWIDTH,
+      type: PolicyType.HQOS_BANDWIDTH,
       categories: [RadioCardCategory.EDGE],
       // eslint-disable-next-line max-len
-      totalCount: useGetEdgeQosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeQosEnabled }).data?.totalCount,
+      totalCount: useGetEdgeHqosProfileViewDataListQuery({ params, payload: {} }, { skip: !isEdgeHqosEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeQosEnabled
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.HQOS_BANDWIDTH, oper: PolicyOperation.LIST })),
+      disabled: !isEdgeHqosEnabled
     },
     {
       type: PolicyType.SOFTGRE,

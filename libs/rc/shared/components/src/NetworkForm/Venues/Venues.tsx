@@ -311,6 +311,30 @@ export function Venues (props: VenuesProps) {
     }
   }, [data])
 
+  useEffect(()=>{
+    if(data && activatedNetworkVenues?.length > 0 && !softGreAssociationUpdate && softGreVenueMap) {
+      const originalNetworkId = data.id
+      if(cloneMode && originalNetworkId){
+        const updateContent = {} as NetworkTunnelSoftGreAction
+        activatedNetworkVenues?.forEach(item => {
+          const venueId = item.venueId
+          if (venueId) {
+            // eslint-disable-next-line max-len
+            const softGreVenue = softGreVenueMap[venueId]?.find(sg => sg.networkIds.includes(originalNetworkId))
+            if (softGreVenue) {
+            // eslint-disable-next-line max-len
+              updateContent[`${venueId}`] = { newProfileId: softGreVenue.profileId, newProfileName: softGreVenue.profileName, oldProfileId: '' }
+            }
+          }
+        })
+
+        if (!_.isEmpty(updateContent)) {
+          form.setFieldValue('softGreAssociationUpdate', updateContent)
+        }
+      }
+    }
+  }, [form, data, cloneMode, activatedNetworkVenues, softGreVenueMap, softGreAssociationUpdate])
+
   useEffect(() => {
     if (data?.wlan) {
       const isSupport6G = IsNetworkSupport6g(data)

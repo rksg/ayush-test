@@ -6,41 +6,37 @@ import _                                      from 'lodash'
 import { useIntl }                            from 'react-intl'
 import { useParams }                          from 'react-router-dom'
 
+import { Button, Drawer, GridCol, GridRow, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
 import {
-  Button,
-  Drawer,
-  GridCol,
-  GridRow,
-  showActionModal,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import {
-  useAddAppPolicyMutation, useApplicationLibrarySettingsQuery,
+  useAddAppPolicyMutation,
+  useAddAppPolicyTemplateMutation,
+  useApplicationLibrarySettingsQuery,
   useAvcAppListQuery,
   useAvcCategoryListQuery,
   useGetAppPolicyQuery,
-  useGetEnhancedApplicationProfileListQuery,
-  useUpdateAppPolicyMutation
-} from '@acx-ui/rc/services'
-import {
-  useAddAppPolicyTemplateMutation,
   useGetAppPolicyTemplateListQuery,
   useGetAppPolicyTemplateQuery,
+  useGetEnhancedApplicationProfileListQuery,
+  useUpdateAppPolicyMutation,
   useUpdateAppPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  ApplicationAclType, ApplicationPolicy,
+  ApplicationAclType,
+  ApplicationPolicy,
   AvcCategory,
   CommonResult,
   defaultSort,
-  sortProp, TableResult, useConfigTemplate,
+  hasPolicyPermission,
+  PolicyOperation,
+  PolicyType,
+  sortProp,
+  TableResult,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                               from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { PROFILE_MAX_COUNT_APPLICATION_POLICY_RULES }                  from '../../AccessControl/constants'
 import { AddModeProps, editModeProps }                                 from '../AccessControlForm'
@@ -49,7 +45,8 @@ import { useScrollLock }                                               from '../
 
 import {
   genRuleObject,
-  transformToApplicationRule, transformToRulesForPayload,
+  transformToApplicationRule,
+  transformToRulesForPayload,
   updateFormWithEditRow
 } from './ApplicationDrawerUtils'
 import ApplicationRuleContent, {
@@ -706,7 +703,7 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         />
       </GridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        {hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.EDIT }) &&
           <Button type='link'
             disabled={visible || !applicationPolicyId}
             onClick={() => {
@@ -722,7 +719,9 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
         }
       </AclGridCol>
       <AclGridCol>
-        {hasPermission({ scopes: [WifiScopes.CREATE] }) &&
+        {
+          // eslint-disable-next-line max-len
+          hasPolicyPermission({ type: PolicyType.APPLICATION_POLICY, oper: PolicyOperation.CREATE }) &&
           <Button type='link'
             disabled={visible || appList.length >= PROFILE_MAX_COUNT_APPLICATION_POLICY}
             onClick={() => {
@@ -735,9 +734,6 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
       </AclGridCol>
     </GridRow>
   }
-
-  // eslint-disable-next-line max-len
-  if (!hasPermission({ scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, WifiScopes.READ] })) return null
 
   return (
     <>
