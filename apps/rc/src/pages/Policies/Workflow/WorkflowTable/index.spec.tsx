@@ -61,6 +61,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/components', ()=> ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  WorkflowActionPreviewModal: () => <div id='action preview'></div>
+}))
+
 
 describe('WorkflowTable', () => {
   const deleteWorkflowApi = jest.fn()
@@ -136,5 +141,23 @@ describe('WorkflowTable', () => {
     await userEvent.click(confirmButton)
 
     await waitFor(() => expect(deleteWorkflowApi).toHaveBeenCalled())
+  })
+
+  it('should able to preview', async () => {
+    render(<Provider>
+      <WorkflowTable/>
+    </Provider>, {
+      route: { params, path: tablePath }
+    })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await screen.findByRole('button', { name: 'Add Workflow' })
+    // // assert link in Table view
+    await screen.findByRole('link', { name: workflows[0].name })
+
+    const row = await screen.findByRole('row', { name: new RegExp(workflows[0].name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    const previewButton = await screen.findByRole('button', { name: /Preview/i })
+    await userEvent.click(previewButton)
   })
 })
