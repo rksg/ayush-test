@@ -77,6 +77,7 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   NewApGroupViewModelResponseType,
+  SystemCommands,
   StickyClientSteering,
   ApStickyClientSteering
 } from '@acx-ui/rc/utils'
@@ -628,8 +629,17 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.factoryResetAp, params, apiCustomHeader)
-        return {
-          ...req
+        if (enableRbac) {
+          return {
+            ...req,
+            body: JSON.stringify({
+              type: SystemCommands.FACTORY_RESET
+            })
+          }
+        } else {
+          return {
+            ...req
+          }
         }
       }
     }),
