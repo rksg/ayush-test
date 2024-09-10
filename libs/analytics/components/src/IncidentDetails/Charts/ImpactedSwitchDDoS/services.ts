@@ -35,6 +35,7 @@ const document = gql`
           portMac
         }
       }
+      switchCount
     }
   }
 `
@@ -49,10 +50,23 @@ export const impactedApi = dataApi.injectEndpoints({
             return { name,mac, serial , portNumbers: ports.map(port=>port.portNumber).join(', ') }
           })
       }
-    })
+    }),
+    impactedSwitchDDoSAndTotalSwitchCount: build.query<{ impactedCount:number,totalCount:number },
+     { id: Incident['id'] }>({
+       query: (variables) => ({ document, variables }),
+       transformResponse: (response: Response<{ impactedSwitchDDoS: ImpactedSwitch[],
+         switchCount: number }>) => {
+         const incident = response.incident
+         return {
+           impactedCount: incident.impactedSwitchDDoS.length,
+           totalCount: incident.switchCount
+         }
+       }
+     })
   })
 })
 
 export const {
-  useImpactedSwitchDDoSQuery
+  useImpactedSwitchDDoSQuery,
+  useImpactedSwitchDDoSAndTotalSwitchCountQuery
 } = impactedApi

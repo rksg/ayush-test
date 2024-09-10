@@ -3,11 +3,9 @@ import type { Incident }    from '@acx-ui/analytics/utils'
 import { GridRow, GridCol } from '@acx-ui/components'
 
 import { FixedAutoSizer }                                   from '../../DescriptionSection/styledComponents'
-import { ImpactedSwitchDDoSTable }                          from '../Charts/ImpactedSwitchDDoSTable'
+import { ImpactedSwitchDDoSDonut, ImpactedSwitchDDoSTable } from '../Charts/ImpactedSwitchDDoS'
 import { IncidentAttributes, Attributes }                   from '../IncidentAttributes'
 import { Insights }                                         from '../Insights'
-import { NetworkImpact, NetworkImpactProps }                from '../NetworkImpact'
-import { NetworkImpactChartTypes, NetworkImpactQueryTypes } from '../NetworkImpact/config'
 
 import { IncidentHeader } from './IncidentHeader'
 
@@ -20,18 +18,6 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
     Attributes.Duration,
     Attributes.EventStartTime,
     Attributes.EventEndTime
-  ]
-
-  console.log({ incident })
-
-
-  const networkImpactCharts: NetworkImpactProps['charts'] = [
-    {
-      chart: NetworkImpactChartTypes.AirtimeRx,
-      query: NetworkImpactQueryTypes.Distribution,
-      type: 'airtimeMetric',
-      dimension: 'airtimeRx'
-    }
   ]
 
   return <>
@@ -47,10 +33,10 @@ export const SwitchTcpSynDDoS = (incident: Incident) => {
       <GridCol col={{ span: 20 }}>
         <Insights incident={incident} />
       </GridCol>
-      <GridCol col={{ offset: 4, span: 5 }} style={{ minHeight: '129px' }}>
-        <NetworkImpact incident={incident} charts={networkImpactCharts} />
+      <GridCol col={{ offset: 4, span: 4 }} style={{ minHeight: '129px' }}>
+        <ImpactedSwitchDDoSDonut incident={incident}/>
       </GridCol>
-      <GridCol col={{ span: 15 }} style={{ minHeight: '129px' }}>
+      <GridCol col={{ span: 16 }} style={{ minHeight: '129px' }}>
         <ImpactedSwitchDDoSTable incident={incident} />
       </GridCol>
       <GridCol col={{ offset: 4, span: 20 }} style={{ minHeight: '326px' }}>
