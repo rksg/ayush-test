@@ -26,7 +26,7 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
   }, [networkList])
   return (
 
-    <Space direction='vertical' size='large' align='center'>
+    <Space direction='vertical' size='large'>
       <br/>
       <Text>
         {$t({ defaultMessage: 'The device with MAC address ' })+' '}
