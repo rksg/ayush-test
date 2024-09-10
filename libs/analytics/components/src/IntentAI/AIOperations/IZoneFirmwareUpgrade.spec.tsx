@@ -121,8 +121,12 @@ describe('IntentAIDetails', () => {
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
+    expect(await screen.findByText('This Intent is active, with following priority:')).toBeVisible()
+    expect(await screen.findByText('Yes, apply the recommendation')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('Venue: weiguo-mesh is running with older AP firmware version . It is recommended to upgrade zone to the latest available AP firmware version.')).toBeVisible()
+    expect(await screen.findByText('IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(await screen.findByTestId('KPI')).toBeVisible()

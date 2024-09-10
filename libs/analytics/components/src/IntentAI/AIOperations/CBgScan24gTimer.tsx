@@ -14,7 +14,11 @@ const configuration: IntentConfigurationConfig = {
 }
 
 const useValuesText = createUseValuesText({
-  action: defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Background Scan Timer" set as {currentValue}. Recommended setting for "Background Scan Timer" is {recommendedValue} to effectively use "Background Scan" feature.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>This Intent is active, with following priority:</p>
+    <p>Yes, apply the recommendation</p>
+    <p>IntentAI will change the background scan interval allowing the network to swiftly detect and react to interference, optimizing performance and ensuring a more responsive and efficient Wi-Fi experience.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'An optimized scan timer for background feature enables RUCKUS APs to scan the channels for an appropriate time interval. Time interval that is too long would result in longer time for radio channel selection.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>More frequent scans may lead to increased power consumption and brief connectivity interruptions, potentially disrupting real-time applications, such as audio and video calls, and impacting overall network stability and user experience.</p>

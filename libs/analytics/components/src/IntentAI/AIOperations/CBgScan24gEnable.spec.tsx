@@ -96,8 +96,12 @@ describe('IntentAIDetails', () => {
     render(<IntentAIDetails />, { route: { params }, wrapper: Provider })
     expect(await screen.findByRole('heading', { name: 'Intent Details' })).toBeVisible()
     expect(await screen.findByText('AI Operations')).toBeVisible()
+    expect(await screen.findByText('This Intent is active, with following priority:')).toBeVisible()
+    expect(await screen.findByText('Yes, apply the recommendation')).toBeVisible()
     // eslint-disable-next-line max-len
-    expect(await screen.findByText(/2.4 GHz radio setting for Venue: APMEMv6 has "Auto Channel Selection" set as "TBD"/)).toBeVisible()
+    expect(await screen.findByText('IntentAI will activate background scanning and configure the auto channel selection mode to "TBD" for this network.')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('IntentAI will continuously monitor these configurations.')).toBeVisible()
     expect(await screen.findByTestId('Details')).toBeVisible()
     expect(await screen.findByTestId('Configuration')).toBeVisible()
     expect(screen.queryByTestId('KPI')).not.toBeInTheDocument()

@@ -46,7 +46,12 @@ export const kpis: IntentKPIConfig[] = [{
 }]
 
 const useValuesText = createUseValuesText({
-  action: defineMessage({ defaultMessage: '{scope} is running with older AP firmware version {currentValue}. It is recommended to upgrade zone to the latest available AP firmware version.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>This Intent is active, with following priority: </p>
+    <p>Yes, apply the recommendation</p>
+    <p>IntentAI will upgrade the Zone firmware ensuring the network remains secure and up-to-date with the latest features. This change will enhance protection against cyber threats and enabling access to new functionalities for improved performance and management.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'Latest AP firmware version in the zone will ensure all the APs in zone have the best available firmware with appropriate security/bug fixes and new features.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Upgrades may temporarily disrupt network operations and require careful planning to mitigate potential compatibility issues with existing hardware or software configurations.</p>
