@@ -8,13 +8,13 @@ import { get }            from '@acx-ui/config'
 import { TenantLink }     from '@acx-ui/react-router-dom'
 import { render, screen } from '@acx-ui/test-utils'
 
-import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithEcoFlexAI, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
-import { Icon }                                                                                                  from './common/IntentIcon'
-import { aiFeatures }                                                                                            from './config'
-import { DisplayStates, Statuses }                                                                               from './states'
-import * as UI                                                                                                   from './styledComponents'
-import { AIFeature, iconTooltips }                                                                               from './Table'
-import { Actions, isVisibledByAction }                                                                           from './utils'
+import { aiFeatureWithAIOps, aiFeatureWithAirFlexAI, aiFeatureWithAirFlexAIWithNewStatus, aiFeatureWithEcoFlexAI, aiFeatureWithRRM, mockAIDrivenRow } from './__tests__/fixtures'
+import { Icon }                                                                                                                                       from './common/IntentIcon'
+import { aiFeatures }                                                                                                                                 from './config'
+import { DisplayStates, Statuses }                                                                                                                    from './states'
+import * as UI                                                                                                                                        from './styledComponents'
+import { AIFeature, iconTooltips }                                                                                                                    from './Table'
+import { Actions, isVisibledByAction }                                                                                                                from './utils'
 
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
@@ -151,6 +151,24 @@ describe('AIFeature component', () => {
         </TenantLink>
       </UI.FeatureIcon>
     )
+  })
+
+  it('should not render link for AIFeature when status is new', async () => {
+    mockGet.mockReturnValue('true')
+
+    expect(AIFeature(aiFeatureWithAirFlexAIWithNewStatus)).toEqual(
+      <UI.FeatureIcon>
+        <Tooltip
+          placement='right'
+          title={iconTooltips[aiFeatures.AirFlexAI]}
+          overlayInnerStyle={{ width: '345px' }}
+        >
+          <Icon feature={aiFeatures.AirFlexAI} />
+        </Tooltip>
+        <span>{aiFeatureWithAirFlexAI.aiFeature}</span>
+      </UI.FeatureIcon>
+    )
+
   })
 
   describe('isVisibledByAction', () => {
