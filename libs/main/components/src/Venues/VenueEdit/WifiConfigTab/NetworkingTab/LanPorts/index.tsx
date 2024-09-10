@@ -285,11 +285,11 @@ export function LanPorts () {
     for (let model of resetModels) {
       let currentLan = payload.find(l => l.model === model)
       const originLan = lanPortOrinData?.find(o => o.model === model)
-      const eqOriginLan = isEqualLanPort(originLan!, currentLan!)
+      const eqOriginLan = isEqualLanPort(currentLan!, originLan!)
       if (eqOriginLan) continue
 
       const defaultLan = defaultLanPortsByModelMap.get(model)
-      const resetToDefault = isEqualLanPort(defaultLan!, currentLan!)
+      const resetToDefault = isEqualLanPort(currentLan!, defaultLan!)
       if (resetToDefault) {
         return true
       }
