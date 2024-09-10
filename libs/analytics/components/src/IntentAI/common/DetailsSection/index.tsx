@@ -16,6 +16,6 @@ export const DetailsSection: React.FC<{
   }
   return <UI.Wrapper {...props}>
     <UI.Title children={title} />
-    <UI.Children children={children} />
+    <UI.Details children={children} />
   </UI.Wrapper>
 }

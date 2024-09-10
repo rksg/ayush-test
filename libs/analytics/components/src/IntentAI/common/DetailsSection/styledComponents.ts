@@ -14,6 +14,6 @@ export const Title = styled(Typography.Title).attrs({ level: 4 })`
   }
 `
 
-export const Children = styled.div`
+export const Details = styled.div`
   flex: 1;
 `
