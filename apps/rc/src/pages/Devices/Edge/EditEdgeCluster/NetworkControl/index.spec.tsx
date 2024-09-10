@@ -1,11 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                                                                        from '@acx-ui/feature-toggle'
-import { edgeApi, edgeDhcpApi, edgeQosProfilesApi }                                                                            from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeQosProfileFixtures, EdgeQosProfilesUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                                                 from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
+import { edgeApi, edgeDhcpApi, edgeHqosProfilesApi }                                                                             from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeHqosProfileFixtures, EdgeHqosProfilesUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                                   from '@acx-ui/test-utils'
 
 import { mockDhcpPoolStatsData } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
@@ -13,7 +13,7 @@ import { EdgeNetworkControl } from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
 const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
-const { mockEdgeQosProfileStatusList } = EdgeQosProfileFixtures
+const { mockEdgeHqosProfileStatusList } = EdgeHqosProfileFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockedActivateEdgeDhcp = jest.fn()
@@ -62,7 +62,7 @@ describe('Edge Cluster Network Control Tab', () => {
 
     store.dispatch(edgeApi.util.resetApiState())
     store.dispatch(edgeDhcpApi.util.resetApiState())
-    store.dispatch(edgeQosProfilesApi.util.resetApiState())
+    store.dispatch(edgeHqosProfilesApi.util.resetApiState())
 
     params = {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -87,26 +87,26 @@ describe('Edge Cluster Network Control Tab', () => {
         (_, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       ),
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList))
       ),
       rest.put(
-        EdgeQosProfilesUrls.activateEdgeCluster.url,
+        EdgeHqosProfilesUrls.activateEdgeCluster.url,
         (req, res, ctx) => {
           mockedActivateEdgeQosFn(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.delete(
-        EdgeQosProfilesUrls.deactivateEdgeCluster.url,
+        EdgeHqosProfilesUrls.deactivateEdgeCluster.url,
         (req, res, ctx) => {
           mockedDeactivateEdgeQosFn(req.params)
           return res(ctx.status(202))
         }
       ),
       rest.get(
-        EdgeQosProfilesUrls.getEdgeQosProfileById.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeQosProfileStatusList.data[1]))
+        EdgeHqosProfilesUrls.getEdgeHqosProfileById.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeHqosProfileStatusList.data[1]))
       )
     )
   })
@@ -143,7 +143,7 @@ describe('Edge Cluster Network Control Tab', () => {
   it('HQoS toggle should be off when no HQoS returned', async () => {
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json({
           data: []
         }))
@@ -232,7 +232,7 @@ describe('Edge Cluster Network Control Tab', () => {
     mockedActivateEdgeDhcp.mockReturnValue(Promise.resolve())
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json({
           data: []
         }))
@@ -288,7 +288,7 @@ describe('Edge Cluster Network Control Tab', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedActivateEdgeQosFn).toBeCalledWith({
       edgeClusterId: params.clusterId,
-      policyId: mockEdgeQosProfileStatusList.data[1].id,
+      policyId: mockEdgeHqosProfileStatusList.data[1].id,
       venueId: mockEdgeClusterList.data[0]?.venueId }
     )
   })
@@ -297,7 +297,7 @@ describe('Edge Cluster Network Control Tab', () => {
     mockedDeactivateEdgeDhcp.mockReturnValue(Promise.resolve())
     mockServer.use(
       rest.post(
-        EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
+        EdgeHqosProfilesUrls.getEdgeHqosProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json({
           data: []
         }))
