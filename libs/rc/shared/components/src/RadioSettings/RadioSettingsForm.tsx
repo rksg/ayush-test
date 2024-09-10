@@ -36,7 +36,7 @@ export function RadioSettingsForm (props:{
   radioType: ApRadioTypeEnum,
   radioDataKey: string[],
   disabled?: boolean,
-  txPowerOptions: SelectItemOption[], 
+  txPowerOptions: SelectItemOption[],
   channelBandwidthOptions: SelectItemOption[],
   context?: string
   isUseVenueSettings?: boolean,

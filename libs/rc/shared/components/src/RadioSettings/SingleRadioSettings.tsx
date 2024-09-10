@@ -337,12 +337,12 @@ export function SingleRadioSettings (props:{
 
     if (isSupportAggressiveTxPowerAdjustment) {
       return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
-        if (a.label === 'MIN') return 1;
-        if (b.label === 'MIN') return -1;
-        return 0;
-      });
+        if (a.label === 'MIN') return 1
+        if (b.label === 'MIN') return -1
+        return 0
+      })
     }
-    return res;
+    return res
   }
 
   const selectRadioChannelSelectionType = () => {
