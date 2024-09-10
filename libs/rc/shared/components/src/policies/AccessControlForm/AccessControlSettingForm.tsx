@@ -10,6 +10,7 @@ import { StepsFormLegacy }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
   useGetAccessControlProfileQuery,
+  useGetAccessControlProfileTemplateQuery,
   useGetEnhancedAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -18,7 +19,7 @@ import {
 import {
   AccessControlInfoType,
   AclEmbeddedObject, EnhancedAccessControlInfoType,
-  useConfigTemplate,
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -212,7 +213,11 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
     }
   })
 
-  const { data } = useGetAccessControlProfileQuery({ params })
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAccessControlProfileQuery,
+    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
+    enableRbac: enableRbac
+  })
 
   const useAclPolicy = tableQuery?.data?.data[0]
 
@@ -232,6 +237,11 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
 
   const useAclTemplatePolicy = templateTableQuery?.data?.data[0]
 
+  const useAclTemplatePolicyWithDesc = {
+    ...useAclTemplatePolicy,
+    description: data?.description || ''
+  }
+
   // eslint-disable-next-line max-len
-  return ((isTemplate ? useAclTemplatePolicy : useAclPolicyWithDesc) || {}) as EnhancedAccessControlInfoType
+  return ((isTemplate ? useAclTemplatePolicyWithDesc : useAclPolicyWithDesc) || {}) as EnhancedAccessControlInfoType
 }
