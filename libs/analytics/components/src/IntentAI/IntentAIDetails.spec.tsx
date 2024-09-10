@@ -1,13 +1,20 @@
 import { Provider, intentAIUrl }            from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
-import { mockedIntentCRRM }                     from './AIDrivenRRM/__tests__/fixtures'
-import { mocked as mockedCBgScanEnable }        from './AIOperations/__tests__/mockedCBgScanEnable'
-import { mocked as mockedCBgScanTimer }         from './AIOperations/__tests__/mockedCBgScanTimer'
-import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
-import { mockedIntentAirFlex }                  from './AirFlexAI/__tests__/fixtures'
-import { IntentAIDetails }                      from './IntentAIDetails'
-import { Intent }                               from './useIntentDetailsQuery'
+import { mockedIntentCRRM }                            from './AIDrivenRRM/__tests__/fixtures'
+import { mocked as mockedCAclbEnable }                 from './AIOperations/__tests__/mockedCAclbEnable'
+import { mocked as mockedCBandbalancingEnable }        from './AIOperations/__tests__/mockedCBandbalancingEnable'
+import { mocked as mockedCBandbalancingEnableBelow61 } from './AIOperations/__tests__/mockedCBandbalancingEnableBelow61'
+import { mocked as mockedCBandbalancingProactive }     from './AIOperations/__tests__/mockedCBandbalancingProactive'
+import { mocked as mockedCBgScanEnable }               from './AIOperations/__tests__/mockedCBgScanEnable'
+import { mocked as mockedCBgScanTimer }                from './AIOperations/__tests__/mockedCBgScanTimer'
+import { mocked as mockedCDfschannelsDisable }         from './AIOperations/__tests__/mockedCDfschannelsDisable'
+import { mocked as mockedCDfschannelsEnable }          from './AIOperations/__tests__/mockedCDfschannelsEnable'
+import { mocked as mockedCTxpowerSame }                from './AIOperations/__tests__/mockedCTxpowerSame'
+import { mocked as mockedIZoneFirmwareUpgrade }        from './AIOperations/__tests__/mockedIZoneFirmwareUpgrade'
+import { mockedIntentAirFlex }                         from './AirFlexAI/__tests__/fixtures'
+import { IntentAIDetails }                             from './IntentAIDetails'
+import { Intent }                                      from './useIntentDetailsQuery'
 
 jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
   kpis: [],
@@ -25,6 +32,26 @@ jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
 jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='i-zonefirmware-upgrade-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CTxpowerSame', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-txpower-same-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CDfschannelsDisable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-dfschannels-disable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CDfschannelsEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-dfschannels-enable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CAclbEnable', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-aclb-enable-IntentAIDetails'/>
+}))
+jest.mock('./AIOperations/CBandbalancingProactive', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bandbalancing-proactive-IntentAIDetails'/>
 }))
 
 jest.mock('./AIOperations/CBgScan24gEnable', () => ({
@@ -46,6 +73,12 @@ jest.mock('./AIOperations/CBgScan5gTimer', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-bgscan5g-timer-IntentAIDetails'/>
 }))
+
+jest.mock('./AIOperations/CBgScan6gTimer', () => ({
+  kpis: [],
+  IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
+}))
+
 jest.mock('./AirFlexAI/CProbeFlex24g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-24g-IntentAIDetails'/>
@@ -57,11 +90,6 @@ jest.mock('./AirFlexAI/CProbeFlex5g.tsx', () => ({
 jest.mock('./AirFlexAI/CProbeFlex6g.tsx', () => ({
   kpis: [],
   IntentAIDetails: () => <div data-testid='c-probeflex-6g-IntentAIDetails'/>
-}))
-
-jest.mock('./AIOperations/CBgScan6gTimer', () => ({
-  kpis: [],
-  IntentAIDetails: () => <div data-testid='c-bgscan6g-timer-IntentAIDetails'/>
 }))
 
 const doTest = async (codes: string[], intent: Intent) => {
@@ -80,25 +108,70 @@ describe('IntentAIDetails', () => {
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
     await doTest(codes, mockedIntentCRRM)
   })
+  const CBandbalancingEnable = () => require('./AIOperations/CBandbalancingEnable')
 
   describe('should render for AIOperations', () => {
-    it('should render for AIOperations', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', {
-        data: { intent: mockedIZoneFirmwareUpgrade } })
+    it('i-zonefirmware-upgrade', async () => {
+      const intent = mockedIZoneFirmwareUpgrade
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       const codes = ['i-zonefirmware-upgrade']
-      await doTest(codes, mockedIZoneFirmwareUpgrade)
+      await doTest(codes, intent)
     })
     it('c-bgscan-enable', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedCBgScanEnable } })
+      const intent = mockedCBgScanEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       const codes = ['c-bgscan24g-enable', 'c-bgscan5g-enable']
-      await doTest(codes, mockedCBgScanEnable)
+      await doTest(codes, intent)
     })
     it('c-bgscan-timer', async () => {
-      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedCBgScanTimer } })
+      const intent = mockedCBgScanTimer
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
       const codes = ['c-bgscan24g-timer', 'c-bgscan5g-timer', 'c-bgscan6g-timer']
-      await doTest(codes, mockedCBgScanTimer)
+      await doTest(codes, intent)
     })
-    // TODO: add test for other AIOperations
+    it('c-txpower-same', async () => {
+      const intent = mockedCTxpowerSame
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-dfschannels-disable', async () => {
+      const intent = mockedCDfschannelsDisable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-dfschannels-enable', async () => {
+      const intent = mockedCDfschannelsEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-aclb-enable', async () => {
+      const intent = mockedCAclbEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-bandbalancing-enable', async () => {
+      jest.spyOn(CBandbalancingEnable(), 'IntentAIDetails').mockImplementation(() => (
+        <div data-testid='c-bandbalancing-enable-IntentAIDetails' />
+      ))
+
+      const intent = mockedCBandbalancingEnable
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-bandbalancing-enable-below-61', async () => {
+      jest.spyOn(CBandbalancingEnable(), 'IntentAIDetails').mockImplementation(() => (
+        <div data-testid='c-bandbalancing-enable-below-61-IntentAIDetails' />
+      ))
+
+      const intent = mockedCBandbalancingEnableBelow61
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
+    it('c-bandbalancing-proactive', async () => {
+      const intent = mockedCBandbalancingProactive
+      mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })
+      await doTest([intent.code], intent)
+    })
   })
 
   it('should render for AirFlexAI', async () => {
