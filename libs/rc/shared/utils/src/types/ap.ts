@@ -41,6 +41,7 @@ interface NewApRadioProperties {
     channel: number
     channelBandwidth: string
     rssi: number
+    actualTxPower?: number
 }
 
 export interface APSystem extends IpSettings {
@@ -173,6 +174,11 @@ export interface NewAPModelExtended extends NewAPModel {
   channelL50?: string | number
   channelU50?: string | number
   channel60?: string | number
+  actualTxPower24?: string | number
+  actualTxPower50?: string | number
+  actualTxPowerL50?: string | number
+  actualTxPowerU50?: string | number
+  actualTxPower60?: string | number
   hasPoeStatus?: boolean
   isPoEStatusUp?: boolean
   poePortInfo?: string
