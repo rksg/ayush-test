@@ -8,17 +8,9 @@ import { mocked as mockedIZoneFirmwareUpgrade } from './AIOperations/__tests__/m
 import { IntentAIForm }                         from './IntentAIForm'
 import { Intent }                               from './useIntentDetailsQuery'
 
-jest.mock('./AIDrivenRRM/CCrrmChannel24gAuto', () => ({
+jest.mock('./AIDrivenRRM/CCrrmChannelAuto', () => ({
   kpis: [],
-  IntentAIForm: () => <div data-testid='c-crrm-channel24g-auto-IntentAIForm'/>
-}))
-jest.mock('./AIDrivenRRM/CCrrmChannel5gAuto', () => ({
-  kpis: [],
-  IntentAIForm: () => <div data-testid='c-crrm-channel5g-auto-IntentAIForm'/>
-}))
-jest.mock('./AIDrivenRRM/CCrrmChannel6gAuto', () => ({
-  kpis: [],
-  IntentAIForm: () => <div data-testid='c-crrm-channel6g-auto-IntentAIForm'/>
+  IntentAIForm: () => <div data-testid='c-crrm-channel-auto-IntentAIForm'/>
 }))
 
 jest.mock('./AIOperations/IZoneFirmwareUpgrade', () => ({
@@ -51,6 +43,16 @@ jest.mock('./AIOperations/CBgScan6gTimer', () => ({
   IntentAIForm: () => <div data-testid='c-bgscan6g-timer-IntentAIForm'/>
 }))
 
+const doCRRMTest = async (codes: string[], intent: Intent) => {
+  for (const code of codes) {
+    const { unmount } = render(<IntentAIForm />, {
+      route: { params: { code, root: intent.root, sliceId: intent.sliceId } },
+      wrapper: Provider
+    })
+    expect(await screen.findByTestId('c-crrm-channel-auto-IntentAIForm')).toBeVisible()
+    unmount()
+  }
+}
 const doTest = async (codes: string[], intent: Intent) => {
   for (const code of codes) {
     const { unmount } = render(<IntentAIForm />, {
@@ -66,7 +68,7 @@ describe('IntentAIForm', () => {
   it('should render for AIDrivenRRM', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent: mockedIntentCRRM } })
     const codes = ['c-crrm-channel24g-auto', 'c-crrm-channel5g-auto', 'c-crrm-channel6g-auto']
-    await doTest(codes, mockedIntentCRRM)
+    await doCRRMTest(codes, mockedIntentCRRM)
   })
 
   describe('should render for AIOperations', () => {

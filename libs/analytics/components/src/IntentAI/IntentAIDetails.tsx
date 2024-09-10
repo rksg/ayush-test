@@ -1,6 +1,4 @@
-import * as CCrrmChannel24gAuto        from './AIDrivenRRM/CCrrmChannel24gAuto'
-import * as CCrrmChannel5gAuto         from './AIDrivenRRM/CCrrmChannel5gAuto'
-import * as CCrrmChannel6gAuto         from './AIDrivenRRM/CCrrmChannel6gAuto'
+import * as CCrrmChannelAuto           from './AIDrivenRRM/CCrrmChannelAuto'
 import * as CBgScan24gEnable           from './AIOperations/CBgScan24gEnable'
 import * as CBgScan24gTimer            from './AIOperations/CBgScan24gTimer'
 import * as CBgScan5gEnable            from './AIOperations/CBgScan5gEnable'
@@ -10,9 +8,9 @@ import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade
 import { createIntentContextProvider } from './IntentContext'
 
 export const IntentAIDetails = createIntentContextProvider('IntentAIDetails', {
-  'c-crrm-channel24g-auto': CCrrmChannel24gAuto,
-  'c-crrm-channel5g-auto': CCrrmChannel5gAuto,
-  'c-crrm-channel6g-auto': CCrrmChannel6gAuto,
+  'c-crrm-channel24g-auto': CCrrmChannelAuto,
+  'c-crrm-channel5g-auto': CCrrmChannelAuto,
+  'c-crrm-channel6g-auto': CCrrmChannelAuto,
   'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
   'c-bgscan24g-enable': CBgScan24gEnable,
   'c-bgscan5g-enable': CBgScan5gEnable,

@@ -8,9 +8,7 @@ import { Statuses }         from '../states'
 import { Intent }           from '../useIntentDetailsQuery'
 
 import { mockedCRRMGraphs, mockedIntentCRRM } from './__tests__/fixtures'
-import * as CCrrmChannel24gAuto               from './CCrrmChannel24gAuto'
-import * as CCrrmChannel5gAuto                from './CCrrmChannel5gAuto'
-import * as CCrrmChannel6gAuto                from './CCrrmChannel6gAuto'
+import * as CCrrmChannelAuto                  from './CCrrmChannelAuto'
 import { kpis }                               from './common'
 
 jest.mock('../IntentContext')
@@ -63,7 +61,7 @@ describe('IntentAIDetails', () => {
       } as unknown as Intent['metadata']
     })
     render(
-      <CCrrmChannel5gAuto.IntentAIDetails />,
+      <CCrrmChannelAuto.IntentAIDetails />,
       { route: { params }, wrapper: Provider }
     )
 
@@ -90,7 +88,7 @@ describe('IntentAIDetails', () => {
     it('handle 2.4 GHz', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel24g-auto' })
       render(
-        <CCrrmChannel24gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
@@ -100,7 +98,7 @@ describe('IntentAIDetails', () => {
     it('handle 5 GHz', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel5g-auto' })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
@@ -110,7 +108,7 @@ describe('IntentAIDetails', () => {
     it('handle 6 GHz', async () => {
       const { params } = mockIntentContextWith({ code: 'c-crrm-channel5g-auto' })
       render(
-        <CCrrmChannel6gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
@@ -136,7 +134,7 @@ describe('IntentAIDetails', () => {
         } as unknown as Intent['metadata']
       })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
@@ -165,7 +163,7 @@ describe('IntentAIDetails', () => {
         } as unknown as Intent['metadata']
       })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
@@ -174,7 +172,7 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
-        .toHaveTextContent(/for channel, channel bandwidth, Auto Channel Selection, Auto Cell Sizing and AP transmit power will potentially be overwritten/) // eslint-disable-line max-len
+        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.') // eslint-disable-line max-len
     })
 
     it('handle active partial rrm', async () => {
@@ -196,7 +194,7 @@ describe('IntentAIDetails', () => {
         } as unknown as Intent['metadata']
       })
       render(
-        <CCrrmChannel5gAuto.IntentAIDetails />,
+        <CCrrmChannelAuto.IntentAIDetails />,
         { route: { params }, wrapper: Provider }
       )
 
@@ -205,7 +203,7 @@ describe('IntentAIDetails', () => {
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.')  // eslint-disable-line max-len
       expect(await screen.findByTestId('Potential trade-off'))
-        .toHaveTextContent(/for channel and Auto Channel Selection will potentially be overwritten/)
+        .toHaveTextContent('In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.') // eslint-disable-line max-len
     })
   })
 })
