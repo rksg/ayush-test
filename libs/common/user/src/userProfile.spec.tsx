@@ -188,7 +188,7 @@ describe('hasCrossVenuesPermission', () => {
     })
     expect(hasCrossVenuesPermission()).toBe(true)
   })
-  xit('check permissions for Specific Venues', () => {
+  it('check permissions for Specific Venues', () => {
     const profile = getUserProfile()
     setUserProfile({
       ...profile,
@@ -417,7 +417,7 @@ describe('AuthRoute', () => {
     expect(await screen.findByText('test page')).toBeVisible()
   })
 
-  xit('should go to no permissions page for global permission', async () => {
+  it('should go to no permissions page for global permission', async () => {
     setRole(RolesEnum.ADMINISTRATOR, true, false, [], false)
     render(
       <Router>

@@ -489,10 +489,13 @@ export function ManageCustomer () {
         ? parseInt(ecFormData.switchLicense, 10) : ecFormData.switchLicense
       const quantityApsw = _.isString(ecFormData.apswLicense)
         ? parseInt(ecFormData.apswLicense, 10) : ecFormData.apswLicense
+      const quantityApswTrial = _.isString(ecFormData.apswTrialLicense)
+        ? parseInt(ecFormData.apswTrialLicense, 10) : ecFormData.apswTrialLicense
       const assignLicense = trialSelected ? { trialAction: AssignActionEnum.ACTIVATE }
         : isDeviceAgnosticEnabled
           ? { assignments: [{
-            quantity: quantityApsw,
+            quantity: serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+              ? quantityApswTrial : quantityApsw,
             action: AssignActionEnum.ADD,
             isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
             deviceType: EntitlementDeviceType.MSP_APSW
@@ -1618,7 +1621,8 @@ export function ManageCustomer () {
     const { Paragraph } = Typography
     const wifiAssigned = trialSelected ? '25' : formData.wifiLicense
     const switchAssigned = trialSelected ? '25' : formData.switchLicense
-    const apswAssigned = trialSelected ? '50' : formData.apswLicense
+    const apswAssigned = trialSelected ? '50' : (serviceTypeSelected === ServiceType.EXTENDED_TRIAL
+      ? formData.apswTrialLicense : formData.apswLicense)
 
     return (
       <>

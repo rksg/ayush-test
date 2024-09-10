@@ -259,6 +259,10 @@ export const EditPortMessages = {
   }),
   INVALID_VOICE_VLAN: defineMessage({
     defaultMessage: 'Voice VLAN needs to be configured together with Tagged VLAN.'
+  }),
+  RESET_PORT_WARNING: defineMessage({
+    defaultMessage: `Changing the port settings may result in loss of connectivity and
+      communication issues to your APs. Do you want to continue with these changes?`
   })
 }
 

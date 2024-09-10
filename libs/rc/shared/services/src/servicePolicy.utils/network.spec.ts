@@ -67,7 +67,6 @@ describe('updateNetworkVenue', () => {
 
     expect(createHttpRequest)
       .toHaveBeenCalledWith(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate, args.params, {
-        ...ConfigTemplateUrlsInfo.updateNetworkVenueTemplate.defaultHeaders,
         'x-rks-new-ui': 'true' })
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify(mockPayload.newData)
@@ -87,7 +86,6 @@ describe('updateNetworkVenue', () => {
 
     expect(createHttpRequest)
       .toHaveBeenCalledWith(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate, args.params, {
-        ...ConfigTemplateUrlsInfo.updateNetworkVenueTemplate.defaultHeaders,
         'x-rks-new-ui': 'true' })
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify(mockPayload.newData)
