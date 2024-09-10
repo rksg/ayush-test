@@ -46,6 +46,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   const mutationAllowed = Boolean(thresholdPermissionQuery.data?.mutationAllowed)
   return <Loader states={[kpiThresholdsQueryResults, thresholdPermissionQuery]}>
     {kpiThresholdsQueryResults.fulfilledTimeStamp && <KpiSection
+      isSwitch
       key={kpiThresholdsQueryResults.fulfilledTimeStamp} // forcing component to rerender on newly received thresholds
       kpis={kpis}
       thresholds={thresholds}

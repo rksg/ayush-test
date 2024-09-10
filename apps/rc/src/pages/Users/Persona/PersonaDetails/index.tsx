@@ -29,8 +29,9 @@ import {
   useLazyGetPropertyUnitByIdQuery,
   useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
-import { ConnectionMetering, hasCloudpathAccess, PersonaGroup } from '@acx-ui/rc/utils'
-import { noDataDisplay }                                        from '@acx-ui/utils'
+import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission }         from '@acx-ui/user'
+import { noDataDisplay }                    from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
 
@@ -386,7 +387,7 @@ function PersonaDetailsPageHeader (props: {
     })
   }
 
-  const extra = hasCloudpathAccess() && [<Button
+  const extra = hasCrossVenuesPermission({ needGlobalPermission: true }) && [<Button
     type='primary'
     onClick={showRevokedModal}
     disabled={!allowed}

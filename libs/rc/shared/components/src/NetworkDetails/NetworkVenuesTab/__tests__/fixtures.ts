@@ -3,7 +3,9 @@ import {
   RadioTypeEnum,
   RadioEnum,
   WlanSecurityEnum,
-  SchedulerTypeEnum
+  SchedulerTypeEnum,
+  SoftGreViewData,
+  MtuTypeEnum
 } from '@acx-ui/rc/utils'
 
 export const network = {
@@ -170,4 +172,93 @@ export const timezoneRes = { // location=-37.8145092,144.9704868
 export const params = {
   tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
   networkId: '373377b0cb6e46ea8982b1c80aabe1fa'
+}
+
+
+export const mockSoftGreTable = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '0d89c0f5596c4689900fb7f5f53a0859',
+      name: 'softGreProfileName1',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.1',
+      secondaryGatewayAddress: '128.0.0.0',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'd7b1a9a350634115a92ee7b0f11c7e75',
+          wifiNetworkIds: ['network_1', 'network_2', '373377b0cb6e46ea8982b1c80aabe1fa']
+        }
+      ]
+    },
+    {
+      id: '75aa5131892d44a6a85a623dd3e524ed',
+      name: 'softGreProfileName2',
+      mtuType: MtuTypeEnum.AUTO,
+      disassociateClientEnabled: true,
+      primaryGatewayAddress: '128.0.0.3',
+      keepAliveInterval: 10,
+      keepAliveRetryTimes: 5,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_4', 'network_5']
+        }
+      ]
+    },
+    {
+      id: 'softGreProfileName3-id',
+      name: 'softGreProfileName3',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.4',
+      secondaryGatewayAddress: '128.0.0.5',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_6']
+        }
+      ]
+    },
+    {
+      id: 'softGreProfileName4-id',
+      name: 'softGreProfileName4',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.4',
+      secondaryGatewayAddress: '128.0.0.5',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-2',
+          wifiNetworkIds: ['network_6']
+        }
+      ]
+    }
+  ] as SoftGreViewData[]
+}
+
+export const vlanPoolProfilesData = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '159b156f559749fcb0d8bbfe76a54934',
+      name: 'pool1'
+    }
+  ]
 }
