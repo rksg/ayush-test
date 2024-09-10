@@ -361,13 +361,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   rebootAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/systemCommands',
     newApi: true
   },
   factoryResetAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/systemCommands',
     newApi: true
   },
   getApPhoto: {
@@ -403,13 +403,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   pingAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/diagnosisCommands',
     newApi: true
   },
   traceRouteAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/diagnosisCommands',
     newApi: true
   },
   startPacketCapture: {
@@ -433,7 +433,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   blinkLedAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
-    url: '/venues/:venueId/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber/diagnosisCommands',
     newApi: true
   },
   getApCapabilities: {
