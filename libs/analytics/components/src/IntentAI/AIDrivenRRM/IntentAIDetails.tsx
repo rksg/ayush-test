@@ -2,7 +2,6 @@
 import { useState } from 'react'
 
 import { Typography }                               from 'antd'
-import _                                            from 'lodash'
 import moment                                       from 'moment-timezone'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -30,11 +29,7 @@ export function createUseValuesText () {
   return function useValuesText () {
     const { $t } = getIntl()
     const { intent, kpis } = useIntentContext()
-    const isFullOptimization = !!_.get(
-      intent,
-      'metadata.algorithmData.isCrrmFullOptimization',
-      true
-    )
+    const isFullOptimization = intent.preferences?.crrmFullOptimization
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
     const { data, compareData } = getKpiData(intent, kpi)

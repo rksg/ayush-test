@@ -56,9 +56,9 @@ describe('IntentAIDetails', () => {
           result: 2
         }
       },
-      metadata: {
-        algorithmData: { isCrrmFullOptimization: true }
-      } as unknown as Intent['metadata']
+      preferences: {
+        crrmFullOptimization: true
+      } as unknown as Intent['preferences']
     })
     render(
       <CCrrmChannelAuto.IntentAIDetails />,
@@ -129,9 +129,9 @@ describe('IntentAIDetails', () => {
             result: 2
           }
         },
-        metadata: {
-          algorithmData: { isCrrmFullOptimization: true }
-        } as unknown as Intent['metadata']
+        preferences: {
+          crrmFullOptimization: true
+        } as unknown as Intent['preferences']
       })
       render(
         <CCrrmChannelAuto.IntentAIDetails />,
@@ -158,9 +158,9 @@ describe('IntentAIDetails', () => {
             result: 2
           }
         },
-        metadata: {
-          algorithmData: { isCrrmFullOptimization: true }
-        } as unknown as Intent['metadata']
+        preferences: {
+          crrmFullOptimization: true
+        } as unknown as Intent['preferences']
       })
       render(
         <CCrrmChannelAuto.IntentAIDetails />,
@@ -168,6 +168,10 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+
+      expect(await screen.findByText('This Intent is active, with following priority:')).toBeVisible() // eslint-disable-line max-len
+      expect(await screen.findByText('High number of clients in a dense network:')).toBeVisible()
+      expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.') // eslint-disable-line max-len
@@ -189,9 +193,9 @@ describe('IntentAIDetails', () => {
             result: 2
           }
         },
-        metadata: {
-          algorithmData: { isCrrmFullOptimization: false }
-        } as unknown as Intent['metadata']
+        preferences: {
+          crrmFullOptimization: false
+        } as unknown as Intent['preferences']
       })
       render(
         <CCrrmChannelAuto.IntentAIDetails />,
@@ -199,6 +203,10 @@ describe('IntentAIDetails', () => {
       )
 
       await assertRenderCorrectly()
+
+      expect(await screen.findByText('This Intent is active, with following priority:')).toBeVisible() // eslint-disable-line max-len
+      expect(await screen.findByText('High client throughput in sparse network:')).toBeVisible()
+      expect(await screen.findByText('IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.')).toBeVisible() // eslint-disable-line max-len
 
       expect(await screen.findByTestId('Benefits'))
         .toHaveTextContent('Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.')  // eslint-disable-line max-len
