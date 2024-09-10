@@ -499,7 +499,6 @@ describe('Guest Table', () => {
         ...userProfile,
         abacEnabled: true,
         isCustomRole: true,
-        hasAllVenues: true,
         scopes: [WifiScopes.CREATE]
       })
 
