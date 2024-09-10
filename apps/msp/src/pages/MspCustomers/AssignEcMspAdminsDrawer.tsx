@@ -128,8 +128,9 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
         }
       },
       render: function (_, row) {
-        return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN
-          ? <span>{$t(roleDisplayText[row.role])}</span>
+        return row.role === RolesEnum.GUEST_MANAGER || row.role === RolesEnum.DPSK_ADMIN ||
+          !SupportedDelegatedRoles.includes(row.role)
+          ? <span>{roleDisplayText[row.role] ? $t(roleDisplayText[row.role]) : row.role}</span>
           : transformAdminRole(row.id, row.role)
       }
     }
@@ -173,7 +174,8 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
             },
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled: record.role === RolesEnum.GUEST_MANAGER ||
-                        record.role === RolesEnum.DPSK_ADMIN
+                        record.role === RolesEnum.DPSK_ADMIN ||
+                        !SupportedDelegatedRoles.includes(record.role)
             })
           }}
         />

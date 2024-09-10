@@ -9,7 +9,6 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { intentAIApi }               from '@acx-ui/store'
 import {
   getIntl,
-  computeRangeFilter,
   TABLE_DEFAULT_PAGE_SIZE,
   useEncodedParameter
 }                                                   from '@acx-ui/utils'
@@ -116,11 +115,11 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentAIList(
-          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput],
+          $path: [HierarchyNodeInput],
           $filterBy: JSON, $page: Int, $pageSize: Int
         ) {
           intents(
-            start: $startDate, end: $endDate, path: $path,
+            path: $path,
             filterBy: $filterBy, page: $page, pageSize: $pageSize
           ) {
             data {
@@ -153,9 +152,6 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: {
           ...(_.pick(payload,['path'])),
-          ...computeRangeFilter({
-            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          }),
           page: payload.page,
           pageSize: payload.pageSize,
           filterBy: payload.filterBy
@@ -228,13 +224,9 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentAI(
-          $startDate: DateTime
-          $endDate: DateTime
           $path: [HierarchyNodeInput]
         ) {
           intentFilterOptions(
-            start: $startDate
-            end: $endDate
             path: $path
           ) {
             codes { id label }
@@ -244,10 +236,7 @@ export const api = intentAIApi.injectEndpoints({
         }
         `,
         variables: {
-          ...(_.pick(payload,['path'])),
-          ...computeRangeFilter({
-            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          })
+          ...(_.pick(payload,['path']))
         }
       }),
       transformResponse: (response: { intentFilterOptions: FilterOptions }) => {
@@ -307,9 +296,9 @@ export const api = intentAIApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query IntentHighlight(
-          $startDate: DateTime, $endDate: DateTime, $path: [HierarchyNodeInput]
+          $path: [HierarchyNodeInput]
         ) {
-          highlights(start: $startDate, end: $endDate, path: $path) {
+          highlights(path: $path) {
             rrm {
               new
               active
@@ -326,10 +315,7 @@ export const api = intentAIApi.injectEndpoints({
         }
         `,
         variables: {
-          ...(_.pick(payload,['path'])),
-          ...computeRangeFilter({
-            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-          })
+          ...(_.pick(payload,['path']))
         }
       }),
       transformResponse: (response: { highlights: IntentHighlight }) =>
