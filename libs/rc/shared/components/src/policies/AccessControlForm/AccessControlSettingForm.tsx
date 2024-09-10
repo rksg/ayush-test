@@ -219,10 +219,10 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
     enableRbac: enableRbac
   })
 
-  const useAclPolicy = tableQuery?.data?.data[0]
+  const aclPolicyData = tableQuery?.data?.data[0]
 
-  const useAclPolicyWithDesc = {
-    ...useAclPolicy,
+  const aclPolicyDataWithDesc = {
+    ...aclPolicyData,
     description: data?.description || ''
   }
 
@@ -235,13 +235,13 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
     }
   })
 
-  const useAclTemplatePolicy = templateTableQuery?.data?.data[0]
+  const aclTemplatePolicyData = templateTableQuery?.data?.data[0]
 
-  const useAclTemplatePolicyWithDesc = {
-    ...useAclTemplatePolicy,
+  const aclTemplatePolicyDataWithDesc = {
+    ...aclTemplatePolicyData,
     description: data?.description || ''
   }
 
   // eslint-disable-next-line max-len
-  return ((isTemplate ? useAclTemplatePolicyWithDesc : useAclPolicyWithDesc) || {}) as EnhancedAccessControlInfoType
+  return ((isTemplate ? aclTemplatePolicyDataWithDesc : aclPolicyDataWithDesc) || {}) as EnhancedAccessControlInfoType
 }
