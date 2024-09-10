@@ -220,7 +220,6 @@ export const FieldLabel = styled.div`
 `
 export const Checkbox = styled(AntCheckbox)`
   margin-right:4px;
-  vertical-align: middle;
 `
 const fieldInputStyle = css`
 ::placeholder{
