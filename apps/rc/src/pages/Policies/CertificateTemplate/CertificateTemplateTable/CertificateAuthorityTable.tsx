@@ -37,11 +37,13 @@ export default function CertificateAuthorityTable () {
     pagination: { settingsId }
   })
 
-  const { inUsedCAs } = useGetCertificateTemplatesQuery({
+  const { networkUsedCAs, identityUsedCAs } = useGetCertificateTemplatesQuery({
     payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
   }, {
     selectFromResult: ({ data }) => ({
-      inUsedCAs: data?.data.filter((template) => (template.networkIds ?? []).length > 0)
+      networkUsedCAs: data?.data.filter((template) => (template.networkIds ?? []).length > 0)
+        .map((template) => (template.onboard?.certificateAuthorityId)) || [],
+      identityUsedCAs: data?.data.filter((template) => (template.certificateCount ?? 0) > 0)
         .map((template) => (template.onboard?.certificateAuthorityId)) || []
     })
   })
@@ -129,8 +131,12 @@ export default function CertificateAuthorityTable () {
   }
 
   const showDeleteModal = (selectedRow: CertificateAuthority, clearSelection: () => void) => {
-    if (inUsedCAs.includes(selectedRow.id)) {
-      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE))
+    if (networkUsedCAs.includes(selectedRow.id)) {
+      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE,
+        { instance: $t({ defaultMessage: 'network' }) }))
+    } else if (identityUsedCAs.includes(selectedRow.id)) {
+      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE,
+        { instance: $t({ defaultMessage: 'identity' }) }))
     } else {
       showActionModal({
         type: 'confirm',

@@ -226,6 +226,8 @@ export default function CertificateTemplateTable () {
     const disabledActionMessage =
       getDisabledActionMessage([selectedRow],
         [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'network' }) }],
+        $t({ defaultMessage: 'delete' })) || getDisabledActionMessage([selectedRow],
+        [{ fieldName: 'certificateNames', fieldText: $t({ defaultMessage: 'identity' }) }],
         $t({ defaultMessage: 'delete' }))
     if (disabledActionMessage) {
       showAppliedInstanceMessage(disabledActionMessage)

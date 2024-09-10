@@ -152,7 +152,7 @@ export const deleteDescription: Record<string, MessageDescriptor> = {
     defaultMessage: 'This action cannot be undone.'
   }),
   CA_IN_USE: defineMessage({
-    defaultMessage: 'You are unable to delete this record due to its usage in network'
+    defaultMessage: 'You are unable to delete this record due to its usage in {instance}'
   })
 }
 
