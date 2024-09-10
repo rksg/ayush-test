@@ -1,14 +1,17 @@
 import { useState } from 'react'
 
 import { Typography }                 from 'antd'
+import { TooltipPlacement }           from 'antd/es/tooltip'
 import _                              from 'lodash'
 import moment                         from 'moment-timezone'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow, Loader } from '@acx-ui/components'
-import { DateFormatEnum, formatter }                    from '@acx-ui/formatter'
-import { getIntl }                                      from '@acx-ui/utils'
+import { formattedPath }                  from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Loader } from '@acx-ui/components'
+import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
+import { getIntl }                        from '@acx-ui/utils'
 
+import { DescriptionSection }       from '../../DescriptionSection'
 import { FixedAutoSizer }           from '../../DescriptionSection/styledComponents'
 import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
@@ -75,6 +78,32 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
     const queryResult = useIntentAICRRMQuery()
     const crrmData = queryResult.data!
 
+    const fields = [
+      {
+        label: $t({ defaultMessage: 'Intent' }),
+        children: $t(codes[intent.code].intent)
+      },
+      {
+        label: $t({ defaultMessage: 'Category' }),
+        children: $t(codes[intent.code].category)
+      },
+      {
+        label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+        children: intent.sliceValue,
+        tooltip: formattedPath(intent.path, intent.sliceValue)
+      },
+      {
+        label: $t({ defaultMessage: 'Status' }),
+        children: getIntentStatus(intent.displayStatus),
+        tooltip: getIntentStatus(intent.displayStatus, true),
+        tooltipPlacement: 'right' as TooltipPlacement
+      },
+      {
+        label: $t({ defaultMessage: 'Date' }),
+        children: formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))
+      }
+    ]
+
     return <Loader states={[queryResult]}>
       <div hidden>
         <SummaryGraphBefore detailsPage crrmData={crrmData} setUrl={setSummaryUrlBefore} />
@@ -91,28 +120,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                   'allowing some interference, or one with minimal interference, ' +
                   'for high client density.'
               })} />
-              <Descriptions noSpace>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Intent' })}
-                  children={$t(codes[intent.code].intent)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Category' })}
-                  children={$t(codes[intent.code].category)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
-                  children={intent.sliceValue}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.displayStatus)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Date' })}
-                  children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
-                />
-              </Descriptions>
+              <DescriptionSection fields={fields}/>
               <br />
               {/* TODO: question: handle data retention? */}
               <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />

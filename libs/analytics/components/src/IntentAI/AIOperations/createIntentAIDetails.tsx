@@ -1,10 +1,13 @@
-import { Typography }                from 'antd'
-import moment                        from 'moment-timezone'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { Typography }       from 'antd'
+import { TooltipPlacement } from 'antd/es/tooltip'
+import moment               from 'moment-timezone'
+import { useIntl }          from 'react-intl'
 
-import { Card, Descriptions, GridCol, GridRow } from '@acx-ui/components'
-import { DateFormatEnum, formatter }            from '@acx-ui/formatter'
+import { formattedPath }             from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow }    from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
+import { DescriptionSection }  from '../../DescriptionSection'
 import { FixedAutoSizer }      from '../../DescriptionSection/styledComponents'
 import { DetailsSection }      from '../common/DetailsSection'
 import { getIntentStatus }     from '../common/getIntentStatus'
@@ -29,6 +32,35 @@ export function createIntentAIDetails (
     const { intent, kpis, configuration } = useIntentContext()
     const valuesText = useValuesText()
 
+    const fields = [
+      {
+        label: $t({ defaultMessage: 'Intent' }),
+        children: $t(codes[intent.code].intent)
+      },
+      {
+        label: $t({ defaultMessage: 'Category' }),
+        children: $t(codes[intent.code].category)
+      },
+      {
+        label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
+        children: intent.sliceValue,
+        tooltip: formattedPath(intent.path, intent.sliceValue)
+      },
+      {
+        label: $t({ defaultMessage: 'Status' }),
+        children: getIntentStatus(intent.displayStatus),
+        tooltip: getIntentStatus(intent.displayStatus, true),
+        tooltipPlacement: 'right' as TooltipPlacement
+      },
+      {
+        label: $t({ defaultMessage: 'Date' }),
+        children: formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))
+      },
+      ...options.showImpactedAPs
+        ? [ { label: $t({ defaultMessage: 'AP Impact Count' }), children: <ImpactedAPCount /> } ]
+        : []
+    ]
+
     return <>
       <IntentDetailsHeader />
       <GridRow>
@@ -37,31 +69,7 @@ export function createIntentAIDetails (
             {({ width }) => (<div style={{ width }}>
               <IntentIcon size='large' />
               <Typography.Paragraph children={valuesText.summary} />
-              <Descriptions noSpace>
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Intent' })}
-                  children={$t(codes[intent.code].intent)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Category' })}
-                  children={$t(codes[intent.code].category)}
-                />
-                <Descriptions.Item
-                  label={<FormattedMessage defaultMessage='<VenueSingular></VenueSingular>' />}
-                  children={intent.sliceValue}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Status' })}
-                  children={getIntentStatus(intent.displayStatus)}
-                />
-                <Descriptions.Item
-                  label={$t({ defaultMessage: 'Date' })}
-                  children={formatter(DateFormatEnum.DateTimeFormat)(moment(intent.updatedAt))}
-                />
-                {options.showImpactedAPs ? <Descriptions.Item
-                  label={$t({ defaultMessage: 'AP Impact Count' })}
-                  children={<ImpactedAPCount />} /> : null}
-              </Descriptions>
+              <DescriptionSection fields={fields}/>
             </div>)}
           </FixedAutoSizer>
         </GridCol>
