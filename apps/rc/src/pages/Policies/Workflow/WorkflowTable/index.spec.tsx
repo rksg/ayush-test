@@ -131,6 +131,10 @@ describe('WorkflowTable', () => {
     await screen.findByRole('button', { name: /Edit/i })
     const deleteButton = await screen.findByRole('button', { name: /Delete/i })
     await userEvent.click(deleteButton)
+
+    const confirmButton = await screen.findByText('Delete Workflow')
+    await userEvent.click(confirmButton)
+
     await waitFor(() => expect(deleteWorkflowApi).toHaveBeenCalled())
   })
 })
