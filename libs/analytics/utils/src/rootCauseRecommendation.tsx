@@ -202,7 +202,7 @@ export const getAirtimeBusyRecommendations = (
     ? <FormattedMessage defaultMessage={'<li>Click <rogueapdrawer>here</rogueapdrawer> for a list of rogue APs for removal in your premises.</li>'} values={{ ...htmlValues, ...extraValues }}/>
     : <FormattedMessage defaultMessage={'<li>Enable rogue AP detection to search, identify, and physically remove rogue APs from your premises.</li>'} values={htmlValues}/>
   const nonWifiInterference = <FormattedMessage defaultMessage={'<li>Identify and mitigate sources of non-WiFi interference, such as microwave ovens, Bluetooth devices, and cordless phones.</li>'} values={htmlValues}/>
-  const crrmRaised = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
+  const crrmRaised = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM.</li>'} values={{ ...htmlValues, crrmLink }}/>
 
   const stringlist = [
     rogueAP,
@@ -279,12 +279,12 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
   const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
   const crrmLink = <TenantLinkWrapper params={params} linkType='crrm' />
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
+    ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
     : ''
-  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
+  const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
     : get('IS_MLISA_SA')
@@ -371,7 +371,7 @@ const getAirtimeTxRecommendations = (checks: (AirtimeTxChecks)[], params: Airtim
   const aiOpsLink = <TenantLinkWrapper params={params} linkType='aiOps' />
 
   const highDensityWifi = checkTrue.includes('isAclbRaised')
-    ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, link: aiOpsLink }}/>
+    ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops.</li>'} values={{ ...htmlValues, link: aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
