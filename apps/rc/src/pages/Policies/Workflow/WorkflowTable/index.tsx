@@ -185,8 +185,7 @@ export default function WorkflowTable () {
                 console.log(e)
               })
           })
-      },
-      visible: (selectedItems => selectedItems.length >= 1)
+      }
     }
   ]
 
