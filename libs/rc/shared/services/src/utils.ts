@@ -111,6 +111,13 @@ export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfi
   return p.status === 'fulfilled'
 }
 
+type ApGroupVlanPoolParams = {
+  venueId?: string
+  networkId?: string
+  apGroupId?: string
+  profileId: string
+}
+
 export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkVenue) => {
   // eslint-disable-next-line max-len
   const itemProcessFn = (currentPayload: Record<string, unknown>, oldPayload: Record<string, unknown> | null, key: string, id: string) => {
@@ -125,6 +132,8 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
   const updateApGroups = [] as NetworkApGroup[]
   const addApGroups = [] as NetworkApGroup[]
   const deleteApGroups = [] as NetworkApGroup[]
+  const activatedVlanPoolParamsList = [] as ApGroupVlanPoolParams[]
+  const deactivatedVlanPoolParamsList = [] as ApGroupVlanPoolParams[]
 
   newApGroups.forEach((newApGroup: NetworkApGroup) => {
     const apGroupId = newApGroup.apGroupId as string
@@ -132,6 +141,15 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
 
     if (!oldApGroup) {
       addApGroups.push(newApGroup)
+      // activiate vlan pooling
+      if (newApGroup.vlanPoolId) {
+        activatedVlanPoolParamsList.push({
+          venueId: newApGroup.venueId ?? newPayload.venueId,
+          networkId: newApGroup.networkId ?? newPayload.networkId,
+          apGroupId: newApGroup.apGroupId,
+          profileId: newApGroup.vlanPoolId
+        })
+      }
     } else {
       const comparisonResult = comparePayload(
         newApGroup as unknown as Record<string, unknown>,
@@ -140,6 +158,22 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
         itemProcessFn
       )
       if (comparisonResult.updated.length) updateApGroups.push(newApGroup)
+
+      if (!newApGroup.vlanPoolId && oldApGroup.vlanPoolId) {
+        deactivatedVlanPoolParamsList.push({
+          venueId: oldApGroup.venueId ?? oldPayload.venueId,
+          networkId: oldApGroup.networkId ?? oldPayload.networkId,
+          apGroupId: oldApGroup.apGroupId,
+          profileId: oldApGroup.vlanPoolId
+        })
+      } else if (newApGroup.vlanPoolId && (newApGroup.vlanPoolId !== oldApGroup.vlanPoolId)) {
+        activatedVlanPoolParamsList.push({
+          venueId: newApGroup.venueId ?? newPayload.venueId,
+          networkId: newApGroup.networkId ?? newPayload.networkId,
+          apGroupId: newApGroup.apGroupId,
+          profileId: newApGroup.vlanPoolId
+        })
+      }
     }
   })
 
@@ -149,5 +183,11 @@ export const apGroupsChangeSet = (newPayload: NetworkVenue, oldPayload: NetworkV
     if (!newApGroup) deleteApGroups.push(oldApGroup)
   })
 
-  return { addApGroups, updateApGroups, deleteApGroups }
+  return {
+    addApGroups,
+    updateApGroups,
+    deleteApGroups,
+    activatedVlanPoolParamsList,
+    deactivatedVlanPoolParamsList
+  }
 }
