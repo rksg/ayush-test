@@ -46,7 +46,7 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
           </Space>
       }
       {(networkList.length > 1 && selectedSsid === '') &&
-          <List
+          <List bordered
             dataSource={networkList}
             renderItem={
               (ssid) => (
@@ -66,9 +66,11 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
   )
 }
 
-function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables }){
+// eslint-disable-next-line max-len
+function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables , onMacAddressChange: (value: string)=>void }){
   const { $t } = useIntl()
-  const { data } = props
+  const { data , onMacAddressChange } = props
+
   const macRegexString = {
     name: 'macAddress',
     // eslint-disable-next-line max-len
@@ -85,12 +87,13 @@ function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables }){
           label={$t({ defaultMessage: 'Enter the MAC address of your device here' })}
           name={'macAddress'}
           rules={[{
+            whitespace: false,
             pattern: macRegexString.regex,
             message: $t(macRegexString.errorMessage),
             required: macRegexString.required
           }]}
         >
-          <Input />
+          <Input onChange={(e)=>onMacAddressChange(e.currentTarget?.value)}/>
         </Form.Item>
       </Form>
     </Space>
@@ -102,8 +105,7 @@ function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables }){
 export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegAction>) {
   const { data, ...rest } = props
   const [page, setPage] = useState('macInputPreview')
-  const [macAddress] = useState<string>('')
-  //const macAddress = Form.useWatch<string>('macAddress')
+  const [macAddress, setMacAddress] = useState<string>('')
   const [ getMacRegPool] = useLazyGetMacRegListQuery()
   const [ getNetworkList, networkListResponse ] = useLazyNetworkListQuery({
     selectFromResult: ({ data }) => {
@@ -136,7 +138,8 @@ export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegActi
   }, [data?.macRegListId, loadMacRegNetworks])
 
   const macInputPreview = <MacRegActionInputPreview
-    data={{ macAddress: macAddress, networks: networkListResponse }}/>
+    data={{ macAddress: macAddress, networks: networkListResponse }}
+    onMacAddressChange={setMacAddress}/>
 
   const onBoardPreview= <MacRegOnboardedPreview
     onboard={{ macAddress: macAddress, networks: networkListResponse }}/>
@@ -146,7 +149,9 @@ export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegActi
 
     body={page === 'macInputPreview' ? macInputPreview : onBoardPreview}
     onNext={() => {
-      setPage('onBoardPreview')
+      if(macAddress){
+        setPage('onBoardPreview')
+      }
     }}
     onBack={() => {
       setPage('macInputPreview')
