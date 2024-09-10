@@ -148,7 +148,7 @@ describe('IntentAIForm', () => {
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Average management traffic per client')).toBeVisible()
-    expect(await screen.findByText('1 Network selected')).toBeVisible()
+    expect(await screen.findByText('1 network selected')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()
@@ -216,10 +216,10 @@ describe('IntentAIForm', () => {
     )
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
-    expect(await screen.findByText('0 Networks selected')).toBeVisible()
+    expect(await screen.findByText('0 networks selected')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
-    expect(await screen.findByText(/Please select at least one Network in Settings/)).toBeVisible()
+    expect(await screen.findByText(/Please select at least one network in Settings/)).toBeVisible()
   })
   it('should use all wlans when no saved wlans', async () => {
     mockGet.mockReturnValue('true') // RAI
@@ -244,7 +244,7 @@ describe('IntentAIForm', () => {
     )
     await click(actions.getByRole('button', { name: 'Next' }))
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
-    expect(await screen.findByText('2 Networks selected')).toBeVisible()
+    expect(await screen.findByText('2 networks selected')).toBeVisible()
     await click(actions.getByRole('button', { name: 'Apply' }))
 
     expect(await screen.findByText(/has been updated/)).toBeVisible()

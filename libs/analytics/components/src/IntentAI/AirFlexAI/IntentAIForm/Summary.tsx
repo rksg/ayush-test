@@ -4,7 +4,7 @@ import React from 'react'
 import { Row, Col, Form }                           from 'antd'
 import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
 
-import { StepsForm, useStepFormContext } from '@acx-ui/components'
+import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 
 import { KpiField }             from '../../common/KpiField'
 import { richTextFormatValues } from '../../common/richTextFormatValues'
@@ -34,15 +34,17 @@ export function Summary () {
             rules={[{
               validator: () => {
                 if (!wlans || wlans.length === 0) {
-                  return Promise.reject($t({ defaultMessage: 'Please select at least one Network in Settings' }))
+                  return Promise.reject($t({ defaultMessage: 'Please select at least one network in Settings' }))
                 }
                 return Promise.resolve()
               }
             }]}
           >
-            <u
+            <Tooltip
+              placement='top'
               title={wlans?.map(wlan => wlan.name).join(', ')}
-              style={{ textDecoration: 'underline', textDecorationStyle: 'dotted' }}>
+              dottedUnderline={true}
+            >
               {$t({
                 defaultMessage: `{count} {count, plural,
                     one {{singular}}
@@ -50,10 +52,10 @@ export function Summary () {
                   } selected`
               }, {
                 count: wlans?.length || 0,
-                singular: $t(defineMessage({ defaultMessage: 'Network' })),
-                plural: $t(defineMessage({ defaultMessage: 'Networks' }))
+                singular: $t(defineMessage({ defaultMessage: 'network' })),
+                plural: $t(defineMessage({ defaultMessage: 'networks' }))
               })}
-            </u>
+            </Tooltip>
           </Form.Item>
         </>
         : <FormattedMessage
