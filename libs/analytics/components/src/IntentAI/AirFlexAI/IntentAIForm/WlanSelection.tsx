@@ -74,7 +74,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
   return<Loader states={[wlansQuery]} style={{ height: '72px' }}>
     <Form.Item hidden name='wlans' children={<></>}></Form.Item>
     <Form.Item
-      label={$t({ defaultMessage: 'Exclude Networks' })}
+      label={$t({ defaultMessage: 'Networks' })}
       style={{
         margin: '0 0 0 0',
         fontWeight: 'normal',
@@ -107,8 +107,8 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
             } selected`
               }, {
                 count: selectedWlans.length,
-                singular: $t(defineMessage({ defaultMessage: 'Network' })),
-                plural: $t(defineMessage({ defaultMessage: 'Networks' }))
+                singular: $t(defineMessage({ defaultMessage: 'network' })),
+                plural: $t(defineMessage({ defaultMessage: 'networks' }))
               })}
             </div>
         }
