@@ -30,16 +30,19 @@ import {
   MAX_PASSPHRASES_PER_TENANT,
   NetworkTypeEnum,
   NewDpskPassphrase,
+  ServiceOperation,
+  ServiceType,
   getPassphraseStatus,
+  getScopeKeyByService,
   hasDpskAccess,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { getIntl, validationMessages }   from '@acx-ui/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
+import { getIntl, validationMessages }                             from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -246,6 +249,7 @@ export default function DpskPassphraseManagement () {
 
   const rowActions: TableProps<NewDpskPassphrase>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit Passphrase' }),
       visible: canEdit,
       onClick: ([selectedRow]) => {
@@ -255,6 +259,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Manage Devices' }),
       visible: (selectedRows: NewDpskPassphrase[]) => allowManageDevices(selectedRows),
       onClick: ([selectedRow]) => {
@@ -264,6 +269,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Revoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -286,6 +292,7 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Unrevoke' }),
       visible: isCloudpathEnabled,
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
@@ -301,12 +308,15 @@ export default function DpskPassphraseManagement () {
       }
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: NewDpskPassphrase[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     }
   ]
+
+  const allowedRowActions = (hasDpskAccess() && filterByAccess(rowActions)) || []
 
   const actions = [
     ...hasDpskAccess() ? [{
@@ -324,7 +334,7 @@ export default function DpskPassphraseManagement () {
       label: $t({ defaultMessage: 'Export To File' }),
       onClick: () => downloadPassphrases()
     },
-    ...hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
+    ...(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.CREATE] })) ? [{
       label: $t({ defaultMessage: 'Add DPSK Network' }),
       onClick: () => setNetworkModalVisible(true)
     }]: []
@@ -401,8 +411,8 @@ export default function DpskPassphraseManagement () {
         getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
         actions={actions}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={hasDpskAccess() && { type: 'checkbox' }}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

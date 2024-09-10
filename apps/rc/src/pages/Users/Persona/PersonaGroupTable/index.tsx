@@ -30,9 +30,9 @@ import {
   useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import { FILTER, hasCloudpathAccess, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                  from '@acx-ui/user'
-import { exportMessageMapping }                                            from '@acx-ui/utils'
+import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasCrossVenuesPermission }    from '@acx-ui/user'
+import { exportMessageMapping }                        from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
 
@@ -315,7 +315,7 @@ export function PersonaGroupTable () {
   }
 
   const actions: TableProps<PersonaGroup>['actions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [{
         label: $t({ defaultMessage: 'Add Identity Group' }),
         onClick: () => {
@@ -324,7 +324,7 @@ export function PersonaGroupTable () {
       }] : []
 
   const rowActions: TableProps<PersonaGroup>['rowActions'] =
-    hasCloudpathAccess()
+    hasCrossVenuesPermission({ needGlobalPermission: true })
       ? [
         {
           label: $t({ defaultMessage: 'Edit' }),
@@ -382,7 +382,7 @@ export function PersonaGroupTable () {
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasCloudpathAccess() && { type: 'radio' }}
+          hasCrossVenuesPermission({ needGlobalPermission: true }) && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
