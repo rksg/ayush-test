@@ -170,10 +170,13 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
           enableRbac: resolvedRbacEnabled
         }).unwrap()
       } else {
+        const aclOldPayloadObject = genAclPayloadObject(
+          formRef.current?.getFieldValue('oldPayload')
+        )
         await updateAclProfile({
           params: params,
           payload: convertToPayload(true, aclPayloadObject, params.policyId),
-          oldPayload: formRef.current?.getFieldValue('oldPayload'),
+          oldPayload: convertToPayload(true, aclOldPayloadObject, params.policyId),
           enableRbac: resolvedRbacEnabled
         }).unwrap()
       }

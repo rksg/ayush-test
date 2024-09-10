@@ -129,6 +129,7 @@ export function VenueFirmwareListPerApModel () {
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
+        pagination={tableQuery.pagination}
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}

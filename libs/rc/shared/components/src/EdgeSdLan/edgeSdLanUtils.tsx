@@ -118,10 +118,10 @@ export const showSdLanVenueDissociateModal = (onOk: () => Promise<void>, onCance
 
   showActionModal({
     type: 'confirm',
-    title: $t({ defaultMessage: 'Confirm <venueSingular></venueSingular> deassociation' }),
+    title: $t({ defaultMessage: 'SD-LAN Removal' }),
     content: $t({ defaultMessage:
       // eslint-disable-next-line max-len
-      'After deactivated, this <venueSingular></venueSingular> will not tunneled by SD-LAN anymore. Are you sure you want to continue ?'
+      'The SD-LAN service at this <venueSingular></venueSingular> will be removed once the last network disassociates from it. Are you sure you want to continue?'
     }),
     okText: $t({ defaultMessage: 'Continue' }),
     onOk,

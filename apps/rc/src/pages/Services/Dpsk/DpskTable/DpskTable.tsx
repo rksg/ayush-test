@@ -33,7 +33,8 @@ import {
   PassphraseFormatEnum,
   displayDeviceCountLimit,
   displayDefaultAccess,
-  hasDpskAccess
+  hasDpskAccess,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
@@ -79,10 +80,12 @@ export default function DpskTable () {
 
   const rowActions: TableProps<DpskSaveData>['rowActions'] = [
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.DELETE),
       label: intl.$t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => doDelete(selectedRow, clearSelection)
     },
     {
+      scopeKey: getScopeKeyByService(ServiceType.DPSK, ServiceOperation.EDIT),
       label: intl.$t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
@@ -116,14 +119,17 @@ export default function DpskTable () {
       </span>
     </Space>
 
+  const allowedRowActions = (hasDpskAccess() && filterByAccess(rowActions)) || []
   return (
     <>
       <PageHeader
         title={title}
         breadcrumb={breadCrumb}
         extra={hasDpskAccess() && filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            scopeKey={getScopeKeyByService(ServiceType.DPSK, ServiceOperation.CREATE)}
+          >
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
           </TenantLink>
         ])}
@@ -136,8 +142,8 @@ export default function DpskTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasDpskAccess() && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

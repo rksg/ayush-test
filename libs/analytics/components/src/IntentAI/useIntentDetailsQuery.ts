@@ -6,6 +6,7 @@ import { MessageDescriptor } from 'react-intl'
 
 import { kpiDelta, TrendTypeEnum }              from '@acx-ui/analytics/utils'
 import { formatter }                            from '@acx-ui/formatter'
+import { useParams }                            from '@acx-ui/react-router-dom'
 import { intentAIApi }                          from '@acx-ui/store'
 import { NetworkPath, noDataDisplay, NodeType } from '@acx-ui/utils'
 
@@ -68,6 +69,21 @@ export type Intent = {
   recommendedValue: IntentConfigurationValue
 } & Partial<IntentKpi>
 
+export const useIntentParams = () => {
+  const { tenantId, root, ...params } = useParams() as {
+    tenantId?: string
+    root?: Intent['root']
+    sliceId: Intent['sliceId']
+    code: string
+  }
+
+  return { ...params, root: (root || tenantId)! } as {
+    root: Intent['root']
+    sliceId: Intent['sliceId']
+    code: string
+  }
+}
+
 const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
   return kpis.map(kpi => {
     const name = `kpi_${_.snakeCase(kpi.key)}`
@@ -89,14 +105,9 @@ const kpiHelper = (kpis: IntentDetailsQueryPayload['kpis']) => {
 export function getKpiData (intent: Intent, config: IntentKPIConfig) {
   const key = `kpi_${_.snakeCase(config.key)}` as `kpi_${string}`
   const kpi = intent[key] as IntentKpi[`kpi_${string}`]
-  const [before, after] = [
-    _.get(kpi, 'compareData.result', null),
-    _.get(kpi, 'data.result', null)
-  ].filter(value => value !== null)
-
   return {
-    data: after,
-    compareData: before
+    data: _.get(kpi, 'data.result', null),
+    compareData: _.get(kpi, 'compareData.result', null)
   }
 }
 

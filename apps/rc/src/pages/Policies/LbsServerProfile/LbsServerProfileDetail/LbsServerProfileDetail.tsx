@@ -28,7 +28,7 @@ const LbsServerProfileDetail = () => {
   const { data: lbsServerProfileList } = useGetLbsServerProfileListQuery({
     params,
     payload: {
-      fields: ['id', 'name', 'lbsVenueName', 'server', 'venueIds', 'serverConnected'],
+      fields: ['id', 'name', 'lbsServerVenueName', 'server', 'venueIds', 'serverConnected'],
       searchString: '',
       filters: { id: [policyId] }
     }
