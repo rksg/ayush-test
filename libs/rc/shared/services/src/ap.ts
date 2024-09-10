@@ -18,6 +18,7 @@ import {
   ApAntennaTypeSettings,
   ApBandModeSettings,
   ApBssColoringSettings,
+  ApSmartMonitor,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -76,6 +77,7 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   NewApGroupViewModelResponseType,
+  SystemCommands,
   StickyClientSteering,
   ApStickyClientSteering
 } from '@acx-ui/rc/utils'
@@ -627,8 +629,17 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.factoryResetAp, params, apiCustomHeader)
-        return {
-          ...req
+        if (enableRbac) {
+          return {
+            ...req,
+            body: JSON.stringify({
+              type: SystemCommands.FACTORY_RESET
+            })
+          }
+        } else {
+          return {
+            ...req
+          }
         }
       }
     }),
@@ -979,6 +990,28 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
+    getApSmartMonitor: build.query<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
+    updateApSmartMonitor: build.mutation<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
@@ -1418,6 +1451,9 @@ export const {
   useUpdateApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
+  useGetApSmartMonitorQuery,
+  useLazyGetApSmartMonitorQuery,
+  useUpdateApSmartMonitorMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,

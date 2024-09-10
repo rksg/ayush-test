@@ -199,6 +199,49 @@ describe.skip('Network More settings - Networking Tab', () => {
 
 })
 
+describe('NetworkMoreSettings', () => {
+  describe('Over-the-DS', () => {
+
+    const testNetworkTypes = [
+      NetworkTypeEnum.CAPTIVEPORTAL,
+      NetworkTypeEnum.PSK
+    ]
+
+    it('FF is open, should be display when enabling Fast Roaming', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      // eslint-disable-next-line max-len
+      const mockWlanData = { wlan: { wlanSecurity: WlanSecurityEnum.WPA23Mixed } } as NetworkSaveData
+
+      for (const networkType in testNetworkTypes) {
+        // eslint-disable-next-line max-len
+        const mockContextData = { editMode: true, data: { type: NetworkTypeEnum[networkType as keyof typeof NetworkTypeEnum] } } as NetworkFormContextType
+        render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
+
+        const tabs = await screen.findAllByRole('tab')
+        const networkingTab = tabs[3]
+        await userEvent.click(networkingTab)
+
+        expect(screen.queryByTestId('over-the-ds-full-block')).not.toBeInTheDocument()
+        expect(screen.queryByTestId('reassociation-timeout-full-block')).not.toBeInTheDocument()
+
+        const enableFastRoaming = screen.getByTestId('enableFastRoaming')
+
+        await userEvent.click(enableFastRoaming)
+
+        expect(screen.getByTestId('over-the-ds-full-block')).toBeVisible()
+        expect(screen.getByTestId('reassociation-timeout-full-block')).toBeVisible()
+
+        await userEvent.type(screen.getByTestId('reassociation-timeout-input'), '300')
+
+        expect(await screen.findByRole('alert')).toBeVisible()
+
+        cleanup()
+      }
+    })
+  })
+
+})
+
 // eslint-disable-next-line max-len
 export function MockedMoreSettingsForm (wlanData: NetworkSaveData, networkFormContext: NetworkFormContextType) {
   return (

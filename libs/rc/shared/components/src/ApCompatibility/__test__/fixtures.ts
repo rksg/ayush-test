@@ -57,7 +57,7 @@ export const mockApCompatibilitiesNetwork: ApCompatibilityResponse = {
 
 export const mockFeatureCompatibilities: ApFeatureSet = {
   featureName: 'EXAMPLE-FEATURE-3',
-  requiredFw: '6.2.3.103.251',
+  requiredFw: '6.2.3.103.252',
   supportedModelFamilies: ['Wi-Fi 6']
 }
 

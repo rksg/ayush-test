@@ -221,8 +221,7 @@ describe('ManageDelegateAdminDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(3)
-    await userEvent.click(checkboxes.at(1)!)
-    await userEvent.click(checkboxes.at(2)!)
+    await userEvent.click(checkboxes.at(0)!)
 
     const input = screen.getByPlaceholderText('Search Email')
     await userEvent.type(input, 'ms')
@@ -248,8 +247,7 @@ describe('ManageDelegateAdminDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
     const checkboxes = screen.getAllByRole('checkbox')
     expect(checkboxes).toHaveLength(3)
-    await userEvent.click(checkboxes.at(1)!)
-    await userEvent.click(checkboxes.at(2)!)
+    await userEvent.click(checkboxes.at(0)!)
 
     await userEvent.click(screen.getByRole('button', { name: 'Assign' }))
 

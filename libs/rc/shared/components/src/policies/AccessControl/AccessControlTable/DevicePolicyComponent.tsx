@@ -15,19 +15,18 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AclOptionType,
-  DevicePolicy,
-  Network,
+  DevicePolicy, filterByAccessForServicePolicyMutation,
+  getScopeKeyByPolicy,
+  Network, PolicyOperation,
+  PolicyType,
   useTableQuery,
   WifiNetwork
 } from '@acx-ui/rc/utils'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { defaultNetworkPayload }           from '../../../NetworkTable'
 import { AddModeProps }                    from '../../AccessControlForm'
 import { DeviceOSDrawer }                  from '../../AccessControlForm/DeviceOSDrawer'
 import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
-
 
 
 const defaultPayload = {
@@ -110,7 +109,7 @@ const DevicePolicyComponent = () => {
   }, [networkTableQuery.data, networkIds])
 
   const actions = [{
-    scopeKey: [WifiScopes.CREATE],
+    scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.CREATE),
     label: $t({ defaultMessage: 'Add Device & OS Policy' }),
     disabled: tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT_DEVICE_POLICY,
     onClick: () => {
@@ -134,7 +133,7 @@ const DevicePolicyComponent = () => {
 
   const rowActions: TableProps<DevicePolicy>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems => selectedItems.length > 0),
       onClick: (rows, clearSelection) => {
@@ -142,7 +141,7 @@ const DevicePolicyComponent = () => {
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.DEVICE_POLICY, PolicyOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -150,6 +149,9 @@ const DevicePolicyComponent = () => {
       }
     }
   ]
+
+  const allowedActions = filterByAccessForServicePolicyMutation(actions)
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return <Loader states={[tableQuery]}>
     <Form>
@@ -165,12 +167,9 @@ const DevicePolicyComponent = () => {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         rowKey='id'
-        actions={filterByAccess(actions)}
-        rowActions={filterByAccess(rowActions)}
-        rowSelection={
-          // eslint-disable-next-line max-len
-          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
-        }
+        actions={allowedActions}
+        rowActions={allowedRowActions}
+        rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
       />
     </Form>
   </Loader>

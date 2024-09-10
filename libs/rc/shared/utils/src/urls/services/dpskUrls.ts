@@ -147,7 +147,7 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
   },
   deleteDpskPolicySet: {
     method: 'delete',
-    url: NewDpskBaseUrlWithId + '/policySets/:policySetId',
+    url: NewDpskBaseUrlWithId + '/policySets',
     newApi: true,
     defaultHeaders: {
       'Content-Type': 'application/vnd.ruckus.v1+json',
