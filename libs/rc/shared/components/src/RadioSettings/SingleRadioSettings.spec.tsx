@@ -1568,11 +1568,12 @@ describe('SignaleRadioSettings component', () => {
       .findByText('This band is not supported for APs in current country')
     expect(noSupportInfoDiv).toEqual(expect.anything())
   })
-  
+
+  // eslint-disable-next-line max-len
   it('should show tx power extended options when isSupportAggressiveTxPowerAdjustment is true', async () => {
     const radioType = ApRadioTypeEnum.Radio24G
 
-    const { asFragment } = render (
+    render (
       <Provider>
         <Router>
           <Form>

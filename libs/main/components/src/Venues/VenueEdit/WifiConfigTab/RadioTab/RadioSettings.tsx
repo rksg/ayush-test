@@ -987,7 +987,7 @@ export function RadioSettings () {
                 testId='radio-24g-tab'
                 radioType={ApRadioTypeEnum.Radio24G}
                 handleChanged={handleChange}
-                onResetDefaultValue={handleResetDefaultSettings} 
+                onResetDefaultValue={handleResetDefaultSettings}
                 isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
             </div>
             <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
@@ -1006,7 +1006,7 @@ export function RadioSettings () {
                 radioType={ApRadioTypeEnum.Radio6G}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings}
-                afcProps={afcProps} 
+                afcProps={afcProps}
                 isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
             </div>
             }
@@ -1044,7 +1044,7 @@ export function RadioSettings () {
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   handleChanged={handleChange}
-                  onResetDefaultValue={handleResetDefaultSettings} 
+                  onResetDefaultValue={handleResetDefaultSettings}
                   isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
               </div>
               <div style={{
@@ -1079,7 +1079,7 @@ export function RadioSettings () {
                   inherit5G={isUpper5gInherit}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   handleChanged={handleChange}
-                  onResetDefaultValue={handleResetDefaultSettings} 
+                  onResetDefaultValue={handleResetDefaultSettings}
                   isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
               </div>
             </>

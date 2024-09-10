@@ -73,7 +73,7 @@ export const txPowerAdjustmentExtendedOptions = [
   { label: '-20dB', value: '-20' },
   { label: '-21dB', value: '-21' },
   { label: '-22dB', value: '-22' },
-  { label: '-23dB', value: '-23' },
+  { label: '-23dB', value: '-23' }
 ]
 
 export const txPowerAdjustment6GOptions = [

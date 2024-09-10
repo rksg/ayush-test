@@ -4,8 +4,8 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { AFCProps }               from '@acx-ui/rc/utils'
+import { Button, cssStr } from '@acx-ui/components'
+import { AFCProps }       from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -14,7 +14,7 @@ import {
   RadioSettingsChannelsManual320Mhz
 } from '../RadioSettingsChannels/320Mhz/RadioSettingsChannelsManual320Mhz'
 
-import { ChannelBarControlPopover } from './ChannelBarControlPopover'
+import { ChannelBarControlPopover }  from './ChannelBarControlPopover'
 import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
@@ -25,7 +25,7 @@ import {
   SupportRadioChannelsContext,
   txPowerAdjustmentOptions,
   txPowerAdjustment6GOptions,
-  txPowerAdjustmentExtendedOptions,
+  txPowerAdjustmentExtendedOptions
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -332,7 +332,9 @@ export function SingleRadioSettings (props:{
   }
 
   const getTxPowerAdjustmentOptions = (radioType : ApRadioTypeEnum) => {
-    let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions : txPowerAdjustmentOptions;
+    let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
+      : txPowerAdjustmentOptions
+
     if (isSupportAggressiveTxPowerAdjustment) {
       return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
         if (a.label === 'MIN') return 1;
