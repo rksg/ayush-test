@@ -65,6 +65,9 @@ describe('IntentAIForm', () => {
       data: { transition: { success: true, errorMsg: '' , errorCode: '' } }
     })
 
+    jest.spyOn(require('../../utils'), 'isDataRetained')
+      .mockImplementation(() => true)
+
     mockIntentContext({ intent: mockedIntentCRRM, kpis })
   })
 
