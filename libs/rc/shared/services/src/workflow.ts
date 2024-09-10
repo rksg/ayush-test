@@ -26,13 +26,15 @@ import {
   ActionBase,
   GetApiVersionHeader,
   ApiVersionEnum,
-  ImageUrl
+  ImageUrl,
+  CommonResult
 } from '@acx-ui/rc/utils'
-import { baseWorkflowApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseWorkflowApi }             from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn } from './servicePolicy.utils'
+import { AsyncCommonResponse } from './persona'
+import { commonQueryFn }       from './servicePolicy.utils'
 
 
 export interface ActionQueryCriteria {
@@ -45,16 +47,13 @@ export interface ActionQueryCriteria {
   pageSize?: number
 }
 
-export interface AsyncResponse {
-  id: string,
-  requestId: string
-}
+
 
 export const workflowApi = baseWorkflowApi.injectEndpoints({
   endpoints: build => ({
     /** Workflow Management */
     // eslint-disable-next-line max-len
-    addWorkflow: build.mutation<AsyncResponse, RequestPayload<Workflow> & { callback?: (response: AsyncResponse) => void }>({
+    addWorkflow: build.mutation<AsyncCommonResponse, RequestPayload<Workflow> & { callback?: (response: AsyncCommonResponse) => void }>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WorkflowUrls.createWorkflow, params)
         return {
@@ -86,6 +85,14 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Workflow' }]
     }),
+    deleteWorkflows: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ payload }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const requests = payload!.map(id => ({ params: { id } }))
+        await batchApi(WorkflowUrls.deleteWorkflow, requests, fetchWithBQ)
+        return { data: {} as CommonResult }
+      },
+      invalidatesTags: [{ type: 'Workflow' }]
+    }),
     getWorkflowById: build.query<Workflow, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WorkflowUrls.getWorkflowDetail, params)
@@ -113,7 +120,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       ]
     }),
     // eslint-disable-next-line max-len
-    updateWorkflow: build.mutation<AsyncResponse, RequestPayload<Workflow> & { callback?: () => void }>({
+    updateWorkflow: build.mutation<AsyncCommonResponse, RequestPayload<Workflow> & { callback?: () => void }>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WorkflowUrls.updateWorkflow, params)
         return {
@@ -435,7 +442,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 
     /** Workflow Actions API */
     // eslint-disable-next-line max-len
-    createAction: build.mutation<AsyncResponse, RequestPayload & { callback?: (response: AsyncResponse) => void }>({
+    createAction: build.mutation<AsyncCommonResponse, RequestPayload & { callback?: (response: AsyncCommonResponse) => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
       invalidatesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -521,6 +528,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 export const {
   useAddWorkflowMutation,
   useDeleteWorkflowMutation,
+  useDeleteWorkflowsMutation,
   useGetWorkflowByIdQuery,
   useLazyGetWorkflowByIdQuery,
   useUpdateWorkflowMutation,

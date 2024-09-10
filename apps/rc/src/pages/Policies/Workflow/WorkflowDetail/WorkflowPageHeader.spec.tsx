@@ -41,6 +41,12 @@ describe('WorkflowPageHeader', () => {
           getWorkflowApi()
           return res(ctx.json(workflows[0]))
         }
+      ),
+      rest.post(
+        WorkflowUrls.searchWorkflows.url.split('?')[0],
+        (req, res, ctx) => {
+          return res(ctx.json([]))
+        }
       )
     )
   })

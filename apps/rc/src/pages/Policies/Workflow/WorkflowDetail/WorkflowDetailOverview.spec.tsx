@@ -45,21 +45,27 @@ const actionDefinitions: WorkflowActionDefinition[] = [
     id: 'actionId1',
     name: 'action1',
     category: '',
-    isSplit: false
+    isSplit: false,
+    localizationDescriptionId: '',
+    hasEndActions: false
   },
   {
     actionType: ActionType.DATA_PROMPT,
     id: 'actionId2',
     name: 'action2',
     category: '',
-    isSplit: false
+    isSplit: false,
+    localizationDescriptionId: '',
+    hasEndActions: false
   },
   {
     actionType: ActionType.DISPLAY_MESSAGE,
     id: 'actionId3',
     name: 'action3',
     category: '',
-    isSplit: false
+    isSplit: false,
+    localizationDescriptionId: '',
+    hasEndActions: false
   }
 ]
 
@@ -102,6 +108,10 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  WorkflowPanel: () => <div data-testid='WorkflowPanel' />
+}))
 
 describe('WorkflowDetailOverview', () => {
   const getWorkflowApi = jest.fn()

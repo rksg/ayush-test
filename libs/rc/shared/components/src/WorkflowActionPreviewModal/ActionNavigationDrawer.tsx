@@ -6,8 +6,8 @@ import {
   Node
 } from 'reactflow'
 
-import { ActionType, WorkflowStep } from '@acx-ui/rc/utils'
-import { getIntl }                  from '@acx-ui/utils'
+import { ActionType, ActionTypeTitle, WorkflowStep } from '@acx-ui/rc/utils'
+import { getIntl }                                   from '@acx-ui/utils'
 
 
 export interface ActionNavigationDrawerProps {
@@ -27,16 +27,7 @@ function transformToDataNode (nodes: Node<WorkflowStep, ActionType>[], selectedI
     .forEach(node => {
       dataNodes.push(
         {
-          title: $t({ defaultMessage: `{
-            type, select,
-            AUP {Acceptable Use Policy (AUP)}
-            DATA_PROMPT {Display a Form}
-            DISPLAY_MESSAGE {Custom Message}
-            MAC_REG {MAC Registration}
-            other {}
-          }` }, {
-            type: node.data.actionType
-          }),
+          title: $t(ActionTypeTitle[node.data.actionType!]),
           key: node.data.id,
           style: {
             color: node.data.id === selectedId ?

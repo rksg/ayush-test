@@ -2,8 +2,8 @@ import {
   useCreateWorkflowStepMutation,
   useCreateWorkflowChildStepMutation,
   usePatchActionMutation,
-  AsyncResponse,
-  useCreateActionMutation
+  useCreateActionMutation,
+  AsyncCommonResponse
 } from '@acx-ui/rc/services'
 import { ActionType, GenericActionData, StepType } from '@acx-ui/rc/utils'
 
@@ -50,7 +50,7 @@ export function useWorkflowStepActions () {
 
     return await createAction({
       payload: { ...formData, actionType },
-      callback: async (response: AsyncResponse) => {
+      callback: async (response: AsyncCommonResponse) => {
         if (response.id) {
           await createStepCallback(policyId, actionType, response.id, priorNodeId)
           onClose?.()

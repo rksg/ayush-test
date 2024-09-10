@@ -10,9 +10,10 @@ import {
   Loader } from '@acx-ui/components'
 import { EnrollmentPortalLink, WorkflowActionPreviewModal } from '@acx-ui/rc/components'
 import {
-  useDeleteWorkflowMutation,
+  useDeleteWorkflowsMutation,
   useSearchInProgressWorkflowListQuery,
-  useLazySearchWorkflowsVersionListQuery
+  useLazySearchWorkflowsVersionListQuery,
+  doProfileDelete
 } from '@acx-ui/rc/services'
 import {
   getPolicyListRoutePath,
@@ -100,9 +101,9 @@ export default function WorkflowTable () {
   const tenantBasePath = useTenantLink('')
   const navigate = useNavigate()
   const [workflowMap, setWorkflowMap] = useState(new Map<string, Workflow>())
-  const [deleteWorkflow,
+  const [deleteWorkflows,
     { isLoading: isDeleteWorkflowing }
-  ] = useDeleteWorkflowMutation()
+  ] = useDeleteWorkflowsMutation()
   const [searchVersionedWorkflows] = useLazySearchWorkflowsVersionListQuery()
   const settingsId = 'workflow-table'
   const [previewVisible, setPreviewVisible] = useState(false)
@@ -149,7 +150,7 @@ export default function WorkflowTable () {
         })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      visible: (selectedItems => selectedItems.length === 1)
     },
     {
       label: $t({ defaultMessage: 'Preview' }),
@@ -159,27 +160,33 @@ export default function WorkflowTable () {
         setPreviewVisible(true)
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      visible: (selectedItems => selectedItems.length === 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([data], clearSelection) => {
-        const id = workflowMap.get(data.id!)?.id ?? data.id
-        deleteWorkflow({ params: { id } })
-          .unwrap()
-          .then(()=> {
-            setWorkflowMap(map => {
-              map.delete(data.id!!)
-              return new Map(map)
-            })
+      onClick: (selectedItems, clearSelection) => {
+        doProfileDelete(selectedItems,
+          $t({ defaultMessage: 'Workflow' }),
+          selectedItems.length === 1 ? selectedItems[0].name : undefined,
+          [],
+          async () => {
+            const ids = selectedItems.map(v => workflowMap.get(v.id!)?.id ?? v.id!)
+            deleteWorkflows({ payload: ids })
+              .unwrap()
+              .then(()=> {
+                setWorkflowMap(map => {
+                  ids.forEach(id => map.delete(id!))
+                  return new Map(map)
+                })
+                clearSelection()
+              })
+              .catch((e) => {
+                // eslint-disable-next-line no-console
+                console.log(e)
+              })
           })
-          .catch((e) => {
-            // eslint-disable-next-line no-console
-            console.log(e)
-          })
-        clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      visible: (selectedItems => selectedItems.length >= 1)
     }
   ]
 

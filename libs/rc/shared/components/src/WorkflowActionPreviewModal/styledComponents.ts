@@ -1,6 +1,6 @@
 import { Popover as AntPopover, Layout as AntLayout,
   Select as AntSelect } from 'antd'
-import styled, { css, createGlobalStyle } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Button as UIButton } from '@acx-ui/components'
 import { EyeSlashSolid as UIEyeSlashSolid,
@@ -22,47 +22,6 @@ import { EyeSlashSolid as UIEyeSlashSolid,
 export const popoverClassName = 'portal-demo-popover'
 export const modalClassName = 'portal-modal-preview'
 
-export const PopoverStyle = createGlobalStyle`
-  .${popoverClassName} {
-    z-index: 7;
-    padding-top: 0px;
-    .ant-popover-arrow { display: none; }
-    .ant-popover-inner {
-      .ant-popover-inner-content {
-        padding: 10px 10px;
-      }
-    }
-  }
-`
-export const ModalStyle = createGlobalStyle`
-  .ant-modal.ant-modal-confirm.${modalClassName} {
-    top: 0px;
-    height:100%;
-    .ant-modal-confirm-btns{
-      margin-top: 0px;
-    }
-    .ant-modal-content{
-      height:100%;
-      .ant-modal-body{
-        height:100%;
-        .ant-modal-confirm-body-wrapper{
-          height: 100%;
-          .ant-modal-confirm-body{
-            height:100%;
-            .ant-modal-confirm-content{
-              height:100%;
-              margin-top: 0px;
-              .ant-layout{
-                margin-bottom: 0px;
-              }
-            }
-          }
-        }
-      }
-    }
-
-  }
-`
 export const ListViewToggle = styled(ListSolid)
 
 export const CommonLabel = styled.div`

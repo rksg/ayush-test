@@ -11,7 +11,7 @@ import {
   useGetWorkflowByIdQuery,
   useAddWorkflowMutation,
   useUpdateWorkflowMutation,
-  AsyncResponse
+  AsyncCommonResponse
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -68,7 +68,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
     updateWorkflow,
     { isLoading: isUpdating }
   ] = useUpdateWorkflowMutation()
-  const handleAddWorkflow = async (data: Workflow, callback?: (v: AsyncResponse)=>void) => {
+  const handleAddWorkflow = async (data: Workflow, callback?: (v: AsyncCommonResponse)=>void) => {
     return addWorkflow({ payload: {
       ...data,
       publishedDetails: { status: 'WORK_IN_PROGRESS' as PublishStatus }
@@ -113,7 +113,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
   useEffect(() => {
     const createDraft = async () => {
       let draftName = 'draft-' + uuidv4()
-      await handleAddWorkflow({ name: draftName }, (response: AsyncResponse) => {
+      await handleAddWorkflow({ name: draftName }, (response: AsyncCommonResponse) => {
         originData.current = { id: response.id, name: draftName } as Workflow
         setReady(true)
       })
