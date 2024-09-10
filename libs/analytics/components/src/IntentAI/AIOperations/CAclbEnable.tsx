@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -51,7 +51,12 @@ const useValuesText = createUseValuesText({
       Disabling load balancing prioritizes network stability over performance optimization, ensuring consistent connectivity and reducing the risk of disruptions caused by frequent client reassignments.
     </p>
   ` }),
-  action: defineMessage({ defaultMessage: 'Client Load Balancing for this {scope} is disabled. For proper distribution of Clients across APs, it is recommended to enable Client Load Balancing with default method as "Based on Client Count". Note that for Smartzones 6.0 and below Client Load Balancing will be enabled on 5 GHz only.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>This Intent is active, with following priority: </p>
+    <p>Yes, apply the recommendation</p>
+    <p>IntentAI will enable load balancing based on client count for this network, this change shall improves network performance by evenly distributing client connections, preventing congestion on specific access points and optimizing overall throughput and reliability.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'Client Load Balancing allows equal distribution of clients by allowing heavily loaded APs to move clients to less loaded neighboring APs, This shall result in better radio utilization resulting in better Wi-Fi experience to the user.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Load balancing mechanisms may introduce complexity and require additional management overhead, potentially leading to increased network latency or disruptions during client reassignments.</p>
@@ -63,7 +68,7 @@ export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
-    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -73,7 +78,7 @@ const options = {
     />
   },
   no: {
-    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -132,7 +137,6 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>

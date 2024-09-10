@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -53,7 +53,12 @@ const useValuesText = createUseValuesText({
       This option maintains the transmit power of the 2.4 GHz band to preserve its range and ensure broader coverage, prioritizing compatibility and connectivity for devices that rely on the 2.4 GHz band.
     </p>
   ` }),
-  action: defineMessage({ defaultMessage: '{scope} is configured with the same transmit power on 2.4 GHz and 5 GHz/6 GHz. Reducing the transmit power on 2.4 GHz will reduce co-channel interference and encourage clients to use 5 GHz/6 GHz.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>This Intent is active, with following priority: </p>
+    <p>Yes, apply the recommendation</p>
+    <p>IntentAI will reduce 2.4 GHz power for this network. This change will enhance 5 GHz network performance by encouraging device connection to the less congested 5 GHz band, resulting in faster speeds and improved reliability for compatible devices.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'Encourages client association to 5 GHz/6 GHz and reduces co-channel interference.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Devices that rely solely on the 2.4 GHz band may experience reduced signal strength and potentially slower speeds, particularly if they are located at the edge of coverage areas or in areas with obstacles that attenuate 5 GHz signals.</p>
@@ -65,7 +70,7 @@ export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
-    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -75,7 +80,7 @@ const options = {
     />
   },
   no: {
-    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -134,7 +139,6 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>

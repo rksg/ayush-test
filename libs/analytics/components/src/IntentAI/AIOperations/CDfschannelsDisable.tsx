@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -51,7 +51,12 @@ const useValuesText = createUseValuesText({
       Enabling DFS provides access to additional channels in the 5 GHz band, reducing congestion and optimizing overall Wi-Fi performance by using less crowded frequencies.
     </p>
   ` }),
-  action: defineMessage({ defaultMessage: 'There is a significant high detection of DFS Radar signals in the {scope}, it is recommended to disable DFS Channels on this <VenueSingular></VenueSingular>.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>This Intent is active, with following priority: </p>
+    <p>Yes, apply the recommendation</p>
+    <p>IntentAI will disable DFS Radar channels for this network, ensuring stable and predictable Wi-Fi performance by avoiding interference with radar systems and preventing the disruptions caused by mandatory channel switching.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'If AP is placed in an area where there are genuine and consistent DFS Radar signals, then the AP need not try to operate on the DFS channel.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Disabling DFS limits the available channels, potentially increasing network congestion and reducing overall Wi-Fi performance, especially in crowded environments with many competing devices.</p>
@@ -63,7 +68,7 @@ export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
-    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -73,7 +78,7 @@ const options = {
     />
   },
   no: {
-    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -132,7 +137,6 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>

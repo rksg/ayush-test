@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Form, Typography }                         from 'antd'
+import { Form }                                     from 'antd'
 import _                                            from 'lodash'
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
@@ -46,7 +46,12 @@ const useValuesText = createUseValuesText({
       Remaining on basic mode prioritizes client compatibility, ensuring seamless connectivity for a wide range of devices without implementing advanced load balancing techniques.
     </p>
   ` }),
-  action: defineMessage({ defaultMessage: 'Steering mode for {scope} is set as {currentValue}. It is recommended to change the mode to PROACTIVE.' }),
+  action: defineMessage({ defaultMessage: `
+    <p>This Intent is active, with following priority: </p>
+    <p>Yes, apply the recommendation</p>
+    <p>IntentAI will change band balancing mode to Proactive for this network, this change will optimizes client distribution, enhancing overall network performance by efficiently balancing client load across access points, which shall improve throughput and reduce congestion.</p>
+    <p>IntentAI will continuously monitor these configurations.</p>
+  ` }),
   reason: defineMessage({ defaultMessage: 'Band Balancing (BB) feature intelligently distributes the WLAN clients on the 2.4 GHz and the 5 GHz channels in order to balance the client load. Mode "PROACTIVE" shall have higher efficiency in steering clients from one band to another and hence shall result in improve load on the AP resulting in better WiFi experience to the user.' }),
   tradeoff: defineMessage({ defaultMessage: `
     <p>Advanced client distribution techniques might introduce complexity and require additional configuration, potentially increasing management overhead and requiring more sophisticated monitoring and troubleshooting.</p>
@@ -58,7 +63,7 @@ export const IntentAIDetails = createIntentAIDetails(useValuesText)
 
 const options = {
   yes: {
-    title: defineMessage({ defaultMessage: 'Yes, apply the intent' }),
+    title: defineMessage({ defaultMessage: 'Yes, apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -68,7 +73,7 @@ const options = {
     />
   },
   no: {
-    title: defineMessage({ defaultMessage: 'No, do not apply the intent' }),
+    title: defineMessage({ defaultMessage: 'No, do not apply the recommendation' }),
     content: <FormattedMessage
       values={richTextFormatValues}
       defaultMessage={`
@@ -127,7 +132,6 @@ export const IntentAIForm = createIntentAIForm<{ enable: boolean }>({
     const { $t } = useIntl()
     const { intent } = useIntentContext()
     return <>
-      <Typography.Paragraph children={useValuesText().actionText} />
       <StepsForm.Subtitle children={$t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: intent.sliceValue })} />
 
       <Form.Item name={['preferences','enable']}>
