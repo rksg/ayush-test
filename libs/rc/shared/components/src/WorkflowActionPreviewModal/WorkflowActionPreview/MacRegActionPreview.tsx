@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback  } from 'react'
 
 import { Form, Input, List, Row, Space, Typography } from 'antd'
 import { defineMessage, useIntl }                    from 'react-intl'
@@ -26,27 +26,36 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
   }, [networkList])
   return (
 
-    <Space direction='vertical' size='large'>
+    <Space direction='vertical' size='large' align='center'>
       <br/>
       <Text>
         {$t({ defaultMessage: 'The device with MAC address ' })+' '}
         <Text strong data-testid='macAdd'>{macAddress} </Text>
         {$t({ defaultMessage: ' is now allowed to connect to the following network:' })}
       </Text>
-      {selectedSsid &&
+      {(selectedSsid && networkList.length === 1) &&
           <Space direction='vertical' size='large' align='center'>
-            <Link onClick={() => setSelectedSsid('')}> {selectedSsid}</Link>
+            <Text strong={true}><b>{selectedSsid}</b><br/></Text>
+          </Space>
+      }
+      {(selectedSsid && networkList.length > 1) &&
+          <Space direction='vertical' size='large' align='center'>
+            <Link onClick={() => setSelectedSsid('')}>
+              <Text strong={true}><b>{selectedSsid}</b><br/></Text>
+            </Link>
           </Space>
       }
       {(networkList.length > 1 && selectedSsid === '') &&
-          <List bordered
+          <List
             dataSource={networkList}
             renderItem={
               (ssid) => (
                 (ssid && ssid.trim().length > 0) && <List.Item>
                   <Row justify='space-between' style={{ width: '100%' }}>
                     <Space align='baseline'>
-                      <Link onClick={() => setSelectedSsid(ssid)}>{ssid}</Link>
+                      <Link onClick={() => setSelectedSsid(ssid)} strong={true}>
+                        <Text strong={true}><b>{ssid}</b><br/></Text>
+                      </Link>
                     </Space>
                   </Row>
                 </List.Item>
@@ -57,8 +66,9 @@ function MacRegOnboardedPreview (props: { onboard: MacRegOnboardedVariables }) {
   )
 }
 
-function MacRegActionInputPreview (){
+function MacRegActionInputPreview (props: { data?: MacRegOnboardedVariables }){
   const { $t } = useIntl()
+  const { data } = props
   const macRegexString = {
     name: 'macAddress',
     // eslint-disable-next-line max-len
@@ -70,7 +80,7 @@ function MacRegActionInputPreview (){
     <Space direction='vertical' align='center'>
       <br/>
       <br/>
-      <Form layout='vertical' style={{ width: '250px' }}>
+      <Form layout='vertical' style={{ width: '250px' }} initialValues={data}>
         <Form.Item
           label={$t({ defaultMessage: 'Enter the MAC address of your device here' })}
           name={'macAddress'}
@@ -92,8 +102,8 @@ function MacRegActionInputPreview (){
 export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegAction>) {
   const { data, ...rest } = props
   const [page, setPage] = useState('macInputPreview')
-  //const [macAddress] = useState<string>('')
-  const macAddress = Form.useWatch<string>('macAddress')
+  const [macAddress] = useState<string>('')
+  //const macAddress = Form.useWatch<string>('macAddress')
   const [ getMacRegPool] = useLazyGetMacRegListQuery()
   const [ getNetworkList, networkListResponse ] = useLazyNetworkListQuery({
     selectFromResult: ({ data }) => {
@@ -125,7 +135,8 @@ export function MacRegActionPreview (props: GenericActionPreviewProps<MacRegActi
     }
   }, [data?.macRegListId, loadMacRegNetworks])
 
-  const macInputPreview = <MacRegActionInputPreview />
+  const macInputPreview = <MacRegActionInputPreview
+    data={{ macAddress: macAddress, networks: networkListResponse }}/>
 
   const onBoardPreview= <MacRegOnboardedPreview
     onboard={{ macAddress: macAddress, networks: networkListResponse }}/>
