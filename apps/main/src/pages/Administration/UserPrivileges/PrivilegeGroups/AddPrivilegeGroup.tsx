@@ -157,7 +157,8 @@ export function AddPrivilegeGroup () {
           venueList['com.ruckus.cloud.venue.model.venue'] = venueIds
           policyEntities.push({
             tenantId: ec.id,
-            objectList: venueList
+            allVenues: ec.allVenues ?? false,
+            objectList: ec.allVenues ? undefined : venueList
           })
         })
         privilegeGroupData.delegation = displayMspScope
@@ -199,7 +200,7 @@ export function AddPrivilegeGroup () {
     const restCustomer = selectedCustomers.slice(1)
     return <div style={{ marginLeft: '12px', marginTop: '-16px', marginBottom: '10px' }}>
       <UI.VenueList key={firstCustomer.id}>
-        {firstCustomer.name} ({firstCustomer.children.every(v => v.selected) ?
+        {firstCustomer.name} ({firstCustomer.allVenues ?
           intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
           intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
             { count: firstCustomer.children.filter(v => v.selected).length })})
@@ -211,7 +212,7 @@ export function AddPrivilegeGroup () {
       </UI.VenueList>
       {restCustomer.map(ec =>
         <UI.VenueList key={ec.id}>
-          {ec.name} ({ec.children.every(v => v.selected) ?
+          {ec.name} ({ec.allVenues ?
             intl.$t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
             intl.$t({ defaultMessage: '{count} <VenuePlural></VenuePlural>' },
               { count: ec.children.filter(v => v.selected).length })})
