@@ -138,7 +138,8 @@ function ScheduleTime ({ disabled = false }: { disabled?: boolean }) {
 }
 
 const formats = {
-  datetime: formatter(DateFormatEnum.DateFormat),
+  datetime: formatter(DateFormatEnum.DateTimeFormat),
+  date: formatter(DateFormatEnum.DateFormat),
   time: formatter(DateFormatEnum.OnlyTime)
 }
 
@@ -153,7 +154,7 @@ ScheduleTiming.FieldSummary = function FieldSummary (): JSX.Element {
   return <Form.Item name={fieldName} label={label}>
     <StepsForm.FieldSummary<SettingsType>
       convert={(settings) => {
-        const date = formats.datetime(getScheduledAt({
+        const date = formats.date(getScheduledAt({
           status: intent.status as Statuses,
           settings: settings!
         }))

@@ -148,8 +148,9 @@ describe('ScheduleTiming.FieldSummary', () => {
     it('show date + time', async () => {
       jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRMnew, kpis: [] })
       renderForm(<ScheduleTiming.FieldSummary/>)
-      expect(await screen.findByText('Start Date & Time')).toBeVisible()
-      expect(await screen.findByText('08/12/2024 00:00')).toBeVisible()
+      expect(await screen.findByText('Date & Time')).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('The Intent will be scheduled to activate on 08/12/2024. Once active, any identified configuration changes will be applied daily at 00:00.')).toBeVisible()
     })
   })
 
@@ -157,8 +158,9 @@ describe('ScheduleTiming.FieldSummary', () => {
     it('show time only', async () => {
       jest.mocked(useIntentContext).mockReturnValue({ intent: mockedIntentCRRM, kpis: [] })
       renderForm(<ScheduleTiming.FieldSummary/>)
-      expect(await screen.findByText('Schedule Time')).toBeVisible()
-      expect(await screen.findByText('14:15')).toBeVisible()
+      expect(await screen.findByText('Time')).toBeVisible()
+      // eslint-disable-next-line max-len
+      expect(await screen.findByText('Any identified configuration changes will be applied daily at 14:15.')).toBeVisible()
     })
   })
 })
