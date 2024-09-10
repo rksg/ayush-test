@@ -13,7 +13,7 @@ import {
 import { RadioTypeEnum } from '@acx-ui/rc/utils'
 import { getIntl }       from '@acx-ui/utils'
 
-import { IntentListItem }       from './config'
+import { aiFeaturesLabel, codes, IntentListItem } from './config'
 import {
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
@@ -129,12 +129,26 @@ export function useIntentAIActions () {
   const handleResponse = (rows:IntentListItem[], result: TransitionMutationResponse) => {
     const errorMsgs:JSX.Element[] = []
     Object.entries(result).forEach(([, { success, errorMsg }], index) => {
+      const intentListItem = rows[index]
       if (!success) {
         errorMsgs.push(
           <div key={`optimizeAllIntentErrorToast_${index}`} style={{ padding: '10px 0' }}>
-            {rows[index].aiFeature}, {rows[index].sliceValue}:<br />{errorMsg}
+            {intentListItem.aiFeature}, {intentListItem.sliceValue}:<br />{errorMsg}
           </div>
         )
+      } else {
+        const feature = codes[intentListItem.code]
+        showToast({
+          type: 'success',
+          content: <FormattedMessage
+            defaultMessage='{feature}: {intent} for {sliceValue} has been updated'
+            values={{
+              feature: $t(aiFeaturesLabel[feature.aiFeature]),
+              intent: $t(feature.intent),
+              sliceValue: intentListItem.sliceValue
+            }}
+          />
+        })
       }
     })
     if (errorMsgs.length > 0) {
