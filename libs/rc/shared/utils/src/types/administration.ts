@@ -357,7 +357,8 @@ export interface PrivilegePolicy
 export interface PrivilegePolicyEntity
 {
   tenantId?: string,
-  objectList?: VenueObjectList
+  objectList?: VenueObjectList,
+  allVenues?: boolean
 }
 
 export interface VenueObjectList

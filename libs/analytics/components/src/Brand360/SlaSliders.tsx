@@ -4,10 +4,12 @@ import { Slider }  from 'antd'
 import { isEqual } from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { useUpdateTenantSettingsMutation } from '@acx-ui/analytics/services'
-import type { Settings }                   from '@acx-ui/analytics/utils'
-import { Button, Card, Loader }            from '@acx-ui/components'
-import { formatter, FormatterType }        from '@acx-ui/formatter'
+import { useUpdateTenantSettingsMutation }         from '@acx-ui/analytics/services'
+import type { Settings }                           from '@acx-ui/analytics/utils'
+import { Button, Card, Loader }                    from '@acx-ui/components'
+import { formatter, FormatterType }                from '@acx-ui/formatter'
+import { WifiScopes }                              from '@acx-ui/types'
+import { hasCrossVenuesPermission, hasPermission } from '@acx-ui/user'
 
 import { SliderLabel, Buttons, SliderWrapper } from './styledComponents'
 
@@ -27,7 +29,8 @@ export const SlaSliders = ({ initialSlas, currentSlas, setCurrentSlas }: {
     defaultValue={parseInt(currentSlas[name]!, 10)}
     onAfterChange={(value: number) => setCurrentSlas({ ...currentSlas, [name]: value.toString() })}
   />
-  const disabled = isEqual(savedSlas, currentSlas)
+  const isReadOnly = !(hasCrossVenuesPermission() && hasPermission({ scopes: [WifiScopes.UPDATE] }))
+  const disabled = isEqual(savedSlas, currentSlas) || isReadOnly
   return <SliderWrapper>
     <Loader states={[result]}>
       <Card title={$t({ defaultMessage: 'Service Level Agreements' })}>

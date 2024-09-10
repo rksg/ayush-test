@@ -51,6 +51,7 @@ import {
   fetchRbacVenueNetworkList,
   getNetworkDeepList, updateNetworkVenueFn
 } from './networkVenueUtils'
+import { commonQueryFn }     from './servicePolicy.utils'
 import { isPayloadHasField } from './utils'
 
 
@@ -401,7 +402,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings'
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
           ]
 
           onActivityMessageReceived(msg, useCases, () => {
@@ -542,7 +545,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
             'ActivateWifiNetworkTemplateOnVenue',
             'DeactivateWifiNetworkOnVenue',
             'DeactivateWifiNetworkTemplateOnVenue',
-            'UpdateVenueWifiNetworkSettings'
+            'UpdateVenueWifiNetworkSettings',
+            'DeactivateApGroupOnWifiNetwork',
+            'ActivateApGroupOnWifiNetwork'
           ], () => {
             api.dispatch(networkApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'LIST' }]))
           })
@@ -1014,6 +1019,27 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...req
         }
       }
+    }),
+    activateVenueApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        WifiRbacUrlsInfo.activateVenueApGroup,
+        WifiRbacUrlsInfo.activateVenueApGroup
+      ),
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    deactivateVenueApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        WifiRbacUrlsInfo.deactivateVenueApGroup,
+        WifiRbacUrlsInfo.deactivateVenueApGroup
+      ),
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
+    }),
+    updateVenueApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: commonQueryFn(
+        WifiRbacUrlsInfo.updateVenueApGroups,
+        WifiRbacUrlsInfo.updateVenueApGroups
+      ),
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }]
     })
   })
 })
@@ -1356,7 +1382,10 @@ export const {
   useUpdateRadiusServerSettingsMutation,
   useGetRadiusServerSettingsQuery,
   useBindClientIsolationMutation,
-  useUnbindClientIsolationMutation
+  useUnbindClientIsolationMutation,
+  useActivateVenueApGroupMutation,
+  useDeactivateVenueApGroupMutation,
+  useUpdateVenueApGroupMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
