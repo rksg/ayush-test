@@ -74,8 +74,8 @@ export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   [ActionType.DPSK]: defineMessage({ defaultMessage: 'Provide DPSK' }),
   [ActionType.MAC_REG]: defineMessage({ defaultMessage: 'MAC Address Registration' })
 }
