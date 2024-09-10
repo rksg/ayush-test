@@ -4,8 +4,8 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr } from '@acx-ui/components'
-import { AFCProps }       from '@acx-ui/rc/utils'
+import { Button, cssStr }         from '@acx-ui/components'
+import { AFCProps }               from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -22,7 +22,10 @@ import {
   split5GChannels,
   VenueRadioTypeDataKeyMap,
   LPIButtonText,
-  SupportRadioChannelsContext
+  SupportRadioChannelsContext,
+  txPowerAdjustmentOptions,
+  txPowerAdjustment6GOptions,
+  txPowerAdjustmentExtendedOptions,
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -59,7 +62,8 @@ export function SingleRadioSettings (props:{
   testId?: string,
   isUseVenueSettings?: boolean,
   LPIButtonText?: LPIButtonText,
-  afcProps?: AFCProps
+  afcProps?: AFCProps,
+  isSupportAggressiveTxPowerAdjustment?: boolean
 }) {
 
   const { $t } = useIntl()
@@ -71,7 +75,8 @@ export function SingleRadioSettings (props:{
     isUseVenueSettings = false,
     testId,
     LPIButtonText,
-    afcProps
+    afcProps,
+    isSupportAggressiveTxPowerAdjustment
   } = props
 
   const { radioType, handleChanged } = props
@@ -326,6 +331,18 @@ export function SingleRadioSettings (props:{
     combinChannelOnChanged.current = true
   }
 
+  const getTxPowerAdjustmentOptions = (radioType : ApRadioTypeEnum) => {
+    let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions : txPowerAdjustmentOptions;
+    if (isSupportAggressiveTxPowerAdjustment) {
+      return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
+        if (a.label === 'MIN') return 1;
+        if (b.label === 'MIN') return -1;
+        return 0;
+      });
+    }
+    return res;
+  }
+
   const selectRadioChannelSelectionType = () => {
     if(channelBandwidth === '320MHz') {
       if (channelMethod === 'MANUAL' && context === 'ap') {
@@ -389,6 +406,7 @@ export function SingleRadioSettings (props:{
               radioType={radioType}
               radioDataKey={radioDataKey}
               disabled={inherit5G || disable}
+              txPowerOptions={getTxPowerAdjustmentOptions(radioType)}
               channelBandwidthOptions={bandwidthOptions}
               context={context}
               isUseVenueSettings={isUseVenueSettings}

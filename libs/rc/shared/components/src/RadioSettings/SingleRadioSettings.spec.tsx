@@ -1568,5 +1568,38 @@ describe('SignaleRadioSettings component', () => {
       .findByText('This band is not supported for APs in current country')
     expect(noSupportInfoDiv).toEqual(expect.anything())
   })
+  
+  it('should show tx power extended options when isSupportAggressiveTxPowerAdjustment is true', async () => {
+    const radioType = ApRadioTypeEnum.Radio24G
+
+    const { asFragment } = render (
+      <Provider>
+        <Router>
+          <Form>
+            <SupportRadioChannelsContext.Provider value={{
+              bandwidthRadioOptions,
+              supportRadioChannels
+            }}>
+              <SingleRadioSettings
+                context='ap'
+                radioType={radioType}
+                isUseVenueSettings={false}
+                isSupportAggressiveTxPowerAdjustment={true}
+              />
+            </SupportRadioChannelsContext.Provider>
+          </Form>
+        </Router>
+      </Provider>
+    )
+
+    await screen.findByText('Channel selection method')
+
+    const channelSelect = await screen.findByRole('combobox', { name: /Channel selection/i })
+    expect(channelSelect).not.toHaveAttribute('disabled')
+
+    const transmitSelect = await screen.findByRole('combobox', { name: /Transmit Power/i })
+    await userEvent.click(transmitSelect)
+    await userEvent.click((await screen.findByTitle('-15dB')))
+  })
 
 })

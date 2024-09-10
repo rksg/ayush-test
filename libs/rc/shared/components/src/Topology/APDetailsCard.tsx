@@ -15,10 +15,11 @@ import {
   SwitchStatusEnum,
   transformApStatus,
   getPowerSavingStatusEnabledApStatus,
-  transformTitleCase
+  transformTitleCase,
+  RadioProperties
 } from '@acx-ui/rc/utils'
 import { useLocation }                  from '@acx-ui/react-router-dom'
-import { noDataDisplay, useDateFilter } from '@acx-ui/utils'
+import { noDataDisplay, useDateFilter, compareVersions } from '@acx-ui/utils'
 import type { AnalyticsFilter }         from '@acx-ui/utils'
 
 import IncidentStackedBar              from './IncidentStackedBar'
@@ -62,6 +63,19 @@ export function APDetailsCard (props: {
     || $t({ defaultMessage: 'Unknown' }) // for unknown device
 
   const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
+
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+  
+  const getTxPowerByApFwVersion = (currentAP: ApViewModel, channel: RadioProperties) => {
+    if (isApTxPowerToggleEnabled) {
+      return ((isApFwVersionLargerThan71(currentAP))? channel?.actualTxPower : channel?.txPower)
+    }
+    return channel?.txPower
+  }
+
+  const isApFwVersionLargerThan71 = (currentAP: ApViewModel) => {
+    return currentAP.fwVersion && compareVersions(currentAP.fwVersion, "7.1") >= 0
+  }
 
   return <Card><Card.Title>
     <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -175,7 +189,7 @@ export function APDetailsCard (props: {
                   <label><Subtitle level={5}>{ '2.4 GHz' }</Subtitle></label>
                   <span>{apDetail.channel24.channel || noDataDisplay}</span>
                   <span>{apDetail.channel24.operativeChannelBandwidth || noDataDisplay}</span>
-                  <span>{apDetail.channel24.txPower || noDataDisplay}</span>
+                  <span>{getTxPowerByApFwVersion(apDetail, apDetail.channel24) || noDataDisplay}</span>
                 </UI.TextNumber>
               )
           }
@@ -186,7 +200,7 @@ export function APDetailsCard (props: {
                   <label><Subtitle level={5}>{ '5 GHz' }</Subtitle></label>
                   <span>{apDetail.channel50.channel || noDataDisplay}</span>
                   <span>{apDetail.channel50.operativeChannelBandwidth || noDataDisplay}</span>
-                  <span>{apDetail.channel50.txPower || noDataDisplay}</span>
+                  <span>{getTxPowerByApFwVersion(apDetail, apDetail.channel50) || noDataDisplay}</span>
                 </UI.TextNumber>
               )
           }
@@ -197,7 +211,7 @@ export function APDetailsCard (props: {
                   <label><Subtitle level={5}>{ 'LO 5 GHz' }</Subtitle></label>
                   <span>{apDetail.channelL50.channel || noDataDisplay}</span>
                   <span>{apDetail.channelL50.operativeChannelBandwidth || noDataDisplay}</span>
-                  <span>{apDetail.channelL50.txPower || noDataDisplay}</span>
+                  <span>{getTxPowerByApFwVersion(apDetail, apDetail.channelL50) || noDataDisplay}</span>
                 </UI.TextNumber>
               )
           }
@@ -208,7 +222,7 @@ export function APDetailsCard (props: {
                   <label><Subtitle level={5}>{ 'HI 5 GHz' }</Subtitle></label>
                   <span>{apDetail.channelU50.channel || noDataDisplay}</span>
                   <span>{apDetail.channelU50.operativeChannelBandwidth || noDataDisplay}</span>
-                  <span>{apDetail.channelU50.txPower || noDataDisplay}</span>
+                  <span>{getTxPowerByApFwVersion(apDetail, apDetail.channelU50) || noDataDisplay}</span>
                 </UI.TextNumber>
               )
           }
@@ -219,7 +233,7 @@ export function APDetailsCard (props: {
                   <label><Subtitle level={5}>{ '6 GHz' }</Subtitle></label>
                   <span>{apDetail.channel60.channel || noDataDisplay}</span>
                   <span>{apDetail.channel60.operativeChannelBandwidth || noDataDisplay}</span>
-                  <span>{apDetail.channel60.txPower || noDataDisplay}</span>
+                  <span>{getTxPowerByApFwVersion(apDetail, apDetail.channel60) || noDataDisplay}</span>
                 </UI.TextNumber>
               )
           }

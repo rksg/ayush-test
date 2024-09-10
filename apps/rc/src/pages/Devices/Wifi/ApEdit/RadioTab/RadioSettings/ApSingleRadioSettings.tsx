@@ -8,7 +8,9 @@ import { useIntl }      from 'react-intl'
 
 import { ApRadioTypeEnum, SingleRadioSettings, LPIButtonText, SupportRadioChannelsContext } from '@acx-ui/rc/components'
 import { isAPLowPower }                                                                     from '@acx-ui/rc/services'
-import { AFCStatus,AFCProps }                                                               from '@acx-ui/rc/utils'
+import { AFCStatus,AFCProps, ApViewModel }                                                  from '@acx-ui/rc/utils'
+import { compareVersions }                                                                  from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 
 import { ApEditContext, ApDataContext } from '../..'
 import { DisabledDiv, FieldLabel }      from '../../styledComponents'
@@ -49,7 +51,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     apViewContextData
   } = useContext(ApEditContext)
   const {
-    apCapabilities
+    apCapabilities,
+    apData
   } = useContext(ApDataContext)
 
   const defaultButtonTextSetting: LPIButtonText = {
@@ -102,6 +105,12 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
     return newButtonTextSetting
   }
 
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
+
+  const isApFwVersionLargerThan71 = (fwVersion: string | undefined) => {
+    return fwVersion? compareVersions(fwVersion, "7.1") >= 0 : false;
+  }
+
   return (
     (bandwidthOptions.length > 0)?
       <>
@@ -135,6 +144,8 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
             isUseVenueSettings={isUseVenueSettings}
             LPIButtonText={setLPIToggleText()}
             afcProps={afcProps}
+            isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled 
+              && isApFwVersionLargerThan71(apData?.firmware)}
           />
         )
         }

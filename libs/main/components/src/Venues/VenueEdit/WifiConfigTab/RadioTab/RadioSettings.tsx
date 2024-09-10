@@ -134,6 +134,7 @@ export function RadioSettings () {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isApTxPowerToggleEnabled = useIsSplitOn(Features.AP_TX_POWER_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const {
@@ -986,14 +987,16 @@ export function RadioSettings () {
                 testId='radio-24g-tab'
                 radioType={ApRadioTypeEnum.Radio24G}
                 handleChanged={handleChange}
-                onResetDefaultValue={handleResetDefaultSettings} />
+                onResetDefaultValue={handleResetDefaultSettings} 
+                isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
             </div>
             <div style={{ display: currentTab === 'Normal5GHz' ? 'block' : 'none' }}>
               <SingleRadioSettings
                 testId='radio-5g-tab'
                 radioType={ApRadioTypeEnum.Radio5G}
                 handleChanged={handleChange}
-                onResetDefaultValue={handleResetDefaultSettings} />
+                onResetDefaultValue={handleResetDefaultSettings}
+                isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
             </div>
             {(isTriBandRadio || (isWifiSwitchableRfEnabled && isSupport6GCountry)) &&
             <div style={{ display: (isTriBandRadio || (isWifiSwitchableRfEnabled && isSupport6GCountry)) &&
@@ -1003,7 +1006,8 @@ export function RadioSettings () {
                 radioType={ApRadioTypeEnum.Radio6G}
                 handleChanged={handleChange}
                 onResetDefaultValue={handleResetDefaultSettings}
-                afcProps={afcProps} />
+                afcProps={afcProps} 
+                isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
             </div>
             }
             {(isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
@@ -1040,7 +1044,8 @@ export function RadioSettings () {
                   inherit5G={isLower5gInherit}
                   radioType={ApRadioTypeEnum.RadioLower5G}
                   handleChanged={handleChange}
-                  onResetDefaultValue={handleResetDefaultSettings} />
+                  onResetDefaultValue={handleResetDefaultSettings} 
+                  isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
               </div>
               <div style={{
                 display: (isTriBandRadio || isWifiSwitchableRfEnabled) && isDual5gMode &&
@@ -1074,7 +1079,8 @@ export function RadioSettings () {
                   inherit5G={isUpper5gInherit}
                   radioType={ApRadioTypeEnum.RadioUpper5G}
                   handleChanged={handleChange}
-                  onResetDefaultValue={handleResetDefaultSettings} />
+                  onResetDefaultValue={handleResetDefaultSettings} 
+                  isSupportAggressiveTxPowerAdjustment={isApTxPowerToggleEnabled} />
               </div>
             </>
             }

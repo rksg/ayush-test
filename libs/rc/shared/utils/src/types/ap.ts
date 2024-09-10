@@ -530,6 +530,7 @@ export interface PingAp {
 export interface RadioProperties {
   Rssi: string | null,
   txPower?: string | null,
+  actualTxPower?: number,
   channel: string | number,
   band?: string,
   radioId?: number,
