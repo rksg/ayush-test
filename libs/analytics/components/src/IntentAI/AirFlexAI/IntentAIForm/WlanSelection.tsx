@@ -38,7 +38,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
     selectedWlans.map(wlan => ({ name: wlan.name, ssid: wlan.ssid, id: wlan.id }))
   )
   const venueId = sliceId
-  const raIQuery = useIntentWlansQuery({ sliceId, root, code }, { skip: !isMlisa })
+  const raiQuery = useIntentWlansQuery({ sliceId, root, code }, { skip: !isMlisa })
   let available: Wlan[] | undefined
   const r1Networks = useVenueRadioActiveNetworksQuery({
     params: { venueId },
@@ -52,7 +52,7 @@ export default function WlanSelection ({ disabled }: { disabled: boolean }) {
       pageSize: 10_000
     }
   }, { skip: isMlisa })
-  const wlansQuery = isMlisa ? raIQuery : r1Networks
+  const wlansQuery = isMlisa ? raiQuery : r1Networks
   useEffect(() => {
     if (isMlisa && wlansQuery.data) {
       available = wlansQuery.data.map(wlan => ({ ...wlan, id: wlan.name })) // RA does not have ID
