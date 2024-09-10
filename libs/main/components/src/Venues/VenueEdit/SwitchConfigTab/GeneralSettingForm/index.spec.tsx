@@ -179,7 +179,7 @@ describe('GeneralSettingForm', () => {
     expect(await screen.findByText('2 CLI profiles selected')).toBeVisible()
   })
 
-  it('should handle DNS update', async () => {
+  it('should disabled settings when the CLI profiles selected', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json({
@@ -197,19 +197,42 @@ describe('GeneralSettingForm', () => {
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
     await waitFor(() => screen.findByText('2 CLI profiles selected'))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add IP Address' }))
+    const addIpAddressButton = screen.getByRole('button', { name: 'Add IP Address' })
+    expect(addIpAddressButton).toBeDisabled()
+  })
+
+
+  it('should handle DNS update', async () => {
+    mockServer.use(
+      rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
+        (_, res, ctx) => res(ctx.json({
+          ...venueSwitchSetting[2],
+          cliApplied: false
+        })))
+    )
+    render(<Provider>
+      <VenueEditContext.Provider value={{
+        ...defaultValue,
+        editContextData, setEditContextData }}>
+        <GeneralSettingForm />
+      </VenueEditContext.Provider>
+    </Provider>, { route: { params } })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await screen.findByText('profile02 (Regular)')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add IP Address' }))
     // TODO: add test for edit dns
 
     const deleteBtns = screen.getAllByRole('deleteBtn')
-    expect(deleteBtns).toHaveLength(2)
-    fireEvent.click(deleteBtns[1])
+    expect(deleteBtns).toHaveLength(1)
+    fireEvent.click(deleteBtns[0])
   })
 
   it('should handle Syslog Server change and setting update', async () => {
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json({
-          ...venueSwitchSetting[1],
+          ...venueSwitchSetting[2],
           cliApplied: false
         })))
     )
@@ -221,7 +244,7 @@ describe('GeneralSettingForm', () => {
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('2 CLI profiles selected'))
+    await screen.findByText('profile02 (Regular)')
 
     expect(screen.getByRole('switch')).not.toBeChecked()
     fireEvent.click(screen.getByRole('switch'))
