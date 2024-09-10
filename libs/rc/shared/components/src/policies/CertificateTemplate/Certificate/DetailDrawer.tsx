@@ -7,6 +7,7 @@ import { Collapse, Drawer, Loader }                                             
 import { CollapseActive, CollapseInactive }                                                                                                                                   from '@acx-ui/icons'
 import { useGetAdaptivePolicySetQuery, useGetCertificateAuthorityQuery, useGetCertificateTemplateQuery, useGetSubCertificateAuthoritiesQuery, useUploadCaPrivateKeyMutation } from '@acx-ui/rc/services'
 import { Certificate, CertificateAuthority, CertificateCategoryType }                                                                                                         from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                                         from '@acx-ui/react-router-dom'
 import { noDataDisplay }                                                                                                                                                      from '@acx-ui/utils'
 
 import { UploadCaSettings }                                                                                                   from '../CertificateAuthorityForm/CertificateAuthoritySettings/UploadCaSettings'
@@ -30,7 +31,8 @@ export enum RenderType {
   CONTENT,
   CONTENT_WITH_DETAILS,
   DIVIDER,
-  DOWNLOAD
+  DOWNLOAD,
+  LINK
 }
 
 export interface Content {
@@ -45,6 +47,7 @@ export interface SubContent {
   content?: string | JSX.Element | number | null;
   detailTitle?: string;
   detail?: string;
+  link?: string
 }
 
 export function DetailDrawer ({ open = false, setOpen, data, type }: DetailDrawerProps) {
@@ -132,6 +135,13 @@ export function DetailDrawer ({ open = false, setOpen, data, type }: DetailDrawe
             <DescriptionRow key={subIndex}>
               <Description>{subItem.title}</Description>
               <DescriptionText>{subItem.content || noDataDisplay}</DescriptionText>
+            </DescriptionRow>
+          )
+        case RenderType.LINK:
+          return (
+            <DescriptionRow key={subIndex}>
+              <Description>{subItem.title}</Description>
+              <TenantLink to={subItem.link!}>{subItem.content || noDataDisplay}</TenantLink>
             </DescriptionRow>
           )
         case RenderType.DIVIDER:

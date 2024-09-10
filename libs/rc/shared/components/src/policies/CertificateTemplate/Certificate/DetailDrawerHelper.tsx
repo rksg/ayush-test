@@ -27,12 +27,14 @@ export const getDisplayedItems
     const { $t } = getIntl()
     if (items && items.length === 0) return <div>{noDataDisplay}</div>
     return <>{items.map((item, index) => {
-      if (type === 'keyUsages') {
+      if (type === 'keyUsages' && Object.values(KeyUsageType).includes(item as KeyUsageType)) {
         return <DescriptionText key={index}>
           {$t(keyUsagesLabel[item as KeyUsageType])}
         </DescriptionText>
-      } else if (type === 'usages') {
-        return <DescriptionText key={index}>{$t(usagesLabel[item as UsageType])}</DescriptionText>
+      } else if (type === 'usages' && Object.values(UsageType).includes(item as UsageType)) {
+        return <DescriptionText key={index}>
+          {$t(usagesLabel[item as UsageType]) || item}
+        </DescriptionText>
       } else {
         return <DescriptionText key={index}>{item}</DescriptionText>
       }
@@ -123,6 +125,13 @@ export const getCertificateDetails =
             type: RenderType.CONTENT,
             title: $t({ defaultMessage: 'Certificate Authority' }),
             content: certificateData?.certificateAuthoritiesName
+          },
+          {
+            type: RenderType.LINK,
+            title: $t({ defaultMessage: 'Identity' }),
+            // eslint-disable-next-line max-len
+            link: `users/identity-management/identity-group/${certificateData?.identityGroupId}/identity/${certificateData?.identityId}`,
+            content: certificateData?.identityName
           },
           {
             type: RenderType.CONTENT,

@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AlgorithmType, CertificateUrls }                                         from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateUrls, PersonaUrls }                            from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { RolesEnum, WifiScopes }                                                  from '@acx-ui/types'
@@ -28,6 +28,10 @@ describe('CertificateTable', () => {
       rest.get(
         CertificateUrls.getCertificateTemplate.url,
         (req, res, ctx) => res(ctx.json(certificateTemplate))
+      ),
+      rest.post(
+        PersonaUrls.searchPersonaList.url.split('?')[0],
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -47,6 +51,7 @@ describe('CertificateTable', () => {
     expect(within(row[0]).getByText('Expiration Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('CA Name')).toBeInTheDocument()
     expect(within(row[0]).getByText('Template')).toBeInTheDocument()
+    expect(within(row[0]).getByText('Identity')).toBeInTheDocument()
     expect(within(row[0]).getByText('Revocation Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('Issued By')).toBeInTheDocument()
     expect(within(row[0]).getByText('Timestamp')).toBeInTheDocument()
@@ -159,6 +164,7 @@ describe('CertificateTable', () => {
     expect(within(row[0]).getByText('Revocation Date')).toBeInTheDocument()
     expect(within(row[0]).getByText('Issued By')).toBeInTheDocument()
     expect(within(row[0]).getByText('Timestamp')).toBeInTheDocument()
+    expect(within(row[0]).getByText('Identity')).toBeInTheDocument()
     expect(within(row[0]).queryByText('CA Name')).not.toBeInTheDocument()
     expect(within(row[0]).queryByText('Template')).not.toBeInTheDocument()
   })

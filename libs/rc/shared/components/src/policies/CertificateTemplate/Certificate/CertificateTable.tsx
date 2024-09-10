@@ -5,7 +5,7 @@ import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
 import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                                                                                                                 from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery }                                                                                                                                              from '@acx-ui/rc/services'
+import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery, useSearchPersonaListQuery }                                                                                                                   from '@acx-ui/rc/services'
 import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
 import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                    from '@acx-ui/utils'
 
@@ -37,10 +37,19 @@ export function CertificateTable ({ templateData, showGenerateCert = false, type
     pagination: { settingsId }
   })
 
+  const { data: identityList } = useSearchPersonaListQuery(
+    { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
+    { skip: !tableQuery.data })
 
   useEffect(() => {
-    tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
-  }, [tableQuery])
+    tableQuery.data?.data?.filter((item) =>
+      item.id === detailId).map((item) => {
+      const identity = identityList?.data.filter(d=>d.id===item.identityId)[0]
+      setDetailData({ ...item,
+        identityName: identity?.name,
+        identityGroupId: identity?.groupId
+      })})
+  }, [tableQuery.data])
 
   const [editCertificate] = useEditCertificateMutation()
   const [generateCertificate] = useGenerateCertificateMutation()
@@ -65,7 +74,11 @@ export function CertificateTable ({ templateData, showGenerateCert = false, type
           <Button type='link'
             onClick={() => {
               setDetailId(row.id)
-              setDetailData(row)
+              const identity = identityList?.data?.filter(d=>d.id===row.identityId)[0]
+              setDetailData({ ...row,
+                identityName: identity?.name,
+                identityGroupId: identity?.groupId
+              })
               setDetailDrawerOpen(true)
             }}>{row.commonName}
           </Button>)
@@ -113,6 +126,16 @@ export function CertificateTable ({ templateData, showGenerateCert = false, type
         return row.revocationDate
           ? moment(row.revocationDate).format(EXPIRATION_TIME_FORMAT)
           : noDataDisplay
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Identity' }),
+      dataIndex: 'identityId',
+      key: 'identityId',
+      render: function (_, row) {
+        const item = identityList?.data?.filter(data =>
+          data.id===row.identityId).map(data => data.name)[0]
+        return item ?? noDataDisplay
       }
     },
     {

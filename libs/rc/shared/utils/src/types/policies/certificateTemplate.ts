@@ -219,6 +219,9 @@ export interface Certificate {
   details?: string
   description?: string
   enrollmentType?: EnrollmentType
+  identityId?: string
+  identityName?: string
+  identityGroupId?: string
 }
 
 export interface CertificateFormData {

@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Loader, Table, TableProps, showActionModal }                                                                                                                                                                                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel, deleteDescription }                                                                                                                                                             from '@acx-ui/rc/components'
-import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate, Network, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getScopeKeyByPolicy, useTableQuery }                                                                                    from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                                                   from '@acx-ui/react-router-dom'
-import { noDataDisplay }                                                                                                                                                                                                                                  from '@acx-ui/utils'
+import { Button, Loader, Table, TableProps, showActionModal }                                                                                                                                                                                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                                                                                                                                                         from '@acx-ui/feature-toggle'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel, deleteDescription }                                                                                                                                                                                             from '@acx-ui/rc/components'
+import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery, useSearchPersonaGroupListQuery, useWifiNetworkListQuery } from '@acx-ui/rc/services'
+import { CertificateTemplate, Network, PolicyOperation, PolicyType, filterByAccessForServicePolicyMutation, getPolicyDetailsLink, getScopeKeyByPolicy, useTableQuery }                                                                                                                    from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                                                                                   from '@acx-ui/react-router-dom'
+import { noDataDisplay }                                                                                                                                                                                                                                                                  from '@acx-ui/utils'
 
 
 export default function CertificateTemplateTable () {
@@ -56,6 +56,13 @@ export default function CertificateTemplateTable () {
     {
       selectFromResult: ({ data }) => ({
         caFilterOptions: data?.data.map((ca) => ({ key: ca.id, value: ca.name })) || []
+      })
+    })
+  const { identityGroupIdNameMap } = useSearchPersonaGroupListQuery(
+    { payload: { groupIds: tableQuery.data?.data?.map(d => d.identityGroupId) } },
+    {
+      selectFromResult: ({ data }) => ({
+        identityGroupIdNameMap: data?.data?.map(d => ({ id: d.id, name: d.name }))
       })
     })
 
@@ -145,6 +152,16 @@ export default function CertificateTemplateTable () {
               items={items || []}
               maximum={26}
             />)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Identity Group' }),
+      dataIndex: 'identityGroupId',
+      key: 'identityGroupId',
+      render: function (_, row) {
+        const item = identityGroupIdNameMap?.filter(data =>
+          data.id===row.identityGroupId).map(data => data.name)[0]
+        return item ?? noDataDisplay
       }
     },
     {
