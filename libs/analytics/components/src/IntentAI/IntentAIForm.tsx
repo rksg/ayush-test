@@ -31,11 +31,11 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-crrm-channel24g-auto': CCrrmChannel24gAuto,
   'c-crrm-channel5g-auto': CCrrmChannel5gAuto,
   'c-crrm-channel6g-auto': CCrrmChannel6gAuto,
+  'c-probeflex-5g': CProbeFlex5g,
+  'c-probeflex-24g': CProbeFlex24g,
+  'c-probeflex-6g': CProbeFlex6g,
   'c-dfschannels-disable': CDfschannelsDisable,
   'c-dfschannels-enable': CDfschannelsEnable,
   'c-txpower-same': CTxpowerSame,
-  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade,
-  'c-probeflex-5g': CProbeFlex5g,
-  'c-probeflex-24g': CProbeFlex24g,
-  'c-probeflex-6g': CProbeFlex6g
+  'i-zonefirmware-upgrade': IZoneFirmwareUpgrade
 })

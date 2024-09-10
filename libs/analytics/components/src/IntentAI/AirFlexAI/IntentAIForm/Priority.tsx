@@ -6,26 +6,20 @@ import { useIntl, defineMessage } from 'react-intl'
 
 import { StepsForm } from '@acx-ui/components'
 
-import { TradeOff }           from '../../../TradeOff'
-import { isStandaloneSwitch } from '../../common/isStandaloneSwitch'
-import { useIntentContext }   from '../../IntentContext'
+import { TradeOff }         from '../../../TradeOff'
+import { useIntentContext } from '../../IntentContext'
 
 // import * as SideNotes from './SideNotes'
 
-const name = ['preferences', 'crrmFullOptimization'] as NamePath
+const name = ['preferences', 'enable'] as NamePath
 const label = defineMessage({ defaultMessage: 'Intent Priority' })
-
-export enum IntentPriority {
-  full = 'full',
-  partial = 'partial'
-}
 
 export function Priority () {
   const { $t } = useIntl()
   const { intent: { sliceValue } } = useIntentContext()
   const priority = [
     {
-      key: 'full',
+      key: 'yes',
       value: true,
       children: $t({ defaultMessage: 'Reduce Management traffic in dense network' }),
       columns: [
@@ -35,7 +29,7 @@ export function Priority () {
       ]
     },
     {
-      key: 'partial',
+      key: 'no',
       value: false,
       children: $t({ defaultMessage: 'Standard Management traffic in a sparse network' }),
       columns: [
@@ -46,22 +40,27 @@ export function Priority () {
     }
   ]
 
-  const label = isStandaloneSwitch(
-    $t({ defaultMessage: 'What is your primary network intent for Zone: {zone}' }, { zone: sliceValue }),
-    $t({ defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}' }, { zone: sliceValue }))
+  const label = $t({
+    defaultMessage: 'What is your primary network intent for <VenueSingular></VenueSingular>: {zone}'
+  },
+  { zone: sliceValue }
+  )
 
   return <Row gutter={20}>
     <Col span={15}>
       <StepsForm.Title children={$t({ defaultMessage: 'Intent Priority' })} />
       <StepsForm.Subtitle children={label} />
-      <Form.Item name={name}>
-        <TradeOff
+      <Form.Item
+        name={name}
+        rules={[{ required: true, message: $t({ defaultMessage: 'Please select intent priority' }) }]}
+        children={<TradeOff
           radios={priority}
           headers={[
             $t({ defaultMessage: 'Intent Priority' }),
             $t({ defaultMessage: 'IntentAI Scope' })
-          ]} />
-      </Form.Item>
+          ]}
+        />}
+      />
     </Col>
     <Col span={7} offset={2}>
       {/* <SideNotes.Priority /> */}
