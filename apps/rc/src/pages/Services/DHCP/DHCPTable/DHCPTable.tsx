@@ -14,11 +14,11 @@ import {
   DHCPSaveData,
   DHCP_LIMIT_NUMBER,
   DHCPPool,
-  IpUtilsService
+  IpUtilsService,
+  filterByAccessForServicePolicyMutation,
+  getScopeKeyByService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -51,7 +51,7 @@ export default function DHCPTable () {
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.DELETE),
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
@@ -74,7 +74,7 @@ export default function DHCPTable () {
       }
     },
     {
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByService(ServiceType.DHCP, ServiceOperation.EDIT),
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
         return selectedRows.some((row)=>{
@@ -93,24 +93,24 @@ export default function DHCPTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
+
   return (
     <>
       <PageHeader
         title={
-          $t({
-            defaultMessage: 'DHCP ({count})'
-          },
-          {
-            count: tableQuery.data?.totalCount
-          })
+          $t({ defaultMessage: 'DHCP ({count})' }, { count: tableQuery.data?.totalCount })
         }
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
-        extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })} scopeKey={[WifiScopes.CREATE]}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
+            scopeKey={getScopeKeyByService(ServiceType.DHCP, ServiceOperation.CREATE)}
+          >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= DHCP_LIMIT_NUMBER
@@ -126,9 +126,8 @@ export default function DHCPTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          // eslint-disable-next-line max-len
-          rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -239,6 +238,7 @@ function useColumns () {
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueNameMap,
+      filterKey: 'venueIds',
       align: 'center',
       sorter: true,
       render: (_, row) =>{

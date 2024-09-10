@@ -16,18 +16,9 @@ export enum InCompatibilityFeatures {
   AP_NEIGHBORS = 'AP Neighbors',
   BSS_COLORING = 'BSS Coloring',
   QOS_MIRRORING = 'QoS Mirroring',
-  TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id'
-}
-
-export enum ApCompatibilityQueryTypes {
-  CHECK_VENUE = 'CHECK_VENUE',
-  CHECK_VENUE_WITH_FEATURE = 'CHECK_VENUE_WITH_FEATURE',
-  CHECK_VENUE_WITH_APS = 'CHECK_VENUE_WITH_APS',
-  CHECK_NETWORKS_OF_VENUE = 'CHECK_NETWORKS_OF_VENUE',
-
-  CHECK_NETWORK = 'CHECK_NETWORK',
-  CHECK_NETWORK_WITH_APS = 'CHECK_NETWORK_WITH_APS',
-  CHECK_VENUES_OF_NETWORK = 'CHECK_VENUES_OF_NETWORK',
+  TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port VLAN Untag Id',
+  SD_LAN = 'SD-LAN',
+  TUNNEL_PROFILE = 'Tunnel Profile'
 }
 
 export const retrievedCompatibilitiesOptions = (

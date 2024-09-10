@@ -8,11 +8,12 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { SplitProvider }          from '@acx-ui/feature-toggle'
-import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { BrowserRouter }          from '@acx-ui/react-router-dom'
-import { Provider }               from '@acx-ui/store'
+import { SplitProvider }                      from '@acx-ui/feature-toggle'
+import { TenantDetail }                       from '@acx-ui/msp/utils'
+import { useGetPreferencesQuery }             from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
+import { BrowserRouter }                      from '@acx-ui/react-router-dom'
+import { Provider }                           from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -25,7 +26,8 @@ import {
   createHttpRequest,
   useLocaleContext,
   LangKey,
-  DEFAULT_SYS_LANG
+  DEFAULT_SYS_LANG,
+  initializeSockets
 } from '@acx-ui/utils'
 import type { PendoParameters } from '@acx-ui/utils'
 
@@ -45,7 +47,7 @@ async function pendoInitalization (): Promise<PendoParameters> {
   const tenantDetailRequest =
     createHttpRequest(AdministrationUrlsInfo.getTenantDetails, { tenantId })
   const resTenant = await fetch(tenantDetailRequest.url, tenantDetailRequest)
-  const tenant = await resTenant.json()
+  const tenant = await resTenant.json() as TenantDetail
 
   return {
     visitor: {
@@ -53,7 +55,7 @@ async function pendoInitalization (): Promise<PendoParameters> {
       full_name: `${user.firstName} ${user.lastName}`,
       role: user.role,
       version: user.pver,
-      var: user.var,
+      var: tenant.tenantType === TenantType.VAR,
       varTenantId: user.varTenantId,
       support: user.support,
       dogfood: user.dogfood,
@@ -139,13 +141,11 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
-  const abacEnabled = userProfile.abacEnabled
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        (abacEnabled ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
@@ -155,6 +155,8 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(errorMiddleware)
+
+  initializeSockets()
 
   root.render(
     <React.StrictMode>

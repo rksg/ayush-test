@@ -33,6 +33,7 @@ import {
   PrivilegePolicy,
   PrivilegePolicyEntity,
   PrivilegePolicyObjectType,
+  TenantType,
   Venue,
   VenueObjectList,
   excludeSpaceRegExp,
@@ -113,7 +114,10 @@ const venuesListPayload = {
 
 const customerListPayload = {
   fields: ['name', 'id'],
-  filters: { tenantType: [AccountType.MSP_EC] },
+  filters: {
+    tenantType: [AccountType.MSP_EC, AccountType.MSP_REC,
+      AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER]
+  },
   pageSize: 10000,
   sortField: 'name',
   sortOrder: 'ASC'
@@ -140,6 +144,9 @@ export function EditPrivilegeGroup () {
   const [updatePrivilegeGroup] = useUpdatePrivilegeGroupMutation()
   const isOnboardedMsp = location?.isOnboardedMsp ?? false
   const isClone = action === 'clone'
+  const tenantType = location?.tenantType as TenantType
+  const isTechPartner =
+    tenantType === TenantType.MSP_INSTALLER || tenantType === TenantType.MSP_INTEGRATOR
 
   const { data: privilegeGroup } =
       useGetOnePrivilegeGroupQuery({ params: { privilegeGroupId: groupId } },
@@ -199,7 +206,7 @@ export function EditPrivilegeGroup () {
         name: formValues.name,
         description: formValues.description,
         roleName: formValues.role,
-        delegation: false
+        delegation: isTechPartner ? true : false
       }
       const policies = [] as PrivilegePolicy[]
       selectedVenues.forEach((venue: Venue) => {

@@ -1,8 +1,8 @@
 import { ReactElement } from 'react'
 
-import { Tag, Tooltip, Typography } from 'antd'
-import _                            from 'lodash'
-import { IntlShape }                from 'react-intl'
+import { Divider, Tag, Tooltip, Typography } from 'antd'
+import _                                     from 'lodash'
+import { IntlShape }                         from 'react-intl'
 
 import { cssStr }                   from '@acx-ui/components'
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -25,11 +25,17 @@ import {
   SwitchFirmwareModelGroup,
   SwitchFirmwareV1002,
   SwitchModelGroupDisplayText,
-  SwitchModelGroupDisplayTextValue
+  SwitchModelGroupDisplayTextValue,
+  SwitchVersion1002
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
-import { DowngradeTag, RecommendedTag, Statistic } from './styledComponents'
+import {
+  DowngradeTag,
+  RecommendedTag,
+  Statistic,
+  TypeSpace
+} from './styledComponents'
 
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -38,8 +44,8 @@ export function useSwitchFirmwareUtils () {
   const switchVersions = useGetSwitcDefaultVersionsQuery({
     enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
     customHeaders: isSwitchFirmwareV1002Enabled ? {
-      'Content-Type': 'application/vnd.ruckus.v1.2+json',
-      'Accept': 'application/vnd.ruckus.v1.2+json'
+      'Content-Type': 'application/vnd.ruckus.v1.1+json',
+      'Accept': 'application/vnd.ruckus.v1.1+json'
     } : {}
   }, {
     refetchOnMountOrArgChange: false
@@ -53,6 +59,29 @@ export function useSwitchFirmwareUtils () {
       return convertSwitchVersionFormat(version.replace(/_[^_]*$/, ''))
     }
     return convertSwitchVersionFormat(version)
+  }
+
+  const getVersionOptionV1002 = (intl: IntlShape, v: SwitchVersion1002, note?: React.ReactNode) => {
+    return <span style={{ lineHeight: '20px', fontSize: 'var(--acx-body-3-font-size)' }}>
+      <span style={{ marginRight: '5px' }}>
+        {<TypeSpace split={<Divider type='vertical' />}>
+          <div>
+            {parseSwitchVersion(v.name)} {note}
+          </div>
+          {/* [TODO] Wait for the backend to provide the correct date. */}
+          {/* {!isNaN(Date.parse(v.createdDate || '')) &&
+            formatter(DateFormatEnum.DateFormat)(v.createdDate)} */}
+        </TypeSpace>}
+      </span>
+      {getSwitchVersionTagV1002(intl, v)}
+      <div style={{
+        marginTop: '5px',
+        fontSize: 'var(--acx-body-4-font-size)',
+        color: v.inUse ? 'inherit' : 'var(--acx-neutrals-60)'
+      }}>
+        {getSwitchVersionLabelV1002(intl, v)}
+      </div>
+    </span>
   }
 
   const getSwitchVersionLabel = (intl: IntlShape, version: FirmwareVersion): string => {
@@ -242,7 +271,8 @@ export function useSwitchFirmwareUtils () {
     return ''
   }
   const getSwitchScheduleTplV1002 = (s: SwitchFirmwareV1002): string => {
-    return s.switchNextSchedule?.version || ''
+    const version = s.switchNextSchedule?.version || ''
+    return _.isString(version) ? parseSwitchVersion(version) : version
   }
 
   const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
@@ -445,6 +475,7 @@ export function useSwitchFirmwareUtils () {
 
   return {
     parseSwitchVersion,
+    getVersionOptionV1002,
     getSwitchVersionLabel,
     getSwitchVersionLabelV1002,
     getSwitchVersionTagV1002,

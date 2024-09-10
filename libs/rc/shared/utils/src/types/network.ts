@@ -160,6 +160,7 @@ export interface NetworkSaveData {
   authRadius?: Radius
   accountingRadius?: Radius
   dpskServiceProfileId?: string
+  useDpskService?: boolean
   isOweMaster?: boolean
   owePairNetworkId?: string
   maxRate?: MaxRateEnum
@@ -173,7 +174,8 @@ export interface NetworkSaveData {
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
   accountingInterimUpdates?: number
-  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[]
+  sdLanAssociationUpdate?: NetworkTunnelSdLanAction[],
+  softGreAssociationUpdate?: NetworkTunnelSoftGreAction
 }
 
 export enum MaxRateEnum {
@@ -183,6 +185,10 @@ export enum MaxRateEnum {
 
 export interface ExternalProviders{
   providers: Providers[]
+}
+
+export interface ExternalWifiProviders extends ExternalProviders{
+  wisprProviders: Providers[]
 }
 export interface Providers{
   customExternalProvider: boolean,
@@ -253,4 +259,12 @@ export interface NetworkTunnelSdLanAction {
   guestEnabled: boolean, // forward guest traffic
   enabled: boolean,      // is local breakout
   venueSdLanInfo?: EdgeMvSdLanViewData
+}
+
+export interface NetworkTunnelSoftGreAction {
+  [name:string]: {
+    newProfileId: string,
+    newProfileName: string,
+    oldProfileId: string
+  }
 }

@@ -77,7 +77,7 @@ describe('LbsServerProfileTable', () => {
       }
     )
 
-    const targetName = dummyTableResult.data[0].lbsVenueName
+    const targetName = dummyTableResult.data[0].lbsServerVenueName
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add LBS Server/i })).toBeVisible()
     await waitFor(() => {

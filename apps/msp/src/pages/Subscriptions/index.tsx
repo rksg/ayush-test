@@ -27,9 +27,9 @@ import {
   useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }                 from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget }              from '@acx-ui/rc/components'
-import { useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
+import { MspAssignmentSummary, MspEntitlementSummary }                                           from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }                                        from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery, useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
   dateSort,
   defaultSort,
@@ -113,12 +113,17 @@ export function Subscriptions () {
   const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
   const isComplianceEnabled = useIsSplitOn(Features.ENTITLEMENT_LICENSE_COMPLIANCE_TOGGLE)
   const showCompliance = isvSmartEdgeEnabled && isComplianceEnabled
+  const isExtendedTrialToggleEnabled = useIsSplitOn(Features.ENTITLEMENT_EXTENDED_TRIAL_TOGGLE)
+
   const {
     state
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
 
   const { tenantId } = useParams()
+
+  const { data: tenantDetailsData } = useGetTenantDetailsQuery({ })
+
   const subscriptionDeviceTypeList = isEntitlementRbacApiEnabled
     ? getEntitlementDeviceTypes()
     : getEntitlementDeviceTypes().filter(o => o.value.startsWith('MSP'))
@@ -280,7 +285,8 @@ export function Subscriptions () {
         summaryData.forEach(summary => {
           quantity += summary.purchasedQuantity + summary.courtesyQuantity
           courtesy += summary.courtesyQuantity
-          used += summary.usedQuantity
+          // usedQuantity includes used by EC and MSP
+          used += (summary.usedQuantity - summary.usedQuantityForOwnAssignment)
           assigned += summary.usedQuantityForOwnAssignment
         })
 
@@ -399,9 +405,11 @@ export function Subscriptions () {
           style={{ marginBottom: '20px' }}>
           {
             subscriptionDeviceTypeList.map((item) => {
+              const showExtendedTrial = tenantDetailsData?.extendedTrial
+                && isExtendedTrialToggleEnabled
               const summary = summaryData[item.value]
-              const showUtilBar = summary &&
-                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive)
+              const showUtilBar = isExtendedTrialToggleEnabled ? summary : (summary &&
+                  (item.value !== EntitlementDeviceType.MSP_APSW_TEMP || isAssignedActive))
               if (isvSmartEdgeEnabled) {
                 item.label = $t({ defaultMessage: 'Device Networking' })
               }
@@ -415,6 +423,7 @@ export function Subscriptions () {
                 used={summary.used}
                 trial={summary.trial}
                 tooltip={summary.tooltip}
+                extendedTrial={showExtendedTrial ?? false}
               /> : ''
             })
           }
@@ -424,7 +433,7 @@ export function Subscriptions () {
   }
 
   const SubscriptionTable = () => {
-    const { data: rbacQueryResults } = useRbacEntitlementListQuery(
+    const { data: rbacQueryResults, ...rbacQueryState } = useRbacEntitlementListQuery(
       { params: useParams(), payload: entitlementListPayload },
       { skip: !isEntitlementRbacApiEnabled })
     const queryResults = useMspEntitlementListQuery(
@@ -446,7 +455,7 @@ export function Subscriptions () {
       })
 
     return (
-      <Loader states={[queryResults]}>
+      <Loader states={[queryResults, rbacQueryState]}>
         <Table
           settingsId='msp-subscription-table'
           columns={columns}
@@ -475,7 +484,7 @@ export function Subscriptions () {
     assignedSubscriptions: {
       title: $t({ defaultMessage: 'MSP Assigned Subscriptions' }),
       content: <>
-        <SubscriptionUtilization />
+        {!isExtendedTrialToggleEnabled && <SubscriptionUtilization />}
         <AssignedSubscriptionTable />
       </>,
       visible: true
@@ -487,7 +496,10 @@ export function Subscriptions () {
     },
     compliance: {
       title: $t({ defaultMessage: 'Compliance' }),
-      content: <LicenseCompliance isMsp={true}/>,
+      content: <LicenseCompliance
+        isMsp={true}
+        isExtendedTrial={tenantDetailsData?.extendedTrial && isExtendedTrialToggleEnabled}
+      />,
       visible: showCompliance
     }
   }

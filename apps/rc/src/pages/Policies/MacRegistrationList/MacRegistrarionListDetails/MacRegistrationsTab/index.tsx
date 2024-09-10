@@ -21,10 +21,10 @@ import {
   SEARCH,
   toDateTimeString,
   useTableQuery,
-  hasCloudpathAccess
+  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy,
+  PolicyType, PolicyOperation
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
@@ -87,7 +87,8 @@ export function MacRegistrationsTab () {
       setVisible(true)
       setIsEditMode(true)
       clearSelection()
-    }
+    },
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -127,7 +128,8 @@ export function MacRegistrationsTab () {
             console.log(error) // eslint-disable-line no-console
           })
       )
-    }
+    },
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.DELETE)
   },
   {
     label: $t({ defaultMessage: 'Revoke' }),
@@ -148,7 +150,8 @@ export function MacRegistrationsTab () {
           payload: { revoked: true },
           customHeaders
         }).then(clearSelection)
-    }
+    },
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
   },
   {
     label: $t({ defaultMessage: 'Unrevoke' }),
@@ -161,7 +164,8 @@ export function MacRegistrationsTab () {
           payload: { revoked: false },
           customHeaders
         }).then(clearSelection)
-    }
+    },
+    scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.EDIT)
   }]
 
   const columns: TableProps<MacRegistration>['columns'] = [
@@ -219,6 +223,16 @@ export function MacRegistrationsTab () {
         return row.expirationDate ? toDateTimeString(row.expirationDate) :
           $t({ defaultMessage: 'Never Expire' })
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Device Name' }),
+      key: 'deviceName',
+      dataIndex: 'deviceName'
+    },
+    {
+      title: $t({ defaultMessage: 'Location' }),
+      key: 'location',
+      dataIndex: 'location'
     }
   ]
 
@@ -232,6 +246,8 @@ export function MacRegistrationsTab () {
     }
     tableQuery.setPayload(payload)
   }
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <Loader states={[
@@ -274,10 +290,11 @@ export function MacRegistrationsTab () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowActions={filterByAccess(rowActions)}
+        rowActions={allowedRowActions}
         onFilterChange={handleFilterChange}
-        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
-        actions={filterByAccess( hasCloudpathAccess() ? [{
+        rowSelection={allowedRowActions.length > 0 && { type: 'radio' }}
+        actions={filterByAccessForServicePolicyMutation([{
+          scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE),
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)
@@ -286,9 +303,10 @@ export function MacRegistrationsTab () {
           }
         },
         {
+          scopeKey: getScopeKeyByPolicy(PolicyType.MAC_REGISTRATION_LIST, PolicyOperation.CREATE),
           label: $t({ defaultMessage: 'Import From File' }),
           onClick: () => setUploadCsvDrawerVisible(true)
-        }] : [])}
+        }])}
       />
     </Loader>
   )

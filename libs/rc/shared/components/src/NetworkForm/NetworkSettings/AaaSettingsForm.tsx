@@ -27,10 +27,13 @@ import {
   AAAWlanSecurityEnum,
   MacAuthMacFormatEnum,
   ManagementFrameProtectionEnum,
+  PolicyOperation,
+  PolicyType,
   WifiNetworkMessages,
   WlanSecurityEnum,
-  hasCloudpathAccess,
-  macAuthMacFormatOptions
+  hasPolicyPermission,
+  macAuthMacFormatOptions,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 
 import { CertificateTemplateForm, MAX_CERTIFICATE_PER_TENANT } from '../../policies'
@@ -96,6 +99,7 @@ function SettingsForm () {
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const { isTemplate } = useConfigTemplate()
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -170,7 +174,7 @@ function SettingsForm () {
           <Input type='hidden' />
         </Form.Item>
       </div>
-      {isCertificateTemplateEnabled ? <>
+      {!isTemplate && isCertificateTemplateEnabled ? <>
         <div>
           <Form.Item name='useCertificateTemplate' initialValue={!!useCertificateTemplate}>
             <Radio.Group disabled={editMode}>
@@ -210,7 +214,9 @@ function SettingsForm () {
               </Select>
             </Form.Item>
           </GridCol>
-          { hasCloudpathAccess() && <Button
+          { hasPolicyPermission({
+            type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE }) &&
+          <Button
             type='link'
             style={{ top: '28px' }}
             onClick={() => setCertTempModalVisible(true)}

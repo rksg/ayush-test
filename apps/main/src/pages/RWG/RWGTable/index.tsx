@@ -6,7 +6,7 @@ import { useRwgActions }                                                        
 import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
 import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                                                                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                          from '@acx-ui/user'
+import { filterByAccess, hasAccess, useUserProfileContext }                                                   from '@acx-ui/user'
 
 
 
@@ -117,6 +117,7 @@ export function RWGTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const rwgActions = useRwgActions()
+  const { isCustomRole } = useUserProfileContext()
 
   const rwgPayload = {
     filters: {}
@@ -200,7 +201,7 @@ export function RWGTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'RUCKUS WAN Gateway ({count})' }, { count })}
-        extra={filterByAccess([
+        extra={!isCustomRole && filterByAccess([
           <TenantLink to='/ruckus-wan-gateway/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
           </TenantLink>
@@ -216,7 +217,7 @@ export function RWGTable () {
           pagination={{ total: tableQuery?.data?.totalCount }}
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='rowId'
-          rowActions={filterByAccess(rowActions)}
+          rowActions={isCustomRole ? [] : filterByAccess(rowActions)}
           rowSelection={hasAccess() && { ...rowSelection() }}
           onChange={handleTableChange}
         />

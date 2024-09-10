@@ -1,5 +1,5 @@
 import {
-  AsyncCommonResponse,
+  CommonAsyncResponse,
   useAddPersonaGroupMutation,
   useAssociateIdentityGroupWithDpskMutation,
   useAssociateIdentityGroupWithMacRegistrationMutation,
@@ -40,7 +40,7 @@ export function usePersonaGroupAction () {
     return await addPersonaGroup({
       payload: { ...(isAsync ? groupData : submittedData) },
       customHeaders,
-      callback: (response: AsyncCommonResponse) => {
+      callback: (response: CommonAsyncResponse) => {
         callback?.(response)
         if (response.id && isAsync) {
           associateDpskCallback(response.id)
@@ -48,6 +48,9 @@ export function usePersonaGroupAction () {
         }
       }
     }).unwrap()
+      .then(result => {
+        if(!isAsync) callback?.(result)
+      })
   }
 
   const updatePersonaGroupMutation

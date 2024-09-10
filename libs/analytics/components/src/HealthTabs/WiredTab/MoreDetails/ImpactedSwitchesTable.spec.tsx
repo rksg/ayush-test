@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+import { get }                         from '@acx-ui/config'
 import { BrowserRouter as Router }     from '@acx-ui/react-router-dom'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
@@ -12,6 +13,10 @@ import { moreDetailsDataFixture, noDataFixture } from './__tests__/fixtures'
 import { TopNByCPUUsageResult }                  from './config'
 import { ImpactedSwitchesTable }                 from './ImpactedSwitchesTable'
 import { moreDetailsApi }                        from './services'
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 describe('ImpactedSwitchesTable', () => {
   afterEach(() =>
@@ -36,6 +41,7 @@ describe('ImpactedSwitchesTable', () => {
     )
     expect(await screen.findByText('switch1-cpuUsage')).toBeVisible()
 
+    jest.mocked(get).mockReturnValue('true')
     rerender(
       <Router>
         <Provider>

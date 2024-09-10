@@ -35,7 +35,8 @@ import {
   MspEcAlarmList,
   MspEc,
   MSPUtils,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcAccountType
 } from '@acx-ui/msp/utils'
 import {
   useGetTenantDetailsQuery
@@ -64,6 +65,7 @@ export function MspCustomers () {
   const isAssignMultipleEcEnabled =
     useIsSplitOn(Features.ASSIGN_MULTI_EC_TO_MSP_ADMINS) && isPrimeAdmin && !isDelegationMode()
   const MAX_ALLOWED_SELECTED_EC = 200
+  const MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE = 100
 
   const {
     state
@@ -78,6 +80,7 @@ export function MspCustomers () {
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isvSmartEdgeEnabled = useIsSplitOn(Features.ENTITLEMENT_VIRTUAL_SMART_EDGE_TOGGLE)
 
   const [ecTenantId, setTenantId] = useState('')
   const [selectedTenantType, setTenantType] = useState(AccountType.MSP_INTEGRATOR)
@@ -246,9 +249,9 @@ export function MspCustomers () {
         dataIndex: 'status',
         key: 'status',
         sorter: true,
-        width: 80,
+        width: 120,
         render: function (_, row) {
-          return $t({ defaultMessage: '{status}' }, { status: mspUtils.getStatus(row) })
+          return $t(mspUtils.getStatus(row))
         }
       },
       {
@@ -354,7 +357,8 @@ export function MspCustomers () {
         }
       }]),
       {
-        title: $t({ defaultMessage: 'Installed Devices' }),
+        title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Used Licenses' })
+          : $t({ defaultMessage: 'Installed Devices' }),
         dataIndex: 'apswLicenseInstalled',
         key: 'apswLicenseInstalled',
         align: 'center',
@@ -365,7 +369,8 @@ export function MspCustomers () {
         }
       },
       {
-        title: $t({ defaultMessage: 'Assigned Device Subscriptions' }),
+        title: isvSmartEdgeEnabled ? $t({ defaultMessage: 'Assigned Licenses' })
+          : $t({ defaultMessage: 'Assigned Device Subscriptions' }) ,
         dataIndex: 'apswLicense',
         key: 'apswLicense',
         align: 'center',
@@ -480,7 +485,9 @@ export function MspCustomers () {
           return (selectedRows.length === 1)
         },
         onClick: (selectedRows) => {
-          const status = selectedRows[0].accountType === 'TRIAL' ? 'Trial' : 'Paid'
+          const accType = selectedRows[0].accountType
+          const status = accType === MspEcAccountType.TRIAL ? 'Trial'
+            : (accType === MspEcAccountType.EXTENDED_TRIAL ? 'ExtendedTrial': 'Paid')
           navigate({
             ...basePath,
             pathname: `${basePath.pathname}/${status}/${selectedRows[0].id}`
@@ -505,7 +512,7 @@ export function MspCustomers () {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
           return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
-                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)
@@ -527,7 +534,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Deactivate' }),
         visible: (selectedRows) => {
           if(selectedRows.length === 1 && selectedRows[0] &&
-            (selectedRows[0].status === 'Active' && selectedRows[0].accountType !== 'TRIAL' )) {
+            (selectedRows[0].status === 'Active' &&
+              selectedRows[0].accountType !== MspEcAccountType.TRIAL &&
+              selectedRows[0].accountType !== MspEcAccountType.EXTENDED_TRIAL)) {
             return true
           }
           return false
@@ -557,7 +566,9 @@ export function MspCustomers () {
         label: $t({ defaultMessage: 'Reactivate' }),
         visible: (selectedRows) => {
           if(selectedRows.length !== 1 || (selectedRows[0] &&
-            (selectedRows[0].status === 'Active' || selectedRows[0].accountType === 'TRIAL'))) {
+            (selectedRows[0].status === 'Active' ||
+              selectedRows[0].accountType === MspEcAccountType.TRIAL ||
+              selectedRows[0].accountType === MspEcAccountType.EXTENDED_TRIAL))) {
             return false
           }
           return true
@@ -680,7 +691,7 @@ export function MspCustomers () {
           const len = selectedRows.length
           const validRows = selectedRows.filter(en => en.status === 'Active')
           return (isUpgradeMultipleEcEnabled && validRows.length > 0 &&
-                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC)
+                  len >= 1 && len <= MAX_ALLOWED_SELECTED_EC_FIRMWARE_UPGRADE)
         },
         onClick: (selectedRows) => {
           const selectedEcIds = selectedRows.map(item => item.id)

@@ -1,8 +1,11 @@
-import { useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady, useIsEdgeReady }                              from '@acx-ui/rc/components'
+import { find }                      from 'lodash'
+import { useIntl, FormattedMessage } from 'react-intl'
+
+import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady, ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType } from '@acx-ui/rc/components'
 import {
   useAdaptivePolicyListByQueryQuery,
   useEnhancedRoguePoliciesQuery,
@@ -20,26 +23,27 @@ import {
   useSearchInProgressWorkflowListQuery,
   useGetWifiOperatorListQuery,
   useMacRegListsQuery,
-  useSyslogPolicyListQuery
+  useSyslogPolicyListQuery,
+  useGetSoftGreViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
+  IncompatibilityFeatures,
   PolicyOperation,
   PolicyType,
-  ServicePolicyCardData,
+  filterByAccessForServicePolicyMutation,
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
-  isServicePolicyCardEnabled,
+  isPolicyCardEnabled,
   policyTypeDescMapping,
-  policyTypeLabelMapping,
-  servicePolicyCardDataToScopeKeys
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import {
+  Path,
   TenantLink,
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -48,18 +52,28 @@ const defaultPayload = {
 export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
-  const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
+  const policies = useCardData()
+  const [edgeFeatureName, setEdgeFeatureName] = useState<IncompatibilityFeatures | undefined>()
 
-  const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
+  if (isEdgeCompatibilityEnabled) {
+    find(policies, { type: PolicyType.TUNNEL_PROFILE })!.helpIcon = isEdgeCompatibilityEnabled
+      ? <ApCompatibilityToolTip
+        title=''
+        visible
+        onClick={() => setEdgeFeatureName(IncompatibilityFeatures.TUNNEL_PROFILE)}
+      />
+      : undefined
+  }
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
-        extra={filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
+        extra={filterByAccessForServicePolicyMutation([
+          <TenantLink to={getSelectPolicyRoutePath(true)}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
@@ -67,19 +81,29 @@ export default function MyPolicies () {
       <GridRow>
         {
           // eslint-disable-next-line max-len
-          policies.filter(p => isServicePolicyCardEnabled<PolicyType>(p, 'read')).map((policy, index) => {
+          policies.filter(p => isPolicyCardEnabled(p, PolicyOperation.LIST)).map((policy, index) => {
+            const title = <FormattedMessage
+              defaultMessage={
+                '{name} ({count})<helpIcon></helpIcon>'
+              }
+              values={{
+                name: $t(policyTypeLabelMapping[policy.type]),
+                count: policy.totalCount ?? 0,
+                helpIcon: () => {
+                  return policy.helpIcon
+                    ? <span style={{ marginLeft: '5px' }}>{policy.helpIcon}</span>
+                    : ''
+                }
+              }}
+            />
+
             return (
               <GridCol key={policy.type} col={{ span: 6 }}>
                 <RadioCard
                   type={'default'}
                   key={`${policy.type}_${index}`}
                   value={policy.type}
-                  title={$t({
-                    defaultMessage: '{name} ({count})'
-                  }, {
-                    name: $t(policyTypeLabelMapping[policy.type]),
-                    count: policy.totalCount ?? 0
-                  })}
+                  title={title}
                   description={$t(policyTypeDescMapping[policy.type])}
                   categories={policy.categories}
                   onClick={() => {
@@ -91,11 +115,27 @@ export default function MyPolicies () {
           })
         }
       </GridRow>
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!edgeFeatureName}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeFeatureName}
+        onClose={() => setEdgeFeatureName(undefined)}
+      />}
     </>
   )
 }
 
-function useCardData (): ServicePolicyCardData<PolicyType>[] {
+interface PolicyCardData {
+  type: PolicyType
+  categories: RadioCardCategory[]
+  totalCount?: number
+  listViewPath?: Path
+  disabled?: boolean
+  helpIcon?: React.ReactNode
+}
+
+function useCardData (): PolicyCardData[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
@@ -107,6 +147,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   return [
     {
@@ -266,6 +307,15 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.QOS_BANDWIDTH, oper: PolicyOperation.LIST })),
       disabled: !isEdgeQosEnabled
+    },
+    {
+      type: PolicyType.SOFTGRE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetSoftGreViewDataListQuery({ params, payload: {} }, { skip: !isSoftGreEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SOFTGRE, oper: PolicyOperation.LIST })),
+      disabled: !isSoftGreEnabled
     }
   ]
 }

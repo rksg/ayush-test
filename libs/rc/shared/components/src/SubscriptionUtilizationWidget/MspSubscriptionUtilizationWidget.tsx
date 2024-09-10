@@ -18,6 +18,7 @@ interface MspSubscriptionUtilizationWidgetProps {
   barColors?: string[];
   tooltip?: string;
   trial?: boolean;
+  extendedTrial: boolean;
 }
 
 export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizationWidgetProps) => {
@@ -30,7 +31,8 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
     assigned,
     total,
     tooltip,
-    trial
+    trial,
+    extendedTrial
   } = props
 
   const isZeroQuantity = total <= 0
@@ -75,7 +77,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
             : $t({ defaultMessage: 'Total Paid: {total}' }, { total })}
         </Tooltip>
         : <Typography.Text>
-          {used} / {total}
+          {used+assigned} / {total}
         </Typography.Text>}
     </SpaceWrapper>
     {trial ? <div style={{ marginTop: '15px' }}>
@@ -116,7 +118,7 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
           }]}
           barColors={usedBarColors}
         />
-        {trial
+        {trial && (!extendedTrial && used === 0)
           ? <div style={{ marginLeft: '25px', fontSize: '11px' }}>
             <UI.LegendDot style={{ backgroundColor: usedBarColors[1] }} />
             <span >{$t({ defaultMessage: 'MSP Assigned' })} ({assigned})</span>
@@ -136,9 +138,9 @@ export const MspSubscriptionUtilizationWidget = (props: MspSubscriptionUtilizati
         <Tooltip
           title={trial ? '' : tooltip}
           placement={'top'}
-        ><Typography.Text>{used} / {total}</Typography.Text>
+        ><Typography.Text>{used+assigned} / {total}</Typography.Text>
         </Tooltip>
-        : <Typography.Text>{used} / {total}</Typography.Text>}
+        : <Typography.Text>{used+assigned} / {total}</Typography.Text>}
     </UI.FieldLabelUtilMsp>
   </Space>
 

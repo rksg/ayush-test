@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Form, Select } from 'antd'
-import { useIntl }      from 'react-intl'
-import { useParams }    from 'react-router-dom'
+import { Form, Select }      from 'antd'
+import { DefaultOptionType } from 'antd/lib/select'
+import { useIntl }           from 'react-intl'
+import { useParams }         from 'react-router-dom'
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
@@ -44,9 +45,9 @@ const PortalInstance = (props: {
 }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { useWatch } = Form
   const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [getPortal] = useLazyGetPortalQuery()
   const [getPortalTemplate] = useLazyGetPortalTemplateQuery()
   const [getPortalLang] = useGetPortalLangMutation()
@@ -69,7 +70,7 @@ const PortalInstance = (props: {
     socials.twitterEnabled = socialIdentities.twitter ? true : false
     socials.linkedInEnabled = socialIdentities.linkedin ? true : false
   }
-  const portalServiceID = useWatch('portalServiceProfileId')
+  const portalServiceID = Form.useWatch('portalServiceProfileId')
   const defaultPayload = {
     fields: ['id', 'name'],
     filters: {},
@@ -79,18 +80,15 @@ const PortalInstance = (props: {
     useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
     payload: { ...defaultPayload },
-    enableRbac: isEnabledRbacService
+    enableRbac: (isEnabledRbacService || isUseWifiRbacApi)
   })
 
   const [demoValue, setDemoValue] = useState({} as Demo)
-  const portalServices =
-    data?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id })) ?? []
-  const [portalList, setPortalList] = useState(portalServices)
-  const [portalData, setPortalData] = useState([] as Portal[])
+  const [portalList, setPortalList] = useState<DefaultOptionType[]>([])
+  const [portalData, setPortalData] = useState<Portal[]>([])
   const [portalLang, setPortalLang] = useState({} as { [key: string]: string })
 
-  const getPortalContent = async (serviceId: string,
-    list: (Portal|PortalDetail)[], isEnabledRbac: boolean
+  const getPortalContent = async (serviceId: string, isEnabledRbac: boolean
   ) => (await getPortal({
     params: { serviceId },
     enableRbac: isEnabledRbac })
@@ -102,11 +100,12 @@ const PortalInstance = (props: {
     enableRbac: isEnabledRbacService })
     .unwrap())?.content as Demo
 
-  const getCurrentPortalContent = async (isTemplateMode: boolean, serviceId: string,
-    list: (Portal|PortalDetail)[], isEnabledRbac: boolean) => {
+  const getCurrentPortalContent = async (isTemplateMode: boolean,
+    serviceId: string,
+    isEnabledRbac: boolean) => {
     return await (isTemplateMode ?
       getTemplateContent(serviceId) :
-      getPortalContent(serviceId, list, isEnabledRbac))
+      getPortalContent(serviceId, isEnabledRbac))
   }
 
   const getImageUrl = async (content: string) => {
@@ -131,7 +130,7 @@ const PortalInstance = (props: {
   }
 
   const setPortal = async (value: string, isEnabledRbac:boolean) => {
-    const content = await getCurrentPortalContent(isTemplate, value, portalData, isEnabledRbac)
+    const content = await getCurrentPortalContent(isTemplate, value, isEnabledRbac)
     const imagePortalData = await bindImageUrl(content)
     const tempValue = {
       ...initialPortalData.content,
@@ -149,30 +148,37 @@ const PortalInstance = (props: {
       setPortalList(
         response?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id }))
       )
-      if (networkData?.portalServiceProfileId) {
-        form.setFieldValue(
-          'portalServiceProfileId',
-          networkData.portalServiceProfileId
-        )
-        const content = await getCurrentPortalContent(
-          isTemplate,
-          networkData.portalServiceProfileId,
-          response.data,
-          isEnabledRbacService)
-        const imagePortalData = await bindImageUrl(content)
-        const tempValue = {
-          ...initialPortalData.content,
-          ...content,
-          ...imagePortalData,
-          wifi4EUNetworkId: content?.wifi4EUNetworkId || ''
-        }
-        setDemoValue(tempValue)
-      }
     }
-    if (data) {
+    if (data?.data) {
       fetchData(data)
     }
   }, [data])
+
+  useEffect(() => {
+    const fetchDemoContent = async (portalServiceProfileId: string) => {
+      const content = await getCurrentPortalContent(
+        isTemplate,
+        portalServiceProfileId,
+        isEnabledRbacService)
+      const imagePortalData = await bindImageUrl(content)
+      const tempValue = {
+        ...initialPortalData.content,
+        ...content,
+        ...imagePortalData,
+        wifi4EUNetworkId: content?.wifi4EUNetworkId || ''
+      }
+      setDemoValue(tempValue)
+    }
+    if (networkData?.portalServiceProfileId &&
+      networkData?.portalServiceProfileId !== portalServiceID) {
+      form.setFieldValue(
+        'portalServiceProfileId',
+        networkData.portalServiceProfileId
+      )
+      fetchDemoContent(networkData.portalServiceProfileId)
+    }
+  }, [networkData?.portalServiceProfileId])
+
 
   useEffect(() => {
     if (demoValue.displayLangCode) {

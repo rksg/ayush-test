@@ -1,16 +1,17 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 
-import { Col, Form, Image, Row, Select, Space } from 'antd'
-import { isEqual }                              from 'lodash'
-import { useIntl }                              from 'react-intl'
+import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
+import { isEqual }                                       from 'lodash'
+import { useIntl }                                       from 'react-intl'
 
-import { AnchorContext, Loader, Tabs }                                  from '@acx-ui/components'
+import { AnchorContext, Button, Loader, Tabs }                          from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
   from '@acx-ui/rc/components'
 import {
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
+  useGetDefaultVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
@@ -24,7 +25,8 @@ import {
   LanPort,
   useConfigTemplate,
   VenueLanPorts,
-  VenueSettings
+  VenueSettings,
+  WifiNetworkMessages
 } from '@acx-ui/rc/utils'
 import {
   useParams
@@ -89,7 +91,11 @@ export function LanPorts () {
   const { isTemplate } = useConfigTemplate()
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
+
+  const { data: defaultVenueLanPorts, isLoading: isDefaultPortsLoading } =
+    useGetDefaultVenueLanPortsQuery({ params: { venueId } }, { skip: !isLanPortResetEnabled })
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
@@ -231,6 +237,22 @@ export function LanPorts () {
     customGuiChagedRef.current = true
   }
 
+  const handleResetDefaultSettings = () => {
+    if (!defaultVenueLanPorts || !apModel || isDefaultPortsLoading) {
+      return
+    }
+
+    const defaultLanPorts = defaultVenueLanPorts.filter(lanPort => lanPort.model === apModel)?.[0]
+    setSelectedModel(defaultLanPorts)
+    form?.setFieldsValue({
+      ...defaultLanPorts,
+      poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPorts?.poeOut),
+      lan: defaultLanPorts?.lanPorts
+    })
+
+    customGuiChagedRef.current = true
+  }
+
   return (<Loader states={[{
     isLoading: venueLanPorts.isLoading || isLoadingVenueApCaps,
     isFetching: isUpdatingVenueLanPorts
@@ -256,6 +278,14 @@ export function LanPorts () {
           onGUIChanged={handleGUIChanged}
         />
       </Col>
+      {!isTemplate && isLanPortResetEnabled && apModel &&
+      <Col style={{ paddingLeft: '0px', paddingTop: '28px' }}>
+        <Tooltip title={$t(WifiNetworkMessages.LAN_PORTS_RESET_TOOLTIP)} >
+          <Button type='link' onClick={handleResetDefaultSettings}>
+            {$t({ defaultMessage: 'Reset to default' })}
+          </Button>
+        </Tooltip>
+      </Col>}
     </Row>
     <Row gutter={24}>
       <Col span={24}> {

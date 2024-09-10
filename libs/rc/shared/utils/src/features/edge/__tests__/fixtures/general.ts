@@ -20,7 +20,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-1'
+      clusterId: 'cluster-1',
+      firmwareVersion: '1.9.0.100'
     },
     {
       name: 'Smart Edge 2',
@@ -33,7 +34,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-2'
+      clusterId: 'cluster-2',
+      firmwareVersion: '1.9.0.200'
     },
     {
       name: 'Smart Edge 3',
@@ -46,7 +48,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-3'
+      clusterId: 'cluster-3',
+      firmwareVersion: '1.9.0.900'
     },
     {
       name: 'Smart Edge 4',
@@ -59,7 +62,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-4'
+      clusterId: 'cluster-4',
+      firmwareVersion: '2.1.0.900'
     },
     {
       name: 'Smart Edge 5',
@@ -72,7 +76,8 @@ export const mockEdgeList = {
       venueName: 'Venue 1',
       venueId: '00001',
       tags: ['Tag1', 'Tag2'],
-      clusterId: 'cluster-5'
+      clusterId: 'cluster-5',
+      firmwareVersion: '2.1.0.850'
     }
   ]
 }
@@ -206,6 +211,7 @@ export const mockEdgeClusterList = {
       venueName: 'venue_1',
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
+      firmwareVersion: '2.1.0.480',
       hasCorePort: true,
       edgeList: [
         {
@@ -255,6 +261,7 @@ export const mockEdgeClusterList = {
       venueName: 'venue_2',
       clusterStatus: 'test',
       highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY,
+      firmwareVersion: '2.1.0.580',
       hasCorePort: true,
       edgeList: [
         {
@@ -356,6 +363,7 @@ export const mockEdgeClusterList = {
       venueId: '0000000005',
       venueName: 'venue_5',
       clusterStatus: ClusterStatusEnum.CLUSTER_UNHEALTHY,
+      firmwareVersion: '2.1.0.480',
       hasCorePort: true,
       edgeList: [
         {

@@ -36,7 +36,8 @@ import {
   showToast
 } from '@acx-ui/components'
 import { useIsSplitOn, Features }          from '@acx-ui/feature-toggle'
-import { DeleteOutlinedIcon, Drag }        from '@acx-ui/icons'
+import { Drag }                            from '@acx-ui/icons'
+import { DeleteOutlined }                  from '@acx-ui/icons-new'
 import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
 import {
   switchApi,
@@ -49,7 +50,7 @@ import {
   useLazyGetSwitchListQuery,
   useGetSwitchVenueVersionListQuery,
   useGetSwitchListQuery,
-  useGetSwitchVenueVersionListV1002Query
+  useGetSwitchVenueVersionListV1001Query
 } from '@acx-ui/rc/services'
 import {
   Switch,
@@ -87,7 +88,6 @@ import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '../
 
 import {
   TableContainer,
-  DisabledDeleteOutlinedIcon,
   RequiredDotSpan,
   StepFormTitle,
   TypographyText
@@ -197,7 +197,7 @@ export function StackForm () {
     }, { skip: isSwitchFirmwareV1002Enabled })
 
   const { data: venuesListV1002, isLoading: isVenuesListV1002Loading } =
-    useGetSwitchVenueVersionListV1002Query({
+    useGetSwitchVenueVersionListV1001Query({
       params: { tenantId },
       payload: {
         firmwareType: '',
@@ -727,13 +727,7 @@ export function StackForm () {
           type='link'
           key='delete'
           role='deleteBtn'
-          icon={
-            tableData.length <= 1 ? (
-              <DisabledDeleteOutlinedIcon />
-            ) : (
-              <DeleteOutlinedIcon />
-            )
-          }
+          icon={<DeleteOutlined size='sm' />}
           disabled={tableData.length <= 1 || (editMode && activeRow === row.key)}
           hidden={row.disabled}
           onClick={() => handleDelete(row)}
@@ -902,7 +896,8 @@ export function StackForm () {
           <Loader
             states={[
               {
-                isLoading: isVenuesListLoading || isSwitchDataLoading || isSwitchDetailLoading
+                isLoading: isVenuesListLoading || isSwitchDataLoading
+                  || isSwitchDetailLoading || isVenuesListV1002Loading
               }
             ]}
           >

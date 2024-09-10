@@ -13,7 +13,9 @@ import {
   Hotspot20AccessNetworkTypeEnum,
   Hotspot20Ipv4AddressTypeEnum,
   NetworkHotspot20Settings,
-  SmsProviderType
+  SmsProviderType,
+  SoftGreViewData,
+  MtuTypeEnum
 } from '@acx-ui/rc/utils'
 
 export const networksResponse = {
@@ -562,6 +564,7 @@ export const successResponse = {
 }
 
 export const policyListResponse = {
+  data: [],
   fields: ['name', 'id'],
   totalCount: 0,
   totalPages: 0,
@@ -1237,6 +1240,259 @@ export const externalProviders = {
         }
       ],
       name: 'Skyfii',
+      customExternalProvider: false
+    }
+  ]
+}
+
+export const externalWifiProviders = {
+  wisprProviders: [
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '158.106.110.94',
+              port: 1812
+            },
+            secondary: {
+              ip: '206.25.74.94',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '158.106.110.94',
+              port: 1813
+            },
+            secondary: {
+              ip: '206.25.74.94',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Middle East',
+          authRadius: {
+            primary: {
+              ip: '150.129.118.29',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '150.129.118.29',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Aislelabs',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          captivePortalUrl: 'http://333.cc.com',
+          redirectUrl: 'baibai.com.cn',
+          authRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SkyWifiRadSec',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Global',
+          authRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '81.150.39.238',
+              port: 2083
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'SkyWifiRadSecTest',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Australia & New Zealand',
+          authRadius: {
+            primary: {
+              ip: '52.64.33.144',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.62.73.96',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.64.33.144',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.62.73.96',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Asia',
+          authRadius: {
+            primary: {
+              ip: '52.74.81.42',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.220.47.94',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.74.81.42',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.220.47.94',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'Europe',
+          authRadius: {
+            primary: {
+              ip: '52.18.184.156',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.50.161.230',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.18.184.156',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.50.161.230',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'North America',
+          authRadius: {
+            primary: {
+              ip: '52.52.68.90',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.8.61.119',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '52.52.68.90',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.8.61.119',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        },
+        {
+          name: 'South America',
+          authRadius: {
+            primary: {
+              ip: '54.94.181.249',
+              port: 1812
+            },
+            secondary: {
+              ip: '52.67.103.30',
+              port: 1812
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '54.94.181.249',
+              port: 1813
+            },
+            secondary: {
+              ip: '52.67.103.30',
+              port: 1813
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Skyfii',
+      customExternalProvider: false
+    },
+    {
+      regions: [
+        {
+          name: 'Test-Region-5',
+          authRadius: {
+            primary: {
+              ip: '34.72.60.108',
+              port: '3812'
+            },
+            secondary: {
+              ip: '2.2.2.2',
+              port: '3002'
+            }
+          },
+          accountingRadius: {
+            primary: {
+              ip: '34.72.60.108',
+              port: '3813'
+            },
+            secondary: {
+              ip: '4.4.4.4',
+              port: '3004'
+            }
+          },
+          showAnalyticsData: false
+        }
+      ],
+      name: 'Test-Provider-0502',
       customExternalProvider: false
     }
   ]
@@ -2244,4 +2500,77 @@ export const mock_SelfSignIn_SMS_Off = {
       unit: TimeUnitEnum.HOUR
     }
   }
+}
+
+export const mockSoftGreTable = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '0d89c0f5596c4689900fb7f5f53a0859',
+      name: 'softGreProfileName1',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.1',
+      secondaryGatewayAddress: '128.0.0.0',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_1', 'network_2', 'network_3']
+        }
+      ]
+    },
+    {
+      id: '75aa5131892d44a6a85a623dd3e524ed',
+      name: 'softGreProfileName2',
+      mtuType: MtuTypeEnum.AUTO,
+      disassociateClientEnabled: true,
+      primaryGatewayAddress: '128.0.0.3',
+      keepAliveInterval: 10,
+      keepAliveRetryTimes: 5,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_4', 'network_5']
+        }
+      ]
+    },
+    {
+      id: 'softGreProfileName3-id',
+      name: 'softGreProfileName3',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.4',
+      secondaryGatewayAddress: '128.0.0.5',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-1',
+          wifiNetworkIds: ['network_6']
+        }
+      ]
+    },
+    {
+      id: 'softGreProfileName4-id',
+      name: 'softGreProfileName4',
+      mtuType: MtuTypeEnum.MANUAL,
+      mtuSize: 1450,
+      disassociateClientEnabled: false,
+      primaryGatewayAddress: '128.0.0.4',
+      secondaryGatewayAddress: '128.0.0.5',
+      keepAliveInterval: 100,
+      keepAliveRetryTimes: 8,
+      activations: [
+        {
+          venueId: 'venueId-2',
+          wifiNetworkIds: ['network_6']
+        }
+      ]
+    }
+  ] as SoftGreViewData[]
 }

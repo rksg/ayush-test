@@ -19,3 +19,9 @@ export const InstancesTitle = styled(Typography.Title)`
 export const StyledTableInfoText = styled(Typography.Text)`
   color: var(--acx-neutrals-50)
 `
+
+export const StyledSpace = styled(Space)`
+  & > .ant-space-item:not(:last-child) {
+    margin-bottom: -15px;
+  }
+`

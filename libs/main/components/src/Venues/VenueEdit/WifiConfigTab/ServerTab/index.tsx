@@ -3,6 +3,7 @@ import { useContext } from 'react'
 import { useIntl } from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import { ConfigTemplateType, redirectPreviousPage, useConfigTemplate }    from '@acx-ui/rc/utils'
 import { useNavigate }                                                    from '@acx-ui/react-router-dom'
@@ -31,6 +32,7 @@ export function ServerTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
   const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
+  const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
 
   const {
     previousPath,
@@ -53,7 +55,7 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
-  if (!isTemplate) {
+  if (supportLbs && !isTemplate) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'Location Based Service' }), 'locationBasedService', <LocationBasedService />))
   }

@@ -1,17 +1,19 @@
+import { useState } from 'react'
+
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { GridCol, GridRow, PageHeader }             from '@acx-ui/components'
-import { RadioCardCategory }                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
+import { GridCol, GridRow, PageHeader }                                                                  from '@acx-ui/components'
+import { RadioCardCategory }                                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                                      from '@acx-ui/feature-toggle'
+import { ApCompatibilityToolTip, EdgeCompatibilityDrawer, EdgeCompatibilityType, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
-  ServicePolicyCardData,
   ServiceType,
-  isServicePolicyCardSetEnabled,
-  isServicePolicyCardEnabled
+  isServiceCardEnabled,
+  ServiceOperation,
+  isServiceCardSetEnabled,
+  IncompatibilityFeatures
 } from '@acx-ui/rc/utils'
-import { EdgeScopes } from '@acx-ui/types'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -29,8 +31,12 @@ export default function ServiceCatalog () {
   const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeCompatibilityEnabled = useIsEdgeFeatureReady(Features.EDGE_COMPATIBILITY_CHECK_TOGGLE)
 
-  const sets: { title: string, items: ServicePolicyCardData<ServiceType>[] }[] = [
+  // eslint-disable-next-line max-len
+  const [edgeCompatibilityFeature, setEdgeCompatibilityFeature] = useState<IncompatibilityFeatures | undefined>()
+
+  const sets = [
     {
       title: $t({ defaultMessage: 'Connectivity' }),
       items: [
@@ -49,11 +55,14 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
-          scopeKeysMap: {
-            create: [EdgeScopes.CREATE],
-            read: [EdgeScopes.READ]
-          }
+          helpIcon: isEdgeCompatibilityEnabled
+            ? <ApCompatibilityToolTip
+              title={''}
+              visible={true}
+              onClick={() => setEdgeCompatibilityFeature(IncompatibilityFeatures.SD_LAN)}
+            />
+            : undefined,
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
@@ -97,26 +106,33 @@ export default function ServiceCatalog () {
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
       />
-      {sets.filter(set => isServicePolicyCardSetEnabled(set, 'read')).map(set => {
+      {sets.filter(set => isServiceCardSetEnabled(set, ServiceOperation.LIST)).map(set => {
         return <UI.CategoryContainer key={set.title}>
           <Typography.Title level={3}>
             { set.title }
           </Typography.Title>
           <GridRow>
-            {set.items.filter(i => isServicePolicyCardEnabled<ServiceType>(i, 'read')).map(item => {
+            {set.items.filter(i => isServiceCardEnabled(i, ServiceOperation.LIST)).map(item => {
               return <GridCol key={item.type} col={{ span: 6 }}>
                 <ServiceCard
                   key={item.type}
                   serviceType={item.type}
                   categories={item.categories}
                   type={'button'}
-                  scopeKeysMap={item.scopeKeysMap}
+                  helpIcon={item.helpIcon}
                 />
               </GridCol>
             })}
           </GridRow>
         </UI.CategoryContainer>
       })}
+      {isEdgeCompatibilityEnabled && <EdgeCompatibilityDrawer
+        visible={!!edgeCompatibilityFeature}
+        type={EdgeCompatibilityType.ALONE}
+        title={$t({ defaultMessage: 'Compatibility Requirement' })}
+        featureName={edgeCompatibilityFeature}
+        onClose={() => setEdgeCompatibilityFeature(undefined)}
+      />}
     </>
   )
 }

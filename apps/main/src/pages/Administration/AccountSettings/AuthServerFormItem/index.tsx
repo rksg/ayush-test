@@ -37,11 +37,13 @@ const AuthServerFormItem = (props: AuthServerFormItemProps) => {
   const [hasSsoConfigured, setSsoConfigured] = useState(false)
   const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
   const navigate = useNavigate()
-  const linkToAdministrators = useTenantLink('/administration/administrators')
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isGoogleWorkspaceEnabled = useIsSplitOn(Features.GOOGLE_WORKSPACE_SSO_TOGGLE)
   const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
   const isRbacEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const linkToAdministrators =
+  useTenantLink(isRbacEnabled ? '/administration/userPrivileges/ssoGroups'
+    : '/administration/administrators/adminGroups')
 
   const { data: adminList } = useGetAdminListQuery({ params })
 

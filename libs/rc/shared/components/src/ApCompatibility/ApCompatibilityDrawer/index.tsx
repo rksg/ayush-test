@@ -11,11 +11,11 @@ import {
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApFeatureSetsQuery
 }   from '@acx-ui/rc/services'
-import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { ApCompatibility, ApCompatibilityResponse, ApIncompatibleFeature, useConfigTemplate } from '@acx-ui/rc/utils'
+import { TenantLink, useParams }                                                              from '@acx-ui/react-router-dom'
 
-import { ApCompatibilityType, InCompatibilityFeatures, ApCompatibilityQueryTypes } from '../constants'
-import { StyledWrapper }                                                           from '../styledComponents'
+import { ApCompatibilityType, InCompatibilityFeatures } from '../constants'
+import { StyledWrapper }                                from '../styledComponents'
 
 export type ApCompatibilityDrawerProps = {
   visible: boolean,
@@ -29,7 +29,6 @@ export type ApCompatibilityDrawerProps = {
   networkIds?: string[],
   apIds?: string[],
   venueIds?: string[],
-  queryType?: ApCompatibilityQueryTypes,
   data?: ApCompatibility[],
   onClose: () => void
 }
@@ -53,7 +52,6 @@ Sample 1: Open drawer and then fetch data
     venueId={venueId}
     featureName={InCompatibilityFeatures.BETA_DPSK3}
     venueName={venueData?.name ?? ''}
-    queryType={ApCompatibilityQueryTypes.CHECK_VENUE_WITH_FEATURE}
     onClose={() => setDrawerVisible(false)}
   />
 
@@ -67,10 +65,11 @@ Sample 2: Display data on drawer
   />
 */
 export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
+  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName='', apName, apIds=[], networkIds=[], venueIds=[], data=[] } = props
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { tenantId } = useParams()
-  const { visible, type=ApCompatibilityType.VENUE, isMultiple=false, venueId, venueName, networkId, featureName='', apName, apIds=[], networkIds=[], venueIds=[], data=[] } = props
+  const { isTemplate } = useConfigTemplate()
   const [ isInitializing, setIsInitializing ] = useState(data?.length === 0)
   const [ apCompatibilities, setApCompatibilities ] = useState<ApCompatibility[]>(data)
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId })
@@ -78,6 +77,7 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const [ getApFeatureSets ] = useLazyGetApFeatureSetsQuery()
 
+  const currentType = isTemplate ? ApCompatibilityType.ALONE : type
   const apNameTitle = (apName) ? `: ${apName}` : ''
 
   const title = isMultiple
@@ -115,23 +115,24 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
     { featureName: featureName?.valueOf() ?? '', venueName: venueData?.name ?? venueName })
 
   const multipleTitle = apName ? multipleFromAp : multipleFromVenue
-  const singleTitle = (ApCompatibilityType.VENUE === type)
+  const singleTitle = (ApCompatibilityType.VENUE === currentType)
     ? singleFromVenue : singleFromNetwork
 
   const contentTxt = isMultiple ? multipleTitle : singleTitle
 
   const getApCompatibilities = async () => {
-    if (ApCompatibilityType.NETWORK === type) {
+    if (ApCompatibilityType.NETWORK === currentType) {
       return getApCompatibilitiesNetwork({
         params: { networkId },
-        payload: { filters: { apIds, venueIds }, feature: featureName }
+        payload: { filters: { apIds, venueIds } }
       }).unwrap()
-    } else if (ApCompatibilityType.VENUE === type) {
+    } else if (ApCompatibilityType.VENUE === currentType) {
       return getApCompatibilitiesVenue({
         params: { venueId },
-        payload: { filters: { apIds, networkIds }, feature: featureName }
+        payload: { filters: { apIds, networkIds }, featureName }
       }).unwrap()
     }
+
     const apFeatureSets = await getApFeatureSets({
       params: { featureName: encodeURI(featureName) }
     }).unwrap()
@@ -201,7 +202,7 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
             {itemDetail?.supportedModelFamilies?.join(', ')}
           </Form.Item>
         }
-        {!apName && type !== ApCompatibilityType.ALONE &&
+        {!apName && currentType !== ApCompatibilityType.ALONE &&
           <Form.Item
             key={`total_${index}`}
             label={$t({

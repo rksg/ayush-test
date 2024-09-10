@@ -33,7 +33,7 @@ import { baseWorkflowApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { AsyncCommonResponse } from './persona'
+import { CommonAsyncResponse } from './common'
 import { commonQueryFn }       from './servicePolicy.utils'
 
 
@@ -47,13 +47,11 @@ export interface ActionQueryCriteria {
   pageSize?: number
 }
 
-
-
 export const workflowApi = baseWorkflowApi.injectEndpoints({
   endpoints: build => ({
     /** Workflow Management */
     // eslint-disable-next-line max-len
-    addWorkflow: build.mutation<AsyncCommonResponse, RequestPayload<Workflow> & { callback?: (response: AsyncCommonResponse) => void }>({
+    addWorkflow: build.mutation<CommonAsyncResponse, RequestPayload<Workflow> & { callback?: (response: CommonAsyncResponse) => void }>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WorkflowUrls.createWorkflow, params)
         return {
@@ -120,7 +118,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       ]
     }),
     // eslint-disable-next-line max-len
-    updateWorkflow: build.mutation<AsyncCommonResponse, RequestPayload<Workflow> & { callback?: () => void }>({
+    updateWorkflow: build.mutation<CommonAsyncResponse, RequestPayload<Workflow> & { callback?: () => void }>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WorkflowUrls.updateWorkflow, params)
         return {
@@ -442,7 +440,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 
     /** Workflow Actions API */
     // eslint-disable-next-line max-len
-    createAction: build.mutation<AsyncCommonResponse, RequestPayload & { callback?: (response: AsyncCommonResponse) => void }>({
+    createAction: build.mutation<CommonAsyncResponse, RequestPayload & { callback?: (response: CommonAsyncResponse) => void }>({
       query: commonQueryFn(WorkflowUrls.createAction),
       invalidatesTags: [{ type: 'Action', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {

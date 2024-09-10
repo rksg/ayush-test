@@ -1,0 +1,238 @@
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+
+import { CommonResult,
+  SoftGreViewData,
+  TableResult,
+  SoftGreUrls,
+  SoftGre,
+  CommonUrlsInfo,
+  SoftGreActivation,
+  Network,
+  VenueTableUsageBySoftGre,
+  VenueDetail,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
+  SoftGreOptionsData
+} from '@acx-ui/rc/utils'
+import { baseSoftGreApi }    from '@acx-ui/store'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
+
+export const softGreApi = baseSoftGreApi.injectEndpoints({
+  endpoints: (build) => ({
+    createSoftGre: build.mutation<CommonResult, RequestPayload<SoftGre>>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(SoftGreUrls.createSoftGre)
+        if (payload && !payload.secondaryGatewayAddress) {
+          delete payload.secondaryGatewayAddress
+        }
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+    }),
+    getSoftGreViewDataList: build.query<TableResult<SoftGreViewData>, RequestPayload>({
+      query: ({ payload }) => {
+        const req = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'SoftGre', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddSoftGreProfile',
+            'UpdateSoftGreProfile',
+            'DeleteSoftGreProfile',
+            'ActivateSoftGreProfileOnVenueWifiNetwork',
+            'DeactivateSoftGreProfileOnVenueWifiNetwork'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(
+              softGreApi.util.invalidateTags([
+                { type: 'SoftGre', id: 'LIST' },
+                { type: 'SoftGre', id: 'Options' }
+              ])
+            )
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    deleteSoftGre: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SoftGreUrls.deleteSoftGre, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    getSoftGreById: build.query<SoftGre, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SoftGreUrls.getSoftGre, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SoftGre', id: 'DETAIL' }]
+    }),
+    updateSoftGre: build.mutation<CommonResult, RequestPayload<SoftGre>>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SoftGreUrls.updateSoftGre, params)
+        if (payload && !payload.secondaryGatewayAddress) {
+          delete payload.secondaryGatewayAddress
+        }
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }]
+    }),
+    getVenuesSoftGrePolicy: build.query<TableResult<VenueTableUsageBySoftGre>, RequestPayload>({
+      queryFn: async ( { payload }, _api, _extraOptions, fetchWithBQ) => {
+        const activations = _.get(payload,'activations') as SoftGreActivation[]
+        const emptyResponse = { data: { totalCount: 0 } as TableResult<VenueTableUsageBySoftGre> }
+        const venueNetworksMap:{ [key:string]: string[] } = {}
+        let networkIds: string[] = []
+
+        activations.forEach(venue => {
+          venueNetworksMap[venue.venueId] = venue.wifiNetworkIds
+          networkIds = networkIds.concat(venue.wifiNetworkIds)
+        })
+
+        const networkIdsSet = Array.from(new Set(networkIds))
+
+        if (networkIds.length === 0) return emptyResponse
+        const networkQueryPayload = {
+          fields: ['name', 'id'],
+          filters: { id: networkIdsSet },
+          page: 1,
+          pageSize: 10_000
+        }
+        const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList)
+        // eslint-disable-next-line max-len
+        const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
+        if (networkRes.error) return emptyResponse
+
+        const { data: networkData } = networkRes.data as TableResult<Network>
+        let networkMapping:{ [key:string]: string } = {}
+        networkData?.forEach((network: Network) => {
+          networkMapping[network.id] = network.name
+        })
+
+        const venueIds = Object.keys(venueNetworksMap)
+        const venueQueryPayload = {
+          ...(_.omit(payload as RequestPayload, ['activations'])),
+          filters: { id: venueIds }
+        }
+        const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList)
+        const venueRes = await fetchWithBQ({ ...venueReq, body: JSON.stringify(venueQueryPayload) })
+        if (venueRes.error) return emptyResponse
+        const { data: venueData } = venueRes?.data as TableResult<VenueDetail>
+
+        const venueResult = venueData?.map(venue =>{
+          const wifiNetworkIDs = venueNetworksMap[venue.id]
+          const wifiNetworkNames = wifiNetworkIDs.map(id => (networkMapping[id]))
+          // eslint-disable-next-line max-len
+          return { ...venue, wifiNetworkIds: wifiNetworkIDs, wifiNetworkNames } as unknown as VenueTableUsageBySoftGre
+        })
+
+        const result = {
+          data: venueResult,
+          page: 1,
+          totalCount: venueResult.length
+        } as TableResult<VenueTableUsageBySoftGre>
+        return { data: result }
+      },
+      providesTags: [{ type: 'SoftGre', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    getSoftGreOptions: build.query<SoftGreOptionsData, RequestPayload>({
+      queryFn: async ( { params, payload }, _api, _extraOptions, fetchWithBQ) => {
+        const { venueId, networkId } = params as { venueId: string, networkId?: string }
+        const softGreListReq = createHttpRequest(SoftGreUrls.getSoftGreViewDataList)
+        const softGreListRes = await fetchWithBQ({
+          ...softGreListReq,
+          body: JSON.stringify(payload)
+        })
+        // eslint-disable-next-line max-len
+        if (softGreListRes.error) return { data: { options: [], isLockedOptions: false } as SoftGreOptionsData }
+        let { data: listData } = softGreListRes.data as TableResult<SoftGreViewData>
+
+        let venueTotal = 0
+        let softGreProfileId = ''
+
+        const options = listData?.map(item => {
+          let isSame = false
+          item.activations?.forEach(activation => {
+            const isEqualVenue = activation.venueId === venueId
+            if (isEqualVenue) {
+              isSame = activation.venueId === venueId
+              venueTotal += 1
+              if (networkId && activation.wifiNetworkIds?.includes(networkId)) {
+                softGreProfileId = item.id
+              }
+            }
+          })
+          return {
+            disabled: !isSame,
+            value: item.id,
+            label: item.name
+          } as DefaultOptionType
+        })
+        if (venueTotal >= 3) {
+          return {
+            data: {
+              options: options,
+              id: softGreProfileId,
+              isLockedOptions: true
+            } as SoftGreOptionsData
+          }
+        }
+        return {
+          data: {
+            options: options.map((item) =>
+              ({ value: item.value, label: item.label, disabled: false })) ,
+            id: softGreProfileId,
+            isLockedOptions: false
+          } as SoftGreOptionsData
+        }
+      },
+      providesTags: [{ type: 'SoftGre', id: 'Options' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    activateSoftGre: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.activateSoftGre, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+    }),
+    dectivateSoftGre: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(SoftGreUrls.dectivateSoftGre, params)
+      },
+      invalidatesTags: [{ type: 'SoftGre', id: 'LIST' }, { type: 'SoftGre', id: 'Options' }]
+    })
+  })
+})
+
+
+export const {
+  useCreateSoftGreMutation,
+  useGetSoftGreViewDataListQuery,
+  useLazyGetSoftGreViewDataListQuery,
+  useDeleteSoftGreMutation,
+  useGetSoftGreByIdQuery,
+  useUpdateSoftGreMutation,
+  useGetVenuesSoftGrePolicyQuery,
+  useGetSoftGreOptionsQuery,
+  useActivateSoftGreMutation,
+  useDectivateSoftGreMutation
+} = softGreApi

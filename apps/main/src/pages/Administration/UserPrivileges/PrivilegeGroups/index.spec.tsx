@@ -120,7 +120,7 @@ describe('Privilege Group Table', () => {
       pathname: `/${params.tenantId}/t/administration/userPrivileges/privilegeGroups/create`,
       hash: '',
       search: ''
-    }, { state: true })
+    }, { state: { isOnboardedMsp: true } })
   })
   it('should render correctly for non prime admin', async () => {
     render(

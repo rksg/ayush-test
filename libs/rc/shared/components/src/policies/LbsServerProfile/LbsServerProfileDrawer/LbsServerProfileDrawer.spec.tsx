@@ -34,7 +34,7 @@ describe('Add Lbs Server Profile Drawer', () => {
     expect(screen.getByText('Add Location Based Service Server')).toBeVisible()
 
     expect(screen.getByText('Profile Name')).toBeVisible()
-    expect(screen.getByText('LBS Venue Name')).toBeVisible()
+    expect(screen.getByText('LBS Server Venue Name')).toBeVisible()
     expect(screen.getByText('Server Address')).toBeVisible()
     expect(screen.getByText('Port')).toBeVisible()
     expect(screen.getByText('Password')).toBeVisible()

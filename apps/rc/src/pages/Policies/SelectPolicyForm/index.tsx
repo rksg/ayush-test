@@ -6,29 +6,28 @@ import {
   GridRow,
   PageHeader,
   RadioCard,
-  StepsFormLegacy,
-  RadioCardCategory
+  RadioCardCategory,
+  StepsFormLegacy
 } from '@acx-ui/components'
 import {
   Features,
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeReady } from '@acx-ui/rc/components'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
 } from '@acx-ui/rc/services'
 import {
+  PolicyOperation,
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping,
-  ServicePolicyCardData,
-  isServicePolicyCardEnabled,
-  hasCloudpathAccess
+  isPolicyCardEnabled,
+  policyTypeDescMapping,
+  policyTypeLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                  from '@acx-ui/types'
@@ -46,6 +45,7 @@ export default function SelectPolicyForm () {
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
+  const isEdgeQosEnabled = useIsEdgeFeatureReady(Features.EDGE_QOS_TOGGLE)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
     enableRbac: isUseRbacApi,
@@ -68,6 +68,7 @@ export default function SelectPolicyForm () {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isSoftGreEnabled = useIsSplitOn(Features.WIFI_SOFTGRE_OVER_WIRELESS_TOGGLE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -81,7 +82,7 @@ export default function SelectPolicyForm () {
     })
   }
 
-  const sets : ServicePolicyCardData<PolicyType>[] = [
+  const sets = [
     { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
@@ -92,49 +93,58 @@ export default function SelectPolicyForm () {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       disabled: (ApSnmpPolicyTotalCount >= 64)
-    }
-  ]
-
-  if (supportHotspot20R1) {
-    sets.push({
+    },
+    {
       type: PolicyType.WIFI_OPERATOR,
       categories: [RadioCardCategory.WIFI],
-      disabled: (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
-    })
-    sets.push({
+      disabled: !supportHotspot20R1 || (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
+    },
+    {
       type: PolicyType.IDENTITY_PROVIDER,
       categories: [RadioCardCategory.WIFI],
-      disabled: (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
-    })
-  }
-
-  if (isEdgeEnabled) {
-    sets.push({
-      type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
-    })
-  }
-
-  if(macRegistrationEnabled) {
-    // eslint-disable-next-line max-len
-    sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
-  }
-
-  if(cloudpathBetaEnabled) {
-    sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
-  }
-
-  if (isConnectionMeteringEnabled && hasCloudpathAccess()) {
-    // eslint-disable-next-line max-len
-    sets.push({ type: PolicyType.CONNECTION_METERING, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE] })
-  }
-
-  if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
-    sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
-  }
-
-  if (isWorkflowEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
-    sets.push({ type: PolicyType.WORKFLOW, categories: [RadioCardCategory.WIFI] })
-  }
+      disabled: !supportHotspot20R1 || (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
+    },
+    {
+      type: PolicyType.TUNNEL_PROFILE,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      disabled: !isEdgeEnabled
+    },
+    {
+      type: PolicyType.MAC_REGISTRATION_LIST,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !macRegistrationEnabled
+    },
+    {
+      type: PolicyType.ADAPTIVE_POLICY,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.CONNECTION_METERING,
+      categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
+      disabled: !isConnectionMeteringEnabled
+    },
+    {
+      type: PolicyType.CERTIFICATE_TEMPLATE,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !isCertificateTemplateEnabled
+    },
+    {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !isWorkflowEnabled
+    },
+    {
+      type: PolicyType.SOFTGRE,
+      categories: [RadioCardCategory.WIFI],
+      disabled: !(isSoftGreEnabled && hasPermission({ scopes: [WifiScopes.CREATE] }))
+    },
+    {
+      type: PolicyType.QOS_BANDWIDTH,
+      categories: [RadioCardCategory.EDGE],
+      disabled: !isEdgeQosEnabled
+    }
+  ]
 
   return (
     <>
@@ -164,15 +174,15 @@ export default function SelectPolicyForm () {
               <GridRow>
                 {
                   // eslint-disable-next-line max-len
-                  sets.filter(set => isServicePolicyCardEnabled<PolicyType>(set, 'create')).map(set => {
-                    return <GridCol col={{ span: 6 }} key={set.type}>
+                  sets.filter(item => isPolicyCardEnabled(item, PolicyOperation.CREATE)).map(item => {
+                    return <GridCol col={{ span: 6 }} key={item.type}>
                       <RadioCard
                         type={'radio'}
-                        key={set.type}
-                        value={set.type}
-                        title={$t(policyTypeLabelMapping[set.type])}
-                        description={$t(policyTypeDescMapping[set.type])}
-                        categories={set.categories}
+                        key={item.type}
+                        value={item.type}
+                        title={$t(policyTypeLabelMapping[item.type])}
+                        description={$t(policyTypeDescMapping[item.type])}
+                        categories={item.categories}
                       />
                     </GridCol>
                   })

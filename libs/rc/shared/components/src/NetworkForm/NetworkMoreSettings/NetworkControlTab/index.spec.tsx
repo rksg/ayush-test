@@ -40,6 +40,7 @@ jest.mock('../../utils', () => ({
 }))
 
 const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+const mockedGetDevicePolicy = jest.fn()
 
 describe('Network More settings - Network Control Tab', () => {
   beforeEach(() => {
@@ -63,7 +64,10 @@ describe('Network More settings - Network Control Tab', () => {
       rest.post(AccessControlUrls.getDevicePolicyListQuery.url,
         (req, res, ctx) => res(ctx.json(devicePolicyListResponse))),
       rest.get(AccessControlUrls.getDevicePolicy.url,
-        (req, res, ctx) => res(ctx.json(devicePolicyDetailResponse))),
+        (req, res, ctx) => {
+          mockedGetDevicePolicy()
+          return res(ctx.json(devicePolicyDetailResponse))
+        }),
       rest.post(AccessControlUrls.getEnhancedL2AclPolicies.url,
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.post(AccessControlUrls.getL2AclPolicyListQuery.url,
@@ -81,6 +85,9 @@ describe('Network More settings - Network Control Tab', () => {
       rest.post(AccessControlUrls.getAccessControlProfileQueryList.url,
         (_, res, ctx) => res(ctx.json(policyListResponse)))
     )
+  })
+  afterEach(() => {
+    mockedGetDevicePolicy.mockClear()
   })
 
   it('after click DNS Proxy', async () => {
@@ -222,6 +229,7 @@ describe('Network More settings - Network Control Tab', () => {
       </Provider>,
       { route: { params } })
 
+    await waitFor(() => expect(mockedGetDevicePolicy).toBeCalled())
     const view = screen.getByText(/client isolation/i)
     await userEvent.click(within(view).getByRole('switch'))
 

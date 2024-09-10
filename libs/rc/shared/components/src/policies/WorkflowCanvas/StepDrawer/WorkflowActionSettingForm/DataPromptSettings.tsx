@@ -51,7 +51,7 @@ function DataPromptField () {
             {variables.map((field, index) => (
               <div key={field.key} data-testid={'field'+index}>
                 <FieldLabel width='555px' key={'label_'+index}>
-                  {`${$t({ defaultMessage: 'Field' })} ${index + 1}`}
+                  {$t({ defaultMessage: 'Field {num}' }, { num: index + 1 })}
                   <Button
                     data-testid={'btn-remove_'+index}
                     disabled={index < 1}
@@ -89,6 +89,7 @@ function DataPromptField () {
             ))}
             <Form.Item>
               <Button type={'link'}
+                disabled={variables.length > 10}
                 onClick={() => add()}
               >
                 {$t({ defaultMessage: 'Add Field' })}

@@ -13,7 +13,7 @@ import {
   ClientIsolationUrls,
   ConnectionMeteringUrls,
   EdgeQosProfilesUrls,
-  RogueApUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
+  RogueApUrls, SoftGreUrls, SyslogUrls, VlanPoolRbacUrls, WifiUrlsInfo,
   getSelectPolicyRoutePath,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
@@ -27,7 +27,8 @@ import {
 import {
   mockedClientIsolationQueryData,
   mockedRogueApPoliciesList,
-  mockedVlanPoolProfilesQueryData
+  mockedVlanPoolProfilesQueryData,
+  mockSoftGreTable
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -119,7 +120,10 @@ describe('MyPolicies', () => {
           totalCount: 1,
           data: []
         }))
-      )
+      ),
+      rest.post(
+        SoftGreUrls.getSoftGreViewDataList.url,
+        (_, res, ctx) => res(ctx.json(mockSoftGreTable)))
     )
   })
 
@@ -209,11 +213,25 @@ describe('MyPolicies', () => {
   })
 
   it('should render edge qos bandwidth correctly', async () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation(ff =>
+      [Features.EDGE_QOS_TOGGLE, Features.EDGES_TOGGLE].includes(ff as Features))
+
     mockServer.use(
       rest.post(
         EdgeQosProfilesUrls.getEdgeQosProfileViewDataList.url,
         (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (_req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      ),
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (_req, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
     render(

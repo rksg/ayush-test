@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, TableProps, Loader, Table, Button } from '@acx-ui/components'
+import { Button, Loader, PageHeader, Table, TableProps } from '@acx-ui/components'
 import {
-  SimpleListTooltip,
-  friendlyNameEnumOptions,
   FriendlyNameEnum,
+  friendlyNameEnumOptions,
+  SimpleListTooltip,
   WIFI_OPERATOR_MAX_COUNT
 } from '@acx-ui/rc/components'
 import {
@@ -14,20 +14,19 @@ import {
   useWifiNetworkListQuery
 } from '@acx-ui/rc/services'
 import {
-  KeyValue,
-  PolicyOperation,
-  PolicyType,
-  WifiNetwork,
-  WifiOperatorViewModel,
+  filterByAccessForServicePolicyMutation,
   getPolicyDetailsLink,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  useTableQuery
+  getScopeKeyByPolicy,
+  KeyValue,
+  PolicyOperation,
+  PolicyType,
+  useTableQuery,
+  WifiNetwork,
+  WifiOperatorViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasPermission }                           from '@acx-ui/user'
-
 
 
 const defaultPayload = {
@@ -65,14 +64,14 @@ export default function WifiOperatorTable () {
   const rowActions: TableProps<WifiOperatorViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      scopeKey: [WifiScopes.DELETE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.DELETE),
       onClick: (selectedRows: WifiOperatorViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
-      scopeKey: [WifiScopes.UPDATE],
+      scopeKey: getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.EDIT),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -86,6 +85,8 @@ export default function WifiOperatorTable () {
       }
     }
   ]
+
+  const allowedRowActions = filterByAccessForServicePolicyMutation(rowActions)
 
   return (
     <>
@@ -101,9 +102,9 @@ export default function WifiOperatorTable () {
             link: getPolicyListRoutePath(true)
           }
         ]}
-        extra={filterByAccess([
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
-            scopeKey={[WifiScopes.CREATE]}
+            scopeKey={getScopeKeyByPolicy(PolicyType.WIFI_OPERATOR, PolicyOperation.CREATE)}
             to={getPolicyRoutePath({
               type: PolicyType.WIFI_OPERATOR,
               oper: PolicyOperation.CREATE })}>
@@ -123,8 +124,8 @@ export default function WifiOperatorTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasPermission() && { type: 'checkbox' }}
+          rowActions={allowedRowActions}
+          rowSelection={allowedRowActions.length > 0 && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

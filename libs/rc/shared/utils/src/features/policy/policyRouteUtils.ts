@@ -15,6 +15,7 @@ export enum WorkflowDetailsTabKey {
 export enum PolicyOperation {
   CREATE,
   EDIT,
+  DELETE,
   DETAIL,
   LIST
 }
@@ -34,7 +35,8 @@ const operationPathMapping: Record<PolicyOperation, string> = {
   [PolicyOperation.CREATE]: 'create',
   [PolicyOperation.EDIT]: ':policyId/edit',
   [PolicyOperation.DETAIL]: ':policyId/detail',
-  [PolicyOperation.LIST]: 'list'
+  [PolicyOperation.LIST]: 'list',
+  [PolicyOperation.DELETE]: ''
 }
 
 export const policyTypePathMapping: Record<PolicyType, string> = {
@@ -62,7 +64,8 @@ export const policyTypePathMapping: Record<PolicyType, string> = {
   [PolicyType.CERTIFICATE_TEMPLATE]: 'certificateTemplate',
   [PolicyType.CERTIFICATE_AUTHORITY]: 'certificateAuthority',
   [PolicyType.CERTIFICATE]: 'certificate',
-  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth'
+  [PolicyType.QOS_BANDWIDTH]: 'qosBandwidth',
+  [PolicyType.SOFTGRE]: 'softGre'
 }
 
 export function getPolicyRoutePath (props: PolicyRoutePathProps): string {

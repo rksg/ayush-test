@@ -21,11 +21,14 @@ import {
 import {
   AssociatedResource,
   EditPropertyConfigMessages,
-  hasCloudpathAccess,
+  hasServicePermission,
   PropertyConfigs,
   PropertyConfigStatus,
-  ResidentPortalType
+  ResidentPortalType,
+  ServiceOperation,
+  ServiceType
 } from '@acx-ui/rc/utils'
+import { hasCrossVenuesPermission } from '@acx-ui/user'
 
 import { IdentityGroupLink, ResidentPortalLink }  from '../CommonLinkHelper'
 import { TemplateSelector }                       from '../TemplateSelector'
@@ -95,6 +98,10 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   const personaGroupId = Form.useWatch('personaGroupId', form)
   const residentPortalType = Form.useWatch('residentPortalType', form)
   const residentPortalId = Form.useWatch('residentPortalId', form)
+  const hasAddPersonaGroupPermission = hasCrossVenuesPermission({ needGlobalPermission: true })
+  const hasAddResidentPortalPermission = hasServicePermission({
+    type: ServiceType.RESIDENT_PORTAL, oper: ServiceOperation.CREATE
+  })
 
   const { data: venueData } = useGetVenueQuery({ params: { tenantId, venueId } })
   const propertyConfigsQuery = useGetPropertyConfigsQuery(
@@ -253,6 +260,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
     const {
       unitConfig,
       residentPortalType,
+      communicationConfig,
       ...formValues
     } = values
 
@@ -274,6 +282,20 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
             unitConfig: {
               ...unitConfig,
               ...toResidentPortalPayload(residentPortalType as ResidentPortalType)
+            },
+            communicationConfig: {
+              ...communicationConfig,
+              // these values must match the registration id in th TemplateSelector form items
+              unitAssignmentHtmlRegId: venueId,
+              unitAssignmentTextRegId: venueId,
+              unitPassphraseChangeHtmlRegId: venueId,
+              unitPassphraseChangeTextRegId: venueId,
+              guestPassphraseChangeHtmlRegId: venueId,
+              guestPassphraseChangeTextRegId: venueId,
+              portalAccessResetHtmlRegId: venueId,
+              portalAccessResetTextRegId: venueId,
+              portAssignmentHtmlRegId: venueId,
+              portAssignmentTextRegId: venueId
             }
           }
         }).unwrap()
@@ -320,7 +342,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
             checked={isPropertyEnable}
             onChange={handlePropertyEnable}
             style={{ marginLeft: '20px' }}
-            disabled={!hasCloudpathAccess()}
           />
           <Tooltip.Question
             title={$t(EditPropertyConfigMessages.ENABLE_PROPERTY_TOOLTIP)}
@@ -335,7 +356,6 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
         onCancel={onCancel}
         buttonLabel={{ submit: submitButtonLabel || $t({ defaultMessage: 'Save' }) }}
         initialValues={initialValues}
-        disabled={!hasCloudpathAccess()}
       >
         <StepsForm.StepForm>
           {isPropertyEnable &&
@@ -370,18 +390,21 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                       />
                   }
                 </Form.Item>
-                <Form.Item
-                  noStyle
-                  hidden={personaGroupHasBound}
-                >
-                  <Button
-                    type={'link'}
-                    size={'small'}
-                    onClick={() => setPersonaGroupVisible(true)}
+
+                {hasAddPersonaGroupPermission &&
+                  <Form.Item
+                    noStyle
+                    hidden={personaGroupHasBound}
                   >
-                    {$t({ defaultMessage: 'Add Identity Group' })}
-                  </Button>
-                </Form.Item>
+                    <Button
+                      type={'link'}
+                      size={'small'}
+                      onClick={() => setPersonaGroupVisible(true)}
+                    >
+                      {$t({ defaultMessage: 'Add Identity Group' })}
+                    </Button>
+                  </Form.Item>
+                }
 
                 <Form.Item noStyle name={['unitConfig', 'type']}>
                   <Input type='hidden' />
@@ -433,19 +456,21 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                           />
                       }
                     />
-                    <Form.Item
-                      noStyle
-                      hidden={hasUnits
-                        && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL}
-                    >
-                      <Button
-                        type={'link'}
-                        size={'small'}
-                        onClick={() => setResidentPortalModalVisible(true)}
+                    {hasAddResidentPortalPermission &&
+                      <Form.Item
+                        noStyle
+                        hidden={hasUnits
+                          && initialValues.residentPortalType === ResidentPortalType.RUCKUS_PORTAL}
                       >
-                        {$t({ defaultMessage: 'Add Resident Portal' })}
-                      </Button>
-                    </Form.Item>
+                        <Button
+                          type={'link'}
+                          size={'small'}
+                          onClick={() => setResidentPortalModalVisible(true)}
+                        >
+                          {$t({ defaultMessage: 'Add Resident Portal' })}
+                        </Button>
+                      </Form.Item>
+                    }
                   </>
                 }
                 {
