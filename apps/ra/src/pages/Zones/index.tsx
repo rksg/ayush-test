@@ -11,6 +11,8 @@ import { intlFormats }                                           from '@acx-ui/f
 import { TenantLink, resolvePath }                               from '@acx-ui/react-router-dom'
 import {  NetworkPath, DateRange, encodeParameter, DateFilter  } from '@acx-ui/utils'
 
+import { getZoneUrl } from '../ZoneDetails/ZoneTabs'
+
 import { useZonesListQuery, Zone } from './services'
 import * as UI                     from './styledComponents'
 
@@ -36,13 +38,10 @@ function ZonesList () {
       fixed: 'left',
       searchable: true,
       width: 200,
-      render: (_, row: Zone, __, highlightFn) => (
-        <TenantLink
-          to={resolvePath(`/zones/${row.systemName}/${row.zoneName}/assurance?period=${period}`)}>
-          {highlightFn(row.zoneName)}
-        </TenantLink>
-      )
-      ,
+      render: (_, row: Zone, __, highlightFn) => <TenantLink
+        to={resolvePath(`${getZoneUrl(row.systemName, row.zoneName)}/assurance?period=${period}`)}>
+        {highlightFn(row.zoneName)}
+      </TenantLink>,
       sorter: { compare: sortProp('name', defaultSort) }
     },
     {
