@@ -2,11 +2,15 @@ import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { fixedEncodeURIComponent  }              from '@acx-ui/utils'
 
-function VenueTabs () {
+export const getZoneUrl = (systemName: string, zoneName: string) =>
+  `/zones/${fixedEncodeURIComponent(systemName)}/${fixedEncodeURIComponent(zoneName)}`
+
+export default function ZoneTabs () {
   const { $t } = useIntl()
   const { systemName, zoneName, activeTab } = useParams()
-  const basePath = useTenantLink(`/zones/${systemName}/${zoneName}/`)
+  const basePath = useTenantLink(getZoneUrl(systemName as string, zoneName as string))
   const navigate = useNavigate()
 
   const onTabChange = (tab: string) =>
@@ -36,6 +40,3 @@ function VenueTabs () {
     </Tabs>
   )
 }
-
-export default VenueTabs
-

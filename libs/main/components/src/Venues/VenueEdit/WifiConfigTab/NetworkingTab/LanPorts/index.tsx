@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 
 import { Col, Form, Image, Row, Select, Space, Tooltip } from 'antd'
-import { isEqual }                                       from 'lodash'
+import { isEqual, clone }                                from 'lodash'
 import { useIntl }                                       from 'react-intl'
 
-import { AnchorContext, Button, Loader, Tabs }                          from '@acx-ui/components'
+import { AnchorContext, Button, Loader, Tabs, showActionModal }         from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { LanPortPoeSettings, LanPortSettings, ConvertPoeOutToFormData }
   from '@acx-ui/rc/components'
@@ -22,6 +22,8 @@ import {
 import {
   CapabilitiesApModel,
   DHCPSaveData,
+  EditPortMessages,
+  isEqualLanPort,
   LanPort,
   useConfigTemplate,
   VenueLanPorts,
@@ -94,8 +96,15 @@ export function LanPorts () {
   const isLanPortResetEnabled = useIsSplitOn(Features.WIFI_RESET_AP_LAN_PORT_TOGGLE)
   const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isWifiRbacEnabled
 
-  const { data: defaultVenueLanPorts, isLoading: isDefaultPortsLoading } =
-    useGetDefaultVenueLanPortsQuery({ params: { venueId } }, { skip: !isLanPortResetEnabled })
+  const { defaultLanPortsByModelMap, isDefaultPortsLoading } =
+    useGetDefaultVenueLanPortsQuery({ params: { venueId } },
+      { selectFromResult: ({ data, isLoading }) => {
+        return {
+          defaultLanPortsByModelMap: new Map(data?.map(l => [l.model, l])),
+          isDefaultPortsLoading: isLoading
+        }
+
+      }, skip: !isLanPortResetEnabled })
 
   const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
     useQueryFn: useGetVenueLanPortsQuery,
@@ -116,6 +125,7 @@ export function LanPorts () {
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
+  const [resetModels, setResetModels] = useState([] as string[])
 
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
@@ -202,6 +212,7 @@ export function LanPorts () {
     const selected = getSelectedModelData(data, apModel)
     setLanPortData(data)
     setLanPortOrinData(data)
+    setResetModels([])
 
     form?.setFieldsValue({
       ...selected,
@@ -219,13 +230,25 @@ export function LanPorts () {
       })
       const payload = data ?? lanPortData
       if (payload) {
-        setLanPortData(payload)
-        setLanPortOrinData(payload)
-        await updateVenueLanPorts({
-          params: { tenantId, venueId },
-          payload,
-          enableRbac: resolvedRbacEnabled
-        }).unwrap()
+        if (isLanPortResetEnabled && isResetLanPort(payload)) {
+          showActionModal({
+            type: 'confirm',
+            width: 450,
+            title: $t({ defaultMessage: 'Reset Port Settings to Default' }),
+            content: $t(EditPortMessages.RESET_PORT_WARNING),
+            okText: $t({ defaultMessage: 'Continue' }),
+            onOk: async () => {
+              try {
+                processUpdateVenueLanPorts(payload)
+                setResetModels([])
+              } catch (error) {
+                console.log(error) // eslint-disable-line no-console
+              }
+            }
+          })
+        } else {
+          processUpdateVenueLanPorts(payload)
+        }
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -238,19 +261,52 @@ export function LanPorts () {
   }
 
   const handleResetDefaultSettings = () => {
-    if (!defaultVenueLanPorts || !apModel || isDefaultPortsLoading) {
+    if (!defaultLanPortsByModelMap || !apModel || isDefaultPortsLoading) {
       return
     }
 
-    const defaultLanPorts = defaultVenueLanPorts.filter(lanPort => lanPort.model === apModel)?.[0]
-    setSelectedModel(defaultLanPorts)
+    const defaultLanPorts = defaultLanPortsByModelMap.get(apModel)
+    if (defaultLanPorts === undefined) return
+
+    setSelectedModel(defaultLanPorts as VenueLanPorts)
     form?.setFieldsValue({
       ...defaultLanPorts,
       poeOut: Array(form.getFieldValue('poeOut')?.length).fill(defaultLanPorts?.poeOut),
       lan: defaultLanPorts?.lanPorts
     })
+    let records = clone(resetModels)
+    records.push(apModel)
+    setResetModels([...new Set(records)])
 
     customGuiChagedRef.current = true
+  }
+
+  const isResetLanPort = (payload: VenueLanPorts[]) => {
+    for (let model of resetModels) {
+      let currentLan = payload.find(l => l.model === model)
+      const originLan = lanPortOrinData?.find(o => o.model === model)
+      const eqOriginLan = isEqualLanPort(originLan!, currentLan!)
+      if (eqOriginLan) continue
+
+      const defaultLan = defaultLanPortsByModelMap.get(model)
+      const resetToDefault = isEqualLanPort(defaultLan!, currentLan!)
+      if (resetToDefault) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  const processUpdateVenueLanPorts = async (payload: VenueLanPorts[]) => {
+    setLanPortData(payload)
+    setLanPortOrinData(payload)
+    await updateVenueLanPorts({
+      params: { tenantId, venueId },
+      payload,
+      enableRbac: resolvedRbacEnabled
+    }).unwrap()
+    setResetModels([])
   }
 
   return (<Loader states={[{

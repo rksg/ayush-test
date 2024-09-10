@@ -37,7 +37,7 @@ function OptionsList ({ preferences, setState }: {
   const { $t } = useIntl()
   const apiChangesNotificationEnabled =
     useIsSplitOn(Features.NOTIFICATION_CHANNEL_API_CHANGES_TOGGLE)
-  const labelsCombined = apiChangesNotificationEnabled ? { ...apiChanges, ...labels } : labels
+  const labelsCombined = apiChangesNotificationEnabled ? { ...labels, ...apiChanges } : labels
 
   return <>{Object.entries(labelsCombined).map(([key, label]) => <div key={key}>
     <Checkbox
@@ -68,7 +68,12 @@ export const R1NotificationSettings = ({ tenantId, apply }: {
   const [updatePrefrences] = useUpdateTenantSelfMutation()
   useEffect(() => {
     if (tenantDetailsData?.data?.subscribes) {
-      setState(JSON.parse(tenantDetailsData?.data?.subscribes))
+      try {
+        const jsonData = JSON.parse(tenantDetailsData?.data?.subscribes)
+        setState(jsonData)
+      } catch {
+        setState(defaultNotification)
+      }
     }
   }, [tenantDetailsData.data])
   apply.current = async (): Promise<boolean | void> => {

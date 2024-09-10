@@ -4,7 +4,7 @@ import { MaybePromise }                                       from '@reduxjs/too
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { reduce }                                             from 'lodash'
 
-import { Filter }                   from '@acx-ui/components'
+import { Filter }          from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -18,6 +18,7 @@ import {
   ApAntennaTypeSettings,
   ApBandModeSettings,
   ApBssColoringSettings,
+  ApSmartMonitor,
   ApClientAdmissionControl,
   ApDeep,
   ApDetailHeader,
@@ -75,7 +76,10 @@ import {
   downloadFile,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  NewApGroupViewModelResponseType
+  NewApGroupViewModelResponseType,
+  SystemCommands,
+  StickyClientSteering,
+  ApStickyClientSteering
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -625,8 +629,17 @@ export const apApi = baseApApi.injectEndpoints({
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.factoryResetAp, params, apiCustomHeader)
-        return {
-          ...req
+        if (enableRbac) {
+          return {
+            ...req,
+            body: JSON.stringify({
+              type: SystemCommands.FACTORY_RESET
+            })
+          }
+        } else {
+          return {
+            ...req
+          }
         }
       }
     }),
@@ -977,6 +990,28 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'BssColoring' }]
+    }),
+    getApSmartMonitor: build.query<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
+    }),
+    updateApSmartMonitor: build.mutation<ApSmartMonitor, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApSmartMonitor, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'SmartMonitor' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
@@ -1329,6 +1364,34 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'ApFeatureSets' }]
+    }),
+    getApStickyClientSteering: build.query<ApStickyClientSteering, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApStickyClientSteering, params)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    updateApStickyClientSteering: build.mutation<StickyClientSteering, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.updateApStickyClientSteering, params)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
+    }),
+    resetApStickyClientSteering: build.mutation<StickyClientSteering, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiRbacUrlsInfo.resetApStickyClientSteering, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'StickyClientSteering' }]
     })
   })
 })
@@ -1388,6 +1451,9 @@ export const {
   useUpdateApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
+  useGetApSmartMonitorQuery,
+  useLazyGetApSmartMonitorQuery,
+  useUpdateApSmartMonitorMutation,
   useGetApCapabilitiesQuery,     // deprecated
   useLazyGetApCapabilitiesQuery, // deprecated
   useGetOldApCapabilitiesByModelQuery,
@@ -1426,7 +1492,10 @@ export const {
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
   useLazyGetApNeighborsQuery,
-  useMoveApToTargetApGroupMutation
+  useMoveApToTargetApGroupMutation,
+  useGetApStickyClientSteeringQuery,
+  useUpdateApStickyClientSteeringMutation,
+  useResetApStickyClientSteeringMutation
 } = apApi
 
 export function isAPLowPower (afcInfo?: AFCInfo): boolean {

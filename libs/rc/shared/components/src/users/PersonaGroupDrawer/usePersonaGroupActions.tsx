@@ -48,6 +48,9 @@ export function usePersonaGroupAction () {
         }
       }
     }).unwrap()
+      .then(result => {
+        if(!isAsync) callback?.(result)
+      })
   }
 
   const updatePersonaGroupMutation

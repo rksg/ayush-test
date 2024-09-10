@@ -26,6 +26,7 @@ import DHCPTable from '.'
 
 const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
+const mockedUpdateFn = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -59,7 +60,10 @@ describe('EdgeDhcpTable', () => {
       ),
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
+        (req, res, ctx) => {
+          mockedUpdateFn()
+          return res(ctx.status(202))
+        }
       )
     )
   })
@@ -202,6 +206,7 @@ describe('EdgeDhcpTable', () => {
     // eslint-disable-next-line max-len
     await screen.findByText('Are you sure you want to update this service to the latest version immediately?')
     await user.click(screen.getByRole('button', { name: 'Update' }))
+    await waitFor(() => expect(mockedUpdateFn).toHaveBeenCalled())
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 

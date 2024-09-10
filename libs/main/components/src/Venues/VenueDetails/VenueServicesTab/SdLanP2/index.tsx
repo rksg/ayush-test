@@ -19,10 +19,9 @@ import {
   PolicyType,
   PolicyOperation,
   NetworkTypeEnum,
-  Network } from '@acx-ui/rc/utils'
-import { TenantLink }    from '@acx-ui/react-router-dom'
-import { EdgeScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
+  Network,
+  hasServicePermission } from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 interface EdgeSdLanServiceProps {
   data: EdgeSdLanViewDataP2;
@@ -148,7 +147,8 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     }
   }
 
-  const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+  // eslint-disable-next-line max-len
+  const hasEdgeUpdatePermission = hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
 
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>

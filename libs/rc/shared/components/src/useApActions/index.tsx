@@ -25,7 +25,9 @@ import {
   APExtended,
   CountdownNode, DhcpAp,
   DhcpApInfo,
-  NewAPModel
+  DiagnosisCommands,
+  NewAPModel,
+  SystemCommands
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -70,7 +72,8 @@ export function useApActions () {
           handler: () => {
             rebootAp({
               params: { tenantId: tenantId, serialNumber, venueId },
-              payload: { action: 'reboot' },
+              payload: {
+                ...(isUseWifiRbacApi ? { type: SystemCommands.REBOOT } : { action: 'reboot' }) },
               enableRbac: isUseWifiRbacApi
             })
             callBack && callBack()
@@ -212,7 +215,8 @@ export function useApActions () {
   ) => {
     blinkLedAp({
       params: { tenantId, serialNumber, venueId },
-      payload: { action: 'blinkLed' },
+      payload: {
+        ...(isUseWifiRbacApi ? { type: DiagnosisCommands.BLINK_LED } :{ action: 'blinkLed' }) },
       enableRbac: isUseWifiRbacApi
     })
       .unwrap().then(() => {
