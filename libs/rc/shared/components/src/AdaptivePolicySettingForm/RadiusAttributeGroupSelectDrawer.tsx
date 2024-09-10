@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { Form, FormInstance } from 'antd'
 import {  useIntl }           from 'react-intl'
 
-import { Card, Descriptions, Drawer, Loader, Table, TableProps }                        from '@acx-ui/components'
-import { useRadiusAttributeGroupListByQueryQuery }                                      from '@acx-ui/rc/services'
-import { AttributeAssignment, hasCloudpathAccess, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess }                                                               from '@acx-ui/user'
+import { Card, Descriptions, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import { useRadiusAttributeGroupListByQueryQuery }               from '@acx-ui/rc/services'
+import {
+  AttributeAssignment,
+  filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, PolicyOperation, PolicyType,
+  RadiusAttributeGroup,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 
@@ -136,12 +140,14 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
               selectedRowKeys: selectedRowKeys }}
             rowKey='id'
             type={'form'}
-            actions={filterByAccess( hasCloudpathAccess() ? [{
+            actions={filterByAccessForServicePolicyMutation([{
+              // eslint-disable-next-line max-len
+              scopeKey: getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.CREATE),
               label: $t({ defaultMessage: 'Add Group' }),
               onClick: () => {
                 setRadiusAttributeGroupFormDrawerVisible(true)
               }
-            }] : [])}
+            }])}
           />
         </Loader>
       </Form.Item>

@@ -11,9 +11,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
-  AttributeAssignment,
+  AttributeAssignment, filterByAccessForServicePolicyMutation,
   getAdaptivePolicyDetailLink,
-  getPolicyDetailsLink, hasCloudpathAccess,
+  getPolicyDetailsLink, getScopeKeyByPolicy,
   PolicyOperation,
   PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
@@ -102,17 +102,18 @@ export default function RadiusAttributeGroupDetail () {
       <PageHeader
         title={data?.name || ''}
         breadcrumb={breadcrumb}
-        extra={hasCloudpathAccess() && [
+        extra={filterByAccessForServicePolicyMutation([
           <TenantLink
             to={getPolicyDetailsLink({
               type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
               oper: PolicyOperation.EDIT,
               policyId: policyId!
             })}
+            scopeKey={getScopeKeyByPolicy(PolicyType.RADIUS_ATTRIBUTE_GROUP, PolicyOperation.EDIT)}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ]}
+        ])}
       />
       <Space direction={'vertical'}>
         <Card>
