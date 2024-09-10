@@ -56,21 +56,22 @@ export default function PortalViewContent (props:{
 
   const renderTermsConditionsView = (view: PortalViewEnum) => {
     if (componentDisplay.termsConditions && portalLang) {
-      const { acceptTermsMsg2, acceptTermsMsgClickthrough, acceptTermsMsgSelfSign, acceptTermsMsgHostApproval } = portalLang
+      const { acceptTermsMsg2, acceptTermsMsg, acceptTermsMsgSelfSign, acceptTermsMsgHostApproval } = portalLang
       let termsMsg = acceptTermsMsg2 || ''
       if (view === PortalViewEnum.ClickThrough) {
-        termsMsg = acceptTermsMsgClickthrough || ''
+        termsMsg = acceptTermsMsg || ''
       } else if (view === PortalViewEnum.HostApproval) {
         termsMsg = acceptTermsMsgHostApproval || ''
       } else if (view === PortalViewEnum.SelfSignIn) {
         termsMsg = acceptTermsMsgSelfSign || ''
       }
-      const acceptTermsMsg = termsMsg.replace('<1>{{linkText}}</1>','#')
-      const linkIndex = acceptTermsMsg.indexOf('#')
+      const acceptTermsText = termsMsg.replace('<1>{{linkText}}</1>','#')
+      const linkIndex = acceptTermsText.indexOf('#')
       return (<span style={{ display: 'inline-block' }}>
-        {(linkIndex !== 0) && <UI.FieldText style={{ display: 'inline' }}>{acceptTermsMsg.substring(0, linkIndex)}&nbsp;</UI.FieldText> }
+        {view === PortalViewEnum.ClickThrough && <UI.Checkbox checked={true} style={{ verticalAlign: 'middle' }}/>}
+        {(linkIndex !== 0) && <UI.FieldText style={{ display: 'inline' }}>{acceptTermsText.substring(0, linkIndex)}&nbsp;</UI.FieldText> }
         <UI.FieldLabelLink>{props.portalLang.acceptTermsLink}</UI.FieldLabelLink>
-        {(linkIndex !== acceptTermsMsg.length - 1) && <UI.FieldText style={{ display: 'inline' }}>&nbsp;{acceptTermsMsg.substring(linkIndex +1, acceptTermsMsg.length -1)}</UI.FieldText>}
+        {(linkIndex !== acceptTermsText.length - 1) && <UI.FieldText style={{ display: 'inline' }}>&nbsp;{acceptTermsText.substring(linkIndex +1, acceptTermsText.length -1)}</UI.FieldText>}
       </span>)
 
     }
