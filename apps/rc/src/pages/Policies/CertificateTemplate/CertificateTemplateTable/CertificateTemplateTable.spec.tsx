@@ -144,10 +144,10 @@ describe('CertificateTemplateTable', () => {
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
 
     // should delete selected row
-    const row2 = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    const row2 = await screen.findByRole('row', { name: /certificateTemplate3/ })
     await userEvent.click(within(row2).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-    expect(await screen.findByText('Delete "certificateTemplate1"?')).toBeVisible()
+    expect(await screen.findByText('Delete "certificateTemplate3"?')).toBeVisible()
     const deleteInput = await screen.findByLabelText('Type the word "Delete" to confirm')
     await userEvent.type(deleteInput, 'Delete')
     await userEvent.click(await screen.findByRole('button', { name: 'Delete template' }))
