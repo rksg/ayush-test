@@ -95,7 +95,10 @@ const customerList = {
       apSwLicenses: 50,
       installerCount: 0,
       integratorCount: 0,
-      children: [{ name: 'Venue B', id: 'BBB', selected: false }]
+      children: [
+        { name: 'Venue B', id: 'BBB', selected: false },
+        { name: 'Venue Z', id: 'ZZZZ', selected: false }
+      ]
     },
     {
       id: '5d4b605aa0604241b2cd7a238b7d5c56',
@@ -218,9 +221,10 @@ const privilegeGroup = {
   }],
   policyEntityDTOS: [{
     tenantId: '07da017483044526875ae33acbd0117e',
-    objectList: firstSelectedVenueList
+    allVenues: true
   }, {
     tenantId: '3756dcf148c2473ba0c3dd8b811a9bcd',
+    allVenues: false,
     objectList: secondSelectedVenueList
   }]
 }
@@ -364,7 +368,7 @@ describe('Edit Privilege Group', () => {
     await userEvent.click(screen.getByRole('radio', { name: 'All Customers' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
     expect(screen.getByText('AC Hotel Atlanta Airport Gateway (1 Venues)')).toBeVisible()
-    expect(screen.getByText('Amy (1 Venues)')).toBeVisible()
+    expect(screen.getByText('Amy (All Venues)')).toBeVisible()
     await userEvent.click(screen.getAllByRole('button', { name: 'Change' })[1])
     await screen.findByText('Select Customers')
     await screen.findByText('int 1')
@@ -374,8 +378,8 @@ describe('Edit Privilege Group', () => {
     await userEvent.click(screen.getAllByRole('checkbox')[5])
     await userEvent.click(screen.getByRole('button', { name: 'Save Selection' }))
     expect(screen.queryByText('AC Hotel Atlanta Airport Gateway (1 Venues)')).toBeNull()
-    expect(screen.queryByText('Amy (1 Venues)')).toBeNull()
-    expect(screen.getByText('int 1 (1 Venues)')).toBeVisible()
+    expect(screen.queryByText('Amy (All Venues)')).toBeNull()
+    expect(screen.getByText('int 1 (All Venues)')).toBeVisible()
 
     // Add
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
