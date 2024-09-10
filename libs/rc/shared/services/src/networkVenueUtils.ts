@@ -606,8 +606,18 @@ export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
             const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value
 
             const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-              const apGroupsVenueIds = vlanPool.wifiNetworkVenueApGroups.map(apg => apg.venueId)
-              return apGroupsVenueIds.includes(params.venueId)
+              const apGroupsVenueIds: string[] = []
+              const apGroupNetworkIds: string[] = []
+              let apgIds: string[] = []
+              vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
+                apGroupsVenueIds.push(apg.venueId)
+                apGroupNetworkIds.push(apg.wifiNetworkId)
+                apgIds = apgIds.concat(apg.apGroupIds)
+              })
+              const uniqApgIds = uniq(apgIds)
+              return apGroupsVenueIds.includes(params.venueId) &&
+                apGroupNetworkIds.includes(params.networkId) &&
+                uniqApgIds.includes(params.apGroupId)
             })
 
             return {
@@ -786,8 +796,18 @@ export const fetchRbacNetworkVenueList = async (queryArgs: RequestPayload<{ isTe
           const apGroupName = apGroupNameMap.find(apg => apg.key === params.apGroupId)?.value
 
           const apgVlanPool = apGroupVlanPoolList?.data?.find(vlanPool => {
-            const apGroupsVenueIds = vlanPool.wifiNetworkVenueApGroups.map(apg => apg.venueId)
-            return apGroupsVenueIds.includes(params.venueId)
+            const apGroupsVenueIds: string[] = []
+            const apGroupNetworkIds: string[] = []
+            let apgIds: string[] = []
+            vlanPool.wifiNetworkVenueApGroups.forEach(apg => {
+              apGroupsVenueIds.push(apg.venueId)
+              apGroupNetworkIds.push(apg.wifiNetworkId)
+              apgIds = apgIds.concat(apg.apGroupIds)
+            })
+            const uniqApgIds = uniq(apgIds)
+            return apGroupsVenueIds.includes(params.venueId) &&
+              apGroupNetworkIds.includes(params.networkId) &&
+              uniqApgIds.includes(params.apGroupId)
           })
 
           return {
@@ -915,7 +935,9 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
           const {
             updateApGroups,
             addApGroups,
-            deleteApGroups
+            deleteApGroups,
+            activatedVlanPoolParamsList,
+            deactivatedVlanPoolParamsList
           } = apGroupsChangeSet(newPayload, oldPayload)
 
           if (addApGroups.length > 0) {
@@ -924,6 +946,7 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
               if (isEqual(apGroup.radioTypes?.sort(), apGroup.allApGroupsRadioTypes) || apGroup.vlanId) {
                 updateApGroups.push(apGroup)
               }
+
               const apGroupSettingReq = {
                 ...createHttpRequest(
                   isTemplate ? ConfigTemplateUrlsInfo.activateVenueApGroupRbac : WifiRbacUrlsInfo.activateVenueApGroup, {
@@ -964,8 +987,25 @@ export const updateNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<Comm
               return fetchWithBQ(apGroupSettingReq)
             }))
           }
-        }
 
+          if (activatedVlanPoolParamsList.length > 0) {
+            await Promise.all(activatedVlanPoolParamsList.map(params => {
+              //const { venueId, networkId, apGroupId, profileId } = params
+              const urlInfos = isTemplate ? PoliciesConfigTemplateUrlsInfo.activateApGroupVlanPool :WifiRbacUrlsInfo.activateApGroupVlanPool
+              const activatedVlanPoolReq = createHttpRequest( urlInfos, params )
+              return fetchWithBQ(activatedVlanPoolReq)
+            }))
+          }
+
+          if (deactivatedVlanPoolParamsList.length > 0) {
+            await Promise.all(deactivatedVlanPoolParamsList.map(params => {
+              //const { venueId, networkId, apGroupId, profileId } = params
+              const urlInfos = isTemplate ? PoliciesConfigTemplateUrlsInfo.deactivateApGroupVlanPool :WifiRbacUrlsInfo.deactivateApGroupVlanPool
+              const activatedVlanPoolReq = createHttpRequest( urlInfos, params )
+              return fetchWithBQ(activatedVlanPoolReq)
+            }))
+          }
+        }
       }
 
       return updateNetworkVenueQuery.data
