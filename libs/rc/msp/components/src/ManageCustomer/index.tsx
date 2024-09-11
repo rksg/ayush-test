@@ -305,7 +305,7 @@ export function ManageCustomer () {
         }
         const assigned = isEntitlementRbacApiEnabled ? licenseAssignment
           : licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
-        setAssignedLicense(licenseAssignment)
+        setAssignedLicense(assigned)
         const wifi = assigned.filter(en =>
           en.deviceType === EntitlementDeviceType.MSP_WIFI && en.status === 'VALID')
         const wLic = wifi.length > 0 ? wifi[0].quantity : 0
@@ -651,7 +651,7 @@ export function ManageCustomer () {
               quantity: quantityApsw,
               assignmentId: apswAssignId,
               action: actionApsw,
-              isTrial: serviceTypeSelected === ServiceType.EXTENDED_TRIAL,
+              isTrial: actionApsw === AssignActionEnum.ADD ? true : undefined,
               deviceType: EntitlementDeviceType.MSP_APSW
             })
           }
@@ -835,7 +835,7 @@ export function ManageCustomer () {
       ? assignedLicense.filter(en => en.licenseType === deviceType && en.status === 'VALID' &&
         en.isTrial === isTrial)
       : assignedLicense.filter(en => en.deviceType === deviceType && en.status === 'VALID' &&
-        en.trialAssignment === isTrial && en.ownAssignments === false)
+        en.trialAssignment === isTrial && en.ownAssignment === false)
     return license.length > 0 ? license[0].id : 0
 
   }

@@ -211,7 +211,7 @@ export interface MspAssignmentHistory {
   mspTenantId: string;
   trialAssignment: boolean;
   status: string;
-  ownAssignments?: boolean;
+  ownAssignment?: boolean;
   // RBAC
   licenseType?: string;
   effectiveDate?: string;
