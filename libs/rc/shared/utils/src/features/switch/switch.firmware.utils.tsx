@@ -39,7 +39,7 @@ export const invalidVersionFor82Av = (version: string): boolean => {
   } else if (_.isString(version) && version.startsWith('10020')) {
     return !isVerGEVer(version, '10020b', false)
   } else {
-    return false
+    return true
   }
 }
 
