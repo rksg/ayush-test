@@ -9,7 +9,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features }                                                                                     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
 import { EdgeChangeScheduleDialog, EdgeUpdateNowDialog, useIsEdgeFeatureReady, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
@@ -19,7 +19,10 @@ import {
   useSkipEdgeUpgradeSchedulesMutation,
   useUpdateEdgeFirmwareNowMutation,
   useUpdateEdgeUpgradePreferencesMutation,
-  useUpdateEdgeVenueSchedulesMutation
+  useUpdateEdgeVenueSchedulesMutation,
+  useStartEdgeFirmwareVenueUpdateNowMutation,
+  useUpdateEdgeFirmwareVenueScheduleMutation,
+  useSkipEdgeFirmwareVenueScheduleMutation
 } from '@acx-ui/rc/services'
 import {
   EdgeFirmwareVersion,
@@ -92,6 +95,10 @@ export function VenueFirmwareList () {
   const [updatePreferences] = useUpdateEdgeUpgradePreferencesMutation()
   const [updateSchedule] = useUpdateEdgeVenueSchedulesMutation()
   const [skipSchedule] = useSkipEdgeUpgradeSchedulesMutation()
+
+  const isBatchOperationEnable = useIsSplitOn(
+    Features.EDGE_FIRMWARE_NOTIFICATION_BATCH_OPERATION_TOGGLE)
+  const [ skipEdgeFirmwareVenueSchedule ] = useSkipEdgeFirmwareVenueScheduleMutation()
 
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
@@ -215,10 +222,16 @@ export function VenueFirmwareList () {
             onOk () {
               const requests = []
               try {
-                for(let row of selectedRows) {
-                  requests.push(skipSchedule({
-                    params: { venueId: row.id }
+                if (isBatchOperationEnable) {
+                  requests.push(skipEdgeFirmwareVenueSchedule({
+                    payload: { venueIds: selectedRows.map((row) => row.id) }
                   }))
+                } else {
+                  for(let row of selectedRows) {
+                    requests.push(skipSchedule({
+                      params: { venueId: row.id }
+                    }))
+                  }
                 }
                 Promise.all(requests).then(() => clearSelection())
               } catch (error) {
