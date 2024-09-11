@@ -1,6 +1,7 @@
 import { BasicServiceSetPriorityEnum } from './BasicServiceSetPriorityEnum'
 import { ClientIsolationOptions }      from './ClientIsolationOptions'
 import { DnsProxy }                    from './DnsProxy'
+import { FastRoamingOptions }          from './FastRoamingOptions'
 import { MultiLinkOperationOptions }   from './MultiLinkOperationOptions'
 import { QosMapSetOptions }            from './QosMapSetOptions'
 import { RadiusOptions }               from './RadiusOptions'
@@ -165,6 +166,8 @@ export class OpenWlanAdvancedCustomization {
 
   qosMapSetOptions?: QosMapSetOptions
 
+  fastRoamingOptions?: FastRoamingOptions
+
   constructor () {
     this.clientIsolation = true
 
@@ -284,5 +287,7 @@ export class OpenWlanAdvancedCustomization {
     this.qosMapSetEnabled = false
 
     this.qosMapSetOptions = new QosMapSetOptions()
+
+    this.fastRoamingOptions = new FastRoamingOptions()
   }
 }

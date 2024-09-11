@@ -24,10 +24,9 @@ import {
   PolicyType,
   PolicyOperation,
   NetworkTypeEnum,
-  Network } from '@acx-ui/rc/utils'
+  Network,
+  hasServicePermission } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { EdgeScopes }            from '@acx-ui/types'
-import { hasPermission }         from '@acx-ui/user'
 
 interface EdgeSdLanServiceProps {
   data: EdgeMvSdLanViewData;
@@ -176,7 +175,8 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     row: Network,
     isGuestSwitchBtn: boolean
   ) => {
-    const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+    // eslint-disable-next-line max-len
+    const hasEdgeUpdatePermission = hasServicePermission({ type: ServiceType.EDGE_SD_LAN, oper: ServiceOperation.EDIT })
 
     if (!hasEdgeUpdatePermission) {
       return {
@@ -193,7 +193,8 @@ const EdgeMvSdLan = ({ data }: EdgeSdLanServiceProps) => {
     return {
       isDisabled: isTheLastOne,
       tooltip: isTheLastOne
-        ? $t({ defaultMessage: 'Cannot deactivate the last WLAN in SD-LAN' })
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Cannot deactivate the last network at this <venueSingular></venueSingular>' })
         : undefined
     }
   }

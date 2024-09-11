@@ -10,7 +10,7 @@ import {
   useSyncDataMutation,
   useSyncSwitchesDataMutation,
   useRetryFirmwareUpdateMutation,
-  useRetryFirmwareUpdateV1002Mutation
+  useRetryFirmwareUpdateV1001Mutation
 } from '@acx-ui/rc/services'
 import {
   DeviceRequestAction,
@@ -28,7 +28,7 @@ export function useSwitchActions () {
   const [ syncData ] = useSyncDataMutation()
   const [ syncSwitchesData ] = useSyncSwitchesDataMutation()
   const [ retryFirmwareUpdate ] = useRetryFirmwareUpdateMutation()
-  const [ retryFirmwareUpdateV1002 ] = useRetryFirmwareUpdateV1002Mutation()
+  const [ retryFirmwareUpdateV1002 ] = useRetryFirmwareUpdateV1001Mutation()
 
   function shouldHideConfirmation (selectedRows: SwitchRow[]) {
     const noVerificationStatus = [SwitchStatusEnum.NEVER_CONTACTED_CLOUD, SwitchStatusEnum.DISCONNECTED]

@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
-import { Form, Radio, Row, Space, Switch, Typography } from 'antd'
-import { isNil }                                       from 'lodash'
-import { useIntl }                                     from 'react-intl'
+import { Form, Radio, RadioProps, Row, Space, Switch, Tooltip, Typography } from 'antd'
+import { isNil }                                                            from 'lodash'
+import { useIntl }                                                          from 'react-intl'
 
+import { cssStr }   from '@acx-ui/components'
 import {
   EdgeMvSdLanViewData,
   NetworkTypeEnum,
@@ -29,8 +30,9 @@ interface SdLanRadioOptionProps {
   venueSdLan: EdgeMvSdLanViewData | undefined
   networkVlanPool?: VLANPoolViewModelType
   disabledInfo?: {
-    isDisabled: boolean,
-    tooltip: string
+    noChangePermission: boolean
+    isDisabled: boolean
+    tooltip: string | undefined
   }
 }
 
@@ -110,30 +112,46 @@ export const EdgeSdLanRadioOption = (props: SdLanRadioOptionProps) => {
           }}
         </Form.Item>
       </UI.RadioSubTitle>}
-      tooltip={'testing'}
     >
-      <Radio
-        value={NetworkTunnelTypeEnum.SdLan}
-        disabled={disabledInfo?.isDisabled || !isVenueSdLanExist}
-      >
-        {$t({ defaultMessage: 'SD-LAN Tunneling{info}' }, {
-          info: (sdlanName ? $t({ defaultMessage: '({sdlanName})' }, { sdlanName }) : sdlanName)
-        })}
-      </Radio>
+      <Tooltip title={disabledInfo?.tooltip}>
+        <EdgeSdLanRadioButton
+          // eslint-disable-next-line max-len
+          disabled={disabledInfo?.isDisabled || disabledInfo?.noChangePermission || !isVenueSdLanExist}
+          sdlanName={sdlanName}
+        />
+      </Tooltip>
     </Form.Item>
     <UI.SwitchContainer>
-      <Space size={10}>
+      <Space size={10} style={{ marginTop: cssStr('--acx-content-vertical-space') }}>
         {showFwdGuestSwitch &&
-        <>
-          <Form.Item name={['sdLan', 'isGuestTunnelEnabled']} valuePropName='checked' noStyle>
-            <Switch disabled={hasVlanPool} />
-          </Form.Item>
-          <Typography.Text style={{ fontSize: 14 }}>
-            {$t({ defaultMessage: 'Forward guest traffic to DMZ' })}
-          </Typography.Text>
-        </>
+          <>
+            <Form.Item name={['sdLan', 'isGuestTunnelEnabled']} valuePropName='checked' noStyle>
+              <Switch disabled={hasVlanPool} />
+            </Form.Item>
+            <Typography.Text style={{ fontSize: 14 }}>
+              {$t({ defaultMessage: 'Forward guest traffic to DMZ' })}
+            </Typography.Text>
+          </>
         }
       </Space>
     </UI.SwitchContainer>
   </Row>
+}
+
+const EdgeSdLanRadioButton = (props: RadioProps & {
+  disabled: boolean,
+  sdlanName?: ReactNode | string
+}) => {
+  const { $t } = useIntl()
+  const { disabled, sdlanName, ...otherProps } = props
+
+  return <Radio
+    value={NetworkTunnelTypeEnum.SdLan}
+    disabled={disabled}
+    {...otherProps}
+  >
+    {$t({ defaultMessage: 'SD-LAN Tunneling{info}' }, {
+      info: (sdlanName ? $t({ defaultMessage: '({sdlanName})' }, { sdlanName }) : sdlanName)
+    })}
+  </Radio>
 }

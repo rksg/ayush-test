@@ -189,6 +189,7 @@ describe('LanPortsForm', () => {
     await waitFor(() => {
       expect(screen.getByRole('tooltip').textContent).toBe('Reset port settings to default')
     })
+    await userEvent.click(resetBtn)
   })
 
   it ('Should render ethernet profile correctly with AP model T750SE', async () => {

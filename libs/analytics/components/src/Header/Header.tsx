@@ -21,7 +21,7 @@ export type UseHeaderExtraProps = {
 }
 type HeaderProps = Omit<PageHeaderProps, 'subTitle'> & UseHeaderExtraProps
 
-const Filter = (
+export const Filter = (
   { shouldQueryAp = true, shouldQuerySwitch, shouldShowOnlyDomains,
     withIncidents, excludeNetworkFilter }: UseHeaderExtraProps
 ) => {

@@ -71,7 +71,7 @@ export function updateDpskFn (isTemplate: boolean = false) : QueryFn<DpskMutatio
             })
           } else {
             await fetchWithBQ({
-              ...createHttpRequest(api.deleteDpskPolicySet, { ...params, policySetId: currentDpsk.policySetId })
+              ...createHttpRequest(api.deleteDpskPolicySet, { ...params })
             })
           }
         }
