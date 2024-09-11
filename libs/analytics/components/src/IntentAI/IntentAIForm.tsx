@@ -11,6 +11,9 @@ import * as CDfschannelsDisable        from './AIOperations/CDfschannelsDisable'
 import * as CDfschannelsEnable         from './AIOperations/CDfschannelsEnable'
 import * as CTxpowerSame               from './AIOperations/CTxpowerSame'
 import * as IZoneFirmwareUpgrade       from './AIOperations/IZoneFirmwareUpgrade'
+import * as CProbeFlex24g              from './AirFlexAI/CProbeFlex24g'
+import * as CProbeFlex5g               from './AirFlexAI/CProbeFlex5g'
+import * as CProbeFlex6g               from './AirFlexAI/CProbeFlex6g'
 import { createIntentContextProvider } from './IntentContext'
 
 export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
@@ -26,6 +29,9 @@ export const IntentAIForm = createIntentContextProvider('IntentAIForm', {
   'c-crrm-channel24g-auto': CCrrmChannelAuto,
   'c-crrm-channel5g-auto': CCrrmChannelAuto,
   'c-crrm-channel6g-auto': CCrrmChannelAuto,
+  'c-probeflex-5g': CProbeFlex5g,
+  'c-probeflex-24g': CProbeFlex24g,
+  'c-probeflex-6g': CProbeFlex6g,
   'c-dfschannels-disable': CDfschannelsDisable,
   'c-dfschannels-enable': CDfschannelsEnable,
   'c-txpower-same': CTxpowerSame,

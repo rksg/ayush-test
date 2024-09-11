@@ -33,7 +33,8 @@ export const kpis: IntentKPIConfig[] = [
     key: 'session-time-on-24GHz',
     label: defineMessage({ defaultMessage: 'Session time on 2.4 GHz' }),
     format: formatter('percentFormat'),
-    deltaSign: '-' },
+    deltaSign: '-'
+  },
   {
     key: 'co-channel-interference-ratio',
     label: defineMessage({ defaultMessage: 'Co-channel Interference Ratio' }),

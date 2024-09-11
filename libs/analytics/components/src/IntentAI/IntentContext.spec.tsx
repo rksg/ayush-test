@@ -36,7 +36,11 @@ const intent = {
   root: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   tenantId: '33707ef3-b8c7-4e70-ab76-8e551343acb4',
   sliceId: '4e3f1fbc-63dd-417b-b69d-2b08ee0abc52',
-  code: 'xyz-intent-code'
+  code: 'xyz-intent-code',
+  status: 'active',
+  metadata: {
+    dataEndTime: '2023-06-26T00:00:25.772Z'
+  }
 }
 
 const params = { root: intent.root, sliceId: intent.sliceId, code: intent.code }
@@ -44,7 +48,7 @@ const params = { root: intent.root, sliceId: intent.sliceId, code: intent.code }
 describe('IntentAIForm', () => {
   beforeEach(() => {
     store.dispatch(intentAIApi.util.resetApiState())
-
+    jest.spyOn(Date, 'now').mockReturnValue(+new Date('2023-07-15T14:15:00.000Z'))
   })
   it('handle API respond with data for IntentAIForm & IntentAIDetails', async () => {
     mockGraphqlQuery(intentAIUrl, 'IntentDetails', { data: { intent } })

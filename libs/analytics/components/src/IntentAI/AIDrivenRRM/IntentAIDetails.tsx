@@ -19,7 +19,7 @@ import { richTextFormatValues }     from '../common/richTextFormatValues'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
-import { getGraphKPIs, getKpiData } from '../useIntentDetailsQuery'
+import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
@@ -32,7 +32,7 @@ export function createUseValuesText () {
     const isFullOptimization = intent.preferences?.crrmFullOptimization
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
-    const { data, compareData } = getKpiData(intent, kpi)
+    const { data, compareData } = getKPIData(intent, kpi)
 
     const summaryText = isFullOptimization
       ? defineMessage({ defaultMessage: `
@@ -49,16 +49,16 @@ export function createUseValuesText () {
         <p>In this mode, while building the channel plan, IntentAI <b>will NOT</b> change the <i>AP Radio Channel Width</i> and <i>Transmit Power</i>.</p>
         <p>IntentAI ensures that only the existing channels configured for this network are utilized in the channel planning process.</p>
       ` })
-    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved 
-      throughput, lower latency, better signal quality, stable connections, enhanced user 
-      experience, longer battery life, efficient spectrum utilization, optimized channel usage, 
-      and reduced congestion, leading to higher data rates, higher SNR, consistent performance, 
+    const benefitText = defineMessage({ defaultMessage: `Low interference fosters improved
+      throughput, lower latency, better signal quality, stable connections, enhanced user
+      experience, longer battery life, efficient spectrum utilization, optimized channel usage,
+      and reduced congestion, leading to higher data rates, higher SNR, consistent performance,
       and balanced network load.` })
 
-    const tradeoffText = defineMessage({ defaultMessage: `In the quest for minimizing interference 
-      between access points (APs), AI algorithms may opt to narrow channel widths. While this can 
-      enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to 
-      noise, potentially reducing throughput. Narrow channels limit data capacity, which could 
+    const tradeoffText = defineMessage({ defaultMessage: `In the quest for minimizing interference
+      between access points (APs), AI algorithms may opt to narrow channel widths. While this can
+      enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to
+      noise, potentially reducing throughput. Narrow channels limit data capacity, which could
       lower overall throughput.` })
 
     return {
@@ -74,7 +74,7 @@ export function createIntentAIDetails () {
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData } = useIntentContext()
     const valuesText = useValuesText()
 
     const [summaryUrlBefore, setSummaryUrlBefore] = useState<string>('')
@@ -119,59 +119,53 @@ export function createIntentAIDetails () {
                 />
               </Descriptions>
               <br />
-              {/* TODO: question: handle data retention? */}
-              <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+              {hasData
+                ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+                : null}
             </div>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection
-            checkDataRetention
-            data-testid='Details'
-            title={$t({ defaultMessage: 'Details' })}
-            children={<GridRow>
+          <DetailsSection data-testid='Details'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+            <GridRow>
               {getGraphKPIs(intent, kpis).map(kpi => (
                 <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                   <KpiCard kpi={kpi} />
                 </GridCol>
               ))}
-            </GridRow>}
-          />
+            </GridRow>
+          </DetailsSection>
 
-          <DetailsSection
-            checkDataRetention
-            data-testid='Key Performance Indications'
-            title={$t({ defaultMessage: 'Key Performance Indications' })}
-            children={<IntentAIRRMGraph
-              details={intent}
+          <DetailsSection data-testid='Key Performance Indications'>
+            <DetailsSection.Title
+              children={$t({ defaultMessage: 'Key Performance Indications' })} />
+            <IntentAIRRMGraph
               crrmData={crrmData}
               summaryUrlBefore={summaryUrlBefore}
               summaryUrlAfter={summaryUrlAfter}
-            />}
-          />
+            />
+          </DetailsSection>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Benefits'
-                title={$t({ defaultMessage: 'Benefits' })}
-                children={<Card>{valuesText.benefitText}</Card>}
-              />
+              <DetailsSection data-testid='Benefits'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+                <Card>{valuesText.benefitText}</Card>
+              </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Potential trade-off'
-                title={$t({ defaultMessage: 'Potential trade-off' })}
-                children={<Card>{valuesText.tradeoffText}</Card>}
-              />
+              <DetailsSection data-testid='Potential trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                <Card>{valuesText.tradeoffText}</Card>
+              </DetailsSection>
             </GridCol>
           </GridRow>
 
-          <DetailsSection
-            data-testid='Status Trail'
-            title={$t({ defaultMessage: 'Status Trail' })}
-            children={<StatusTrail />}
-          />
+          <DetailsSection data-testid='Status Trail'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
+            <StatusTrail />
+          </DetailsSection>
         </GridCol>
       </GridRow>
     </Loader>
