@@ -30,7 +30,7 @@ export function createIntentAIDetails (
 ) {
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis, configuration } = useIntentContext()
+    const { intent, kpis } = useIntentContext()
     const valuesText = useValuesText()
     const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
 
@@ -77,45 +77,41 @@ export function createIntentAIDetails (
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection
-            checkDataRetention
-            data-testid='Details'
-            title={$t({ defaultMessage: 'Details' })}
-            children={<GridRow>
-              {[
-                <GridCol data-testid='Configuration' key='value' col={{ span: 12 }}>
-                  <ConfigurationCard configuration={configuration!} intent={intent}/>
-                </GridCol>,
-                ...getGraphKPIs(intent, kpis).map(kpi => (
+          <DetailsSection data-testid='Details'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Details' })} />
+            <DetailsSection.Details>
+              <GridRow>
+                <GridCol data-testid='Configuration' col={{ span: 12 }}>
+                  <ConfigurationCard />
+                </GridCol>
+                {getGraphKPIs(intent, kpis).map(kpi => (
                   <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
                     <KpiCard kpi={kpi} />
                   </GridCol>
-                ))]}
-            </GridRow>}
-          />
+                ))}
+              </GridRow>
+            </DetailsSection.Details>
+          </DetailsSection>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Why the intent?'
-                title={$t({ defaultMessage: 'Why the intent?' })}
-                children={<Card>{valuesText.reasonText}</Card>}
-              />
+              <DetailsSection data-testid='Why the intent?'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Why the intent?' })} />
+                <DetailsSection.Details children={<Card>{valuesText.reasonText}</Card>} />
+              </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Potential trade-off'
-                title={$t({ defaultMessage: 'Potential trade-off' })}
-                children={<Card>{valuesText.tradeoffText}</Card>}
-              />
+              <DetailsSection data-testid='Potential trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
+              </DetailsSection>
             </GridCol>
           </GridRow>
 
-          <DetailsSection
-            data-testid='Status Trail'
-            title={$t({ defaultMessage: 'Status Trail' })}
-            children={<StatusTrail />}
-          />
+          <DetailsSection data-testid='Status Trail'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
+            <DetailsSection.Details children={<StatusTrail />} />
+          </DetailsSection>
         </GridCol>
       </GridRow>
     </>

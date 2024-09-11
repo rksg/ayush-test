@@ -17,13 +17,12 @@ import { DetailsSection }           from '../common/DetailsSection'
 import { getIntentStatus }          from '../common/getIntentStatus'
 import { IntentDetailsHeader }      from '../common/IntentDetailsHeader'
 import { IntentIcon }               from '../common/IntentIcon'
-import { isIntentActive }           from '../common/isIntentActive'
 import { KpiCard }                  from '../common/KpiCard'
 import { StatusTrail }              from '../common/StatusTrail'
 import { codes }                    from '../config'
 import { useIntentContext }         from '../IntentContext'
 import { getStatusTooltip }         from '../services'
-import { getGraphKPIs, getKpiData } from '../useIntentDetailsQuery'
+import { getGraphKPIs, getKPIData } from '../useIntentDetailsQuery'
 
 import { IntentAIRRMGraph, SummaryGraphAfter, SummaryGraphBefore } from './RRMGraph'
 import { DownloadRRMComparison }                                   from './RRMGraph/DownloadRRMComparison'
@@ -42,7 +41,7 @@ export function createUseValuesText ({ reason, tradeoff }: {
 }) {
   return function useValuesText () {
     const { $t } = getIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, state } = useIntentContext()
     const isFullOptimization = !!_.get(
       intent,
       'metadata.algorithmData.isCrrmFullOptimization',
@@ -50,16 +49,19 @@ export function createUseValuesText ({ reason, tradeoff }: {
     )
 
     const kpi = kpis.find(kpi => kpi.key === 'number-of-interfering-links')!
-    const { data, compareData } = getKpiData(intent, kpi)
+    const { data, compareData } = getKPIData(intent, kpi)
 
-    const reasonText = isIntentActive(intent)
+    const reasonText = state === 'active'
       ? isFullOptimization ? reason.activeFull : reason.activePartial
       : reason.default
 
     const tradeoffText = isFullOptimization ? tradeoff.full : tradeoff.partial
 
     return {
-      reasonText: $t(reasonText, { before: kpi.format(compareData), after: kpi.format(data) }),
+      reasonText: $t(reasonText, {
+        before: kpi.format(compareData?.result),
+        after: kpi.format(data?.result)
+      }),
       tradeoffText: $t(tradeoffText)
     }
   }
@@ -70,7 +72,7 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
 
   return function IntentAIDetails () {
     const { $t } = useIntl()
-    const { intent, kpis } = useIntentContext()
+    const { intent, kpis, isDataRetained: hasData } = useIntentContext()
     const valuesText = useValuesText()
     const { code, path, sliceValue, metadata, updatedAt, displayStatus } = intent
 
@@ -125,59 +127,55 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
               })} />
               <DescriptionSection fields={fields}/>
               <br />
-              {/* TODO: question: handle data retention? */}
-              <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+              {hasData
+                ? <DownloadRRMComparison title={$t({ defaultMessage: 'RRM comparison' })} />
+                : null}
             </div>)}
           </FixedAutoSizer>
         </GridCol>
         <GridCol col={{ span: 18, xxl: 20 }}>
-          <DetailsSection
-            checkDataRetention
-            data-testid='Benefits'
-            title={$t({ defaultMessage: 'Benefits' })}
-            children={<GridRow>
-              {getGraphKPIs(intent, kpis).map(kpi => (
-                <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
-                  <KpiCard kpi={kpi} />
-                </GridCol>
-              ))}
-            </GridRow>}
-          />
+          <DetailsSection data-testid='Benefits'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Benefits' })} />
+            <DetailsSection.Details>
+              <GridRow>
+                {getGraphKPIs(intent, kpis).map(kpi => (
+                  <GridCol data-testid='KPI' key={kpi.key} col={{ span: 12 }}>
+                    <KpiCard kpi={kpi} />
+                  </GridCol>
+                ))}
+              </GridRow>
+            </DetailsSection.Details>
+          </DetailsSection>
 
-          <DetailsSection
-            checkDataRetention
-            data-testid='Key Performance Indications'
-            title={$t({ defaultMessage: 'Key Performance Indications' })}
-            children={<IntentAIRRMGraph
-              details={intent}
+          <DetailsSection data-testid='Key Performance Indications'>
+            <DetailsSection.Title
+              children={$t({ defaultMessage: 'Key Performance Indications' })} />
+            <DetailsSection.Details children={<IntentAIRRMGraph
               crrmData={crrmData}
               summaryUrlBefore={summaryUrlBefore}
               summaryUrlAfter={summaryUrlAfter}
-            />}
-          />
+            />} />
+          </DetailsSection>
 
           <GridRow>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Why the intent?'
-                title={$t({ defaultMessage: 'Why the intent?' })}
-                children={<Card>{valuesText.reasonText}</Card>}
-              />
+              <DetailsSection data-testid='Why the intent?'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Why the intent?' })} />
+                <DetailsSection.Details children={<Card>{valuesText.reasonText}</Card>} />
+              </DetailsSection>
             </GridCol>
             <GridCol col={{ span: 12 }}>
-              <DetailsSection
-                data-testid='Potential trade-off'
-                title={$t({ defaultMessage: 'Potential trade-off' })}
-                children={<Card>{valuesText.tradeoffText}</Card>}
-              />
+              <DetailsSection data-testid='Potential trade-off'>
+                <DetailsSection.Title children={$t({ defaultMessage: 'Potential trade-off' })} />
+                <DetailsSection.Details children={<Card>{valuesText.tradeoffText}</Card>} />
+              </DetailsSection>
             </GridCol>
           </GridRow>
 
-          <DetailsSection
-            data-testid='Status Trail'
-            title={$t({ defaultMessage: 'Status Trail' })}
-            children={<StatusTrail />}
-          />
+          <DetailsSection data-testid='Status Trail'>
+            <DetailsSection.Title children={$t({ defaultMessage: 'Status Trail' })} />
+            <DetailsSection.Details children={<StatusTrail />} />
+          </DetailsSection>
         </GridCol>
       </GridRow>
     </Loader>
