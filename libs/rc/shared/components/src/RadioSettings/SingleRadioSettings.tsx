@@ -334,11 +334,10 @@ export function SingleRadioSettings (props:{
   const getTxPowerAdjustmentOptions = (radioType : ApRadioTypeEnum) => {
     let res = (radioType === ApRadioTypeEnum.Radio6G)? txPowerAdjustment6GOptions
       : txPowerAdjustmentOptions
-
     if (isSupportAggressiveTxPowerAdjustment) {
       return [...res, ...txPowerAdjustmentExtendedOptions].sort((a, b) => {
-        if (a.label === 'MIN') return 1
-        if (b.label === 'MIN') return -1
+        if (a.value === 'MIN') return 1
+        if (b.value === 'MIN') return -1
         return 0
       })
     }
