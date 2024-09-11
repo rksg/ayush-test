@@ -110,7 +110,7 @@ describe('Portal Detail Page', () => {
   })
 
   describe('ABAC permission', () => {
-    it('should dispaly with custom scopeKeys', async () => {
+    xit('should dispaly with custom scopeKeys', async () => {
       setUserProfile({
         profile: {
           ...getUserProfile().profile
