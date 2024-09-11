@@ -6,6 +6,7 @@ export const mocked = {
   code: 'c-aclb-enable',
   sliceId: 'dff976ca-a4ea-4f6c-ab63-cb8e4a886df6',
   status: 'new',
+  displayStatus: 'new',
   metadata: { failures: [], dataEndTime: 1725235200000 },
   sliceType: 'zone',
   sliceValue: 'Yakubpur-MH',
