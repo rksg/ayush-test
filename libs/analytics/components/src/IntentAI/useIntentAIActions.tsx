@@ -10,21 +10,23 @@ import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useLazyVenueRadioActiveNetworksQuery
 } from '@acx-ui/rc/services'
-import { RadioTypeEnum } from '@acx-ui/rc/utils'
-import { getIntl }       from '@acx-ui/utils'
+import { RadioTypeEnum }                                                  from '@acx-ui/rc/utils'
+import { useNavigate, useSearchParams }                                   from '@acx-ui/react-router-dom'
+import { Filters, fixedEncodeURIComponent, getIntl, useEncodedParameter } from '@acx-ui/utils'
 
-import { aiFeaturesLabel, codes, IntentListItem } from './config'
+import { IntentListItem }       from './config'
 import {
   TransitionMutationResponse,
   useLazyIntentWlansQuery,
   useTransitionIntentMutation
 } from './services'
-import * as UI     from './styledComponents'
+import * as UI          from './styledComponents'
 import {
   Actions,
   TransitionIntentItem,
   TransitionIntentMetadata,
-  getDefaultTime
+  getDefaultTime,
+  getTransitionStatus
 } from './utils'
 interface IntentAIDateTimePickerProps {
   id: string
@@ -120,39 +122,87 @@ const getR1WlanPayload = (venueId:string, code:string) => ({
 
 export function useIntentAIActions () {
   const { $t } = useIntl()
+  // const basePath = useTenantLink('/analytics/intentAI')
   const [recommendationWlans] = useLazyIntentWlansQuery()
   const [venueRadioActiveNetworks] = useLazyVenueRadioActiveNetworksQuery()
   const [transitionIntent] = useTransitionIntentMutation()
   const initialDate = useRef(getDefaultTime())
   const isMlisa = Boolean(get('IS_MLISA_SA'))
+  const [search, setSearch] = useSearchParams()
+  // const intentTableFilters = useEncodedParameter<Filters>('intentTableFilters')
 
-  const handleResponse = (rows:IntentListItem[], result: TransitionMutationResponse) => {
+  // const navigate = useNavigate()
+
+  // const getNewFilterLink = (action: Actions, data: TransitionIntentItem[]) => {
+  //   const { status } = getTransitionStatus(action, data[0])
+  //   const currentParams = JSON.parse(decodeURIComponent(search.get('intentTableFilters') as string))
+  //   console.log(currentParams)
+  //   const newParams = {
+  //     ...currentParams,
+  //     statusLabel: Array.from([status])
+  //   }
+  //   handleFilterChange(newParams)
+  //   console.log(newParams)
+  //   console.log(fixedEncodeURIComponent(JSON.stringify(newParams)))
+  //   search.set('intentTableFilters', fixedEncodeURIComponent(JSON.stringify(newParams)))
+  //   console.log(search)
+  //   console.log(search.toString())
+  //   return search.toString()
+  // // return `${window.location.pathname}?${params.toString()}`
+  // }
+
+  const showSuccessToast = (action: Actions, data: TransitionIntentItem[]) => {
+
+    showToast({
+      type: 'success',
+      content:
+        <FormattedMessage
+          defaultMessage={`The selected
+            {totalCount, plural,
+            one {intent}
+            other {intents}} has been updated`}
+          values={{
+            totalCount: data.length
+          }}
+        />,
+      link: {
+        text: 'View',
+        onClick: () => {
+          const { status } = getTransitionStatus(action, data[0])
+          const currentParams = JSON.parse(
+            decodeURIComponent(search.get('intentTableFilters') as string))
+          console.log(currentParams)
+          const newParams = {
+            ...currentParams,
+            statusLabel: Array.from([status])
+          }
+          console.log(newParams)
+          search.set('intentTableFilters', fixedEncodeURIComponent(JSON.stringify(newParams)))
+          setSearch(search, { replace: true })
+          // navigate(`${getNewFilterLink(action, data)}`)
+        }
+      }
+    })
+  }
+
+  const handleResponse = (rows:IntentListItem[], result: TransitionMutationResponse,
+    action: Actions, data: TransitionIntentItem[]
+  ) => {
     const errorMsgs:JSX.Element[] = []
     Object.entries(result).forEach(([, { success, errorMsg }], index) => {
-      const intentListItem = rows[index]
+      const row = rows[index]
       if (!success) {
         errorMsgs.push(
           <div key={`optimizeAllIntentErrorToast_${index}`} style={{ padding: '10px 0' }}>
-            {intentListItem.aiFeature}, {intentListItem.sliceValue}:<br />{errorMsg}
+            {row.aiFeature}, {row.sliceValue}:<br />{errorMsg}
           </div>
         )
-      } else {
-        const feature = codes[intentListItem.code]
-        showToast({
-          type: 'success',
-          content: <FormattedMessage
-            defaultMessage='{feature}: {intent} for {sliceValue} has been updated'
-            values={{
-              feature: $t(aiFeaturesLabel[feature.aiFeature]),
-              intent: $t(feature.intent),
-              sliceValue: intentListItem.sliceValue
-            }}
-          />
-        })
       }
     })
     if (errorMsgs.length > 0) {
       showToast({ type: 'error', content: errorMsgs })
+    } else {
+      showSuccessToast(action, data)
     }
   }
 
@@ -184,7 +234,8 @@ export function useIntentAIActions () {
         action: Actions.One_Click_Optimize,
         data: optimizeList
       })
-    handleResponse(rows, (response as { data: TransitionMutationResponse }).data )
+    handleResponse(rows, (response as { data: TransitionMutationResponse }).data,
+      Actions.One_Click_Optimize, optimizeList)
   }
 
   const showOneClickOptimize = (rows:IntentListItem[], onOk: ()=>void) => {
@@ -249,17 +300,19 @@ export function useIntentAIActions () {
   const revert = async (date: Moment, rows:IntentListItem[], onOk: ()=>void) => {
     if (validateDate(date)) {
       const scheduledAt = date.toISOString()
+      const data = rows.map(item =>(
+        {
+          id: item.id,
+          displayStatus: item.displayStatus,
+          status: item.status,
+          metadata: { scheduledAt }
+        } as TransitionIntentItem))
       const response = await transitionIntent({
         action: Actions.Revert,
-        data: rows.map(item =>(
-            {
-              id: item.id,
-              displayStatus: item.displayStatus,
-              status: item.status,
-              metadata: { scheduledAt }
-            } as TransitionIntentItem))
+        data: data
       })
-      handleResponse(rows, (response as { data: TransitionMutationResponse }).data)
+      handleResponse(rows, (response as { data: TransitionMutationResponse }).data,
+        Actions.Revert,data)
       onOk()
 
     } else {
@@ -276,17 +329,19 @@ export function useIntentAIActions () {
     action: Actions,
     rows:IntentListItem[],
     onOk: ()=>void) => {
+    const data = rows.map(item =>
+      ({ id: item.id,
+        displayStatus: item.displayStatus,
+        status: item.status,
+        statusTrail: item.statusTrail,
+        metadata: item.metadata
+      } as TransitionIntentItem))
     const response = await transitionIntent({
       action,
-      data: rows.map(item =>
-        ({ id: item.id,
-          displayStatus: item.displayStatus,
-          status: item.status,
-          statusTrail: item.statusTrail,
-          metadata: item.metadata
-        } as TransitionIntentItem))
+      data: data
     })
-    handleResponse(rows, (response as { data: TransitionMutationResponse }).data)
+    handleResponse(rows, (response as { data: TransitionMutationResponse }).data,
+      action, data)
     onOk()
   }
 
