@@ -128,8 +128,12 @@ export function createIntentAIDetails (config: Parameters<typeof createUseValues
                 { needsWlans && <Descriptions.Item
                   label={$t({ defaultMessage: 'Networks' })}>
                   <DescriptionRow
-                    children={$t({ defaultMessage: '{count} networks selected' },
-                      { count: wlans.length })}
+                    children={$t({ defaultMessage: `{count} {count, plural,
+                        one {network}
+                        other {networks}
+                      } selected` }, {
+                      count: wlans.length
+                    })}
                     popover={wlanRecords.map(wlan => wlan.name).join('\n')}
                   />
                 </Descriptions.Item>}
