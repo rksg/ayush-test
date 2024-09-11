@@ -9,6 +9,8 @@ import { GridCol, GridRow }                     from '@acx-ui/components'
 import { StepsFormLegacy }                      from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import {
+  useGetAccessControlProfileQuery,
+  useGetAccessControlProfileTemplateQuery,
   useGetEnhancedAccessControlProfileListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -17,7 +19,7 @@ import {
 import {
   AccessControlInfoType,
   AclEmbeddedObject, EnhancedAccessControlInfoType,
-  useConfigTemplate,
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -198,22 +200,7 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
   const defaultPayload = {
     filters: { id: [params.policyId] },
     searchString: '',
-    fields: [
-      'id',
-      'name',
-      'l2AclPolicyName',
-      'l2AclPolicyId',
-      'l3AclPolicyName',
-      'l3AclPolicyId',
-      'devicePolicyName',
-      'devicePolicyId',
-      'applicationPolicyName',
-      'applicationPolicyId',
-      'clientRateUpLinkLimit',
-      'clientRateDownLinkLimit',
-      'networkIds',
-      'networkCount'
-    ],
+    fields: [],
     page: 1
   }
 
@@ -226,7 +213,19 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
     }
   })
 
-  const useAclPolicy = tableQuery?.data?.data[0]
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAccessControlProfileQuery,
+    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
+    enableRbac: enableRbac
+  })
+
+  const aclPolicyData = tableQuery?.data?.data[0]
+
+  const aclPolicyDataWithExtra = {
+    ...aclPolicyData,
+    description: data?.description || '',
+    rateLimiting: data?.rateLimiting
+  }
 
   const templateTableQuery = useTableQuery({
     useQuery: useGetAccessControlProfileTemplateListQuery,
@@ -237,7 +236,14 @@ const useGetAclPolicyInstance = (editMode: boolean) => {
     }
   })
 
-  const useAclTemplatePolicy = templateTableQuery?.data?.data[0]
+  const aclTemplatePolicyData = templateTableQuery?.data?.data[0]
 
-  return ((isTemplate ? useAclTemplatePolicy : useAclPolicy) || {}) as EnhancedAccessControlInfoType
+  const aclTemplatePolicyDataWithExtra = {
+    ...aclTemplatePolicyData,
+    description: data?.description || '',
+    rateLimiting: data?.rateLimiting
+  }
+
+  // eslint-disable-next-line max-len
+  return ((isTemplate ? aclTemplatePolicyDataWithExtra : aclPolicyDataWithExtra) || {}) as EnhancedAccessControlInfoType
 }
