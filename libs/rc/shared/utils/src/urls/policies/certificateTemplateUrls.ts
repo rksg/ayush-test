@@ -147,5 +147,10 @@ export const CertificateUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     newApi: true,
     url: '/certificateTemplates/:templateId/certificates/:certificateId/chains'
+  },
+  getCertificatesByIdentity: {
+    method: 'post',
+    newApi: true,
+    url: '/certificateTemplates/:templateId/identities/:personaId/certificates/query'
   }
 }

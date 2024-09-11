@@ -3229,6 +3229,30 @@ export const policyApi = basePolicyApi.injectEndpoints({
           }
         }
       }
+    }),
+    getCertificatesByIdentityId: build.query<TableResult<Certificate>, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CertificateUrls.getCertificatesByIdentity, params),
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'Certificate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'UPDATE_CERT',
+            'GENERATE_CERT',
+            'DELETE_CA',
+            'DELETE_TEMPLATE',
+            'UpdatePersona'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Certificate', id: 'LIST' }
+            ]))
+          })
+        })
+      }
     })
   })
 })
@@ -3459,5 +3483,7 @@ export const {
   useLazyDownloadCertificateAuthorityChainsQuery,
   useLazyDownloadCertificateQuery,
   useLazyDownloadCertificateChainsQuery,
-  useDeleteCertificateAuthorityMutation
+  useDeleteCertificateAuthorityMutation,
+  useGetCertificatesByIdentityIdQuery,
+  useLazyGetCertificatesByIdentityIdQuery
 } = policyApi

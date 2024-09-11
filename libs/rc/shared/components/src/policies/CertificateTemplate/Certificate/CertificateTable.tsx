@@ -4,10 +4,16 @@ import { Modal as AntModal, Form }  from 'antd'
 import moment                       from 'moment'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableProps }                                                                                                                                                                                                                                 from '@acx-ui/components'
-import { useEditCertificateMutation, useGenerateCertificateMutation, useGetCertificatesQuery, useGetSpecificTemplateCertificatesQuery, useSearchPersonaListQuery }                                                                                                                   from '@acx-ui/rc/services'
-import { Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
-import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                    from '@acx-ui/utils'
+import { Button, Drawer, Loader, Table, TableProps } from '@acx-ui/components'
+import {
+  useEditCertificateMutation,
+  useGenerateCertificateMutation, useGetCertificatesQuery,
+  useGetSpecificTemplateCertificatesQuery,
+  useSearchPersonaListQuery
+} from '@acx-ui/rc/services'
+import { TableQuery, Certificate, CertificateCategoryType, CertificateStatusType, CertificateTemplate, EXPIRATION_DATE_FORMAT, EXPIRATION_TIME_FORMAT, EnrollmentType, FILTER, PolicyOperation, PolicyType, SEARCH, filterByAccessForServicePolicyMutation, getScopeKeyByPolicy, useTableQuery } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                                                                                                                                                                        from '@acx-ui/types'
+import { getIntl, noDataDisplay }                                                                                                                                                                                                                                                                from '@acx-ui/utils'
 
 import { issuedByLabel } from '../contentsMap'
 
@@ -17,11 +23,12 @@ import { getCertificateStatus, getDisplayedCertificateStatus } from './DetailDra
 import RevokeForm                                              from './RevokeForm'
 
 
-
-export function CertificateTable ({ templateData, showGenerateCert = false, type = 'all' }:
-  { templateData?: CertificateTemplate, showGenerateCert?: boolean,
-    type?: 'all' | 'specificTemplate' | 'specificIdentity'
-   }) {
+export function CertificateTable (
+  { templateData, showGenerateCert = false, type = 'all', customTableQuery }: {
+    templateData?: CertificateTemplate, showGenerateCert?: boolean,
+    type?: 'all' | 'specificTemplate' | 'specificIdentity',
+    customTableQuery?: TableQuery<Certificate, RequestPayload, unknown>
+}) {
   const { $t } = useIntl()
   const [certificateForm] = Form.useForm()
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false)
@@ -29,14 +36,16 @@ export function CertificateTable ({ templateData, showGenerateCert = false, type
   const [detailData, setDetailData] = useState<Certificate | null>(null)
   const [detailId, setDetailId] = useState<string | null>(null)
   const settingsId = 'certificate-table'
-  const tableQuery = useTableQuery({
+  const defaultTableQuery = useTableQuery({
     useQuery:
     type === 'specificTemplate' ? useGetSpecificTemplateCertificatesQuery : useGetCertificatesQuery,
     defaultPayload: {},
     apiParams: type === 'specificTemplate' ? { templateId: templateData?.id! } : {},
-    pagination: { settingsId }
+    pagination: { settingsId },
+    option: { skip: !!customTableQuery }
   })
 
+  const tableQuery = customTableQuery ?? defaultTableQuery
   const { data: identityList } = useSearchPersonaListQuery(
     { payload: { ids: [...new Set(tableQuery.data?.data?.map(d => d.identityId))] } },
     { skip: !tableQuery.data })
