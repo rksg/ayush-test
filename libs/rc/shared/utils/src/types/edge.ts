@@ -434,6 +434,7 @@ export interface EdgeClusterStatus {
   hasCorePort?: boolean,
   highAvailabilityMode?: ClusterHighAvailabilityModeEnum
   firmwareVersion?: string
+  activeAps?:number
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,
