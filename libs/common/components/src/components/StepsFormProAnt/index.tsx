@@ -264,10 +264,11 @@ function StepsForm<T = Record<string, any>> (
   const onSubmit = useRefFunction(() => {
     const form = formArrayRef.current[step]
     try {
-      form.validateFields().then(
+      form.current?.validateFields().then(
         () => {},
         () => {
           const errors = form.current?.getFieldsError()
+          // eslint-disable-next-line no-console
           console.warn(errors)
         }
       )
