@@ -56,7 +56,7 @@ export function useDowngradePerApModel () {
     // eslint-disable-next-line max-len
     const apModelIndividualDisplayData = convertToApModelIndividualDisplayData(apModelFirmwares, selectedVenues, undefined, false)
 
-    return apModelIndividualDisplayData.filter(data => data.versionOptions.length > 0).length > 0
+    return apModelIndividualDisplayData.some(data => data.versionOptions.length > 0)
   }
 
   return {
@@ -233,7 +233,7 @@ export function convertToApModelIndividualDisplayData (
 
       const shouldAddOption = isUpgrade
         ? comparisonResult > 0 || (!apModelExtremeFirmware.isAllTheSame && comparisonResult === 0)
-        : comparisonResult <= 0
+        : comparisonResult < 0
 
       if (shouldAddOption) {
         result[apModel].versionOptions.push(createFirmwareOption(apModelFirmware))
