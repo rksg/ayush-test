@@ -130,7 +130,8 @@ export function DataPromptSettings () {
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
         >
-          <Input placeholder={$t({ defaultMessage: 'Type your title here...' })} data-testid={'title'}/>
+          <Input placeholder={$t({ defaultMessage: 'Type your title here...' })}
+            data-testid={'title'}/>
         </Form.Item>
       }
       <FieldLabel width='555px'>

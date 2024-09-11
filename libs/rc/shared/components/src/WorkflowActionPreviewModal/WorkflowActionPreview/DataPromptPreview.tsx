@@ -43,7 +43,8 @@ export function DataPromptPreview (props: GenericActionPreviewProps<DataPromptAc
                   />}
               />
             } else {
-              return <Form.Item key={getFormFieldLabel(formField)} label={getFormFieldLabel(formField)}>
+              return <Form.Item key={getFormFieldLabel(formField)}
+                label={getFormFieldLabel(formField)}>
                 <Input></Input>
               </Form.Item>
             }})
