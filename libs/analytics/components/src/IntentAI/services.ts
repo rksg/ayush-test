@@ -197,6 +197,7 @@ export const api = intentAIApi.injectEndpoints({
         `,
         variables: { code, root, sliceId }
       }),
+      providesTags: [{ type: 'Intent', id: 'INTENT_AI_WLANS' }],
       transformResponse: (response: { intent: { wlans: IntentWlan[] } }) =>
         response.intent.wlans
     }),
@@ -450,6 +451,7 @@ export function useIntentAITableQuery (filter: PathFilter) {
 export const {
   useIntentAIListQuery,
   useLazyIntentWlansQuery,
+  useIntentWlansQuery,
   useTransitionIntentMutation,
   useIntentFilterOptionsQuery,
   useIntentHighlightQuery,
