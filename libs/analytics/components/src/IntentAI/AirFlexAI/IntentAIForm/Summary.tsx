@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import React from 'react'
 
-import { Row, Col, Form }                           from 'antd'
-import { useIntl, defineMessage, FormattedMessage } from 'react-intl'
+import { Row, Col, Form }            from 'antd'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import { StepsForm, Tooltip, useStepFormContext } from '@acx-ui/components'
 
@@ -47,13 +47,11 @@ export function Summary () {
             >
               {$t({
                 defaultMessage: `{count} {count, plural,
-                    one {{singular}}
-                    other {{plural}}
+                    one {network}
+                    other {networks}
                   } selected`
               }, {
-                count: wlans?.length || 0,
-                singular: $t(defineMessage({ defaultMessage: 'network' })),
-                plural: $t(defineMessage({ defaultMessage: 'networks' }))
+                count: wlans?.length || 0
               })}
             </Tooltip>
           </Form.Item>
