@@ -106,6 +106,47 @@ export const ethernetPortProfileApi = baseEthernetPortProfileApi.injectEndpoints
       },
       invalidatesTags: [{ type: 'EthernetPortProfile', id: 'LIST' }]
     }),
+
+    // eslint-disable-next-line max-len
+    getEthernetPortProfileSettingsByVenueApModel: build.query<EhternetPortSettings, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          EthernetPortProfileUrls.getEthernetPortSettingsByVenueApModel, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+
+    updateEthernetPortSettingsByVenueApModel:
+      build.mutation<EhternetPortSettings, RequestPayload>({
+        query: ({ params, payload }) => {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const req = createHttpRequest(
+            EthernetPortProfileUrls.updateEthernetPortSettingsByVenueApModel, params,
+            customHeaders)
+          return {
+            ...req,
+            body: JSON.stringify(payload)
+          }
+        }
+      }),
+
+    activateEthernetPortProfileOnVenueApModelPortId: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          EthernetPortProfileUrls.activateEthernetPortProfileOnVenueApModelPortId,
+          params,
+          customHeaders
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+
     getEthernetPortProfileSettingsByApPortId: build.query<EhternetPortSettings, RequestPayload>({
       query: ({ params }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
@@ -152,6 +193,9 @@ export const {
   useUpdateEthernetPortProfileMutation,
   useUpdateEthernetPortProfileRadiusIdMutation,
   useDeleteEthernetPortProfileRadiusIdMutation,
+  useGetEthernetPortProfileSettingsByVenueApModelQuery,
+  useUpdateEthernetPortSettingsByVenueApModelMutation,
+  useActivateEthernetPortProfileOnVenueApModelPortIdMutation,
   useGetEthernetPortProfileSettingsByApPortIdQuery,
   useUpdateEthernetPortProfileSettingsByApPortIdMutation,
   useActivateEthernetPortProfileOnApPortIdMutation
