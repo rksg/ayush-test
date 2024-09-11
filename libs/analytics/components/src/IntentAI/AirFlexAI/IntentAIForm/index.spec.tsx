@@ -138,14 +138,12 @@ describe('IntentAIForm', () => {
     const time = await screen.findByPlaceholderText('Select time')
     await selectOptions(time, '12:30 (UTC+08)')
     expect(time).toHaveValue('12.5')
-    await click(actions.getByRole('button', { name: 'Next' }))
-
     await selectOptions(
       await screen.findByPlaceholderText('Select Networks'),
       'DENSITY'
     )
-
     await click(actions.getByRole('button', { name: 'Next' }))
+
     expect((await screen.findAllByText('Summary')).length).toEqual(2)
     expect(await screen.findByText('Average management traffic per client')).toBeVisible()
     expect(await screen.findByText('1 network selected')).toBeVisible()
